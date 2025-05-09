@@ -132,9 +132,9 @@ public class JavaComment implements Reportable {
     }
 
     public static Stream<JavaComment> getLeadingComments(JavaNode node) {
-        Stream<JavaccToken> specialTokens;
+        Stream<JavaccToken> specialTokens = getSpecialTokensIn(node);
         
-        if (node instanceof ModifierOwner) {
+        if (node instanceof ModifierOwner && !(node instanceof ASTConstructorDeclaration)) {
             node = ((ModifierOwner) node).getModifiers();
             specialTokens = getSpecialTokensIn(node);
             
@@ -142,8 +142,6 @@ public class JavaComment implements Reportable {
             if (!node.getFirstToken().isImplicit()) {
                 specialTokens = Stream.concat(specialTokens, getSpecialTokensIn(node.getNextSibling()));
             }
-        } else {
-            specialTokens = getSpecialTokensIn(node);
         }
         
         return specialTokens.filter(JavaComment::isComment)
