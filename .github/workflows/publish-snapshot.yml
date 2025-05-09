@@ -47,6 +47,22 @@ jobs:
             exit 1
           fi
           echo "PMD_VERSION=$PMD_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Add Job Summary
+        env:
+          WORKFLOW_RUN_DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
+          WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
+          WORKFLOW_RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+          WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+          VERSION: ${{ steps.version.outputs.PMD_VERSION }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          echo "### Run Info" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Building Version: ${VERSION}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Branch: ${BRANCH}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Called by [${WORKFLOW_RUN_DISPLAY_TITLE} (${WORKFLOW_RUN_NAME} #${WORKFLOW_RUN_NUMBER})](${WORKFLOW_RUN_HTML_URL})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
 
   deploy-to-maven-central:
     needs: check-version
