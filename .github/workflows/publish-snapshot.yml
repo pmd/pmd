@@ -19,7 +19,7 @@ jobs:
     # only run in the official pmd repo, where we have access to the secrets and not on forks
     # and only run for _successful_ push workflow runs on branch "main".
     if: ${{ github.repository == 'pmd/pmd'
-            && github.event.workflow_run.event == 'push'
+            && contains(fromJSON('["push", "workflow_dispatch", "schedule"]'), github.event.workflow_run.event)
             && github.event.workflow_run.head_branch == 'main'
             && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
