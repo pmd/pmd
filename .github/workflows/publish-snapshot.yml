@@ -5,6 +5,8 @@ on:
     workflows: [Build]
     types:
       - completed
+    branches:
+      - main
 
 permissions:
   contents: read # to fetch code (actions/checkout)
