@@ -1,0 +1,109 @@
+name: Publish Snapshot
+
+on:
+  workflow_run:
+    workflows: [Build]
+    types:
+      - completed
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+env:
+  LANG: 'en_US.UTF-8'
+
+jobs:
+  check-version:
+    # only run in the official pmd repo, where we have access to the secrets and not on forks
+    # and only run for _successful_ push workflow runs on branch "main".
+    if: ${{ github.repository == 'pmd/pmd'
+            && github.event.workflow_run.event == 'push'
+            && github.event.workflow_run.head_branch == 'main'
+            && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      PMD_VERSION: ${{ steps.version.outputs.PMD_VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+         ref: main
+      - name: Determine Version
+        id: version
+        run: |
+          PMD_VERSION=$(./mvnw --batch-mode --no-transfer-progress help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Determined PMD_VERSION=$PMD_VERSION"
+          if [[ "$PMD_VERSION" != *-SNAPSHOT ]]; then
+            echo "::error ::PMD_VERSION=$PMD_VERSION is not a snapshot version, aborting."
+            exit 1
+          fi
+          echo "PMD_VERSION=$PMD_VERSION" >> "$GITHUB_OUTPUT"
+
+  deploy-to-maven-central:
+    needs: check-version
+    # use environment maven-central, where secrets are configured for OSSRH_*
+    environment: maven-central
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Build and publish
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
+        # note: we can't use artifact staging-repository, as the jars are unsigned.
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+            -Dmaven.repo.local=.m2/repository \
+            deploy \
+            -DskipTests \
+            -PfastSkip,sign,pmd-release -Dcyclonedx.skip=false
+
+# TODO
+# deploy-to-sourceforge:
+# -> https://sourceforge.net/projects/pmd/files/pmd/
+# - pmd-dist bin+src+doc + release notes
+# - use environment with secrets
+# - deploy doc to sourceforge (https://pmd.sourceforge.io/snapshot)
+# deploy-documentation:
+# -> https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
+# - also api docs https://docs.pmd-code.org/apidocs/*/${PMD_CI_MAVEN_PROJECT_VERSION}/
+# - also symlink https://docs.pmd-code.org/snapshot -> pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}
+# - use environment with secrets
+# update-github-pages:
+# -> (https://pmd.github.io/pmd/)
+# - just updates branch gh_pages
+# - needs write permissions
+# regression-tester-baseline:
+# - create new baseline -> https://pmd-code.org/pmd-regression-tester/
+# run-sonar: -> https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd
+# run-coveralls: -> https://coveralls.io/github/pmd/pmd
