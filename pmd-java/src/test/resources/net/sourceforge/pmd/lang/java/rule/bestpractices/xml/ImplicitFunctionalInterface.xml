@@ -39,4 +39,28 @@ interface Bar extends Foo { // warn
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>ImplicitFunctionalInterface should not be reported on sealed interfaces #5724</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public sealed interface MyInterface permits MyInterface1, MyInterface2 {
+                String message();
+            }
+            interface MyInterface1 {}
+            interface MyInterface2 {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public @interface MyInterface {
+                String message();
+            }
+            ]]></code>
+    </test-code>
+
+
 </test-data>
