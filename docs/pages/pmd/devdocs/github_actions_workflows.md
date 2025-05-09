@@ -148,18 +148,22 @@ we are actually building a SNAPSHOT version. Then a couple of other jobs are bei
   gpg-signs the files and uploads them to <https://sourceforge.net/projects/pmd/files/pmd/>.
   * Environment: sourceforge
   * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
 * deploy-to-sourceforge-io: Uploads the documentation page to be hosted at
   <https://pmd.sourceforge.io/snapshot>.
   * Environment: sourceforge
   * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
 * deploy-to-pmd-code-doc: Uploads the documentation page to be hosted at
   <https://docs.pmd-code.org/snapshot/>.
   * Environment: pmd-code
   * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+  * Vars: PMD_CODE_ORG_KNOWN_HOSTS
 * deploy-to-pmd-code-javadoc: Uploads the javadoc of PMD's modules to be hosted at
   <https://docs.pmd-code.org/apidocs/>.
   * Environment: pmd-code
   * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+  * Vars: PMD_CODE_ORG_KNOWN_HOSTS
 * deploy-to-github-pages: Updates the branch "gh-pages" wit the new documentation page
   and pushes a new commit onto that branch. This will trigger a new github pages deployment,
   so that the new documentation page is available at
@@ -170,6 +174,7 @@ we are actually building a SNAPSHOT version. Then a couple of other jobs are bei
   for regression testing. The baseline is uploaded to <https://pmd-code.org/pmd-regression-tester/main-baseline.zip>.
   * Environment: pmd-code
   * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+  * Vars: PMD_CODE_ORG_KNOWN_HOSTS
 * run-sonar: Executes [sonar-scanner-plugin](https://github.com/SonarSource/sonar-scanner-maven) and
   uploads the results to sonarcloud at <https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd>.
   * Environment: sonarcloud

@@ -92,7 +92,8 @@ jobs:
 
   deploy-to-sourceforge-files:
     needs: check-version
-    # use environment sourceforge, where secrets are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
     environment:
       name: sourceforge
       url: ${{ steps.upload.outputs.url_output }}
@@ -130,6 +131,7 @@ jobs:
       - name: Setup ssh key for sourceforge
         env:
           WEB_SF_DEPLOY_KEY: ${{ secrets.PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY }}
+          WEB_SF_KNOWN_HOSTS: ${{ vars.PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS }}
         run: |
           mkdir -p "${HOME}/.ssh"
           chmod 700 "${HOME}/.ssh"
@@ -139,28 +141,7 @@ jobs:
           Host web.sourceforge.net
               IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
           " > "$HOME/.ssh/config"
-          {
-            #
-            # web.sourceforge.net (https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
-            #
-            # run locally:
-            # ssh-keyscan web.sourceforge.net | tee -a sf_known_hosts
-            #
-            # verify fingerprints:
-            # ssh-keygen -F web.sourceforge.net -l -f sf_known_hosts
-            # # Host web.sourceforge.net found: line 1 
-            # web.sourceforge.net RSA SHA256:xB2rnn0NUjZ/E0IXQp4gyPqc7U7gjcw7G26RhkDyk90 
-            # # Host web.sourceforge.net found: line 2 
-            # web.sourceforge.net ECDSA SHA256:QAAxYkf0iI/tc9oGa0xSsVOAzJBZstcO8HqGKfjpxcY 
-            # # Host web.sourceforge.net found: line 3 
-            # web.sourceforge.net ED25519 SHA256:209BDmH3jsRyO9UeGPPgLWPSegKmYCBIya0nR/AWWCY 
-            #
-            # then add output of `ssh-keygen -F web.sourceforge.net -f sf_known_hosts`
-            #
-            echo 'web.sourceforge.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA2uifHZbNexw6cXbyg1JnzDitL5VhYs0E65Hk/tLAPmcmm5GuiGeUoI/B0eUSNFsbqzwgwrttjnzKMKiGLN5CWVmlN1IXGGAfLYsQwK6wAu7kYFzkqP4jcwc5Jr9UPRpJdYIK733tSEmzab4qc5Oq8izKQKIaxXNe7FgmL15HjSpatFt9w/ot/CHS78FUAr3j3RwekHCm/jhPeqhlMAgC+jUgNJbFt3DlhDaRMa0NYamVzmX8D47rtmBbEDU3ld6AezWBPUR5Lh7ODOwlfVI58NAf/aYNlmvl2TZiauBCTa7OPYSyXJnIPbQXg6YQlDknNCr0K769EjeIlAfY87Z4tw=='
-            echo 'web.sourceforge.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCwsY6sZT4MTTkHfpRzYjxG7mnXrGL74RCT2cO/NFvRrZVNB5XNwKNn7G5fHbYLdJ6UzpURDRae1eMg92JG0+yo='
-            echo 'web.sourceforge.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOQD35Ujalhh+JJkPvMckDlhu4dS7WH6NsOJ15iGCJLC'
-          } > "$HOME/.ssh/known_hosts"
+          echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
 
       - name: Create docs zip
         env:
@@ -213,7 +194,8 @@ jobs:
 
   deploy-to-sourceforge-io:
     needs: check-version
-    # use environment sourceforge, where secrets are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
     environment:
       name: sourceforge
       url: https://pmd.sourceforge.io/snapshot/
@@ -233,6 +215,7 @@ jobs:
       - name: Setup ssh key for sourceforge
         env:
           WEB_SF_DEPLOY_KEY: ${{ secrets.PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY }}
+          WEB_SF_KNOWN_HOSTS: ${{ vars.PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS }}
         run: |
           mkdir -p "${HOME}/.ssh"
           chmod 700 "${HOME}/.ssh"
@@ -242,28 +225,7 @@ jobs:
           Host web.sourceforge.net
               IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
           " > "$HOME/.ssh/config"
-          {
-            #
-            # web.sourceforge.net (https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
-            #
-            # run locally:
-            # ssh-keyscan web.sourceforge.net | tee -a sf_known_hosts
-            #
-            # verify fingerprints:
-            # ssh-keygen -F web.sourceforge.net -l -f sf_known_hosts
-            # # Host web.sourceforge.net found: line 1 
-            # web.sourceforge.net RSA SHA256:xB2rnn0NUjZ/E0IXQp4gyPqc7U7gjcw7G26RhkDyk90 
-            # # Host web.sourceforge.net found: line 2 
-            # web.sourceforge.net ECDSA SHA256:QAAxYkf0iI/tc9oGa0xSsVOAzJBZstcO8HqGKfjpxcY 
-            # # Host web.sourceforge.net found: line 3 
-            # web.sourceforge.net ED25519 SHA256:209BDmH3jsRyO9UeGPPgLWPSegKmYCBIya0nR/AWWCY 
-            #
-            # then add output of `ssh-keygen -F web.sourceforge.net -f sf_known_hosts`
-            #
-            echo 'web.sourceforge.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA2uifHZbNexw6cXbyg1JnzDitL5VhYs0E65Hk/tLAPmcmm5GuiGeUoI/B0eUSNFsbqzwgwrttjnzKMKiGLN5CWVmlN1IXGGAfLYsQwK6wAu7kYFzkqP4jcwc5Jr9UPRpJdYIK733tSEmzab4qc5Oq8izKQKIaxXNe7FgmL15HjSpatFt9w/ot/CHS78FUAr3j3RwekHCm/jhPeqhlMAgC+jUgNJbFt3DlhDaRMa0NYamVzmX8D47rtmBbEDU3ld6AezWBPUR5Lh7ODOwlfVI58NAf/aYNlmvl2TZiauBCTa7OPYSyXJnIPbQXg6YQlDknNCr0K769EjeIlAfY87Z4tw=='
-            echo 'web.sourceforge.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCwsY6sZT4MTTkHfpRzYjxG7mnXrGL74RCT2cO/NFvRrZVNB5XNwKNn7G5fHbYLdJ6UzpURDRae1eMg92JG0+yo='
-            echo 'web.sourceforge.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOQD35Ujalhh+JJkPvMckDlhu4dS7WH6NsOJ15iGCJLC'
-          } > "$HOME/.ssh/known_hosts"
+          echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
 
       - name: Upload to sourceforge
         env:
@@ -278,7 +240,8 @@ jobs:
 
   deploy-to-pmd-code-doc:
     needs: check-version
-    # use environment pmd-code, where secrets are configured for PMD_CODE_ORG_DEPLOY_KEY
+    # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
+    # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
       name: pmd-code
       url: ${{ steps.upload.outputs.url_output }}
@@ -298,6 +261,7 @@ jobs:
       - name: Setup ssh key for pmd-code
         env:
           PMD_CODE_ORG_DEPLOY_KEY: ${{ secrets.PMD_CODE_ORG_DEPLOY_KEY }}
+          PMD_CODE_ORG_KNOWN_HOSTS: ${{ vars.PMD_CODE_ORG_KNOWN_HOSTS }}
         run: |
           mkdir -p "${HOME}/.ssh"
           chmod 700 "${HOME}/.ssh"
@@ -307,23 +271,7 @@ jobs:
           Host pmd-code.org
               IdentityFile=$HOME/.ssh/pmd-code.org_deploy_key
           " > "$HOME/.ssh/config"
-          {
-            #
-            # pmd-code.org
-            #
-            # ssh-keyscan pmd-code.org | tee -a pmd_known_hosts
-            # ssh-keygen -F pmd-code.org -l -f pmd_known_hosts
-            # # Host pmd-code.org found: line 1 
-            # pmd-code.org RSA SHA256:/uKehVNumCNvJL8C5CziwV9KkUUxHfggq0C4GTrUhwg
-            # # Host pmd-code.org found: line 2 
-            # pmd-code.org ECDSA SHA256:6aD1r1XuIoc/zgBT3bt1S9L5ToyJzdQ9rrcMchnqiRA
-            # # Host pmd-code.org found: line 3 
-            # pmd-code.org ED25519 SHA256:nvkIAzZhYTxXqSU3DWvos83A0EocZ5dsxNkx1LoMZhg
-            # ssh-keygen -F pmd-code.org -f pmd_known_hosts
-            echo 'pmd-code.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVsIeF6xU0oPb/bMbxG1nU1NDyBpR/cBEPZcm/PuJwdI9B0ydPHA6FysqAnt32fNFznC2SWisnWyY3iNsP3pa8RQJVwmnnv9OboGFlW2/61o3iRyydcpPbgl+ADdt8iU9fmMI7dC04UqgHGBoqOwVNna9VylTjp5709cK2qHnwU450F6YcOEiOKeZfJvV4PmpJCz/JcsUVqft6StviR31jKnqbnkZdP8qNoTbds6WmGKyXkhHdLSZE7X1CFQH28tk8XFqditX93ezeCiThFL7EleDexV/3+2+cs5878sDMUMzHS5KShTjkxzhHaodhtIEdNesinq/hOPbxAGkQ0FbD'
-            echo 'pmd-code.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMfSJtZcJCeENSZMvdngr+Hwe7oUVQWWKwC4HnfiOoAh/NSIlzJyQvpoPZxnEFid6Y3ntDK+rnx04Japo63zD8Q='
-            echo 'pmd-code.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa88nqfMavMH/tGeS5DNrSeM5AVHmZQGHh98vC1717o'
-          } > "$HOME/.ssh/known_hosts"
+          echo "${PMD_CODE_ORG_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
 
       - name: Create docs zip
         env:
@@ -365,7 +313,8 @@ jobs:
 
   deploy-to-pmd-code-javadoc:
     needs: check-version
-    # use environment pmd-code, where secrets are configured for PMD_CODE_ORG_DEPLOY_KEY
+    # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
+    # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
       name: pmd-code
       url: https://docs.pmd-code.org/apidocs/
@@ -384,6 +333,7 @@ jobs:
       - name: Setup ssh key for pmd-code
         env:
           PMD_CODE_ORG_DEPLOY_KEY: ${{ secrets.PMD_CODE_ORG_DEPLOY_KEY }}
+          PMD_CODE_ORG_KNOWN_HOSTS: ${{ vars.PMD_CODE_ORG_KNOWN_HOSTS }}
         run: |
           mkdir -p "${HOME}/.ssh"
           chmod 700 "${HOME}/.ssh"
@@ -393,23 +343,7 @@ jobs:
           Host pmd-code.org
               IdentityFile=$HOME/.ssh/pmd-code.org_deploy_key
           " > "$HOME/.ssh/config"
-          {
-            #
-            # pmd-code.org
-            #
-            # ssh-keyscan pmd-code.org | tee -a pmd_known_hosts
-            # ssh-keygen -F pmd-code.org -l -f pmd_known_hosts
-            # # Host pmd-code.org found: line 1 
-            # pmd-code.org RSA SHA256:/uKehVNumCNvJL8C5CziwV9KkUUxHfggq0C4GTrUhwg
-            # # Host pmd-code.org found: line 2 
-            # pmd-code.org ECDSA SHA256:6aD1r1XuIoc/zgBT3bt1S9L5ToyJzdQ9rrcMchnqiRA
-            # # Host pmd-code.org found: line 3 
-            # pmd-code.org ED25519 SHA256:nvkIAzZhYTxXqSU3DWvos83A0EocZ5dsxNkx1LoMZhg
-            # ssh-keygen -F pmd-code.org -f pmd_known_hosts
-            echo 'pmd-code.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVsIeF6xU0oPb/bMbxG1nU1NDyBpR/cBEPZcm/PuJwdI9B0ydPHA6FysqAnt32fNFznC2SWisnWyY3iNsP3pa8RQJVwmnnv9OboGFlW2/61o3iRyydcpPbgl+ADdt8iU9fmMI7dC04UqgHGBoqOwVNna9VylTjp5709cK2qHnwU450F6YcOEiOKeZfJvV4PmpJCz/JcsUVqft6StviR31jKnqbnkZdP8qNoTbds6WmGKyXkhHdLSZE7X1CFQH28tk8XFqditX93ezeCiThFL7EleDexV/3+2+cs5878sDMUMzHS5KShTjkxzhHaodhtIEdNesinq/hOPbxAGkQ0FbD'
-            echo 'pmd-code.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMfSJtZcJCeENSZMvdngr+Hwe7oUVQWWKwC4HnfiOoAh/NSIlzJyQvpoPZxnEFid6Y3ntDK+rnx04Japo63zD8Q='
-            echo 'pmd-code.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa88nqfMavMH/tGeS5DNrSeM5AVHmZQGHh98vC1717o'
-          } > "$HOME/.ssh/known_hosts"
+          echo "${PMD_CODE_ORG_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
 
       - name: Upload javadocs to pmd-code.org
         env:
@@ -480,7 +414,8 @@ jobs:
   create-regression-tester-baseline:
     needs: check-version
     runs-on: ubuntu-latest
-    # use environment pmd-code, where secrets are configured for PMD_CODE_ORG_DEPLOY_KEY
+    # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
+    # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
       name: pmd-code
       url: https://pmd-code.org/pmd-regression-tester/
@@ -536,6 +471,7 @@ jobs:
       - name: Setup ssh key for pmd-code
         env:
           PMD_CODE_ORG_DEPLOY_KEY: ${{ secrets.PMD_CODE_ORG_DEPLOY_KEY }}
+          PMD_CODE_ORG_KNOWN_HOSTS: ${{ vars.PMD_CODE_ORG_KNOWN_HOSTS }}
         run: |
           mkdir -p "${HOME}/.ssh"
           chmod 700 "${HOME}/.ssh"
@@ -545,23 +481,7 @@ jobs:
           Host pmd-code.org
               IdentityFile=$HOME/.ssh/pmd-code.org_deploy_key
           " > "$HOME/.ssh/config"
-          {
-            #
-            # pmd-code.org
-            #
-            # ssh-keyscan pmd-code.org | tee -a pmd_known_hosts
-            # ssh-keygen -F pmd-code.org -l -f pmd_known_hosts
-            # # Host pmd-code.org found: line 1 
-            # pmd-code.org RSA SHA256:/uKehVNumCNvJL8C5CziwV9KkUUxHfggq0C4GTrUhwg
-            # # Host pmd-code.org found: line 2 
-            # pmd-code.org ECDSA SHA256:6aD1r1XuIoc/zgBT3bt1S9L5ToyJzdQ9rrcMchnqiRA
-            # # Host pmd-code.org found: line 3 
-            # pmd-code.org ED25519 SHA256:nvkIAzZhYTxXqSU3DWvos83A0EocZ5dsxNkx1LoMZhg
-            # ssh-keygen -F pmd-code.org -f pmd_known_hosts
-            echo 'pmd-code.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVsIeF6xU0oPb/bMbxG1nU1NDyBpR/cBEPZcm/PuJwdI9B0ydPHA6FysqAnt32fNFznC2SWisnWyY3iNsP3pa8RQJVwmnnv9OboGFlW2/61o3iRyydcpPbgl+ADdt8iU9fmMI7dC04UqgHGBoqOwVNna9VylTjp5709cK2qHnwU450F6YcOEiOKeZfJvV4PmpJCz/JcsUVqft6StviR31jKnqbnkZdP8qNoTbds6WmGKyXkhHdLSZE7X1CFQH28tk8XFqditX93ezeCiThFL7EleDexV/3+2+cs5878sDMUMzHS5KShTjkxzhHaodhtIEdNesinq/hOPbxAGkQ0FbD'
-            echo 'pmd-code.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMfSJtZcJCeENSZMvdngr+Hwe7oUVQWWKwC4HnfiOoAh/NSIlzJyQvpoPZxnEFid6Y3ntDK+rnx04Japo63zD8Q='
-            echo 'pmd-code.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa88nqfMavMH/tGeS5DNrSeM5AVHmZQGHh98vC1717o'
-          } > "$HOME/.ssh/known_hosts"
+          echo "${PMD_CODE_ORG_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
       - name: Upload report
         run: |
           cd ../target/reports
