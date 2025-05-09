@@ -232,37 +232,57 @@
 
 
 {
-"title": "Best Practices (Modelica, Best Practices)",
+"title": "Best Practices (Swift, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_modelica_bestpractices.html#best practices",
+"url": "pmd_rules_swift_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
+"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
 "tags": "",
-"keywords": "ClassStartNameEqualsEndName",
-"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
+"keywords": "ProhibitedInterfaceBuilder",
+"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
+"title": "UnavailableFunction (Swift, Best Practices)",
 "tags": "",
-"keywords": "ConnectUsingNonConnector",
-"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
+"keywords": "UnavailableFunction",
+"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (PLSQL, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_plsql_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "AmbiguousResolution (Modelica, Best Practices)",
+"title": "TomKytesDespair (PLSQL, Best Practices)",
 "tags": "",
-"keywords": "AmbiguousResolution",
-"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"keywords": "TomKytesDespair",
+"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -292,100 +312,6 @@
 "tags": "",
 "keywords": "FunctionNameTooShort",
 "url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_ecmascript_bestpractices.html#best practices",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "AvoidWithStatement (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "AvoidWithStatement",
-"url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ConsistentReturn (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "ConsistentReturn",
-"url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "GlobalVariable (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "GlobalVariable",
-"url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ScopeForInVariable (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "ScopeForInVariable",
-"url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "UseBaseWithParseInt (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "UseBaseWithParseInt",
-"url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (XML, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_xml_bestpractices.html#best practices",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "MissingEncoding (XML, Best Practices)",
-"tags": "",
-"keywords": "MissingEncoding",
-"url": "pmd_rules_xml_bestpractices.html#missingencoding",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -496,44 +422,6 @@
 "tags": "",
 "keywords": "QueueableWithoutFinalizer",
 "url": "pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_velocity_bestpractices.html#best practices",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
-"tags": "",
-"keywords": "AvoidReassigningParameters",
-"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
-"tags": "",
-"keywords": "UnusedMacroParameter",
-"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -1231,19 +1119,55 @@
 
 
 {
-"title": "Best Practices (PLSQL, Best Practices)",
+"title": "Best Practices (JavaScript, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_plsql_bestpractices.html#best practices",
+"url": "pmd_rules_ecmascript_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "TomKytesDespair (PLSQL, Best Practices)",
+"title": "AvoidWithStatement (JavaScript, Best Practices)",
 "tags": "",
-"keywords": "TomKytesDespair",
-"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
+"keywords": "AvoidWithStatement",
+"url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ConsistentReturn (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "ConsistentReturn",
+"url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "GlobalVariable (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "GlobalVariable",
+"url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ScopeForInVariable (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "ScopeForInVariable",
+"url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "UseBaseWithParseInt (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "UseBaseWithParseInt",
+"url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -1260,28 +1184,104 @@
 
 
 {
-"title": "Best Practices (Swift, Best Practices)",
+"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_swift_bestpractices.html#best practices",
+"url": "pmd_rules_velocity_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
+"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
-"keywords": "ProhibitedInterfaceBuilder",
-"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
+"keywords": "AvoidReassigningParameters",
+"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "UnavailableFunction (Swift, Best Practices)",
+"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
-"keywords": "UnavailableFunction",
-"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
+"keywords": "UnusedMacroParameter",
+"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Modelica, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_modelica_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ClassStartNameEqualsEndName",
+"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ConnectUsingNonConnector",
+"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "AmbiguousResolution (Modelica, Best Practices)",
+"tags": "",
+"keywords": "AmbiguousResolution",
+"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (XML, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_xml_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "MissingEncoding (XML, Best Practices)",
+"tags": "",
+"keywords": "MissingEncoding",
+"url": "pmd_rules_xml_bestpractices.html#missingencoding",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -1458,91 +1458,55 @@
 
 
 {
-"title": "Code Style (JavaScript, Code Style)",
+"title": "Code Style (PLSQL, Code Style)",
 "tags": "",
 "keywords": "Code Style",
-"url": "pmd_rules_ecmascript_codestyle.html#code style",
+"url": "pmd_rules_plsql_codestyle.html#code style",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "AssignmentInOperand (JavaScript, Code Style)",
+"title": "AvoidTabCharacter (PLSQL, Code Style)",
 "tags": "",
-"keywords": "AssignmentInOperand",
-"url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
+"keywords": "AvoidTabCharacter",
+"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "ForLoopsMustUseBraces (JavaScript, Code Style)",
+"title": "CodeFormat (PLSQL, Code Style)",
 "tags": "",
-"keywords": "ForLoopsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
+"keywords": "CodeFormat",
+"url": "pmd_rules_plsql_codestyle.html#codeformat",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "IfElseStmtsMustUseBraces (JavaScript, Code Style)",
+"title": "MisplacedPragma (PLSQL, Code Style)",
 "tags": "",
-"keywords": "IfElseStmtsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
+"keywords": "MisplacedPragma",
+"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "IfStmtsMustUseBraces (JavaScript, Code Style)",
+"title": "ForLoopNaming (PLSQL, Code Style)",
 "tags": "",
-"keywords": "IfStmtsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
+"keywords": "ForLoopNaming",
+"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "NoElseReturn (JavaScript, Code Style)",
+"title": "LineLength (PLSQL, Code Style)",
 "tags": "",
-"keywords": "NoElseReturn",
-"url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "UnnecessaryBlock (JavaScript, Code Style)",
-"tags": "",
-"keywords": "UnnecessaryBlock",
-"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "UnnecessaryParentheses (JavaScript, Code Style)",
-"tags": "",
-"keywords": "UnnecessaryParentheses",
-"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "UnreachableCode (JavaScript, Code Style)",
-"tags": "",
-"keywords": "UnreachableCode",
-"url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "WhileLoopsMustUseBraces (JavaScript, Code Style)",
-"tags": "",
-"keywords": "WhileLoopsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
+"keywords": "LineLength",
+"url": "pmd_rules_plsql_codestyle.html#linelength",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 
@@ -2249,71 +2213,6 @@
 
 
 {
-"title": "Code Style (PLSQL, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_plsql_codestyle.html#code style",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "AvoidTabCharacter (PLSQL, Code Style)",
-"tags": "",
-"keywords": "AvoidTabCharacter",
-"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "CodeFormat (PLSQL, Code Style)",
-"tags": "",
-"keywords": "CodeFormat",
-"url": "pmd_rules_plsql_codestyle.html#codeformat",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "MisplacedPragma (PLSQL, Code Style)",
-"tags": "",
-"keywords": "MisplacedPragma",
-"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "ForLoopNaming (PLSQL, Code Style)",
-"tags": "",
-"keywords": "ForLoopNaming",
-"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "LineLength (PLSQL, Code Style)",
-"tags": "",
-"keywords": "LineLength",
-"url": "pmd_rules_plsql_codestyle.html#linelength",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Code Style (XSL, Code Style)",
 "tags": "",
 "keywords": "Code Style",
@@ -2327,6 +2226,107 @@
 "tags": "",
 "keywords": "UseConcatOnce",
 "url": "pmd_rules_xsl_codestyle.html#useconcatonce",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Code Style (JavaScript, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_ecmascript_codestyle.html#code style",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "AssignmentInOperand (JavaScript, Code Style)",
+"tags": "",
+"keywords": "AssignmentInOperand",
+"url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "ForLoopsMustUseBraces (JavaScript, Code Style)",
+"tags": "",
+"keywords": "ForLoopsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "IfElseStmtsMustUseBraces (JavaScript, Code Style)",
+"tags": "",
+"keywords": "IfElseStmtsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "IfStmtsMustUseBraces (JavaScript, Code Style)",
+"tags": "",
+"keywords": "IfStmtsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "NoElseReturn (JavaScript, Code Style)",
+"tags": "",
+"keywords": "NoElseReturn",
+"url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "UnnecessaryBlock (JavaScript, Code Style)",
+"tags": "",
+"keywords": "UnnecessaryBlock",
+"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "UnnecessaryParentheses (JavaScript, Code Style)",
+"tags": "",
+"keywords": "UnnecessaryParentheses",
+"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "UnreachableCode (JavaScript, Code Style)",
+"tags": "",
+"keywords": "UnreachableCode",
+"url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "WhileLoopsMustUseBraces (JavaScript, Code Style)",
+"tags": "",
+"keywords": "WhileLoopsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 
@@ -2503,6 +2503,134 @@
 
 
 {
+"title": "Design (PLSQL, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_plsql_design.html#design",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "CyclomaticComplexity (PLSQL, Design)",
+"tags": "",
+"keywords": "CyclomaticComplexity",
+"url": "pmd_rules_plsql_design.html#cyclomaticcomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveMethodLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveMethodLength",
+"url": "pmd_rules_plsql_design.html#excessivemethodlength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveObjectLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveObjectLength",
+"url": "pmd_rules_plsql_design.html#excessiveobjectlength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessivePackageBodyLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessivePackageBodyLength",
+"url": "pmd_rules_plsql_design.html#excessivepackagebodylength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessivePackageSpecificationLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessivePackageSpecificationLength",
+"url": "pmd_rules_plsql_design.html#excessivepackagespecificationlength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveParameterList (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveParameterList",
+"url": "pmd_rules_plsql_design.html#excessiveparameterlist",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveTypeLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveTypeLength",
+"url": "pmd_rules_plsql_design.html#excessivetypelength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NcssMethodCount (PLSQL, Design)",
+"tags": "",
+"keywords": "NcssMethodCount",
+"url": "pmd_rules_plsql_design.html#ncssmethodcount",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NcssObjectCount (PLSQL, Design)",
+"tags": "",
+"keywords": "NcssObjectCount",
+"url": "pmd_rules_plsql_design.html#ncssobjectcount",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NPathComplexity (PLSQL, Design)",
+"tags": "",
+"keywords": "NPathComplexity",
+"url": "pmd_rules_plsql_design.html#npathcomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "TooManyFields (PLSQL, Design)",
+"tags": "",
+"keywords": "TooManyFields",
+"url": "pmd_rules_plsql_design.html#toomanyfields",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "TooManyMethods (PLSQL, Design)",
+"tags": "",
+"keywords": "TooManyMethods",
+"url": "pmd_rules_plsql_design.html#toomanymethods",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Design (Apex, Design)",
 "tags": "",
 "keywords": "Design",
@@ -2615,71 +2743,6 @@
 "tags": "",
 "keywords": "TooManyFields",
 "url": "pmd_rules_apex_design.html#toomanyfields",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_velocity_design.html#design",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "AvoidDeeplyNestedIfStmts (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_velocity_design.html#avoiddeeplynestedifstmts",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "CollapsibleIfStatements (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "CollapsibleIfStatements",
-"url": "pmd_rules_velocity_design.html#collapsibleifstatements",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveTemplateLength (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "ExcessiveTemplateLength",
-"url": "pmd_rules_velocity_design.html#excessivetemplatelength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NoInlineJavaScript (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "NoInlineJavaScript",
-"url": "pmd_rules_velocity_design.html#noinlinejavascript",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NoInlineStyles (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "NoInlineStyles",
-"url": "pmd_rules_velocity_design.html#noinlinestyles",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 
@@ -3141,118 +3204,55 @@
 
 
 {
-"title": "Design (PLSQL, Design)",
+"title": "Design (Velocity Template Language (VTL), Design)",
 "tags": "",
 "keywords": "Design",
-"url": "pmd_rules_plsql_design.html#design",
+"url": "pmd_rules_velocity_design.html#design",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "CyclomaticComplexity (PLSQL, Design)",
+"title": "AvoidDeeplyNestedIfStmts (Velocity Template Language (VTL), Design)",
 "tags": "",
-"keywords": "CyclomaticComplexity",
-"url": "pmd_rules_plsql_design.html#cyclomaticcomplexity",
+"keywords": "AvoidDeeplyNestedIfStmts",
+"url": "pmd_rules_velocity_design.html#avoiddeeplynestedifstmts",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "ExcessiveMethodLength (PLSQL, Design)",
+"title": "CollapsibleIfStatements (Velocity Template Language (VTL), Design)",
 "tags": "",
-"keywords": "ExcessiveMethodLength",
-"url": "pmd_rules_plsql_design.html#excessivemethodlength",
+"keywords": "CollapsibleIfStatements",
+"url": "pmd_rules_velocity_design.html#collapsibleifstatements",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "ExcessiveObjectLength (PLSQL, Design)",
+"title": "ExcessiveTemplateLength (Velocity Template Language (VTL), Design)",
 "tags": "",
-"keywords": "ExcessiveObjectLength",
-"url": "pmd_rules_plsql_design.html#excessiveobjectlength",
+"keywords": "ExcessiveTemplateLength",
+"url": "pmd_rules_velocity_design.html#excessivetemplatelength",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "ExcessivePackageBodyLength (PLSQL, Design)",
+"title": "NoInlineJavaScript (Velocity Template Language (VTL), Design)",
 "tags": "",
-"keywords": "ExcessivePackageBodyLength",
-"url": "pmd_rules_plsql_design.html#excessivepackagebodylength",
+"keywords": "NoInlineJavaScript",
+"url": "pmd_rules_velocity_design.html#noinlinejavascript",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "ExcessivePackageSpecificationLength (PLSQL, Design)",
+"title": "NoInlineStyles (Velocity Template Language (VTL), Design)",
 "tags": "",
-"keywords": "ExcessivePackageSpecificationLength",
-"url": "pmd_rules_plsql_design.html#excessivepackagespecificationlength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveParameterList (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveParameterList",
-"url": "pmd_rules_plsql_design.html#excessiveparameterlist",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveTypeLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveTypeLength",
-"url": "pmd_rules_plsql_design.html#excessivetypelength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NcssMethodCount (PLSQL, Design)",
-"tags": "",
-"keywords": "NcssMethodCount",
-"url": "pmd_rules_plsql_design.html#ncssmethodcount",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NcssObjectCount (PLSQL, Design)",
-"tags": "",
-"keywords": "NcssObjectCount",
-"url": "pmd_rules_plsql_design.html#ncssobjectcount",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NPathComplexity (PLSQL, Design)",
-"tags": "",
-"keywords": "NPathComplexity",
-"url": "pmd_rules_plsql_design.html#npathcomplexity",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "TooManyFields (PLSQL, Design)",
-"tags": "",
-"keywords": "TooManyFields",
-"url": "pmd_rules_plsql_design.html#toomanyfields",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "TooManyMethods (PLSQL, Design)",
-"tags": "",
-"keywords": "TooManyMethods",
-"url": "pmd_rules_plsql_design.html#toomanymethods",
+"keywords": "NoInlineStyles",
+"url": "pmd_rules_velocity_design.html#noinlinestyles",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 
@@ -3411,6 +3411,91 @@
 
 
 {
+"title": "Error Prone (Swift, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_swift_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ForceCast (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceCast",
+"url": "pmd_rules_swift_errorprone.html#forcecast",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ForceTry (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceTry",
+"url": "pmd_rules_swift_errorprone.html#forcetry",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_plsql_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "TO_DATE_TO_CHAR (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "TO_DATE_TO_CHAR",
+"url": "pmd_rules_plsql_errorprone.html#to_date_to_char",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "TO_DATEWithoutDateFormat (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "TO_DATEWithoutDateFormat",
+"url": "pmd_rules_plsql_errorprone.html#to_datewithoutdateformat",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "TO_TIMESTAMPWithoutDateFormat (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "TO_TIMESTAMPWithoutDateFormat",
+"url": "pmd_rules_plsql_errorprone.html#to_timestampwithoutdateformat",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Error Prone (Kotlin, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
@@ -3424,91 +3509,6 @@
 "tags": "",
 "keywords": "OverrideBothEqualsAndHashcode",
 "url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_ecmascript_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "AvoidTrailingComma (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "AvoidTrailingComma",
-"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EqualComparison (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "EqualComparison",
-"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "InaccurateNumericLiteral (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "InaccurateNumericLiteral",
-"url": "pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "InnaccurateNumericLiteral (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "InnaccurateNumericLiteral",
-"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (XML, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_xml_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "MistypedCDATASection (XML, Error Prone)",
-"tags": "",
-"keywords": "MistypedCDATASection",
-"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -3664,44 +3664,6 @@
 "tags": "",
 "keywords": "TypeShadowsBuiltInNamespace",
 "url": "pmd_rules_apex_errorprone.html#typeshadowsbuiltinnamespace",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Velocity Template Language (VTL), Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_velocity_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyForeachStmt (Velocity Template Language (VTL), Error Prone)",
-"tags": "",
-"keywords": "EmptyForeachStmt",
-"url": "pmd_rules_velocity_errorprone.html#emptyforeachstmt",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyIfStmt (Velocity Template Language (VTL), Error Prone)",
-"tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_velocity_errorprone.html#emptyifstmt",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -4521,6 +4483,35 @@
 
 
 {
+"title": "Error Prone (Java Server Pages, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_jsp_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "JspEncoding (Java Server Pages, Error Prone)",
+"tags": "",
+"keywords": "JspEncoding",
+"url": "pmd_rules_jsp_errorprone.html#jspencoding",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Error Prone (Maven POM, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
@@ -4559,66 +4550,46 @@
 
 
 {
-"title": "Error Prone (Java Server Pages, Error Prone)",
+"title": "Error Prone (JavaScript, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_jsp_errorprone.html#error prone",
+"url": "pmd_rules_ecmascript_errorprone.html#error prone",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "JspEncoding (Java Server Pages, Error Prone)",
+"title": "AvoidTrailingComma (JavaScript, Error Prone)",
 "tags": "",
-"keywords": "JspEncoding",
-"url": "pmd_rules_jsp_errorprone.html#jspencoding",
+"keywords": "AvoidTrailingComma",
+"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
-
-
-
-
-
 ,
 
-
-
-
-
-
-
 {
-"title": "Error Prone (PLSQL, Error Prone)",
+"title": "EqualComparison (JavaScript, Error Prone)",
 "tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_plsql_errorprone.html#error prone",
+"keywords": "EqualComparison",
+"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "TO_DATE_TO_CHAR (PLSQL, Error Prone)",
+"title": "InaccurateNumericLiteral (JavaScript, Error Prone)",
 "tags": "",
-"keywords": "TO_DATE_TO_CHAR",
-"url": "pmd_rules_plsql_errorprone.html#to_date_to_char",
+"keywords": "InaccurateNumericLiteral",
+"url": "pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "TO_DATEWithoutDateFormat (PLSQL, Error Prone)",
+"title": "InnaccurateNumericLiteral (JavaScript, Error Prone)",
 "tags": "",
-"keywords": "TO_DATEWithoutDateFormat",
-"url": "pmd_rules_plsql_errorprone.html#to_datewithoutdateformat",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TO_TIMESTAMPWithoutDateFormat (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_TIMESTAMPWithoutDateFormat",
-"url": "pmd_rules_plsql_errorprone.html#to_timestampwithoutdateformat",
+"keywords": "InnaccurateNumericLiteral",
+"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -4635,28 +4606,57 @@
 
 
 {
-"title": "Error Prone (Swift, Error Prone)",
+"title": "Error Prone (Velocity Template Language (VTL), Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_swift_errorprone.html#error prone",
+"url": "pmd_rules_velocity_errorprone.html#error prone",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "ForceCast (Swift, Error Prone)",
+"title": "EmptyForeachStmt (Velocity Template Language (VTL), Error Prone)",
 "tags": "",
-"keywords": "ForceCast",
-"url": "pmd_rules_swift_errorprone.html#forcecast",
+"keywords": "EmptyForeachStmt",
+"url": "pmd_rules_velocity_errorprone.html#emptyforeachstmt",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "ForceTry (Swift, Error Prone)",
+"title": "EmptyIfStmt (Velocity Template Language (VTL), Error Prone)",
 "tags": "",
-"keywords": "ForceTry",
-"url": "pmd_rules_swift_errorprone.html#forcetry",
+"keywords": "EmptyIfStmt",
+"url": "pmd_rules_velocity_errorprone.html#emptyifstmt",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (XML, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_xml_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "MistypedCDATASection (XML, Error Prone)",
+"tags": "",
+"keywords": "MistypedCDATASection",
+"url": "pmd_rules_xml_errorprone.html#mistypedcdatasection",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -5514,35 +5514,6 @@
 
 
 {
-"title": "Performance (JavaScript, Performance)",
-"tags": "",
-"keywords": "Performance",
-"url": "pmd_rules_ecmascript_performance.html#performance",
-"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
-}
-,
-
-{
-"title": "AvoidConsoleStatements (JavaScript, Performance)",
-"tags": "",
-"keywords": "AvoidConsoleStatements",
-"url": "pmd_rules_ecmascript_performance.html#avoidconsolestatements",
-"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Performance (Apex, Performance)",
 "tags": "",
 "keywords": "Performance",
@@ -5879,6 +5850,35 @@
 
 
 
+
+
+{
+"title": "Performance (JavaScript, Performance)",
+"tags": "",
+"keywords": "Performance",
+"url": "pmd_rules_ecmascript_performance.html#performance",
+"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
+}
+,
+
+{
+"title": "AvoidConsoleStatements (JavaScript, Performance)",
+"tags": "",
+"keywords": "AvoidConsoleStatements",
+"url": "pmd_rules_ecmascript_performance.html#avoidconsolestatements",
+"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "Perl support",
 "tags": "languagesCpdCapableLanguage",
@@ -6152,11 +6152,11 @@
 
 
 {
-"title": "Rule guidelines",
-"tags": "extendinguserdocs",
+"title": "Guidelines for standard rules",
+"tags": "devdocsextending",
 "keywords": "",
-"url": "pmd_userdocs_extending_rule_guidelines.html",
-"summary": "\bRule\b \bGuidelines\b, \bor\b \bthe\b \blast\b \btouches\b \bto\b \ba\b \brule\b"
+"url": "pmd_devdocs_major_rule_guidelines.html",
+"summary": "\bGuidelines\b \bfor\b \brules\b \bthat\b \bare\b \bincluded\b \bin\b \bthe\b \bstandard\b \bdistribution\b"
 }
 
 
@@ -6168,11 +6168,11 @@
 
 
 {
-"title": "Guidelines for standard rules",
-"tags": "devdocsextending",
+"title": "Rule guidelines",
+"tags": "extendinguserdocs",
 "keywords": "",
-"url": "pmd_devdocs_major_rule_guidelines.html",
-"summary": "\bGuidelines\b \bfor\b \brules\b \bthat\b \bare\b \bincluded\b \bin\b \bthe\b \bstandard\b \bdistribution\b"
+"url": "pmd_userdocs_extending_rule_guidelines.html",
+"summary": "\bRule\b \bGuidelines\b, \bor\b \bthe\b \blast\b \btouches\b \bto\b \ba\b \brule\b"
 }
 
 
@@ -6228,22 +6228,6 @@
 ,
 
 
-
-
-
-
-
-{
-"title": "PMD Security",
-"tags": "",
-"keywords": "",
-"url": "pmd_about_security.html",
-"summary": ""
-}
-
-
-
-,
 
 
 
@@ -6362,53 +6346,6 @@
 
 
 {
-"title": "Security (Salesforce Visualforce, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_visualforce_security.html#security",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "VfCsrf (Salesforce Visualforce, Security)",
-"tags": "",
-"keywords": "VfCsrf",
-"url": "pmd_rules_visualforce_security.html#vfcsrf",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "VfHtmlStyleTagXss (Salesforce Visualforce, Security)",
-"tags": "",
-"keywords": "VfHtmlStyleTagXss",
-"url": "pmd_rules_visualforce_security.html#vfhtmlstyletagxss",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "VfUnescapeEl (Salesforce Visualforce, Security)",
-"tags": "",
-"keywords": "VfUnescapeEl",
-"url": "pmd_rules_visualforce_security.html#vfunescapeel",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
 "title": "Security (Java, Security)",
 "tags": "",
 "keywords": "Security",
@@ -6473,6 +6410,69 @@
 }
 
 
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Security (Salesforce Visualforce, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_visualforce_security.html#security",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "VfCsrf (Salesforce Visualforce, Security)",
+"tags": "",
+"keywords": "VfCsrf",
+"url": "pmd_rules_visualforce_security.html#vfcsrf",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "VfHtmlStyleTagXss (Salesforce Visualforce, Security)",
+"tags": "",
+"keywords": "VfHtmlStyleTagXss",
+"url": "pmd_rules_visualforce_security.html#vfhtmlstyletagxss",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "VfUnescapeEl (Salesforce Visualforce, Security)",
+"tags": "",
+"keywords": "VfUnescapeEl",
+"url": "pmd_rules_visualforce_security.html#vfunescapeel",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+{
+"title": "PMD Security",
+"tags": "",
+"keywords": "",
+"url": "pmd_about_security.html",
+"summary": ""
+}
 
 
 
