@@ -265,7 +265,7 @@ See <https://github.com/pmd/docker/settings/secrets/actions>
   <https://hub.docker.com/u/pmdcode>. This is actually a personal access token of user [andreasdangel](https://hub.docker.com/u/andreasdangel),
   who is the only member of the community organization [pmdcode](https://hub.docker.com/u/pmdcode).
 
-### Repository pmd/pmd-regression-tester
+### Repository pmd/pmd-regression-tester - Environment "rubygems"
 See <https://github.com/pmd/pmd-regression-tester/settings/secrets/actions>
 
 * `GEM_HOST_API_KEY`: Used to publish a new version into <https://rubygems.org/gems/pmdtester>.
