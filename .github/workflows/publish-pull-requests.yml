@@ -2,7 +2,7 @@ name: Publish Results from Pull Requests
 run-name: Publish Results for "${{ github.event.workflow_run.display_title }}"
 on:
   workflow_run:
-    workflows: [Pull Request Build]
+    workflows: [Build]
     types:
       - completed
 
@@ -13,8 +13,11 @@ permissions:
 
 jobs:
   publish:
-    # only run in the official pmd repo, where we have access to the secrets
-    if: github.repository == 'pmd/pmd'
+    # only run in the official pmd repo, where we have access to the secrets and not on forks
+    # and only run for _successful_ pull requests workflow runs.
+    if: ${{ github.repository == 'pmd/pmd'
+            && github.event.workflow_run.event == 'pull_request'
+            && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -132,7 +135,7 @@ jobs:
             -f "state=success" -f "target_url=https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/regression" \
             -f "description=PMD Regression Tester Report" -f "context=Published Results / Regression Tester"
       - name: Prepare regression summary
-        run: |-
+        run: |
           summary="$(cat pmd-regression-tester/summary.txt)"
           if [ "$REGRESSION_REPORT_UPLOADED" = "1" ]; then
             summary="
@@ -146,7 +149,7 @@ jobs:
         env:
           # Token required for GH CLI:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |-
+        run: |
           timestamp="$(date -uIs)"
           summary="$(cat pmd-regression-tester/summary.txt)"
           
@@ -162,7 +165,7 @@ jobs:
             -f "started_at=${timestamp}" -f "conclusion=${conclusion}" -f "completed_at=${timestamp}" \
             -f "output[title]=Regression Tester Report" -f "output[summary]=${summary}"
       - name: Prepare comment text
-        run: |-
+        run: |
           summary="$(cat pmd-regression-tester/summary.txt)"
           comment="[Documentation Preview](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/docs)
           

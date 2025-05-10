@@ -27,6 +27,7 @@
             <excludes>
                 <exclude>mvnw</exclude> <!-- added already above -->
                 <exclude>.git/**</exclude>
+                <exclude>.m2/**</exclude>
                 <exclude>**/target/**</exclude>
                 <exclude>**/bin/**</exclude>
 
