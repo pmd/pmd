@@ -537,6 +537,20 @@ public final class PmdAnalysis implements AutoCloseable {
                 }
             }
         } while (changed);
+
+        // include all available dialects of applicable languages - ie: if we have XML rules, all XML dialects are applicable
+        do {
+            changed = false;
+            for (Language lang : reg) {
+                if (lang.getBaseLanguageId() != null) {
+                    Language baseLang = reg.getLanguageById(lang.getBaseLanguageId());
+                    if (baseLang != null && languages.contains(baseLang)) {
+                        changed |= languages.add(lang);
+                    }
+                }
+            }
+        } while (changed);
+
         return languages;
     }
 
