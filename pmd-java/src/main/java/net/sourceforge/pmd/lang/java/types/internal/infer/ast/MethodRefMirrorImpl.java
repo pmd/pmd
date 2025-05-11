@@ -65,7 +65,7 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
         AssertionUtil.validateState(ctdecl != null, "overload resolution is not complete");
 
         // must bind to the same ctdecl.
-        return myNode.getReferencedMethod().equals(ctdecl);
+        return myNode.getReferencedMethod().equals(ctdecl.getMethodType());
     }
 
     @Override

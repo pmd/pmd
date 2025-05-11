@@ -529,10 +529,10 @@ public class Foo {
         </code>
     </test-code>
     <test-code>
-        <description>Make sure collectors are supported</description>
+        <description>Test case with collectors</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Explicit type arguments can be replaced by a diamond: `new ArrayList&lt;&gt;()`</message>
+            <message>Explicit type arguments can be replaced by a diamond: `new CollectorImpl&lt;&gt;(...)`</message>
         </expected-messages>
         <code><![CDATA[
             public class DiamondIssues {
