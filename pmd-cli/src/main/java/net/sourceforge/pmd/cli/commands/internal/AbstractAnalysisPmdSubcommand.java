@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -15,13 +16,11 @@ import java.util.Set;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
-import net.sourceforge.pmd.cli.commands.mixins.internal.EncodingMixin;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.PmdRootLogger;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine;
-import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
@@ -35,7 +34,12 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     protected static final String FILE_COLLECTION_OPTION_HEADER = "File collection options";
 
 
-    protected static class FileCollectionOptions {
+    protected static class FileCollectionOptions<C extends AbstractConfiguration> {
+
+        @Option(names = {"--encoding", "-e"}, description = "Specifies the character set encoding of the source code files",
+                defaultValue = "UTF-8")
+        private Charset encoding;
+
 
         @Option(names = "--file-list",
                 description =
@@ -49,14 +53,14 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         private URI uri;
 
 
-        private List<Path> excludes = new ArrayList<>();
+        private List<Path> ignoreFiles = new ArrayList<>();
 
         @Option(names = "--ignore", arity = "1..*", description = "Files to be excluded from the analysis")
         protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
             if (rootPaths != null) {
-                this.excludes = rootPaths;
+                this.ignoreFiles = rootPaths;
             } else {
-                this.excludes = new ArrayList<>();
+                this.ignoreFiles = new ArrayList<>();
             }
         }
 
@@ -105,6 +109,23 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         }
 
 
+        protected void configureFilesToAnalyze(C configuration) {
+            // Configure input paths
+            if (inputPaths != null) {
+                configuration.setInputPathList(new ArrayList<>(inputPaths));
+            }
+            configuration.setExcludes(ignoreFiles);
+            configuration.collectFilesRecursively(!nonRecursive);
+            configuration.setInputFilePath(fileListPath);
+            configuration.setIgnoreFilePath(ignoreListPath);
+            configuration.setInputUri(uri);
+            if (relativizeRootPaths != null) {
+                configuration.addRelativizeRoots(relativizeRootPaths);
+            }
+            configuration.setSourceEncoding(encoding);
+        }
+
+
         protected void validate(CommandSpec spec) throws ParameterException {
 
             if ((inputPaths == null || inputPaths.isEmpty()) && uri == null && fileListPath == null) {
@@ -124,9 +145,6 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         }
 
     }
-
-    @Mixin
-    private EncodingMixin encoding;
 
     @Option(names = "--no-fail-on-violation",
             description = "By default PMD exits with status 4 if violations or duplications are found. "
@@ -162,7 +180,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
                                                      this::doExecute);
     }
 
-    protected abstract FileCollectionOptions getFileCollectionOptions();
+    protected abstract FileCollectionOptions<C> getFileCollectionOptions();
 
     @Override
     protected void validate() throws ParameterException {
@@ -171,21 +189,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     }
 
     protected final void setCommonConfigProperties(C configuration) {
-        FileCollectionOptions files = getFileCollectionOptions();
-
-        // Configure input paths
-        if (files.inputPaths != null) {
-            configuration.setInputPathList(new ArrayList<>(files.inputPaths));
-        }
-        configuration.setExcludes(files.excludes);
-        configuration.collectFilesRecursively(!files.nonRecursive);
-        configuration.setInputFilePath(files.fileListPath);
-        configuration.setIgnoreFilePath(files.ignoreListPath);
-        configuration.setInputUri(files.uri);
-        if (files.relativizeRootPaths != null) {
-            configuration.addRelativizeRoots(files.relativizeRootPaths);
-        }
-        configuration.setSourceEncoding(encoding.getEncoding());
+        getFileCollectionOptions().configureFilesToAnalyze(configuration);
 
         // reporting logic
         configuration.setReportFile(reportFile);

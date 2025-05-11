@@ -108,7 +108,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
 
     @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
-    FileCollectionOptions files = new FileCollectionOptions();
+    FileCollectionOptions<PMDConfiguration> files = new FileCollectionOptions<>();
 
     @Option(names = { "--rulesets", "-R" },
                description = "Path to a ruleset xml file. "
@@ -231,7 +231,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
 
     @Override
-    protected FileCollectionOptions getFileCollectionOptions() {
+    protected FileCollectionOptions<PMDConfiguration> getFileCollectionOptions() {
         return files;
     }
 

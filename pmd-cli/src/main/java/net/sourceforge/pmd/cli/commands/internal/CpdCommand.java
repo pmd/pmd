@@ -34,7 +34,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
     CpdFileCollectionOptions files = new CpdFileCollectionOptions();
 
-    static class CpdFileCollectionOptions extends FileCollectionOptions {
+    static class CpdFileCollectionOptions extends FileCollectionOptions<CPDConfiguration> {
         private boolean usedDeprecatedExcludeName = false;
 
         // this option name is deprecated
@@ -106,7 +106,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     private String skipBlocksPattern;
 
     @Override
-    protected FileCollectionOptions getFileCollectionOptions() {
+    protected FileCollectionOptions<CPDConfiguration> getFileCollectionOptions() {
         return files;
     }
 
