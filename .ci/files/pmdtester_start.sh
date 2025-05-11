@@ -39,6 +39,14 @@ if [ "${PMD_REGRESSION_TESTER_BASE_BRANCH}" != "main" ]; then
   exit 1
 fi
 
+if [ "${PMD_REGRESSION_TESTER_2ND_REF}" == "0000000000000000000000000000000000000000" ]; then
+  echo "No changes has been pushed."
+  # create files that are added to artifact "pmd-regression-tester"
+  mkdir -p ../target/reports/diff
+  echo -n "No regression tested rules have been changed." > ../target/reports/diff/summary.txt
+  echo -n "skipped" > ../target/reports/diff/conclusion.txt
+  exit 0
+fi
 
 echo "::group::Fetching additional commits"
 # actions/checkout (git clone) initially only fetched with depth 2. Regression tester
@@ -73,8 +81,8 @@ fi
 git branch "main" "${merge_base}"
 echo "::endgroup::"
 
-echo "::group::Running pmdtester on branch ${PMD_CI_BRANCH}"
 export PMD_CI_BRANCH="main"
+echo "::group::Running pmdtester against base branch ${PMD_CI_BRANCH}"
 if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
   export PMD_CI_PULL_REQUEST_NUMBER="${GITHUB_REF_NAME%/merge}"
 fi

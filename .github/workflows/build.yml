@@ -331,7 +331,7 @@ jobs:
       - name: Run pmdtester
         env:
           # this variable is available for "push" builds only, otherwise it's empty
-          PMD_REGRESSION_TESTER_PUSH_BEFORE: ${{ github.event.push.before }}
+          PMD_REGRESSION_TESTER_PUSH_BEFORE: ${{ github.event.before }}
         run: .ci/files/pmdtester_start.sh
       - name: Workaround actions/upload-artifact#176
         run: |
