@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -241,10 +242,24 @@ public interface ExprMirror {
         void finishFailedInference(@Nullable JTypeMirror targetType);
     }
 
+    /**
+     * Common interface for {@link InvocationMirror} and {@link MethodRefMirror},
+     * both of which wrap nods that implement {@link MethodUsage}.
+     */
     interface MethodUsageMirror extends PolyExprMirror {
 
+        /**
+         * Set the compile-time declaration that was resolved for this method usage.
+         */
         void setCompileTimeDecl(InvocationMirror.MethodCtDecl methodType);
 
+        /**
+         * Return the type in which the search for accessible methods start.
+         * For method references it is the type of the LHS and is specified by
+         * the JLS. For method invocations it is the type of the receiver, or
+         * the type of the enclosing type. For constructor invocations this
+         * is not defined and will return null.
+         */
         @Nullable JTypeMirror getTypeToSearch();
     }
 
@@ -434,9 +449,16 @@ public interface ExprMirror {
         List<ExprMirror> getArgumentExpressions();
 
 
+        /** Return the size of the argument list. */
         int getArgumentCount();
 
 
+        /**
+         * {@inheritDoc}
+         *
+         * @implSpec Should cache this value and return it when {@link #getCtDecl()}
+         * is called.
+         */
         @Override
         void setCompileTimeDecl(MethodCtDecl methodType);
 
@@ -448,6 +470,7 @@ public interface ExprMirror {
          */
         @Nullable MethodCtDecl getCtDecl();
 
+        @Override
         default @Nullable JTypeMirror getTypeToSearch() {
             return getReceiverType();
         }
