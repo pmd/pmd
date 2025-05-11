@@ -471,7 +471,7 @@ jobs:
             ~/.m2/repository
             ~/.gradle/caches
             ~/work/pmd/target/repositories
-            vendor/bundle
+            .ci/files/vendor/bundle
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
           restore-keys: regressiontester-
       - uses: actions/download-artifact@v4
@@ -491,6 +491,9 @@ jobs:
       - name: Run pmdtester
         run: |
           cd ..
+          rm -f .bundle/config
+          bundle config set --local gemfile pmd/.ci/files/Gemfile
+          bundle config set --local path vendor/bundle
           bundle exec pmdtester \
               --mode single \
               --local-git-repo ./pmd \
