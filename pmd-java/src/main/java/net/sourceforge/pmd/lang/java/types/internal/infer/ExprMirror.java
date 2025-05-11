@@ -278,6 +278,7 @@ public interface ExprMirror {
          * , except it may also return an array type (the jls makes an exception for it,
          * while we don't).
          */
+        @Override
         JTypeMirror getTypeToSearch();
 
 
