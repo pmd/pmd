@@ -21,6 +21,7 @@ import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.StringUtil;
 
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
@@ -28,6 +29,23 @@ import picocli.CommandLine.ParameterException;
 @Command(name = "cpd", showDefaultValues = true,
     description = "Copy/Paste Detector - find duplicate code")
 public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> {
+
+
+    @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
+    CpdFileCollectionOptions files = new CpdFileCollectionOptions();
+
+    static class CpdFileCollectionOptions extends FileCollectionOptions {
+        private boolean usedDeprecatedExcludeName = false;
+
+        // this option name is deprecated
+        @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
+        @Override
+        protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
+            super.setIgnoreSpecificPaths(rootPaths);
+            this.usedDeprecatedExcludeName = true;
+        }
+
+    }
 
     @Option(names = { "--language", "-l" }, description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
             defaultValue = CPDConfiguration.DEFAULT_LANGUAGE, converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
@@ -41,16 +59,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             description = "Ignore multiple copies of files of the same name and length in comparison.")
     private boolean skipDuplicates;
 
-    private boolean usedDeprecatedExcludeName = false;
 
-    // this option name is deprecated
-    @Option(names = "--exclude",
-            description = "Files to be excluded from the analysis")
-    @Override
-    protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
-        super.setIgnoreSpecificPaths(rootPaths);
-        this.usedDeprecatedExcludeName = true;
-    }
+
 
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
@@ -95,6 +105,11 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             defaultValue = CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN)
     private String skipBlocksPattern;
 
+    @Override
+    protected FileCollectionOptions getFileCollectionOptions() {
+        return files;
+    }
+
     /**
      * Converts these parameters into a configuration.
      *
@@ -124,7 +139,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             configuration.setFailOnError(false);
         }
 
-        if (usedDeprecatedExcludeName) {
+        if (files.usedDeprecatedExcludeName) {
             configuration.getReporter().warn("Option name --exclude is deprecated. Use --ignore instead.");
         }
 

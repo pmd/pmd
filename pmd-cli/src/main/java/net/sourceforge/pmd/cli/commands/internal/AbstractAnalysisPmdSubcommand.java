@@ -20,50 +20,113 @@ import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.PmdRootLogger;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
+import picocli.CommandLine;
 import picocli.CommandLine.Mixin;
+import picocli.CommandLine.Model.CommandSpec;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.Parameters;
 
 public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfiguration> extends AbstractPmdSubcommand {
 
-    @Mixin
-    private EncodingMixin encoding;
+    @CommandLine.Spec
+    protected CommandSpec spec; // injected by PicoCli, needed for validations
 
-    // see the setters #setInputPaths and setPositionalInputPaths for @Option and @Parameters annotations
-    // Note: can't use annotations on the fields here, as otherwise the complete list would be replaced
-    // rather than accumulated.
-    private Set<Path> inputPaths;
+    protected static final String FILE_COLLECTION_OPTION_HEADER = "File collection options";
 
 
+    protected static class FileCollectionOptions {
 
-    @Option(names = "--file-list",
-            description =
-                "Path to a file containing a list of files to analyze, one path per line. "
-                + "One of --dir, --file-list or --uri must be provided.")
-    private Path fileListPath;
-    
-    @Option(names = { "--uri", "-u" },
-            description = "Database URI for sources. "
-                          + "One of --dir, --file-list or --uri must be provided.")
-    private URI uri;
+        @Option(names = "--file-list",
+                description =
+                        "Path to a file containing a list of files to analyze, one path per line. "
+                        + "One of --dir, --file-list or --uri must be provided.")
+        private Path fileListPath;
+
+        @Option(names = {"--uri", "-u"},
+                description = "Database URI for sources. "
+                              + "One of --dir, --file-list or --uri must be provided.")
+        private URI uri;
 
 
-    private List<Path> excludes = new ArrayList<>();
-    @Option(names = "--ignore", arity = "1..*", description = "Files to be excluded from the analysis")
-    protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
-        if (rootPaths != null) {
-            this.excludes = rootPaths;
-        } else {
-            this.excludes = new ArrayList<>();
+        private List<Path> excludes = new ArrayList<>();
+
+        @Option(names = "--ignore", arity = "1..*", description = "Files to be excluded from the analysis")
+        protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
+            if (rootPaths != null) {
+                this.excludes = rootPaths;
+            } else {
+                this.excludes = new ArrayList<>();
+            }
         }
+
+        @Option(names = "--ignore-list",
+                description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
+                              + "This option can be combined with --dir, --file-list and --uri.")
+        private Path ignoreListPath;
+
+
+        @Option(names = {"--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
+                                                                         + "This option allows shortening directories in the report; "
+                                                                         + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
+                                                                         + "The option can be repeated, in which case the shortest relative path will be used. "
+                                                                         + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
+                arity = "1..*", split = ",")
+        private List<Path> relativizeRootPaths;
+
+        // see the setters #setInputPaths and setPositionalInputPaths for @Option and @Parameters annotations
+        // Note: can't use annotations on the fields here, as otherwise the complete list would be replaced
+        // rather than accumulated.
+        private Set<Path> inputPaths;
+
+        @Option(names = {"--dir", "-d"},
+                description = "Path to a source file, or directory containing source files to analyze. "
+                              + "Zip and Jar files are also supported, if they are specified directly "
+                              + "(archive files found while exploring a directory are not recursively expanded). "
+                              + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
+                              + "One of --dir, --file-list or --uri must be provided.",
+                arity = "1..*", split = ",")
+        protected void setInputPaths(final List<Path> inputPaths) {
+            if (this.inputPaths == null) {
+                this.inputPaths = new LinkedHashSet<>(); // linked hashSet in order to maintain order
+            }
+
+            this.inputPaths.addAll(inputPaths);
+        }
+
+        @Option(names = "--non-recursive", description = "Don't scan subdirectiories when using the --d (-dir) option.")
+        private boolean nonRecursive;
+
+
+        @Parameters(arity = "*", description = "Path to a source file, or directory containing source files to analyze. "
+                                               + "Equivalent to using --dir.")
+        protected void setPositionalInputPaths(final List<Path> inputPaths) {
+            this.setInputPaths(inputPaths);
+        }
+
+
+        protected void validate(CommandSpec spec) throws ParameterException {
+
+            if ((inputPaths == null || inputPaths.isEmpty()) && uri == null && fileListPath == null) {
+                throw new ParameterException(spec.commandLine(),
+                        "Please provide a parameter for source root directory (--dir or -d), "
+                        + "database URI (--uri or -u), or file list path (--file-list)");
+            }
+
+            if (relativizeRootPaths != null) {
+                for (Path path : this.relativizeRootPaths) {
+                    if (Files.isRegularFile(path)) {
+                        throw new ParameterException(spec.commandLine(),
+                                "Expected a directory path for option '--relativize-paths-with', found a file: " + path);
+                    }
+                }
+            }
+        }
+
     }
 
-    @Option(names = "--ignore-list",
-            description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
-                          + "This option can be combined with --dir, --file-list and --uri.")
-    private Path ignoreListPath;
-
+    @Mixin
+    private EncodingMixin encoding;
 
     @Option(names = "--no-fail-on-violation",
             description = "By default PMD exits with status 4 if violations or duplications are found. "
@@ -84,59 +147,6 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
                           + "If this option is not specified, the report is rendered to standard output.")
     private Path reportFile;
 
-    private List<Path> relativizeRootPaths;
-
-    @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
-            + "This option allows shortening directories in the report; "
-            + "without it, paths are rendered as mentioned in the source directory (option \"--dir\"). "
-            + "The option can be repeated, in which case the shortest relative path will be used. "
-            + "If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered as absolute.",
-            arity = "1..*", split = ",")
-    protected void setRelativizePathsWith(List<Path> rootPaths) {
-        this.relativizeRootPaths = rootPaths;
-
-        for (Path path : this.relativizeRootPaths) {
-            if (Files.isRegularFile(path)) {
-                throw new ParameterException(spec.commandLine(),
-                        "Expected a directory path for option '--relativize-paths-with', found a file: " + path);
-            }
-        }
-    }
-
-    @Option(names = { "--dir", "-d" },
-            description = "Path to a source file, or directory containing source files to analyze. "
-                    + "Zip and Jar files are also supported, if they are specified directly "
-                    + "(archive files found while exploring a directory are not recursively expanded). "
-                    + "This option can be repeated, and multiple arguments can be provided to a single occurrence of the option. "
-                    + "One of --dir, --file-list or --uri must be provided.",
-            arity = "1..*", split = ",")
-    protected void setInputPaths(final List<Path> inputPaths) {
-        if (this.inputPaths == null) {
-            this.inputPaths = new LinkedHashSet<>(); // linked hashSet in order to maintain order
-        }
-
-        this.inputPaths.addAll(inputPaths);
-    }
-
-    @Option(names = "--non-recursive", description = "Don't scan subdirectiories when using the --d (-dir) option.")
-    private boolean nonRecursive;
-
-    @Parameters(arity = "*", description = "Path to a source file, or directory containing source files to analyze. "
-            + "Equivalent to using --dir.")
-    protected void setPositionalInputPaths(final List<Path> inputPaths) {
-        this.setInputPaths(inputPaths);
-    }
-
-    @Override
-    protected final void validate() throws ParameterException {
-        super.validate();
-
-        if ((inputPaths == null || inputPaths.isEmpty()) && uri == null && fileListPath == null) {
-            throw new ParameterException(spec.commandLine(),
-                                         "Please provide a parameter for source root directory (--dir or -d), "
-                                             + "database URI (--uri or -u), or file list path (--file-list)");
-        }
-    }
 
 
     protected abstract C toConfiguration();
@@ -152,18 +162,28 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
                                                      this::doExecute);
     }
 
+    protected abstract FileCollectionOptions getFileCollectionOptions();
+
+    @Override
+    protected void validate() throws ParameterException {
+        super.validate();
+        getFileCollectionOptions().validate(spec);
+    }
+
     protected final void setCommonConfigProperties(C configuration) {
+        FileCollectionOptions files = getFileCollectionOptions();
+
         // Configure input paths
-        if (inputPaths != null) {
-            configuration.setInputPathList(new ArrayList<>(inputPaths));
+        if (files.inputPaths != null) {
+            configuration.setInputPathList(new ArrayList<>(files.inputPaths));
         }
-        configuration.setExcludes(excludes);
-        configuration.collectFilesRecursively(!nonRecursive);
-        configuration.setInputFilePath(fileListPath);
-        configuration.setIgnoreFilePath(ignoreListPath);
-        configuration.setInputUri(uri);
-        if (relativizeRootPaths != null) {
-            configuration.addRelativizeRoots(relativizeRootPaths);
+        configuration.setExcludes(files.excludes);
+        configuration.collectFilesRecursively(!files.nonRecursive);
+        configuration.setInputFilePath(files.fileListPath);
+        configuration.setIgnoreFilePath(files.ignoreListPath);
+        configuration.setInputUri(files.uri);
+        if (files.relativizeRootPaths != null) {
+            configuration.addRelativizeRoots(files.relativizeRootPaths);
         }
         configuration.setSourceEncoding(encoding.getEncoding());
 
