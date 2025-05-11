@@ -170,13 +170,14 @@ jobs:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
         run: |
           mv docs "pmd-doc-${PMD_VERSION}"
-          zip -qr "pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
+          zip -qr "dist/pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
 
       - name: Sign files
         env:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
         run: |
+          cd dist
           printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-bin.zip"
           printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
@@ -377,7 +378,9 @@ jobs:
               moduleJavadocJarBasename="$(basename "$moduleJavadocJar")"
               module=${moduleJavadocJarBasename%%-${PMD_VERSION}-javadoc.jar}
     
+              echo "Copying module ${moduleJavadocJar}..."
               scp "$moduleJavadocJar" ${PMD_CODE_SSH_USER}@pmd-code.org:${PMD_CODE_DOCS_PATH}
+              echo "Extracting remotely ${module}..."
               # shellcheck disable=SC2029
               ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
                       mkdir -p \"apidocs/${module}/${PMD_VERSION}\" && \
@@ -385,6 +388,7 @@ jobs:
                       rm \"${moduleJavadocJarBasename}\""
           done
 
+          echo "(Re)creating .htaccess"
           # make sure https://docs.pmd-code.org/apidocs/ shows directory index
           # shellcheck disable=SC2029
           ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}/apidocs\" && \
@@ -430,6 +434,10 @@ jobs:
 
           Updated by: https://github.com/pmd/pmd/actions/runs/$GITHUB_RUN_ID
           Triggered by: ${WORKFLOW_RUN_HTML_URL}"
+          
+          echo "Commit Message:"
+          echo "$MSG"
+          
           git commit -q -m "$MSG"
           git push
 
@@ -469,6 +477,8 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: dist-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
           path: pmd-dist/target
       - name: Setup bundler
         run: |
