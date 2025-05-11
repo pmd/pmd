@@ -93,7 +93,6 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     /** The default suppress marker string. */
     public static final String DEFAULT_SUPPRESS_MARKER = "NOPMD";
-    private Path reportFile;
 
     // General behavior options
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
@@ -412,24 +411,6 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public boolean isIgnoreIncrementalAnalysis() {
         return ignoreIncrementalAnalysis;
-    }
-
-    /**
-     * Get the file to which the report should render.
-     *
-     * @return The file to which to render.
-     */
-    public Path getReportFilePath() {
-        return reportFile;
-    }
-
-    /**
-     * Set the file to which the report should render.
-     *
-     * @param reportFile the file to set
-     */
-    public void setReportFile(Path reportFile) {
-        this.reportFile = reportFile;
     }
 
     @Override

@@ -78,7 +78,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     private List<String> rulesets;
     
-    private Path ignoreListPath;
 
     private String format;
 
@@ -91,8 +90,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     private RulePriority minimumPriority;
 
     private Properties properties = new Properties();
-
-    private Path reportFile;
 
     private List<LanguageVersion> languageVersion;
 
@@ -115,12 +112,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.rulesets = rulesets;
     }
 
-    @Option(names = "--ignore-list",
-            description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
-                          + "This option can be combined with --dir, --file-list and --uri.")
-    public void setIgnoreListPath(final Path ignoreListPath) {
-        this.ignoreListPath = ignoreListPath;
-    }
 
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
@@ -162,14 +153,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
             completionCandidates = PmdReportPropertiesCandidates.class)
     public void setProperties(final Properties properties) {
         this.properties = properties;
-    }
-
-    @Option(names = { "--report-file", "-r" },
-            description = "Path to a file to which report output is written. "
-                + "The file is created if it does not exist. "
-                + "If this option is not specified, the report is rendered to standard output.")
-    public void setReportFile(final Path reportFile) {
-        this.reportFile = reportFile;
     }
 
     @Option(names = "--use-version",
@@ -239,26 +222,14 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     @Override
     protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
-        if (inputPaths != null) {
-            configuration.setInputPathList(new ArrayList<>(inputPaths));
-        }
-        configuration.setInputFilePath(fileListPath);
-        configuration.setIgnoreFilePath(ignoreListPath);
-        configuration.setInputUri(uri);
+        setCommonConfigProperties(configuration);
         configuration.setReportFormat(format);
         configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setMinimumPriority(minimumPriority);
-        configuration.setReportFile(reportFile);
         configuration.setReportProperties(properties);
-        if (relativizeRootPaths != null) {
-            configuration.addRelativizeRoots(relativizeRootPaths);
-        }
         configuration.setRuleSets(rulesets);
         configuration.setShowSuppressedViolations(showSuppressed);
         configuration.setSuppressMarker(suppressMarker);
-        configuration.setThreads(threads);
-        configuration.setFailOnViolation(failOnViolation);
-        configuration.setFailOnError(failOnError);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
 
@@ -307,7 +278,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                 LOG.debug("Aux classpath: {}", configuration.getClassLoader());
 
                 if (showProgressBar) {
-                    if (reportFile == null) {
+                    if (configuration.getReportFilePath() == null) {
                         pmdReporter.warn("Progressbar rendering conflicts with reporting to STDOUT. "
                                 + "No progressbar will be shown. Try running with argument '-r <file>' to output the report to a file instead.");
                     } else {

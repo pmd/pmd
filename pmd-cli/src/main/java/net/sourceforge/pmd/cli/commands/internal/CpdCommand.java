@@ -69,7 +69,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     private boolean ignoreIdentifierAndLiteralSequences;
 
     /**
-     * @deprecated Use {@link #failOnError} instead.
+     * @deprecated Use --[no-]fail-on-error instead.
      */
     @Option(names = "--skip-lexical-errors",
             description = "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error. Deprecated - use --[no-]fail-on-error instead.")
@@ -102,16 +102,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     @Override
     protected CPDConfiguration toConfiguration() {
         final CPDConfiguration configuration = new CPDConfiguration();
-        configuration.setExcludes(excludes);
-        if (relativizeRootPaths != null) {
-            configuration.addRelativizeRoots(relativizeRootPaths);
-        }
-        configuration.setFailOnViolation(failOnViolation);
-        configuration.setFailOnError(failOnError);
-        configuration.setInputFilePath(fileListPath);
-        if (inputPaths != null) {
-            configuration.setInputPathList(new ArrayList<>(inputPaths));
-        }
+        setCommonConfigProperties(configuration);
+        configuration.setExcludes(excludes); // todo put that into common properties
         configuration.setIgnoreAnnotations(ignoreAnnotations);
         configuration.setIgnoreIdentifiers(ignoreIdentifiers);
         configuration.setIgnoreLiterals(ignoreLiterals);
@@ -125,8 +117,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
         configuration.setSourceEncoding(encoding.getEncoding());
-        configuration.setInputUri(uri);
-        configuration.setThreads(threads);
 
         if (skipLexicalErrors) {
             configuration.getReporter().warn("--skip-lexical-errors is deprecated. Use --no-fail-on-error instead.");
