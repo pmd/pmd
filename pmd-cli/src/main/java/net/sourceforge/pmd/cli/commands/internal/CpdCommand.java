@@ -5,10 +5,7 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -69,7 +66,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     private boolean ignoreIdentifierAndLiteralSequences;
 
     /**
-     * @deprecated Use {@link #failOnError} instead.
+     * @deprecated Use --[no-]fail-on-error instead.
      */
     @Option(names = "--skip-lexical-errors",
             description = "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error. Deprecated - use --[no-]fail-on-error instead.")
@@ -85,13 +82,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             defaultValue = CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN)
     private String skipBlocksPattern;
 
-    @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
-    private List<Path> excludes = new ArrayList<>();
-
-    @Option(names = "--non-recursive", description = "Don't scan subdirectiories.")
-    private boolean nonRecursive;
-
-
     /**
      * Converts these parameters into a configuration.
      *
@@ -102,16 +92,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     @Override
     protected CPDConfiguration toConfiguration() {
         final CPDConfiguration configuration = new CPDConfiguration();
-        configuration.setExcludes(excludes);
-        if (relativizeRootPaths != null) {
-            configuration.addRelativizeRoots(relativizeRootPaths);
-        }
-        configuration.setFailOnViolation(failOnViolation);
-        configuration.setFailOnError(failOnError);
-        configuration.setInputFilePath(fileListPath);
-        if (inputPaths != null) {
-            configuration.setInputPathList(new ArrayList<>(inputPaths));
-        }
+        setCommonConfigProperties(configuration);
+
         configuration.setIgnoreAnnotations(ignoreAnnotations);
         configuration.setIgnoreIdentifiers(ignoreIdentifiers);
         configuration.setIgnoreLiterals(ignoreLiterals);
@@ -119,13 +101,10 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         configuration.setIgnoreUsings(ignoreUsings);
         configuration.setOnlyRecognizeLanguage(language);
         configuration.setMinimumTileSize(minimumTokens);
-        configuration.collectFilesRecursively(!nonRecursive);
         configuration.setNoSkipBlocks(noSkipBlocks);
         configuration.setRendererName(rendererName);
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
-        configuration.setSourceEncoding(encoding.getEncoding());
-        configuration.setInputUri(uri);
 
         if (skipLexicalErrors) {
             configuration.getReporter().warn("--skip-lexical-errors is deprecated. Use --no-fail-on-error instead.");

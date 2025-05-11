@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,7 +197,9 @@ public final class CpdAnalysis implements AutoCloseable {
             CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile, processingErrors);
 
             if (renderer != null) {
-                try (Writer writer = IOUtil.createWriter(Charset.defaultCharset(), null)) {
+                Path reportFilePath = configuration.getReportFilePath();
+                String reportFileAsString = reportFilePath != null ? reportFilePath.toAbsolutePath().toString() : null;
+                try (Writer writer = IOUtil.createWriter(Charset.defaultCharset(), reportFileAsString)) {
                     renderer.render(cpdReport, writer);
                 }
             }

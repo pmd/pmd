@@ -41,11 +41,15 @@ public abstract class AbstractConfiguration {
     private PmdReporter reporter;
     private final LanguageVersionDiscoverer languageVersionDiscoverer;
     private LanguageVersion forceLanguageVersion;
+
     private @NonNull List<Path> inputPaths = new ArrayList<>();
     private Path inputFilePath;
     private Path ignoreFilePath;
     private List<Path> excludes = new ArrayList<>();
     private boolean collectRecursive = true;
+
+    private Path reportFile;
+
     private boolean failOnViolation = true;
     private boolean failOnError = true;
 
@@ -379,6 +383,27 @@ public abstract class AbstractConfiguration {
     public void collectFilesRecursively(boolean collectRecursive) {
         this.collectRecursive = collectRecursive;
     }
+
+
+    /**
+     * Get the file to which the report should render. If null, the
+     * report is rendered on stdout.
+     *
+     * @return The file to which to render.
+     */
+    public @Nullable Path getReportFilePath() {
+        return reportFile;
+    }
+
+    /**
+     * Set the file to which the report should render.
+     *
+     * @param reportFile the file to set
+     */
+    public void setReportFile(@Nullable Path reportFile) {
+        this.reportFile = reportFile;
+    }
+
 
     /**
      * Whether PMD should exit with status 4 (the default behavior, true) if

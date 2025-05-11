@@ -7,14 +7,18 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cli.commands.mixins.internal.EncodingMixin;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.PmdRootLogger;
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine.Mixin;
 import picocli.CommandLine.Option;
@@ -24,37 +28,52 @@ import picocli.CommandLine.Parameters;
 public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfiguration> extends AbstractPmdSubcommand {
 
     @Mixin
-    protected EncodingMixin encoding;
+    private EncodingMixin encoding;
 
     // see the setters #setInputPaths and setPositionalInputPaths for @Option and @Parameters annotations
     // Note: can't use annotations on the fields here, as otherwise the complete list would be replaced
     // rather than accumulated.
-    protected Set<Path> inputPaths;
+    private Set<Path> inputPaths;
+
+
 
     @Option(names = "--file-list",
             description =
                 "Path to a file containing a list of files to analyze, one path per line. "
                 + "One of --dir, --file-list or --uri must be provided.")
-    protected Path fileListPath;
+    private Path fileListPath;
     
     @Option(names = { "--uri", "-u" },
             description = "Database URI for sources. "
                           + "One of --dir, --file-list or --uri must be provided.")
-    protected URI uri;
-    
+    private URI uri;
+
+    @Option(names = "--ignore-list",
+            description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
+                          + "This option can be combined with --dir, --file-list and --uri.")
+    private Path ignoreListPath;
+
+
     @Option(names = "--no-fail-on-violation",
             description = "By default PMD exits with status 4 if violations or duplications are found. "
                     + "Disable this option with '--no-fail-on-violation' to exit with 0 instead. In any case a report with the found violations or duplications will be written.",
             defaultValue = "true", negatable = true)
-    protected boolean failOnViolation;
+    private boolean failOnViolation;
 
     @Option(names = "--no-fail-on-error",
             description = "By default PMD exits with status 5 if recoverable errors occurred (whether or not there are violations or duplications). "
                     + "Disable this option with '--no-fail-on-error' to exit with 0 instead. In any case, a report with the found violations or duplications will be written.",
             defaultValue = "true", negatable = true)
-    protected boolean failOnError;
+    private boolean failOnError;
 
-    protected List<Path> relativizeRootPaths;
+
+    @Option(names = { "--report-file", "-r" },
+            description = "Path to a file to which report output is written. "
+                          + "The file is created if it does not exist. "
+                          + "If this option is not specified, the report is rendered to standard output.")
+    private Path reportFile;
+
+    private List<Path> relativizeRootPaths;
 
     @Option(names = { "--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
             + "This option allows shortening directories in the report; "
@@ -88,6 +107,12 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         this.inputPaths.addAll(inputPaths);
     }
 
+    @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
+    private List<Path> excludes = new ArrayList<>();
+
+    @Option(names = "--non-recursive", description = "Don't scan subdirectiories when using the --d (-dir) option.")
+    private boolean nonRecursive;
+
     @Parameters(arity = "*", description = "Path to a source file, or directory containing source files to analyze. "
             + "Equivalent to using --dir.")
     protected void setPositionalInputPaths(final List<Path> inputPaths) {
@@ -117,6 +142,31 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         return PmdRootLogger.executeInLoggingContext(configuration,
                                                      debug,
                                                      this::doExecute);
+    }
+
+    protected final void setCommonConfigProperties(C configuration) {
+        // Configure input paths
+        if (inputPaths != null) {
+            configuration.setInputPathList(new ArrayList<>(inputPaths));
+        }
+        configuration.setExcludes(excludes);
+        configuration.collectFilesRecursively(!nonRecursive);
+        configuration.setInputFilePath(fileListPath);
+        configuration.setIgnoreFilePath(ignoreListPath);
+        configuration.setInputUri(uri);
+        if (relativizeRootPaths != null) {
+            configuration.addRelativizeRoots(relativizeRootPaths);
+        }
+        configuration.setSourceEncoding(encoding.getEncoding());
+
+        // reporting logic
+        configuration.setReportFile(reportFile);
+        // configuration.setReportProperties(properties);
+        configuration.setFailOnViolation(failOnViolation);
+        configuration.setFailOnError(failOnError);
+
+        // Setup CLI message reporter
+        configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(PmdCommand.class)));
     }
 
 }
