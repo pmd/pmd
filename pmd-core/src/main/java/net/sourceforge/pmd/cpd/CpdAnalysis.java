@@ -7,10 +7,10 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.PSortedSet;
-import org.pcollections.TreePSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
@@ -225,7 +223,7 @@ public final class CpdAnalysis implements AutoCloseable {
             }
 
             consumer.accept(cpdReport);
-        } catch (IOException e) {
+        } catch (Exception e) {
             reporter.errorEx("Exception while running CPD", e);
         }
         // source manager is closed and closes all text files now.
@@ -235,36 +233,35 @@ public final class CpdAnalysis implements AutoCloseable {
      * Execute a callback on all the files in the source manager.
      * Errors are returned by the callback, not thrown.
      */
-    private static List<ProcessingError> executeInParallel(int threads,
-                                                           SourceManager sourceManager,
-                                                           Function<TextFile, @Nullable ProcessingError> processFile)
+    private static List<ProcessingError> executeInParallel(
+            int threads,
+            SourceManager sourceManager,
+            Function<TextFile, @Nullable ProcessingError> processFile)
         throws InterruptedException, ExecutionException {
 
+        // To make parallel streams use a custom ForkJoinPool, we need
+        // to execute it in its "context" using submit.
         ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
         try {
-            PSortedSet<Report.ProcessingError> processingErrors =
-                forkJoinPool
-                    .submit(
-                        () ->
-                            sourceManager
-                                .getTextFiles()
-                                .parallelStream()
-                                .<PSortedSet<ProcessingError>>reduce(
-                                    TreePSet.empty(),
-                                    (currentErrors, textFile) -> {
-                                        ProcessingError err = processFile.apply(textFile);
-                                        if (err != null) {
-                                            return currentErrors.plus(err);
-                                        }
-                                        return currentErrors;
-                                    }, PSortedSet::plusAll))
+            return forkJoinPool
+                    .submit(() -> processWithParallelStream(sourceManager, processFile))
                     .get();
-            return new ArrayList<>(processingErrors);
         } finally {
             forkJoinPool.shutdown();
         }
 
 
+    }
+
+    /** Process all files with the given callback. Errors are collected into the result list. */
+    private static List<ProcessingError> processWithParallelStream(SourceManager sourceManager, Function<TextFile, @Nullable ProcessingError> processFile) {
+        return sourceManager
+                .getTextFiles()
+                .parallelStream()
+                .map(processFile)
+                .filter(Objects::nonNull)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     @Override
