@@ -15,46 +15,51 @@ class SelectIntoStatementTest extends AbstractPLSQLParserTst {
 
     @Test
     void testParsingComplex() {
-        plsql.parseResource("SelectIntoStatement.pls");
+        doTest("SelectIntoStatement");
     }
 
     @Test
     void testParsingExample1() {
-        plsql.parseResource("SelectIntoStatementExample1.pls");
+        doTest("SelectIntoStatementExample1");
     }
 
     @Test
     void testParsingExample2() {
-        plsql.parseResource("SelectIntoStatementExample2.pls");
+        doTest("SelectIntoStatementExample2");
     }
 
     @Test
     void testParsingExample3() {
-        plsql.parseResource("SelectIntoStatementExample3.pls");
+        doTest("SelectIntoStatementExample3");
     }
 
     @Test
     void testParsingExample4() {
-        plsql.parseResource("SelectIntoStatementExample4.pls");
+        doTest("SelectIntoStatementExample4");
     }
 
     @Test
     void testParsingExample5() {
-        plsql.parseResource("SelectIntoStatementExample5.pls");
+        doTest("SelectIntoStatementExample5");
     }
 
     @Test
     void testParsingExample6Invalid() {
-        assertThrows(ParseException.class, () -> plsql.parseResource("SelectIntoStatementExample6Invalid.pls"));
+        assertThrows(ParseException.class, () -> doTest("SelectIntoStatementExample6Invalid"));
     }
 
     @Test
     void testParsingWithFunctionCall() {
-        plsql.parseResource("SelectIntoStatementFunctionCall.pls");
+        doTest("SelectIntoStatementFunctionCall");
     }
 
     @Test
     void testParsingIntoRecordField() {
-        plsql.parseResource("SelectIntoStatementRecordField.pls");
+        doTest("SelectIntoStatementRecordField");
+    }
+
+    @Test
+    void selectIntoTimeoutIssue5521() {
+        doTest("SelectIntoTimeoutIssue5521");
     }
 }

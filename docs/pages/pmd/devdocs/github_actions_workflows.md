@@ -101,3 +101,19 @@ to create or update a comment on the pull request which shows the regression tes
 This workflow is in that sense optional, as the docs-artifact and pmd-regression-tester artifacts can
 be manually downloaded from the "Pull Request Build" workflow run. It merely adds convenience by
 giving easy access to a preview of the documentation and to the regression tester results.
+
+In the end, this workflow adds additional links to a pull request page. For the comment, GitHub seems
+to automatically add "rel=nofollow" to the links in the text. This is also applied for the check status
+pages. However, the links in the commit status are plain links. This might lead to unnecessary
+crawling by search engines. To avoid this, the following robots.txt is used
+at <https://pull-requests.pmd-code.org/robots.txt> to disallow any (search engine) bot:
+
+```
+User-agent: *
+Disallow: /
+```
+
+The reasons, why we don't want to have the pages there indexed: They are short-lived and only
+temporary. These temporary created documentation pages should not end up in any search result.
+This also helps to avoid unnecessary traffic and load for both the hosting side and the
+crawling side.

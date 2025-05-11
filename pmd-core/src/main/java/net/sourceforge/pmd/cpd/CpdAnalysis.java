@@ -225,7 +225,7 @@ public final class CpdAnalysis implements AutoCloseable {
             }
 
             consumer.accept(cpdReport);
-        } catch (Exception e) {
+        } catch (IOException e) {
             reporter.errorEx("Exception while running CPD", e);
         }
         // source manager is closed and closes all text files now.

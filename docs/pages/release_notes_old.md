@@ -5,6 +5,264 @@ permalink: pmd_release_notes_old.html
 
 Previous versions of PMD can be downloaded here: [Releases - pmd/pmd (GitHub)](https://github.com/pmd/pmd/releases)
 
+
+
+## 25-April-2025 - 7.13.0
+
+The PMD team is pleased to announce PMD 7.13.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🚀 New and noteworthy](#new-and-noteworthy)
+    * [Docker images](#docker-images)
+    * [Experimental support for language dialects](#experimental-support-for-language-dialects)
+    * [✨ New Rules](#new-rules)
+* [🐛 Fixed Issues](#fixed-issues)
+* [🚨 API Changes](#api-changes)
+    * [Deprecations](#deprecations)
+    * [Experimental API](#experimental-api)
+* [✨ Merged pull requests](#merged-pull-requests)
+* [📦 Dependency updates](#dependency-updates)
+* [📈 Stats](#stats)
+
+### 🚀 New and noteworthy
+
+#### Docker images
+
+PMD is now providing official docker images at <https://hub.docker.com/r/pmdcode/pmd> and
+<https://github.com/pmd/docker/pkgs/container/pmd>.
+
+You can now analyze your code with PMD by using docker like so:
+
+```
+docker run --rm --tty -v $PWD:/src pmdcode/pmd:latest check -d . -R rulesets/java/quickstart.xml`
+```
+
+More information is available at <https://github.com/pmd/docker>.
+
+#### Experimental support for language dialects
+
+A dialect is a particular form of another supported language. For example, an XSLT is a particular
+form of an XML. Even though the dialect has its own semantics and uses, the contents are still readable
+by any tool capable of understanding the base language.
+
+In PMD, a dialect allows to set up completely custom rules, XPath functions, properties and metrics
+for these files; while retaining the full support of the underlying base language including
+already existing rules and XPath functions.
+
+See [[core] Support language dialects #5438](https://github.com/pmd/pmd/pull/5438) and
+[Adding a new dialect](https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_devdocs_major_adding_dialect.html) for more information.
+
+#### ✨ New Rules
+
+* The new Apex rule [`TypeShadowsBuiltInNamespace`](https://docs.pmd-code.org/pmd-doc-7.13.0/pmd_rules_apex_errorprone.html#typeshadowsbuiltinnamespace) finds Apex classes, enums, and interfaces
+  that have the same name as a class, enum, or interface in the `System` or `Schema` namespace.
+  Shadowing these namespaces in this way can lead to confusion and unexpected behavior.
+
+### 🐛 Fixed Issues
+* core
+  * [#5438](https://github.com/pmd/pmd/issues/5438): \[core] Support language dialects
+  * [#5448](https://github.com/pmd/pmd/issues/5448): Maintain a public PMD docker image
+  * [#5525](https://github.com/pmd/pmd/issues/5525): \[core] Add rule priority as level to Sarif report
+  * [#5623](https://github.com/pmd/pmd/issues/5623): \[dist] Make pmd launch script compatible with /bin/sh
+* apex-bestpractices
+  * [#5667](https://github.com/pmd/pmd/issues/5667): \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative when seeAllData parameter is a string
+* apex-errorprone
+  * [#3184](https://github.com/pmd/pmd/issues/3184): \[apex] Prevent classes from shadowing System Namespace
+* java
+  * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
+* java-bestpractices
+  * [#5687](https://github.com/pmd/pmd/issues/5687): \[java] UnusedPrivateMethodRule: exclude serialization method readObjectNoData()
+* plsql
+  * [#5675](https://github.com/pmd/pmd/issues/5675): \[plsql] Parse error with TREAT function
+
+### 🚨 API Changes
+
+#### Deprecations
+* <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0/net/sourceforge/pmd/lang/xml/pom/PomLanguageModule.html#"><code>net.sourceforge.pmd.lang.xml.pom.PomLanguageModule</code></a> is deprecated. POM is now a dialect of XML.
+  Use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0/net/sourceforge/pmd/lang/xml/pom/PomDialectModule.html#"><code>PomDialectModule</code></a> instead.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0/net/sourceforge/pmd/lang/xml/wsdl/WsdlLanguageModule.html#"><code>net.sourceforge.pmd.lang.xml.wsdl.WsdlLanguageModule</code></a> is deprecated. WSDL is now a dialect of XML.
+  Use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0/net/sourceforge/pmd/lang/xml/wsdl/WsdlDialectModule.html#"><code>WsdlDialectModule</code></a> instead.
+* <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0/net/sourceforge/pmd/lang/xml/xsl/XslLanguageModule.html#"><code>net.sourceforge.pmd.lang.xml.xsl.XslLanguageModule</code></a> is deprecated. XSL is now a dialect of XML.
+  Use <a href="https://docs.pmd-code.org/apidocs/pmd-xml/7.13.0/net/sourceforge/pmd/lang/xml/xsl/XslDialectModule.html#"><code>XslDialectModule</code></a> instead.
+
+#### Experimental API
+* The core API around support for language dialects:
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0/net/sourceforge/pmd/lang/Language.html#getBaseLanguageId()"><code>Language#getBaseLanguageId</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0/net/sourceforge/pmd/lang/Language.html#isDialectOf(net.sourceforge.pmd.lang.Language)"><code>Language#isDialectOf</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0/net/sourceforge/pmd/lang/LanguageModuleBase.html#<init>(net.sourceforge.pmd.lang.LanguageModuleBase.DialectLanguageMetadata)"><code>LanguageModuleBase#&lt;init&gt;</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0/net/sourceforge/pmd/lang/LanguageModuleBase.html#asDialectOf(java.lang.String)"><code>LanguageModuleBase#asDialectOf</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0/net/sourceforge/pmd/lang/LanguageModuleBase.DialectLanguageMetadata.html#"><code>LanguageModuleBase.DialectLanguageMetadata</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0/net/sourceforge/pmd/lang/impl/BasePmdDialectLanguageVersionHandler.html#"><code>BasePmdDialectLanguageVersionHandler</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.13.0/net/sourceforge/pmd/lang/impl/SimpleDialectLanguageModuleBase.html#"><code>SimpleDialectLanguageModuleBase</code></a>
+
+### ✨ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5438](https://github.com/pmd/pmd/pull/5438): \[core] Support language dialects - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#5450](https://github.com/pmd/pmd/pull/5450): Fix #3184: \[apex] New Rule: TypeShadowsBuiltInNamespace - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
+* [#5573](https://github.com/pmd/pmd/pull/5573): Fix #5525: \[core] Add Sarif Level Property - [julees7](https://github.com/julees7) (@julees7)
+* [#5623](https://github.com/pmd/pmd/pull/5623): \[dist] Make pmd launch script compatible with /bin/sh - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5648](https://github.com/pmd/pmd/pull/5648): Fix #5645: \[java] Parse error with yield statement - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5652](https://github.com/pmd/pmd/pull/5652): \[java] Cleanup `AccessorClassGenerationRule` implementation - [Pankraz76](https://github.com/Pankraz76) (@Pankraz76)
+* [#5672](https://github.com/pmd/pmd/pull/5672): \[doc] Fix its/it's and doable/double typos - [John Jetmore](https://github.com/jetmore) (@jetmore)
+* [#5674](https://github.com/pmd/pmd/pull/5674): Fix #5448: \[ci] Maintain public Docker image - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5684](https://github.com/pmd/pmd/pull/5684): Fix #5667: \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative when seeAllDate parameter is a string - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
+* [#5685](https://github.com/pmd/pmd/pull/5685): \[doc] typo fix in PMD Designer reference - [Douglas Griffith](https://github.com/dwgrth) (@dwgrth)
+* [#5686](https://github.com/pmd/pmd/pull/5686): Fix #5675: \[plsql] Support TREAT function with specified datatype - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5687](https://github.com/pmd/pmd/pull/5687): \[java] UnusedPrivateMethodRule: exclude serialization method readObjectNoData() - [Gili Tzabari](https://github.com/cowwoc) (@cowwoc)
+* [#5688](https://github.com/pmd/pmd/pull/5688): \[java] Fix Double Literal for Java19+ compatibility - [Andreas Dangel](https://github.com/adangel) (@adangel)
+
+### 📦 Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5607](https://github.com/pmd/pmd/pull/5607): Bump org.junit:junit-bom from 5.11.4 to 5.12.1
+* [#5641](https://github.com/pmd/pmd/pull/5641): Bump PMD from 7.11.0 to 7.12.0
+* [#5653](https://github.com/pmd/pmd/pull/5653): Bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.0.0.4389 to 5.1.0.4751
+* [#5654](https://github.com/pmd/pmd/pull/5654): Bump surefire.version from 3.5.2 to 3.5.3
+* [#5655](https://github.com/pmd/pmd/pull/5655): Bump com.google.guava:guava from 33.4.5-jre to 33.4.6-jre
+* [#5656](https://github.com/pmd/pmd/pull/5656): Bump org.ow2.asm:asm from 9.7.1 to 9.8
+* [#5657](https://github.com/pmd/pmd/pull/5657): Bump com.google.protobuf:protobuf-java from 4.30.1 to 4.30.2
+* [#5658](https://github.com/pmd/pmd/pull/5658): Bump logger from 1.6.6 to 1.7.0 in /.ci/files in the all-gems group across 1 directory
+* [#5671](https://github.com/pmd/pmd/pull/5671): Bump checkstyle from 10.21.4 to 10.23.0
+* [#5676](https://github.com/pmd/pmd/pull/5676): Bump org.checkerframework:checker-qual from 3.49.1 to 3.49.2
+* [#5677](https://github.com/pmd/pmd/pull/5677): Bump junit5.platform.version from 1.12.1 to 1.12.2
+* [#5678](https://github.com/pmd/pmd/pull/5678): Bump org.apache.commons:commons-text from 1.13.0 to 1.13.1
+* [#5679](https://github.com/pmd/pmd/pull/5679): Bump com.google.guava:guava from 33.4.6-jre to 33.4.7-jre
+* [#5680](https://github.com/pmd/pmd/pull/5680): Bump org.mockito:mockito-core from 5.16.1 to 5.17.0
+* [#5681](https://github.com/pmd/pmd/pull/5681): Bump org.jacoco:jacoco-maven-plugin from 0.8.12 to 0.8.13
+* [#5682](https://github.com/pmd/pmd/pull/5682): Bump net.bytebuddy:byte-buddy-agent from 1.17.4 to 1.17.5
+* [#5683](https://github.com/pmd/pmd/pull/5683): Bump the all-gems group across 2 directories with 2 updates
+* [#5691](https://github.com/pmd/pmd/pull/5691): Bump com.google.code.gson:gson from 2.12.1 to 2.13.0
+* [#5692](https://github.com/pmd/pmd/pull/5692): Bump com.google.guava:guava from 33.4.7-jre to 33.4.8-jre
+* [#5693](https://github.com/pmd/pmd/pull/5693): Bump net.bytebuddy:byte-buddy from 1.17.4 to 1.17.5
+* [#5694](https://github.com/pmd/pmd/pull/5694): Bump org.junit:junit-bom from 5.12.1 to 5.12.2
+* [#5696](https://github.com/pmd/pmd/pull/5696): Bump info.picocli:picocli from 4.7.6 to 4.7.7
+* [#5697](https://github.com/pmd/pmd/pull/5697): Bump com.github.hazendaz.maven:coveralls-maven-plugin from 4.5.0-M6 to 4.7.0
+* [#5704](https://github.com/pmd/pmd/pull/5704): Bump nokogiri from 1.18.5 to 1.18.8
+
+### 📈 Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 117 commits
+* 19 closed tickets & PRs
+* Days since last release: 27
+
+## 28-March-2025 - 7.12.0
+
+The PMD team is pleased to announce PMD 7.12.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🚀 New and noteworthy](#new-and-noteworthy)
+    * [✨ New Rules](#new-rules)
+* [🐛 Fixed Issues](#fixed-issues)
+* [🚨 API Changes](#api-changes)
+    * [Deprecations](#deprecations)
+* [✨ Merged pull requests](#merged-pull-requests)
+* [📦 Dependency updates](#dependency-updates)
+* [📈 Stats](#stats)
+
+### 🚀 New and noteworthy
+
+#### ✨ New Rules
+
+* The new Java rule [`ImplicitFunctionalInterface`](https://docs.pmd-code.org/pmd-doc-7.12.0/pmd_rules_java_bestpractices.html#implicitfunctionalinterface) reports functional interfaces that were
+  not explicitly declared as such with the annotation `@FunctionalInterface`. If an interface is accidentally a functional
+  interface, then it should bear a `@SuppressWarnings("PMD.ImplicitFunctionalInterface")`
+  annotation to make this clear.
+
+### 🐛 Fixed Issues
+* core
+  * [#5593](https://github.com/pmd/pmd/issues/5593): \[core] Make renderers output files in deterministic order even when multithreaded
+* apex
+  * [#5567](https://github.com/pmd/pmd/issues/5567): \[apex] Provide type information for CastExpression
+* apex-design
+  * [#5616](https://github.com/pmd/pmd/issues/5616): \[apex] ExcessiveParameterList reports entire method instead of signature only
+* java
+  * [#5587](https://github.com/pmd/pmd/issues/5587): \[java] Thread deadlock during PMD analysis in ParseLock.getFinalStatus
+* java-bestpractices
+  * [#2849](https://github.com/pmd/pmd/issues/2849): \[java] New Rule: ImplicitFunctionalInterface
+  * [#5369](https://github.com/pmd/pmd/issues/5369): \[java] UnusedPrivateMethod false positives with lombok.val
+  * [#5590](https://github.com/pmd/pmd/issues/5590): \[java] LiteralsFirstInComparisonsRule not applied on constant
+  * [#5592](https://github.com/pmd/pmd/issues/5592): \[java] UnusedAssignment false positive in record compact constructor
+* java-codestyle
+  * [#5079](https://github.com/pmd/pmd/issues/5079): \[java] LocalVariableCouldBeFinal false-positive with lombok.val
+  * [#5452](https://github.com/pmd/pmd/issues/5452): \[java] PackageCase: Suppression comment has no effect due to finding at wrong position in case of JavaDoc comment
+* plsql
+  * [#4441](https://github.com/pmd/pmd/issues/4441): \[plsql] Parsing exception with XMLQUERY function in SELECT
+  * [#5521](https://github.com/pmd/pmd/issues/5521): \[plsql] Long parse time and eventually parse error with XMLAGG order by clause
+
+### 🚨 API Changes
+#### Deprecations
+* java
+  * The method <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/AbstractJavaExpr.html#buildConstValue()"><code>buildConstValue</code></a> is deprecated for removal. It should
+    have been package-private from the start. In order to get the (compile time) const value of an expression, use
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConstValue()"><code>getConstValue</code></a> or <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTExpression.html#getConstFoldingResult()"><code>getConstFoldingResult</code></a>
+    instead.
+  * For the same reason, the following methods are also deprecated for removal:
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTNumericLiteral.html#buildConstValue()"><code>buildConstValue</code></a> and <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/ast/ASTStringLiteral.html#buildConstValue()"><code>buildConstValue</code></a>.
+
+- <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.12.0/net/sourceforge/pmd/lang/java/types/JTypeVar.html#withUpperbound(net.sourceforge.pmd.types.JTypeMirror)"><code>JTypeVar#withUpperbound</code></a> is deprecated. It was previously meant to be used
+  internally and not needed anymore.
+
+### ✨ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5550](https://github.com/pmd/pmd/pull/5550): Fix #5521: \[plsql] Improve parser performance by reducing lookaheads - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5554](https://github.com/pmd/pmd/pull/5554): Fix #5369: \[java] Consider that lombok.val and var are inferred - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5555](https://github.com/pmd/pmd/pull/5555): Fix #2849: \[java] Add rule ImplicitFunctionalInterface - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5556](https://github.com/pmd/pmd/pull/5556): \[ci] New workflow "Publish Results from Pull Requests" - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5574](https://github.com/pmd/pmd/pull/5574): Fix #5567: \[apex] Provide type info for CastExpression - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5583](https://github.com/pmd/pmd/pull/5583): \[java] Fix race condition in ClassStub for inner classes - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5586](https://github.com/pmd/pmd/pull/5586): \[java/core] Micro optimizations  - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5588](https://github.com/pmd/pmd/pull/5588): \[java] Fix crash when parsing class for anonymous class - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5591](https://github.com/pmd/pmd/pull/5591): Fix #5587: \[java] Fix deadlock while loading ClassStub - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5593](https://github.com/pmd/pmd/pull/5593): \[core] Make renderers output files in deterministic order even when multithreaded - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5595](https://github.com/pmd/pmd/pull/5595): Fix #5590: \[java] LiteralsFirstInComparisons with constant field - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5596](https://github.com/pmd/pmd/pull/5596): Fix #4441: \[plsql] XMLQuery - Support identifier as XQuery_string parameter - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5598](https://github.com/pmd/pmd/pull/5598): Fix #5592: \[java] Fix UnusedAssignment FP with compact record ctor - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5600](https://github.com/pmd/pmd/pull/5600): Fix #5079: \[java] LocalVariableCouldBeFinal false-positive with lombok.val - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5611](https://github.com/pmd/pmd/pull/5611): Fix #5452: \[java] PackageCase reported on wrong line - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5617](https://github.com/pmd/pmd/pull/5617): Fix #5616: \[apex] ExcessiveParameterList: Report only method signature - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5618](https://github.com/pmd/pmd/pull/5618): \[doc] Fix search index - [Andreas Dangel](https://github.com/adangel) (@adangel)
+
+### 📦 Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5558](https://github.com/pmd/pmd/pull/5558): Bump PMD from 7.10.0 to 7.11.0
+* [#5561](https://github.com/pmd/pmd/pull/5561): Bump org.apache.groovy:groovy from 4.0.25 to 4.0.26
+* [#5562](https://github.com/pmd/pmd/pull/5562): Bump org.junit.platform:junit-platform-suite from 1.11.4 to 1.12.0
+* [#5564](https://github.com/pmd/pmd/pull/5564): Bump org.apache.maven.plugins:maven-clean-plugin from 3.4.0 to 3.4.1
+* [#5565](https://github.com/pmd/pmd/pull/5565): Bump org.apache.maven.plugins:maven-deploy-plugin from 3.1.3 to 3.1.4
+* [#5566](https://github.com/pmd/pmd/pull/5566): Bump io.github.apex-dev-tools:apex-ls_2.13 from 5.7.0 to 5.8.0
+* [#5571](https://github.com/pmd/pmd/pull/5571): Bump nokogiri from 1.16.7 to 1.18.3
+* [#5572](https://github.com/pmd/pmd/pull/5572): Bump uri from 0.13.1 to 1.0.3
+* [#5575](https://github.com/pmd/pmd/pull/5575): Bump org.jsoup:jsoup from 1.18.3 to 1.19.1
+* [#5576](https://github.com/pmd/pmd/pull/5576): Bump scalameta.version from 4.13.2 to 4.13.3
+* [#5577](https://github.com/pmd/pmd/pull/5577): Bump org.yaml:snakeyaml from 2.3 to 2.4
+* [#5578](https://github.com/pmd/pmd/pull/5578): Bump com.google.protobuf:protobuf-java from 4.29.3 to 4.30.0
+* [#5580](https://github.com/pmd/pmd/pull/5580): Bump net.bytebuddy:byte-buddy from 1.17.1 to 1.17.2
+* [#5581](https://github.com/pmd/pmd/pull/5581): Bump com.puppycrawl.tools:checkstyle from 10.21.3 to 10.21.4
+* [#5582](https://github.com/pmd/pmd/pull/5582): Bump the gems liquid to 5.8.1 and logger to 1.6.6
+* [#5602](https://github.com/pmd/pmd/pull/5602): Bump org.apache.maven.plugins:maven-install-plugin from 3.1.3 to 3.1.4
+* [#5603](https://github.com/pmd/pmd/pull/5603): Bump net.bytebuddy:byte-buddy-agent from 1.17.1 to 1.17.2
+* [#5604](https://github.com/pmd/pmd/pull/5604): Bump org.mockito:mockito-core from 5.15.2 to 5.16.1
+* [#5605](https://github.com/pmd/pmd/pull/5605): Bump org.junit.platform:junit-platform-suite from 1.12.0 to 1.12.1
+* [#5606](https://github.com/pmd/pmd/pull/5606): Bump org.checkerframework:checker-qual from 3.49.0 to 3.49.1
+* [#5608](https://github.com/pmd/pmd/pull/5608): Bump com.google.protobuf:protobuf-java from 4.30.0 to 4.30.1
+* [#5619](https://github.com/pmd/pmd/pull/5619): Bump nokogiri from 1.18.3 to 1.18.5
+* [#5624](https://github.com/pmd/pmd/pull/5624): Bump scalameta.version from 4.13.3 to 4.13.4
+* [#5627](https://github.com/pmd/pmd/pull/5627): Bump net.bytebuddy:byte-buddy-agent from 1.17.2 to 1.17.4
+* [#5628](https://github.com/pmd/pmd/pull/5628): Bump io.github.apex-dev-tools:apex-ls_2.13 from 5.8.0 to 5.9.0
+* [#5629](https://github.com/pmd/pmd/pull/5629): Bump com.google.guava:guava from 33.4.0-jre to 33.4.5-jre
+* [#5630](https://github.com/pmd/pmd/pull/5630): Bump net.bytebuddy:byte-buddy from 1.17.2 to 1.17.4
+
+### 📈 Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 114 commits
+* 28 closed tickets & PRs
+* Days since last release: 27
+
 ## 28-February-2025 - 7.11.0
 
 The PMD team is pleased to announce PMD 7.11.0.

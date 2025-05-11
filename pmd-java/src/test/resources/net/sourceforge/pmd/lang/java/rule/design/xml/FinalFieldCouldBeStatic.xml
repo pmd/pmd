@@ -383,4 +383,16 @@ class MyConstants {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>Nonstatic</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class MyConstants {
+    private final byte BITARRAYMASK = (byte)0x1;
+    private final int  BYTEPOWER = 3;
+    private final int  BYTEMASK = (1 << BYTEPOWER) - 1; //this one cannot
+}
+]]></code>
+    </test-code>
 </test-data>

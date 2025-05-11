@@ -3983,4 +3983,38 @@ class Lock {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment false positive in record compact constructor when using ternary #5592</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.Set;
+            import java.util.Collections;
+            import java.util.TreeSet;
+            record TestRecord(Set<Integer> foo) {
+                TestRecord {
+                    foo = foo == null ? Collections.emptySet() : new TreeSet<>(foo); // <!--- violation here
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Compact record ctor 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>The initial value of variable 'foo' is never used (overwritten on line 6)</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Set;
+            import java.util.Collections;
+            import java.util.TreeSet;
+            record TestRecord(Set<Integer> foo) { // initial value unused
+                TestRecord {
+                    foo = Collections.emptySet();
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

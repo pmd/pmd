@@ -12,8 +12,10 @@ import net.sourceforge.pmd.lang.xml.XmlHandler;
 import net.sourceforge.pmd.lang.xml.cpd.XmlCpdLexer;
 
 /**
- * Created by bernardo-macedo on 24.06.15.
+ * This language module is deprecated. WSDL is now a dialect of XML.
+ * @deprecated Since 7.13.0. Use @link{WsdlDialectModule} instead.
  */
+@Deprecated
 public class WsdlLanguageModule extends SimpleLanguageModuleBase {
     private static final String ID = "wsdl";
 

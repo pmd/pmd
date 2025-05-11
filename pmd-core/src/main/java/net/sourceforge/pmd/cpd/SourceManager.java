@@ -112,12 +112,12 @@ class SourceManager implements AutoCloseable {
 
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         strongReferences.clear();
         files.clear();
         Exception exception = IOUtil.closeAll(textFiles);
         if (exception != null) {
-            throw exception;
+            throw new IOException(exception);
         }
     }
 
