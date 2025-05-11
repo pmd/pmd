@@ -79,6 +79,13 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                             The valid values are the standard character sets of `java.nio.charset.Charset`."
                default="UTF-8"
     %}
+    {% include custom/cli_option_row.html options="--exclude"
+               option_arg="path+"
+               description="Files to be excluded from the analysis. This takes one or more path names as an argument. It is combinable with --exclude-file."
+    %}
+    {% include custom/cli_option_row.html options="--non-recursive"
+               description="Don't scan subdirectories. By default, subdirectories are considered."
+    %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-error"
                description="Specifies whether PMD exits with non-zero status if recoverable errors occurred.
                             By default PMD exits with status 5 if recoverable errors occurred (whether there are violations or not).
@@ -106,10 +113,17 @@ The tool comes with a rather extensive help text, simply running with `--help`!
                             <p>This option allows to use the xml language for files, that don't
                             use xml as extension. See [example](#analyze-other-xml-formats) below.</p>"
     %}
+    {% include custom/cli_option_row.html options="--ignore"
+               option_arg="filepath+"
+               description="Specify one or more paths to files that will be ignored.
+                            This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
+                            It can combine with `--ignore-list`."
+    %}
     {% include custom/cli_option_row.html options="--ignore-list"
                option_arg="filepath"
                description="Path to file containing a list of files to ignore, one path per line.
-                            This option overrides files included by any of `--dir`, `--file-list` and `--uri`."
+                            This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
+                            It can combine with `--ignore`"
     %}
     {% include custom/cli_option_row.html options="--help,-h"
                description="Display help on usage."
@@ -141,6 +155,10 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--[no-]progress"
                description="Enables / disable progress bar indicator of live analysis progress. This ie enabled by default."
+    %}
+    {% include custom/cli_option_row.html options="--non-recursive"
+               description="When specified, any directory mentioned with `--dir` or in the `--file-list` will only be searched for files that are direct children.
+                            By default, subdirectories are recursively included."
     %}
     {% include custom/cli_option_row.html options="--property,-P"
                option_arg="name&gt;=&lt;value"

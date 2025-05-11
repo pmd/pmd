@@ -48,6 +48,17 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
                           + "One of --dir, --file-list or --uri must be provided.")
     private URI uri;
 
+
+    private List<Path> excludes = new ArrayList<>();
+    @Option(names = "--ignore", arity = "1..*", description = "Files to be excluded from the analysis")
+    protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
+        if (rootPaths != null) {
+            this.excludes = rootPaths;
+        } else {
+            this.excludes = new ArrayList<>();
+        }
+    }
+
     @Option(names = "--ignore-list",
             description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
                           + "This option can be combined with --dir, --file-list and --uri.")
@@ -106,9 +117,6 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
 
         this.inputPaths.addAll(inputPaths);
     }
-
-    @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
-    private List<Path> excludes = new ArrayList<>();
 
     @Option(names = "--non-recursive", description = "Don't scan subdirectiories when using the --d (-dir) option.")
     private boolean nonRecursive;

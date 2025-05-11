@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -38,6 +40,17 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     @Option(names = "--skip-duplicate-files",
             description = "Ignore multiple copies of files of the same name and length in comparison.")
     private boolean skipDuplicates;
+
+    private boolean usedDeprecatedExcludeName = false;
+
+    // this option name is deprecated
+    @Option(names = "--exclude",
+            description = "Files to be excluded from the analysis")
+    @Override
+    protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
+        super.setIgnoreSpecificPaths(rootPaths);
+        this.usedDeprecatedExcludeName = true;
+    }
 
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
@@ -109,6 +122,10 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         if (skipLexicalErrors) {
             configuration.getReporter().warn("--skip-lexical-errors is deprecated. Use --no-fail-on-error instead.");
             configuration.setFailOnError(false);
+        }
+
+        if (usedDeprecatedExcludeName) {
+            configuration.getReporter().warn("Option name --exclude is deprecated. Use --ignore instead.");
         }
 
         return configuration;
