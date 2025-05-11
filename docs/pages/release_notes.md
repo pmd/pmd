@@ -26,6 +26,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 
+* core
+    * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
+
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
