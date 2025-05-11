@@ -2021,18 +2021,21 @@ This page gives an overview of how these workflows work and how to use them.
 This page is work in progress and does not yet describe all workflows.</p>
 </div>
 
-<h2 id="pull-request-build">Pull Request Build</h2>
+<h2 id="build">Build</h2>
 
 <ul>
-  <li>Builds: <a href="https://github.com/pmd/pmd/actions/workflows/pull-requests.yml">https://github.com/pmd/pmd/actions/workflows/pull-requests.yml</a></li>
-  <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/pull-requests.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/pull-requests.yml</a></li>
+  <li>Builds: <a href="https://github.com/pmd/pmd/actions/workflows/build.yml">https://github.com/pmd/pmd/actions/workflows/build.yml</a></li>
+  <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml</a></li>
 </ul>
 
-<p>This workflow is triggered whenever a pull request is created or synchronized.</p>
+<p>This workflow is triggered whenever new commits are pushed to a branch (including the default branch and
+including forks) or whenever a pull request is created or synchronized.
+It is designed to run on the main repository in PMD’s GitHub organization as well as for forks, as it does
+not require any secrets.</p>
 
 <p>In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
-the current pull request when a new commit has been pushed. This means, only the latest commit is built, which
-is enough, since only this will be merged in the end. Only the latest build matters.</p>
+the current branch or pull request when a new commit has been pushed. This means, only the latest commit is built,
+which is enough, since only this will be released or merged in the end. Only the latest build matters.</p>
 
 <p>The workflow is self-contained, e.g. it doesn’t depend on the shell scripts from PMD’s build-tools.
 It also uses only read permissions and doesn’t need access to any secrets. It is safe to run also on
@@ -2048,8 +2051,9 @@ repository to test against this built PMD version without the need to deploy the
 actually used by the dogfood job.</li>
   <li>dist-artifact: contains the binary distribution files, ready to be downloaded. This can be used to test
 PMD with the changes from the pull request without the need to build it locally. It is actually used by the
-regression tester job to avoid building PMD another time.</li>
-  <li>docs-artifact: contains the generated rule documentation.</li>
+regression tester job to avoid building PMD another time. It also includes the SBOM files (in json and xml format).</li>
+  <li>docs-artifact: contains the generated PMD documentation including rule descriptions.</li>
+  <li>javadocs-artifact: contains the javadoc jars of all PMD modules generated during build.</li>
   <li>pmd-regression-tester: contains the generation regression report, if there were any changes to rules.</li>
 </ul>
 
@@ -2064,14 +2068,16 @@ The created artifacts are: “compile-artifact”, “staging-repository”, “
     <ul>
       <li>“verify”: runs a complete <code class="language-plaintext highlighter-rouge">./mvnw verify</code> with all code checks like checkstyle, japicmp, javadoc, etc.
 but excluding unit tests (these are run in a separate job).
-This job is only run on linux. It reuses the already compiled artifacts from the first “compile” job.</li>
+This job is only run on linux. It reuses the already compiled artifacts from the first “compile” job.
+Since it runs javadoc, it creates the javadocs-artifact.</li>
       <li>“verify-unittests”: just runs the unit tests on Linux, Windows and MacOS. Only linux reuses the
 “compile-artifact” from the first job. For Windows/MacOS we can’t reuse this due to platform specific line
 endings and timestamp issues.</li>
       <li>“dogfood”: runs maven-pmd-plugin on PMD with the latest changes from this very pull request. It uses the
 “staging-repository” artifact.</li>
       <li>“documentation”: generates the rule documentations and builds PMD’s documentation page using jekyll.
-It also executes the verification for wrong rule tags and dead links. It creates the artifact “docs-artifact”.</li>
+It also executes the verification for wrong rule tags and dead links. Additional it contains the release
+notes in markdown format, to be used for release publishing. It creates the artifact “docs-artifact”.</li>
       <li>“regressiontester”: runs the <a href="pmd_devdocs_pmdtester.html">pmdtester</a> to produce the regression report.
 It reuses the artifact “dist-artifact” so that we don’t need to build PMD again. It uses a different build
 cache as the other jobs, as this cache now contains the test projects (like Spring Framework) and their
@@ -2087,9 +2093,9 @@ dependencies. It produces the artifact “pmd-regression-tester” with the regr
   <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/publish-pull-requests.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/publish-pull-requests.yml</a></li>
 </ul>
 
-<p>This workflow runs after “Pull Request Build” is completed. It runs in the context of our own
+<p>This workflow runs after “Build” on a pull request is completed. It runs in the context of our own
 repository and has write permissions and complete access to the configured secrets.
-For security reasons, this workflow won’t checkout the pull request code and it won’t build anything.</p>
+For security reasons, this workflow won’t check out the pull request code and won’t build anything.</p>
 
 <p>It just uses the artifacts from the pull request build, uploads it as static website and adds
 a commit status and check status to the PR and finally adds a PR comment.</p>
@@ -2126,7 +2132,8 @@ to create or update a comment on the pull request which shows the regression tes
 be manually downloaded from the “Pull Request Build” workflow run. It merely adds convenience by
 giving easy access to a preview of the documentation and to the regression tester results.</p>
 
-<p>In the end, this workflow adds additional links to a pull request page. For the comment, GitHub seems
+<p>«««&lt; HEAD
+In the end, this workflow adds additional links to a pull request page. For the comment, GitHub seems
 to automatically add “rel=nofollow” to the links in the text. This is also applied for the check status
 pages. However, the links in the commit status are plain links. This might lead to unnecessary
 crawling by search engines. To avoid this, the following robots.txt is used
@@ -2140,6 +2147,474 @@ Disallow: /
 temporary. These temporary created documentation pages should not end up in any search result.
 This also helps to avoid unnecessary traffic and load for both the hosting side and the
 crawling side.</p>
+
+<h2 id="publish-snapshot">Publish Snapshot</h2>
+
+<ul>
+  <li>Builds: <a href="https://github.com/pmd/pmd/actions/workflows/publish-snapshot.yml">https://github.com/pmd/pmd/actions/workflows/publish-snapshot.yml</a></li>
+  <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/publish-snapshot.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/publish-snapshot.yml</a></li>
+</ul>
+
+<p>This runs after “Build” of a push on the <code class="language-plaintext highlighter-rouge">main</code> branch is finished.
+It runs in the context of our own repository and has access to all secrets. In order
+to have a nicer display in GitHub actions, we leverage “environments”, which also
+contain secrets.</p>
+
+<p>There is a first job “check-version” that just determines the version of PMD we are building. This is to ensure,
+we are actually building a SNAPSHOT version. Then a couple of other jobs are being executed in parallel:</p>
+
+<ul>
+  <li>deploy-to-maven-central: Rebuilds PMD from branch main and deploys the snapshot artifacts to
+<a href="https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/">https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/</a>. Rebuilding is necessary in
+order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the artifacts. This
+is not available from the build artifacts of the “Build” workflow.
+    <ul>
+      <li>Environment: maven-central</li>
+      <li>Secrets: OSSRH_TOKEN, OSSRH_USERNAME</li>
+    </ul>
+  </li>
+  <li>deploy-to-sourceforge-files: Downloads the “dist-artifact” and “docs-artifact” from the “Build” workflow,
+gpg-signs the files and uploads them to <a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a>.
+    <ul>
+      <li>Environment: sourceforge</li>
+      <li>Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY</li>
+      <li>Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>deploy-to-sourceforge-io: Uploads the documentation page to be hosted at
+<a href="https://pmd.sourceforge.io/snapshot">https://pmd.sourceforge.io/snapshot</a>.
+    <ul>
+      <li>Environment: sourceforge</li>
+      <li>Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY</li>
+      <li>Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>deploy-to-pmd-code-doc: Uploads the documentation page to be hosted at
+<a href="https://docs.pmd-code.org/snapshot/">https://docs.pmd-code.org/snapshot/</a>.
+    <ul>
+      <li>Environment: pmd-code</li>
+      <li>Secrets: PMD_CODE_ORG_DEPLOY_KEY</li>
+      <li>Vars: PMD_CODE_ORG_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>deploy-to-pmd-code-javadoc: Uploads the javadoc of PMD’s modules to be hosted at
+<a href="https://docs.pmd-code.org/apidocs/">https://docs.pmd-code.org/apidocs/</a>.
+    <ul>
+      <li>Environment: pmd-code</li>
+      <li>Secrets: PMD_CODE_ORG_DEPLOY_KEY</li>
+      <li>Vars: PMD_CODE_ORG_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>deploy-to-github-pages: Updates the branch “gh-pages” wit the new documentation page
+and pushes a new commit onto that branch. This will trigger a new github pages deployment,
+so that the new documentation page is available at
+<a href="https://pmd.github.io/pmd/">https://pmd.github.io/pmd/</a>.
+    <ul>
+      <li>Environment: github-pages</li>
+      <li>Secrets: no additional secrets</li>
+    </ul>
+  </li>
+  <li>create-regression-tester-baseline: Creates a new baseline to be used by the pull request builds
+for regression testing. The baseline is uploaded to <a href="https://pmd-code.org/pmd-regression-tester/main-baseline.zip">https://pmd-code.org/pmd-regression-tester/main-baseline.zip</a>.
+    <ul>
+      <li>Environment: pmd-code</li>
+      <li>Secrets: PMD_CODE_ORG_DEPLOY_KEY</li>
+      <li>Vars: PMD_CODE_ORG_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>run-sonar: Executes <a href="https://github.com/SonarSource/sonar-scanner-maven">sonar-scanner-plugin</a> and
+uploads the results to sonarcloud at <a href="https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd">https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd</a>.
+    <ul>
+      <li>Environment: sonarcloud</li>
+      <li>Secrets: SONAR_TOKEN</li>
+    </ul>
+  </li>
+  <li>run-coveralls: Executes <a href="https://github.com/hazendaz/coveralls-maven-plugin">coveralls-maven-plugin</a> and
+uploads the results to coveralls at <a href="https://coveralls.io/github/pmd/pmd">https://coveralls.io/github/pmd/pmd</a>.
+    <ul>
+      <li>Environment: coveralls</li>
+      <li>Secrets: COVERALLS_REPO_TOKEN</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="secrets-and-variables">Secrets and Variables</h2>
+<p>The “Build” workflow doesn’t need any secrets or additional permissions, it just builds and creates artifacts.
+This is necessary, so that this workflow can also run on forks, so that contributors can develop in their
+own fork and have their build validated already. All branches (not only main) are built. The same workflow is
+also used for pull request builds.</p>
+
+<p>On the main PMD repository (<a href="https://github.com/pmd/pmd">https://github.com/pmd/pmd</a>) additional workflows are triggered after “Build”.
+These additional workflows run with privileged mode, so that they have access to all secrets and can
+elevate permissions as needed.</p>
+
+<p>Secrets and variables are organized in a hierarchy, beginning at the organization level (those secrets are
+available in all repositories), repository level and environment level (environments can be created at the
+repository level).</p>
+
+<p>At time of this writing (2025-05-10), the following secrets and variables are configured:</p>
+
+<h3 id="organization">Organization</h3>
+<p>See <a href="https://github.com/organizations/pmd/settings/secrets/actions">https://github.com/organizations/pmd/settings/secrets/actions</a></p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">PMD_ACTIONS_HELPER_ID</code> and <code class="language-plaintext highlighter-rouge">PMD_ACTIONS_HELPER_PRIVATE_KEY</code>: These are the app id and private key for our
+custom GitHub App <a href="https://github.com/organizations/pmd/settings/apps/pmd-actions-helper">PMD Actions Helper</a>.
+This is a private app defined at our organization and can only be installed within our organization. With these two
+secrets and the action <a href="https://github.com/actions/create-github-app-token">create-github-app-token</a> we can
+create a temporary github token, that has more permissions to access other repositories.
+This is used to trigger the workflow in pmd/docker from pmd/pmd to create and upload a new docker image and
+also in “publish-snapshot” to push to repository pmd/pmd-eclipse-plugin-p2-site during the build
+of pmd/pmd-eclipse-plugin.<br />
+A new private key can be generated through GitHub organization settings.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">PMD_CI_GPG_PASSPHRASE</code> and <code class="language-plaintext highlighter-rouge">PMD_CI_GPG_PRIVATE_KEY</code>: That’s the secret GPG key used to sign our releases,
+see <a href="pmd_userdocs_signed_releases.html">Signed Releases</a>. The key is exported in armored format
+(beginning with “—–BEGIN PGP PRIVATE KEY BLOCK—–”). The key is imported during the build either with
+the option “gpg-private-key” of <a href="https://github.com/actions/setup-java">setup-java</a> action or manually
+via a small shell script (“gpg –import …”).<br />
+The release signing key is created in such a way, that we use the primary key only for certifying our own
+subkeys (capability C) and we have a separate subkey that is used only for signing releases
+(capability S). In case the signing subkey gets compromised, we can add a new subkey, but keep the
+primary key. The idea is, that only the private key of the subkey is exported and put into the
+secret variable <code class="language-plaintext highlighter-rouge">PMD_CI_GPG_PRIVATE_KEY</code>. This can be achieved through
+<code class="language-plaintext highlighter-rouge">gpg --armor --export-secret-subkeys 2EFA55D0785C31F956F2F87EA0B5CA1A4E086838 | wl-copy</code>.<br />
+More information about creating and renewing this key, see below <a href="#release-signing-keys">Release Signing Keys</a>.</p>
+  </li>
+</ul>
+
+<h3 id="repository-pmdpmd">Repository pmd/pmd</h3>
+<p>See <a href="https://github.com/pmd/pmd/settings/secrets/actions">https://github.com/pmd/pmd/settings/secrets/actions</a></p>
+
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID</code> and <code class="language-plaintext highlighter-rouge">AWS_S3_PMD_PULL_REQUESTS_SECRET_ACCESS_KEY</code>: Used by
+“Publish Results From Pull Request” to upload the regression report and documentation to the AWS S3
+bucket “pmd-pull-requests”: http://pmd-pull-requests.s3-website.eu-central-1.amazonaws.com/.
+This access key corresponds to the user “arn:aws:iam::624352026855:user/pmd-pull-requests”, which is
+granted write access to this bucket via the following permission policy:</p>
+
+    <div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"Version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2012-10-17"</span><span class="p">,</span><span class="w">
+  </span><span class="nl">"Statement"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="w">
+          </span><span class="nl">"Sid"</span><span class="p">:</span><span class="w"> </span><span class="s2">"VisualEditor0"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"Effect"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Allow"</span><span class="p">,</span><span class="w">
+          </span><span class="nl">"Action"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+              </span><span class="s2">"s3:Get*"</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"s3:List*"</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"s3:PutObject"</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"s3:DeleteObject"</span><span class="w">
+          </span><span class="p">],</span><span class="w">
+          </span><span class="nl">"Resource"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+              </span><span class="s2">"arn:aws:s3:::pmd-pull-requests/*"</span><span class="p">,</span><span class="w">
+              </span><span class="s2">"arn:aws:s3:::pmd-pull-requests"</span><span class="w">
+          </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre></div>    </div>
+    <p>New access key/users need to be created via AWS.</p>
+  </li>
+</ul>
+
+<h3 id="repository-pmddocker">Repository pmd/docker</h3>
+<p>See <a href="https://github.com/pmd/docker/settings/secrets/actions">https://github.com/pmd/docker/settings/secrets/actions</a></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">DOCKER_USERNAME</code> and <code class="language-plaintext highlighter-rouge">DOCKER_PASSWORD</code>: Used by repo pmd/docker to push new images to
+<a href="https://hub.docker.com/u/pmdcode">https://hub.docker.com/u/pmdcode</a>. This is actually a personal access token of user <a href="https://hub.docker.com/u/andreasdangel">andreasdangel</a>,
+who is the only member of the community organization <a href="https://hub.docker.com/u/pmdcode">pmdcode</a>.</li>
+</ul>
+
+<h3 id="repository-pmdpmd-regression-tester---environment-rubygems">Repository pmd/pmd-regression-tester - Environment “rubygems”</h3>
+<p>See <a href="https://github.com/pmd/pmd-regression-tester/settings/secrets/actions">https://github.com/pmd/pmd-regression-tester/settings/secrets/actions</a></p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">GEM_HOST_API_KEY</code>: Used to publish a new version into <a href="https://rubygems.org/gems/pmdtester">https://rubygems.org/gems/pmdtester</a>.
+The key can be generated at <a href="https://rubygems.org/profile/api_keys">https://rubygems.org/profile/api_keys</a>.</li>
+</ul>
+
+<h3 id="repository-pmdpmd---environment-maven-central">Repository pmd/pmd - Environment “maven-central”</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">OSSRH_USERNAME</code> and <code class="language-plaintext highlighter-rouge">OSSRH_TOKEN</code>: Used to deploy artifacts to maven central via OSSRH to our namespace
+<a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd">net.sourceforge.pmd</a>.<br />
+Login on <a href="https://oss.sonatype.org">https://oss.sonatype.org</a>, go to your user profile, select “User Token” and “Access User Token”.
+You’ll see the tokens to be used for username and password.<br />
+Note: This will soon be migrated to use <a href="https://central.sonatype.com">https://central.sonatype.com</a>.</li>
+</ul>
+
+<h3 id="repository-pmdpmd---environment-coveralls">Repository pmd/pmd - Environment “coveralls”</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">COVERALLS_REPO_TOKEN</code>: Used to upload coverage results to <a href="https://coveralls.io/github/pmd/pmd">https://coveralls.io/github/pmd/pmd</a>.
+When you log in via GitHub on coveralls.io, the token is displayed on that page.</li>
+</ul>
+
+<h3 id="repository-pmdpmd---environment-sonarcloud">Repository pmd/pmd - Environment “sonarcloud”</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">SONAR_TOKEN</code>: Used to upload new results to <a href="https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd">https://sonarcloud.io/dashboard?id=net.sourceforge.pmd%3Apmd</a>.
+The token can be configured here: <a href="https://sonarcloud.io/account/security/">https://sonarcloud.io/account/security/</a>. Login via GitHub.</li>
+</ul>
+
+<h3 id="repository-pmdpmd---environment-sourceforge">Repository pmd/pmd - Environment “sourceforge”</h3>
+<ul>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY</code>: The private ssh key used to access web.sourceforge.net to
+upload files and web pages.<br />
+It is created with <code class="language-plaintext highlighter-rouge">ssh-keygen -t ed25519 -C "ssh key for pmd. used for github actions push to web.sourceforge.net" -f web.sourceforge.net_deploy_key</code>.<br />
+You need to configure the public key part here: <a href="https://sourceforge.net/auth/shell_services">https://sourceforge.net/auth/shell_services</a>. The user is your
+sourceforge user id.<br />
+The key should begin with “—–BEGIN OPENSSH PRIVATE KEY—–”.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">PMD_SF_BEARER_TOKEN</code>: This is needed to access sourceforge API (https://sourceforge.net/p/forge/documentation/Allura%20API/)
+to create new blog entries. The token is created at <a href="https://sourceforge.net/auth/oauth/">https://sourceforge.net/auth/oauth/</a>.</p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">PMD_SF_APIKEY</code>: This is needed to select the latest release on sourceforge files, see
+<a href="https://sourceforge.net/p/forge/documentation/Using%20the%20Release%20API/">https://sourceforge.net/p/forge/documentation/Using%20the%20Release%20API/</a>. The key is created at
+<a href="https://sourceforge.net/auth/preferences/">https://sourceforge.net/auth/preferences/</a> under “Releases API Key”.</p>
+  </li>
+</ul>
+
+<p>This environment also has a variable, which is the known_hosts content as <code class="language-plaintext highlighter-rouge">PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#
+# web.sourceforge.net (https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
+#
+# run locally:
+# ssh-keyscan web.sourceforge.net | tee -a sf_known_hosts
+#
+# verify fingerprints:
+# ssh-keygen -F web.sourceforge.net -l -f sf_known_hosts
+# # Host web.sourceforge.net found: line 1 
+# web.sourceforge.net RSA SHA256:xB2rnn0NUjZ/E0IXQp4gyPqc7U7gjcw7G26RhkDyk90 
+# # Host web.sourceforge.net found: line 2 
+# web.sourceforge.net ECDSA SHA256:QAAxYkf0iI/tc9oGa0xSsVOAzJBZstcO8HqGKfjpxcY 
+# # Host web.sourceforge.net found: line 3 
+# web.sourceforge.net ED25519 SHA256:209BDmH3jsRyO9UeGPPgLWPSegKmYCBIya0nR/AWWCY 
+#
+# then add output of `ssh-keygen -F web.sourceforge.net -f sf_known_hosts`
+#
+web.sourceforge.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA2uifHZbNexw6cXbyg1JnzDitL5VhYs0E65Hk/tLAPmcmm5GuiGeUoI/B0eUSNFsbqzwgwrttjnzKMKiGLN5CWVmlN1IXGGAfLYsQwK6wAu7kYFzkqP4jcwc5Jr9UPRpJdYIK733tSEmzab4qc5Oq8izKQKIaxXNe7FgmL15HjSpatFt9w/ot/CHS78FUAr3j3RwekHCm/jhPeqhlMAgC+jUgNJbFt3DlhDaRMa0NYamVzmX8D47rtmBbEDU3ld6AezWBPUR5Lh7ODOwlfVI58NAf/aYNlmvl2TZiauBCTa7OPYSyXJnIPbQXg6YQlDknNCr0K769EjeIlAfY87Z4tw==
+web.sourceforge.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCwsY6sZT4MTTkHfpRzYjxG7mnXrGL74RCT2cO/NFvRrZVNB5XNwKNn7G5fHbYLdJ6UzpURDRae1eMg92JG0+yo=
+web.sourceforge.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOQD35Ujalhh+JJkPvMckDlhu4dS7WH6NsOJ15iGCJLC
+</code></pre></div></div>
+
+<h3 id="repository-pmdpmd---environment-pmd-code">Repository pmd/pmd - Environment “pmd-code”</h3>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">PMD_CODE_ORG_DEPLOY_KEY</code>: The private ssh key used to access docs.pmd-code.org.
+It is created with <code class="language-plaintext highlighter-rouge">ssh-keygen -t ed25519 -C "ssh key for pmd. used for github actions push to pmd-code.org" -f pmd-code.org_deploy_key</code>.<br />
+The public key is configured in <code class="language-plaintext highlighter-rouge">~/.ssh/authorized_keys</code> on pmd@pmd-code.org. That means, the user is “pmd”.<br />
+The key should begin with “—–BEGIN OPENSSH PRIVATE KEY—–”.</li>
+</ul>
+
+<p>This environment also has a variable, which is the known_hosts content as <code class="language-plaintext highlighter-rouge">PMD_CODE_ORG_KNOWN_HOSTS</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#
+# pmd-code.org
+#
+# ssh-keyscan pmd-code.org | tee -a pmd_known_hosts
+# ssh-keygen -F pmd-code.org -l -f pmd_known_hosts
+# # Host pmd-code.org found: line 1 
+# pmd-code.org RSA SHA256:/uKehVNumCNvJL8C5CziwV9KkUUxHfggq0C4GTrUhwg
+# # Host pmd-code.org found: line 2 
+# pmd-code.org ECDSA SHA256:6aD1r1XuIoc/zgBT3bt1S9L5ToyJzdQ9rrcMchnqiRA
+# # Host pmd-code.org found: line 3 
+# pmd-code.org ED25519 SHA256:nvkIAzZhYTxXqSU3DWvos83A0EocZ5dsxNkx1LoMZhg
+# ssh-keygen -F pmd-code.org -f pmd_known_hosts
+pmd-code.org ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDVsIeF6xU0oPb/bMbxG1nU1NDyBpR/cBEPZcm/PuJwdI9B0ydPHA6FysqAnt32fNFznC2SWisnWyY3iNsP3pa8RQJVwmnnv9OboGFlW2/61o3iRyydcpPbgl+ADdt8iU9fmMI7dC04UqgHGBoqOwVNna9VylTjp5709cK2qHnwU450F6YcOEiOKeZfJvV4PmpJCz/JcsUVqft6StviR31jKnqbnkZdP8qNoTbds6WmGKyXkhHdLSZE7X1CFQH28tk8XFqditX93ezeCiThFL7EleDexV/3+2+cs5878sDMUMzHS5KShTjkxzhHaodhtIEdNesinq/hOPbxAGkQ0FbD
+pmd-code.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBMfSJtZcJCeENSZMvdngr+Hwe7oUVQWWKwC4HnfiOoAh/NSIlzJyQvpoPZxnEFid6Y3ntDK+rnx04Japo63zD8Q=
+pmd-code.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFa88nqfMavMH/tGeS5DNrSeM5AVHmZQGHh98vC1717o
+</code></pre></div></div>
+
+<h2 id="release-signing-keys">Release Signing Keys</h2>
+
+<h3 id="creating-a-new-key">Creating a new key</h3>
+<p>In general, a key created once should be reused. However, if the key is (potentially) compromised, a new
+key needs to be generated. A gpg key consists of a primary key and one or more subkeys. The primary key
+defines the identity (fingerprint, key ID) and subkeys can be used for actual signing. The primary key is
+then only used to create new subkeys or renew subkeys. For a more safe operation, the primary key should
+be kept offline and only the subkeys should be used for signing. A Release Signing Key also doesn’t need
+a subkey for encryption. In case a signing key gets compromised, the subkey can be revoked and a new key
+can be generated. But the primary key still is safe.</p>
+
+<p>Creating such a key is not straightforward, hence this how to (there are a couple of guides
+in the internet about best practices):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --expert --full-generate-key
+...
+Please select what kind of key you want:
+&gt; 8 (RSA (set your own capabilities)
+&gt; S (Toggle Sign)
+&gt; E (Toggle Encrypt)
+&gt; Q
+Current allowed actions: Certify
+What keysize do you want?
+&gt; 4096
+Please specify how long the key should be valid.
+&gt; 2y
+Real name:
+&gt; PMD Release Signing Key
+Email address:
+&gt; releases@pmd-code.org
+...
+pub   rsa4096 2025-01-04 [C] [expires: 2027-01-04]
+      2EFA55D0785C31F956F2F87EA0B5CA1A4E086838
+uid                      PMD Release Signing Key &lt;releases@pmd-code.org&gt;
+</code></pre></div></div>
+
+<p>Then we create a subkey for signing:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --edit-key 2EFA55D0785C31F956F2F87EA0B5CA1A4E086838
+gpg&gt; addkey
+&gt; 4 (RSA (sign only))
+keysize:
+&gt; 4096
+Expiration
+&gt; 2y
+...
+&gt; save
+</code></pre></div></div>
+
+<p>Now let’s publish the public key:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --armor --export 2EFA55D0785C31F956F2F87EA0B5CA1A4E086838 | curl -T - https://keys.openpgp.org
+Key successfully uploaded. Proceed with verification here:
+https://keys.openpgp.org/upload/....
+</code></pre></div></div>
+
+<p>Export the key to upload it to <a href="https://keyserver.ubuntu.com/#submitKey">https://keyserver.ubuntu.com/#submitKey</a>:
+<code class="language-plaintext highlighter-rouge">gpg --armor --export 2EFA55D0785C31F956F2F87EA0B5CA1A4E086838 | wl-copy</code>
+Also upload it to <a href="http://pgp.mit.edu/">http://pgp.mit.edu/</a>.</p>
+
+<p>Verify the uploaded (public) key (and expiration date):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg --armor --export 2EFA55D0785C31F956F2F87EA0B5CA1A4E086838 &gt; release-signing-key-2EFA55D0785C31F956F2F87EA0B5CA1A4E086838-public.asc
+gpg --show-keys release-signing-key-2EFA55D0785C31F956F2F87EA0B5CA1A4E086838-public.asc
+curl 'https://keys.openpgp.org/vks/v1/by-fingerprint/2EFA55D0785C31F956F2F87EA0B5CA1A4E086838' | gpg --show-keys
+curl 'https://keyserver.ubuntu.com/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&amp;fingerprint=on&amp;exact=on&amp;options=mr&amp;op=get' | gpg --show-keys
+curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838' | gpg --show-keys
+</code></pre></div></div>
+
+<h3 id="current-key">Current Key</h3>
+
+<ul>
+  <li>Used since January 2025</li>
+  <li>Fingerprint <code class="language-plaintext highlighter-rouge">2EFA 55D0 785C 31F9 56F2  F87E A0B5 CA1A 4E08 6838</code></li>
+  <li>Used for signing artifacts in Maven Central</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gpg --list-keys --fingerprint --with-subkey-fingerprint 2EFA55D0785C31F956F2F87EA0B5CA1A4E086838
+pub   rsa4096 2025-01-04 [C] [verfällt: 2027-01-04]
+      2EFA 55D0 785C 31F9 56F2  F87E A0B5 CA1A 4E08 6838
+uid        [ ultimativ ] PMD Release Signing Key &lt;releases@pmd-code.org&gt;
+sub   rsa4096 2025-01-04 [S] [verfällt: 2027-01-04]
+      1E04 6C19 ED28 73D8 C08A  F7B8 A063 2691 B78E 3422
+</code></pre></div></div>
+
+<p>The public key is available here:</p>
+<ul>
+  <li><a href="https://keys.openpgp.org/search?q=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838">https://keys.openpgp.org/search?q=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838</a></li>
+  <li><a href="https://keyserver.ubuntu.com/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&amp;fingerprint=on&amp;op=index">https://keyserver.ubuntu.com/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&amp;fingerprint=on&amp;op=index</a></li>
+  <li><a href="http://pgp.mit.edu/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&amp;fingerprint=on&amp;op=index">http://pgp.mit.edu/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&amp;fingerprint=on&amp;op=index</a></li>
+  <li><a href="https://github.com/pmd/build-tools/blob/main/scripts/files/release-signing-key-2EFA55D0785C31F956F2F87EA0B5CA1A4E086838-public.asc">https://github.com/pmd/build-tools/blob/main/scripts/files/release-signing-key-2EFA55D0785C31F956F2F87EA0B5CA1A4E086838-public.asc</a></li>
+</ul>
+
+<h3 id="old-keys">Old keys</h3>
+
+<ul>
+  <li>Fingerprint <code class="language-plaintext highlighter-rouge">EBB2 41A5 45CB 17C8 7FAC B2EB D0BF 1D73 7C9A 1C22</code>
+    <ul>
+      <li>Used until December 2024</li>
+      <li>Replaced as the passphrase has been compromised and therefore the key is potentially
+compromised. Note - as until now (January 2025) we don’t have any indication that the key
+actually has been misused.</li>
+      <li>Revoked 2025-01-04.</li>
+      <li>see file <code class="language-plaintext highlighter-rouge">release-signing-key-D0BF1D737C9A1C22-public.asc</code>.</li>
+    </ul>
+  </li>
+  <li>Fingerprint <code class="language-plaintext highlighter-rouge">94A5 2756 9CAF 7A47 AFCA  BDE4 86D3 7ECA 8C2E 4C5B</code>
+    <ul>
+      <li>Old key used to sign PMD Designer</li>
+      <li>Revoked 2025-01-04.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="private-key">Private key</h3>
+
+<p>In order for GitHub Actions to automatically sign the artifacts for snapshot builds and release builds,
+we need to make the private key along with the passphrase available. This is done using
+multiple <a href="https://help.github.com/en/actions/configuring-and-managing-workflows/creating-and-storing-encrypted-secrets"><code class="language-plaintext highlighter-rouge">secrets</code></a>.
+The secrets are configured on the organization level of PMD, so that the Release Signing key is available
+for all repositories.</p>
+
+<p>To not expose the master key, we only export the subkeys we use for signing and store this in the secret
+<code class="language-plaintext highlighter-rouge">PMD_CI_GPG_PRIVATE_KEY</code>.</p>
+
+<p>For setting up, export the secret key and copy-paste it into a new secret:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg --armor --export-secret-subkeys 2EFA55D0785C31F956F2F87EA0B5CA1A4E086838 | wl-copy
+</code></pre></div></div>
+
+<p>(instead of wl-copy, use xclip or pbcopy, depending on your os).</p>
+
+<p>This private key will be imported by setup-java or a small shell script.</p>
+
+<p><strong>Note 1:</strong> We use option <code class="language-plaintext highlighter-rouge">--export-secret-subkeys</code> to only export the subkey and not the master key.
+That way, we don’t need to transfer the master key.</p>
+
+<p><strong>Note 2:</strong> In order to use the key later on, the passphrase is needed. This is also setup as a secret:
+<code class="language-plaintext highlighter-rouge">PMD_CI_GPG_PASSPHRASE</code>. This secret is then exported as “MAVEN_GPG_PASSPHRASE” where needed
+(<code class="language-plaintext highlighter-rouge">MAVEN_GPG_PASSPHRASE: $</code>) in github actions workflows.
+See also <a href="https://maven.apache.org/plugins/maven-gpg-plugin/usage.html#sign-artifacts-with-gnupg">https://maven.apache.org/plugins/maven-gpg-plugin/usage.html#sign-artifacts-with-gnupg</a>.</p>
+
+<p><strong>Note 3:</strong> The private key is now only secured by the passphrase. It is stored as a GitHub Actions
+secret and available in an environment variable. It is not committed as a file anywhere. Note:
+When importing the key, it is stored on disk in “~/.gnupg” - hence the GitHub Actions should make sure
+to delete this directory on the runner after the workflow is finished in order to not leak
+the key to following users of the runner.</p>
+
+<h3 id="updating-the-key">Updating the key</h3>
+
+<p>From time to time the key needs to be renewed, passphrase needs to be changed or a whole (sub)key needs to
+be replaced.</p>
+
+<p>For renewing or changing the passphrase, import the private master key and public key into your local gpg keystore
+(if you don’t have it already in your keyring) and renew it.
+Make sure to renew all subkeys. Then export the public key again.</p>
+
+<p>For replacing, generate a new (sub) key, just export it.</p>
+
+<p>You can verify the expiration date with <code class="language-plaintext highlighter-rouge">gpg --fingerprint --list-key 2EFA55D0785C31F956F2F87EA0B5CA1A4E086838</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pub   rsa4096 2025-01-04 [C] [expires: 2027-01-04]
+      2EFA 55D0 785C 31F9 56F2  F87E A0B5 CA1A 4E08 6838
+uid           [ultimate] PMD Release Signing Key &lt;releases@pmd-code.org&gt;
+sub   rsa4096 2025-01-04 [S] [expires: 2027-01-04]
+
+</code></pre></div></div>
+
+<p>Upload the exported <em>public</em> key to</p>
+
+<ul>
+  <li><a href="https://keys.openpgp.org/upload">https://keys.openpgp.org/upload</a></li>
+  <li><a href="https://keyserver.ubuntu.com/#submitKey">https://keyserver.ubuntu.com/#submitKey</a></li>
+  <li><a href="http://pgp.mit.edu/">http://pgp.mit.edu/</a></li>
+</ul>
+
+<p>Verify the uploaded key expiration date:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg --show-keys release-signing-key-2EFA55D0785C31F956F2F87EA0B5CA1A4E086838-public.asc
+curl 'https://keys.openpgp.org/vks/v1/by-fingerprint/2EFA55D0785C31F956F2F87EA0B5CA1A4E086838' | gpg --show-keys
+curl 'https://keyserver.ubuntu.com/pks/lookup?search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838&amp;fingerprint=on&amp;exact=on&amp;options=mr&amp;op=get' | gpg --show-keys
+curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87EA0B5CA1A4E086838' | gpg --show-keys
+</code></pre></div></div>
+
+<p>Don’t forget to update the secret <code class="language-plaintext highlighter-rouge">PMD_CI_GPG_PRIVATE_KEY</code> with the renewed private signing subkey.</p>
 
 
     <div class="tags">
@@ -2170,7 +2645,7 @@ crawling side.</p>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 2025 (7.12.0)<br /> Site last generated: May 11, 2025 <br />
+            May 2025 (7.14.0)<br /> Site last generated: May 11, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
