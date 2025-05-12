@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -46,20 +47,13 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         return (Number) super.getConstValue();
     }
 
+    /**
+     * @deprecated Since 7.12.0. See super method. This override is needed due to covariant return type change.
+     */
     @Override
-    protected @NonNull Number buildConstValue() {
-        // don't use ternaries, the compiler messes up autoboxing.
-        if (isIntegral()) {
-            if (isIntLiteral()) {
-                return getValueAsInt();
-            }
-            return getValueAsLong();
-        } else {
-            if (isFloatLiteral()) {
-                return getValueAsFloat();
-            }
-            return getValueAsDouble();
-        }
+    @Deprecated
+    protected @Nullable Number buildConstValue() {
+        return (Number) super.buildConstValue();
     }
 
     @Override

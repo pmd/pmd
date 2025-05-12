@@ -456,7 +456,8 @@ public interface JTypeMirror extends JTypeVisitable {
     /**
      * Returns a type mirror that is equal to this instance but has different
      * type annotations. Note that some types ignore this method and return
-     * themselves without changing. Eg the null type cannot be annotated.
+     * themselves without changing. Eg the null type or void type cannot be
+     * annotated.
      *
      * @param newTypeAnnots New type annotations (not null)
      *

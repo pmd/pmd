@@ -640,9 +640,18 @@ public class RuleSet implements ChecksumAware {
      * @apiNote This is internal API.
      */
     static boolean applies(Rule rule, LanguageVersion languageVersion) {
+        assert rule.getLanguage() != null : "Rule has no language " + rule;
+
+        if (languageVersion.getLanguage().isDialectOf(rule.getLanguage())) {
+            // Dialects don't check the version of the base language yet…
+            return true;
+        }
+
         final LanguageVersion min = rule.getMinimumLanguageVersion();
         final LanguageVersion max = rule.getMaximumLanguageVersion();
-        assert rule.getLanguage() != null : "Rule has no language " + rule;
+
+        // All rules from base languages also apply to dialects. They
+        // have to share a parser for that to work.
         return rule.getLanguage().equals(languageVersion.getLanguage())
                 && (min == null || min.compareTo(languageVersion) <= 0)
                 && (max == null || max.compareTo(languageVersion) >= 0);

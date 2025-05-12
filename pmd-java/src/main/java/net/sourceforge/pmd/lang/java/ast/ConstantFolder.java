@@ -5,10 +5,13 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.java.ast.ASTExpression.ConstResult;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -20,7 +23,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * Computes constant expression values.
  */
 // strictfp because constant expressions are FP-strict (not sure if this is really important)
-final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
+final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull ConstResult> {
 
     static final ConstantFolder INSTANCE = new ConstantFolder();
     private static final Pair<Object, Object> FAILED_BIN_PROMOTION = Pair.of(null, null);
@@ -30,100 +33,182 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
     }
 
     @Override
-    public Object visitJavaNode(JavaNode node, Void data) {
-        return null;
+    public @NonNull ConstResult visitJavaNode(JavaNode node, Void data) {
+        return ConstResult.NO_CONST_VALUE;
     }
 
     @Override
-    public @NonNull Number visitLiteral(ASTLiteral num, Void data) {
+    public @NonNull ConstResult visitLiteral(ASTLiteral num, Void data) {
         throw new AssertionError("Literal nodes implement getConstValue directly");
     }
 
     @Override
-    public Object visit(ASTVariableAccess node, Void data) {
+    public @NonNull ConstResult visit(ASTNumericLiteral node, Void data) {
+        // don't use ternaries, the compiler messes up autoboxing.
+        Object result;
+        if (node.isIntegral()) {
+            if (node.isIntLiteral()) {
+                result = node.getValueAsInt();
+            } else {
+                result = node.getValueAsLong();
+            }
+        } else {
+            if (node.isFloatLiteral()) {
+                result = node.getValueAsFloat();
+            } else {
+                result = node.getValueAsDouble();
+            }
+        }
+        return ConstResult.ctConst(result);
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTBooleanLiteral node, Void data) {
+        return node.isTrue() ? ConstResult.BOOL_TRUE : ConstResult.BOOL_FALSE;
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTStringLiteral node, Void data) {
+        String result;
+        if (node.isTextBlock()) {
+            result = ASTStringLiteral.determineTextBlockContent(node.getLiteralText());
+        } else {
+            result = ASTStringLiteral.determineStringContent(node.getLiteralText());
+        }
+        return ConstResult.ctConst(result);
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTNullLiteral node, Void data) {
+        return ConstResult.NO_CONST_VALUE;
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTCharLiteral node, Void data) {
+        Chars image = node.getLiteralText();
+        Chars woDelims = image.subSequence(1, image.length() - 1);
+        Character result = StringEscapeUtils.UNESCAPE_JAVA.translate(woDelims).charAt(0);
+        return ConstResult.ctConst(result);
+    }
+
+    @Override
+    public @NonNull ConstResult visit(ASTVariableAccess node, Void data) {
         JVariableSymbol symbol = node.getReferencedSym();
         if (symbol == null || !symbol.isFinal()) {
-            return null;
+            return ConstResult.NO_CONST_VALUE;
         }
+
+        if (symbol instanceof JFieldSymbol) {
+            @Nullable Object cv = ((JFieldSymbol) symbol).getConstValue();
+            if (cv != null) {
+                return ConstResult.ctConst(cv);
+            }
+        }
+
         @Nullable
         ASTVariableId declaratorId = symbol.tryGetNode();
         if (declaratorId != null) {
             ASTExpression initializer = declaratorId.getInitializer();
             if (initializer != null) {
-                return initializer.getConstValue();
+                ConstResult initRes = initializer.getConstFoldingResult();
+                if (initRes.hasValue()) {
+                    boolean isCompileTimeConstant = symbol instanceof JFieldSymbol
+                        && ((JFieldSymbol) symbol).isStatic();
+                    return new ConstResult(isCompileTimeConstant, initRes.getValue());
+                }
+                return initRes;
             }
         }
 
-        return null;
+        return ConstResult.NO_CONST_VALUE;
     }
 
     @Override
-    public Object visit(ASTFieldAccess node, Void data) {
+    public @NonNull ConstResult visit(ASTFieldAccess node, Void data) {
         JFieldSymbol symbol = node.getReferencedSym();
         if (symbol != null) {
-            return symbol.getConstValue();
+            return ConstResult.ctConstIfNotNull(symbol.getConstValue());
         }
-        return null;
+        return ConstResult.NO_CONST_VALUE;
     }
 
     @Override
-    public Object visit(ASTArrayInitializer node, Void data) {
+    public @NonNull ConstResult visit(ASTArrayInitializer node, Void data) {
         int length = node.length();
+        boolean isCtConst = true;
         Object[] result = new Object[length];
         int index = 0;
         for (ASTExpression expr : node) {
-            if (!expr.isCompileTimeConstant()) {
-                return null;
+            ConstResult itemResult = expr.getConstFoldingResult();
+            if (!itemResult.hasValue()) {
+                return ConstResult.NO_CONST_VALUE;
             }
-            result[index++] = expr.getConstValue();
+            result[index++] = itemResult.getValue();
+            isCtConst &= itemResult.isCompileTimeConstant();
         }
 
-        return result;
+        return new ConstResult(isCtConst, result);
     }
 
     @Override
-    public Object visit(ASTConditionalExpression node, Void data) {
-        Object condition = node.getCondition().getConstValue();
-        if (condition instanceof Boolean) {
-            Object thenValue = node.getThenBranch().getConstValue();
-            Object elseValue = node.getElseBranch().getConstValue();
-            if (thenValue == null || elseValue == null) {
-                return null; // not a constexpr
+    public @NonNull ConstResult visit(ASTConditionalExpression node, Void data) {
+        ConstResult condition = node.getCondition().getConstFoldingResult();
+        if (condition.hasValue()) {
+            ConstResult thenValue = node.getThenBranch().getConstFoldingResult();
+            ConstResult elseValue = node.getElseBranch().getConstFoldingResult();
+            boolean ctConst = condition.isCompileTimeConstant()
+                && thenValue.isCompileTimeConstant()
+                && elseValue.isCompileTimeConstant();
+            if (!thenValue.hasValue() || !elseValue.hasValue()) {
+                return ConstResult.NO_CONST_VALUE; // not a constexpr
             }
-            if ((Boolean) condition) {
-                return thenValue;
+            if (condition.getValue() instanceof Boolean && (boolean) condition.getValue()) {
+                return new ConstResult(ctConst, thenValue.getValue());
             } else {
-                return elseValue;
+                return new ConstResult(ctConst, elseValue.getValue());
             }
         }
-        return null;
+        return ConstResult.NO_CONST_VALUE;
     }
 
     @Override
-    public Object visit(ASTCastExpression node, Void data) {
+    public @NonNull ConstResult visit(ASTCastExpression node, Void data) {
         JTypeMirror t = node.getCastType().getTypeMirror();
-        if (t.isNumeric()) {
-            return numericCoercion(node.getOperand().getConstValue(), t);
-        } else if (TypeTestUtil.isExactlyA(String.class, node.getCastType())) {
-            return stringCoercion(node.getOperand().getConstValue());
+        ConstResult castValue = node.getOperand().getConstFoldingResult();
+        if (!castValue.hasValue()) {
+            return ConstResult.NO_CONST_VALUE;
         }
-        return null;
+        Object res;
+        if (t.isNumeric()) {
+            res = numericCoercion(castValue.getValue(), t);
+        } else if (TypeTestUtil.isExactlyA(String.class, node.getCastType())) {
+            res = stringCoercion(castValue.getValue());
+        } else {
+            return ConstResult.NO_CONST_VALUE;
+        }
+
+        return new ConstResult(castValue.isCompileTimeConstant(), res);
     }
 
     @Override
-    public Object visit(ASTUnaryExpression node, Void data) {
+    public @NonNull ConstResult visit(ASTUnaryExpression node, Void data) {
         UnaryOp operator = node.getOperator();
         if (!operator.isPure()) {
-            return null;
+            return ConstResult.NO_CONST_VALUE;
         }
 
         ASTExpression operand = node.getOperand();
-        Object operandValue = operand.getConstValue();
-        if (operandValue == null) {
-            return null;
+        ConstResult operandValue = operand.getConstFoldingResult();
+        if (!operandValue.hasValue()) {
+            return ConstResult.NO_CONST_VALUE;
         }
+        Object value = computeUnary(operandValue.getValue(), node);
+        return new ConstResult(operandValue.isCompileTimeConstant(), value);
+    }
 
-        switch (operator) {
+    private @Nullable Object computeUnary(Object operandValue, ASTUnaryExpression node) {
+
+        switch (node.getOperator()) {
         case UNARY_PLUS:
             return unaryPromotion(operandValue);
         case UNARY_MINUS: {
@@ -161,13 +246,22 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, Object> {
     }
 
     @Override
-    public strictfp Object visit(ASTInfixExpression node, Void data) {
-        Object left = node.getLeftOperand().getConstValue();
-        Object right = node.getRightOperand().getConstValue();
-        if (left == null || right == null) {
-            return null;
+    public strictfp ConstResult visit(ASTInfixExpression node, Void data) {
+        ConstResult left = node.getLeftOperand().getConstFoldingResult();
+        ConstResult right = node.getRightOperand().getConstFoldingResult();
+        if (!left.hasValue() || !right.hasValue()) {
+            return ConstResult.NO_CONST_VALUE;
+        }
+        Object res = computeInfix(left.getValue(), right.getValue(), node);
+        if (res == null) {
+            return ConstResult.NO_CONST_VALUE;
         }
 
+        boolean ctConst = left.isCompileTimeConstant() && right.isCompileTimeConstant();
+        return new ConstResult(ctConst, res);
+    }
+
+    private strictfp @Nullable Object computeInfix(Object left, Object right, ASTInfixExpression node) {
         switch (node.getOperator()) {
         case CONDITIONAL_OR: {
             if (left instanceof Boolean && right instanceof Boolean) {

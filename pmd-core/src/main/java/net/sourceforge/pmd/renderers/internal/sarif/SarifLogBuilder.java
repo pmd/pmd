@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ArtifactLocation;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.AssociatedRule;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Component;
@@ -22,6 +23,7 @@ import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.MultiformatMessage;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PhysicalLocation;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.PropertyBag;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Region;
+import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ReportingConfiguration;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ReportingDescriptor;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Result;
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.Run;
@@ -50,7 +52,7 @@ public class SarifLogBuilder {
         }
 
         final Location location = getRuleViolationLocation(violation);
-        final Result result = resultFrom(ruleDescriptor, ruleIndex, location);
+        final Result result = resultFrom(ruleDescriptor, ruleIndex, location, violation.getRule().getPriority());
         results.add(result);
 
         return this;
@@ -129,10 +131,11 @@ public class SarifLogBuilder {
         return toolExecutionNotifications.isEmpty() && toolConfigurationNotifications.isEmpty();
     }
 
-    private Result resultFrom(ReportingDescriptor rule, Integer ruleIndex, Location location) {
+    private Result resultFrom(ReportingDescriptor rule, Integer ruleIndex, Location location, RulePriority rulePriority) {
         final Result result = Result.builder()
                 .ruleId(rule.getId())
                 .ruleIndex(ruleIndex)
+                .level(pmdPriorityToSarifSeverityLevel(rulePriority))
                 .build();
 
         final Message message = Message.builder()
@@ -175,7 +178,15 @@ public class SarifLogBuilder {
             .helpUri(rv.getRule().getExternalInfoUrl())
             .help(new MultiformatMessage(rv.getRule().getDescription()))
             .properties(getRuleProperties(rv))
+            .defaultConfiguration(getDefaultConfigForRuleViolation(rv))
             .build();
+    }
+
+    private ReportingConfiguration getDefaultConfigForRuleViolation(RuleViolation rv) {
+        return ReportingConfiguration.builder()
+                // get pmd level from rv and translate it to sarif level (for the config)
+                .level(pmdPriorityToSarifSeverityLevel(rv.getRule().getPriority()))
+                .build();
     }
 
     private PropertyBag getRuleProperties(RuleViolation rv) {
@@ -192,5 +203,27 @@ public class SarifLogBuilder {
                 .version(PMDVersion.VERSION)
                 .informationUri("https://docs.pmd-code.org/latest/")
                 .build();
+    }
+
+
+    /**
+     * Converts PMD's rule priority into the corresponding Sarif severity level.
+     * @param rulePriority of a rule violation.
+     * @return sarif's severity level.
+     * @see net.sourceforge.pmd.lang.rule.RulePriority
+     */
+    private String pmdPriorityToSarifSeverityLevel(RulePriority rulePriority) {
+        switch (rulePriority) {
+        case HIGH:
+        case MEDIUM_HIGH:
+            return "error";
+        case MEDIUM:
+            return "warning";
+        case MEDIUM_LOW:
+        case LOW:
+            return "note";
+        default:
+            return "none"; // should not occur
+        }
     }
 }

@@ -213,7 +213,7 @@ class CpdAnalysisTest {
         }
         verify(reporter).errorEx(eq("Error while tokenizing"), any(LexException.class));
         verify(reporter).errorEx(eq("Error while tokenizing"), any(MalformedSourceException.class));
-        verify(reporter).errorEx(eq("Exception while running CPD"), any(IllegalStateException.class));
+        verify(reporter).error(eq("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset."));
         verifyNoMoreInteractions(reporter);
     }
 
