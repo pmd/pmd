@@ -154,7 +154,12 @@ public final class CpdAnalysis implements AutoCloseable {
 
     @SuppressWarnings("PMD.CloseResource")
     public void performAnalysis(Consumer<CPDReport> consumer) {
+
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
+            if (sourceManager.isEmpty()) {
+                reporter.warn("No files to analyze. Check input paths and exclude parameters, use --debug to see file collection traces.");
+            }
+
             Map<Language, CpdLexer> tokenizers =
                 sourceManager.getTextFiles().stream()
                              .map(it -> it.getLanguageVersion().getLanguage())
