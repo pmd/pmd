@@ -16,12 +16,16 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
+import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.AbstractAnnotationSuppressor;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Helper methods to suppress violations based on annotations.
@@ -86,4 +90,19 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
         return false;
     }
 
+    JavaNode getAnnotationScope(ASTAnnotation a) {
+        if (a.getParent() instanceof ASTModifierList) return a.getParent().getParent();
+        return null;
+    }
+
+    @Override
+    protected OptionalBool isSuppressingNonPmdWarnings(String stringVal, ASTAnnotation annotation) {
+        if ("unused".equals(stringVal)) {
+            JavaNode scope = getAnnotationScope(annotation);
+            if (scope != null && scope.descendants(ASTVariableId.class).crossFindBoundaries().none(it -> it.getLocalUsages().isEmpty())) {
+                return OptionalBool.NO;
+            }
+        }
+        return super.isSuppressingNonPmdWarnings(stringVal, annotation);
+    }
 }

@@ -20,11 +20,14 @@ import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * A rule that reports unused suppression annotations and comments.
+ * This rule class supports any PMD language, but language-specific behavior
+ * needs to be implemented to avoid false positives for some languages.
+ * Violations of this rule cannot be suppressed. It is special cased
+ * by {@link RuleSets} to execute after all other rules, so that whether
+ * those produce warnings or not is known to this rule.
  */
 @Experimental
 public class UnnecessaryPmdSuppressionRule extends AbstractRule {
-    // it is in this package because it uses privileged API of RuleContex
-
 
     @Override
     public void apply(Node rootNode, RuleContext ctx) {

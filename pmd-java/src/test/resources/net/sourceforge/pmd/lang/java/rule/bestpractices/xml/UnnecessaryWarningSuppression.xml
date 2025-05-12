@@ -264,4 +264,21 @@
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Suppresswarnings unused</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings("unused")
+                static void foo(int i) {
+                }
+
+                @SuppressWarnings("unused")
+                static void foo(int i) {
+                    i = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

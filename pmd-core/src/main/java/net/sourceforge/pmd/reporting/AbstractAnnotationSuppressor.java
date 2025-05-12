@@ -19,10 +19,12 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.internal.UnnecessaryPmdSuppressionRule;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
+import net.sourceforge.pmd.util.OptionalBool;
 
 public abstract class AbstractAnnotationSuppressor<A extends Node> implements ViolationSuppressor {
 
@@ -151,6 +153,18 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
         return "PMD".equals(stringVal) || ("PMD." + rule.getName()).equals(stringVal) || "all".equals(stringVal);
     }
 
+    /**
+     * Return whether the annotation param may be suppressing warnings from other tools.
+     * If this returns NO, then the parameter may be marked as unused and reported by the
+     * rule {@link UnnecessaryPmdSuppressionRule}.
+     */
+    protected OptionalBool isSuppressingNonPmdWarnings(String stringVal, A annotation) {
+        if (isPmdSuppressor(stringVal)) {
+            return OptionalBool.NO;
+        }
+        return OptionalBool.UNKNOWN;
+    }
+
     /** Callbacks for a walk over an annotation. */
     protected interface AnnotationWalkCallbacks {
 
@@ -182,7 +196,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
             if (suppressedAny) {
                 entireAnnotationIsUnused.setFalse();
             } else {
-                if (isPmdSuppressor(stringValue)) {
+                if (isSuppressingNonPmdWarnings(stringValue, annotation) == OptionalBool.NO) {
                     unusedParts.add(makeAnnotationPartSuppressor(annotation, annotationParam, stringValue));
                 } else {
                     entireAnnotationIsUnused.setFalse();
