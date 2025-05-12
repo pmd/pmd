@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.PmdRootLogger;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine;
@@ -31,7 +32,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     @CommandLine.Spec
     protected CommandSpec spec; // injected by PicoCli, needed for validations
 
-    protected static final String FILE_COLLECTION_OPTION_HEADER = "File collection options";
+    protected static final String FILE_COLLECTION_OPTION_HEADER = "Input files specification";
 
 
     protected static class FileCollectionOptions<C extends AbstractConfiguration> {
@@ -53,21 +54,32 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         private URI uri;
 
 
-        private List<Path> ignoreFiles = new ArrayList<>();
+        boolean usesDeprecatedIgnoreOption = false;
+        boolean usesDeprecatedIgnoreListOption = false;
 
-        @Option(names = "--ignore", arity = "1..*", description = "Files to be excluded from the analysis")
+        @Option(names = "--ignore", arity = "1..*", description = "(DEPRECATED: use --exclude) Files to be excluded from the analysis")
+        @Deprecated
         protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
-            if (rootPaths != null) {
-                this.ignoreFiles = rootPaths;
-            } else {
-                this.ignoreFiles = new ArrayList<>();
-            }
+            this.excludeFiles = CollectionUtil.makeUnmodifiableAndNonNull(rootPaths);
+            this.usesDeprecatedIgnoreOption = true;
         }
 
         @Option(names = "--ignore-list",
+                description = "(DEPRECATED: use --exclude-file-list) Path to a file containing a list of files to exclude from the analysis, one path per line. "
+                              + "This option can be combined with --dir, --file-list and --uri.")
+        @Deprecated
+        protected void setExcludeFileList(Path path) {
+            this.excludeFileListPath = path;
+            this.usesDeprecatedIgnoreListOption = true;
+        }
+
+        @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
+        private List<Path> excludeFiles = new ArrayList<>();
+
+        @Option(names = "--exclude-file-list",
                 description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
                               + "This option can be combined with --dir, --file-list and --uri.")
-        private Path ignoreListPath;
+        private Path excludeFileListPath;
 
 
         @Option(names = {"--relativize-paths-with", "-z"}, description = "Path relative to which directories are rendered in the report. "
@@ -114,15 +126,22 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             if (inputPaths != null) {
                 configuration.setInputPathList(new ArrayList<>(inputPaths));
             }
-            configuration.setExcludes(ignoreFiles);
+            configuration.setExcludes(excludeFiles);
             configuration.collectFilesRecursively(!nonRecursive);
             configuration.setInputFilePath(fileListPath);
-            configuration.setIgnoreFilePath(ignoreListPath);
+            configuration.setIgnoreFilePath(excludeFileListPath);
             configuration.setInputUri(uri);
             if (relativizeRootPaths != null) {
                 configuration.addRelativizeRoots(relativizeRootPaths);
             }
             configuration.setSourceEncoding(encoding);
+
+            if (usesDeprecatedIgnoreOption) {
+                configuration.getReporter().warn("Option name --ignore is deprecated. Use --exclude instead.");
+            }
+            if (usesDeprecatedIgnoreListOption) {
+                configuration.getReporter().warn("Option name --ignore-list is deprecated. Use --exclude-file-list instead.");
+            }
         }
 
 
@@ -189,6 +208,10 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     }
 
     protected final void setCommonConfigProperties(C configuration) {
+        SimpleMessageReporter reporter = new SimpleMessageReporter(LoggerFactory.getLogger(PmdCommand.class));
+        // Setup CLI message reporter
+        configuration.setReporter(reporter);
+
         getFileCollectionOptions().configureFilesToAnalyze(configuration);
 
         // reporting logic
@@ -197,8 +220,6 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         configuration.setFailOnViolation(failOnViolation);
         configuration.setFailOnError(failOnError);
 
-        // Setup CLI message reporter
-        configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(PmdCommand.class)));
     }
 
 }

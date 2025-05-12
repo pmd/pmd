@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -32,20 +30,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
 
 
     @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
-    CpdFileCollectionOptions files = new CpdFileCollectionOptions();
-
-    static class CpdFileCollectionOptions extends FileCollectionOptions<CPDConfiguration> {
-        private boolean usedDeprecatedExcludeName = false;
-
-        // this option name is deprecated
-        @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
-        @Override
-        protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
-            super.setIgnoreSpecificPaths(rootPaths);
-            this.usedDeprecatedExcludeName = true;
-        }
-
-    }
+    FileCollectionOptions<CPDConfiguration> files = new FileCollectionOptions<>();
 
     @Option(names = { "--language", "-l" }, description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
             defaultValue = CPDConfiguration.DEFAULT_LANGUAGE, converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
@@ -139,9 +124,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             configuration.setFailOnError(false);
         }
 
-        if (files.usedDeprecatedExcludeName) {
-            configuration.getReporter().warn("Option name --exclude is deprecated. Use --ignore instead.");
-        }
 
         return configuration;
     }

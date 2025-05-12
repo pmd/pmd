@@ -169,15 +169,31 @@ least one of `--dir`, `--file-list` or `--uri` must be provided.
                               analyze, one path per line. One of `--dir`,
                               `--file-list` or `--uri` must be provided."
     %}
-    {% include custom/cli_option_row.html options="--ignore"
+    {% include custom/cli_option_row.html options="--exclude"
                option_arg="filepath+"
                description="Specify one or more paths to files that will be ignored.
                             This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
                             It can combine with `--ignore-list`."
     %}
+    {% include custom/cli_option_row.html options="--exclude-file-list"
+               option_arg="filepath"
+               description="Path to a file containing a list of files to ignore, one path per line.
+                            This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
+                            It can combine with `--ignore`"
+    %}
+    {% include custom/cli_option_row.html options="--ignore"
+               option_arg="filepath+"
+               description="<span class='label label-primary'>Deprecated (6.14.0)</span>
+                            This option has been renamed `--exclude`.
+                            Specify one or more paths to files that will be ignored.
+                            This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
+                            It can combine with `--ignore-list`."
+    %}
     {% include custom/cli_option_row.html options="--ignore-list"
                option_arg="filepath"
-               description="Path to file containing a list of files to ignore, one path per line.
+               description="<span class='label label-primary'>Deprecated (6.14.0)</span>
+                            This option has been renamed `--exclude-file-list`.
+                            Path to file containing a list of files to ignore, one path per line.
                             This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
                             It can combine with `--ignore`"
     %}
