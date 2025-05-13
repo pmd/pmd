@@ -158,6 +158,19 @@ class VfExpressionTypeVisitorTest {
                            .filterMatching(ASTIdentifier::getImage, "NotFoundProp"));
     }
 
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/5476">[visualforce] NPE when analyzing standard field references in visualforce page #5476</a>
+     */
+    @Test
+    void standardFieldsOnlyHaveFullName() {
+        Node rootNode = compile("CasePrintPage.page");
+
+        ASTIdentifier description = rootNode.descendants(ASTIdentifier.class)
+                .filterMatching(ASTIdentifier::getImage, "Description")
+                .firstOrThrow();
+        assertEquals(DataType.Text, description.getDataType());
+    }
+
     private Node compile(String pageName) {
         return compile(pageName, false);
     }

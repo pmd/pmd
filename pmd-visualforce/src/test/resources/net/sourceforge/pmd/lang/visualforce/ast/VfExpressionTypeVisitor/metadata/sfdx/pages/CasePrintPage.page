@@ -1,0 +1,4 @@
+<!-- Test case for https://github.com/pmd/pmd/issues/5476 -->
+<apex:page standardController="Case" Extensions="CasePrintController" renderAs="pdf" standardStylesheets="false" showheader="false" sidebar="false" language="{!$CurrentPage.parameters.lang}">
+  <apex:OutputField value="{!Case.Description}"/>
+</apex:page>
