@@ -540,4 +540,22 @@ public class UnusedLocalVarsMultiple {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Issues 5061/5081: Compound assignment used in another expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int read = 0;
+        consume(read += 1);
+    }
+
+    void consume(int val) {
+        System.out.println(val);
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
