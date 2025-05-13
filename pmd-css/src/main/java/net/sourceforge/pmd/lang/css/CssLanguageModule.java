@@ -14,7 +14,7 @@ public class CssLanguageModule extends CpdOnlyLanguageModuleBase {
     private static final String ID = "css";
 
     public CssLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("CSS").extensions("css"));
+        super(LanguageMetadata.withId(ID).name("Css").extensions("css"));
     }
 
     public static CssLanguageModule getInstance() {

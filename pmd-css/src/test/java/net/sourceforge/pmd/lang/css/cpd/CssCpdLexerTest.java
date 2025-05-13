@@ -6,22 +6,17 @@ package net.sourceforge.pmd.lang.css.cpd;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.css.CssLanguageModule;
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class CssCpdLexerTest extends CpdTextComparisonTest {
 
-    public CssCpdLexerTest() {
-        super("css", ".css");
-    }
-
-    @Override
-    protected String getResourcePrefix() {
-        return "testdata";
+    CssCpdLexerTest() {
+        super(CssLanguageModule.getInstance(), ".css");
     }
 
     @Test
-    public void testLiterals() {
+    void testLiterals() {
         doTest("literals");
     }
-
 }

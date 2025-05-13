@@ -30,7 +30,7 @@
                         <configuration>
                             <target>
                                 <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
-                                    <property name="lang-name" value="CSS" />
+                                    <property name="lang-name" value="Css" />
                                     <property name="lang-id" value="css" />
                                 </ant>
                             </target>
