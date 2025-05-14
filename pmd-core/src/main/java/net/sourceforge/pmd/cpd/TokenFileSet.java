@@ -7,10 +7,12 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -38,9 +40,13 @@ final class TokenFileSet {
     private ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
     private final SourceManager sourceManager;
 
-    // the first ID is 1, 0 is the ID of the EOF token.
+    // The first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
     private CpdState state = CpdState.BUILDING;
+    // This is shared to save memory on the lambda allocation, which is significant
+    private final Function<String, Integer> getNextImage = k -> curImageId++;
+    // Collect stats about token file sizes.
+    private final IntSummaryStatistics tokenFileStats = new IntSummaryStatistics();
 
     enum CpdState {
         BUILDING, HASHING, MATCHING
@@ -58,7 +64,7 @@ final class TokenFileSet {
 
     int getImageId(String newImage) {
         checkState(CpdState.BUILDING, "getImage");
-        return images.computeIfAbsent(newImage, k -> curImageId++);
+        return images.computeIfAbsent(newImage, this.getNextImage);
     }
 
     String getImage(TokenEntry entry) {
@@ -77,19 +83,19 @@ final class TokenFileSet {
     int countDupTokens(SmallTokenEntry fst, SmallTokenEntry snd, int offset) {
         checkState(CpdState.MATCHING, "countDupTokens");
 
-        // todo in Java 9+, use Arrays.mismatch, which is intrinsified.
-        int[] f1 = files.get(fst.fileId).identifiers;
-        int[] f2 = files.get(snd.fileId).identifiers;
+        // todo in Java 9+, use Arrays.mismatch, which is vectorized and faster than this
+
+        TokenFile tf1 = files.get(fst.fileId);
+        TokenFile tf2 = files.get(snd.fileId);
+
+        final int[] f1 = tf1.identifiers;
+        final int[] f2 = tf2.identifiers;
         final int i1 = fst.indexInFile + offset;
         final int i2 = snd.indexInFile + offset;
-        if (i1 < 0 || i2 < 0) {
-            return 0;
-        }
 
+        final int maxCount = Math.max(0, Math.min(tf1.size - i1, tf2.size - i2));
         int i = 0;
-        while (i1 + i < f1.length
-            && i2 + i < f2.length
-            && f1[i1 + i] == f2[i2 + i]) {
+        while (i < maxCount && f1[i1 + i] == f2[i2 + i]) {
             i++;
         }
         return i;
@@ -162,7 +168,12 @@ final class TokenFileSet {
             int id = files.size();
             file.setInternalId(id);
             files.add(file);
+            tokenFileStats.accept(file.size);
         }
+    }
+
+    IntSummaryStatistics getStats() {
+        return tokenFileStats;
     }
 
     /**
@@ -412,7 +423,8 @@ final class TokenFileSet {
         }
 
         void finish() {
-            trimToSize();
+            // We don't need really need to trim to size.
+            // trimToSize();
         }
 
         // test only

@@ -23,13 +23,12 @@ class TokenHashMap {
     //    private final Map<Integer, Object> markGroups;
     private final List<List<SmallTokenEntry>> listSink;
     // this is shared to save memory on the lambda allocation, which is significant
-    private final BiFunction<Object, Object, Object> mergeFunction;
+    private final BiFunction<Object, Object, Object> mergeFunction = this::mergeEntries;
 
     TokenHashMap(int size) {
         markGroups = new Int2ObjectOpenHashMap<>(size);
         //        markGroups = new HashMap<>(size);
         listSink = new ArrayList<>();
-        mergeFunction = this::mergeEntries;
     }
 
     public List<List<SmallTokenEntry>> getFinalMatches() {

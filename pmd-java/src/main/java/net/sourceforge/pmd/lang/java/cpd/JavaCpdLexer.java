@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.cpd;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.TokenEntry;
@@ -193,7 +193,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
             this.ignoreIdentifiers = ignoreIdentifiers;
 
             currentNestingLevel = 0;
-            classMembersIndentations = new LinkedList<>();
+            classMembersIndentations = new ArrayDeque<>();
         }
 
         public void processToken(JavaccToken currentToken) {

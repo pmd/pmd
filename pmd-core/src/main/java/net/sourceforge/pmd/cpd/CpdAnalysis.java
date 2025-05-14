@@ -216,6 +216,7 @@ public final class CpdAnalysis implements AutoCloseable {
                         }
                     });
 
+                LOGGER.debug("Done lexing. CPD token count stats {}", tokens.getStats());
                 LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
                 matches = findMatches(sourceManager, listener, tokens, configuration.getMinimumTileSize());
             }
