@@ -242,7 +242,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         configuration.setSuppressMarker(suppressMarker);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
-        configuration.setThreads(threads);
 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);

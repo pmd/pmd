@@ -185,6 +185,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
     private Path reportFile;
 
 
+    private int threads;
     @Option(names = { "--threads", "-t" }, description = "Sets the number of threads used by PMD.",
         defaultValue = "1")
     public void setThreads(final int threads) {

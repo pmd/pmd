@@ -17,6 +17,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -193,7 +194,7 @@ public final class CpdAnalysis implements AutoCloseable {
             List<Report.ProcessingError> processingErrors;
             {
                 TokenFileSet tokens = new TokenFileSet(sourceManager);
-                processingErrors = executeInParallel(
+                processingErrors = processAllFiles(
                     configuration.getThreads(),
                     sourceManager,
                     textFile -> {
@@ -241,36 +242,37 @@ public final class CpdAnalysis implements AutoCloseable {
      * Execute a callback on all the files in the source manager.
      * Errors are returned by the callback, not thrown.
      */
-    private static List<ProcessingError> executeInParallel(
+    private static List<ProcessingError> processAllFiles(
             int threads,
             SourceManager sourceManager,
             Function<TextFile, @Nullable ProcessingError> processFile)
         throws InterruptedException, ExecutionException {
+        if (threads == 0) {
+            return processWithStream(sourceManager.getTextFiles().stream(), processFile);
+        }
 
         // To make parallel streams use a custom ForkJoinPool, we need
         // to execute it in its "context" using submit.
         ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
         try {
             return forkJoinPool
-                    .submit(() -> processWithParallelStream(sourceManager, processFile))
+                    .submit(() -> processWithStream(
+                            sourceManager.getTextFiles().parallelStream(), processFile))
                     .get();
         } finally {
             forkJoinPool.shutdown();
         }
-
-
     }
 
     /** Process all files with the given callback. Errors are collected into the result list. */
-    private static List<ProcessingError> processWithParallelStream(SourceManager sourceManager, Function<TextFile, @Nullable ProcessingError> processFile) {
-        return sourceManager
-                .getTextFiles()
-                .parallelStream()
+    private static List<ProcessingError> processWithStream(Stream<TextFile> files, Function<TextFile, @Nullable ProcessingError> processFile) {
+        return files
                 .map(processFile)
                 .filter(Objects::nonNull)
                 .sorted()
                 .collect(Collectors.toList());
     }
+
 
     @Override
     public void close() throws IOException {
