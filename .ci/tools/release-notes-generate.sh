@@ -100,7 +100,7 @@ for login in $AUTHORS; do
     #DEBUG ONLY
     #USER_JSON="{\"login\": \"$login\", \"name\": \"foo $login\"}"
     #DEBUG_ONLY
-    USER_NAME="$(echo "$USER_JSON" | jq --raw-output .name)"
+    USER_NAME="$(echo "$USER_JSON" | jq --raw-output ".name // \"$login\"")"
     search=" - \@$login"
     replacement=" - [$USER_NAME](https://github.com/$login) (@$login)"
     PULL_REQUESTS="${PULL_REQUESTS//${search}/${replacement}}"

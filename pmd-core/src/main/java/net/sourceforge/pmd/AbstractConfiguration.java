@@ -176,7 +176,7 @@ public abstract class AbstractConfiguration {
     }
 
     /**
-     * Set the given LanguageVersion as the current default for it's Language.
+     * Set the given LanguageVersion as the current default for its Language.
      *
      * @param languageVersion the LanguageVersion
      */
@@ -253,7 +253,7 @@ public abstract class AbstractConfiguration {
      */
     public void addRelativizeRoot(Path path) {
         // Note: the given path is not further modified or resolved. E.g. there is no special handling for symlinks.
-        // The goal is, that if the user inputs a path, PMD should output in terms of that path, not it's resolution.
+        // The goal is, that if the user inputs a path, PMD should output in terms of that path, not its resolution.
         this.relativizeRoots.add(Objects.requireNonNull(path));
 
         if (Files.isRegularFile(path)) {

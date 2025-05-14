@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Shadows a class in the System namespace</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>This name causes a collision with a class, enum, or interface used in the `System` namespace. Please choose a different name.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Database {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shadows an enum in the System namespace</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class AccessType {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shadows an interface in the System namespace</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Callable {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No shadowing</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class FooBar{
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shadows a class in the Schema namespace</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>This name causes a collision with a class, enum, or interface used in the `Schema` namespace. Please choose a different name.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class DataCategory { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Shadows an enum in the Schema namespace</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class DisplayType { }
+]]></code>
+    </test-code>
+</test-data>

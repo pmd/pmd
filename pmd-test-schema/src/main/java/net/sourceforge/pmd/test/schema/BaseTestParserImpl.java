@@ -162,17 +162,25 @@ class BaseTestParserImpl {
         }
 
         List<Integer> expectedLineNumbers = Collections.emptyList();
+        List<Integer> expectedEndLineNumbers = Collections.emptyList();
         {
             Element lineNumbers = getSingleChild(testCode, "expected-linenumbers", false, err);
             if (lineNumbers != null) {
                 expectedLineNumbers = new ArrayList<>();
+                expectedEndLineNumbers = new ArrayList<>();
                 String[] linenos = parseTextNode(lineNumbers).split(",");
                 if (linenos.length != expectedProblems) {
                     err.at(expectedProblemsNode).error("Number of ''expected-linenumbers'' ({0}) does not match", linenos.length);
                     return;
                 }
                 for (String num : linenos) {
-                    expectedLineNumbers.add(Integer.valueOf(num.trim()));
+                    if (num.contains("-")) {
+                        String[] beginAndEnd = num.split("-", 2);
+                        expectedLineNumbers.add(Integer.valueOf(beginAndEnd[0].trim()));
+                        expectedEndLineNumbers.add(Integer.valueOf(beginAndEnd[1].trim()));
+                    } else {
+                        expectedLineNumbers.add(Integer.valueOf(num.trim()));
+                    }
                 }
             }
         }
@@ -180,6 +188,7 @@ class BaseTestParserImpl {
         descriptor.recordExpectedViolations(
             expectedProblems,
             expectedLineNumbers,
+            expectedEndLineNumbers,
             expectedMessages
         );
 

@@ -124,7 +124,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         // or a compile-time constant string to not require a guard
         int messageArg = getMessageArgIndex(node);
         ASTExpression messageExpr = node.getArguments().get(messageArg);
-        if (!isDirectAccess(messageExpr) && !messageExpr.isCompileTimeConstant()) {
+        if (!isDirectAccess(messageExpr) && !messageExpr.getConstFoldingResult().hasValue()) {
             return true;
         }
 
