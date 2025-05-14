@@ -135,6 +135,55 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.openrewrite.maven</groupId>
+                    <artifactId>rewrite-maven-plugin</artifactId>
+                    <version>6.8.0</version>
+                    <configuration>
+                        <activeRecipes>
+                            <!-- <recipe>org.openrewrite.java.recipes.JavaRecipeBestPractices</recipe> -->
+                            <!-- <recipe>org.openrewrite.java.recipes.RecipeNullabilityBestPractices</recipe> -->
+                            <!-- <recipe>org.openrewrite.java.recipes.RecipeTestingBestPractices</recipe> -->
+                            <!-- <recipe>org.openrewrite.staticanalysis.CodeCleanup</recipe> -->
+                            <!-- <recipe>org.openrewrite.staticanalysis.CommonStaticAnalysis</recipe> -->
+                            <!-- <recipe>org.openrewrite.staticanalysis.FinalizeMethodArguments</recipe> -->
+                            <!-- <recipe>org.openrewrite.staticanalysis.RemoveUnusedLocalVariables</recipe> -->
+                            <!-- <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateFields</recipe> -->
+                            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>
+                        </activeRecipes>
+                        <exclusions>
+                            <exclusion>pmd-core/src/test/java/net/sourceforge/pmd/cpd/AnyCpdLexerTest.java</exclusion>
+                            <exclusion>pmd-java/src/test/java/javasymbols/testdata/Statics.java</exclusion>
+                            <exclusion>pmd-java/src/test/java/net/sourceforge/pmd/lang/java/metrics/testdata/MetricsVisitorTestData.java</exclusion>
+                            <exclusion>pmd-java/src/test/java/net/sourceforge/pmd/lang/java/rule/bestpractices/missingoverride/SuperclassWithPrivate.java</exclusion>
+                            <exclusion>pmd-java/src/test/java/net/sourceforge/pmd/lang/java/rule/codestyle/unnecessaryimport/package1/U.java</exclusion>
+                            <exclusion>pmd-java/src/test/java/net/sourceforge/pmd/lang/java/rule/performance/stringtostring/User.java</exclusion>
+                            <exclusion>pmd-java/src/test/java/net/sourceforge/pmd/lang/java/symbols/internal/TypeAnnotTestUtil.java</exclusion>
+                            <exclusion>pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/ast/jdkversiontests/private_method_in_inner_class_interface1.java</exclusion>
+                            <exclusion>pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/ast/jdkversiontests/private_method_in_inner_class_interface2.java</exclusion>
+                            <exclusion>pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/cpd/testdata/SimpleClass.java</exclusion>
+                            <exclusion>pmd-modelica/src/test/java/net/sourceforge/pmd/lang/modelica/resolver/ModelicaResolverTest.java</exclusion>
+                        </exclusions>
+                        <exportDatatables>true</exportDatatables>
+                        <failOnDryRunResults>true</failOnDryRunResults>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.openrewrite.recipe</groupId>
+                            <artifactId>rewrite-static-analysis</artifactId>
+                            <version>2.9.0</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>rewrite-maven-plugin</id>
+                            <goals>
+                                <goal>dryRun</goal>
+                            </goals>
+                            <phase>verify</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.antlr</groupId>
                     <artifactId>antlr4-maven-plugin</artifactId>
                     <version>${antlr.version}</version>
@@ -709,6 +758,10 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+            <groupId>org.openrewrite.maven</groupId>
+            <artifactId>rewrite-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
