@@ -5,10 +5,7 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -22,6 +19,7 @@ import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.StringUtil;
 
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
@@ -29,6 +27,10 @@ import picocli.CommandLine.ParameterException;
 @Command(name = "cpd", showDefaultValues = true,
     description = "Copy/Paste Detector - find duplicate code")
 public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> {
+
+
+    @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
+    FileCollectionOptions<CPDConfiguration> files = new FileCollectionOptions<>();
 
     @Option(names = { "--language", "-l" }, description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
             defaultValue = CPDConfiguration.DEFAULT_LANGUAGE, converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
@@ -41,6 +43,9 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     @Option(names = "--skip-duplicate-files",
             description = "Ignore multiple copies of files of the same name and length in comparison.")
     private boolean skipDuplicates;
+
+
+
 
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
@@ -85,12 +90,10 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             defaultValue = CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN)
     private String skipBlocksPattern;
 
-    @Option(names = "--exclude", arity = "1..*", description = "Files to be excluded from the analysis")
-    private List<Path> excludes = new ArrayList<>();
-
-    @Option(names = "--non-recursive", description = "Don't scan subdirectiories.")
-    private boolean nonRecursive;
-
+    @Override
+    protected FileCollectionOptions<CPDConfiguration> getFileCollectionOptions() {
+        return files;
+    }
 
     /**
      * Converts these parameters into a configuration.
@@ -103,7 +106,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     protected CPDConfiguration toConfiguration() {
         final CPDConfiguration configuration = new CPDConfiguration();
         setCommonConfigProperties(configuration);
-        configuration.setExcludes(excludes); // todo put that into common properties
+
         configuration.setIgnoreAnnotations(ignoreAnnotations);
         configuration.setIgnoreIdentifiers(ignoreIdentifiers);
         configuration.setIgnoreLiterals(ignoreLiterals);
@@ -111,17 +114,16 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         configuration.setIgnoreUsings(ignoreUsings);
         configuration.setOnlyRecognizeLanguage(language);
         configuration.setMinimumTileSize(minimumTokens);
-        configuration.collectFilesRecursively(!nonRecursive);
         configuration.setNoSkipBlocks(noSkipBlocks);
         configuration.setRendererName(rendererName);
         configuration.setSkipBlocksPattern(skipBlocksPattern);
         configuration.setSkipDuplicates(skipDuplicates);
-        configuration.setSourceEncoding(encoding.getEncoding());
 
         if (skipLexicalErrors) {
             configuration.getReporter().warn("--skip-lexical-errors is deprecated. Use --no-fail-on-error instead.");
             configuration.setFailOnError(false);
         }
+
 
         return configuration;
     }

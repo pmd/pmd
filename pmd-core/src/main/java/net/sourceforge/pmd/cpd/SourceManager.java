@@ -43,6 +43,10 @@ class SourceManager implements AutoCloseable {
         return textFiles;
     }
 
+    boolean isEmpty() {
+        return textFiles.isEmpty();
+    }
+
     /**
      * Load a textfile without caching it.
      */

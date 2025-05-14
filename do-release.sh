@@ -320,9 +320,9 @@ echo
 echo "Continuing with release of pmd-cli and pmd-dist..."
 echo "Before proceeding however, wait another 10 minutes, so that the freshly released artefacts"
 echo "are indeed available from maven central. The GitHub runners might not yet see them..."
-echo "If that happens, the build job needs to be started again, maybe the runner cache needs to be cleared as well."
+echo "If that happens, the old-build job needs to be started again, maybe the runner cache needs to be cleared as well."
 echo
-echo "Go to <https://github.com/pmd/pmd/actions/workflows/build.yml> and manually trigger a new build"
+echo "Go to <https://github.com/pmd/pmd/actions/workflows/old-build.yml> and manually trigger a new old-build job"
 echo "from tag 'pmd_releases/${RELEASE_VERSION}' and with option 'Build only modules cli and dist' checked."
 echo
 echo "This triggers the second stage release and eventually publishes the release on GitHub."

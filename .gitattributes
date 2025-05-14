@@ -12,3 +12,6 @@ mvnw.cmd text eol=crlf
 *.jpg   -text
 *.svgz  -text
 *.jar   -text
+# always use LF for pom.xml to be able to reuse github action caching
+# see .github/workflows/build.yml
+pom.xml text eol=lf

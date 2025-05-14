@@ -41,6 +41,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
@@ -77,7 +78,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     }
 
     private List<String> rulesets;
-    
+
 
     private String format;
 
@@ -102,6 +103,10 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     private boolean noCache;
 
     private boolean showProgressBar;
+
+
+    @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
+    FileCollectionOptions<PMDConfiguration> files = new FileCollectionOptions<>();
 
     @Option(names = { "--rulesets", "-R" },
                description = "Path to a ruleset xml file. "
@@ -212,6 +217,12 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.showProgressBar = showProgressBar;
     }
 
+
+    @Override
+    protected FileCollectionOptions<PMDConfiguration> getFileCollectionOptions() {
+        return files;
+    }
+
     /**
      * Converts these parameters into a configuration.
      *
@@ -224,7 +235,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         final PMDConfiguration configuration = new PMDConfiguration();
         setCommonConfigProperties(configuration);
         configuration.setReportFormat(format);
-        configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportProperties(properties);
         configuration.setRuleSets(rulesets);
@@ -232,6 +242,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         configuration.setSuppressMarker(suppressMarker);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
+        configuration.setThreads(threads);
 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);

@@ -77,6 +77,7 @@ final class TokenFileSet {
     int countDupTokens(SmallTokenEntry fst, SmallTokenEntry snd, int offset) {
         checkState(CpdState.MATCHING, "countDupTokens");
 
+        // todo in Java 9+, use Arrays.mismatch, which is intrinsified.
         int[] f1 = files.get(fst.fileId).identifiers;
         int[] f2 = files.get(snd.fileId).identifiers;
         final int i1 = fst.indexInFile + offset;

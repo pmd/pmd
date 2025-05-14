@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -34,6 +35,7 @@ import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.event.Level;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
@@ -245,6 +247,51 @@ class CpdAnalysisTest {
         verify(reporter).logEx(eq(Level.ERROR), eq("Skipping file"), any(), any(MalformedSourceException.class));
         verifyNoMoreInteractions(reporter);
     }
+
+    @Test
+    void reportToNonExistentFile(@TempDir Path tmpDir) throws IOException {
+        Path reportFile = tmpDir.resolve("cpd.txt");
+        assertFalse(Files.exists(reportFile), "Report file " + reportFile + " should not exist");
+
+        testReportFile(reportFile);
+    }
+
+    @Test
+    void reportToExistingFileShouldOverwrite(@TempDir Path tmpDir) throws IOException {
+        Path reportFile = tmpDir.resolve("cpd.txt");
+        assertFalse(Files.exists(reportFile), "Report file " + reportFile + " should not exist");
+        final String sentinel = "EMPTY_FILE";
+        Files.write(reportFile, sentinel.getBytes());
+        assertTrue(Files.exists(reportFile), "Report file " + reportFile + " should have been created");
+
+        String reportContents = testReportFile(reportFile);
+        assertThat(reportContents, not(containsString(sentinel)));
+    }
+
+    private String testReportFile(Path reportFile) throws IOException {
+        PmdReporter reporter = mock(PmdReporter.class);
+        config.setReporter(reporter);
+        config.setRendererName("text");
+        config.setReportFile(reportFile);
+
+        Path dup1 = Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup1.txt");
+        Path dup2 = Paths.get("./" + BASE_TEST_RESOURCE_PATH, "dup2.txt");
+
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+            assertTrue(cpd.files().addFile(dup2));
+            assertTrue(cpd.files().addFile(dup1));
+            cpd.performAnalysis();
+        }
+
+        assertTrue(Files.exists(reportFile), "Report file " + reportFile + " should have been created");
+
+        String reportContents = IOUtil.readFileToString(reportFile.toFile());
+        assertThat(reportContents, containsString("duplication in the following files"));
+        assertThat(reportContents, containsString(dup1.toAbsolutePath().normalize().toString()));
+        assertThat(reportContents, containsString(dup2.toAbsolutePath().normalize().toString()));
+        return reportContents;
+    }
+
 
     @Test
     void testSkipLexicalErrors() throws IOException {
