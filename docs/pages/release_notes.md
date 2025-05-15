@@ -28,6 +28,8 @@ This is a {{ site.pmd.release_type }} release.
 
 * core
     * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
+* java-errorprone
+  * [#5702](https://github.com/pmd/pmd/issues/5702): \[java] InvalidLogMessageFormat: Lombok @<!-- -->Slf4j annotation is not interpreted by PMD
 
 ### 🚨 API Changes
 
