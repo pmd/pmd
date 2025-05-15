@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * </pre>
  */
-public final class ASTLambdaExpression extends AbstractJavaExpr implements FunctionalExpression {
+public final class ASTLambdaExpression extends AbstractJavaExpr implements FunctionalExpression, ReturnScopeNode {
 
     private JMethodSig functionalMethod;
 
@@ -110,6 +110,15 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     public @Nullable ASTBlock getBlockBody() {
         return AstImplUtil.getChildAs(this, 1, ASTBlock.class);
     }
+
+    /**
+     * Returns the body of this lambda if it is a block.
+     */
+    @Override
+    public @Nullable ASTBlock getBody() {
+        return getBlockBody();
+    }
+
 
     /**
      * Returns the body of this lambda if it is an expression.
