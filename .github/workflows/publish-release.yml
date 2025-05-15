@@ -1,0 +1,525 @@
+name: Publish Release
+
+on:
+  workflow_run:
+    workflows: [Build Release]
+    types:
+      - completed
+    branches:
+      - '**'
+  workflow_dispatch:
+    inputs:
+      build_cli_dist_only:
+        description: "Build only modules cli and dist"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read # to fetch code (actions/checkout)
+
+env:
+  LANG: 'en_US.UTF-8'
+
+jobs:
+  check-version:
+    # only run in the official pmd/pmd repo, where we have access to the secrets and not on forks
+    # and only run for _successful_ push workflow runs on tags.
+    if: ${{ github.repository == 'pmd/pmd'
+      && contains(fromJSON('["push", "workflow_dispatch"]'), github.event.workflow_run.event)
+      && github.event.workflow_run.head_branch != main
+      && github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      PMD_VERSION: ${{ steps.version.outputs.PMD_VERSION }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_branch }}
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'maven'
+      - name: Determine Version
+        id: version
+        env:
+          REF: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          if ! git show-ref --exists "refs/tags/$REF"; then
+            echo "::error ::Tag $REF does not exist, aborting."
+            exit 1
+          fi
+          
+          PMD_VERSION=$(./mvnw --batch-mode --no-transfer-progress help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Determined PMD_VERSION=$PMD_VERSION"
+          if [[ "$PMD_VERSION" = *-SNAPSHOT ]]; then
+            echo "::error ::PMD_VERSION=$PMD_VERSION is a snapshot version, aborting."
+            exit 1
+          fi
+          echo "PMD_VERSION=$PMD_VERSION" >> "$GITHUB_OUTPUT"
+      - name: Add Job Summary
+        env:
+          WORKFLOW_RUN_DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
+          WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
+          WORKFLOW_RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+          WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+          VERSION: ${{ steps.version.outputs.PMD_VERSION }}
+          TAG: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          echo "### Run Info" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Building Version: ${VERSION}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Tag: ${TAG}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Called by [${WORKFLOW_RUN_DISPLAY_TITLE} (${WORKFLOW_RUN_NAME} #${WORKFLOW_RUN_NUMBER})](${WORKFLOW_RUN_HTML_URL})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+
+  deploy-to-maven-central:
+    needs: [check-version]
+    # use environment maven-central, where secrets are configured for OSSRH_*
+    environment:
+      name: maven-central
+      url: https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          server-id: ossrh
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+          gpg-private-key: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+      - name: Build and publish
+        env:
+          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
+          BUILD_CLI_DIST_ONLY: ${{ inputs.build_cli_dist_only }}
+        # note: we can't use artifact staging-repository, as the jars are unsigned and javadoc+sources are missing.
+        run: |
+          # make sure, BUILD_CLI_DIST_ONLY is set to false by default
+          : "${BUILD_CLI_DIST_ONLY:=false}"
+          echo "BUILD_CLI_DIST_ONLY=${BUILD_CLI_DIST_ONLY}"
+          # There are two possible release builds:
+          if [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
+            # a) everything without pmd-cli and pmd-dist
+            BUILD_CLI_DIST_MAVEN_OPTION="-Dskip-cli-dist"
+          else
+            # b) only pmd-cli and pmd-dist
+            BUILD_CLI_DIST_MAVEN_OPTION="-pl pmd-cli,pmd-dist"
+          fi
+          
+          ./mvnw --show-version --errors --batch-mode \
+            deploy \
+            -DskipTests \
+            ${BUILD_CLI_DIST_MAVEN_OPTION} \
+            -PfastSkip,sign,pmd-release -Dcyclonedx.skip=false
+
+  deploy-to-sourceforge-files:
+    needs: [check-version, deploy-to-maven-central]
+    if: ${{ inputs.build_cli_dist_only == true }}
+    # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS and PMD_SF_APIKEY
+    environment:
+      name: sourceforge
+      url: ${{ steps.upload.outputs.url_output }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: docs-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: docs
+
+      - name: Setup GPG
+        env:
+          PMD_CI_GPG_PRIVATE_KEY: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+        run: |
+          mkdir -p "${HOME}/.gpg"
+          chmod 700 "${HOME}/.gpg"
+          printenv PMD_CI_GPG_PRIVATE_KEY | gpg --batch --import
+
+          gpg --list-keys --fingerprint --keyid-format=long
+          gpg --list-secret-keys --fingerprint --keyid-format=long
+
+      - name: Setup ssh key for sourceforge
+        env:
+          WEB_SF_DEPLOY_KEY: ${{ secrets.PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY }}
+          WEB_SF_KNOWN_HOSTS: ${{ vars.PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS }}
+        run: |
+          mkdir -p "${HOME}/.ssh"
+          chmod 700 "${HOME}/.ssh"
+          printenv WEB_SF_DEPLOY_KEY > "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+          chmod 600 "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+          echo "
+          Host web.sourceforge.net
+              IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
+          " > "$HOME/.ssh/config"
+          echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+
+      - name: Create docs zip
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+        run: |
+          mv docs "pmd-doc-${PMD_VERSION}"
+          zip -qr "dist/pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
+
+      - name: Sign files
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
+        run: |
+          cd dist
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-bin.zip"
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-src.zip"
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-doc.zip"
+
+      - name: Upload to sourceforge
+        id: upload
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_SF_USER: adangel
+        run: |
+          # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
+          basePath="pmd/${PMD_VERSION}"
+          uploadUrl="${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/${basePath}/"
+
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-bin.zip"        "${uploadUrl}"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-bin.zip.asc"    "${uploadUrl}"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-src.zip"        "${uploadUrl}"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-src.zip.asc"    "${uploadUrl}"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-doc.zip"        "${uploadUrl}"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-doc.zip.asc"    "${uploadUrl}"
+          rsync -avh "dist/pmd-${PMD_VERSION}-cyclonedx.xml"       "${uploadUrl}"
+          rsync -avh "dist/pmd-${PMD_VERSION}-cyclonedx.json"      "${uploadUrl}"
+          rsync -avh "pmd-doc-${PMD_VERSION}/pmd_release_notes.md" "${uploadUrl}/ReadMe.md"
+
+          targetUrl="https://sourceforge.net/projects/pmd/files/${basePath}"
+          echo "TargetUrl: ${targetUrl}"
+          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
+
+      - name: Select latest release as default on sourceforge
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_SF_APIKEY: ${{ secrets.PMD_SF_APIKEY }}
+        run: |
+          #
+          # Select the given version as the new default download.
+          #
+          # https://sourceforge.net/p/forge/documentation/Using%20the%20Release%20API/
+          # https://sourceforge.net/projects/pmd/best_release.json
+          #
+          curl -H "Accept: application/json" \
+              -X PUT \
+              -d "api_key=${PMD_SF_APIKEY}" \
+              -d "default=windows&default=mac&default=linux&default=bsd&default=solaris&default=others" \
+              "https://sourceforge.net/projects/pmd/files/pmd/${PMD_VERSION}/pmd-dist-${PMD_VERSION}-bin.zip"
+
+      - name: Cleanup ssh and gpg
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.ssh"
+          rm -rf "${HOME}/.gpg"
+
+  deploy-to-sourceforge-io:
+    needs: [check-version, deploy-to-maven-central]
+    if: ${{ inputs.build_cli_dist_only == true }}
+    # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
+    environment:
+      name: sourceforge
+      url: ${{ steps.upload.outputs.url_output }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: docs-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: docs
+
+      - name: Setup ssh key for sourceforge
+        env:
+          WEB_SF_DEPLOY_KEY: ${{ secrets.PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY }}
+          WEB_SF_KNOWN_HOSTS: ${{ vars.PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS }}
+        run: |
+          mkdir -p "${HOME}/.ssh"
+          chmod 700 "${HOME}/.ssh"
+          printenv WEB_SF_DEPLOY_KEY > "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+          chmod 600 "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+          echo "
+          Host web.sourceforge.net
+              IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
+          " > "$HOME/.ssh/config"
+          echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+
+      - name: Upload to sourceforge
+        id: upload
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_SF_USER: adangel
+        run: |
+          rsync -ah --stats --delete "docs/" "${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${PMD_VERSION}/"
+          echo "url_output=https://pmd.sourceforge.io/pmd-${PMD_VERSION}/" >> "$GITHUB_OUTPUT"
+
+      - name: Cleanup ssh
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.ssh"
+
+  deploy-to-pmd-code-doc:
+    needs: [check-version, deploy-to-maven-central]
+    if: ${{ inputs.build_cli_dist_only == true }}
+    # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
+    # and PMD_CODE_ORG_KNOWN_HOSTS
+    environment:
+      name: pmd-code
+      url: ${{ steps.upload.outputs.url_output }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: docs-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: docs
+
+      - name: Setup ssh key for pmd-code
+        env:
+          PMD_CODE_ORG_DEPLOY_KEY: ${{ secrets.PMD_CODE_ORG_DEPLOY_KEY }}
+          PMD_CODE_ORG_KNOWN_HOSTS: ${{ vars.PMD_CODE_ORG_KNOWN_HOSTS }}
+        run: |
+          mkdir -p "${HOME}/.ssh"
+          chmod 700 "${HOME}/.ssh"
+          printenv PMD_CODE_ORG_DEPLOY_KEY > "${HOME}/.ssh/pmd-code.org_deploy_key"
+          chmod 600 "${HOME}/.ssh/pmd-code.org_deploy_key"
+          echo "
+          Host pmd-code.org
+              IdentityFile=$HOME/.ssh/pmd-code.org_deploy_key
+          " > "$HOME/.ssh/config"
+          echo "${PMD_CODE_ORG_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+
+      - name: Create docs zip
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+        run: |
+          mv docs "pmd-doc-${PMD_VERSION}"
+          zip -qr "pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
+
+      - name: Upload to pmd-code.org
+        id: upload
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_CODE_SSH_USER: pmd
+          PMD_CODE_DOCS_PATH: /docs.pmd-code.org/
+        run: |
+          filename="pmd-dist-${PMD_VERSION}-doc.zip"
+          
+          scp "${filename}" ${PMD_CODE_SSH_USER}@pmd-code.org:${PMD_CODE_DOCS_PATH}
+          # shellcheck disable=SC2029
+          ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                  ( test -h pmd-doc-${PMD_VERSION} && rm pmd-doc-${PMD_VERSION} || true ) && \
+                  unzip -qo \"${filename}\" && \
+                  rm \"${filename}\""
+
+          # only for release builds: https://docs.pmd-code.org/latest -> pmd-doc-${PMD_VERSION}
+          # shellcheck disable=SC2029
+          ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                  rm -f \"latest\" && \
+                  ln -s \"pmd-doc-${PMD_VERSION}\" \"snapshot\""
+
+          targetUrl="https://docs.pmd-code.org/pmd-doc-${PMD_VERSION}/"
+          echo "TargetUrl: ${targetUrl}"
+          echo "url_output=${targetUrl}" >> "$GITHUB_OUTPUT"
+
+          # remove old snapshot doc and point to the new version
+          # shellcheck disable=SC2029
+          ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                  rm -rf \"pmd-doc-${PMD_VERSION}-SNAPSHOT/\" && \
+                  ln -s \"pmd-doc-${PMD_VERSION}\" \"pmd-doc-${PMD_VERSION}-SNAPSHOT\""
+          echo "Symlink created: https://docs.pmd-code.org/pmd-doc-${PMD_VERSION}-SNAPSHOT/ -> https://docs.pmd-code.org/pmd-doc-${PMD_VERSION}/"
+
+      - name: Cleanup ssh
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.ssh"
+
+  deploy-to-pmd-code-javadoc:
+    needs: [check-version, deploy-to-maven-central]
+    if: ${{ inputs.build_cli_dist_only == true }}
+    # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
+    # and PMD_CODE_ORG_KNOWN_HOSTS
+    environment:
+      name: pmd-code
+      url: https://docs.pmd-code.org/apidocs/
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: javadocs-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Setup ssh key for pmd-code
+        env:
+          PMD_CODE_ORG_DEPLOY_KEY: ${{ secrets.PMD_CODE_ORG_DEPLOY_KEY }}
+          PMD_CODE_ORG_KNOWN_HOSTS: ${{ vars.PMD_CODE_ORG_KNOWN_HOSTS }}
+        run: |
+          mkdir -p "${HOME}/.ssh"
+          chmod 700 "${HOME}/.ssh"
+          printenv PMD_CODE_ORG_DEPLOY_KEY > "${HOME}/.ssh/pmd-code.org_deploy_key"
+          chmod 600 "${HOME}/.ssh/pmd-code.org_deploy_key"
+          echo "
+          Host pmd-code.org
+              IdentityFile=$HOME/.ssh/pmd-code.org_deploy_key
+          " > "$HOME/.ssh/config"
+          echo "${PMD_CODE_ORG_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+
+      - name: Upload javadocs to pmd-code.org
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          PMD_CODE_SSH_USER: pmd
+          PMD_CODE_DOCS_PATH: /docs.pmd-code.org/
+        run: |
+          for moduleJavadocJar in */target/*-javadoc.jar */*/target/*-javadoc.jar; do
+              moduleJavadocJarBasename="$(basename "$moduleJavadocJar")"
+              module=${moduleJavadocJarBasename%%-${PMD_VERSION}-javadoc.jar}
+          
+              echo "Copying module ${moduleJavadocJar}..."
+              scp "$moduleJavadocJar" ${PMD_CODE_SSH_USER}@pmd-code.org:${PMD_CODE_DOCS_PATH}
+              echo "Extracting remotely ${module}..."
+              # shellcheck disable=SC2029
+              ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                      mkdir -p \"apidocs/${module}/${PMD_VERSION}\" && \
+                      unzip -qo -d \"apidocs/${module}/${PMD_VERSION}\" \"${moduleJavadocJarBasename}\" && \
+                      rm \"${moduleJavadocJarBasename}\""
+          done
+
+          # remove old snapshot javadoc
+          # shellcheck disable=SC2029
+          ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                rm -rf apidocs/*/\"${PMD_VERSION}-SNAPSHOT\""
+
+          echo "(Re)creating .htaccess"
+          # make sure https://docs.pmd-code.org/apidocs/ shows directory index
+          # shellcheck disable=SC2029
+          ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}/apidocs\" && \
+              echo 'Options +Indexes' > .htaccess"
+
+      - name: Cleanup ssh
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.ssh"
+
+  github-release:
+    # github release only for releases
+    pmd_ci_gh_releases_updateRelease "$GH_RELEASE" "$release_name" "${rendered_release_notes}"
+    # Deploy to github releases
+    pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-bin.zip"
+    pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-src.zip"
+    # Deploy SBOM
+    pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.xml"
+    pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-${PMD_CI_MAVEN_PROJECT_VERSION}-cyclonedx.json"
+    # Deploy signatures
+    pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-bin.zip.asc"
+    pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "pmd-dist/target/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-src.zip.asc"
+
+    pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip"
+    pmd_ci_gh_releases_uploadAsset "$GH_RELEASE" "docs/pmd-dist-${PMD_CI_MAVEN_PROJECT_VERSION}-doc.zip.asc"
+
+  create-sourceforge-blog-post:
+    local rendered_release_notes_with_links
+    rendered_release_notes_with_links="
+  *   Downloads: https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${PMD_CI_MAVEN_PROJECT_VERSION}
+  *   Documentation: https://docs.pmd-code.org/pmd-doc-${PMD_CI_MAVEN_PROJECT_VERSION}/
+
+  ${rendered_release_notes}"
+  pmd_ci_sourceforge_createDraftBlogPost "${release_name} released" "${rendered_release_notes_with_links}" "pmd,release"
+  SF_BLOG_URL="${RESULT}"
+
+  create-regression-tester-baseline:
+    # create a baseline for snapshot builds (when pmd-dist is built)
+    # or for release builds for case b) when pmd-cli/pmd-dist is released
+    if pmd_ci_maven_isSnapshotBuild || [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
+    pmd_ci_log_group_start "Creating new baseline for regression tester"
+    regression_tester_setup_ci
+    regression_tester_uploadBaseline
+    pmd_ci_log_group_end
+    fi
+
+  create-docker:
+    # Trigger docker workflow to build new images for release builds
+    # but only for case b) pmd-cli/pmd-dist release
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
+    pmd_ci_log_group_start "Trigger docker workflow"
+    # split semantic version by dot
+    IFS="." read -ra VERSION_ARRAY <<< "${PMD_CI_MAVEN_PROJECT_VERSION}"
+    all_tags=""
+    new_tag=""
+    for i in "${VERSION_ARRAY[@]}"; do
+    if [ -z "$new_tag" ]; then
+    new_tag="${i}"
+    else
+    new_tag="${new_tag}.${i}"
+    fi
+    all_tags="${all_tags}${new_tag},"
+    done
+    all_tags="${all_tags}latest"
+    echo "version: ${PMD_CI_MAVEN_PROJECT_VERSION}"
+    echo "tags: ${all_tags}"
+
+    GH_TOKEN="${PMD_ACTIONS_HELPER_TOKEN}" \
+    gh api \
+    --method POST \
+    -H "Accept: application/vnd.github+json" \
+    -H "X-GitHub-Api-Version: 2022-11-28" \
+    /repos/pmd/docker/actions/workflows/publish-docker-image.yaml/dispatches \
+    -f "ref=main" -f "inputs[version]=${PMD_CI_MAVEN_PROJECT_VERSION}" -f "inputs[tags]=${all_tags}"
+    pmd_ci_log_group_end
+    fi
