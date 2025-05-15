@@ -27,7 +27,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 
 * core
-    * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
+  * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
 * java-errorprone
   * [#5702](https://github.com/pmd/pmd/issues/5702): \[java] InvalidLogMessageFormat: Lombok @<!-- -->Slf4j annotation is not interpreted by PMD
 
@@ -35,6 +35,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis - [Elliotte Rusty Harold](https://github.com/elharo) (@elharo)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
