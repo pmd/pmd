@@ -800,6 +800,8 @@
                             <goal>makeAggregateBom</goal>
                         </goals>
                         <configuration>
+                            <!-- to be removed when https://github.com/CycloneDX/cyclonedx-maven-plugin/issues/597 is fixed-->
+                            <skipNotDeployed>false</skipNotDeployed>
                             <!-- PMD is released in two phases: first everything without pmd-cli/pmd-dist
                                  (profile cli-dist-modules disabled), and then only pmd-cli/pmd-dist.
                                  The BOM for the main artifact net.sourceforge.pmd:pmd is created and published
