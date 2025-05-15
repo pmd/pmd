@@ -10,15 +10,27 @@ last_updated: May 2025 (7.14.0)
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
 
-## Build
+## Build, Build Pull Request, Build Snapshot
 
-* Builds: <https://github.com/pmd/pmd/actions/workflows/build.yml>
-* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml>
+"Build" itself is a [reuseable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows),
+that is called by "Build Pull Request" and "Build Snapshot".
 
-This workflow is triggered whenever new commits are pushed to a branch (including the default branch and
-including forks) or whenever a pull request is created or synchronized.
+* Workflow files:
+  * <https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml>
+  * <https://github.com/pmd/pmd/blob/main/.github/workflows/build-pr.yml>
+  * <https://github.com/pmd/pmd/blob/main/.github/workflows/build-snapshot.yml>
+* Builds:
+  * Build Pull Request: <https://github.com/pmd/pmd/actions/workflows/build-pr.yml>
+  * Build Snapshot: <https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml>
+
+All these workflows execute exactly the same steps. But only the triggering event is different.
 It is designed to run on the main repository in PMD's GitHub organization as well as for forks, as it does
 not require any secrets.
+
+"Build Pull Request" is triggered, whenever a pull request is created or synchronized.
+
+"Build Snapshot" is triggered, whenever new commits are pushed to a branch (including the default branch and
+including forks).
 
 In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
 the current branch or pull request when a new commit has been pushed. This means, only the latest commit is built,
@@ -71,7 +83,7 @@ The jobs are:
 * Builds: <https://github.com/pmd/pmd/actions/workflows/publish-pull-requests.yml>
 * Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-pull-requests.yml>
 
-This workflow runs after "Build" on a pull request is completed. It runs in the context of our own
+This workflow runs after "Build Pull Request", when it is completed. It runs in the context of our own
 repository and has write permissions and complete access to the configured secrets.
 For security reasons, this workflow won't check out the pull request code and won't build anything.
 
@@ -108,7 +120,6 @@ This workflow is in that sense optional, as the docs-artifact and pmd-regression
 be manually downloaded from the "Pull Request Build" workflow run. It merely adds convenience by
 giving easy access to a preview of the documentation and to the regression tester results.
 
-<<<<<<< HEAD
 In the end, this workflow adds additional links to a pull request page. For the comment, GitHub seems
 to automatically add "rel=nofollow" to the links in the text. This is also applied for the check status
 pages. However, the links in the commit status are plain links. This might lead to unnecessary
@@ -130,7 +141,7 @@ crawling side.
 * Builds: <https://github.com/pmd/pmd/actions/workflows/publish-snapshot.yml>
 * Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-snapshot.yml>
 
-This runs after "Build" of a push on the `main` branch is finished.
+This runs after "Build Snapshot" of a push on the `main` branch is finished.
 It runs in the context of our own repository and has access to all secrets. In order
 to have a nicer display in GitHub actions, we leverage "environments", which also
 contain secrets.
