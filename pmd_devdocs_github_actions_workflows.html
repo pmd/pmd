@@ -2021,17 +2021,35 @@ This page gives an overview of how these workflows work and how to use them.
 This page is work in progress and does not yet describe all workflows.</p>
 </div>
 
-<h2 id="build">Build</h2>
+<h2 id="build-build-pull-request-build-snapshot">Build, Build Pull Request, Build Snapshot</h2>
+
+<p>“Build” itself is a <a href="https://docs.github.com/en/actions/sharing-automations/reusing-workflows">reuseable workflow</a>,
+that is called by “Build Pull Request” and “Build Snapshot”.</p>
 
 <ul>
-  <li>Builds: <a href="https://github.com/pmd/pmd/actions/workflows/build.yml">https://github.com/pmd/pmd/actions/workflows/build.yml</a></li>
-  <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml</a></li>
+  <li>Workflow files:
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml</a></li>
+      <li><a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build-pr.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build-pr.yml</a></li>
+      <li><a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build-snapshot.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build-snapshot.yml</a></li>
+    </ul>
+  </li>
+  <li>Builds:
+    <ul>
+      <li>Build Pull Request: <a href="https://github.com/pmd/pmd/actions/workflows/build-pr.yml">https://github.com/pmd/pmd/actions/workflows/build-pr.yml</a></li>
+      <li>Build Snapshot: <a href="https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml">https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml</a></li>
+    </ul>
+  </li>
 </ul>
 
-<p>This workflow is triggered whenever new commits are pushed to a branch (including the default branch and
-including forks) or whenever a pull request is created or synchronized.
+<p>All these workflows execute exactly the same steps. But only the triggering event is different.
 It is designed to run on the main repository in PMD’s GitHub organization as well as for forks, as it does
 not require any secrets.</p>
+
+<p>“Build Pull Request” is triggered, whenever a pull request is created or synchronized.</p>
+
+<p>“Build Snapshot” is triggered, whenever new commits are pushed to a branch (including the default branch and
+including forks).</p>
 
 <p>In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
 the current branch or pull request when a new commit has been pushed. This means, only the latest commit is built,
@@ -2093,7 +2111,7 @@ dependencies. It produces the artifact “pmd-regression-tester” with the regr
   <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/publish-pull-requests.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/publish-pull-requests.yml</a></li>
 </ul>
 
-<p>This workflow runs after “Build” on a pull request is completed. It runs in the context of our own
+<p>This workflow runs after “Build Pull Request”, when it is completed. It runs in the context of our own
 repository and has write permissions and complete access to the configured secrets.
 For security reasons, this workflow won’t check out the pull request code and won’t build anything.</p>
 
@@ -2132,8 +2150,7 @@ to create or update a comment on the pull request which shows the regression tes
 be manually downloaded from the “Pull Request Build” workflow run. It merely adds convenience by
 giving easy access to a preview of the documentation and to the regression tester results.</p>
 
-<p>«««&lt; HEAD
-In the end, this workflow adds additional links to a pull request page. For the comment, GitHub seems
+<p>In the end, this workflow adds additional links to a pull request page. For the comment, GitHub seems
 to automatically add “rel=nofollow” to the links in the text. This is also applied for the check status
 pages. However, the links in the commit status are plain links. This might lead to unnecessary
 crawling by search engines. To avoid this, the following robots.txt is used
@@ -2155,7 +2172,7 @@ crawling side.</p>
   <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/publish-snapshot.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/publish-snapshot.yml</a></li>
 </ul>
 
-<p>This runs after “Build” of a push on the <code class="language-plaintext highlighter-rouge">main</code> branch is finished.
+<p>This runs after “Build Snapshot” of a push on the <code class="language-plaintext highlighter-rouge">main</code> branch is finished.
 It runs in the context of our own repository and has access to all secrets. In order
 to have a nicer display in GitHub actions, we leverage “environments”, which also
 contain secrets.</p>
@@ -2178,7 +2195,7 @@ gpg-signs the files and uploads them to <a href="https://sourceforge.net/project
     <ul>
       <li>Environment: sourceforge</li>
       <li>Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY</li>
-      <li>Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS</li>
+      <li>Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS, PMD_GIT_CODE_SF_NET_KNOWN_HOSTS</li>
     </ul>
   </li>
   <li>deploy-to-sourceforge-io: Uploads the documentation page to be hosted at
@@ -2363,7 +2380,7 @@ The token can be configured here: <a href="https://sonarcloud.io/account/securit
 <ul>
   <li>
     <p><code class="language-plaintext highlighter-rouge">PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY</code>: The private ssh key used to access web.sourceforge.net to
-upload files and web pages.<br />
+upload files and web pages. It is also used to push to sourceforge’s git repository at “git.code.sf.net”.<br />
 It is created with <code class="language-plaintext highlighter-rouge">ssh-keygen -t ed25519 -C "ssh key for pmd. used for github actions push to web.sourceforge.net" -f web.sourceforge.net_deploy_key</code>.<br />
 You need to configure the public key part here: <a href="https://sourceforge.net/auth/shell_services">https://sourceforge.net/auth/shell_services</a>. The user is your
 sourceforge user id.<br />
@@ -2402,6 +2419,25 @@ to create new blog entries. The token is created at <a href="https://sourceforge
 web.sourceforge.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA2uifHZbNexw6cXbyg1JnzDitL5VhYs0E65Hk/tLAPmcmm5GuiGeUoI/B0eUSNFsbqzwgwrttjnzKMKiGLN5CWVmlN1IXGGAfLYsQwK6wAu7kYFzkqP4jcwc5Jr9UPRpJdYIK733tSEmzab4qc5Oq8izKQKIaxXNe7FgmL15HjSpatFt9w/ot/CHS78FUAr3j3RwekHCm/jhPeqhlMAgC+jUgNJbFt3DlhDaRMa0NYamVzmX8D47rtmBbEDU3ld6AezWBPUR5Lh7ODOwlfVI58NAf/aYNlmvl2TZiauBCTa7OPYSyXJnIPbQXg6YQlDknNCr0K769EjeIlAfY87Z4tw==
 web.sourceforge.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCwsY6sZT4MTTkHfpRzYjxG7mnXrGL74RCT2cO/NFvRrZVNB5XNwKNn7G5fHbYLdJ6UzpURDRae1eMg92JG0+yo=
 web.sourceforge.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOQD35Ujalhh+JJkPvMckDlhu4dS7WH6NsOJ15iGCJLC
+</code></pre></div></div>
+
+<p>Another variable <code class="language-plaintext highlighter-rouge">PMD_GIT_CODE_SF_NET_KNOWN_HOSTS</code> contains the known_hosts for “git.code.sf.net”:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#
+# git.code.sf.net (https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
+#
+# ssh-keyscan git.code.sf.net | tee -a sf-git_known_hosts
+# ssh-keygen -F git.code.sf.net -l -f sf-git_known_hosts
+# # Host git.code.sf.net found: line 1 
+# git.code.sf.net RSA SHA256:3WhEqJaBPKb69eT5dfgYcPJTgqc9rq1Y9saZlXqkbWg
+# # Host git.code.sf.net found: line 2 
+# git.code.sf.net ECDSA SHA256:FeVkoYYBjuQzb5QVAgm3BkmeN5TTgL2qfmqz9tCPRL4
+# # Host git.code.sf.net found: line 3 
+# git.code.sf.net ED25519 SHA256:vDwNztsrZFViJXWpUTSKGo8cF6n79iKAURNiK68n/yE
+# ssh-keygen -F git.code.sf.net -f sf-git_known_hosts
+git.code.sf.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAoMesJ60dow5VqNsIqIQMBNmSYz6txSC5YSUXzPNWV4VIWTWdqbQoQuIu+oYGhBMoeaSWWCiVIDTwFDzQXrq8CwmyxWp+2TTuscKiOw830N2ycIVmm3ha0x6VpRGm37yo+z+bkQS3m/sE7bkfTU72GbeKufFHSv1VLnVy9nmJKFOraeKSHP/kjmatj9aC7Q2n8QzFWWjzMxVGg79TUs7sjm5KrtytbxfbLbKtrkn8OXsRy1ib9hKgOwg+8cRjwKbSXVrNw/HM+MJJWp9fHv2yzWmL8B6fKoskslA0EjNxa6d76gvIxwti89/8Y6xlhR0u65u1AiHTX9Q4BVsXcBZUDw==
+git.code.sf.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPAa5MFfMaXyT3Trf/Av/laAvIhUzZJUnvPZAd9AC6bKWAhVl+A3s2+M6SlhF/Tn/W0akN03GyNviBtqJKtx0RU=
+git.code.sf.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGObtXLh/mZom0pXjE5Mu211O+JvtzolqdNKVA+XJ466
 </code></pre></div></div>
 
 <h3 id="repository-pmdpmd---environment-pmd-code">Repository pmd/pmd - Environment “pmd-code”</h3>
