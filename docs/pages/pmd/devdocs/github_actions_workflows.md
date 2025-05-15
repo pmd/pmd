@@ -139,11 +139,11 @@ There is a first job "check-version" that just determines the version of PMD we 
 we are actually building a SNAPSHOT version. Then a couple of other jobs are being executed in parallel:
 
 * deploy-to-maven-central: Rebuilds PMD from branch main and deploys the snapshot artifacts to
-  <https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/>. Rebuilding is necessary in
-  order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the artifacts. This
-  is not available from the build artifacts of the "Build" workflow.
+  <https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/>.
+  Rebuilding is necessary in order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the
+  artifacts. This is not available from the build artifacts of the "Build" workflow.
   * Environment: maven-central
-  * Secrets: OSSRH_TOKEN, OSSRH_USERNAME
+  * Secrets: MAVEN_CENTRAL_PORTAL_USERNAME, MAVEN_CENTRAL_PORTAL_PASSWORD
 * deploy-to-sourceforge-files: Downloads the "dist-artifact" and "docs-artifact" from the "Build" workflow,
   gpg-signs the files and uploads them to <https://sourceforge.net/projects/pmd/files/pmd/>.
   * Environment: sourceforge
@@ -273,11 +273,9 @@ See <https://github.com/pmd/pmd-regression-tester/settings/secrets/actions>
 
 ### Repository pmd/pmd - Environment "maven-central"
 
-* `OSSRH_USERNAME` and `OSSRH_TOKEN`: Used to deploy artifacts to maven central via OSSRH to our namespace
-  [net.sourceforge.pmd](https://repo.maven.apache.org/maven2/net/sourceforge/pmd).  
-  Login on <https://oss.sonatype.org>, go to your user profile, select "User Token" and "Access User Token".
-  You'll see the tokens to be used for username and password.  
-  Note: This will soon be migrated to use <https://central.sonatype.com>.
+* `MAVEN_CENTRAL_PORTAL_USERNAME` and `MAVEN_CENTRAL_PORTAL_PASSWORD`: Used to deploy artifacts to maven
+  central via <https://central.sonatype.com>. See <https://central.sonatype.org/> for the documentation.
+  The upload uses token-based authentication, you can generate a user token on <https://central.sonatype.com/account>.
 
 ### Repository pmd/pmd - Environment "coveralls"
 * `COVERALLS_REPO_TOKEN`: Used to upload coverage results to <https://coveralls.io/github/pmd/pmd>.
