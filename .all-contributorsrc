@@ -8094,6 +8094,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "elharo",
+      "name": "Elliotte Rusty Harold",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1005544?v=4",
+      "profile": "https://www.elharo.com/blog/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
