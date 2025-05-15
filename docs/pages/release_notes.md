@@ -30,7 +30,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#3184](https://github.com/pmd/pmd/issues/3184): \[apex] Prevent classes from shadowing System Namespace
 * java
   * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
-  * [#5702](https://github.com/pmd/pmd/issue/5702): \[java] Lombok `@Slf4j` annotation is not interpreted by PMD
+  * [#5702](https://github.com/pmd/pmd/issues/5702): \[java] InvalidLogMessageFormat: Lombok @<!-- -->Slf4j annotation is not interpreted by PMD
 * java-bestpractices
   * [#5687](https://github.com/pmd/pmd/issues/5687): \[java] UnusedPrivateMethodRule: exclude serialization method readObjectNoData()
 

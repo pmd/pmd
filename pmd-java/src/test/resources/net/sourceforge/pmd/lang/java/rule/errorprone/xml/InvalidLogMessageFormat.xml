@@ -1318,7 +1318,7 @@ public class InvalidLogMessageFormat{
     </test-code>
 
     <test-code>
-        <description>[java] False negative with Slf4j lombok annotation rule #3119</description>
+        <description>[java] InvalidLogMessageFormat: Lombok @Slf4j annotation is not interpreted by PMD #5702</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
             import lombok.extern.slf4j.Slf4j;
