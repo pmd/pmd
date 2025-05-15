@@ -31,7 +31,7 @@ jobs:
     - name: Setup ssh key for sourceforge
       env:
         WEB_SF_DEPLOY_KEY: ${{ secrets.PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY }}
-        WEB_SF_KNOWN_HOSTS: ${{ vars.PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS }}
+        GIT_CODE_SF_NET_KNOWN_HOSTS: ${{ vars.PMD_GIT_CODE_SF_NET_KNOWN_HOSTS }}
       run: |
         mkdir -p "${HOME}/.ssh"
         chmod 700 "${HOME}/.ssh"
@@ -41,7 +41,7 @@ jobs:
         Host git.code.sf.net
             IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
         " > "$HOME/.ssh/config"
-        echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+        echo "${GIT_CODE_SF_NET_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
     - name: Git Sync
       env:
         PMD_SF_USER: adangel

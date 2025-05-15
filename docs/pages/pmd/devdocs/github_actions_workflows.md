@@ -159,7 +159,7 @@ we are actually building a SNAPSHOT version. Then a couple of other jobs are bei
   gpg-signs the files and uploads them to <https://sourceforge.net/projects/pmd/files/pmd/>.
   * Environment: sourceforge
   * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
-  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
+  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS, PMD_GIT_CODE_SF_NET_KNOWN_HOSTS
 * deploy-to-sourceforge-io: Uploads the documentation page to be hosted at
   <https://pmd.sourceforge.io/snapshot>.
   * Environment: sourceforge
@@ -300,7 +300,7 @@ See <https://github.com/pmd/pmd-regression-tester/settings/secrets/actions>
 
 ### Repository pmd/pmd - Environment "sourceforge"
 * `PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY`: The private ssh key used to access web.sourceforge.net to
-  upload files and web pages.  
+  upload files and web pages. It is also used to push to sourceforge's git repository at "git.code.sf.net".  
   It is created with `ssh-keygen -t ed25519 -C "ssh key for pmd. used for github actions push to web.sourceforge.net" -f web.sourceforge.net_deploy_key`.  
   You need to configure the public key part here: <https://sourceforge.net/auth/shell_services>. The user is your
   sourceforge user id.  
@@ -337,6 +337,26 @@ This environment also has a variable, which is the known_hosts content as `PMD_W
 web.sourceforge.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA2uifHZbNexw6cXbyg1JnzDitL5VhYs0E65Hk/tLAPmcmm5GuiGeUoI/B0eUSNFsbqzwgwrttjnzKMKiGLN5CWVmlN1IXGGAfLYsQwK6wAu7kYFzkqP4jcwc5Jr9UPRpJdYIK733tSEmzab4qc5Oq8izKQKIaxXNe7FgmL15HjSpatFt9w/ot/CHS78FUAr3j3RwekHCm/jhPeqhlMAgC+jUgNJbFt3DlhDaRMa0NYamVzmX8D47rtmBbEDU3ld6AezWBPUR5Lh7ODOwlfVI58NAf/aYNlmvl2TZiauBCTa7OPYSyXJnIPbQXg6YQlDknNCr0K769EjeIlAfY87Z4tw==
 web.sourceforge.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCwsY6sZT4MTTkHfpRzYjxG7mnXrGL74RCT2cO/NFvRrZVNB5XNwKNn7G5fHbYLdJ6UzpURDRae1eMg92JG0+yo=
 web.sourceforge.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOQD35Ujalhh+JJkPvMckDlhu4dS7WH6NsOJ15iGCJLC
+```
+
+Another variable `PMD_GIT_CODE_SF_NET_KNOWN_HOSTS` contains the known_hosts for "git.code.sf.net":
+
+```
+#
+# git.code.sf.net (https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
+#
+# ssh-keyscan git.code.sf.net | tee -a sf-git_known_hosts
+# ssh-keygen -F git.code.sf.net -l -f sf-git_known_hosts
+# # Host git.code.sf.net found: line 1 
+# git.code.sf.net RSA SHA256:3WhEqJaBPKb69eT5dfgYcPJTgqc9rq1Y9saZlXqkbWg
+# # Host git.code.sf.net found: line 2 
+# git.code.sf.net ECDSA SHA256:FeVkoYYBjuQzb5QVAgm3BkmeN5TTgL2qfmqz9tCPRL4
+# # Host git.code.sf.net found: line 3 
+# git.code.sf.net ED25519 SHA256:vDwNztsrZFViJXWpUTSKGo8cF6n79iKAURNiK68n/yE
+# ssh-keygen -F git.code.sf.net -f sf-git_known_hosts
+git.code.sf.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAoMesJ60dow5VqNsIqIQMBNmSYz6txSC5YSUXzPNWV4VIWTWdqbQoQuIu+oYGhBMoeaSWWCiVIDTwFDzQXrq8CwmyxWp+2TTuscKiOw830N2ycIVmm3ha0x6VpRGm37yo+z+bkQS3m/sE7bkfTU72GbeKufFHSv1VLnVy9nmJKFOraeKSHP/kjmatj9aC7Q2n8QzFWWjzMxVGg79TUs7sjm5KrtytbxfbLbKtrkn8OXsRy1ib9hKgOwg+8cRjwKbSXVrNw/HM+MJJWp9fHv2yzWmL8B6fKoskslA0EjNxa6d76gvIxwti89/8Y6xlhR0u65u1AiHTX9Q4BVsXcBZUDw==
+git.code.sf.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPAa5MFfMaXyT3Trf/Av/laAvIhUzZJUnvPZAd9AC6bKWAhVl+A3s2+M6SlhF/Tn/W0akN03GyNviBtqJKtx0RU=
+git.code.sf.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGObtXLh/mZom0pXjE5Mu211O+JvtzolqdNKVA+XJ466
 ```
 
 ### Repository pmd/pmd - Environment "pmd-code"
