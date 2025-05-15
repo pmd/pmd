@@ -38,7 +38,7 @@ jobs:
         printenv WEB_SF_DEPLOY_KEY > "${HOME}/.ssh/web.sourceforge.net_deploy_key"
         chmod 600 "${HOME}/.ssh/web.sourceforge.net_deploy_key"
         echo "
-        Host web.sourceforge.net
+        Host git.code.sf.net
             IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
         " > "$HOME/.ssh/config"
         echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
