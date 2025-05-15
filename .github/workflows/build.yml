@@ -1,17 +1,7 @@
 name: Build
 
 on:
-  pull_request:
-  merge_group:
-  push:
-    branches:
-      - '**'
-      # don't run on dependabot branches. Dependabot will create pull requests, which will then be run instead
-      - '!dependabot/**'
-  workflow_dispatch:
-  schedule:
-    # build it monthly: At 04:00 on day-of-month 1.
-    - cron:  '0 4 1 * *'
+  workflow_call:
 
 # if another commit is added to the same branch or PR (same github.ref),
 # then cancel already running jobs and start a new build.
