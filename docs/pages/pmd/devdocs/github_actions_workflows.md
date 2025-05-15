@@ -10,18 +10,20 @@ last_updated: May 2025 (7.14.0)
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
 
-## Build, Build Pull Request, Build Snapshot
+## Build, Build Pull Request, Build Snapshot, Build Release
 
 "Build" itself is a [reuseable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows),
-that is called by "Build Pull Request" and "Build Snapshot".
+that is called by "Build Pull Request" and "Build Snapshot" and "Build Release".
 
 * Workflow files:
   * <https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml>
   * <https://github.com/pmd/pmd/blob/main/.github/workflows/build-pr.yml>
   * <https://github.com/pmd/pmd/blob/main/.github/workflows/build-snapshot.yml>
+  * <https://github.com/pmd/pmd/blob/main/.github/workflows/build-release.yml>
 * Builds:
   * Build Pull Request: <https://github.com/pmd/pmd/actions/workflows/build-pr.yml>
   * Build Snapshot: <https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml>
+  * Build Release: <https://github.com/pmd/pmd/actions/workflows/build-release.yml>
 
 All these workflows execute exactly the same steps. But only the triggering event is different.
 It is designed to run on the main repository in PMD's GitHub organization as well as for forks, as it does
@@ -31,6 +33,8 @@ not require any secrets.
 
 "Build Snapshot" is triggered, whenever new commits are pushed to a branch (including the default branch and
 including forks).
+
+"Build Release" is triggered, whenever a tag is pushed.
 
 In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
 the current branch or pull request when a new commit has been pushed. This means, only the latest commit is built,
@@ -194,6 +198,12 @@ we are actually building a SNAPSHOT version. Then a couple of other jobs are bei
   uploads the results to coveralls at <https://coveralls.io/github/pmd/pmd>.
   * Environment: coveralls
   * Secrets: COVERALLS_REPO_TOKEN
+
+## Publish Release
+
+* Builds: <https://github.com/pmd/pmd/actions/workflows/publish-release.yml>
+* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-release.yml>
+
 
 ## Secrets and Variables
 The "Build" workflow doesn't need any secrets or additional permissions, it just builds and creates artifacts.
