@@ -2020,6 +2020,29 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="migrating-to-central-publisher-portal">Migrating to Central Publisher Portal</h4>
+
+<p>We’ve now migrated to <a href="https://central.sonatype.org/publish/publish-portal-guide/">Central Publisher Portal</a>.
+Snapshots of PMD are still available, however the repository URL changed. To consume these with maven, you can
+use the following snippet:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;repositories&gt;</span>
+  <span class="nt">&lt;repository&gt;</span>
+    <span class="nt">&lt;name&gt;</span>Central Portal Snapshots<span class="nt">&lt;/name&gt;</span>
+    <span class="nt">&lt;id&gt;</span>central-portal-snapshots<span class="nt">&lt;/id&gt;</span>
+    <span class="nt">&lt;url&gt;</span>https://central.sonatype.com/repository/maven-snapshots/<span class="nt">&lt;/url&gt;</span>
+    <span class="nt">&lt;releases&gt;</span>
+      <span class="nt">&lt;enabled&gt;</span>false<span class="nt">&lt;/enabled&gt;</span>
+    <span class="nt">&lt;/releases&gt;</span>
+    <span class="nt">&lt;snapshots&gt;</span>
+      <span class="nt">&lt;enabled&gt;</span>true<span class="nt">&lt;/enabled&gt;</span>
+    <span class="nt">&lt;/snapshots&gt;</span>
+  <span class="nt">&lt;/repository&gt;</span>
+<span class="nt">&lt;/repositories&gt;</span>
+</code></pre></div></div>
+
+<p>Releases of PMD are available on <a href="https://central.sonatype.com/">Maven Central</a> as before without change.</p>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>core

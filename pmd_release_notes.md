@@ -10,6 +10,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀 New and noteworthy](#new-and-noteworthy)
+    * [Migrating to Central Publisher Portal](#migrating-to-central-publisher-portal)
 * [🐛 Fixed Issues](#fixed-issues)
 * [🚨 API Changes](#api-changes)
 * [✨ Merged pull requests](#merged-pull-requests)
@@ -17,6 +18,30 @@ This is a minor release.
 * [📈 Stats](#stats)
 
 ### 🚀 New and noteworthy
+
+#### Migrating to Central Publisher Portal
+
+We've now migrated to [Central Publisher Portal](https://central.sonatype.org/publish/publish-portal-guide/).
+Snapshots of PMD are still available, however the repository URL changed. To consume these with maven, you can
+use the following snippet:
+
+```xml
+<repositories>
+  <repository>
+    <name>Central Portal Snapshots</name>
+    <id>central-portal-snapshots</id>
+    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+```
+
+Releases of PMD are available on [Maven Central](https://central.sonatype.com/) as before without change.
 
 ### 🐛 Fixed Issues
 * core
