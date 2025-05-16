@@ -142,7 +142,7 @@ public final class InternalApiBridge {
         }
     }
 
-    public static void setCompileTimeDecl(ASTMethodReference methodReference, JMethodSig methodType) {
+    public static void setCompileTimeDecl(ASTMethodReference methodReference, OverloadSelectionResult methodType) {
         methodReference.setCompileTimeDecl(methodType);
     }
 

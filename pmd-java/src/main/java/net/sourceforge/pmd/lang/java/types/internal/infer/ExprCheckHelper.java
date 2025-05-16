@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 final class ExprCheckHelper {
@@ -164,7 +165,7 @@ final class ExprCheckHelper {
 
         if (argCtDecl == infer.FAILED_INVOCATION) {
             throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR, targetType);
-        } else if (argCtDecl == infer.NO_CTDECL) {
+        } else if (argCtDecl == infer.getMissingCtDecl()) {
             JTypeMirror fallback = invoc.unresolvedType();
             if (fallback != null) {
                 actualType = fallback;
@@ -172,7 +173,7 @@ final class ExprCheckHelper {
             // else it's ts.UNRESOLVED
             if (mayMutateExpr()) {
                 invoc.setInferredType(fallback);
-                invoc.setCtDecl(infer.NO_CTDECL);
+                invoc.setCompileTimeDecl(infer.getMissingCtDecl());
             }
         }
 
@@ -197,7 +198,7 @@ final class ExprCheckHelper {
                 solved -> {
                     JMethodSig ground = solved.ground(mostSpecific);
                     invoc.setInferredType(ground.getReturnType());
-                    invoc.setCtDecl(argCtDecl.withMethod(ground));
+                    invoc.setCompileTimeDecl(argCtDecl.withMethod(ground));
                 }
             );
         }
@@ -372,14 +373,14 @@ final class ExprCheckHelper {
                 //  type of the potentially applicable compile-time declaration.
                 checker.checkExprConstraint(infCtx, capture(r2), r);
             }
-            completeMethodRefInference(mref, nonWildcard, fun, exactMethod, true);
+            completeMethodRefInference(mref, nonWildcard, fun, mrefSigAsCtDecl(exactMethod), true);
         } else if (TypeOps.isUnresolved(mref.getTypeToSearch())) {
             // Then this is neither an exact nor inexact method ref,
             // we just don't know what it is.
 
             // The return values of the mref are assimilated to an (*unknown*) type.
             checker.checkExprConstraint(infCtx, ts.UNKNOWN, fun.getReturnType());
-            completeMethodRefInference(mref, nonWildcard, fun, ts.UNRESOLVED_METHOD, false);
+            completeMethodRefInference(mref, nonWildcard, fun, infer.getMissingCtDecl(), false);
         } else {
             // Otherwise, the method reference is inexact, and:
 
@@ -414,7 +415,7 @@ final class ExprCheckHelper {
         JTypeMirror r = fun.getReturnType();
         if (r == ts.NO_TYPE) {
             // If R is void, the constraint reduces to true.
-            completeMethodRefInference(mref, nonWildcard, fun, ctdecl, false);
+            completeMethodRefInference(mref, nonWildcard, fun, mrefSigAsCtDecl(ctdecl), false);
             return;
         }
 
@@ -453,11 +454,13 @@ final class ExprCheckHelper {
             // as dependencies between these new variables and the inference variables in T.
 
             if (phase.isInvocation()) {
-                JMethodSig sig = inferMethodRefInvocation(mref, fun, ctdecl0);
+                MethodCtDecl sig = inferMethodRefInvocation(mref, fun, ctdecl0);
                 if (fixInstantiation) {
                     // We know that fun & sig have the same type params
                     // We need to fix those that are out-of-scope
-                    sig = sig.subst(Substitution.mapping(fun.getTypeParameters(), sig.getTypeParameters()));
+                    JMethodSig inferred = sig.getMethodType();
+                    inferred = inferred.subst(Substitution.mapping(fun.getTypeParameters(), inferred.getTypeParameters()));
+                    sig = sig.withMethod(inferred);
                 }
                 completeMethodRefInference(mref, nonWildcard, fun, sig, false);
             }
@@ -469,12 +472,12 @@ final class ExprCheckHelper {
                 throw ResolutionFailedException.incompatibleReturn(infer.LOG, mref, ctdecl.getReturnType(), r);
             } else {
                 checker.checkExprConstraint(infCtx, capture(ctdecl.getReturnType()), r);
-                completeMethodRefInference(mref, nonWildcard, fun, ctdecl, false);
+                completeMethodRefInference(mref, nonWildcard, fun, mrefSigAsCtDecl(ctdecl), false);
             }
         }
     }
 
-    private void completeMethodRefInference(MethodRefMirror mref, JClassType groundTargetType, JMethodSig functionalMethod, JMethodSig ctDecl, boolean isExactMethod) {
+    private void completeMethodRefInference(MethodRefMirror mref, JClassType groundTargetType, JMethodSig functionalMethod, MethodCtDecl ctDecl, boolean isExactMethod) {
         if ((phase.isInvocation() || isExactMethod) && mayMutateExpr()) {
             // if exact, then the arg is relevant to applicability and there
             // may not be an invocation round
@@ -483,18 +486,21 @@ final class ExprCheckHelper {
                 solved -> {
                     mref.setInferredType(solved.ground(groundTargetType));
                     mref.setFunctionalMethod(cast(solved.ground(functionalMethod)).withOwner(solved.ground(functionalMethod.getDeclaringType())));
-                    mref.setCompileTimeDecl(solved.ground(ctDecl));
+                    mref.setCompileTimeDecl(ctDecl.withMethod(solved.ground(ctDecl.getMethodType())));
                 }
             );
         }
     }
 
+    MethodCtDecl mrefSigAsCtDecl(JMethodSig sig) {
+        return new MethodCtDecl(sig, MethodResolutionPhase.INVOC_LOOSE, false, OptionalBool.UNKNOWN, false, null);
+    }
 
-    JMethodSig inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl) {
+    MethodCtDecl inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl) {
         InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
-        wrapper.setCtDecl(ctdecl);
+        wrapper.setCompileTimeDecl(ctdecl);
         MethodCallSite mockSite = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), site, infCtx, isSpecificityCheck());
-        return infer.determineInvocationTypeOrFail(mockSite).getMethodType();
+        return infer.determineInvocationTypeOrFail(mockSite);
     }
 
     /**
