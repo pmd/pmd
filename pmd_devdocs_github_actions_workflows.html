@@ -2182,12 +2182,12 @@ we are actually building a SNAPSHOT version. Then a couple of other jobs are bei
 
 <ul>
   <li>deploy-to-maven-central: Rebuilds PMD from branch main and deploys the snapshot artifacts to
-<a href="https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/">https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/</a>. Rebuilding is necessary in
-order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the artifacts. This
-is not available from the build artifacts of the “Build” workflow.
+<a href="https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/">https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/</a>.
+Rebuilding is necessary in order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the
+artifacts. This is not available from the build artifacts of the “Build” workflow.
     <ul>
       <li>Environment: maven-central</li>
-      <li>Secrets: OSSRH_TOKEN, OSSRH_USERNAME</li>
+      <li>Secrets: MAVEN_CENTRAL_PORTAL_USERNAME, MAVEN_CENTRAL_PORTAL_PASSWORD</li>
     </ul>
   </li>
   <li>deploy-to-sourceforge-files: Downloads the “dist-artifact” and “docs-artifact” from the “Build” workflow,
@@ -2357,11 +2357,9 @@ The key can be generated at <a href="https://rubygems.org/profile/api_keys">http
 <h3 id="repository-pmdpmd---environment-maven-central">Repository pmd/pmd - Environment “maven-central”</h3>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">OSSRH_USERNAME</code> and <code class="language-plaintext highlighter-rouge">OSSRH_TOKEN</code>: Used to deploy artifacts to maven central via OSSRH to our namespace
-<a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd">net.sourceforge.pmd</a>.<br />
-Login on <a href="https://oss.sonatype.org">https://oss.sonatype.org</a>, go to your user profile, select “User Token” and “Access User Token”.
-You’ll see the tokens to be used for username and password.<br />
-Note: This will soon be migrated to use <a href="https://central.sonatype.com">https://central.sonatype.com</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">MAVEN_CENTRAL_PORTAL_USERNAME</code> and <code class="language-plaintext highlighter-rouge">MAVEN_CENTRAL_PORTAL_PASSWORD</code>: Used to deploy artifacts to maven
+central via <a href="https://central.sonatype.com">https://central.sonatype.com</a>. See <a href="https://central.sonatype.org/">https://central.sonatype.org/</a> for the documentation.
+The upload uses token-based authentication, you can generate a user token on <a href="https://central.sonatype.com/account">https://central.sonatype.com/account</a>.</li>
 </ul>
 
 <h3 id="repository-pmdpmd---environment-coveralls">Repository pmd/pmd - Environment “coveralls”</h3>
@@ -2681,7 +2679,7 @@ curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87E
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            May 2025 (7.14.0)<br /> Site last generated: May 15, 2025 <br />
+            May 2025 (7.14.0)<br /> Site last generated: May 16, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2093,21 +2093,27 @@ the same as the real release: Just unzip it and execute PMD.</p>
 version. However, you also need to configure an additional Maven Repository, as the SNAPSHOTS are not published
 in Maven Central.</p>
 
-<p>Use the OSSRH snapshot repository url: <code class="language-plaintext highlighter-rouge">https://oss.sonatype.org/content/repositories/snapshots</code>. For Maven
+<p>Use the Central Portal Snapshot repository url: <code class="language-plaintext highlighter-rouge">https://central.sonatype.com/repository/maven-snapshots/</code>. For Maven
 projects, this can be configured like:</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;repositories&gt;</span>
- <span class="nt">&lt;repository&gt;</span>
-   <span class="nt">&lt;id&gt;</span>sonatype-nexus-snapshots<span class="nt">&lt;/id&gt;</span>
-   <span class="nt">&lt;name&gt;</span>Sonatype Nexus Snapshots<span class="nt">&lt;/name&gt;</span>
-   <span class="nt">&lt;url&gt;</span>https://oss.sonatype.org/content/repositories/snapshots<span class="nt">&lt;/url&gt;</span>
-   <span class="nt">&lt;releases&gt;&lt;enabled&gt;</span>false<span class="nt">&lt;/enabled&gt;&lt;/releases&gt;</span>
-   <span class="nt">&lt;snapshots&gt;&lt;enabled&gt;</span>true<span class="nt">&lt;/enabled&gt;&lt;/snapshots&gt;</span>
- <span class="nt">&lt;/repository&gt;</span>
+    <span class="nt">&lt;repository&gt;</span>
+        <span class="nt">&lt;name&gt;</span>Central Portal Snapshots<span class="nt">&lt;/name&gt;</span>
+        <span class="nt">&lt;id&gt;</span>central-portal-snapshots<span class="nt">&lt;/id&gt;</span>
+        <span class="nt">&lt;url&gt;</span>https://central.sonatype.com/repository/maven-snapshots/<span class="nt">&lt;/url&gt;</span>
+        <span class="nt">&lt;releases&gt;</span>
+            <span class="nt">&lt;enabled&gt;</span>false<span class="nt">&lt;/enabled&gt;</span>
+        <span class="nt">&lt;/releases&gt;</span>
+        <span class="nt">&lt;snapshots&gt;</span>
+            <span class="nt">&lt;enabled&gt;</span>true<span class="nt">&lt;/enabled&gt;</span>
+        <span class="nt">&lt;/snapshots&gt;</span>
+    <span class="nt">&lt;/repository&gt;</span>
 <span class="nt">&lt;/repositories&gt;</span>
 </code></pre></div></div>
 
-<p>Have a look at <a href="https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/">https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/</a> to see which
+<p>Have a look at <a href="https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/pmd/">https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/pmd/</a> to see which
 SNAPSHOT versions are available. Note that old SNAPSHOT versions might be removed without prior notice.</p>
+
+<p>See also <a href="https://central.sonatype.org/publish/publish-portal-snapshots/">https://central.sonatype.org/publish/publish-portal-snapshots/</a>.</p>
 
 <h2 id="general-development-tips">General Development Tips</h2>
 
@@ -2184,7 +2190,7 @@ break these without noticing.<br />
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            January 2025 (7.10.0)<br /> Site last generated: May 15, 2025 <br />
+            January 2025 (7.10.0)<br /> Site last generated: May 16, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
