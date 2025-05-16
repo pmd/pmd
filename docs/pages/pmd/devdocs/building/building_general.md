@@ -76,22 +76,28 @@ If you integrate PMD as a dependency in your own project, you can also reference
 version. However, you also need to configure an additional Maven Repository, as the SNAPSHOTS are not published
 in Maven Central.
 
-Use the OSSRH snapshot repository url: `https://oss.sonatype.org/content/repositories/snapshots`. For Maven
+Use the Central Portal Snapshot repository url: `https://central.sonatype.com/repository/maven-snapshots/`. For Maven
 projects, this can be configured like:
 ```xml
 <repositories>
- <repository>
-   <id>sonatype-nexus-snapshots</id>
-   <name>Sonatype Nexus Snapshots</name>
-   <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-   <releases><enabled>false</enabled></releases>
-   <snapshots><enabled>true</enabled></snapshots>
- </repository>
+    <repository>
+        <name>Central Portal Snapshots</name>
+        <id>central-portal-snapshots</id>
+        <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
 </repositories>
 ```
 
-Have a look at <https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/pmd/> to see which
+Have a look at <https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/pmd/> to see which
 SNAPSHOT versions are available. Note that old SNAPSHOT versions might be removed without prior notice.
+
+See also <https://central.sonatype.org/publish/publish-portal-snapshots/>.
 
 ## General Development Tips
 

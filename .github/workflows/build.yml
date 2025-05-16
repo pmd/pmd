@@ -99,8 +99,7 @@ jobs:
         run: |
           ./mvnw --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
-              verify \
-              -DskipTests -Dmaven.test.skip=true
+              verify -DskipTests
       - uses: actions/upload-artifact@v4
         with:
           name: javadocs-artifact
@@ -253,7 +252,7 @@ jobs:
             -Dmaven.repo.local=.m2/repository \
             verify \
             -Pgenerate-rule-docs,fastSkip \
-            -DskipTests -Dmaven.test.skip=true -Dassembly.skipAssembly=true
+            -DskipTests -Dassembly.skipAssembly=true
       - name: Set up Ruby 3.3
         uses: ruby/setup-ruby@v1
         with:

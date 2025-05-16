@@ -66,10 +66,10 @@ jobs:
 
   deploy-to-maven-central:
     needs: check-version
-    # use environment maven-central, where secrets are configured for OSSRH_*
+    # use environment maven-central, where secrets are configured for MAVEN_CENTRAL_PORTAL_*
     environment:
       name: maven-central
-      url: https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/
+      url: https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
@@ -83,7 +83,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '11'
-          server-id: ossrh
+          server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
@@ -101,8 +101,8 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
       - name: Build and publish
         env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_PORTAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PORTAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
         # note: we can't use artifact staging-repository, as the jars are unsigned and javadoc+sources are missing.
         run: |
