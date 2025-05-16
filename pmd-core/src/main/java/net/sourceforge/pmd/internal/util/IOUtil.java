@@ -109,7 +109,7 @@ public final class IOUtil {
      * @param reportFile the file name (optional)
      * @return
      */
-    public static Writer createWriter(Charset charset, String reportFile) {
+    public static Writer createWriter(Charset charset, @Nullable String reportFile) {
         try {
             if (StringUtils.isBlank(reportFile)) {
                 return new OutputStreamWriter(new FilterOutputStream(System.out) {

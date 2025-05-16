@@ -13,6 +13,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
+import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
@@ -144,6 +145,21 @@ class PmdCliTest extends BaseCliTest {
         String reportText = readString(reportFile);
         assertThat(reportText, not(containsStringIgnoringCase("error")));
     }
+
+    @Test
+    void testExcludeFile() throws Exception {
+
+        // restoring system properties: --debug might change logging properties
+        SystemLambda.restoreSystemProperties(() -> {
+            runCli(OK,
+                    "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--ignore", srcDir.toString(), "--debug")
+                    .verify(r -> {
+                        r.checkStdErr(containsString("No files to analyze"));
+                        r.checkStdOut(emptyString());
+                    });
+        });
+    }
+
 
     /**
      * This tests to create the report file in the current working directory.

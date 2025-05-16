@@ -1,0 +1,2 @@
+src/test/resources/net/sourceforge/pmd/cli/cpd/badandgood/GoodFile.java
+src/test/resources/net/sourceforge/pmd/cli/cpd/badandgood/GoodFile2.java
