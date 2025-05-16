@@ -71,7 +71,7 @@ jobs:
       name: maven-central
       url: https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     defaults:
       run:
         shell: bash
@@ -561,7 +561,7 @@ jobs:
           ./mvnw \
               --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
-              clean package \
+              package \
               sonar:sonar -Psonar,fastSkip
 
   run-coveralls:
@@ -594,7 +594,7 @@ jobs:
           ./mvnw \
               --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
-              clean package \
+              package \
               jacoco:report -Pcoveralls,fastSkip
           
           # workaround, maybe https://github.com/jacoco/jacoco/issues/654
@@ -606,8 +606,9 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
           # note: generate-sources is needed, so that antlr4 generated directories are on the compileSourceRoots
+          # compile is needed to that dependency resolution within this multi-module build works
           ./mvnw \
               --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
-              generate-sources \
+              generate-sources compile \
               coveralls:report -DrepoToken="${COVERALLS_REPO_TOKEN}" -Pcoveralls,fastSkip

@@ -24,6 +24,30 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### Migrating to Central Publisher Portal
+
+We've now migrated to [Central Publisher Portal](https://central.sonatype.org/publish/publish-portal-guide/).
+Snapshots of PMD are still available, however the repository URL changed. To consume these with maven, you can
+use the following snippet:
+
+```xml
+<repositories>
+  <repository>
+    <name>Central Portal Snapshots</name>
+    <id>central-portal-snapshots</id>
+    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+```
+
+Releases of PMD are available on [Maven Central](https://central.sonatype.com/) as before without change.
+
 ### 🐛 Fixed Issues
 * core
   * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
