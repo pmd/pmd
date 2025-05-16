@@ -13,6 +13,8 @@ permissions:
 
 jobs:
   build:
+    # only run in the official pmd repo, where we have access to the secrets and not on forks
+    if: ${{ github.repository == 'pmd/pmd' }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
