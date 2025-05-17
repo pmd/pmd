@@ -53,7 +53,9 @@ abstract class BaseMappedDocument implements TextDocument {
 
     @Override
     public int offsetAtLineColumn(TextPos2d position) {
-        throw new UnsupportedOperationException();
+        // Here there is no translation happening, because
+        // TextPos2d is always in the coordinate system of the root document.
+        return base.offsetAtLineColumn(position);
     }
 
     /**
