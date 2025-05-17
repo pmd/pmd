@@ -21,11 +21,9 @@
                 <directory>${project.basedir}/src/test/resources</directory>
             </testResource>
             <testResource>
-                <directory>${project.basedir}/src/test/java</directory>
-                <includes>
-                    <include>**/testdata/**/*.java</include>
-                </includes>
+                <directory>${project.basedir}/src/test/java-resources</directory>
             </testResource>
+
             <!-- Adding kotlin files to test resources, so that checkstyle verifies the license header -->
             <testResource>
                 <directory>${project.basedir}/src/test/kotlin</directory>
@@ -69,12 +67,38 @@
                             </sources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>add-java-test-resources</id>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <directory>${project.basedir}/src/test/java-resources</directory>
+                            </sources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
+                <executions>
+                    <execution>
+                        <id>kotlin-test-compile</id>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                                <sourceDir>${project.basedir}/src/test/java</sourceDir>
+                                <sourceDir>${project.basedir}/src/test/java-resources</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
