@@ -1105,7 +1105,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.30.2</version>
+                <version>4.31.0</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit5 needs. E.g. 5.12.1 needs 1.12.1
