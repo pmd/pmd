@@ -82,6 +82,7 @@ public final class CollectionUtil {
 
     /**
      * Returns a view over the given map, where values are mapped using the given function.
+     * @since 7.14.0
      */
     public static <K, V, U> Map<K, U> mapView(Map<K, V> map, Function<? super V, ? extends U> valueMapper) {
         return new AbstractMap<K, U>() {

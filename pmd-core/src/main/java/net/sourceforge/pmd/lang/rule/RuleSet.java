@@ -183,6 +183,9 @@ public class RuleSet implements ChecksumAware {
         return new RuleSetBuilder(this);
     }
 
+    /**
+     * @since 7.14.0
+     */
     public static class RuleSetBuilder {
 
         public String description;

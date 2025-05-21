@@ -29,6 +29,9 @@ public abstract class AbstractTokenManager implements TokenManager<JavaccToken> 
         this.suppressMarker = marker;
     }
 
+    /**
+     * @deprecated since 7.14.0. Use {@link #getSuppressionComments()} instead.
+     */
     @Deprecated
     public Map<Integer, String> getSuppressMap() {
         return suppressMap;

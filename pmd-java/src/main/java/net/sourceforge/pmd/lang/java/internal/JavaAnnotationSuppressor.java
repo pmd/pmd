@@ -45,6 +45,8 @@ import net.sourceforge.pmd.util.OptionalBool;
  * <li>{@code "serial"}: suppresses BeanMembersShouldSerialize, NonSerializableClass and MissingSerialVersionUID;
  * <li>{@code "fallthrough"}: suppresses ImplicitSwitchFallthrough #1899
  * </ul>
+ *
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.6.4.5">JLS 9.6.4.5. @SuppressWarnings</a>
  */
 final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnnotation> {
 

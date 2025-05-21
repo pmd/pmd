@@ -178,6 +178,8 @@ public interface ViolationSuppressor {
      * @param tree Root node of a file
      *
      * @return A set
+     *
+     * @since 7.14.0
      */
     default Set<UnusedSuppressorNode> getUnusedSuppressors(RootNode tree) {
         return Collections.emptySet();
@@ -206,6 +208,7 @@ public interface ViolationSuppressor {
      * Represents an instance of a "suppressor" that didn't suppress anything.
      * This could be a suppression annotation, or part of an annotation, a
      * comment, etc.
+     * @since 7.14.0
      */
     interface UnusedSuppressorNode {
 

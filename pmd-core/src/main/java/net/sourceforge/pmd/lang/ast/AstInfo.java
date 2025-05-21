@@ -86,7 +86,7 @@ public final class AstInfo<T extends RootNode> {
      * It is suppressed, if the line of the violation is contained in this suppress map.
      *
      * @return map of the suppress lines with the corresponding review comments.
-     * @deprecated Use {@link #getAllSuppressionComments()} or {@link #getSuppressionComment(int)}
+     * @deprecated Since 7.13.0. Use {@link #getAllSuppressionComments()} or {@link #getSuppressionComment(int)}
      */
     @Deprecated
     public Map<Integer, String> getSuppressionComments() {
@@ -96,6 +96,8 @@ public final class AstInfo<T extends RootNode> {
 
     /**
      * Return the suppresson comment at the given line, or null if there is none.
+     *
+     * @since 7.14.0
      */
     public @Nullable SuppressionCommentWrapper getSuppressionComment(int lineNumber) {
         return suppressionComments.get(lineNumber);
@@ -106,6 +108,8 @@ public final class AstInfo<T extends RootNode> {
      * Only single line comments are considered, that start with the configured
      * "suppress marker", which by default is {@link PMDConfiguration#DEFAULT_SUPPRESS_MARKER}.
      * The text after the suppress marker is used as a "review comment" and included in this map.
+     *
+     * @since 7.14.0
      */
     public Collection<SuppressionCommentWrapper> getAllSuppressionComments() {
         return Collections.unmodifiableCollection(suppressionComments.values());
@@ -116,7 +120,7 @@ public final class AstInfo<T extends RootNode> {
      *
      * @return The user data map of this node
      *
-     * @since 7.12.0
+     * @since 7.14.0
      */
     public DataMap<DataKey<?, ?>> getUserMap() {
         return userMap;
@@ -124,7 +128,7 @@ public final class AstInfo<T extends RootNode> {
 
 
     /**
-     * @deprecated Use {@link #withSuppressionComments(Collection)}
+     * @deprecated Since 7.14.0. Use {@link #withSuppressionComments(Collection)}
      */
     @Deprecated
     public AstInfo<T> withSuppressMap(Map<Integer, String> map) {

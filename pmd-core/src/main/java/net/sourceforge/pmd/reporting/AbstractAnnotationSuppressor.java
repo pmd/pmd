@@ -26,9 +26,13 @@ import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sourceforge.pmd.util.OptionalBool;
 
+/**
+ *
+ * @since 7.14.0
+ */
 public abstract class AbstractAnnotationSuppressor<A extends Node> implements ViolationSuppressor {
 
-    private final Class<A> annotationClass;
+    private final Class<A> annotationNodeType;
 
     protected AbstractAnnotationSuppressor(Class<A> annotationClass) {
         this.annotationClass = annotationClass;

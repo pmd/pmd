@@ -14,6 +14,8 @@ import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapp
  * Simple implementation of {@link SuppressionCommentWrapper}.
  *
  * @param <T> Type of Reportable (node, token, lambda)
+ *
+ * @since 7.14.0
  */
 @Experimental
 public class SuppressionCommentImpl<T extends Reportable> implements SuppressionCommentWrapper {

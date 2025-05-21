@@ -1636,7 +1636,7 @@ class C {
 
     <rule name="UnnecessaryWarningSuppression"
           language="java"
-          since="7.12.0"
+          since="7.14.0"
           message="Unused suppression {0}."
           class="net.sourceforge.pmd.lang.rule.internal.UnnecessaryPmdSuppressionRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessarywarningsuppression">
