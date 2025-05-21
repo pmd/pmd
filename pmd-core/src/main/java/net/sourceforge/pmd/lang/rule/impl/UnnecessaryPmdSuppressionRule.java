@@ -1,8 +1,8 @@
-/*
+/**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.rule.internal;
+package net.sourceforge.pmd.lang.rule.impl;
 
 import java.util.List;
 import java.util.Set;
@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
+import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;

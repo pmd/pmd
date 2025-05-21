@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.Rule;
-import net.sourceforge.pmd.lang.rule.internal.UnnecessaryPmdSuppressionRule;
+import net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.DataMap;
@@ -27,7 +27,11 @@ import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
+ * Base class for a {@link ViolationSuppressor} that uses annotations
+ * of the source language to suppress some warnings.
  *
+ * @param <A> Class of the node type that models annotations in the AST
+ *           of the language
  * @since 7.14.0
  */
 public abstract class AbstractAnnotationSuppressor<A extends Node> implements ViolationSuppressor {
@@ -35,7 +39,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
     private final Class<A> annotationNodeType;
 
     protected AbstractAnnotationSuppressor(Class<A> annotationClass) {
-        this.annotationClass = annotationClass;
+        this.annotationNodeType = annotationClass;
     }
 
     @Override
@@ -53,7 +57,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
 
     @Override
     public Set<UnusedSuppressorNode> getUnusedSuppressors(RootNode tree) {
-        return tree.descendants(annotationClass).crossFindBoundaries().toStream().map(this::getUnusedSuppressorNodes).flatMap(Set::stream).collect(Collectors.toSet());
+        return tree.descendants(annotationNodeType).crossFindBoundaries().toStream().map(this::getUnusedSuppressorNodes).flatMap(Set::stream).collect(Collectors.toSet());
     }
 
 
@@ -63,6 +67,12 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
         }
 
         if (node instanceof RootNode) {
+            // This logic is here to suppress violations on the root node
+            // based on an annotation of its child. In Java for instance
+            // you cannot annotate the root node, because you can only annotate
+            // declarations. But an annotation on a toplevel class, or on
+            // the package declaration, would suppress violations on the root
+            // node as well.
             for (int i = 0; i < node.getNumChildren(); i++) {
                 if (suppresses(node.getChild(i), rule)) {
                     return true;

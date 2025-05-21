@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.util.log.PmdReporter;
 

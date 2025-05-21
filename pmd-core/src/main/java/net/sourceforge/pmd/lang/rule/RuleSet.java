@@ -184,7 +184,10 @@ public class RuleSet implements ChecksumAware {
     }
 
     /**
+     * A builder class to create a ruleset.
+     *
      * @since 7.14.0
+     * @see #toBuilder()
      */
     public static class RuleSetBuilder {
 
@@ -239,8 +242,11 @@ public class RuleSet implements ChecksumAware {
             return this;
         }
 
-        public boolean removeIf(Predicate<? super Rule> rule) {
-            return rules.removeIf(rule);
+        /**
+         * Remove all rules that matched the predicate.
+         */
+        public boolean removeIf(Predicate<? super Rule> filter) {
+            return rules.removeIf(filter);
         }
 
         /**

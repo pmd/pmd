@@ -51,7 +51,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.lang.rule.RuleSetWriter;
-import net.sourceforge.pmd.lang.rule.internal.UnnecessaryPmdSuppressionRule;
+import net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
