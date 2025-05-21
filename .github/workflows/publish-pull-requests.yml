@@ -2,7 +2,7 @@ name: Publish Results from Pull Requests
 run-name: Publish Results for "${{ github.event.workflow_run.display_title }}"
 on:
   workflow_run:
-    workflows: [Build]
+    workflows: [Build Pull Request]
     types:
       - completed
 
