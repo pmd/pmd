@@ -4,7 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
-public class AssertContainer {
+public final class AssertContainer {
+
+    private AssertContainer() {
+
+    }
 
     public static void assertTrue(String message, boolean condition) {
         if (!condition) {
