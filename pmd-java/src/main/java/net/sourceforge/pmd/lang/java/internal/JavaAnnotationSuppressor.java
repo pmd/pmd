@@ -93,7 +93,9 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
     }
 
     JavaNode getAnnotationScope(ASTAnnotation a) {
-        if (a.getParent() instanceof ASTModifierList) return a.getParent().getParent();
+        if (a.getParent() instanceof ASTModifierList) {
+            return a.getParent().getParent();
+        }
         return null;
     }
 
