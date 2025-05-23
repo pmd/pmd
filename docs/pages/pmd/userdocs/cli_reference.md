@@ -168,9 +168,11 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--threads,-t"
                option_arg="num"
-               description="Sets the number of threads used by PMD.
-                            Set threads to `0` to disable multi-threading processing."
-               default="1"
+               description="Set the number of threads used by PMD. This can be an integer, or a float (or int) followed by the letter `C`, eg `0.5C` or `1C`. 
+                    In the latter case, the float will be multiplied by the number of cores of the host machine, and rounded down to an integer. 
+                    If the specified number of threads is zero, then PMD will use the main thread for everything. If it is `n` > 0, 
+                    PMD will spawn `n` separate analysis threads besides the main thread."
+               default="1C"
     %}
     {% include custom/cli_option_row.html options="--uri,-u"
                    option_arg="uri"
