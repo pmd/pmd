@@ -49,11 +49,4 @@ public interface InvocationNode extends TypeNode, MethodUsage {
     }
 
 
-    /**
-     * Returns information about the overload selection for this call.
-     * Be aware, that selection might have failed ({@link OverloadSelectionResult#isFailed()}).
-     */
-    OverloadSelectionResult getOverloadSelectionInfo();
-
-
 }
