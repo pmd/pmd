@@ -14,13 +14,22 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTClassType;
+import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughRule;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.AbstractAnnotationSuppressor;
@@ -99,11 +108,85 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
         return null;
     }
 
+    private static OptionalBool hasUnusedWarning(JavaNode node) {
+        if (node == null) {
+            return OptionalBool.UNKNOWN;
+        }
+
+        if (node.descendants(ASTVariableId.class)
+                .crossFindBoundaries()
+                .any(it -> it.getLocalUsages().isEmpty())) {
+            return OptionalBool.YES;
+
+        } else if (hasUnusedTypeParam(node)) {
+            return OptionalBool.YES;
+        }
+
+        return hasUnusedMethod(node);
+    }
+
+    private static boolean hasUnusedTypeParam(JavaNode node) {
+        // we can do this in a single traversal because type params must
+        // be declared before they are used (in tree order)
+        Set<JTypeVar> unusedTypeParams = new HashSet<>();
+        node.acceptVisitor(new JavaVisitorBase<Void, Void>() {
+            @Override
+            public Void visit(ASTTypeParameters node, Void p) {
+                // add all params before visiting bounds
+                for (ASTTypeParameter parm : node) {
+                    unusedTypeParams.add(parm.getTypeMirror());
+                }
+                return super.visit(node, p);
+            }
+
+            @Override
+            public Void visit(ASTClassType node, Void data) {
+                JTypeMirror ty = node.getTypeMirror();
+                if (ty instanceof JTypeVar) {
+                    unusedTypeParams.remove(ty);
+                }
+                return super.visit(node, data);
+            }
+
+            @Override
+            public Void visit(ASTModifierList node, Void data) {
+                // no need to visit those
+                return data;
+            }
+        }, null);
+
+        return !unusedTypeParams.isEmpty();
+    }
+
+    private static OptionalBool hasUnusedMethod(JavaNode node) {
+        Set<JExecutableSymbol> declarations = new HashSet<>();
+        for (ASTExecutableDeclaration decl : node.descendantsOrSelf()
+                .crossFindBoundaries()
+                .filterIs(ASTExecutableDeclaration.class)) {
+            Visibility visibility = decl.getEffectiveVisibility();
+            if (visibility == Visibility.V_PACKAGE) {
+                // We cannot know if a package-private method is effectively used
+                return OptionalBool.UNKNOWN;
+            } else if (visibility.isAtMost(Visibility.V_PRIVATE)) {
+                declarations.add(decl.getSymbol());
+            }
+        }
+
+        if (declarations.isEmpty()) {
+            return OptionalBool.NO;
+        }
+
+        // TODO for now we give up unless the node doesn't contain any method.
+        //  -> we need to somehow sync this with UnusedPrivateMethod
+        //  -> This is pushed back until #5727 is merged
+        return OptionalBool.UNKNOWN;
+    }
+
     @Override
     protected OptionalBool isSuppressingNonPmdWarnings(String stringVal, ASTAnnotation annotation) {
         if ("unused".equals(stringVal)) {
             JavaNode scope = getAnnotationScope(annotation);
-            if (scope != null && scope.descendants(ASTVariableId.class).crossFindBoundaries().none(it -> it.getLocalUsages().isEmpty())) {
+            if (hasUnusedWarning(scope) == OptionalBool.NO) {
                 return OptionalBool.NO;
             }
         }

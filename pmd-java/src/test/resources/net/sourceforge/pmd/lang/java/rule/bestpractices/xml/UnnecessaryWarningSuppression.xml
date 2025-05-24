@@ -271,11 +271,11 @@
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings("unused")
-                static void foo(int i) {
+                public static void foo(int i) {
                 }
 
                 @SuppressWarnings("unused")
-                static void foo(int i) {
+                public static void foo(int i) {
                     i = 2;
                 }
             }
@@ -317,6 +317,55 @@
                     }
                 }
 
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Suppresswarnings unused on type param</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+            @SuppressWarnings("unused")
+            public class Foo<T> {
+            }
+
+            @SuppressWarnings("unused") // type parm is used
+            public class Foo<T> {
+
+                class Bar extends Foo<T> {
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Suppresswarnings unused when a method is unused</description>
+        <!--        TODO enable this and report the second instance. -->
+        <expected-problems>0</expected-problems>
+        <!--        <expected-problems>1</expected-problems>-->
+        <!--        <expected-linenumbers>6</expected-linenumbers>-->
+        <code><![CDATA[
+            @SuppressWarnings("unused")
+            public class Foo {
+                private void foo() {
+                }
+            }
+
+            @SuppressWarnings("unused") // method is used
+            class Bar {
+                private void foo() {
+                }
+
+                {
+                    foo();
+                }
+
+                // we don't know if this method is used or not
+                @SuppressWarnings("unused")
+                static void foo(int i) {
+                    i = 2;
+                }
             }
             ]]></code>
     </test-code>
