@@ -78,10 +78,6 @@ class AnyCpdLexerTest {
         return tokens;
     }
 
-    private String getTokenImage(TokenEntry t) {
-        return t.toString();
-    }
-
     private static final List<String> EXPECTED = listOf(
         "using", "System", ";",
         "namespace", "HelloNameSpace", "{",
