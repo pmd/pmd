@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -23,6 +22,7 @@ import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.CommentNode;
 import net.sourceforge.pmd.lang.rule.xpath.TextNode;
+import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
 
 public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
 
@@ -157,8 +157,8 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
             return this;
         }
 
-        public DummyRootNode withNoPmdComments(Map<Integer, String> suppressMap) {
-            this.astInfo = astInfo.withSuppressMap(suppressMap);
+        public DummyRootNode withNoPmdComments(SuppressionCommentWrapper... suppressMap) {
+            this.astInfo = astInfo.withSuppressionComments(Arrays.asList(suppressMap));
             return this;
         }
 
