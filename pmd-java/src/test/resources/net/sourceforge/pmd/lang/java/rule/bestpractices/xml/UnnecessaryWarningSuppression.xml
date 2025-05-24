@@ -281,4 +281,43 @@
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Suppresswarnings unused on field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+
+                private static class TestSockJsService extends AbstractSockJsService {
+
+                    private String sessionId;
+
+                    @SuppressWarnings("unused")
+                    private String transport;
+
+                    private WebSocketHandler handler;
+
+                    public TestSockJsService(TaskScheduler scheduler) {
+                        super(scheduler);
+                    }
+
+                    @Override
+                    protected void handleRawWebSocketRequest(ServerHttpRequest req, ServerHttpResponse res,
+                                                             WebSocketHandler handler) throws IOException {
+                        this.handler = handler;
+                    }
+
+                    @Override
+                    protected void handleTransportRequest(ServerHttpRequest req, ServerHttpResponse res, WebSocketHandler handler,
+                                                          String sessionId, String transport) throws SockJsException {
+                        this.sessionId = sessionId;
+                        this.transport = transport;
+                        this.handler = handler;
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
 </test-data>
