@@ -32,7 +32,7 @@ final class AstMethodSym
     }
 
     @Override
-    public JTypeMirror getReturnType(Substitution subst) {
+    protected JTypeMirror makeReturnType(Substitution subst) {
         ASTType rt = node.getResultTypeNode();
         return TypeOps.subst(rt.getTypeMirror(), subst);
     }

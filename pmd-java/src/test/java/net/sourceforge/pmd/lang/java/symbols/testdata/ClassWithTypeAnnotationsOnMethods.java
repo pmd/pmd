@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsIn
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.B;
 
 /**
- * See {@link TypeAnnotReflectionOnMethodsTest}.
+ * See {TypeAnnotReflectionOnMethodsTest}.
  *
  * @author Clément Fournier
  */
@@ -40,13 +40,13 @@ public abstract class ClassWithTypeAnnotationsOnMethods {
 
     abstract void abOnReceiver(@A @B ClassWithTypeAnnotationsOnMethods this);
 
-    static class CtorOwner {
+    public static class CtorOwner {
 
         CtorOwner(@A @B int i) { }
 
         @A CtorOwner() { }
 
-        CtorOwner(String i) throws @A Exception {}
+        CtorOwner(String i, int x) throws @A Exception {}
     }
 
 }

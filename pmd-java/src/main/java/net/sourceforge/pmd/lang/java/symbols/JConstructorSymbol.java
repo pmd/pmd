@@ -6,6 +6,9 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 
 /**
@@ -25,6 +28,11 @@ public interface JConstructorSymbol extends JExecutableSymbol, BoundToNode<ASTCo
         return CTOR_NAME;
     }
 
+    @Override
+    default JTypeMirror getReturnType(Substitution subst) {
+        TypeSystem ts = getTypeSystem();
+        return ts.declaration(getEnclosingClass()).subst(subst);
+    }
 
     @Override
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {

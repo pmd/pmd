@@ -74,6 +74,11 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     @Override
+    public JTypeMirror getReturnType(Substitution subst) {
+        return type.getReturnType().subst(subst);
+    }
+
+    @Override
     public boolean isVarargs() {
         return (getModifiers() & Opcodes.ACC_VARARGS) != 0;
     }
@@ -193,12 +198,6 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         public boolean isBridge() {
             return (getModifiers() & Opcodes.ACC_BRIDGE) != 0;
         }
-
-        @Override
-        public JTypeMirror getReturnType(Substitution subst) {
-            return type.getReturnType().subst(subst);
-        }
-
 
         @Override
         public String toString() {

@@ -17,7 +17,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
 
 class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
@@ -92,15 +91,10 @@ class ClassMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     @Override
     public JTypeMirror getReturnType() {
         if (resultType == null) {
-            if (symbol instanceof JMethodSymbol) {
-                if (owner.isRaw()) {
-                    resultType = ClassTypeImpl.eraseToRaw(((JMethodSymbol) symbol).getReturnType(EMPTY), getTypeParamSubst());
-                } else {
-                    resultType = ((JMethodSymbol) symbol).getReturnType(getTypeParamSubst());
-                }
+            if (owner.isRaw()) {
+                resultType = ClassTypeImpl.eraseToRaw(symbol.getReturnType(EMPTY), getTypeParamSubst());
             } else {
-                // constructor
-                resultType = owner;
+                resultType = symbol.getReturnType(getTypeParamSubst());
             }
         }
         return resultType;
