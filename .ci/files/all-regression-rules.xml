@@ -6,9 +6,6 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
     <description>Every apex, plsql and java rule in PMD which is used for the regression tests with pmdtester</description>
 
-    <!-- plsql: avoid long parse time by skipping the problematic file fow now, see #5521 -->
-    <exclude-pattern>.*/OracleDBUtils/p_utils_tests.sql</exclude-pattern>
-
     <rule ref="category/apex/bestpractices.xml" />
     <rule ref="category/apex/codestyle.xml" />
     <rule ref="category/apex/design.xml" />

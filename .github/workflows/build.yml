@@ -1,87 +1,333 @@
-name: build
+name: Build
 
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - '**'
-  merge_group:
-  schedule:
-    # build it monthly: At 04:00 on day-of-month 1.
-    - cron:  '0 4 1 * *'
-  workflow_dispatch:
-    inputs:
-      build_cli_dist_only:
-        description: "Build only modules cli and dist"
-        required: true
-        type: boolean
-        default: false
+  workflow_call:
+
+# if another commit is added to the same branch or PR (same github.ref),
+# then cancel already running jobs and start a new build.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read # to fetch code (actions/checkout)
 
+env:
+  LANG: 'en_US.UTF-8'
+
 jobs:
-  build:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - name: Fast Build with Maven
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+            -Dmaven.repo.local=.m2/repository \
+            verify -PfastSkip -DskipTests -Dcyclonedx.skip=false \
+            deploy:deploy -DdogfoodStagingRepo="$(pwd)/target/staging"
+      - name: Cleanup local repository
+        run: |
+          # Cleanup local repository to not poison the shared cache with our SNAPSHOTS of the current build.
+          # Some information is stored in maven-metadata-*.xml files which tells maven which
+          # version exactly is available in the staging repo. But if we rerun the build using the
+          # older cache, it points to the old staging versions, which are not available anymore.
+          find .m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" -and -not -path "*/pmd-designer/*" -print0 | xargs -0 rm -vrf
+      - uses: actions/upload-artifact@v4
+        with:
+          name: compile-artifact
+          if-no-files-found: error
+          path: |
+            */target
+            */*/target
+            !pmd-dist/target/pmd-dist-*-bin.zip
+            !pmd-dist/target/pmd-dist-*-src.zip
+            !pmd-dist/target/pmd-*-cyclonedx.xml
+            !pmd-dist/target/pmd-*-cyclonedx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: staging-repository
+          if-no-files-found: error
+          path: target/staging
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist-artifact
+          if-no-files-found: error
+          path: |
+            pmd-dist/target/pmd-dist-*-bin.zip
+            pmd-dist/target/pmd-dist-*-src.zip
+            pmd-dist/target/pmd-*-cyclonedx.xml
+            pmd-dist/target/pmd-*-cyclonedx.json
+
+  verify:
+    needs: compile
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - name: Full Build with Maven
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+              -Dmaven.repo.local=.m2/repository \
+              verify -DskipTests
+      - uses: actions/upload-artifact@v4
+        with:
+          name: javadocs-artifact
+          if-no-files-found: error
+          path: |
+            */target/*-javadoc.jar
+            */*/target/*-javadoc.jar
+
+  verify-unittests:
+    needs: compile
+    timeout-minutes: 30
     runs-on: ${{ matrix.os }}
-    permissions:
-      # read to fetch code (actions/checkout)
-      # write to push code to gh-pages, create releases
-      # note: forked repositories will have maximum read access
-      contents: write
-    continue-on-error: false
+    defaults:
+      run:
+        shell: bash
     strategy:
+      # don't fail fast - we want to know the results of all runs
+      fail-fast: false
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
-    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 2
-    - uses: actions/cache@v4
-      with:
-        path: |
-          ~/.m2/repository
-          ~/.gradle/caches
-          ~/.cache
-          ~/work/pmd/target/repositories
-          vendor/bundle
-        key: v3-${{ runner.os }}-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          v3-${{ runner.os }}-
-    - name: Set up Ruby 3.3
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.3
-    - name: Setup Environment
-      shell: bash
-      run: |
-        echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-        echo "MAVEN_OPTS=-Daether.connector.http.connectionMaxTtl=180 -DautoReleaseAfterClose=true -DstagingProgressTimeoutMinutes=30" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/29/scripts" >> $GITHUB_ENV
-    - name: Check Environment
-      shell: bash
-      run: |
-        f=check-environment.sh; \
-        mkdir -p .ci && \
-        ( [ -e .ci/$f ] || curl -sSL "${PMD_CI_SCRIPTS_URL}/$f" > ".ci/$f" ) && \
-        chmod 755 .ci/$f && \
-        .ci/$f
-    - name: Build
-      run: .ci/build.sh
-      shell: bash
-      env:
-        BUILD_CLI_DIST_ONLY: ${{ inputs.build_cli_dist_only }}
-        PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PMD_CI_GPG_PRIVATE_KEY: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
-        MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
-    - name: Workaround actions/upload-artifact#176
-      run: |
-        echo "artifacts_path=$(realpath ..)" >> $GITHUB_ENV
-    - name: Upload regression tester report
-      uses: actions/upload-artifact@v4
-      with:
-        name: pmd-regression-tester
-        path: ${{ env.artifacts_path }}/target/pr-*-diff-report-*.tar.gz
-        if-no-files-found: ignore
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        # under linux we execute more extensive integration tests with various java versions
+        if: ${{ runner.os == 'Linux' }}
+        with:
+          distribution: 'temurin'
+          java-version: |
+            8
+            17
+            21
+      - uses: actions/setup-java@v4
+        # default java version for all os is 11
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      # only restore the cache, don't create a new cache
+      # Note: this works under Windows only if pom.xml files use LF, so that hashFiles('**/pom.xml')
+      # gives the same result (line endings...).
+      # see .gitattributes for pom.xml - it should always be using lf.
+      - uses: actions/cache/restore@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - uses: actions/download-artifact@v4
+        # we can only reuse compile-artifacts under linux due to file timestamp issues and
+        # platform specific line endings in test resource files.
+        if: ${{ runner.os == 'Linux' }}
+        with:
+          name: compile-artifact
+      - name: Build with Maven and run unit tests
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+              -Dmaven.repo.local=.m2/repository \
+              verify \
+              -PfastSkip -Dcyclonedx.skip=false \
+              -Djava8.home="${JAVA_HOME_8_X64}" \
+              -Djava17.home="${JAVA_HOME_17_X64}" \
+              -Djava21.home="${JAVA_HOME_21_X64}"
+
+  dogfood:
+    needs: compile
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - uses: actions/download-artifact@v4
+        with:
+          name: staging-repository
+          path: target/staging
+      - name: Run PMD on PMD
+        run: |
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            dogfood_name="pr-$(jq -r ".number" "${GITHUB_EVENT_PATH}")"
+          else
+            dogfood_name="sha-${GITHUB_SHA}"
+          fi
+
+          current_pmd_version=$(./mvnw --batch-mode --no-transfer-progress \
+              help:evaluate -Dexpression=project.version -q -DforceStdout || echo "failed_to_determine_current_pmd_version")
+          echo "Determined current pmd version: ${current_pmd_version}"
+
+          new_version="${current_pmd_version}-dogfood-${dogfood_name}-SNAPSHOT"
+          echo "::group::Set version to ${new_version}"
+          ./mvnw -Dmaven.repo.local=.m2/repository \
+            versions:set --quiet -DnewVersion="${new_version}" -DgenerateBackupPoms=false
+          sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${current_pmd_version}"'<\/version>\1/' pom.xml
+          echo "::endgroup::"
+
+          echo "::group::Run ./mvnw verify"
+          ./mvnw --show-version --errors --batch-mode \
+            -Dmaven.repo.local=.m2/repository \
+            verify \
+            -PfastSkip \
+            -DdogfoodStagingRepo="$(pwd)/target/staging" \
+            -DskipTests \
+            -Dpmd.skip=false \
+            -Dcpd.skip=false
+          echo "::endgroup::"
+
+          echo "::group::Restore version to ${current_pmd_version}"
+          ./mvnw -Dmaven.repo.local=.m2/repository \
+            versions:set --quiet -DnewVersion="${current_pmd_version}" -DgenerateBackupPoms=false
+          git checkout -- pom.xml
+          echo "::endgroup::"
+
+  documentation:
+    needs: compile
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - name: Generate rule docs
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+            -Dmaven.repo.local=.m2/repository \
+            verify \
+            -Pgenerate-rule-docs,fastSkip \
+            -DskipTests -Dassembly.skipAssembly=true
+      - name: Set up Ruby 3.3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+      - name: Setup bundler
+        run: |
+          cd docs
+          bundle config set --local path vendor/bundle
+          bundle install
+      - name: Build documentation
+        run: |
+          cd docs
+          bundle exec jekyll build
+      - name: Create Markdown formatted Release Notes
+        run: |
+          cd docs
+          bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6 > _site/pmd_release_notes.md
+      - uses: actions/upload-artifact@v4
+        with:
+          name: docs-artifact
+          if-no-files-found: error
+          path: docs/_site
+
+  regressiontester:
+    needs: compile
+    if: ${{ github.event_name == 'pull_request' || github.event_name == 'push' }}
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - name: Set up Ruby 3.3
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.3
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.m2/repository
+            ~/.gradle/caches
+            ~/work/pmd/target/repositories
+            .ci/files/vendor/bundle
+          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
+          restore-keys: regressiontester-
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-artifact
+          path: pmd-dist/target
+      - name: Setup bundler
+        run: |
+          bundle config set --local gemfile .ci/files/Gemfile
+          bundle config set --local path vendor/bundle
+          bundle install
+      - name: Prepare HOME/openjdk11
+        run: |
+          ln -sfn "${JAVA_HOME_11_X64}" "${HOME}/openjdk11"
+      - name: Run pmdtester
+        env:
+          # this variable is available for "push" builds only, otherwise it's empty
+          PMD_REGRESSION_TESTER_PUSH_BEFORE: ${{ github.event.before }}
+        run: .ci/files/pmdtester_start.sh
+      - name: Workaround actions/upload-artifact#176
+        run: |
+          echo "artifacts_path=$(realpath ..)" >> "${GITHUB_ENV}"
+      - name: Upload regression tester report
+        uses: actions/upload-artifact@v4
+        with:
+          name: pmd-regression-tester
+          if-no-files-found: error
+          path: ${{ env.artifacts_path }}/target/reports/diff

@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRegion;
+
 /**
  * Package declaration at the top of a {@linkplain ASTCompilationUnit source file}.
  * Since 7.0, there is no Name node anymore. Use {@link #getName()} instead.
@@ -18,6 +22,8 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public final class ASTPackageDeclaration extends AbstractJavaNode implements Annotatable, ASTTopLevelDeclaration, JavadocCommentOwner {
 
+    private TextRegion reportRegion;
+
     ASTPackageDeclaration(int id) {
         super(id);
     }
@@ -28,6 +34,15 @@ public final class ASTPackageDeclaration extends AbstractJavaNode implements Ann
         return visitor.visit(this, data);
     }
 
+    void setNameRegion(JavaccToken startTok, JavaccToken endTok) {
+        reportRegion = TextRegion.union(startTok.getRegion(), endTok.getRegion());
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        // the report location is the name of the package
+        return getAstInfo().getTextDocument().toLocation(reportRegion);
+    }
 
     /**
      * Returns the name of the package.

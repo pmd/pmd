@@ -474,14 +474,17 @@ class JavaParserImpl {
   }
 
   private boolean mayStartExprAfterYield(final int offset) {
-      // based off of https://hg.openjdk.java.net/jdk/jdk/file/bc3da0226ffa/src/jdk.compiler/share/classes/com/sun/tools/javac/parser/JavacParser.java#l2580
+      // based off of https://github.com/openjdk/jdk/blob/6801eb87042742b8d760b79900b2bdff97c321b1/src/jdk.compiler/share/classes/com/sun/tools/javac/parser/JavacParser.java#L2936
       // please don't sue me
       JavaccToken token = getToken(offset);
       if (token == null) return false; // eof
       switch (token.kind) {
            case PLUS: case MINUS: case STRING_LITERAL: case CHARACTER_LITERAL:
+           case TEXT_BLOCK_LITERAL:
            case INTEGER_LITERAL: case FLOATING_POINT_LITERAL: case HEX_FLOATING_POINT_LITERAL:
            case NULL: case IDENTIFIER: case TRUE: case FALSE:
+           case VOID: case INT: case DOUBLE: case FLOAT: case BOOLEAN: case LONG: case SHORT: case BYTE: case CHAR:
+           case BANG: case TILDE:
            case NEW: case SWITCH: case THIS: case SUPER:
                return true;
            case INCR: case DECR:
@@ -1096,9 +1099,15 @@ private void ModuleDeclLahead() #void:
 
 
 void PackageDeclaration() :
-{String image;}
+{String image; JavaccToken startTok, endTok;}
 {
-  ModAnnotationList() "package" image=VoidName() { jjtThis.setImage(image); } ";"
+  ModAnnotationList() startTok="package"
+  image=VoidName() {
+    endTok = getToken(0);
+    jjtThis.setNameRegion(startTok.getNext(), endTok);
+    jjtThis.setImage(image);
+  }
+  ";"
 }
 
 void ImportDeclaration() :

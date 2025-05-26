@@ -256,6 +256,16 @@ permalink: pmd_release_notes.html
 keywords: changelog, release notes
 ---
 
+{% if is_release_notes_processor %}
+{% comment %}
+This allows to use links e.g. [Basic CLI usage]({{ baseurl }}pmd_userdocs_installation.html) that work both
+in the release notes on GitHub (as an absolute url) and on the rendered documentation page (as a relative url).
+{% endcomment %}
+{% capture baseurl %}https://docs.pmd-code.org/pmd-doc-{{ site.pmd.version }}/{% endcapture %}
+{% else %}
+{% assign baseurl = "" %}
+{% endif %}
+
 ## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
 The PMD team is pleased to announce PMD {{ site.pmd.version }}.
@@ -310,9 +320,9 @@ echo
 echo "Continuing with release of pmd-cli and pmd-dist..."
 echo "Before proceeding however, wait another 10 minutes, so that the freshly released artefacts"
 echo "are indeed available from maven central. The GitHub runners might not yet see them..."
-echo "If that happens, the build job needs to be started again, maybe the runner cache needs to be cleared as well."
+echo "If that happens, the old-build job needs to be started again, maybe the runner cache needs to be cleared as well."
 echo
-echo "Go to <https://github.com/pmd/pmd/actions/workflows/build.yml> and manually trigger a new build"
+echo "Go to <https://github.com/pmd/pmd/actions/workflows/old-build.yml> and manually trigger a new old-build job"
 echo "from tag 'pmd_releases/${RELEASE_VERSION}' and with option 'Build only modules cli and dist' checked."
 echo
 echo "This triggers the second stage release and eventually publishes the release on GitHub."
@@ -337,6 +347,7 @@ echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/${R
 echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-java/${RELEASE_VERSION}/>"
 echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/${RELEASE_VERSION}/>"
 echo "* Regression Tester baseline has been created: <https://pmd-code.org/pmd-regression-tester/>"
+echo "* Docker images have been created: <https://hub.docker.com/r/pmdcode/pmd> / <https://github.com/pmd/docker/pkgs/container/pmd>"
 echo
 echo "*   Send out an announcement mail to the mailing list:"
 echo

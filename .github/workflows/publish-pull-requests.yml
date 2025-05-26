@@ -2,7 +2,7 @@ name: Publish Results from Pull Requests
 run-name: Publish Results for "${{ github.event.workflow_run.display_title }}"
 on:
   workflow_run:
-    workflows: [Pull Request Build]
+    workflows: [Build Pull Request]
     types:
       - completed
 
@@ -13,8 +13,11 @@ permissions:
 
 jobs:
   publish:
-    # only run in the official pmd repo, where we have access to the secrets
-    if: github.repository == 'pmd/pmd'
+    # only run in the official pmd repo, where we have access to the secrets and not on forks
+    # and only run for _successful_ pull requests workflow runs.
+    if: ${{ github.repository == 'pmd/pmd'
+            && github.event.workflow_run.event == 'pull_request'
+            && github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     defaults:
@@ -39,7 +42,18 @@ jobs:
           echo "PR_NUMBER=${PR_NUMBER}" >> "${GITHUB_ENV}"
           echo "PR_BRANCH=${PR_BRANCH}" >> "${GITHUB_ENV}"
           echo "PR_SHA=${PR_SHA}" >> "${GITHUB_ENV}"
+      - name: Add Job Summary
+        env:
+          WORKFLOW_RUN_DISPLAY_TITLE: ${{ github.event.workflow_run.display_title }}
+          WORKFLOW_RUN_NAME: ${{ github.event.workflow_run.name }}
+          WORKFLOW_RUN_NUMBER: ${{ github.event.workflow_run.run_number }}
+          WORKFLOW_RUN_HTML_URL: ${{ github.event.workflow_run.html_url }}
+        run: |
+          echo "### Run Info" >> "${GITHUB_STEP_SUMMARY}"
           echo "Triggered for PR [#${PR_NUMBER}](https://github.com/pmd/pmd/pull/${PR_NUMBER})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
+          echo "Called by [${WORKFLOW_RUN_DISPLAY_TITLE} (${WORKFLOW_RUN_NAME} #${WORKFLOW_RUN_NUMBER})](${WORKFLOW_RUN_HTML_URL})" >> "${GITHUB_STEP_SUMMARY}"
+          echo "" >> "${GITHUB_STEP_SUMMARY}"
       - name: Download docs-artifact
         env:
           # Token required for GH CLI:
@@ -121,7 +135,7 @@ jobs:
             -f "state=success" -f "target_url=https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/regression" \
             -f "description=PMD Regression Tester Report" -f "context=Published Results / Regression Tester"
       - name: Prepare regression summary
-        run: |-
+        run: |
           summary="$(cat pmd-regression-tester/summary.txt)"
           if [ "$REGRESSION_REPORT_UPLOADED" = "1" ]; then
             summary="
@@ -135,7 +149,7 @@ jobs:
         env:
           # Token required for GH CLI:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |-
+        run: |
           timestamp="$(date -uIs)"
           summary="$(cat pmd-regression-tester/summary.txt)"
           
@@ -151,14 +165,20 @@ jobs:
             -f "started_at=${timestamp}" -f "conclusion=${conclusion}" -f "completed_at=${timestamp}" \
             -f "output[title]=Regression Tester Report" -f "output[summary]=${summary}"
       - name: Prepare comment text
-        run: |-
+        run: |
           summary="$(cat pmd-regression-tester/summary.txt)"
           comment="[Documentation Preview](https://pull-requests.pmd-code.org/pr-${PR_NUMBER}/${PR_SHA}/docs)
           
           ${summary}
+          
+          (comment created at $(date -u --rfc-3339=seconds) for ${PR_SHA})
           "
           echo "${comment}" > comment.txt
-      - uses: marocchino/sticky-pull-request-comment@v2
+          
+          echo "### Result" >> "${GITHUB_STEP_SUMMARY}"
+          echo "${comment}" >> "${GITHUB_STEP_SUMMARY}"
+      - uses: marocchino/sticky-pull-request-comment@67d0dec7b07ed060a405f9b2a64b8ab319fdd7db #v2.9.2
         with:
+          header: pmd-publish-pull-requests
           number: ${{ env.PR_NUMBER }}
           path: comment.txt

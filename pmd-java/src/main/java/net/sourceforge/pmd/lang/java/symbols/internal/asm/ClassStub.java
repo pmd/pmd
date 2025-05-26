@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyClassSignature;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ParseLock.CheckedParseLock;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
@@ -89,7 +90,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         this.resolver = resolver;
         this.names = new Names(internalName);
 
-        this.parseLock = new ParseLock("ClassStub:" + internalName) {
+        this.parseLock = new CheckedParseLock("ClassStub:" + internalName) {
             @Override
             protected boolean doParse() throws IOException {
                 try (InputStream instream = loader.getInputStream()) {
@@ -114,7 +115,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                     enclosingInfo = EnclosingInfo.NO_ENCLOSING;
                 }
                 if (signature == null) {
-                    assert failed : "No signature, but the parse hasn't failed? investigate";
+                    assert failed : "No signature, but the parse hasn't failed? investigate " + names.internalName;
                     signature = LazyClassSignature.defaultWhenUnresolved(ClassStub.this, observedArity);
                 }
                 methods = Collections.unmodifiableList(methods);
@@ -123,7 +124,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 memberClasses = Collections.unmodifiableList(memberClasses);
                 enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
                 recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
-                if (isEnum()) {
+                if ((accessFlags & Opcodes.ACC_ENUM) != 0) {
                     permittedSubclasses = Collections.emptyList();
                 }
                 permittedSubclasses = CollectionUtil.makeUnmodifiableAndNonNull(permittedSubclasses);
@@ -134,32 +135,11 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                     // whether they are top-level or not.
                     names.finishOuterClass();
                 }
-                assert names.simpleName != null : "At this point the simple name should be known";
-                if (!enclosingInfo.isLocalOrAnon && names.canonicalName == null) {
-                    // note that this may recursively parse the parent classes. This is
-                    // only necessary in specific cases where class simple names contain dollar signs.
-                    names.canonicalName = computeCanonicalName();
-                }
-
-                annotAttributes = (accessFlags & Opcodes.ACC_ANNOTATION) != 0
-                                  ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute)
-                                                        .map(JElementSymbol::getSimpleName)
-                                                        .collect(CollectionUtil.toPersistentSet())
-                                  : HashTreePSet.empty();
-            }
-
-            @Override
-            protected boolean canReenter() {
-                // We might call the parsing logic again in the same thread,
-                // e.g. in order to determine "annotAttributes", getDeclaredMethods() is called, which
-                // calls ensureParsed().
-                // Note: Other threads can't reenter, since our thread own the ParseLock monitor.
-                return true;
             }
 
             @Override
             protected boolean postCondition() {
-                return signature != null && enclosingInfo != null;
+                return signature != null && enclosingInfo != null && names.simpleName != null;
             }
         };
     }
@@ -381,7 +361,14 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     @Override
     public PSet<String> getAnnotationAttributeNames() {
-        parseLock.ensureParsed();
+        if (annotAttributes == null) {
+            parseLock.ensureParsed();
+            annotAttributes = isAnnotation()
+                              ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute)
+                                                    .map(JElementSymbol::getSimpleName)
+                                                    .collect(CollectionUtil.toPersistentSet())
+                              : HashTreePSet.empty();
+        }
         return annotAttributes;
     }
 
@@ -397,7 +384,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     @Override
     public @Nullable SymbolicValue getDefaultAnnotationAttributeValue(String attrName) {
         parseLock.ensureParsed();
-        if (!annotAttributes.contains(attrName)) {
+        if (!getAnnotationAttributeNames().contains(attrName)) {
             // this is a shortcut, because the default impl checks each method
             return null;
         }
@@ -485,18 +472,22 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     public @Nullable String getCanonicalName() {
         @Nullable String canoName = names.canonicalName;
         if (canoName == null) {
-            parseLock.ensureParsed();
-            canoName = names.canonicalName;
+            canoName = computeCanonicalName();
+            names.canonicalName = canoName;
+        }
+
+        if (Names.NO_CANONAME.equals(canoName)) {
+            return null;
         }
         return canoName;
     }
 
-    private @Nullable String computeCanonicalName() {
+    private @NonNull String computeCanonicalName() {
         parseLock.ensureParsed();
         if (names.canonicalName != null) {
             return names.canonicalName;
         } else if (enclosingInfo.isLocalOrAnon()) {
-            return null;
+            return Names.NO_CANONAME;
         }
         assert names.simpleName != null && !names.simpleName.isEmpty() : "Anon class should not take this branch";
 
@@ -506,7 +497,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         }
         String outerName = enclosing.getCanonicalName();
         if (outerName == null) {
-            return null;
+            return Names.NO_CANONAME;
         }
         return outerName + '.' + names.simpleName;
     }
@@ -617,6 +608,12 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
 
     static class Names {
+        /**
+         * Placeholder to represent that the class has no canonical name.
+         * This is not a valid canonical names so cannot class with an
+         * actual canoname.
+         */
+        private static final String NO_CANONAME = "--NO-CANONICAL-NAME";
 
         final String binaryName;
         final String internalName;

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Basic test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+interface Foo {}
+
+interface Bar { // warn
+    void run();
+}
+
+@FunctionalInterface
+interface Baz { // no warning
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Inheritance test</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+@FunctionalInterface
+interface Foo {
+    void x();
+}
+
+interface Bar extends Foo { // warn
+    default void run() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>ImplicitFunctionalInterface should not be reported on sealed interfaces #5724</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public sealed interface MyInterface permits MyInterface1, MyInterface2 {
+                String message();
+            }
+            interface MyInterface1 {}
+            interface MyInterface2 {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public @interface MyInterface {
+                String message();
+            }
+            ]]></code>
+    </test-code>
+
+
+</test-data>
