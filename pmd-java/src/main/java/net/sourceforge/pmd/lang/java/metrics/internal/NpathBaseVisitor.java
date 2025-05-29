@@ -35,7 +35,9 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
  *
  * @author Clément Fournier
  * @author Jason Bennett
+ * @deprecated Since 7.14.0. Has been replaced by {@link NPathMetricCalculator}
  */
+@Deprecated
 public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
     /** Instance. */
