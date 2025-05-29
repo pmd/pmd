@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
+import java.util.Objects;
 import javax.xml.namespace.QName;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -66,6 +67,23 @@ public abstract class XPathFunctionDefinition {
      * is found in the XPath expression.
      */
     public abstract FunctionCall makeCallExpression();
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(qname);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        XPathFunctionDefinition that = (XPathFunctionDefinition) o;
+        return Objects.equals(qname, that.qname);
+    }
 
     /**
      * Supported types of a custom XPath function. These can be used as {@link #getResultType() result types}

@@ -110,7 +110,7 @@ function build() {
         pmd_ci_setup_secrets_private_env
         pmd_ci_setup_secrets_gpg_key
         pmd_ci_setup_secrets_ssh
-        pmd_ci_maven_setup_settings
+        pmd_ci_build_setup_maven_settings
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Build and Deploy"
@@ -150,6 +150,36 @@ function build() {
     pmd_ci_log_group_end
     fi
 
+    # Trigger docker workflow to build new images for release builds
+    # but only for case b) pmd-cli/pmd-dist release
+    if pmd_ci_maven_isReleaseBuild && [ "${BUILD_CLI_DIST_ONLY}" = "true" ]; then
+    pmd_ci_log_group_start "Trigger docker workflow"
+      # split semantic version by dot
+      IFS="." read -ra VERSION_ARRAY <<< "${PMD_CI_MAVEN_PROJECT_VERSION}"
+      all_tags=""
+      new_tag=""
+      for i in "${VERSION_ARRAY[@]}"; do
+        if [ -z "$new_tag" ]; then
+          new_tag="${i}"
+        else
+          new_tag="${new_tag}.${i}"
+        fi
+        all_tags="${all_tags}${new_tag},"
+      done
+      all_tags="${all_tags}latest"
+      echo "version: ${PMD_CI_MAVEN_PROJECT_VERSION}"
+      echo "tags: ${all_tags}"
+
+      GH_TOKEN="${PMD_ACTIONS_HELPER_TOKEN}" \
+      gh api \
+        --method POST \
+        -H "Accept: application/vnd.github+json" \
+        -H "X-GitHub-Api-Version: 2022-11-28" \
+        /repos/pmd/docker/actions/workflows/publish-docker-image.yaml/dispatches \
+         -f "ref=main" -f "inputs[version]=${PMD_CI_MAVEN_PROJECT_VERSION}" -f "inputs[tags]=${all_tags}"
+    pmd_ci_log_group_end
+    fi
+
     #
     # everything from here runs only on snapshots, not on release builds
     #
@@ -169,7 +199,7 @@ function build() {
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Executing build with coveralls"
-        pmd_ci_openjdk_setdefault 11
+        pmd_ci_openjdk_setdefault 17
         export CI_NAME="github actions"
         export CI_BUILD_URL="${PMD_CI_JOB_URL}"
         export CI_BRANCH="${PMD_CI_BRANCH}"
@@ -204,6 +234,36 @@ function build() {
 function pmd_ci_build_setup_bundler() {
     pmd_ci_log_info "Checking bundler version..."
     bundle --version
+}
+
+function pmd_ci_build_setup_maven_settings() {
+      pmd_ci_log_info "Setting up maven at ${HOME}/.m2/settings.xml..."
+      mkdir -p "${HOME}/.m2"
+      cat > "${HOME}/.m2/settings.xml" <<EOF
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository/>
+  <interactiveMode/>
+  <usePluginRegistry/>
+  <offline/>
+  <pluginGroups>
+    <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
+  </pluginGroups>
+  <servers>
+    <server>
+      <id>central</id>
+      <username>\${env.CI_DEPLOY_USERNAME}</username>
+      <password>\${env.CI_DEPLOY_PASSWORD}</password>
+    </server>
+  </servers>
+  <mirrors/>
+  <proxies/>
+  <profiles/>
+  <activeProfiles/>
+</settings>
+EOF
 }
 
 #

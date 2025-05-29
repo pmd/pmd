@@ -7354,7 +7354,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/3007876?v=4",
       "profile": "https://github.com/marcindabrowski",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -8075,6 +8076,42 @@
       "profile": "https://github.com/dwgrth",
       "contributions": [
         "doc"
+      ]
+    },
+    {
+      "login": "MiladSadinam",
+      "name": "MiladSadinam",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8689490?v=4",
+      "profile": "https://github.com/MiladSadinam",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Frederick888",
+      "name": "Frederick Zhang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4507647?v=4",
+      "profile": "https://onee3.org/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "elharo",
+      "name": "Elliotte Rusty Harold",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1005544?v=4",
+      "profile": "https://www.elharo.com/blog/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ax-lothas",
+      "name": "lothas",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98159917?v=4",
+      "profile": "https://github.com/ax-lothas",
+      "contributions": [
+        "bug"
       ]
     }
   ],

@@ -245,8 +245,14 @@ public final class JavaAstUtils {
     private static boolean isReadUsage(ASTNamedReferenceExpr expr) {
         return expr.getAccessType() == AccessType.READ
             // x++ as a method argument or used in other expression
-            || expr.getParent() instanceof ASTUnaryExpression
-            && !(expr.getParent().getParent() instanceof ASTExpressionStatement);
+            || ((expr.getParent() instanceof ASTUnaryExpression
+            // compound assignments like '+=' have AccessType.WRITE, but can also be used in another expression
+            || isCompoundAssignment(expr))
+            && !(expr.getParent().getParent() instanceof ASTExpressionStatement));
+    }
+
+    private static boolean isCompoundAssignment(ASTNamedReferenceExpr expr) {
+        return expr.getParent() instanceof ASTAssignmentExpression && ((ASTAssignmentExpression) expr.getParent()).isCompound();
     }
 
     /**
