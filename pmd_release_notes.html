@@ -2043,6 +2043,12 @@ use the following snippet:</p>
 
 <p>Releases of PMD are available on <a href="https://central.sonatype.com/">Maven Central</a> as before without change.</p>
 
+<h4 id="more-cli-parameters-shared-between-pmd-and-cpd">More CLI parameters shared between PMD and CPD</h4>
+
+<p>When executing PMD or CPD, the same parameters are now understood for selecting which files should
+be analyzed. See <a href="pmd_userdocs_cli_reference.html#file-collection-options">File collection options</a>
+for a list of common, shared parameters that are valid for both commands.</p>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>core
@@ -2076,9 +2082,20 @@ use the following snippet:</p>
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+<h4 id="cli">CLI</h4>
+<ul>
+  <li>CPD now supports <code class="language-plaintext highlighter-rouge">--report-file</code> (-r) and <code class="language-plaintext highlighter-rouge">--exclude-file-list</code>.</li>
+  <li>PMD now supports <code class="language-plaintext highlighter-rouge">--exclude</code> and <code class="language-plaintext highlighter-rouge">--non-recursive</code>.</li>
+  <li>The option <code class="language-plaintext highlighter-rouge">--ignore-list</code> in PMD is renamed to <code class="language-plaintext highlighter-rouge">--exclude-file-list</code>.</li>
+</ul>
 
 <h4 id="deprecations">Deprecations</h4>
 <ul>
+  <li>CLI
+    <ul>
+      <li>The option <code class="language-plaintext highlighter-rouge">--ignore-list</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">--exclude-file-list</code> instead.</li>
+    </ul>
+  </li>
   <li>pmd-java
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#getDeclarationNode()"><code>ASTCompactConstructorDeclaration#getDeclarationNode</code></a>: This method just returns <code class="language-plaintext highlighter-rouge">this</code> and isn’t useful.</li>
@@ -2104,6 +2121,7 @@ and uses Long instead of BigInteger.</li>
   <li><a href="https://github.com/pmd/pmd/pull/5700">#5700</a>: [core] Don’t accidentally catch unexpected runtime exceptions in CpdAnalysis - <a href="https://github.com/elharo">Elliotte Rusty Harold</a> (@elharo)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5716">#5716</a>: Fix #5634: [java] CommentDefaultAccessModifier: Comment between annotation and constructor not recognized - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5727">#5727</a>: Fix #5621: [java] Fix FPs with UnusedPrivateMethod - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5731">#5731</a>: [cli] Share more CLI options between CPD and PMD - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5736">#5736</a>: Fix #5061: [java] UnusedLocalVariable FP when using compound assignment - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
 </ul>
 

@@ -2067,35 +2067,6 @@
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-dir"><code>--dir&nbsp;&lt;path&gt;</code><br /><code>-d&nbsp;&lt;path&gt;</code></a></td>
-    <td>Path to a source file, or directory containing
-                              source files to analyze. Zip and Jar files are
-                              also supported, if they are specified directly
-                              (archive files found while exploring a directory
-                              are not recursively expanded). This option can be
-                              repeated, and multiple arguments can be provided
-                              to a single occurrence of the option. One of
-                              <code>--dir</code>, <code>--file-list</code> or <code>--uri</code> must be provided.</td>
-    <td><code></code></td>
-    <td></td>
-</tr>
-
-    <!-- Row of the CLI reference table, describing an option -->
-<!-- Rows can be linked to the name of the option (without leading dash) -->
-<!-- Argument summary: -->
-<!-- options: comma separated list of aliases for the option.-->
-<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
-<!-- description: description, you can use "some" inline markdown -->
-<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
-<!-- languages: languages to which the option applies -->
-<!-- default: default value -->
-
-
-
-<!-- fragment id in the page -->
-
-
-<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-format"><code>--format&nbsp;&lt;format&gt;</code><br /><code>-f&nbsp;&lt;format&gt;</code></a></td>
     <td>Output format of the analysis report. The available formats
                             are described <a href="#available-report-formats">here</a>.</td>
@@ -2218,29 +2189,6 @@
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-encoding"><code>--encoding&nbsp;&lt;charset&gt;</code><br /><code>-e&nbsp;&lt;charset&gt;</code></a></td>
-    <td>Specifies the character set encoding of the source code files PMD is reading.
-                            The valid values are the standard character sets of <code>java.nio.charset.Charset</code>.</td>
-    <td><code>UTF-8</code></td>
-    <td></td>
-</tr>
-
-    <!-- Row of the CLI reference table, describing an option -->
-<!-- Rows can be linked to the name of the option (without leading dash) -->
-<!-- Argument summary: -->
-<!-- options: comma separated list of aliases for the option.-->
-<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
-<!-- description: description, you can use "some" inline markdown -->
-<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
-<!-- languages: languages to which the option applies -->
-<!-- default: default value -->
-
-
-
-<!-- fragment id in the page -->
-
-
-<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-%5Bno-%5Dfail-on-error"><code>--[no-]fail-on-error</code></a></td>
     <td>Specifies whether PMD exits with non-zero status if recoverable errors occurred.
                             By default PMD exits with status 5 if recoverable errors occurred (whether there are violations or not).
@@ -2289,30 +2237,6 @@
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-file-list"><code>--file-list&nbsp;&lt;filepath&gt;</code></a></td>
-    <td>Path to a file containing a list of files to
-                              analyze, one path per line. One of <code>--dir</code>,
-                              <code>--file-list</code> or <code>--uri</code> must be provided.</td>
-    <td><code></code></td>
-    <td></td>
-</tr>
-
-    <!-- Row of the CLI reference table, describing an option -->
-<!-- Rows can be linked to the name of the option (without leading dash) -->
-<!-- Argument summary: -->
-<!-- options: comma separated list of aliases for the option.-->
-<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
-<!-- description: description, you can use "some" inline markdown -->
-<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
-<!-- languages: languages to which the option applies -->
-<!-- default: default value -->
-
-
-
-<!-- fragment id in the page -->
-
-
-<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-force-language"><code>--force-language&nbsp;&lt;lang&gt;</code></a></td>
     <td>Force a language to be used for all input files, irrespective of
                             file names. When using this option, the automatic language selection
@@ -2322,29 +2246,6 @@
                             <p>Use <code>--use-version</code> to specify the language version to use, if it is not the default.</p>
                             <p>This option allows to use the xml language for files, that don't
                             use xml as extension. See <a href="#analyze-other-xml-formats">example</a> below.</p></td>
-    <td><code></code></td>
-    <td></td>
-</tr>
-
-    <!-- Row of the CLI reference table, describing an option -->
-<!-- Rows can be linked to the name of the option (without leading dash) -->
-<!-- Argument summary: -->
-<!-- options: comma separated list of aliases for the option.-->
-<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
-<!-- description: description, you can use "some" inline markdown -->
-<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
-<!-- languages: languages to which the option applies -->
-<!-- default: default value -->
-
-
-
-<!-- fragment id in the page -->
-
-
-<tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-ignore-list"><code>--ignore-list&nbsp;&lt;filepath&gt;</code></a></td>
-    <td>Path to file containing a list of files to ignore, one path per line.
-                            This option overrides files included by any of <code>--dir</code>, <code>--file-list</code> and <code>--uri</code>.</td>
     <td><code></code></td>
     <td></td>
 </tr>
@@ -2530,31 +2431,6 @@
 
 
 <tr>
-    <td><a style="pointer-events: none; cursor: default;" name="-relativize-paths-with"><code>--relativize-paths-with&nbsp;&lt;path&gt;</code><br /><code>-z&nbsp;&lt;path&gt;</code></a></td>
-    <td>Path relative to which directories are rendered in the report. This option allows
-                    shortening directories in the report; without it, paths are rendered as mentioned in the source directory (option "--dir").
-                    The option can be repeated, in which case the shortest relative path will be used.
-                    If the root path is mentioned (e.g. "/" or "C:\\"), then the paths will be rendered as absolute.</td>
-    <td><code></code></td>
-    <td></td>
-</tr>
-
-    <!-- Row of the CLI reference table, describing an option -->
-<!-- Rows can be linked to the name of the option (without leading dash) -->
-<!-- Argument summary: -->
-<!-- options: comma separated list of aliases for the option.-->
-<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
-<!-- description: description, you can use "some" inline markdown -->
-<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
-<!-- languages: languages to which the option applies -->
-<!-- default: default value -->
-
-
-
-<!-- fragment id in the page -->
-
-
-<tr>
     <td><a style="pointer-events: none; cursor: default;" name="-report-file"><code>--report-file&nbsp;&lt;path&gt;</code><br /><code>-r&nbsp;&lt;path&gt;</code></a></td>
     <td>Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output.</td>
     <td><code></code></td>
@@ -2628,6 +2504,200 @@
     <td></td>
 </tr>
 
+</table>
+
+<h3 id="file-collection-options">File collection options</h3>
+
+<p>PMD and CPD use the same set of options to specify the files that are to be
+processed by the analyzer. There are different ways to specify files, but at
+least one of <code class="language-plaintext highlighter-rouge">--dir</code>, <code class="language-plaintext highlighter-rouge">--file-list</code> or <code class="language-plaintext highlighter-rouge">--uri</code> must be provided.</p>
+
+<table>
+    <tr>
+        <th>Option</th>
+        <th>Description</th>
+        <th>Default value</th>
+        <th>Applies to</th>
+    </tr>
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-dir"><code>--dir&nbsp;&lt;path&gt;</code><br /><code>-d&nbsp;&lt;path&gt;</code></a></td>
+    <td>Path to a source file, or directory containing
+                              source files to analyze. Zip and Jar files are
+                              also supported, if they are specified directly
+                              (archive files found while exploring a directory
+                              are not recursively expanded). This option can be
+                              repeated, and multiple arguments can be provided
+                              to a single occurrence of the option. One of
+                              <code>--dir</code>, <code>--file-list</code> or <code>--uri</code> must be provided.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-file-list"><code>--file-list&nbsp;&lt;filepath&gt;</code></a></td>
+    <td>Path to a file containing a list of files to
+                              analyze, one path per line. One of <code>--dir</code>,
+                              <code>--file-list</code> or <code>--uri</code> must be provided.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-exclude"><code>--exclude&nbsp;&lt;filepath+&gt;</code></a></td>
+    <td>Specify one or more paths to files that will be ignored.
+                            This option overrides files included by any of <code>--dir</code>, <code>--file-list</code> and <code>--uri</code>.
+                            It can combine with <code>--exclude-file-list</code>.
+                            Available for PMD since 7.14.0, for CPD since 7.0.0.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-exclude-file-list"><code>--exclude-file-list&nbsp;&lt;filepath&gt;</code></a></td>
+    <td>Path to a file containing a list of files to ignore, one path per line.
+                            This option overrides files included by any of <code>--dir</code>, <code>--file-list</code> and <code>--uri</code>.
+                            It can combine with <code>--exclude</code>.
+                            Available for PMD since 7.14.0, for CPD since 7.14.0.
+                            For PMD, this option was called <code>--ignore-list</code>.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-ignore-list"><code>--ignore-list&nbsp;&lt;filepath&gt;</code></a></td>
+    <td><span class="label label-primary">Deprecated (Since 7.14.0)</span>
+                            This option has been renamed <code>--exclude-file-list</code>.
+                            Path to file containing a list of files to ignore, one path per line.
+                            This option overrides files included by any of <code>--dir</code>, <code>--file-list</code> and <code>--uri</code>.
+                            It can combine with <code>--exclude</code>.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-non-recursive"><code>--non-recursive</code></a></td>
+    <td>When specified, any directory mentioned with <code>--dir</code> or in the <code>--file-list</code> will only be searched for files that are direct children.
+                            By default, subdirectories are recursively included.
+                            Available for PMD since 7.14.0, for CPD since 7.0.0.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-relativize-paths-with"><code>--relativize-paths-with&nbsp;&lt;path&gt;</code><br /><code>-z&nbsp;&lt;path&gt;</code></a></td>
+    <td>Path relative to which directories are rendered in the report. This option allows
+                    shortening directories in the report; without it, paths are rendered as mentioned in the source directory (option "--dir").
+                    The option can be repeated, in which case the shortest relative path will be used.
+                    If the root path is mentioned (e.g. "/" or "C:\\"), then the paths will be rendered as absolute.</td>
+    <td><code></code></td>
+    <td></td>
+</tr>
+
     <!-- Row of the CLI reference table, describing an option -->
 <!-- Rows can be linked to the name of the option (without leading dash) -->
 <!-- Argument summary: -->
@@ -2648,6 +2718,29 @@
     <td>Database URI for sources.  One of <code>--dir</code>, <code>--file-list</code> or <code>--uri</code> must be provided.</td>
     <td><code></code></td>
     <td>PLSQL</td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-encoding"><code>--encoding&nbsp;&lt;charset&gt;</code><br /><code>-e&nbsp;&lt;charset&gt;</code></a></td>
+    <td>Specifies the character set encoding of the source code files the tool is reading.
+                            The valid values are the standard character sets of <code>java.nio.charset.Charset</code>.</td>
+    <td><code>UTF-8</code></td>
+    <td></td>
 </tr>
 
 </table>
@@ -2934,7 +3027,7 @@ parse errors are suppressed in order to reduce irrelevant noise:</p>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2024 (7.3.0)<br /> Site last generated: May 29, 2025 <br />
+            May 2025 (7.14.0)<br /> Site last generated: May 29, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
