@@ -412,7 +412,7 @@ public final class ExprOps {
             }
 
             @Override
-            public void setCtDecl(MethodCtDecl methodType) {
+            public void setCompileTimeDecl(MethodCtDecl methodType) {
                 this.mt = methodType;
             }
 
