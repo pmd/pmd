@@ -125,6 +125,8 @@ fun TreeNodeWrapper<Node, *>.variableId(name: String, otherAssertions: NodeSpec<
 fun TreeNodeWrapper<Node, *>.simpleLambdaParam(name: String, otherAssertions: NodeSpec<ASTVariableId> = EmptyAssertions) =
         child<ASTLambdaParameter> {
             it::getModifiers shouldBe modifiers {  }
+            it::hasVarKeyword shouldBe false
+            it::getTypeNode shouldBe null
 
             child<ASTVariableId>(ignoreChildren = otherAssertions == EmptyAssertions) {
                 it::getName shouldBe name

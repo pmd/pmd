@@ -4,8 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
@@ -81,6 +81,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                             }
 
                             it::getTypeNode shouldBe primitiveType(INT)
+                            it::hasVarKeyword shouldBe false
 
                             variableId("a") {
                                 it::isFinal shouldBe true
@@ -108,6 +109,91 @@ class ASTLambdaExpressionTest : ParserTestSpec({
             }
         }
     }
+    parserTestContainer("Lambda with var kw before java 11 ", javaVersions = J1_8..J10) {
+        enableProcessing()
+
+        inContext(ExpressionParsingCtx) {
+            "(final var a, @F var b) -> foo()" should parseAs {
+                exprLambda {
+                    it::isExplicitlyTyped shouldBe true
+                    it::getParameters shouldBe lambdaFormals {
+                        lambdaParam {
+                            it::getModifiers shouldBe modifiers {
+                                it::getExplicitModifiers shouldBe setOf(JModifier.FINAL)
+                            }
+
+                            it::getTypeNode shouldBe classType("var")
+                            it::hasVarKeyword shouldBe false
+
+                            variableId("a") {
+                                it::isFinal shouldBe true
+                                it::isLambdaParameter shouldBe true
+                                it::isTypeInferred shouldBe false
+                            }
+                        }
+                        lambdaParam {
+                            it::getModifiers shouldBe modifiers {
+                                it::getExplicitModifiers shouldBe setOf()
+                                annotation("F")
+                            }
+
+                            it::getTypeNode shouldBe classType("var")
+                            it::hasVarKeyword shouldBe false
+
+                            variableId("b") {
+                                it::isFinal shouldBe false
+                                it::isLambdaParameter shouldBe true
+                                it::isTypeInferred shouldBe false
+                            }
+                        }
+                    }
+
+                    methodCall("foo")
+                }
+            }
+        }
+    }
+    parserTestContainer("Lambda with var kw", javaVersions = J11..Latest) {
+        inContext(ExpressionParsingCtx) {
+            "(final var a, @F var b) -> foo()" should parseAs {
+                exprLambda {
+                    it::isExplicitlyTyped shouldBe false
+                    it::getParameters shouldBe lambdaFormals {
+                        lambdaParam {
+                            it::getModifiers shouldBe modifiers {
+                                it::getExplicitModifiers shouldBe setOf(JModifier.FINAL)
+                            }
+
+                            it::getTypeNode shouldBe null
+                            it::hasVarKeyword shouldBe true
+
+                            variableId("a") {
+                                it::isFinal shouldBe true
+                                it::isLambdaParameter shouldBe true
+                                it::isTypeInferred shouldBe true
+                            }
+                        }
+                        lambdaParam {
+                            it::getModifiers shouldBe modifiers {
+                                it::getExplicitModifiers shouldBe setOf()
+                                annotation("F")
+                            }
+
+                            it::getTypeNode shouldBe null
+                            it::hasVarKeyword shouldBe true
+                            variableId("b") {
+                                it::isFinal shouldBe false
+                                it::isLambdaParameter shouldBe true
+                                it::isTypeInferred shouldBe true
+                            }
+                        }
+                    }
+
+                    methodCall("foo")
+                }
+            }
+        }
+    }
 
     parserTestContainer("Mixed array notation/varargs", javaVersions = J1_8..Latest) {
         inContext(ExpressionParsingCtx) {
@@ -121,6 +207,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                             }
 
                             it::getTypeNode shouldBe primitiveType(INT)
+                            it::hasVarKeyword shouldBe false
 
                             variableId("a") {
                                 it::isFinal shouldBe true
@@ -142,6 +229,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                                 annotation("F")
                             }
 
+                            it::hasVarKeyword shouldBe false
                             it::getTypeNode shouldBe arrayType {
                                 classType("List")
                                 it::getDimensions shouldBe child {
@@ -203,6 +291,7 @@ class ASTLambdaExpressionTest : ParserTestSpec({
                         lambdaParam {
                             it::getModifiers shouldBe modifiers {}
 
+                            it::hasVarKeyword shouldBe false
                             it::getTypeNode shouldBe arrayType {
                                 classType("String")
                                 it::getDimensions shouldBe child {
