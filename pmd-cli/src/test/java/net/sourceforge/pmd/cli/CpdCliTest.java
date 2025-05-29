@@ -294,25 +294,6 @@ class CpdCliTest extends BaseCliTest {
                 });
     }
 
-    @Test
-    void testExcludeFileDeprecated() throws Exception {
-        runCli(OK,
-                "--minimum-tokens", "10",
-                "--file-list", BASE_RES_PATH + "fileList.txt",
-                "--ignore", BASE_RES_PATH + "badandgood/GoodFile.java", BASE_RES_PATH + "badandgood/GoodFile2.java",
-                "--format", "text", "--debug")
-                .verify(r -> {
-                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile.java"));
-                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile2.java"));
-                    r.checkStdErr(containsPattern("Excluding file .*GoodFile.java"));
-                    r.checkStdErr(containsPattern("Excluding file .*GoodFile2.java"));
-
-                    r.checkStdErr(containsString("deprecated. Use --exclude"));
-
-                    r.checkStdOut(not(containsString("Found a 5 line (13 tokens) duplication")));
-                });
-    }
-
 
     @Test
     void testReportFile(@TempDir Path tmp) throws Exception {

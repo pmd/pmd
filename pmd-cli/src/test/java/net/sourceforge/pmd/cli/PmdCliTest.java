@@ -152,7 +152,7 @@ class PmdCliTest extends BaseCliTest {
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
             runCli(OK,
-                    "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--ignore", srcDir.toString(), "--debug")
+                    "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--exclude", srcDir.toString(), "--debug")
                     .verify(r -> {
                         r.checkStdErr(containsString("No files to analyze"));
                         r.checkStdOut(emptyString());
