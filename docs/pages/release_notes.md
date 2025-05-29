@@ -25,11 +25,18 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* java-bestpractices
+  * [#5621](https://github.com/pmd/pmd/issues/5621): \[java] UnusedPrivateMethod with method ref
 
 ### 🚨 API Changes
 
+#### Experimental
+* pmd-java
+  * {%jdoc !!java::lang.java.types.OverloadSelectionResult#getTypeToSearch() %}
+
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5727](https://github.com/pmd/pmd/pull/5727): Fix #5621: \[java]  Fix FPs with UnusedPrivateMethod - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

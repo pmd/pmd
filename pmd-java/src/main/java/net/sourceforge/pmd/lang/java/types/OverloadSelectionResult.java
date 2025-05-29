@@ -98,6 +98,7 @@ public interface OverloadSelectionResult {
      * constructor call expressions.
      *
      * @see ExprMirror.MethodUsageMirror#getTypeToSearch()
+     * @experimental Since 7.14.0
      */
     @Experimental
     @Nullable JTypeMirror getTypeToSearch();

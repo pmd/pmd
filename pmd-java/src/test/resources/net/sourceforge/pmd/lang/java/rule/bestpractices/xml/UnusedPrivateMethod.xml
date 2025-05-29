@@ -2732,7 +2732,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>[java] UnusedPrivateMethod false-positive #5664</description>
+        <description>[java] UnusedPrivateMethod false-positive #5664 (not reproducible)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             @ExtendWith(MockitoExtension.class)

@@ -29,6 +29,8 @@ public interface MethodUsage extends JavaNode {
     /**
      * Returns information about the overload selection for this call.
      * Be aware, that selection might have failed ({@link OverloadSelectionResult#isFailed()}).
+     *
+     * @since 7.14.0
      */
     OverloadSelectionResult getOverloadSelectionInfo();
 
