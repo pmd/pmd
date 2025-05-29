@@ -32,8 +32,17 @@ This is a {{ site.pmd.release_type }} release.
   * [#5645](https://github.com/pmd/pmd/issues/5645): \[java] Parse error on switch with yield
 * java-bestpractices
   * [#5687](https://github.com/pmd/pmd/issues/5687): \[java] UnusedPrivateMethodRule: exclude serialization method readObjectNoData()
+* java-design
+  * [#5568](https://github.com/pmd/pmd/issues/5568): \[java] High NPathComplexity in `switch` expression
+  * [#5647](https://github.com/pmd/pmd/issues/5647): \[java] NPathComplexity does not account for `return`s
 
 ### 🚨 API Changes
+
+#### Deprecations
+* pmd-java
+  * {% jdoc !!java::lang.java.ast.ASTCompactConstructorDeclaration#getDeclarationNode() %}: This method just returns `this` and isn't useful.
+  * {% jdoc !!java::lang.java.metrics.JavaMetrics#NPATH %}: Use {% jdoc java::lang.java.metrics.JavaMetrics#NPATH_COMP %}, which is available on more nodes,
+    and uses Long instead of BigInteger.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -43,6 +52,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5684](https://github.com/pmd/pmd/pull/5684): Fix #5667: \[apex] ApexUnitTestShouldNotUseSeeAllDataTrue false negative when seeAllDate parameter is a string - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
 * [#5685](https://github.com/pmd/pmd/pull/5685): \[doc] typo fix in PMD Designer reference - [Douglas Griffith](https://github.com/dwgrth) (@dwgrth)
 * [#5687](https://github.com/pmd/pmd/pull/5687): \[java] UnusedPrivateMethodRule: exclude serialization method readObjectNoData() - [Gili Tzabari](https://github.com/cowwoc) (@cowwoc)
+* [#5599](https://github.com/pmd/pmd/pull/5599): \[java] Rewrite NPath complexity metric - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
