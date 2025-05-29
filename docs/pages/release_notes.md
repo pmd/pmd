@@ -48,6 +48,12 @@ use the following snippet:
 
 Releases of PMD are available on [Maven Central](https://central.sonatype.com/) as before without change.
 
+#### More CLI parameters shared between PMD and CPD
+
+When executing PMD or CPD, the same parameters are now understood for selecting which files should
+be analyzed. See [File collection options]({{ baseurl }}pmd_userdocs_cli_reference.html#file-collection-options)
+for a list of common, shared parameters that are valid for both commands.
+
 ### 🐛 Fixed Issues
 * core
   * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
@@ -64,8 +70,14 @@ Releases of PMD are available on [Maven Central](https://central.sonatype.com/) 
   * [#5702](https://github.com/pmd/pmd/issues/5702): \[java] InvalidLogMessageFormat: Lombok @<!-- -->Slf4j annotation is not interpreted by PMD
 
 ### 🚨 API Changes
+#### CLI
+* CPD now supports `--report-file` (-r) and `--exclude-file-list`.
+* PMD now supports `--exclude` and `--non-recursive`.
+* The option `--ignore-list` in PMD is renamed to `--exclude-file-list`.
 
 #### Deprecations
+* CLI
+  * The option `--ignore-list` has been deprecated. Use `--exclude-file-list` instead.
 * pmd-java
   * {% jdoc !!java::lang.java.ast.ASTCompactConstructorDeclaration#getDeclarationNode() %}: This method just returns `this` and isn't useful.
   * {% jdoc !!java::lang.java.metrics.JavaMetrics#NPATH %}: Use {% jdoc java::lang.java.metrics.JavaMetrics#NPATH_COMP %}, which is available on more nodes,
@@ -81,6 +93,7 @@ Releases of PMD are available on [Maven Central](https://central.sonatype.com/) 
 * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis - [Elliotte Rusty Harold](https://github.com/elharo) (@elharo)
 * [#5716](https://github.com/pmd/pmd/pull/5716): Fix #5634: \[java] CommentDefaultAccessModifier: Comment between annotation and constructor not recognized - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5727](https://github.com/pmd/pmd/pull/5727): Fix #5621: \[java] Fix FPs with UnusedPrivateMethod - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5731](https://github.com/pmd/pmd/pull/5731): \[cli] Share more CLI options between CPD and PMD - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5736](https://github.com/pmd/pmd/pull/5736): Fix #5061: \[java] UnusedLocalVariable FP when using compound assignment - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 
 ### 📦 Dependency updates
