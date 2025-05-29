@@ -2053,12 +2053,19 @@ use the following snippet:</p>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5061">#5061</a>: [java] UnusedLocalVariable false positive when variable is read as side effect of an assignment</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5621">#5621</a>: [java] UnusedPrivateMethod with method ref</li>
       <li><a href="https://github.com/pmd/pmd/issues/5724">#5724</a>: [java] ImplicitFunctionalInterface should not be reported on sealed interfaces</li>
     </ul>
   </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5634">#5634</a>: [java] CommentDefaultAccessModifier doesn’t recognize /* package */ comment at expected location for constructors</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5568">#5568</a>: [java] High NPathComplexity in <code class="language-plaintext highlighter-rouge">switch</code> expression</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5647">#5647</a>: [java] NPathComplexity does not account for <code class="language-plaintext highlighter-rouge">return</code>s</li>
     </ul>
   </li>
   <li>java-errorprone
@@ -2070,11 +2077,33 @@ use the following snippet:</p>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
+<h4 id="deprecations">Deprecations</h4>
+<ul>
+  <li>pmd-java
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#getDeclarationNode()"><code>ASTCompactConstructorDeclaration#getDeclarationNode</code></a>: This method just returns <code class="language-plaintext highlighter-rouge">this</code> and isn’t useful.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#NPATH"><code>JavaMetrics#NPATH</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#NPATH_COMP"><code>NPATH_COMP</code></a>, which is available on more nodes,
+and uses Long instead of BigInteger.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="experimental">Experimental</h4>
+<ul>
+  <li>pmd-java
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/OverloadSelectionResult.html#getTypeToSearch()"><code>OverloadSelectionResult#getTypeToSearch</code></a></li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/5599">#5599</a>: [java] Rewrite NPath complexity metric - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5700">#5700</a>: [core] Don’t accidentally catch unexpected runtime exceptions in CpdAnalysis - <a href="https://github.com/elharo">Elliotte Rusty Harold</a> (@elharo)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5716">#5716</a>: Fix #5634: [java] CommentDefaultAccessModifier: Comment between annotation and constructor not recognized - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5727">#5727</a>: Fix #5621: [java] Fix FPs with UnusedPrivateMethod - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5736">#5736</a>: Fix #5061: [java] UnusedLocalVariable FP when using compound assignment - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
 </ul>
 
