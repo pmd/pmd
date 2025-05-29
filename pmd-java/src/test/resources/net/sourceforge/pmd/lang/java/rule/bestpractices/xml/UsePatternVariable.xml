@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>simple</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+// instead of
+void example1_before(Object o) {
+    if (o instanceof String) {
+        String s = (String) o;
+        System.out.println("Length: " + s.length());
+    }
+}
+// with pattern matching
+void example1_after(Object o) {
+    if (o instanceof String s) {
+        System.out.println("Length: " + s.length());
+    }
+}
+
+// instead of
+void example2_before(Object o) {
+    if (!(o instanceof String)) {
+        return;
+    }
+    String s = (String) o;
+    System.out.println("Length: " + s.length());
+}
+// with pattern matching
+void example2_after(Object o) {
+    if (!(o instanceof String s)) {
+        return;
+    }
+    System.out.println("Length: " + s.length());
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pattern matching with instanceof - simple case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    void example1(Object o) {
+        if (o instanceof String s) {
+            System.out.println("Length: " + s.length());
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pattern matching with instanceof - negated case</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    void example2(Object o) {
+        if (!(o instanceof String s)) {
+            return;
+        }
+        System.out.println("Length: " + s.length());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pattern matching with instanceof - unused variable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    void example3(Object o) {
+        if (o instanceof String s) {
+            // s is not used here
+            System.out.println("It's a string");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pattern matching with instanceof - complex expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    void example4(Object o) {
+        if (o instanceof List<?> list && !list.isEmpty()) {
+            System.out.println("First element: " + list.get(0));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pattern matching with instanceof - multiple patterns</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    void example5(Object o) {
+        if (o instanceof String s) {
+            System.out.println("String: " + s);
+        } else if (o instanceof Integer i) {
+            System.out.println("Integer: " + i);
+        } else if (o instanceof Double d) {
+            System.out.println("Double: " + d);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pattern matching with instanceof - in while loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    void example6(Object o) {
+        while (o instanceof String s) {
+            System.out.println(s);
+            o = getNext();
+        }
+    }
+
+    private Object getNext() {
+        return null;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pattern matching with instanceof - with else</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    void example7(Object o) {
+        if (o instanceof String s) {
+            System.out.println("String length: " + s.length());
+        } else {
+            System.out.println("Not a string");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Pattern matching with instanceof - nested</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class PatternMatchingInstanceof {
+    void example8(Object o1, Object o2) {
+        if (o1 instanceof String s1) {
+            if (o2 instanceof String s2) {
+                System.out.println(s1 + s2);
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>
