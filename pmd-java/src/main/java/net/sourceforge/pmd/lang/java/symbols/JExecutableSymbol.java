@@ -15,7 +15,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
  * Common supertype for {@linkplain JMethodSymbol method}
