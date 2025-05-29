@@ -63,6 +63,9 @@ public final class ASTCompactConstructorDeclaration extends AbstractJavaNode imp
         return Objects.requireNonNull(firstChild(ASTBlock.class));
     }
 
+    /**
+     * @deprecated Since 7.14.0. This method just returns `this` and isn't useful.
+     */
     @Deprecated
     public ASTCompactConstructorDeclaration getDeclarationNode() {
         return this;

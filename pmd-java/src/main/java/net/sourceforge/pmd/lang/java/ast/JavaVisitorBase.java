@@ -399,6 +399,9 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
 
+    /**
+     * @since 7.14.0
+     */
     public R visitLoop(ASTLoopStatement node, P data) {
         return visitStatement(node, data);
     }

@@ -21,6 +21,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *                   | {@link ASTCompactConstructorDeclaration CompactConstructorDeclaration}
  *
  * </pre>
+ *
+ * @since 7.14.0
  */
 public interface ReturnScopeNode extends JavaNode {
 

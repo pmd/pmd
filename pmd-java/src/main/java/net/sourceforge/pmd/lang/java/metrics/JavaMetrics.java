@@ -385,7 +385,7 @@ public final class JavaMetrics {
                     "NPath Complexity", "NPath");
 
     /**
-     * @deprecated Use {@link #NPATH_COMP}, which is available on more nodes,
+     * @deprecated Since 7.14.0. Use {@link #NPATH_COMP}, which is available on more nodes,
      *             and uses Long instead of BigInteger.
      */
     @Deprecated

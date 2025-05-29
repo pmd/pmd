@@ -44,6 +44,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 
+/**
+ * @since 7.14.0.
+ */
 public final class NPathMetricCalculator {
 
     private NPathMetricCalculator() {
