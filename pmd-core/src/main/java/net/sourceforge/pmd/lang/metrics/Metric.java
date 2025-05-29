@@ -123,7 +123,7 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
      * @throws NullPointerException If either parameter is null
      */
     static <T extends Node, R extends Number> Metric<T, R> of(BiFunction<? super T, MetricOptions, ? extends R> compute,
-                                                              Function<Node, ? extends @Nullable T> cast,
+                                                              Function<? super Node, ? extends @Nullable T> cast,
                                                               @NonNull String fullName,
                                                               String... aliases) {
         AssertionUtil.requireParamNotNull("compute", compute);
