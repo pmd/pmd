@@ -4,7 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: June 2024 (7.3.0)
+last_updated: May 2025 (7.14.0)
 ---
 
 ## Overview
@@ -105,7 +105,7 @@ exactly identical.
                description="Ignore multiple copies of files of the same name and length in comparison."
     %}
     {% include custom/cli_option_row.html options="--skip-lexical-errors"
-               description="<span class='label label-primary'>Deprecated</span> Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
+               description="<span class='label label-primary'>Deprecated (Since 7.3.0)</span> Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
                             By default, CPD analysis is stopped on the first error. This is deprecated. Use `--fail-on-error` instead."
     %}
     {% include custom/cli_option_row.html options="--format,-f"
