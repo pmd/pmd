@@ -110,7 +110,7 @@ function build() {
         pmd_ci_setup_secrets_private_env
         pmd_ci_setup_secrets_gpg_key
         pmd_ci_setup_secrets_ssh
-        pmd_ci_maven_setup_settings
+        pmd_ci_build_setup_maven_settings
     pmd_ci_log_group_end
 
     pmd_ci_log_group_start "Build and Deploy"
@@ -234,6 +234,36 @@ function build() {
 function pmd_ci_build_setup_bundler() {
     pmd_ci_log_info "Checking bundler version..."
     bundle --version
+}
+
+function pmd_ci_build_setup_maven_settings() {
+      pmd_ci_log_info "Setting up maven at ${HOME}/.m2/settings.xml..."
+      mkdir -p "${HOME}/.m2"
+      cat > "${HOME}/.m2/settings.xml" <<EOF
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                      http://maven.apache.org/xsd/settings-1.0.0.xsd">
+  <localRepository/>
+  <interactiveMode/>
+  <usePluginRegistry/>
+  <offline/>
+  <pluginGroups>
+    <pluginGroup>org.sonarsource.scanner.maven</pluginGroup>
+  </pluginGroups>
+  <servers>
+    <server>
+      <id>central</id>
+      <username>\${env.CI_DEPLOY_USERNAME}</username>
+      <password>\${env.CI_DEPLOY_PASSWORD}</password>
+    </server>
+  </servers>
+  <mirrors/>
+  <proxies/>
+  <profiles/>
+  <activeProfiles/>
+</settings>
+EOF
 }
 
 #

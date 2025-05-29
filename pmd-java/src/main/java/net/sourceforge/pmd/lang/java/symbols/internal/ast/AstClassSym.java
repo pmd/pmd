@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -142,15 +143,22 @@ final class AstClassSym
             myMethods.add(ImplicitMemberSymbols.enumValueOf(this));
         }
 
-        this.declaredClasses = Collections.unmodifiableList(myClasses);
-        this.declaredMethods = Collections.unmodifiableList(myMethods);
-        this.declaredCtors = Collections.unmodifiableList(myCtors);
-        this.declaredFields = Collections.unmodifiableList(myFields);
+
+        this.declaredClasses = myClasses;
+        this.declaredMethods = myMethods;
+        this.declaredCtors = myCtors;
+        this.declaredFields = myFields;
         this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
         this.recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
         this.annotAttributes = isAnnotation()
                                ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute).map(JElementSymbol::getSimpleName).collect(CollectionUtil.toPersistentSet())
                                : HashTreePSet.empty();
+    }
+
+    public void processLombok(JavaAstProcessor processor) {
+        if (node.isAnnotationPresent("lombok.extern.slf4j.Slf4j")) {
+            declaredFields.add(ImplicitMemberSymbols.lombokSlf4jLoggerField(this, processor));
+        }
     }
 
 
@@ -204,22 +212,22 @@ final class AstClassSym
 
     @Override
     public List<JClassSymbol> getDeclaredClasses() {
-        return declaredClasses;
+        return Collections.unmodifiableList(declaredClasses);
     }
 
     @Override
     public List<JMethodSymbol> getDeclaredMethods() {
-        return declaredMethods;
+        return Collections.unmodifiableList(declaredMethods);
     }
 
     @Override
     public List<JConstructorSymbol> getConstructors() {
-        return declaredCtors;
+        return Collections.unmodifiableList(declaredCtors);
     }
 
     @Override
     public List<JFieldSymbol> getDeclaredFields() {
-        return declaredFields;
+        return Collections.unmodifiableList(declaredFields);
     }
 
     @Override

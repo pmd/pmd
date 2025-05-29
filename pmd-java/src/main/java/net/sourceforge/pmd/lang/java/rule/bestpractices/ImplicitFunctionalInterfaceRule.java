@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
+import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
@@ -16,7 +17,9 @@ public class ImplicitFunctionalInterfaceRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
-        if (node.isInterface() && !node.isAnnotationPresent(FunctionalInterface.class)) {
+        if (node.isRegularInterface()
+            && !node.isAnnotationPresent(FunctionalInterface.class)
+            && !node.hasModifiers(JModifier.SEALED)) {
             JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(node.getTypeMirror());
             if (fun != null) {
                 asCtx(data).addViolation(node);
