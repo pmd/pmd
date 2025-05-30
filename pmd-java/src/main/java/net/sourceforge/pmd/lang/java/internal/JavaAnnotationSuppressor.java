@@ -9,13 +9,16 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
@@ -109,21 +112,61 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
         return null;
     }
 
+    @SuppressWarnings("unused")
+    public static void foo1(int i) {
+        i = 2;
+        foo2(i);
+    }
+
+    @SuppressWarnings("unused")
+    private static void foo2(int i) {
+        System.out.println("i = " + i);
+    }
+
     private static OptionalBool hasUnusedWarning(JavaNode node) {
         if (node == null) {
             return OptionalBool.UNKNOWN;
         }
 
-        if (node.descendants(ASTVariableId.class)
-                .crossFindBoundaries()
-                .any(it -> it.getLocalUsages().isEmpty())) {
+        if (hasUnusedVariables(node)) {
             return OptionalBool.YES;
-
         } else if (hasUnusedTypeParam(node)) {
+            return OptionalBool.YES;
+        } else if (hasUnusedMethod(node)) {
             return OptionalBool.YES;
         }
 
-        return hasUnusedMethod(node);
+        if (node instanceof ASTFieldDeclaration) {
+            // for annotated fields, "unused" annotation is unambiguous - it only is used for this field.
+            return OptionalBool.NO;
+        }
+
+        if (node instanceof ASTClassDeclaration) {
+            ASTClassDeclaration classDecl = (ASTClassDeclaration) node;
+            if (classDecl.getEffectiveVisibility() == Visibility.V_PRIVATE) {
+                // is this private class is used in this compilation unit?
+                boolean used = node.getRoot().descendants(ASTClassType.class)
+                        .toStream()
+                        .map(ASTClassType::getTypeMirror)
+                        .map(JTypeMirror::getSymbol)
+                        .filter(Objects::nonNull)
+                        .anyMatch(s -> s.equals(classDecl.getSymbol()));
+                if (used) {
+                    return OptionalBool.NO;
+                }
+            }
+        }
+
+        return OptionalBool.UNKNOWN;
+    }
+
+    /**
+     * Searches for local variables, fields, formal parameters.
+     */
+    private static boolean hasUnusedVariables(JavaNode node) {
+        return node.descendants(ASTVariableId.class)
+                .crossFindBoundaries()
+                .any(it -> it.getLocalUsages().isEmpty());
     }
 
     private static boolean hasUnusedTypeParam(JavaNode node) {
@@ -159,28 +202,29 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
         return !unusedTypeParams.isEmpty();
     }
 
-    private static OptionalBool hasUnusedMethod(JavaNode node) {
-        Set<JExecutableSymbol> declarations = new HashSet<>();
+    private static boolean hasUnusedMethod(JavaNode node) {
+        Set<JExecutableSymbol> privateMethods = new HashSet<>();
         for (ASTExecutableDeclaration decl : node.descendantsOrSelf()
                 .crossFindBoundaries()
                 .filterIs(ASTExecutableDeclaration.class)) {
             Visibility visibility = decl.getEffectiveVisibility();
-            if (visibility == Visibility.V_PACKAGE) {
-                // We cannot know if a package-private method is effectively used
-                return OptionalBool.UNKNOWN;
-            } else if (visibility.isAtMost(Visibility.V_PRIVATE)) {
-                declarations.add(decl.getSymbol());
+            if (visibility.isAtMost(Visibility.V_PRIVATE)) {
+                privateMethods.add(decl.getSymbol());
+            } else {
+                // We cannot know if non-private (package-private, protected, public) method is effectively used
+                return false;
             }
         }
 
-        if (declarations.isEmpty()) {
-            return OptionalBool.NO;
+        if (!privateMethods.isEmpty()) {
+            // node is a private method/ctor or is a class decl that contains only private methods
+            // TODO we need to somehow sync this with UnusedPrivateMethod and check, if these private
+            // methods are indeed unused or not. See also #5727.
+            // for now, we give up and assume, all private methods are used
+            return false;
         }
 
-        // TODO for now we give up unless the node doesn't contain any method.
-        //  -> we need to somehow sync this with UnusedPrivateMethod
-        //  -> This is pushed back until #5727 is merged
-        return OptionalBool.UNKNOWN;
+        return false;
     }
 
     @Override

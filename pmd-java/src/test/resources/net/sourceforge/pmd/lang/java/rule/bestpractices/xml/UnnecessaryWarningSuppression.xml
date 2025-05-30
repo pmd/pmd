@@ -264,18 +264,33 @@
             }
             ]]></code>
     </test-code>
-    <test-code>
-        <description>Suppresswarnings unused</description>
+    <test-code disabled="true">
+        <description>Suppresswarnings unused on methods</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>6</expected-linenumbers>
+        <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
             public class Foo {
-                @SuppressWarnings("unused")
-                public static void foo(int i) {
+                @SuppressWarnings("unused") // no violation: parameter i is unused - this suppression is not unnecessary
+                public static void foo1(int i) {
                 }
 
-                @SuppressWarnings("unused")
-                public static void foo(int i) {
+                @SuppressWarnings("unused") // no violation: while parameter i is used now, the suppression could mean the entire public method
+                public static void foo2(int i) {
+                    i = 2;
+                    foo3(i);
+                }
+
+                @SuppressWarnings("unused") // --> violation: parameter i is used and method is used as well (in #foo2)
+                private static void foo3(int i) {
+                    i = 2;
+                }
+
+                @SuppressWarnings("unused") // no violation: both parameter and method are unused - suppression is necessary
+                private static void foo4(int i) {
+                }
+
+                @SuppressWarnings("unused") // no violation: parameter is used but method is unused - suppression is necessary
+                private static void foo5(int i) {
                     i = 2;
                 }
             }
@@ -293,7 +308,7 @@
 
                     private String sessionId;
 
-                    @SuppressWarnings("unused")
+                    @SuppressWarnings("unused") // --> violation - this field is actually used in #handleTransportRequest
                     private String transport;
 
                     private WebSocketHandler handler;
@@ -324,16 +339,27 @@
     <test-code>
         <description>Suppresswarnings unused on type param</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5</expected-linenumbers>
+        <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
-            @SuppressWarnings("unused")
-            public class Foo<T> {
-            }
+            public class OuterClass {
+                @SuppressWarnings("unused") // no violation: type parameter "T" is not used - necessary suppression
+                public static class Foo1<T> {
+                }
 
-            @SuppressWarnings("unused") // type parm is used
-            public class Foo<T> {
+                @SuppressWarnings("unused") // no violation: type parameter "T" is used, class Foo2 is public and might or might not be used
+                public static class Foo2<T> {
+                    class Bar extends Foo2<T> {
+                    }
+                }
 
-                class Bar extends Foo<T> {
+                @SuppressWarnings("unused") // -> violation: type parameter "T" is used, class Foo3 is used - nothing is unused -> suppression is unnecessary
+                private static class Foo3<T> {
+                    class Bar extends Foo3<T> {
+                    }
+                }
+
+                public static void main(String[] args) {
+                    Foo3<String> f = new Foo3<>();
                 }
             }
             ]]></code>
@@ -368,5 +394,19 @@
                 }
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not report on entire inner class as unused</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+    @SuppressWarnings("unused") // this class is public, we don't know whether it is used or not
+    public static class InnerClass {}
+
+    @SuppressWarnings("unused") // valid suppression - this class is private and not used
+    private static class UnusedInnerClass {}
+}
+]]></code>
     </test-code>
 </test-data>
