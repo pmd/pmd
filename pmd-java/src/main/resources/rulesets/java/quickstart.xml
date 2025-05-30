@@ -48,6 +48,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseBeforeAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnitTestShouldUseTestAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnnecessaryVarargsArrayCreation" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/UnnecessaryWarningSuppression" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/UnusedAssignment"/> -->
     <rule ref="category/java/bestpractices.xml/UnusedFormalParameter"/>
     <rule ref="category/java/bestpractices.xml/UnusedLocalVariable"/>
