@@ -21,6 +21,9 @@ import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapp
 public abstract class AbstractTokenManager implements TokenManager<JavaccToken> {
 
     private final List<SuppressionCommentWrapper> suppressionComments = new ArrayList<>();
+    /**
+     * @deprecated Since 7.14.0. Don't use this map directly anymore. Instead, use {@link #getSuppressionComments()}.
+     */
     @Deprecated
     protected Map<Integer, String> suppressMap = new HashMap<>();
     protected String suppressMarker = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
@@ -37,6 +40,9 @@ public abstract class AbstractTokenManager implements TokenManager<JavaccToken> 
         return suppressMap;
     }
 
+    /**
+     * @since 7.14.0
+     */
     protected void processCommentForSuppression(JavaccToken token) {
         String suppressMarker = this.suppressMarker;
         int startOfNOPMD = token.getImageCs().indexOf(suppressMarker, 0);
@@ -47,6 +53,9 @@ public abstract class AbstractTokenManager implements TokenManager<JavaccToken> 
         }
     }
 
+    /**
+     * @since 7.14.0
+     */
     public Collection<SuppressionCommentWrapper> getSuppressionComments() {
         return suppressionComments;
     }

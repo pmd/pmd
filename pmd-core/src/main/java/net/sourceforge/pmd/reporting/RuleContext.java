@@ -185,6 +185,9 @@ public final class RuleContext {
         }
     }
 
+    /**
+     * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
+     */
     @Experimental
     public void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,
                                 String message, Object... formatArgs) {

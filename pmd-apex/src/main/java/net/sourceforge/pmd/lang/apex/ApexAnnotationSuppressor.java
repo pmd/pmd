@@ -16,6 +16,9 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.reporting.AbstractAnnotationSuppressor;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
 
+/**
+ * @since 7.14.0
+ */
 final class ApexAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnnotation> {
 
     static final List<ViolationSuppressor> ALL_APEX_SUPPRESSORS = listOf(new ApexAnnotationSuppressor());

@@ -208,6 +208,7 @@ public interface ViolationSuppressor {
      * Represents an instance of a "suppressor" that didn't suppress anything.
      * This could be a suppression annotation, or part of an annotation, a
      * comment, etc.
+     *
      * @since 7.14.0
      */
     interface UnusedSuppressorNode {
@@ -219,6 +220,8 @@ public interface ViolationSuppressor {
 
     /**
      * Wrapper around a suppression comment.
+     *
+     * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
      */
     @Experimental
     interface SuppressionCommentWrapper {

@@ -85,8 +85,8 @@ public final class AstInfo<T extends RootNode> {
      * <p>This map is later used to determine, if a violation is being suppressed.
      * It is suppressed, if the line of the violation is contained in this suppress map.
      *
-     * @return map of the suppress lines with the corresponding review comments.
-     * @deprecated Since 7.13.0. Use {@link #getAllSuppressionComments()} or {@link #getSuppressionComment(int)}
+     * @return map of the suppressed lines with the corresponding review comments.
+     * @deprecated Since 7.14.0. Use {@link #getAllSuppressionComments()} or {@link #getSuppressionComment(int)}
      */
     @Deprecated
     public Map<Integer, String> getSuppressionComments() {
@@ -152,6 +152,9 @@ public final class AstInfo<T extends RootNode> {
     }
 
 
+    /**
+     * @since 7.14.0
+     */
     public AstInfo<T> withSuppressionComments(Collection<? extends SuppressionCommentWrapper> suppressionComments) {
         Map<Integer, SuppressionCommentWrapper> suppressMap = new HashMap<>(suppressionComments.size());
         for (SuppressionCommentWrapper comment : suppressionComments) {

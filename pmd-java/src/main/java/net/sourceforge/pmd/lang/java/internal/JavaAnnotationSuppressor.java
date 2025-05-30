@@ -56,6 +56,7 @@ import net.sourceforge.pmd.util.OptionalBool;
  * </ul>
  *
  * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.6.4.5">JLS 9.6.4.5. @SuppressWarnings</a>
+ * @since 7.14.0
  */
 final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnnotation> {
 
