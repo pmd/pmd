@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.slf4j.event.Level;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
@@ -48,7 +49,7 @@ abstract class AbstractPMDProcessorTest {
     }
 
     private LanguageProcessor.AnalysisTask createTask(int threads) {
-        return InternalApiBridge.createAnalysisTask(null, null, null, threads, null, null, null);
+        return InternalApiBridge.createAnalysisTask(null, null, null, threads, null, Mockito.mock(PmdReporter.class), null);
     }
 
     @Test
@@ -58,17 +59,23 @@ abstract class AbstractPMDProcessorTest {
             pmd.performAnalysis();
         }
 
+        // note: two executions for dummy and dummydialect
         assertEquals(2, reportListener.files.get());
         assertEquals(2, reportListener.errors.get());
+        if (getThreads() == 0) {
+            Mockito.verify(reporter, Mockito.times(2)).log(Level.DEBUG, "Using single thread for analysis");
+        } else {
+            Mockito.verify(reporter, Mockito.times(2)).log(Level.DEBUG, "Using {0} threads for analysis", getThreads());
+        }
         // exceptions are reported as processing errors
-        Mockito.verifyNoInteractions(reporter);
+        Mockito.verifyNoMoreInteractions(reporter);
     }
 
     protected PmdAnalysis createPmdAnalysis() {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.setThreads(getThreads());
         configuration.setIgnoreIncrementalAnalysis(true);
-        reporter = Mockito.spy(configuration.getReporter());
+        reporter = Mockito.mock(PmdReporter.class);
         configuration.setReporter(reporter);
 
         PmdAnalysis pmd = PmdAnalysis.create(configuration);
