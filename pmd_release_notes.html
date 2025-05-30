@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.14.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 30-May-2025</div>
+    <li class="sidebarTitle">PMD 7.15.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 27-June-2025</div>
     
     
     
@@ -2012,180 +2012,20 @@
     </details>
 
   
-<h2 id="30-may-2025---7140-snapshot">30-May-2025 - 7.14.0-SNAPSHOT</h2>
+<h2 id="27-june-2025---7150-snapshot">27-June-2025 - 7.15.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.14.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.15.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h4 id="pmd-cli-now-uses-threaded-execution-by-default">PMD CLI now uses threaded execution by default</h4>
-
-<p>In the PMD CLI, the <code class="language-plaintext highlighter-rouge">--threads</code> (<code class="language-plaintext highlighter-rouge">-t</code>) option can now accept a thread
-count given relative to the number of cores of the machine. For instance,
-it is now possible to write <code class="language-plaintext highlighter-rouge">-t 1C</code> to spawn one thread per core, or <code class="language-plaintext highlighter-rouge">-t 0.5C</code>
-to spawn one thread for every other core.</p>
-
-<p>The thread count option now defaults to <code class="language-plaintext highlighter-rouge">1C</code>, meaning parallel execution
-is used by default. You can disable this by using <code class="language-plaintext highlighter-rouge">-t 1</code>.</p>
-
-<h4 id="new-rule-unnecessarywarningsuppression-experimental">New Rule UnnecessaryWarningSuppression (experimental)</h4>
-
-<p>This new Java rule <a href="pmd_rules_java_bestpractices.html#unnecessarywarningsuppression"><code class="language-plaintext highlighter-rouge">UnnecessaryWarningSuppression</code></a> reports unused suppression
-annotations and comments. Violations of this rule cannot be suppressed.</p>
-
-<p>How to use it? Just include it in your ruleset:</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnnecessaryWarningSuppression"</span> <span class="nt">/&gt;</span>
-</code></pre></div></div>
-
-<p>Note: This rule is currently experimental. It is available for now only for Java.
-The rule for now only reports annotations specific to PMD, like <code class="language-plaintext highlighter-rouge">@SuppressWarnings("PMD")</code>.
-In the future we might be able to check for other common ones like <code class="language-plaintext highlighter-rouge">@SuppressWarnings("unchecked")</code> or <code class="language-plaintext highlighter-rouge">"fallthrough"</code>.
-Since violations of this rule cannot be suppressed, we opted here on the side of false-negatives and
-don’t report every unused case yet.
-However, suppressing specific PMD rules is working as expected.</p>
-
-<h4 id="migrating-to-central-publisher-portal">Migrating to Central Publisher Portal</h4>
-
-<p>We’ve now migrated to <a href="https://central.sonatype.org/publish/publish-portal-guide/">Central Publisher Portal</a>.
-Snapshots of PMD are still available, however the repository URL changed. To consume these with maven, you can
-use the following snippet:</p>
-
-<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;repositories&gt;</span>
-  <span class="nt">&lt;repository&gt;</span>
-    <span class="nt">&lt;name&gt;</span>Central Portal Snapshots<span class="nt">&lt;/name&gt;</span>
-    <span class="nt">&lt;id&gt;</span>central-portal-snapshots<span class="nt">&lt;/id&gt;</span>
-    <span class="nt">&lt;url&gt;</span>https://central.sonatype.com/repository/maven-snapshots/<span class="nt">&lt;/url&gt;</span>
-    <span class="nt">&lt;releases&gt;</span>
-      <span class="nt">&lt;enabled&gt;</span>false<span class="nt">&lt;/enabled&gt;</span>
-    <span class="nt">&lt;/releases&gt;</span>
-    <span class="nt">&lt;snapshots&gt;</span>
-      <span class="nt">&lt;enabled&gt;</span>true<span class="nt">&lt;/enabled&gt;</span>
-    <span class="nt">&lt;/snapshots&gt;</span>
-  <span class="nt">&lt;/repository&gt;</span>
-<span class="nt">&lt;/repositories&gt;</span>
-</code></pre></div></div>
-
-<p>Releases of PMD are available on <a href="https://central.sonatype.com/">Maven Central</a> as before without change.</p>
-
-<h4 id="more-cli-parameters-shared-between-pmd-and-cpd">More CLI parameters shared between PMD and CPD</h4>
-
-<p>When executing PMD or CPD, the same parameters are now understood for selecting which files should
-be analyzed. See <a href="pmd_userdocs_cli_reference.html#file-collection-options">File collection options</a>
-for a list of common, shared parameters that are valid for both commands.</p>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/648">#648</a>: [core] Warn on unneeded suppression</li>
-      <li><a href="https://github.com/pmd/pmd/pull/5700">#5700</a>: [core] Don’t accidentally catch unexpected runtime exceptions in CpdAnalysis</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5705">#5705</a>: [cli] PMD’s start script fails if PMD_HOME is set</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5061">#5061</a>: [java] UnusedLocalVariable false positive when variable is read as side effect of an assignment</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5621">#5621</a>: [java] UnusedPrivateMethod with method ref</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5724">#5724</a>: [java] ImplicitFunctionalInterface should not be reported on sealed interfaces</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2462">#2462</a>: [java] LinguisticNaming must ignore setters that returns current type (Builder pattern)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5634">#5634</a>: [java] CommentDefaultAccessModifier doesn’t recognize /* package */ comment at expected location for constructors</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5568">#5568</a>: [java] High NPathComplexity in <code class="language-plaintext highlighter-rouge">switch</code> expression</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5647">#5647</a>: [java] NPathComplexity does not account for <code class="language-plaintext highlighter-rouge">return</code>s</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5702">#5702</a>: [java] InvalidLogMessageFormat: Lombok @<!-- -->Slf4j annotation is not interpreted by PMD</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5711">#5711</a>: [java] UseArraysAsList false positive with Sets</li>
-    </ul>
-  </li>
-  <li>visualforce
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5476">#5476</a>: [visualforce] NPE when analyzing standard field references in visualforce page</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
-<h4 id="cli">CLI</h4>
-<ul>
-  <li>CPD now supports <code class="language-plaintext highlighter-rouge">--report-file</code> (-r) and <code class="language-plaintext highlighter-rouge">--exclude-file-list</code>.</li>
-  <li>PMD now supports <code class="language-plaintext highlighter-rouge">--exclude</code> and <code class="language-plaintext highlighter-rouge">--non-recursive</code>.</li>
-  <li>The option <code class="language-plaintext highlighter-rouge">--ignore-list</code> in PMD is renamed to <code class="language-plaintext highlighter-rouge">--exclude-file-list</code>.</li>
-</ul>
-
-<h4 id="deprecations">Deprecations</h4>
-<ul>
-  <li>CLI
-    <ul>
-      <li>The option <code class="language-plaintext highlighter-rouge">--ignore-list</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">--exclude-file-list</code> instead.</li>
-    </ul>
-  </li>
-  <li>core
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#getSuppressionComments()"><code>AstInfo#getSuppressionComments</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#getAllSuppressionComments()"><code>getAllSuppressionComments</code></a>
-or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#getSuppressionComment(int)"><code>getSuppressionComment</code></a>.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#withSuppressMap()"><code>AstInfo#withSuppressMap</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#withSuppressionComments(java.util.Collection)"><code>withSuppressionComments</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#suppressMap"><code>AbstractTokenManager#suppressMap</code></a>: Don’t use this map directly anymore. Instead,
-use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressionComments()"><code>getSuppressionComments</code></a>.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressMap()"><code>AbstractTokenManager#getSuppressMap</code></a>: Use
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressionComments()"><code>getSuppressionComments</code></a> instead.</li>
-    </ul>
-  </li>
-  <li>pmd-java
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#getDeclarationNode()"><code>ASTCompactConstructorDeclaration#getDeclarationNode</code></a>: This method just returns <code class="language-plaintext highlighter-rouge">this</code> and isn’t useful.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#NPATH"><code>JavaMetrics#NPATH</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#NPATH_COMP"><code>NPATH_COMP</code></a>, which is available on more nodes,
-and uses Long instead of BigInteger.</li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="experimental">Experimental</h4>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/SuppressionCommentImpl.html#"><code>SuppressionCommentImpl</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/impl/UnnecessaryPmdSuppressionRule.html#"><code>UnnecessaryPmdSuppressionRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#addViolationNoSuppress(net.sourceforge.pmd.reporting.Reportable,net.sourceforge.pmd.lang.ast.AstInfo,java.lang.String,java.lang.Object...)"><code>RuleContext#addViolationNoSuppress</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/reporting/ViolationSuppressor.SuppressionCommentWrapper.html#"><code>ViolationSuppressor.SuppressionCommentWrapper</code></a></li>
-    </ul>
-  </li>
-  <li>pmd-java
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/OverloadSelectionResult.html#getTypeToSearch()"><code>OverloadSelectionResult#getTypeToSearch</code></a></li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/5599">#5599</a>: [java] Rewrite NPath complexity metric - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5609">#5609</a>: [core] Add rule to report unnecessary suppression comments/annotations - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5700">#5700</a>: [core] Don’t accidentally catch unexpected runtime exceptions in CpdAnalysis - <a href="https://github.com/elharo">Elliotte Rusty Harold</a> (@elharo)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5716">#5716</a>: Fix #5634: [java] CommentDefaultAccessModifier: Comment between annotation and constructor not recognized - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5727">#5727</a>: Fix #5621: [java] Fix FPs with UnusedPrivateMethod - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5731">#5731</a>: [cli] Share more CLI options between CPD and PMD - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5736">#5736</a>: Fix #5061: [java] UnusedLocalVariable FP when using compound assignment - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5763">#5763</a>: [java] Support annotated constructor return type in symbol API - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5764">#5764</a>: Fix #2462: [java] LinguisticNaming should ignore setters for Builders  - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-</ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
