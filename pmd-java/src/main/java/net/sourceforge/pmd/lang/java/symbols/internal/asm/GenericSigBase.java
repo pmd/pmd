@@ -21,6 +21,7 @@ import org.objectweb.asm.TypeReference;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSet;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSetWithReferences;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -269,6 +270,13 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                                             .map(ctx.getResolver()::resolveFromInternalNameCannotFail)
                                             .map(ctx.getTypeSystem()::rawType)
                                             .collect(CollectionUtil.toUnmodifiableList());
+            }
+            if (ctx instanceof CtorStub) {
+                // Is a constructor, return type of the descriptor is void.
+                // We replace the return type with the owner type. This must
+                // be done before type annotations are applied.
+                assert this.returnType.isVoid();
+                this.returnType = ctx.getTypeSystem().declaration(ctx.getEnclosingClass());
             }
             if (typeAnnots != null) {
                 // apply type annotations here

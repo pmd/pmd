@@ -2618,4 +2618,165 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod false positives with method ref</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sample;
+
+import java.util.Optional;
+import java.io.*;
+import java.util.Base64;
+import java.net.InetSocketAddress;
+
+class Foo {
+
+    public String foo(final Object foo, final String bar) {
+        final String abc = Optional.ofNullable(foo.toString()).map(Foo::getNormalizedAddress).orElse(null);
+        return abc;
+    }
+
+    private static String getNormalizedAddress(final String encoded) {
+        try (var objectInputStream = new ObjectInputStream(new ByteArrayInputStream(Base64.getDecoder().decode(encoded)))) {
+            final var inetSocketAddress = (InetSocketAddress) objectInputStream.readObject();
+            return inetSocketAddress.toString().substring(1);
+        } catch (IOException | ClassNotFoundException | IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5621 [java] UnusedPrivateMethod false positives with method ref, #2</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sample;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
+import java.io.*;
+import java.util.Base64;
+import java.net.InetSocketAddress;
+
+class Foo {
+    @Override
+    public Collection<Consumer<Router>> routes() {
+        return List.of(
+                r -> r.post("/some/path").handler(this::handleRequest)
+        );
+    }
+
+    private void handleRequest(RoutingContext rc) { }
+    private void handleRequest(String rc) { }
+}
+]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Verify that if the method ref is obviously in another class our methods are still flagged</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>Avoid unused private methods such as 'alala(RoutingContext)'.</message>
+            <message>Avoid unused private methods such as 'alala(String)'.</message>
+            <message>Avoid unused private methods such as 'elelel(RoutingContext)'.</message>
+            <message>Avoid unused private methods such as 'elelel(String)'.</message>
+        </expected-messages>
+        <code><![CDATA[
+package sample;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Consumer;
+import java.io.*;
+import java.util.Base64;
+import java.net.InetSocketAddress;
+
+import foo.Bar;
+
+class Foo {
+    @Override
+    public Collection<Consumer<Router>> routes() {
+        return List.of(
+                // Other is an ambiguous name and it may be var or type,
+                // therefore it has a fully unknown type
+                r -> r.post("/some/path").handler(Other::handleRequest) 
+        );
+        return List.of(
+                // This is an unresolved type but unambiguous thanks to the
+                // import. That means we know that Bar::alala cannot
+                // be a reference to one of Foo's alala methods.
+                r -> r.post("/some/path").handler(Bar::alala)
+        );
+        return List.of(
+                // This is a fully known type, same thing
+                r -> r.post("/some/path").handler(String::elelel)
+        );
+    }
+
+    private void handleRequest(RoutingContext rc) { }
+    private void handleRequest(String rc) { }
+    
+    private void alala(RoutingContext rc) { }
+    private void alala(String rc) { }
+    
+    private void elelel(RoutingContext rc) { }
+    private void elelel(String rc) { }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateMethod false-positive #5664 (not reproducible)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            @ExtendWith(MockitoExtension.class)
+            class TimeProfilerTests {
+                @Nested
+                class operations_test {
+                    private final long[] offset = {0L};
+
+                    private static Long offsetTimeSupplier(final long[] offset) {
+                        return offset[0];
+                    }
+
+                    @BeforeEach
+                    void setUp() {
+                        offset[0] = offsetTimeSupplier(offset);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>FP with lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // should reproduce https://github.com/pmd/pmd/issues/5621#issuecomment-2849411551
+            class Test {
+                class operations_test {
+
+                    void method(long l) {
+                    }
+                    void method() {}
+
+                    void setUp() {
+                        foo(unresolved -> {
+                            method(unresolved);
+                        });
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+
 </test-data>

@@ -310,7 +310,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     @Override
     public R visit(ASTDoStatement node, P data) {
-        return visitStatement(node, data);
+        return visitLoop(node, data);
     }
 
     @Override
@@ -330,12 +330,12 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     @Override
     public R visit(ASTForeachStatement node, P data) {
-        return visitStatement(node, data);
+        return visitLoop(node, data);
     }
 
     @Override
     public R visit(ASTForStatement node, P data) {
-        return visitStatement(node, data);
+        return visitLoop(node, data);
     }
 
     @Override
@@ -390,7 +390,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     @Override
     public R visit(ASTWhileStatement node, P data) {
-        return visitStatement(node, data);
+        return visitLoop(node, data);
     }
 
     @Override
@@ -399,6 +399,12 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
 
+    /**
+     * @since 7.14.0
+     */
+    public R visitLoop(ASTLoopStatement node, P data) {
+        return visitStatement(node, data);
+    }
 
     // </editor-fold>
 

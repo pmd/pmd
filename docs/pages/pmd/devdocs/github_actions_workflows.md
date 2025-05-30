@@ -10,15 +10,27 @@ last_updated: May 2025 (7.14.0)
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
 
-## Build
+## Build, Build Pull Request, Build Snapshot
 
-* Builds: <https://github.com/pmd/pmd/actions/workflows/build.yml>
-* Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml>
+"Build" itself is a [reuseable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows),
+that is called by "Build Pull Request" and "Build Snapshot".
 
-This workflow is triggered whenever new commits are pushed to a branch (including the default branch and
-including forks) or whenever a pull request is created or synchronized.
+* Workflow files:
+  * <https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml>
+  * <https://github.com/pmd/pmd/blob/main/.github/workflows/build-pr.yml>
+  * <https://github.com/pmd/pmd/blob/main/.github/workflows/build-snapshot.yml>
+* Builds:
+  * Build Pull Request: <https://github.com/pmd/pmd/actions/workflows/build-pr.yml>
+  * Build Snapshot: <https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml>
+
+All these workflows execute exactly the same steps. But only the triggering event is different.
 It is designed to run on the main repository in PMD's GitHub organization as well as for forks, as it does
 not require any secrets.
+
+"Build Pull Request" is triggered, whenever a pull request is created or synchronized.
+
+"Build Snapshot" is triggered, whenever new commits are pushed to a branch (including the default branch and
+including forks).
 
 In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
 the current branch or pull request when a new commit has been pushed. This means, only the latest commit is built,
@@ -71,7 +83,7 @@ The jobs are:
 * Builds: <https://github.com/pmd/pmd/actions/workflows/publish-pull-requests.yml>
 * Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-pull-requests.yml>
 
-This workflow runs after "Build" on a pull request is completed. It runs in the context of our own
+This workflow runs after "Build Pull Request", when it is completed. It runs in the context of our own
 repository and has write permissions and complete access to the configured secrets.
 For security reasons, this workflow won't check out the pull request code and won't build anything.
 
@@ -108,7 +120,6 @@ This workflow is in that sense optional, as the docs-artifact and pmd-regression
 be manually downloaded from the "Pull Request Build" workflow run. It merely adds convenience by
 giving easy access to a preview of the documentation and to the regression tester results.
 
-<<<<<<< HEAD
 In the end, this workflow adds additional links to a pull request page. For the comment, GitHub seems
 to automatically add "rel=nofollow" to the links in the text. This is also applied for the check status
 pages. However, the links in the commit status are plain links. This might lead to unnecessary
@@ -130,7 +141,7 @@ crawling side.
 * Builds: <https://github.com/pmd/pmd/actions/workflows/publish-snapshot.yml>
 * Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-snapshot.yml>
 
-This runs after "Build" of a push on the `main` branch is finished.
+This runs after "Build Snapshot" of a push on the `main` branch is finished.
 It runs in the context of our own repository and has access to all secrets. In order
 to have a nicer display in GitHub actions, we leverage "environments", which also
 contain secrets.
@@ -139,16 +150,16 @@ There is a first job "check-version" that just determines the version of PMD we 
 we are actually building a SNAPSHOT version. Then a couple of other jobs are being executed in parallel:
 
 * deploy-to-maven-central: Rebuilds PMD from branch main and deploys the snapshot artifacts to
-  <https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/>. Rebuilding is necessary in
-  order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the artifacts. This
-  is not available from the build artifacts of the "Build" workflow.
+  <https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/>.
+  Rebuilding is necessary in order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the
+  artifacts. This is not available from the build artifacts of the "Build" workflow.
   * Environment: maven-central
-  * Secrets: OSSRH_TOKEN, OSSRH_USERNAME
+  * Secrets: MAVEN_CENTRAL_PORTAL_USERNAME, MAVEN_CENTRAL_PORTAL_PASSWORD
 * deploy-to-sourceforge-files: Downloads the "dist-artifact" and "docs-artifact" from the "Build" workflow,
   gpg-signs the files and uploads them to <https://sourceforge.net/projects/pmd/files/pmd/>.
   * Environment: sourceforge
   * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
-  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
+  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS, PMD_GIT_CODE_SF_NET_KNOWN_HOSTS
 * deploy-to-sourceforge-io: Uploads the documentation page to be hosted at
   <https://pmd.sourceforge.io/snapshot>.
   * Environment: sourceforge
@@ -273,11 +284,9 @@ See <https://github.com/pmd/pmd-regression-tester/settings/secrets/actions>
 
 ### Repository pmd/pmd - Environment "maven-central"
 
-* `OSSRH_USERNAME` and `OSSRH_TOKEN`: Used to deploy artifacts to maven central via OSSRH to our namespace
-  [net.sourceforge.pmd](https://repo.maven.apache.org/maven2/net/sourceforge/pmd).  
-  Login on <https://oss.sonatype.org>, go to your user profile, select "User Token" and "Access User Token".
-  You'll see the tokens to be used for username and password.  
-  Note: This will soon be migrated to use <https://central.sonatype.com>.
+* `MAVEN_CENTRAL_PORTAL_USERNAME` and `MAVEN_CENTRAL_PORTAL_PASSWORD`: Used to deploy artifacts to maven
+  central via <https://central.sonatype.com>. See <https://central.sonatype.org/> for the documentation.
+  The upload uses token-based authentication, you can generate a user token on <https://central.sonatype.com/account>.
 
 ### Repository pmd/pmd - Environment "coveralls"
 * `COVERALLS_REPO_TOKEN`: Used to upload coverage results to <https://coveralls.io/github/pmd/pmd>.
@@ -289,7 +298,7 @@ See <https://github.com/pmd/pmd-regression-tester/settings/secrets/actions>
 
 ### Repository pmd/pmd - Environment "sourceforge"
 * `PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY`: The private ssh key used to access web.sourceforge.net to
-  upload files and web pages.  
+  upload files and web pages. It is also used to push to sourceforge's git repository at "git.code.sf.net".  
   It is created with `ssh-keygen -t ed25519 -C "ssh key for pmd. used for github actions push to web.sourceforge.net" -f web.sourceforge.net_deploy_key`.  
   You need to configure the public key part here: <https://sourceforge.net/auth/shell_services>. The user is your
   sourceforge user id.  
@@ -326,6 +335,26 @@ This environment also has a variable, which is the known_hosts content as `PMD_W
 web.sourceforge.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEA2uifHZbNexw6cXbyg1JnzDitL5VhYs0E65Hk/tLAPmcmm5GuiGeUoI/B0eUSNFsbqzwgwrttjnzKMKiGLN5CWVmlN1IXGGAfLYsQwK6wAu7kYFzkqP4jcwc5Jr9UPRpJdYIK733tSEmzab4qc5Oq8izKQKIaxXNe7FgmL15HjSpatFt9w/ot/CHS78FUAr3j3RwekHCm/jhPeqhlMAgC+jUgNJbFt3DlhDaRMa0NYamVzmX8D47rtmBbEDU3ld6AezWBPUR5Lh7ODOwlfVI58NAf/aYNlmvl2TZiauBCTa7OPYSyXJnIPbQXg6YQlDknNCr0K769EjeIlAfY87Z4tw==
 web.sourceforge.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBCwsY6sZT4MTTkHfpRzYjxG7mnXrGL74RCT2cO/NFvRrZVNB5XNwKNn7G5fHbYLdJ6UzpURDRae1eMg92JG0+yo=
 web.sourceforge.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOQD35Ujalhh+JJkPvMckDlhu4dS7WH6NsOJ15iGCJLC
+```
+
+Another variable `PMD_GIT_CODE_SF_NET_KNOWN_HOSTS` contains the known_hosts for "git.code.sf.net":
+
+```
+#
+# git.code.sf.net (https://sourceforge.net/p/forge/documentation/SSH%20Key%20Fingerprints/)
+#
+# ssh-keyscan git.code.sf.net | tee -a sf-git_known_hosts
+# ssh-keygen -F git.code.sf.net -l -f sf-git_known_hosts
+# # Host git.code.sf.net found: line 1 
+# git.code.sf.net RSA SHA256:3WhEqJaBPKb69eT5dfgYcPJTgqc9rq1Y9saZlXqkbWg
+# # Host git.code.sf.net found: line 2 
+# git.code.sf.net ECDSA SHA256:FeVkoYYBjuQzb5QVAgm3BkmeN5TTgL2qfmqz9tCPRL4
+# # Host git.code.sf.net found: line 3 
+# git.code.sf.net ED25519 SHA256:vDwNztsrZFViJXWpUTSKGo8cF6n79iKAURNiK68n/yE
+# ssh-keygen -F git.code.sf.net -f sf-git_known_hosts
+git.code.sf.net ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAoMesJ60dow5VqNsIqIQMBNmSYz6txSC5YSUXzPNWV4VIWTWdqbQoQuIu+oYGhBMoeaSWWCiVIDTwFDzQXrq8CwmyxWp+2TTuscKiOw830N2ycIVmm3ha0x6VpRGm37yo+z+bkQS3m/sE7bkfTU72GbeKufFHSv1VLnVy9nmJKFOraeKSHP/kjmatj9aC7Q2n8QzFWWjzMxVGg79TUs7sjm5KrtytbxfbLbKtrkn8OXsRy1ib9hKgOwg+8cRjwKbSXVrNw/HM+MJJWp9fHv2yzWmL8B6fKoskslA0EjNxa6d76gvIxwti89/8Y6xlhR0u65u1AiHTX9Q4BVsXcBZUDw==
+git.code.sf.net ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPAa5MFfMaXyT3Trf/Av/laAvIhUzZJUnvPZAd9AC6bKWAhVl+A3s2+M6SlhF/Tn/W0akN03GyNviBtqJKtx0RU=
+git.code.sf.net ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGObtXLh/mZom0pXjE5Mu211O+JvtzolqdNKVA+XJ466
 ```
 
 ### Repository pmd/pmd - Environment "pmd-code"

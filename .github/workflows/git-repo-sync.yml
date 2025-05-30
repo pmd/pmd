@@ -13,21 +13,100 @@ permissions:
 
 jobs:
   build:
+    # only run in the official pmd repo, where we have access to the secrets and not on forks
+    if: ${{ github.repository == 'pmd/pmd' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
+    environment:
+      name: sourceforge
+      url: https://sourceforge.net/p/pmd/code/ci/main/tree/
+    defaults:
+      run:
+        shell: bash
     continue-on-error: false
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 100
-    - name: Setup Environment
-      shell: bash
-      run: |
-        echo "LANG=en_US.UTF-8" >> $GITHUB_ENV
-        echo "PMD_CI_SCRIPTS_URL=https://raw.githubusercontent.com/pmd/build-tools/30/scripts" >> $GITHUB_ENV
-    - name: Sync
-      run: .ci/git-repo-sync.sh
-      shell: bash
+    - name: Setup ssh key for sourceforge
       env:
-        PMD_CI_SECRET_PASSPHRASE: ${{ secrets.PMD_CI_SECRET_PASSPHRASE }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        PMD_CI_GPG_PRIVATE_KEY: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+        WEB_SF_DEPLOY_KEY: ${{ secrets.PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY }}
+        GIT_CODE_SF_NET_KNOWN_HOSTS: ${{ vars.PMD_GIT_CODE_SF_NET_KNOWN_HOSTS }}
+      run: |
+        mkdir -p "${HOME}/.ssh"
+        chmod 700 "${HOME}/.ssh"
+        printenv WEB_SF_DEPLOY_KEY > "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+        chmod 600 "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+        echo "
+        Host git.code.sf.net
+            IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
+        " > "$HOME/.ssh/config"
+        echo "${GIT_CODE_SF_NET_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+    - name: Git Sync
+      env:
+        PMD_SF_USER: adangel
+      run: |
+        #
+        # From: https://gist.github.com/sj26/88e1c6584397bb7c13bd11108a579746
+        #
+        # Retry a command up to a specific number of times until it exits successfully,
+        # with exponential back off.
+        #
+        #  $ retry 5 echo Hello
+        #  Hello
+        #
+        #  $ retry 5 false
+        #  Retry 1/5 exited 1, retrying in 1 seconds...
+        #  Retry 2/5 exited 1, retrying in 2 seconds...
+        #  Retry 3/5 exited 1, retrying in 4 seconds...
+        #  Retry 4/5 exited 1, retrying in 8 seconds...
+        #  Retry 5/5 exited 1, no more retries left.
+        #
+        function retry {
+          local retries=$1
+          shift
+        
+          local count=0
+          until "$@"; do
+            exit=$?
+            wait=$((2 ** $count))
+            count=$(($count + 1))
+            if [ $count -lt $retries ]; then
+              echo "Retry $count/$retries exited $exit, retrying in $wait seconds..."
+              sleep $wait
+            else
+              echo "Retry $count/$retries exited $exit, no more retries left."
+              return $exit
+            fi
+          done
+          return 0
+        }
+
+        if [[ "${GITHUB_REF}" == refs/heads/* ]]; then
+            PMD_CI_BRANCH=${GITHUB_REF##refs/heads/}
+        elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            PMD_CI_TAG=${GITHUB_REF##refs/tags/}
+        else
+            echo "::error ::Unknown branch/tag: GITHUB_REF=${GITHUB_REF}"
+            exit 1
+        fi
+
+
+        git remote add pmd-sf "${PMD_SF_USER}@git.code.sf.net:/p/pmd/code"
+        if [ -n "${PMD_CI_BRANCH}" ]; then
+          retry 5 git push pmd-sf "${PMD_CI_BRANCH}:${PMD_CI_BRANCH}"
+          echo "Successfully pushed ${PMD_CI_BRANCH} to sourceforge"
+        elif [ -n "${PMD_CI_TAG}" ]; then
+          git push pmd-sf tag "${PMD_CI_TAG}"
+          echo "Successfully pushed tag ${PMD_CI_TAG} to sourceforge"
+        else
+          echo "::error ::Don't know what to do: neither PMD_CI_BRANCH nor PMD_CI_TAG is set"
+          exit 1
+        fi
+
+    - name: Cleanup ssh
+      if: ${{ always() }}
+      run: |
+        rm -rf "${HOME}/.ssh"

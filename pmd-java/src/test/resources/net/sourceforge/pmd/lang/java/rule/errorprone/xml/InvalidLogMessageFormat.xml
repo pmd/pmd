@@ -1316,4 +1316,18 @@ public class InvalidLogMessageFormat{
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] InvalidLogMessageFormat: Lombok @Slf4j annotation is not interpreted by PMD #5702</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            import lombok.extern.slf4j.Slf4j;
+            @Slf4j
+            public class Book {
+                public void logMe() {
+                    log.info("Hello, %s!");
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

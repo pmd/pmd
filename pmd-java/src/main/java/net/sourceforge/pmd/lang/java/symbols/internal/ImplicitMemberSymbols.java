@@ -16,6 +16,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -152,6 +153,18 @@ public final class ImplicitMemberSymbols {
         );
     }
 
+    public static JFieldSymbol lombokSlf4jLoggerField(JClassSymbol classSym, JavaAstProcessor processor) {
+        // https://javadoc.io/doc/org.projectlombok/lombok/1.16.18/lombok/extern/slf4j/Slf4j.html
+
+        return new FakeFieldSym(
+                classSym,
+                "log",
+                Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
+                (ts, s) ->
+                        ts.declaration(processor.findSymbolCannotFail("org.slf4j.Logger"))
+        );
+    }
+
     private abstract static class FakeExecutableSymBase<T extends JExecutableSymbol> implements JExecutableSymbol {
 
         private final JClassSymbol owner;
@@ -275,6 +288,7 @@ public final class ImplicitMemberSymbols {
                     List<Function<JConstructorSymbol, JFormalParamSymbol>> formals) {
             super(owner, JConstructorSymbol.CTOR_NAME, modifiers, formals);
         }
+
 
         @Override
         public boolean equals(Object o) {
