@@ -24,6 +24,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### PMD CLI now uses threaded execution by default
+
+In the PMD CLI, the `--threads` (`-t`) option can now accept a thread
+count given relative to the number of cores of the machine. For instance,
+it is now possible to write `-t 1C` to spawn one thread per core, or `-t 0.5C`
+to spawn one thread for every other core.
+
+The thread count option now defaults to `1C`, meaning parallel execution
+is used by default. You can disable this by using `-t 1`.
+
 #### Migrating to Central Publisher Portal
 
 We've now migrated to [Central Publisher Portal](https://central.sonatype.org/publish/publish-portal-guide/).

@@ -541,6 +541,25 @@ class PmdCliTest extends BaseCliTest {
         runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "2");
     }
 
+    @Test
+    void defaultThreadCount() throws Exception {
+        CliExecutionResult result = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
+        result.checkStdErr(containsString("[DEBUG] Using " + Runtime.getRuntime().availableProcessors() + " threads for analysis"));
+    }
+
+    @Test
+    void monoThreadCount() throws Exception {
+        CliExecutionResult result = runCliSuccessfully("--debug", "--threads", "0", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
+        result.checkStdErr(containsString("[DEBUG] Using main thread for analysis"));
+    }
+
+    @Test
+    void oneThreadCount() throws Exception {
+        CliExecutionResult result = runCliSuccessfully("--debug", "--threads", "1", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
+        result.checkStdErr(containsString("[DEBUG] Using 1 thread for analysis"));
+    }
+
+
     // utilities
     private Path tempRoot() {
         return tempDir;
