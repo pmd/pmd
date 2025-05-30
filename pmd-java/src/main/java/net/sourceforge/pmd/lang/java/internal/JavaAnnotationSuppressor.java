@@ -168,10 +168,7 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
         return node.descendants(ASTVariableId.class)
                 .crossFindBoundaries()
                 .any(it -> {
-                    if (it.getLocalUsages().isEmpty()) {
-                        return true;
-                    }
-                    return it.getLocalUsages().stream()
+                    return it.getLocalUsages().isEmpty() || it.getLocalUsages().stream()
                             .map(ASTAssignableExpr::getAccessType)
                             .noneMatch(a -> a == ASTAssignableExpr.AccessType.READ);
                 });
