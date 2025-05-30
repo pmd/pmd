@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -166,14 +165,17 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
      * Searches for local variables, fields, formal parameters.
      */
     private static boolean hasUnusedVariables(JavaNode node) {
-        Set<ASTAssignableExpr.AccessType> varAccesses = node.descendants(ASTVariableId.class)
+        return node.descendants(ASTVariableId.class)
                 .crossFindBoundaries()
-                .toStream()
-                .flatMap(it -> it.getLocalUsages().stream())
-                .map(ASTAssignableExpr::getAccessType)
-                .collect(Collectors.toSet());
-        return !varAccesses.isEmpty() && varAccesses.stream()
-                .noneMatch(it -> it == ASTAssignableExpr.AccessType.READ);
+                .any(it -> {
+                    if (it.getLocalUsages().isEmpty()) {
+                        return true;
+                    }
+                    return it.getLocalUsages().stream()
+                            .map(ASTAssignableExpr::getAccessType)
+                            .noneMatch(a -> a == ASTAssignableExpr.AccessType.READ);
+                });
+
     }
 
     private static boolean hasUnusedTypeParam(JavaNode node) {
