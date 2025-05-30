@@ -254,8 +254,8 @@ function pmd_ci_build_setup_maven_settings() {
   <servers>
     <server>
       <id>central</id>
-      <username>\${env.CI_DEPLOY_USERNAME}</username>
-      <password>\${env.CI_DEPLOY_PASSWORD}</password>
+      <username>\${env.MAVEN_CENTRAL_PORTAL_USERNAME}</username>
+      <password>\${env.MAVEN_CENTRAL_PORTAL_PASSWORD}</password>
     </server>
   </servers>
   <mirrors/>
