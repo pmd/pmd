@@ -27,10 +27,7 @@ This is a {{ site.pmd.release_type }} release.
 #### New Rule UnnecessaryWarningSuppression (experimental)
 
 This new Java rule {% rule java/bestpractices/UnnecessaryWarningSuppression %} reports unused suppression
-annotations and comments. The rule class supports any PMD language,
-but language-specific behavior needs to be implemented to avoid false positives for some languages.
-Violations of this rule cannot be suppressed. It is special cased rule that is executed after all
-other rules, so that whether those produce warnings or not is known to this rule.
+annotations and comments. Violations of this rule cannot be suppressed.
 
 How to use it? Just include it in your ruleset:
 
@@ -42,7 +39,7 @@ Note: This rule is currently experimental. It is available for now only for Java
 The rule for now only reports annotations specific to PMD, like `@SuppressWarnings("PMD")`.
 In the future we might be able to check for other common ones like `@SuppressWarnings("unchecked")` or `"fallthrough"`.
 Since violations of this rule cannot be suppressed, we opted here on the side of false-negatives and
-don't report such unused cases yet.
+don't report every unused case yet.
 However, suppressing specific PMD rules is working as expected.
 
 #### Migrating to Central Publisher Portal
