@@ -38,7 +38,7 @@ class MonoThreadProcessorTest extends AbstractPMDProcessorTest {
         // in case of error, we abort at the first error, so in this test case
         // we abort at the first file, so only 1 file is processed.
         assertEquals(1, reportListener.files.get());
-        Mockito.verify(reporter, Mockito.times(1)).log(Level.DEBUG, "Using single thread for analysis");
+        Mockito.verify(reporter, Mockito.times(1)).log(Level.DEBUG, "Using main thread for analysis");
         // in mono thread, the error just falls through, we don't additionally catch and log it.
         Mockito.verifyNoMoreInteractions(reporter);
     }
