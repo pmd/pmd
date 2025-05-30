@@ -216,15 +216,15 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
             }
         }
 
-        if (!privateMethods.isEmpty()) {
-            // node is a private method/ctor or is a class decl that contains only private methods
-            // TODO we need to somehow sync this with UnusedPrivateMethod and check, if these private
-            // methods are indeed unused or not. See also #5727.
-            // for now, we give up and assume, all private methods are used
-            return false;
-        }
-
         return false;
+
+        // if (!privateMethods.isEmpty()) {
+        // node is a private method/ctor or is a class decl that contains only private methods
+        // TODO we need to somehow sync this with UnusedPrivateMethod and check, if these private
+        // methods are indeed unused or not. See also #5727.
+        // for now, we give up and assume, all private methods are used
+        // and always return false...
+        // }
     }
 
     @Override
