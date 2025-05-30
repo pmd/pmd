@@ -330,10 +330,39 @@
                         this.transport = transport;
                         this.handler = handler;
                     }
+
+                    public String getTransport() {
+                        return transport;
+                    }
                 }
 
             }
             ]]></code>
+    </test-code>
+    <test-code>
+        <description>Suppresswarnings unused on field - 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    @SuppressWarnings("unused") // no violation: this is really unused, it is only set
+    private String field1;
+
+    public void setField1(String field1) {
+        this.field1 = field1;
+    }
+
+    @SuppressWarnings("unused") // -> violation: the field is used in the getter
+    private String field2;
+
+    public void setField2(String field2) {
+        this.field2 = field2;
+    }
+    public String getField2() {
+        return field2;
+    }
+}
+        ]]></code>
     </test-code>
 
     <test-code>
