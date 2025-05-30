@@ -169,7 +169,7 @@ public final class RuleContext {
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
         Node suppressionNode = getNearestNode(reportable, astInfo);
-        RuleViolation violation = createViolation(reportable, astInfo, suppressionNode, message, formatArgs);
+        RuleViolation violation = createViolation(() -> location, astInfo, suppressionNode, message, formatArgs);
         SuppressedViolation suppressed = suppressOrNull(suppressionNode, violation, astInfo);
 
         if (suppressed != null) {
