@@ -137,21 +137,46 @@ for a list of common, shared parameters that are valid for both commands.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5584](https://github.com/pmd/pmd/pull/5584): \[ci] New workflow "Publish Snapshot" - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5599](https://github.com/pmd/pmd/pull/5599): \[java] Rewrite NPath complexity metric - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5609](https://github.com/pmd/pmd/pull/5609): \[core] Add rule to report unnecessary suppression comments/annotations - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5699](https://github.com/pmd/pmd/pull/5699): Fix #5702: \[java] First-class support for lombok @<!-- -->Slf4j  - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis - [Elliotte Rusty Harold](https://github.com/elharo) (@elharo)
+* [#5712](https://github.com/pmd/pmd/pull/5712): Fix #5711: \[java] UseArrayAsList - only consider List.add - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5715](https://github.com/pmd/pmd/pull/5715): Fix #5476: \[visualforce] Resolve data types of standard object fields - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5716](https://github.com/pmd/pmd/pull/5716): Fix #5634: \[java] CommentDefaultAccessModifier: Comment between annotation and constructor not recognized - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5726](https://github.com/pmd/pmd/pull/5726): Fix #5724: \[java] Implicit functional interface FP with sealed interface - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5727](https://github.com/pmd/pmd/pull/5727): Fix #5621: \[java] Fix FPs with UnusedPrivateMethod - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5728](https://github.com/pmd/pmd/pull/5728): \[ci] Improvements for "Publish Pull Requests" - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5730](https://github.com/pmd/pmd/pull/5730): \[ci] Refactor git-repo-sync - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5731](https://github.com/pmd/pmd/pull/5731): \[cli] Share more CLI options between CPD and PMD - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5736](https://github.com/pmd/pmd/pull/5736): Fix #5061: \[java] UnusedLocalVariable FP when using compound assignment - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5741](https://github.com/pmd/pmd/pull/5741): \[cli] Make CLI default to multithreaded - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5742](https://github.com/pmd/pmd/pull/5742): \[ci] publish-snapshot/old build: migrate to central portal - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5743](https://github.com/pmd/pmd/pull/5743): \[ci] Make build a reuseable workflow - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5744](https://github.com/pmd/pmd/pull/5744): Fix #5705: \[cli] Always determine PMD_HOME based on script location - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5748](https://github.com/pmd/pmd/pull/5748): \[core] Reformat SarifLog to comply to coding standards - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5763](https://github.com/pmd/pmd/pull/5763): \[java] Support annotated constructor return type in symbol API - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5764](https://github.com/pmd/pmd/pull/5764): Fix #2462: \[java] LinguisticNaming should ignore setters for Builders  - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5706](https://github.com/pmd/pmd/pull/5706): Bump PMD from 7.12.0 to 7.13.0
+* [#5709](https://github.com/pmd/pmd/pull/5709): Bump com.google.code.gson:gson from 2.13.0 to 2.13.1
+* [#5710](https://github.com/pmd/pmd/pull/5710): Bump com.puppycrawl.tools:checkstyle from 10.23.0 to 10.23.1
+* [#5717](https://github.com/pmd/pmd/pull/5717): Bump scalameta.version from 4.13.4 to 4.13.5
+* [#5718](https://github.com/pmd/pmd/pull/5718): Bump org.checkerframework:checker-qual from 3.49.2 to 3.49.3
+* [#5719](https://github.com/pmd/pmd/pull/5719): Bump org.jsoup:jsoup from 1.19.1 to 1.20.1
+* [#5751](https://github.com/pmd/pmd/pull/5751): Bump scalameta.version from 4.13.5 to 4.13.6
+* [#5754](https://github.com/pmd/pmd/pull/5754): Bump com.google.protobuf:protobuf-java from 4.30.2 to 4.31.0
+* [#5766](https://github.com/pmd/pmd/pull/5766): Bump io.github.git-commit-id:git-commit-id-maven-plugin from 9.0.1 to 9.0.2
+* [#5767](https://github.com/pmd/pmd/pull/5767): Bump org.mockito:mockito-core from 5.17.0 to 5.18.0
+* [#5768](https://github.com/pmd/pmd/pull/5768): Bump com.puppycrawl.tools:checkstyle from 10.23.1 to 10.24.0
 
 ### 📈 Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 165 commits
+* 33 closed tickets & PRs
+* Days since last release: 35
 
 {% endtocmaker %}
-
