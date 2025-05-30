@@ -232,6 +232,147 @@
 
 
 {
+"title": "Best Practices (Modelica, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_modelica_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ClassStartNameEqualsEndName",
+"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
+"tags": "",
+"keywords": "ConnectUsingNonConnector",
+"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "AmbiguousResolution (Modelica, Best Practices)",
+"tags": "",
+"keywords": "AmbiguousResolution",
+"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_ecmascript_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "AvoidWithStatement (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "AvoidWithStatement",
+"url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ConsistentReturn (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "ConsistentReturn",
+"url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "GlobalVariable (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "GlobalVariable",
+"url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ScopeForInVariable (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "ScopeForInVariable",
+"url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "UseBaseWithParseInt (JavaScript, Best Practices)",
+"tags": "",
+"keywords": "UseBaseWithParseInt",
+"url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (XML, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_xml_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "MissingEncoding (XML, Best Practices)",
+"tags": "",
+"keywords": "MissingEncoding",
+"url": "pmd_rules_xml_bestpractices.html#missingencoding",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Best Practices (HTML, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
@@ -279,129 +420,19 @@
 
 
 {
-"title": "Best Practices (XML, Best Practices)",
+"title": "Best Practices (PLSQL, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_xml_bestpractices.html#best practices",
+"url": "pmd_rules_plsql_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "MissingEncoding (XML, Best Practices)",
+"title": "TomKytesDespair (PLSQL, Best Practices)",
 "tags": "",
-"keywords": "MissingEncoding",
-"url": "pmd_rules_xml_bestpractices.html#missingencoding",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Apex, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_apex_bestpractices.html#best practices",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ApexAssertionsShouldIncludeMessage (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexAssertionsShouldIncludeMessage",
-"url": "pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ApexUnitTestClassShouldHaveAsserts (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestClassShouldHaveAsserts",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ApexUnitTestClassShouldHaveRunAs (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestClassShouldHaveRunAs",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunas",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestMethodShouldHaveIsTestAnnotation",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ApexUnitTestShouldNotUseSeeAllDataTrue (Apex, Best Practices)",
-"tags": "",
-"keywords": "ApexUnitTestShouldNotUseSeeAllDataTrue",
-"url": "pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "AvoidGlobalModifier (Apex, Best Practices)",
-"tags": "",
-"keywords": "AvoidGlobalModifier",
-"url": "pmd_rules_apex_bestpractices.html#avoidglobalmodifier",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "AvoidLogicInTrigger (Apex, Best Practices)",
-"tags": "",
-"keywords": "AvoidLogicInTrigger",
-"url": "pmd_rules_apex_bestpractices.html#avoidlogicintrigger",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "DebugsShouldUseLoggingLevel (Apex, Best Practices)",
-"tags": "",
-"keywords": "DebugsShouldUseLoggingLevel",
-"url": "pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "UnusedLocalVariable (Apex, Best Practices)",
-"tags": "",
-"keywords": "UnusedLocalVariable",
-"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "QueueableWithoutFinalizer (Apex, Best Practices)",
-"tags": "",
-"keywords": "QueueableWithoutFinalizer",
-"url": "pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer",
+"keywords": "TomKytesDespair",
+"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -996,57 +1027,28 @@
 
 
 {
-"title": "Best Practices (Kotlin, Best Practices)",
+"title": "Best Practices (Swift, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_kotlin_bestpractices.html#best practices",
+"url": "pmd_rules_swift_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "FunctionNameTooShort (Kotlin, Best Practices)",
+"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
 "tags": "",
-"keywords": "FunctionNameTooShort",
-"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_velocity_bestpractices.html#best practices",
+"keywords": "ProhibitedInterfaceBuilder",
+"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
+"title": "UnavailableFunction (Swift, Best Practices)",
 "tags": "",
-"keywords": "AvoidReassigningParameters",
-"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
-"tags": "",
-"keywords": "UnusedMacroParameter",
-"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
+"keywords": "UnavailableFunction",
+"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -1119,104 +1121,100 @@
 
 
 {
-"title": "Best Practices (PLSQL, Best Practices)",
+"title": "Best Practices (Apex, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_plsql_bestpractices.html#best practices",
+"url": "pmd_rules_apex_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "TomKytesDespair (PLSQL, Best Practices)",
+"title": "ApexAssertionsShouldIncludeMessage (Apex, Best Practices)",
 "tags": "",
-"keywords": "TomKytesDespair",
-"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
+"keywords": "ApexAssertionsShouldIncludeMessage",
+"url": "pmd_rules_apex_bestpractices.html#apexassertionsshouldincludemessage",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
-
-
-
-
-
 ,
 
-
-
-
-
-
-
 {
-"title": "Best Practices (Modelica, Best Practices)",
+"title": "ApexUnitTestClassShouldHaveAsserts (Apex, Best Practices)",
 "tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_modelica_bestpractices.html#best practices",
+"keywords": "ApexUnitTestClassShouldHaveAsserts",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaveasserts",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
+"title": "ApexUnitTestClassShouldHaveRunAs (Apex, Best Practices)",
 "tags": "",
-"keywords": "ClassStartNameEqualsEndName",
-"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
+"keywords": "ApexUnitTestClassShouldHaveRunAs",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestclassshouldhaverunas",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
+"title": "ApexUnitTestMethodShouldHaveIsTestAnnotation (Apex, Best Practices)",
 "tags": "",
-"keywords": "ConnectUsingNonConnector",
-"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
+"keywords": "ApexUnitTestMethodShouldHaveIsTestAnnotation",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestmethodshouldhaveistestannotation",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "AmbiguousResolution (Modelica, Best Practices)",
+"title": "ApexUnitTestShouldNotUseSeeAllDataTrue (Apex, Best Practices)",
 "tags": "",
-"keywords": "AmbiguousResolution",
-"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"keywords": "ApexUnitTestShouldNotUseSeeAllDataTrue",
+"url": "pmd_rules_apex_bestpractices.html#apexunittestshouldnotuseseealldatatrue",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
-
-
-
-
-
 ,
 
-
-
-
-
-
-
 {
-"title": "Best Practices (Swift, Best Practices)",
+"title": "AvoidGlobalModifier (Apex, Best Practices)",
 "tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_swift_bestpractices.html#best practices",
+"keywords": "AvoidGlobalModifier",
+"url": "pmd_rules_apex_bestpractices.html#avoidglobalmodifier",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
+"title": "AvoidLogicInTrigger (Apex, Best Practices)",
 "tags": "",
-"keywords": "ProhibitedInterfaceBuilder",
-"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
+"keywords": "AvoidLogicInTrigger",
+"url": "pmd_rules_apex_bestpractices.html#avoidlogicintrigger",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "UnavailableFunction (Swift, Best Practices)",
+"title": "DebugsShouldUseLoggingLevel (Apex, Best Practices)",
 "tags": "",
-"keywords": "UnavailableFunction",
-"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
+"keywords": "DebugsShouldUseLoggingLevel",
+"url": "pmd_rules_apex_bestpractices.html#debugsshoulduselogginglevel",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "UnusedLocalVariable (Apex, Best Practices)",
+"tags": "",
+"keywords": "UnusedLocalVariable",
+"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "QueueableWithoutFinalizer (Apex, Best Practices)",
+"tags": "",
+"keywords": "QueueableWithoutFinalizer",
+"url": "pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -1233,55 +1231,57 @@
 
 
 {
-"title": "Best Practices (JavaScript, Best Practices)",
+"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_ecmascript_bestpractices.html#best practices",
+"url": "pmd_rules_velocity_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "AvoidWithStatement (JavaScript, Best Practices)",
+"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
-"keywords": "AvoidWithStatement",
-"url": "pmd_rules_ecmascript_bestpractices.html#avoidwithstatement",
+"keywords": "AvoidReassigningParameters",
+"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ConsistentReturn (JavaScript, Best Practices)",
+"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
 "tags": "",
-"keywords": "ConsistentReturn",
-"url": "pmd_rules_ecmascript_bestpractices.html#consistentreturn",
+"keywords": "UnusedMacroParameter",
+"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Kotlin, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_kotlin_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "GlobalVariable (JavaScript, Best Practices)",
+"title": "FunctionNameTooShort (Kotlin, Best Practices)",
 "tags": "",
-"keywords": "GlobalVariable",
-"url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ScopeForInVariable (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "ScopeForInVariable",
-"url": "pmd_rules_ecmascript_bestpractices.html#scopeforinvariable",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "UseBaseWithParseInt (JavaScript, Best Practices)",
-"tags": "",
-"keywords": "UseBaseWithParseInt",
-"url": "pmd_rules_ecmascript_bestpractices.html#usebasewithparseint",
+"keywords": "FunctionNameTooShort",
+"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -1458,118 +1458,185 @@
 
 
 {
-"title": "Code Style (Apex, Code Style)",
+"title": "Code Style (XSL, Code Style)",
 "tags": "",
 "keywords": "Code Style",
-"url": "pmd_rules_apex_codestyle.html#code style",
+"url": "pmd_rules_xsl_codestyle.html#code style",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "ClassNamingConventions (Apex, Code Style)",
+"title": "UseConcatOnce (XSL, Code Style)",
 "tags": "",
-"keywords": "ClassNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#classnamingconventions",
+"keywords": "UseConcatOnce",
+"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
+
+
+
+
+
 ,
 
+
+
+
+
+
+
 {
-"title": "IfElseStmtsMustUseBraces (Apex, Code Style)",
+"title": "Code Style (JavaScript, Code Style)",
 "tags": "",
-"keywords": "IfElseStmtsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces",
+"keywords": "Code Style",
+"url": "pmd_rules_ecmascript_codestyle.html#code style",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "IfStmtsMustUseBraces (Apex, Code Style)",
+"title": "AssignmentInOperand (JavaScript, Code Style)",
 "tags": "",
-"keywords": "IfStmtsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#ifstmtsmustusebraces",
+"keywords": "AssignmentInOperand",
+"url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "FieldDeclarationsShouldBeAtStart (Apex, Code Style)",
-"tags": "",
-"keywords": "FieldDeclarationsShouldBeAtStart",
-"url": "pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "FieldNamingConventions (Apex, Code Style)",
-"tags": "",
-"keywords": "FieldNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#fieldnamingconventions",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "ForLoopsMustUseBraces (Apex, Code Style)",
+"title": "ForLoopsMustUseBraces (JavaScript, Code Style)",
 "tags": "",
 "keywords": "ForLoopsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#forloopsmustusebraces",
+"url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "FormalParameterNamingConventions (Apex, Code Style)",
+"title": "IfElseStmtsMustUseBraces (JavaScript, Code Style)",
 "tags": "",
-"keywords": "FormalParameterNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#formalparameternamingconventions",
+"keywords": "IfElseStmtsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "LocalVariableNamingConventions (Apex, Code Style)",
+"title": "IfStmtsMustUseBraces (JavaScript, Code Style)",
 "tags": "",
-"keywords": "LocalVariableNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#localvariablenamingconventions",
+"keywords": "IfStmtsMustUseBraces",
+"url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "MethodNamingConventions (Apex, Code Style)",
+"title": "NoElseReturn (JavaScript, Code Style)",
 "tags": "",
-"keywords": "MethodNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#methodnamingconventions",
+"keywords": "NoElseReturn",
+"url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "OneDeclarationPerLine (Apex, Code Style)",
+"title": "UnnecessaryBlock (JavaScript, Code Style)",
 "tags": "",
-"keywords": "OneDeclarationPerLine",
-"url": "pmd_rules_apex_codestyle.html#onedeclarationperline",
+"keywords": "UnnecessaryBlock",
+"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "PropertyNamingConventions (Apex, Code Style)",
+"title": "UnnecessaryParentheses (JavaScript, Code Style)",
 "tags": "",
-"keywords": "PropertyNamingConventions",
-"url": "pmd_rules_apex_codestyle.html#propertynamingconventions",
+"keywords": "UnnecessaryParentheses",
+"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "WhileLoopsMustUseBraces (Apex, Code Style)",
+"title": "UnreachableCode (JavaScript, Code Style)",
+"tags": "",
+"keywords": "UnreachableCode",
+"url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "WhileLoopsMustUseBraces (JavaScript, Code Style)",
 "tags": "",
 "keywords": "WhileLoopsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#whileloopsmustusebraces",
+"url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Code Style (PLSQL, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_plsql_codestyle.html#code style",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "AvoidTabCharacter (PLSQL, Code Style)",
+"tags": "",
+"keywords": "AvoidTabCharacter",
+"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "CodeFormat (PLSQL, Code Style)",
+"tags": "",
+"keywords": "CodeFormat",
+"url": "pmd_rules_plsql_codestyle.html#codeformat",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "MisplacedPragma (PLSQL, Code Style)",
+"tags": "",
+"keywords": "MisplacedPragma",
+"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "ForLoopNaming (PLSQL, Code Style)",
+"tags": "",
+"keywords": "ForLoopNaming",
+"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "LineLength (PLSQL, Code Style)",
+"tags": "",
+"keywords": "LineLength",
+"url": "pmd_rules_plsql_codestyle.html#linelength",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 
@@ -2148,185 +2215,118 @@
 
 
 {
-"title": "Code Style (XSL, Code Style)",
+"title": "Code Style (Apex, Code Style)",
 "tags": "",
 "keywords": "Code Style",
-"url": "pmd_rules_xsl_codestyle.html#code style",
+"url": "pmd_rules_apex_codestyle.html#code style",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "UseConcatOnce (XSL, Code Style)",
+"title": "ClassNamingConventions (Apex, Code Style)",
 "tags": "",
-"keywords": "UseConcatOnce",
-"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (PLSQL, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_plsql_codestyle.html#code style",
+"keywords": "ClassNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#classnamingconventions",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "AvoidTabCharacter (PLSQL, Code Style)",
-"tags": "",
-"keywords": "AvoidTabCharacter",
-"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "CodeFormat (PLSQL, Code Style)",
-"tags": "",
-"keywords": "CodeFormat",
-"url": "pmd_rules_plsql_codestyle.html#codeformat",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "MisplacedPragma (PLSQL, Code Style)",
-"tags": "",
-"keywords": "MisplacedPragma",
-"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "ForLoopNaming (PLSQL, Code Style)",
-"tags": "",
-"keywords": "ForLoopNaming",
-"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "LineLength (PLSQL, Code Style)",
-"tags": "",
-"keywords": "LineLength",
-"url": "pmd_rules_plsql_codestyle.html#linelength",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (JavaScript, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_ecmascript_codestyle.html#code style",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "AssignmentInOperand (JavaScript, Code Style)",
-"tags": "",
-"keywords": "AssignmentInOperand",
-"url": "pmd_rules_ecmascript_codestyle.html#assignmentinoperand",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "ForLoopsMustUseBraces (JavaScript, Code Style)",
-"tags": "",
-"keywords": "ForLoopsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#forloopsmustusebraces",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "IfElseStmtsMustUseBraces (JavaScript, Code Style)",
+"title": "IfElseStmtsMustUseBraces (Apex, Code Style)",
 "tags": "",
 "keywords": "IfElseStmtsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#ifelsestmtsmustusebraces",
+"url": "pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "IfStmtsMustUseBraces (JavaScript, Code Style)",
+"title": "IfStmtsMustUseBraces (Apex, Code Style)",
 "tags": "",
 "keywords": "IfStmtsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#ifstmtsmustusebraces",
+"url": "pmd_rules_apex_codestyle.html#ifstmtsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "NoElseReturn (JavaScript, Code Style)",
+"title": "FieldDeclarationsShouldBeAtStart (Apex, Code Style)",
 "tags": "",
-"keywords": "NoElseReturn",
-"url": "pmd_rules_ecmascript_codestyle.html#noelsereturn",
+"keywords": "FieldDeclarationsShouldBeAtStart",
+"url": "pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "UnnecessaryBlock (JavaScript, Code Style)",
+"title": "FieldNamingConventions (Apex, Code Style)",
 "tags": "",
-"keywords": "UnnecessaryBlock",
-"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryblock",
+"keywords": "FieldNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#fieldnamingconventions",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "UnnecessaryParentheses (JavaScript, Code Style)",
+"title": "ForLoopsMustUseBraces (Apex, Code Style)",
 "tags": "",
-"keywords": "UnnecessaryParentheses",
-"url": "pmd_rules_ecmascript_codestyle.html#unnecessaryparentheses",
+"keywords": "ForLoopsMustUseBraces",
+"url": "pmd_rules_apex_codestyle.html#forloopsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "UnreachableCode (JavaScript, Code Style)",
+"title": "FormalParameterNamingConventions (Apex, Code Style)",
 "tags": "",
-"keywords": "UnreachableCode",
-"url": "pmd_rules_ecmascript_codestyle.html#unreachablecode",
+"keywords": "FormalParameterNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#formalparameternamingconventions",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "WhileLoopsMustUseBraces (JavaScript, Code Style)",
+"title": "LocalVariableNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "LocalVariableNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#localvariablenamingconventions",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "MethodNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "MethodNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#methodnamingconventions",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "OneDeclarationPerLine (Apex, Code Style)",
+"tags": "",
+"keywords": "OneDeclarationPerLine",
+"url": "pmd_rules_apex_codestyle.html#onedeclarationperline",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "PropertyNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "PropertyNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#propertynamingconventions",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "WhileLoopsMustUseBraces (Apex, Code Style)",
 "tags": "",
 "keywords": "WhileLoopsMustUseBraces",
-"url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
+"url": "pmd_rules_apex_codestyle.html#whileloopsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 
@@ -2503,118 +2503,118 @@
 
 
 {
-"title": "Design (Apex, Design)",
+"title": "Design (PLSQL, Design)",
 "tags": "",
 "keywords": "Design",
-"url": "pmd_rules_apex_design.html#design",
+"url": "pmd_rules_plsql_design.html#design",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "AvoidDeeplyNestedIfStmts (Apex, Design)",
-"tags": "",
-"keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_apex_design.html#avoiddeeplynestedifstmts",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "UnusedMethod (Apex, Design)",
-"tags": "",
-"keywords": "UnusedMethod",
-"url": "pmd_rules_apex_design.html#unusedmethod",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "CyclomaticComplexity (Apex, Design)",
+"title": "CyclomaticComplexity (PLSQL, Design)",
 "tags": "",
 "keywords": "CyclomaticComplexity",
-"url": "pmd_rules_apex_design.html#cyclomaticcomplexity",
+"url": "pmd_rules_plsql_design.html#cyclomaticcomplexity",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "CognitiveComplexity (Apex, Design)",
+"title": "ExcessiveMethodLength (PLSQL, Design)",
 "tags": "",
-"keywords": "CognitiveComplexity",
-"url": "pmd_rules_apex_design.html#cognitivecomplexity",
+"keywords": "ExcessiveMethodLength",
+"url": "pmd_rules_plsql_design.html#excessivemethodlength",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "ExcessiveClassLength (Apex, Design)",
+"title": "ExcessiveObjectLength (PLSQL, Design)",
 "tags": "",
-"keywords": "ExcessiveClassLength",
-"url": "pmd_rules_apex_design.html#excessiveclasslength",
+"keywords": "ExcessiveObjectLength",
+"url": "pmd_rules_plsql_design.html#excessiveobjectlength",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "ExcessiveParameterList (Apex, Design)",
+"title": "ExcessivePackageBodyLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessivePackageBodyLength",
+"url": "pmd_rules_plsql_design.html#excessivepackagebodylength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessivePackageSpecificationLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessivePackageSpecificationLength",
+"url": "pmd_rules_plsql_design.html#excessivepackagespecificationlength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveParameterList (PLSQL, Design)",
 "tags": "",
 "keywords": "ExcessiveParameterList",
-"url": "pmd_rules_apex_design.html#excessiveparameterlist",
+"url": "pmd_rules_plsql_design.html#excessiveparameterlist",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "ExcessivePublicCount (Apex, Design)",
+"title": "ExcessiveTypeLength (PLSQL, Design)",
 "tags": "",
-"keywords": "ExcessivePublicCount",
-"url": "pmd_rules_apex_design.html#excessivepubliccount",
+"keywords": "ExcessiveTypeLength",
+"url": "pmd_rules_plsql_design.html#excessivetypelength",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "NcssConstructorCount (Apex, Design)",
-"tags": "",
-"keywords": "NcssConstructorCount",
-"url": "pmd_rules_apex_design.html#ncssconstructorcount",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NcssMethodCount (Apex, Design)",
+"title": "NcssMethodCount (PLSQL, Design)",
 "tags": "",
 "keywords": "NcssMethodCount",
-"url": "pmd_rules_apex_design.html#ncssmethodcount",
+"url": "pmd_rules_plsql_design.html#ncssmethodcount",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "NcssTypeCount (Apex, Design)",
+"title": "NcssObjectCount (PLSQL, Design)",
 "tags": "",
-"keywords": "NcssTypeCount",
-"url": "pmd_rules_apex_design.html#ncsstypecount",
+"keywords": "NcssObjectCount",
+"url": "pmd_rules_plsql_design.html#ncssobjectcount",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "StdCyclomaticComplexity (Apex, Design)",
+"title": "NPathComplexity (PLSQL, Design)",
 "tags": "",
-"keywords": "StdCyclomaticComplexity",
-"url": "pmd_rules_apex_design.html#stdcyclomaticcomplexity",
+"keywords": "NPathComplexity",
+"url": "pmd_rules_plsql_design.html#npathcomplexity",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
 
 {
-"title": "TooManyFields (Apex, Design)",
+"title": "TooManyFields (PLSQL, Design)",
 "tags": "",
 "keywords": "TooManyFields",
-"url": "pmd_rules_apex_design.html#toomanyfields",
+"url": "pmd_rules_plsql_design.html#toomanyfields",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "TooManyMethods (PLSQL, Design)",
+"tags": "",
+"keywords": "TooManyMethods",
+"url": "pmd_rules_plsql_design.html#toomanymethods",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 
@@ -3020,6 +3020,190 @@
 
 
 {
+"title": "Design (Java Server Pages, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_jsp_design.html#design",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NoInlineScript (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoInlineScript",
+"url": "pmd_rules_jsp_design.html#noinlinescript",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NoInlineStyleInformation (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoInlineStyleInformation",
+"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NoLongScripts (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoLongScripts",
+"url": "pmd_rules_jsp_design.html#nolongscripts",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NoScriptlets (Java Server Pages, Design)",
+"tags": "",
+"keywords": "NoScriptlets",
+"url": "pmd_rules_jsp_design.html#noscriptlets",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Design (Apex, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_apex_design.html#design",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "AvoidDeeplyNestedIfStmts (Apex, Design)",
+"tags": "",
+"keywords": "AvoidDeeplyNestedIfStmts",
+"url": "pmd_rules_apex_design.html#avoiddeeplynestedifstmts",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "UnusedMethod (Apex, Design)",
+"tags": "",
+"keywords": "UnusedMethod",
+"url": "pmd_rules_apex_design.html#unusedmethod",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "CyclomaticComplexity (Apex, Design)",
+"tags": "",
+"keywords": "CyclomaticComplexity",
+"url": "pmd_rules_apex_design.html#cyclomaticcomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "CognitiveComplexity (Apex, Design)",
+"tags": "",
+"keywords": "CognitiveComplexity",
+"url": "pmd_rules_apex_design.html#cognitivecomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveClassLength (Apex, Design)",
+"tags": "",
+"keywords": "ExcessiveClassLength",
+"url": "pmd_rules_apex_design.html#excessiveclasslength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveParameterList (Apex, Design)",
+"tags": "",
+"keywords": "ExcessiveParameterList",
+"url": "pmd_rules_apex_design.html#excessiveparameterlist",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessivePublicCount (Apex, Design)",
+"tags": "",
+"keywords": "ExcessivePublicCount",
+"url": "pmd_rules_apex_design.html#excessivepubliccount",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NcssConstructorCount (Apex, Design)",
+"tags": "",
+"keywords": "NcssConstructorCount",
+"url": "pmd_rules_apex_design.html#ncssconstructorcount",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NcssMethodCount (Apex, Design)",
+"tags": "",
+"keywords": "NcssMethodCount",
+"url": "pmd_rules_apex_design.html#ncssmethodcount",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NcssTypeCount (Apex, Design)",
+"tags": "",
+"keywords": "NcssTypeCount",
+"url": "pmd_rules_apex_design.html#ncsstypecount",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "StdCyclomaticComplexity (Apex, Design)",
+"tags": "",
+"keywords": "StdCyclomaticComplexity",
+"url": "pmd_rules_apex_design.html#stdcyclomaticcomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "TooManyFields (Apex, Design)",
+"tags": "",
+"keywords": "TooManyFields",
+"url": "pmd_rules_apex_design.html#toomanyfields",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Design (Velocity Template Language (VTL), Design)",
 "tags": "",
 "keywords": "Design",
@@ -3082,190 +3266,6 @@
 
 
 
-
-
-{
-"title": "Design (Java Server Pages, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_jsp_design.html#design",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NoInlineScript (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineScript",
-"url": "pmd_rules_jsp_design.html#noinlinescript",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NoInlineStyleInformation (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoInlineStyleInformation",
-"url": "pmd_rules_jsp_design.html#noinlinestyleinformation",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NoLongScripts (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoLongScripts",
-"url": "pmd_rules_jsp_design.html#nolongscripts",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NoScriptlets (Java Server Pages, Design)",
-"tags": "",
-"keywords": "NoScriptlets",
-"url": "pmd_rules_jsp_design.html#noscriptlets",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (PLSQL, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_plsql_design.html#design",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "CyclomaticComplexity (PLSQL, Design)",
-"tags": "",
-"keywords": "CyclomaticComplexity",
-"url": "pmd_rules_plsql_design.html#cyclomaticcomplexity",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveMethodLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveMethodLength",
-"url": "pmd_rules_plsql_design.html#excessivemethodlength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveObjectLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveObjectLength",
-"url": "pmd_rules_plsql_design.html#excessiveobjectlength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessivePackageBodyLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessivePackageBodyLength",
-"url": "pmd_rules_plsql_design.html#excessivepackagebodylength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessivePackageSpecificationLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessivePackageSpecificationLength",
-"url": "pmd_rules_plsql_design.html#excessivepackagespecificationlength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveParameterList (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveParameterList",
-"url": "pmd_rules_plsql_design.html#excessiveparameterlist",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveTypeLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveTypeLength",
-"url": "pmd_rules_plsql_design.html#excessivetypelength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NcssMethodCount (PLSQL, Design)",
-"tags": "",
-"keywords": "NcssMethodCount",
-"url": "pmd_rules_plsql_design.html#ncssmethodcount",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NcssObjectCount (PLSQL, Design)",
-"tags": "",
-"keywords": "NcssObjectCount",
-"url": "pmd_rules_plsql_design.html#ncssobjectcount",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NPathComplexity (PLSQL, Design)",
-"tags": "",
-"keywords": "NPathComplexity",
-"url": "pmd_rules_plsql_design.html#npathcomplexity",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "TooManyFields (PLSQL, Design)",
-"tags": "",
-"keywords": "TooManyFields",
-"url": "pmd_rules_plsql_design.html#toomanyfields",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "TooManyMethods (PLSQL, Design)",
-"tags": "",
-"keywords": "TooManyMethods",
-"url": "pmd_rules_plsql_design.html#toomanymethods",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
 {
 "title": "The rule designer",
 "tags": "extendinguserdocs",
@@ -3289,35 +3289,6 @@
 "url": "pmd_devdocs_development.html",
 "summary": ""
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Documentation (Apex, Documentation)",
-"tags": "",
-"keywords": "Documentation",
-"url": "pmd_rules_apex_documentation.html#documentation",
-"summary": "\bRules\b \bthat\b \bare\b \brelated\b \bto\b \bcode\b \bdocumentation\b."
-}
-,
-
-{
-"title": "ApexDoc (Apex, Documentation)",
-"tags": "",
-"keywords": "ApexDoc",
-"url": "pmd_rules_apex_documentation.html#apexdoc",
-"summary": "\bRules\b \bthat\b \bare\b \brelated\b \bto\b \bcode\b \bdocumentation\b."
-}
-
-
 
 
 
@@ -3392,6 +3363,35 @@
 
 
 
+
+
+{
+"title": "Documentation (Apex, Documentation)",
+"tags": "",
+"keywords": "Documentation",
+"url": "pmd_rules_apex_documentation.html#documentation",
+"summary": "\bRules\b \bthat\b \bare\b \brelated\b \bto\b \bcode\b \bdocumentation\b."
+}
+,
+
+{
+"title": "ApexDoc (Apex, Documentation)",
+"tags": "",
+"keywords": "ApexDoc",
+"url": "pmd_rules_apex_documentation.html#apexdoc",
+"summary": "\bRules\b \bthat\b \bare\b \brelated\b \bto\b \bcode\b \bdocumentation\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "JavaScript Rules",
 "tags": "rule_referencesecmascript",
@@ -3399,6 +3399,100 @@
 "url": "pmd_rules_ecmascript.html",
 "summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bJavaScript\b"
 }
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (JavaScript, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_ecmascript_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "AvoidTrailingComma (JavaScript, Error Prone)",
+"tags": "",
+"keywords": "AvoidTrailingComma",
+"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "EqualComparison (JavaScript, Error Prone)",
+"tags": "",
+"keywords": "EqualComparison",
+"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "InaccurateNumericLiteral (JavaScript, Error Prone)",
+"tags": "",
+"keywords": "InaccurateNumericLiteral",
+"url": "pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "InnaccurateNumericLiteral (JavaScript, Error Prone)",
+"tags": "",
+"keywords": "InnaccurateNumericLiteral",
+"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_pom_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "InvalidDependencyTypes",
+"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "ProjectVersionAsDependencyVersion",
+"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
 
 
 
@@ -3440,145 +3534,37 @@
 
 
 {
-"title": "Error Prone (Apex, Error Prone)",
+"title": "Error Prone (PLSQL, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_apex_errorprone.html#error prone",
+"url": "pmd_rules_plsql_errorprone.html#error prone",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "ApexCSRF (Apex, Error Prone)",
+"title": "TO_DATE_TO_CHAR (PLSQL, Error Prone)",
 "tags": "",
-"keywords": "ApexCSRF",
-"url": "pmd_rules_apex_errorprone.html#apexcsrf",
+"keywords": "TO_DATE_TO_CHAR",
+"url": "pmd_rules_plsql_errorprone.html#to_date_to_char",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "AvoidDirectAccessTriggerMap (Apex, Error Prone)",
+"title": "TO_DATEWithoutDateFormat (PLSQL, Error Prone)",
 "tags": "",
-"keywords": "AvoidDirectAccessTriggerMap",
-"url": "pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap",
+"keywords": "TO_DATEWithoutDateFormat",
+"url": "pmd_rules_plsql_errorprone.html#to_datewithoutdateformat",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "AvoidHardcodingId (Apex, Error Prone)",
+"title": "TO_TIMESTAMPWithoutDateFormat (PLSQL, Error Prone)",
 "tags": "",
-"keywords": "AvoidHardcodingId",
-"url": "pmd_rules_apex_errorprone.html#avoidhardcodingid",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "AvoidNonExistentAnnotations (Apex, Error Prone)",
-"tags": "",
-"keywords": "AvoidNonExistentAnnotations",
-"url": "pmd_rules_apex_errorprone.html#avoidnonexistentannotations",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "AvoidStatefulDatabaseResult (Apex, Error Prone)",
-"tags": "",
-"keywords": "AvoidStatefulDatabaseResult",
-"url": "pmd_rules_apex_errorprone.html#avoidstatefuldatabaseresult",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyCatchBlock (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyCatchBlock",
-"url": "pmd_rules_apex_errorprone.html#emptycatchblock",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyIfStmt (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_apex_errorprone.html#emptyifstmt",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyStatementBlock (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyStatementBlock",
-"url": "pmd_rules_apex_errorprone.html#emptystatementblock",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyTryOrFinallyBlock (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyTryOrFinallyBlock",
-"url": "pmd_rules_apex_errorprone.html#emptytryorfinallyblock",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyWhileStmt (Apex, Error Prone)",
-"tags": "",
-"keywords": "EmptyWhileStmt",
-"url": "pmd_rules_apex_errorprone.html#emptywhilestmt",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "InaccessibleAuraEnabledGetter (Apex, Error Prone)",
-"tags": "",
-"keywords": "InaccessibleAuraEnabledGetter",
-"url": "pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "MethodWithSameNameAsEnclosingClass (Apex, Error Prone)",
-"tags": "",
-"keywords": "MethodWithSameNameAsEnclosingClass",
-"url": "pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "OverrideBothEqualsAndHashcode (Apex, Error Prone)",
-"tags": "",
-"keywords": "OverrideBothEqualsAndHashcode",
-"url": "pmd_rules_apex_errorprone.html#overridebothequalsandhashcode",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TestMethodsMustBeInTestClasses (Apex, Error Prone)",
-"tags": "",
-"keywords": "TestMethodsMustBeInTestClasses",
-"url": "pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TypeShadowsBuiltInNamespace (Apex, Error Prone)",
-"tags": "",
-"keywords": "TypeShadowsBuiltInNamespace",
-"url": "pmd_rules_apex_errorprone.html#typeshadowsbuiltinnamespace",
+"keywords": "TO_TIMESTAMPWithoutDateFormat",
+"url": "pmd_rules_plsql_errorprone.html#to_timestampwithoutdateformat",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -4398,57 +4384,212 @@
 
 
 {
-"title": "Error Prone (Kotlin, Error Prone)",
+"title": "Error Prone (Swift, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_kotlin_errorprone.html#error prone",
+"url": "pmd_rules_swift_errorprone.html#error prone",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
+"title": "ForceCast (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceCast",
+"url": "pmd_rules_swift_errorprone.html#forcecast",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ForceTry (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceTry",
+"url": "pmd_rules_swift_errorprone.html#forcetry",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Java Server Pages, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_jsp_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "JspEncoding (Java Server Pages, Error Prone)",
+"tags": "",
+"keywords": "JspEncoding",
+"url": "pmd_rules_jsp_errorprone.html#jspencoding",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Apex, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_apex_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ApexCSRF (Apex, Error Prone)",
+"tags": "",
+"keywords": "ApexCSRF",
+"url": "pmd_rules_apex_errorprone.html#apexcsrf",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "AvoidDirectAccessTriggerMap (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidDirectAccessTriggerMap",
+"url": "pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "AvoidHardcodingId (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidHardcodingId",
+"url": "pmd_rules_apex_errorprone.html#avoidhardcodingid",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "AvoidNonExistentAnnotations (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidNonExistentAnnotations",
+"url": "pmd_rules_apex_errorprone.html#avoidnonexistentannotations",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "AvoidStatefulDatabaseResult (Apex, Error Prone)",
+"tags": "",
+"keywords": "AvoidStatefulDatabaseResult",
+"url": "pmd_rules_apex_errorprone.html#avoidstatefuldatabaseresult",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "EmptyCatchBlock (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyCatchBlock",
+"url": "pmd_rules_apex_errorprone.html#emptycatchblock",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "EmptyIfStmt (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyIfStmt",
+"url": "pmd_rules_apex_errorprone.html#emptyifstmt",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "EmptyStatementBlock (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyStatementBlock",
+"url": "pmd_rules_apex_errorprone.html#emptystatementblock",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "EmptyTryOrFinallyBlock (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyTryOrFinallyBlock",
+"url": "pmd_rules_apex_errorprone.html#emptytryorfinallyblock",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "EmptyWhileStmt (Apex, Error Prone)",
+"tags": "",
+"keywords": "EmptyWhileStmt",
+"url": "pmd_rules_apex_errorprone.html#emptywhilestmt",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "InaccessibleAuraEnabledGetter (Apex, Error Prone)",
+"tags": "",
+"keywords": "InaccessibleAuraEnabledGetter",
+"url": "pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "MethodWithSameNameAsEnclosingClass (Apex, Error Prone)",
+"tags": "",
+"keywords": "MethodWithSameNameAsEnclosingClass",
+"url": "pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "OverrideBothEqualsAndHashcode (Apex, Error Prone)",
 "tags": "",
 "keywords": "OverrideBothEqualsAndHashcode",
-"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Maven POM, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_pom_errorprone.html#error prone",
+"url": "pmd_rules_apex_errorprone.html#overridebothequalsandhashcode",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
+"title": "TestMethodsMustBeInTestClasses (Apex, Error Prone)",
 "tags": "",
-"keywords": "InvalidDependencyTypes",
-"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
+"keywords": "TestMethodsMustBeInTestClasses",
+"url": "pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
+"title": "TypeShadowsBuiltInNamespace (Apex, Error Prone)",
 "tags": "",
-"keywords": "ProjectVersionAsDependencyVersion",
-"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"keywords": "TypeShadowsBuiltInNamespace",
+"url": "pmd_rules_apex_errorprone.html#typeshadowsbuiltinnamespace",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -4503,160 +4644,19 @@
 
 
 {
-"title": "Error Prone (Java Server Pages, Error Prone)",
+"title": "Error Prone (Kotlin, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_jsp_errorprone.html#error prone",
+"url": "pmd_rules_kotlin_errorprone.html#error prone",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "JspEncoding (Java Server Pages, Error Prone)",
+"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
 "tags": "",
-"keywords": "JspEncoding",
-"url": "pmd_rules_jsp_errorprone.html#jspencoding",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_plsql_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TO_DATE_TO_CHAR (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_DATE_TO_CHAR",
-"url": "pmd_rules_plsql_errorprone.html#to_date_to_char",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TO_DATEWithoutDateFormat (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_DATEWithoutDateFormat",
-"url": "pmd_rules_plsql_errorprone.html#to_datewithoutdateformat",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TO_TIMESTAMPWithoutDateFormat (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_TIMESTAMPWithoutDateFormat",
-"url": "pmd_rules_plsql_errorprone.html#to_timestampwithoutdateformat",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Swift, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_swift_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "ForceCast (Swift, Error Prone)",
-"tags": "",
-"keywords": "ForceCast",
-"url": "pmd_rules_swift_errorprone.html#forcecast",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "ForceTry (Swift, Error Prone)",
-"tags": "",
-"keywords": "ForceTry",
-"url": "pmd_rules_swift_errorprone.html#forcetry",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_ecmascript_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "AvoidTrailingComma (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "AvoidTrailingComma",
-"url": "pmd_rules_ecmascript_errorprone.html#avoidtrailingcomma",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EqualComparison (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "EqualComparison",
-"url": "pmd_rules_ecmascript_errorprone.html#equalcomparison",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "InaccurateNumericLiteral (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "InaccurateNumericLiteral",
-"url": "pmd_rules_ecmascript_errorprone.html#inaccuratenumericliteral",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "InnaccurateNumericLiteral (JavaScript, Error Prone)",
-"tags": "",
-"keywords": "InnaccurateNumericLiteral",
-"url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
+"keywords": "OverrideBothEqualsAndHashcode",
+"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -5514,55 +5514,48 @@
 
 
 {
-"title": "Performance (Apex, Performance)",
+"title": "Performance (XSL, Performance)",
 "tags": "",
 "keywords": "Performance",
-"url": "pmd_rules_apex_performance.html#performance",
+"url": "pmd_rules_xsl_performance.html#performance",
 "summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
 }
 ,
 
 {
-"title": "AvoidDebugStatements (Apex, Performance)",
+"title": "AvoidAxisNavigation (XSL, Performance)",
 "tags": "",
-"keywords": "AvoidDebugStatements",
-"url": "pmd_rules_apex_performance.html#avoiddebugstatements",
+"keywords": "AvoidAxisNavigation",
+"url": "pmd_rules_xsl_performance.html#avoidaxisnavigation",
+"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Performance (JavaScript, Performance)",
+"tags": "",
+"keywords": "Performance",
+"url": "pmd_rules_ecmascript_performance.html#performance",
 "summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
 }
 ,
 
 {
-"title": "AvoidNonRestrictiveQueries (Apex, Performance)",
+"title": "AvoidConsoleStatements (JavaScript, Performance)",
 "tags": "",
-"keywords": "AvoidNonRestrictiveQueries",
-"url": "pmd_rules_apex_performance.html#avoidnonrestrictivequeries",
-"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
-}
-,
-
-{
-"title": "EagerlyLoadedDescribeSObjectResult (Apex, Performance)",
-"tags": "",
-"keywords": "EagerlyLoadedDescribeSObjectResult",
-"url": "pmd_rules_apex_performance.html#eagerlyloadeddescribesobjectresult",
-"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
-}
-,
-
-{
-"title": "OperationWithHighCostInLoop (Apex, Performance)",
-"tags": "",
-"keywords": "OperationWithHighCostInLoop",
-"url": "pmd_rules_apex_performance.html#operationwithhighcostinloop",
-"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
-}
-,
-
-{
-"title": "OperationWithLimitsInLoop (Apex, Performance)",
-"tags": "",
-"keywords": "OperationWithLimitsInLoop",
-"url": "pmd_rules_apex_performance.html#operationwithlimitsinloop",
+"keywords": "AvoidConsoleStatements",
+"url": "pmd_rules_ecmascript_performance.html#avoidconsolestatements",
 "summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
 }
 
@@ -5824,48 +5817,55 @@
 
 
 {
-"title": "Performance (XSL, Performance)",
+"title": "Performance (Apex, Performance)",
 "tags": "",
 "keywords": "Performance",
-"url": "pmd_rules_xsl_performance.html#performance",
+"url": "pmd_rules_apex_performance.html#performance",
 "summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
 }
 ,
 
 {
-"title": "AvoidAxisNavigation (XSL, Performance)",
+"title": "AvoidDebugStatements (Apex, Performance)",
 "tags": "",
-"keywords": "AvoidAxisNavigation",
-"url": "pmd_rules_xsl_performance.html#avoidaxisnavigation",
-"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Performance (JavaScript, Performance)",
-"tags": "",
-"keywords": "Performance",
-"url": "pmd_rules_ecmascript_performance.html#performance",
+"keywords": "AvoidDebugStatements",
+"url": "pmd_rules_apex_performance.html#avoiddebugstatements",
 "summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
 }
 ,
 
 {
-"title": "AvoidConsoleStatements (JavaScript, Performance)",
+"title": "AvoidNonRestrictiveQueries (Apex, Performance)",
 "tags": "",
-"keywords": "AvoidConsoleStatements",
-"url": "pmd_rules_ecmascript_performance.html#avoidconsolestatements",
+"keywords": "AvoidNonRestrictiveQueries",
+"url": "pmd_rules_apex_performance.html#avoidnonrestrictivequeries",
+"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
+}
+,
+
+{
+"title": "EagerlyLoadedDescribeSObjectResult (Apex, Performance)",
+"tags": "",
+"keywords": "EagerlyLoadedDescribeSObjectResult",
+"url": "pmd_rules_apex_performance.html#eagerlyloadeddescribesobjectresult",
+"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
+}
+,
+
+{
+"title": "OperationWithHighCostInLoop (Apex, Performance)",
+"tags": "",
+"keywords": "OperationWithHighCostInLoop",
+"url": "pmd_rules_apex_performance.html#operationwithhighcostinloop",
+"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
+}
+,
+
+{
+"title": "OperationWithLimitsInLoop (Apex, Performance)",
+"tags": "",
+"keywords": "OperationWithLimitsInLoop",
+"url": "pmd_rules_apex_performance.html#operationwithlimitsinloop",
 "summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
 }
 
@@ -6252,6 +6252,82 @@
 
 
 {
+"title": "Security (Java, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_java_security.html#security",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "HardCodedCryptoKey (Java, Security)",
+"tags": "",
+"keywords": "HardCodedCryptoKey",
+"url": "pmd_rules_java_security.html#hardcodedcryptokey",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "InsecureCryptoIv (Java, Security)",
+"tags": "",
+"keywords": "InsecureCryptoIv",
+"url": "pmd_rules_java_security.html#insecurecryptoiv",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Security (Java Server Pages, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_jsp_security.html#security",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "IframeMissingSrcAttribute (Java Server Pages, Security)",
+"tags": "",
+"keywords": "IframeMissingSrcAttribute",
+"url": "pmd_rules_jsp_security.html#iframemissingsrcattribute",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "NoUnsanitizedJSPExpression (Java Server Pages, Security)",
+"tags": "",
+"keywords": "NoUnsanitizedJSPExpression",
+"url": "pmd_rules_jsp_security.html#nounsanitizedjspexpression",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Security (Salesforce Visualforce, Security)",
 "tags": "",
 "keywords": "Security",
@@ -6393,82 +6469,6 @@
 "tags": "",
 "keywords": "ApexXSSFromURLParam",
 "url": "pmd_rules_apex_security.html#apexxssfromurlparam",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Security (Java, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_java_security.html#security",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "HardCodedCryptoKey (Java, Security)",
-"tags": "",
-"keywords": "HardCodedCryptoKey",
-"url": "pmd_rules_java_security.html#hardcodedcryptokey",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "InsecureCryptoIv (Java, Security)",
-"tags": "",
-"keywords": "InsecureCryptoIv",
-"url": "pmd_rules_java_security.html#insecurecryptoiv",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Security (Java Server Pages, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_jsp_security.html#security",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "IframeMissingSrcAttribute (Java Server Pages, Security)",
-"tags": "",
-"keywords": "IframeMissingSrcAttribute",
-"url": "pmd_rules_jsp_security.html#iframemissingsrcattribute",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "NoUnsanitizedJSPExpression (Java Server Pages, Security)",
-"tags": "",
-"keywords": "NoUnsanitizedJSPExpression",
-"url": "pmd_rules_jsp_security.html#nounsanitizedjspexpression",
 "summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
 }
 
