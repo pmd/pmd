@@ -47,13 +47,11 @@ java_heapsize_settings() {
 }
 
 set_pmd_home_dir() {
-  if [ -z "$PMD_HOME" ]; then
-    script_real_loc="$0"
+  script_real_loc="$0"
 
-    # see #4723 - allow calling as "bash pmd", when pmd is on the PATH
-    if [ ! -e "$script_real_loc" ]; then
-      script_real_loc=$(which "$script_real_loc")
-    fi
+  # see #4723 - allow calling as "bash pmd", when pmd is on the PATH
+  if [ ! -e "$script_real_loc" ]; then
+    script_real_loc=$(which "$script_real_loc")
   fi
 
   if [ ! -e "$script_real_loc" ]; then

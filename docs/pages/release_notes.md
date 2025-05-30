@@ -57,6 +57,7 @@ for a list of common, shared parameters that are valid for both commands.
 ### 🐛 Fixed Issues
 * core
   * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
+  * [#5705](https://github.com/pmd/pmd/issues/5705): \[cli] PMD's start script fails if PMD_HOME is set
 * java-bestpractices
   * [#5061](https://github.com/pmd/pmd/issues/5061): \[java] UnusedLocalVariable false positive when variable is read as side effect of an assignment
   * [#5621](https://github.com/pmd/pmd/issues/5621): \[java] UnusedPrivateMethod with method ref
