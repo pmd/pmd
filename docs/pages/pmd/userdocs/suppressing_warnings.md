@@ -5,6 +5,7 @@ tags: [userdocs]
 summary: "Learn how to suppress some rule violations, from the source code using annotations or comments, or globally from the ruleset"
 permalink: pmd_userdocs_suppressing_warnings.html
 author: Tom Copeland <tom@infoether.com>
+last_updated: May 2025 (7.14.0)
 ---
 
 PMD provides several methods by which Rule violations can be suppressed.
@@ -242,3 +243,14 @@ Note for XPath based suppression to work, you must know how to write
 an XPath query that matches the AST structure of the nodes of the
 violations you wish to suppress.  XPath queries are explained in
 [XPath Rule tutorial](pmd_userdocs_extending_writing_xpath_rules.html).
+
+
+## Finding unused suppressions
+
+After one has added a suppression annotation or comment, the code or the suppressed rule might change.
+Often this goes unnoticed and the suppression is still in the code, but it is not necessary anymore.
+
+With PMD 7.14.0, there is an experimental rule for Java, that finds such unnecessary suppressions:
+{% rule java/bestpractices/UnnecessaryWarningSuppression %}.
+
+It will report a violation for unnecessary suppressions.

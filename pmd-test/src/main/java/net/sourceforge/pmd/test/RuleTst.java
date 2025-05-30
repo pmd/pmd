@@ -57,7 +57,16 @@ public abstract class RuleTst {
         // This method is intended to be overridden by subclasses.
     }
 
+    /**
+     * Return the rules that will be tested. Each rule must have a corresponding XML file containing a test collection.
+     * Test collections for all these rules are run separately.
+     */
     protected List<Rule> getRules() {
+        return Collections.emptyList();
+    }
+
+    /** Return extra rules that will be run while running the tests. */
+    protected Collection<? extends Rule> getExtraRules() {
         return Collections.emptyList();
     }
 
@@ -280,6 +289,10 @@ public abstract class RuleTst {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
+            Collection<? extends Rule> extraRules = getExtraRules();
+            if (!extraRules.isEmpty()) {
+                pmd.addRuleSet(RuleSet.create("extra rules", "description", "file.xml", Collections.emptyList(), Collections.emptyList(), extraRules));
+            }
             pmd.addRuleSet(RuleSet.forSingleRule(rule));
             pmd.addListener(GlobalAnalysisListener.exceptionThrower());
             return pmd.performAnalysisAndCollectReport();

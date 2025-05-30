@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>comment suppression (baseline)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>VIOLATION OF THE ORIGINAL RULE (++)</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                static {
+
+                    int i = 0;
+                    i++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>comment suppression (violation is suppressed)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                static {
+
+                    int i = 0;
+                    i++; // NOPMD
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>comment suppression (comment is unused)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary PMD suppression comment</message>
+            <message>VIOLATION OF THE ORIGINAL RULE (++)</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                static {
+
+                    int i = 0; // NOPMD
+                    i++;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>comment suppression (several comments)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary PMD suppression comment</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                static {
+
+                    int i = 0; // NOPMD
+                    i++; // NOPMD
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>annotation suppression (all)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings("all")
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings("all")
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (PMD)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings("PMD")
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings("PMD")
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (specific rule)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings("PMD.FakeRuleThatReportsIncrements")
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings("PMD.FakeRuleThatReportsIncrements")
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (multiple parts, specific rule)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary suppression "PMD" in @SuppressWarnings annotation</message>
+            <message>Unnecessary @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "PMD"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "PMD"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (multiple parts, specific rule, inverted)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary suppression "PMD" in @SuppressWarnings annotation</message>
+            <message>Unnecessary @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"PMD", "PMD.FakeRuleThatReportsIncrements"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings({"PMD", "PMD.FakeRuleThatReportsIncrements"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (multiple parts, specific rule, all)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"all", "PMD.FakeRuleThatReportsIncrements"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings({"all", "PMD.FakeRuleThatReportsIncrements"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>annotation suppression (multiple parts, specific rule, all, inverted)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "all"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                }
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "all"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code disabled="true">
+        <description>annotation suppression (multiple rules)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,8</expected-linenumbers>
+        <expected-messages>
+            <!--
+            TODO what is the correct behavior here? rule 1 is suppressed by "PMD.FakeRule...",
+               rule 2 is suppressed by "PMD", so both are in use. Should we report "PMD.FakeRule..."
+               because it is a subset of "PMD"?
+            -->
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+            <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "PMD"})
+                static void foo() {
+                    int i = 0;
+                    i++;
+                    i--;
+                }
+                @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "all"})
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>unrelated annotations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+                @Test
+                static void foo() {
+                    int i = 0;
+                }
+                @Override
+                static void bar() {
+
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code disabled="true">
+        <description>Suppresswarnings unused on methods</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                @SuppressWarnings("unused") // no violation: parameter i is unused - this suppression is not unnecessary
+                public static void foo1(int i) {
+                }
+
+                @SuppressWarnings("unused") // no violation: while parameter i is used now, the suppression could mean the entire public method
+                public static void foo2(int i) {
+                    i = 2;
+                    foo3(i);
+                }
+
+                @SuppressWarnings("unused") // --> violation: parameter i is used and method is used as well (in #foo2)
+                private static void foo3(int i) {
+                    i = 2;
+                }
+
+                @SuppressWarnings("unused") // no violation: both parameter and method are unused - suppression is necessary
+                private static void foo4(int i) {
+                }
+
+                @SuppressWarnings("unused") // no violation: parameter is used but method is unused - suppression is necessary
+                private static void foo5(int i) {
+                    i = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Suppresswarnings unused on field</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+
+                private static class TestSockJsService extends AbstractSockJsService {
+
+                    private String sessionId;
+
+                    @SuppressWarnings("unused") // --> violation - this field is actually used in #handleTransportRequest
+                    private String transport;
+
+                    private WebSocketHandler handler;
+
+                    public TestSockJsService(TaskScheduler scheduler) {
+                        super(scheduler);
+                    }
+
+                    @Override
+                    protected void handleRawWebSocketRequest(ServerHttpRequest req, ServerHttpResponse res,
+                                                             WebSocketHandler handler) throws IOException {
+                        this.handler = handler;
+                    }
+
+                    @Override
+                    protected void handleTransportRequest(ServerHttpRequest req, ServerHttpResponse res, WebSocketHandler handler,
+                                                          String sessionId, String transport) throws SockJsException {
+                        this.sessionId = sessionId;
+                        this.transport = transport;
+                        this.handler = handler;
+                    }
+
+                    public String getTransport() {
+                        return transport;
+                    }
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Suppresswarnings unused on field - 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>9</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    @SuppressWarnings("unused") // no violation: this is really unused, it is only set
+    private String field1;
+
+    public void setField1(String field1) {
+        this.field1 = field1;
+    }
+
+    @SuppressWarnings("unused") // -> violation: the field is used in the getter
+    private String field2;
+
+    public void setField2(String field2) {
+        this.field2 = field2;
+    }
+    public String getField2() {
+        return field2;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Suppresswarnings unused on fields - 3</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @SuppressWarnings("unused")
+    private String s1, s2, s3;
+
+    @SuppressWarnings("unused")
+    private String s4 = "bar";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Suppresswarnings unused on type param</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>12</expected-linenumbers>
+        <code><![CDATA[
+            public class OuterClass {
+                @SuppressWarnings("unused") // no violation: type parameter "T" is not used - necessary suppression
+                public static class Foo1<T> {
+                }
+
+                @SuppressWarnings("unused") // no violation: type parameter "T" is used, class Foo2 is public and might or might not be used
+                public static class Foo2<T> {
+                    class Bar extends Foo2<T> {
+                    }
+                }
+
+                @SuppressWarnings("unused") // -> violation: type parameter "T" is used, class Foo3 is used - nothing is unused -> suppression is unnecessary
+                private static class Foo3<T> {
+                    class Bar extends Foo3<T> {
+                    }
+                }
+
+                public static void main(String[] args) {
+                    Foo3<String> f = new Foo3<>();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Suppresswarnings unused when a method is unused</description>
+        <!--        TODO enable this and report the second instance. -->
+        <expected-problems>0</expected-problems>
+        <!--        <expected-problems>1</expected-problems>-->
+        <!--        <expected-linenumbers>6</expected-linenumbers>-->
+        <code><![CDATA[
+            @SuppressWarnings("unused")
+            public class Foo {
+                private void foo() {
+                }
+            }
+
+            @SuppressWarnings("unused") // method is used
+            class Bar {
+                private void foo() {
+                }
+
+                {
+                    foo();
+                }
+
+                // we don't know if this method is used or not
+                @SuppressWarnings("unused")
+                static void foo(int i) {
+                    i = 2;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not report on entire inner class as unused</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OuterClass {
+    @SuppressWarnings("unused") // this class is public, we don't know whether it is used or not
+    public static class InnerClass {}
+
+    @SuppressWarnings("unused") // valid suppression - this class is private and not used
+    private static class UnusedInnerClass {}
+}
+]]></code>
+    </test-code>
+</test-data>

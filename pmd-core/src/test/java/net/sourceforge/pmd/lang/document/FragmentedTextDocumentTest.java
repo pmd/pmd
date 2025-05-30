@@ -74,4 +74,22 @@ class FragmentedTextDocumentTest {
         }
     }
 
+    @Test
+    void offsetAtLineColumn() throws IOException {
+        try (TextDocument base = TextDocument.readOnlyString("ABC\n123\n", dummyVersion)) {
+            FragmentedDocBuilder builder = new FragmentedDocBuilder(base);
+            builder.recordDelta(3, 3, Chars.wrap("X"));
+            builder.recordDelta(7, 7, Chars.wrap("Y"));
+            try (TextDocument doc = builder.build()) {
+                assertEquals("ABCX\n123Y\n", doc.getText().toString());
+
+                assertEquals(0, doc.offsetAtLineColumn(pos2d(1, 1)));
+                assertEquals(0, base.offsetAtLineColumn(pos2d(1, 1)));
+                // pos2d is always in the coordinate system of the base document
+                assertEquals(4, doc.offsetAtLineColumn(pos2d(2, 1)));
+                assertEquals(4, base.offsetAtLineColumn(pos2d(2, 1)));
+            }
+
+        }
+    }
 }
