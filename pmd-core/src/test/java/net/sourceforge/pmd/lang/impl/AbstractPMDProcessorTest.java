@@ -63,7 +63,7 @@ abstract class AbstractPMDProcessorTest {
         assertEquals(2, reportListener.files.get());
         assertEquals(2, reportListener.errors.get());
         if (getThreads() == 0) {
-            Mockito.verify(reporter, Mockito.times(2)).log(Level.DEBUG, "Using single thread for analysis");
+            Mockito.verify(reporter, Mockito.times(2)).log(Level.DEBUG, "Using main thread for analysis");
         } else {
             Mockito.verify(reporter, Mockito.times(2)).log(Level.DEBUG, "Using {0} threads for analysis", getThreads());
         }

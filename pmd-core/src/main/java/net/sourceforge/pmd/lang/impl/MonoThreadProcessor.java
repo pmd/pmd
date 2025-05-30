@@ -17,7 +17,7 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
 
     MonoThreadProcessor(AnalysisTask task) {
         super(task);
-        task.getMessageReporter().log(Level.DEBUG, "Using single thread for analysis");
+        task.getMessageReporter().log(Level.DEBUG, "Using main thread for analysis");
     }
 
     @Override

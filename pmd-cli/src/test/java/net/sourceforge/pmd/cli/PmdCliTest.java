@@ -534,7 +534,7 @@ class PmdCliTest extends BaseCliTest {
     @Test
     void monoThreadCount() throws Exception {
         CliExecutionResult result = runCliSuccessfully("--debug", "--threads", "0", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
-        result.checkStdErr(containsString("[DEBUG] Using single thread for analysis"));
+        result.checkStdErr(containsString("[DEBUG] Using main thread for analysis"));
     }
 
     @Test
