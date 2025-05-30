@@ -168,15 +168,9 @@ public final class RuleContext {
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
-
         Node suppressionNode = getNearestNode(reportable, astInfo);
-
-        Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), suppressionNode);
-        String description = makeMessage(message, formatArgs, extraVariables);
-        RuleViolation violation = new ParametricRuleViolation(rule, location, description, extraVariables);
-
-        SuppressedViolation suppressed = suppressOrNull(suppressionNode, violation, handler);
+        RuleViolation violation = createViolation(reportable, astInfo, suppressionNode, message, formatArgs);
+        SuppressedViolation suppressed = suppressOrNull(suppressionNode, violation, astInfo);
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);
@@ -195,16 +189,17 @@ public final class RuleContext {
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
-
-
         Node nearestNode = getNearestNode(reportable, astInfo);
+        RuleViolation violation = createViolation(reportable, astInfo, nearestNode, message, formatArgs);
+        listener.onRuleViolation(violation);
+    }
+
+    private RuleViolation createViolation(Reportable reportable, AstInfo<?> astInfo, Node nearestNode, String message, Object... formatArgs) {
+        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
         Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), nearestNode);
         String description = makeMessage(message, formatArgs, extraVariables);
         FileLocation location = reportable.getReportLocation();
-        RuleViolation violation = new ParametricRuleViolation(rule, location, description, extraVariables);
-
-        listener.onRuleViolation(violation);
+        return new ParametricRuleViolation(rule, location, description, extraVariables);
     }
 
     private Node getNearestNode(Reportable reportable, AstInfo<?> astInfo) {
@@ -225,7 +220,8 @@ public final class RuleContext {
         return astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());
     }
 
-    private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, LanguageVersionHandler handler) {
+    private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, AstInfo<?> astInfo) {
+        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
         SuppressedViolation suppressed = ViolationSuppressor.suppressOrNull(handler.getExtraViolationSuppressors(), rv, location);
         if (suppressed == null) {
             suppressed = ViolationSuppressor.suppressOrNull(DEFAULT_SUPPRESSORS, rv, location);
