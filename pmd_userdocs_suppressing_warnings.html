@@ -2239,6 +2239,16 @@ an XPath query that matches the AST structure of the nodes of the
 violations you wish to suppress.  XPath queries are explained in
 <a href="pmd_userdocs_extending_writing_xpath_rules.html">XPath Rule tutorial</a>.</p>
 
+<h2 id="finding-unused-suppressions">Finding unused suppressions</h2>
+
+<p>After one has added a suppression annotation or comment, the code or the suppressed rule might change.
+Often this goes unnoticed and the suppression is still in the code, but it is not necessary anymore.</p>
+
+<p>With PMD 7.14.0, there is an experimental rule for Java, that finds such unnecessary suppressions:
+<a href="pmd_rules_java_bestpractices.html#unnecessarywarningsuppression"><code class="language-plaintext highlighter-rouge">UnnecessaryWarningSuppression</code></a>.</p>
+
+<p>It will report a violation for unnecessary suppressions.</p>
+
 
     <div class="tags">
         
@@ -2275,7 +2285,8 @@ violations you wish to suppress.  XPath queries are explained in
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: May 30, 2025 <br />
+            <span>Page last updated:</span>
+            May 2025 (7.14.0)<br /> Site last generated: May 30, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

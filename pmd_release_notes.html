@@ -2020,6 +2020,33 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="pmd-cli-now-uses-threaded-execution-by-default">PMD CLI now uses threaded execution by default</h4>
+
+<p>In the PMD CLI, the <code class="language-plaintext highlighter-rouge">--threads</code> (<code class="language-plaintext highlighter-rouge">-t</code>) option can now accept a thread
+count given relative to the number of cores of the machine. For instance,
+it is now possible to write <code class="language-plaintext highlighter-rouge">-t 1C</code> to spawn one thread per core, or <code class="language-plaintext highlighter-rouge">-t 0.5C</code>
+to spawn one thread for every other core.</p>
+
+<p>The thread count option now defaults to <code class="language-plaintext highlighter-rouge">1C</code>, meaning parallel execution
+is used by default. You can disable this by using <code class="language-plaintext highlighter-rouge">-t 1</code>.</p>
+
+<h4 id="new-rule-unnecessarywarningsuppression-experimental">New Rule UnnecessaryWarningSuppression (experimental)</h4>
+
+<p>This new Java rule <a href="pmd_rules_java_bestpractices.html#unnecessarywarningsuppression"><code class="language-plaintext highlighter-rouge">UnnecessaryWarningSuppression</code></a> reports unused suppression
+annotations and comments. Violations of this rule cannot be suppressed.</p>
+
+<p>How to use it? Just include it in your ruleset:</p>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnnecessaryWarningSuppression"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p>Note: This rule is currently experimental. It is available for now only for Java.
+The rule for now only reports annotations specific to PMD, like <code class="language-plaintext highlighter-rouge">@SuppressWarnings("PMD")</code>.
+In the future we might be able to check for other common ones like <code class="language-plaintext highlighter-rouge">@SuppressWarnings("unchecked")</code> or <code class="language-plaintext highlighter-rouge">"fallthrough"</code>.
+Since violations of this rule cannot be suppressed, we opted here on the side of false-negatives and
+don’t report every unused case yet.
+However, suppressing specific PMD rules is working as expected.</p>
+
 <h4 id="migrating-to-central-publisher-portal">Migrating to Central Publisher Portal</h4>
 
 <p>We’ve now migrated to <a href="https://central.sonatype.org/publish/publish-portal-guide/">Central Publisher Portal</a>.
@@ -2053,6 +2080,7 @@ for a list of common, shared parameters that are valid for both commands.</p>
 <ul>
   <li>core
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/648">#648</a>: [core] Warn on unneeded suppression</li>
       <li><a href="https://github.com/pmd/pmd/pull/5700">#5700</a>: [core] Don’t accidentally catch unexpected runtime exceptions in CpdAnalysis</li>
       <li><a href="https://github.com/pmd/pmd/issues/5705">#5705</a>: [cli] PMD’s start script fails if PMD_HOME is set</li>
     </ul>
@@ -2108,6 +2136,17 @@ for a list of common, shared parameters that are valid for both commands.</p>
       <li>The option <code class="language-plaintext highlighter-rouge">--ignore-list</code> has been deprecated. Use <code class="language-plaintext highlighter-rouge">--exclude-file-list</code> instead.</li>
     </ul>
   </li>
+  <li>core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#getSuppressionComments()"><code>AstInfo#getSuppressionComments</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#getAllSuppressionComments()"><code>getAllSuppressionComments</code></a>
+or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#getSuppressionComment(int)"><code>getSuppressionComment</code></a>.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#withSuppressMap()"><code>AstInfo#withSuppressMap</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/AstInfo.html#withSuppressionComments(java.util.Collection)"><code>withSuppressionComments</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#suppressMap"><code>AbstractTokenManager#suppressMap</code></a>: Don’t use this map directly anymore. Instead,
+use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressionComments()"><code>getSuppressionComments</code></a>.</li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressMap()"><code>AbstractTokenManager#getSuppressMap</code></a>: Use
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressionComments()"><code>getSuppressionComments</code></a> instead.</li>
+    </ul>
+  </li>
   <li>pmd-java
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#getDeclarationNode()"><code>ASTCompactConstructorDeclaration#getDeclarationNode</code></a>: This method just returns <code class="language-plaintext highlighter-rouge">this</code> and isn’t useful.</li>
@@ -2119,6 +2158,14 @@ and uses Long instead of BigInteger.</li>
 
 <h4 id="experimental">Experimental</h4>
 <ul>
+  <li>core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/ast/impl/SuppressionCommentImpl.html#"><code>SuppressionCommentImpl</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/rule/impl/UnnecessaryPmdSuppressionRule.html#"><code>UnnecessaryPmdSuppressionRule</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#addViolationNoSuppress(net.sourceforge.pmd.reporting.Reportable,net.sourceforge.pmd.lang.ast.AstInfo,java.lang.String,java.lang.Object...)"><code>RuleContext#addViolationNoSuppress</code></a></li>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0-SNAPSHOT/net/sourceforge/pmd/reporting/ViolationSuppressor.SuppressionCommentWrapper.html#"><code>ViolationSuppressor.SuppressionCommentWrapper</code></a></li>
+    </ul>
+  </li>
   <li>pmd-java
     <ul>
       <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/OverloadSelectionResult.html#getTypeToSearch()"><code>OverloadSelectionResult#getTypeToSearch</code></a></li>
@@ -2130,6 +2177,7 @@ and uses Long instead of BigInteger.</li>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/5599">#5599</a>: [java] Rewrite NPath complexity metric - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5609">#5609</a>: [core] Add rule to report unnecessary suppression comments/annotations - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5700">#5700</a>: [core] Don’t accidentally catch unexpected runtime exceptions in CpdAnalysis - <a href="https://github.com/elharo">Elliotte Rusty Harold</a> (@elharo)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5716">#5716</a>: Fix #5634: [java] CommentDefaultAccessModifier: Comment between annotation and constructor not recognized - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5727">#5727</a>: Fix #5621: [java] Fix FPs with UnusedPrivateMethod - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>

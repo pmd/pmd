@@ -917,6 +917,15 @@
 ,
 
 {
+"title": "UnnecessaryWarningSuppression (Java, Best Practices)",
+"tags": "",
+"keywords": "UnnecessaryWarningSuppression",
+"url": "pmd_rules_java_bestpractices.html#unnecessarywarningsuppression",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
 "title": "UnusedAssignment (Java, Best Practices)",
 "tags": "",
 "keywords": "UnusedAssignment",

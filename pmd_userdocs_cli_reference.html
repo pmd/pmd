@@ -2498,9 +2498,11 @@
 
 <tr>
     <td><a style="pointer-events: none; cursor: default;" name="-threads"><code>--threads&nbsp;&lt;num&gt;</code><br /><code>-t&nbsp;&lt;num&gt;</code></a></td>
-    <td>Sets the number of threads used by PMD.
-                            Set threads to <code>0</code> to disable multi-threading processing.</td>
-    <td><code>1</code></td>
+    <td>Set the number of threads used by PMD. This can be an integer, or a float (or int) followed by the letter <code>C</code>, eg <code>0.5C</code> or <code>1C</code>. 
+                    In the latter case, the float will be multiplied by the number of cores of the host machine, and rounded down to an integer. 
+                    If the specified number of threads is zero, then PMD will use the main thread for everything. If it is <code>n</code> &gt; 0, 
+                    PMD will spawn <code>n</code> separate analysis threads besides the main thread.</td>
+    <td><code>1C</code></td>
     <td></td>
 </tr>
 
