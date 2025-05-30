@@ -28,6 +28,7 @@ This is a {{ site.pmd.release_type }} release.
 
 * core
     * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
+    * [#5705](https://github.com/pmd/pmd/issues/5705): \[cli] PMD's start script fails if PMD_HOME is set
 
 ### 🚨 API Changes
 
