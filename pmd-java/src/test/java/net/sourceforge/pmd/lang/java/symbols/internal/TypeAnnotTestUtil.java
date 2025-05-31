@@ -17,15 +17,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.AnnotationUtils;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 
 import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -107,20 +103,6 @@ public class TypeAnnotTestUtil {
 
             throw new UnsupportedOperationException("Proxy does not implement " + method);
         });
-    }
-
-    private static Matcher<SymAnnot> matchesAnnot(Annotation o) {
-        return new BaseMatcher<SymAnnot>() {
-            @Override
-            public boolean matches(Object actual) {
-                return actual instanceof SymAnnot && ((SymAnnot) actual).valueEquals(o);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("an annotation like " + o);
-            }
-        };
     }
 
 
