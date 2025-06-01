@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -19,7 +18,6 @@ public final class ASTThrowStatement extends AbstractStatement implements ASTSwi
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -31,5 +29,4 @@ public final class ASTThrowStatement extends AbstractStatement implements ASTSwi
     public ASTExpression getExpr() {
         return (ASTExpression) getFirstChild();
     }
-
 }

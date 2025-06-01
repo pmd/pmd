@@ -16,14 +16,12 @@ import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
+import net.sourceforge.pmd.cpd.CpdCapableLanguage;
+import net.sourceforge.pmd.util.CollectionUtil;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.cpd.CpdCapableLanguage;
-import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * A set of languages with convenient methods. In the PMD CLI, languages
@@ -36,8 +34,7 @@ public final class LanguageRegistry implements Iterable<Language> {
     private static final Logger LOG = LoggerFactory.getLogger(LanguageRegistry.class);
 
     // test only
-    static final LanguageRegistry ALL_LANGUAGES =
-        loadLanguages(LanguageRegistry.class.getClassLoader());
+    static final LanguageRegistry ALL_LANGUAGES = loadLanguages(LanguageRegistry.class.getClassLoader());
 
     /**
      * Contains the languages that support PMD and are found on the classpath
@@ -62,8 +59,8 @@ public final class LanguageRegistry implements Iterable<Language> {
      */
     public LanguageRegistry(Set<? extends Language> languages) {
         this.languages = languages.stream()
-                                  .sorted(Comparator.comparing(Language::getId, String::compareToIgnoreCase))
-                                  .collect(CollectionUtil.toUnmodifiableSet());
+                .sorted(Comparator.comparing(Language::getId, String::compareToIgnoreCase))
+                .collect(CollectionUtil.toUnmodifiableSet());
         this.languagesById = CollectionUtil.associateBy(languages, Language::getId);
         this.languagesByFullName = CollectionUtil.associateBy(languages, Language::getName);
     }
@@ -72,8 +69,7 @@ public final class LanguageRegistry implements Iterable<Language> {
      * Create a new registry with the languages that satisfy the predicate.
      */
     public LanguageRegistry filter(Predicate<Language> filterFun) {
-        return new LanguageRegistry(languages.stream().filter(filterFun)
-                                             .collect(Collectors.toSet()));
+        return new LanguageRegistry(languages.stream().filter(filterFun).collect(Collectors.toSet()));
     }
 
     /**
@@ -103,8 +99,7 @@ public final class LanguageRegistry implements Iterable<Language> {
         for (String depId : l.getDependencies()) {
             Language dep = getLanguageById(depId);
             if (dep == null) {
-                throw new IllegalStateException(
-                    "Cannot find language " + depId + " in " + this);
+                throw new IllegalStateException("Cannot find language " + depId + " in " + this);
             }
             if (languages.add(dep)) {
                 addDepsOrThrow(dep, languages);
@@ -182,8 +177,7 @@ public final class LanguageRegistry implements Iterable<Language> {
         if (lang == null) {
             return null;
         }
-        return version == null ? lang.getDefaultVersion()
-                               : lang.getVersion(version);
+        return version == null ? lang.getDefaultVersion() : lang.getVersion(version);
     }
 
     /**

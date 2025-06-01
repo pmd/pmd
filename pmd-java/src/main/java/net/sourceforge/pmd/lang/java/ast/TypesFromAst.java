@@ -9,11 +9,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
@@ -25,6 +20,9 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 /**
  * Builds type mirrors from AST nodes.
@@ -61,14 +59,12 @@ final class TypesFromAst {
 
         } else if (node instanceof ASTWildcardType) {
 
-
             ASTWildcardType wild = (ASTWildcardType) node;
             @Nullable JTypeMirror bound = fromAst(ts, lexicalSubst, wild.getTypeBoundNode());
             if (bound == null) {
                 bound = ts.OBJECT;
             }
             return ts.wildcard(wild.isUpperBound(), bound).withAnnotations(getTypeAnnotations(node));
-
 
         } else if (node instanceof ASTIntersectionType) {
 
@@ -110,29 +106,26 @@ final class TypesFromAst {
         } else if (node instanceof ASTVoidType) {
 
             return ts.NO_TYPE;
-
         }
 
         throw new IllegalStateException("Illegal type " + node.getClass() + " " + node);
     }
 
-
     private static PSet<SymAnnot> getSymbolicAnnotations(Annotatable dim) {
         return SymbolResolutionPass.buildSymbolicAnnotations(dim.getDeclaredAnnotations());
     }
-
 
     private static JTypeMirror makeFromClassType(TypeSystem ts, ASTClassType node, Substitution subst) {
         if (node == null) {
             return null;
         }
 
-
         PSet<SymAnnot> typeAnnots = getTypeAnnotations(node);
         JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
 
         if (reference instanceof JTypeParameterSymbol) {
-            return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror()).withAnnotations(typeAnnots);
+            return subst.apply(((JTypeParameterSymbol) reference).getTypeMirror())
+                    .withAnnotations(typeAnnots);
         }
 
         JClassType enclosing = getEnclosing(ts, node, subst, node.getQualifier(), reference);
@@ -169,7 +162,12 @@ final class TypesFromAst {
         }
     }
 
-    private static @Nullable JClassType getEnclosing(TypeSystem ts, ASTClassType node, Substitution subst, @Nullable ASTClassType lhsType, JTypeDeclSymbol reference) {
+    private static @Nullable JClassType getEnclosing(
+            TypeSystem ts,
+            ASTClassType node,
+            Substitution subst,
+            @Nullable ASTClassType lhsType,
+            JTypeDeclSymbol reference) {
         @Nullable JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
 
         if (enclosing != null && !shouldEnclose(reference)) {
@@ -205,8 +203,8 @@ final class TypesFromAst {
     // Whether the reference needs an enclosing type if it is unqualified (non-static inner type)
     private static boolean needsEnclosing(JTypeDeclSymbol reference) {
         return reference instanceof JClassSymbol
-            && reference.getEnclosingClass() != null
-            && !Modifier.isStatic(reference.getModifiers());
+                && reference.getEnclosingClass() != null
+                && !Modifier.isStatic(reference.getModifiers());
     }
 
     private static @NonNull JTypeDeclSymbol getReferenceEnsureResolved(ASTClassType node) {
@@ -215,15 +213,18 @@ final class TypesFromAst {
         } else if (node.getParent() instanceof ASTConstructorCall) {
             ASTExpression qualifier = ((ASTConstructorCall) node.getParent()).getQualifier();
             if (qualifier != null) {
-                assert node.getImplicitEnclosing() == null
-                    : "Qualified ctor calls should be handled lazily";
+                assert node.getImplicitEnclosing() == null : "Qualified ctor calls should be handled lazily";
                 // note: this triggers recursive type resolution of the qualifier
                 JTypeMirror qualifierType = qualifier.getTypeMirror();
                 JClassSymbol symbol;
                 if (qualifierType instanceof JClassType) {
                     JClassType enclosing = (JClassType) qualifierType;
-                    JClassType resolved = JavaResolvers.getMemberClassResolver(enclosing, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
-                                                       .resolveFirst(node.getSimpleName());
+                    JClassType resolved = JavaResolvers.getMemberClassResolver(
+                                    enclosing,
+                                    node.getRoot().getPackageName(),
+                                    node.getEnclosingType().getSymbol(),
+                                    node.getSimpleName())
+                            .resolveFirst(node.getSimpleName());
                     if (resolved == null) {
                         // compile-time error
                         symbol = (JClassSymbol) node.getTypeSystem().UNKNOWN.getSymbol();

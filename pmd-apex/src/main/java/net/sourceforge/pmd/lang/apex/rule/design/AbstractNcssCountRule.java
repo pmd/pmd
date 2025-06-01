@@ -35,7 +35,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
-
     /**
      * Count the nodes of the given type using NCSS rules.
      *
@@ -44,7 +43,6 @@ abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCoun
     protected AbstractNcssCountRule(Class<T> nodeClass) {
         super(nodeClass);
     }
-
 
     @Override
     protected int getMetric(T node) {

@@ -24,7 +24,6 @@ public abstract class BackslashEscapeTranslator extends EscapeTranslator {
      */
     private int savedNotEscapeSpecialEnd = Integer.MAX_VALUE;
 
-
     public BackslashEscapeTranslator(TextDocument builder) {
         super(builder);
     }
@@ -58,5 +57,4 @@ public abstract class BackslashEscapeTranslator extends EscapeTranslator {
         this.bufpos = min;
         return min;
     }
-
 }

@@ -12,7 +12,6 @@ public final class ASTClassRefExpression extends AbstractApexNode.Single<TypeRef
         super(typeRefExpression);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

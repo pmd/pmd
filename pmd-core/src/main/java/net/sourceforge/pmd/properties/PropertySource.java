@@ -1,14 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.properties;
 
 import java.util.List;
 import java.util.Map;
-
 import net.sourceforge.pmd.lang.rule.Rule;
-
 
 /**
  * Entity that manages a list of properties. Properties are described by
@@ -36,7 +33,6 @@ public interface PropertySource {
      */
     void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) throws IllegalArgumentException;
 
-
     /**
      * Gets the name of this property source. This is e.g. the name
      * of the rule or renderer.
@@ -44,7 +40,6 @@ public interface PropertySource {
      * @return The name
      */
     String getName();
-
 
     /**
      * Get the PropertyDescriptor for the given property name.
@@ -55,7 +50,6 @@ public interface PropertySource {
      */
     PropertyDescriptor<?> getPropertyDescriptor(String name);
 
-
     /**
      * Get the descriptors of all defined properties.
      * The properties are returned sorted by UI order.
@@ -63,7 +57,6 @@ public interface PropertySource {
      * @return The PropertyDescriptors in UI order.
      */
     List<PropertyDescriptor<?>> getPropertyDescriptors();
-
 
     /**
      * Returns a modifiable list of the property descriptors
@@ -83,7 +76,6 @@ public interface PropertySource {
      * @return The property value.
      */
     <T> T getProperty(PropertyDescriptor<T> propertyDescriptor);
-
 
     /**
      * Returns true if the given property has been set to a value
@@ -105,7 +97,6 @@ public interface PropertySource {
      */
     <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value);
 
-
     /**
      * Returns an unmodifiable map of descriptors to property values
      * for the current receiver. The returned map has an entry for
@@ -117,7 +108,6 @@ public interface PropertySource {
      */
     Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor();
 
-
     /**
      * Returns a modifiable map of the property descriptors
      * that don't use default values, to their overridden value.
@@ -127,7 +117,6 @@ public interface PropertySource {
      * @return The descriptors that don't use default values
      */
     Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor();
-
 
     /**
      * Returns whether the specified property is defined on this property source,
@@ -139,7 +128,6 @@ public interface PropertySource {
      * @return {@code true} if the descriptor is defined, {@code false} otherwise.
      */
     boolean hasDescriptor(PropertyDescriptor<?> descriptor);
-
 
     /**
      * Returns a description of why the receiver may be dysfunctional.

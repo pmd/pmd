@@ -7,16 +7,13 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-
 import org.w3c.dom.Node;
 
 class ExposingSerializer extends Serializer {
 
-
     ExposingSerializer(OutputStream out, String encoding) throws UnsupportedEncodingException {
         super(out, encoding);
     }
-
 
     /**
      * Overriding in order to change the access modifier from protected to public - so: not only merely calling super.

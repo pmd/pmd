@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -32,6 +31,6 @@ public class NcssMethodCountRule extends AbstractNcssCountRule<ASTMethod> {
 
     @Override
     protected Object[] getViolationParameters(ASTMethod node, int metric, int limit) {
-        return new Object[]{ node.getImage(), metric, limit };
+        return new Object[] {node.getImage(), metric, limit};
     }
 }

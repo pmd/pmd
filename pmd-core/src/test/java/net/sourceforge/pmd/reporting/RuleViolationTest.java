@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.reporting.ReportTest.violation;
@@ -10,10 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Comparator;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-
 import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
@@ -22,11 +17,14 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.Rule;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 class RuleViolationTest {
 
     @RegisterExtension
     private final DummyParsingHelper helper = new DummyParsingHelper();
+
     private FileId filename = FileId.fromPathLikeString("filename");
 
     @Test
@@ -79,7 +77,6 @@ class RuleViolationTest {
     void testComparatorWithSameFileSameLines() {
         Rule rule = new MockRule("name", "desc", "msg", "rulesetname");
         Comparator<RuleViolation> comp = RuleViolation.DEFAULT_COMPARATOR;
-
 
         FileLocation loc = FileLocation.range(filename, TextRange2d.range2d(10, 1, 15, 10));
         RuleViolation r1 = violation(rule, loc, "description");

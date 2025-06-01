@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -21,19 +20,14 @@ public abstract class HierarchyWithSeveralBridges<T extends Node> {
 
     public abstract static class SubclassTwo<T extends TypeNode> extends SubclassOne<T> {
         @Override
-        void foo(T node) {
-
-        }
+        void foo(T node) {}
     }
-
 
     public static class Concrete extends SubclassTwo<ASTPrimitiveType> {
 
         // bridges: foo(AbstractJavaTypeNode), foo(JavaNode), foo(Node)
 
         @Override
-        void foo(ASTPrimitiveType node) {
-
-        }
+        void foo(ASTPrimitiveType node) {}
     }
 }

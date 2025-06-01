@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.lang.swift.cpd;
 
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Lexer;
-
 import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
 import net.sourceforge.pmd.lang.swift.ast.SwiftLexer;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
 
 /**
  * SwiftTokenizer

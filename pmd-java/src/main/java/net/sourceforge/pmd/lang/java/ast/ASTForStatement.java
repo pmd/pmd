@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -22,12 +21,10 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     @Override
     public ASTExpression getCondition() {
@@ -51,6 +48,4 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
         ASTForUpdate update = firstChild(ASTForUpdate.class);
         return update == null ? null : update.getExprList();
     }
-
-
 }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.annotation.InternalApi;
@@ -33,11 +32,14 @@ public final class InternalApiBridge {
         return ((AbstractModelicaImportClause) importClause).isQualified();
     }
 
-    public static void resolveImportedSimpleName(ModelicaImportClause importClause, ResolutionContext result, String simpleName) throws Watchdog.CountdownException {
+    public static void resolveImportedSimpleName(
+            ModelicaImportClause importClause, ResolutionContext result, String simpleName)
+            throws Watchdog.CountdownException {
         ((AbstractModelicaImportClause) importClause).resolveSimpleName(result, simpleName);
     }
 
-    public static void populateExtendsAndImports(ModelicaClassSpecifierNode classNode, ModelicaClassType classTypeDeclaration) {
+    public static void populateExtendsAndImports(
+            ModelicaClassSpecifierNode classNode, ModelicaClassType classTypeDeclaration) {
         ((AbstractModelicaClassSpecifierNode) classNode).populateExtendsAndImports(classTypeDeclaration);
     }
 }

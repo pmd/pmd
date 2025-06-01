@@ -8,10 +8,9 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
@@ -35,7 +34,6 @@ class NodeIsFunctionTest extends BaseXPathFunctionTest {
         assertFinds(rule, 1, code);
     }
 
-
     @Test
     void testWellFormedNodeNameForSupertype() {
         Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:nodeIs('TypeDeclaration')]");
@@ -44,32 +42,21 @@ class NodeIsFunctionTest extends BaseXPathFunctionTest {
         assertFinds(rule, 1, code);
     }
 
-
-
     @Test
     void testNonExistentNodeName() {
         // note that this would fail with a type error (boolean > integer)
         // if nodeIs fails to fail
-        testWithExpectedStaticException(
-            "//MethodDeclaration[pmd-java:nodeIs('ohio') > 1]",
-            e -> {
-                assertThat(e.getMessage(), containsString("ASTohio"));
-            });
-
+        testWithExpectedStaticException("//MethodDeclaration[pmd-java:nodeIs('ohio') > 1]", e -> {
+            assertThat(e.getMessage(), containsString("ASTohio"));
+        });
     }
-
 
     @Test
     void testNonExistentNodeNameStaticallyUnknown() {
         testWithExpectedException(
-            "//MethodDeclaration[pmd-java:nodeIs(name() || 'qqq')]",
-            "class Moo { void foo() {if(true){}} }",
-            e -> {
-                assertThat(e.getMessage(), containsString("MethodDeclarationqqq"));
-                assertThat(e.getPhase(), equalTo(Phase.EVALUATION));
-            });
-
+                "//MethodDeclaration[pmd-java:nodeIs(name() || 'qqq')]", "class Moo { void foo() {if(true){}} }", e -> {
+                    assertThat(e.getMessage(), containsString("MethodDeclarationqqq"));
+                    assertThat(e.getPhase(), equalTo(Phase.EVALUATION));
+                });
     }
-
-
 }

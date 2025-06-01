@@ -7,10 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
@@ -23,6 +19,8 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -49,7 +47,6 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
     @Override
     public @NonNull JClassSymbol getAnnotationSymbol() {
         return sym;
-
     }
 
     @Override
@@ -97,7 +94,8 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
             return SymArray.forElements(elements);
         } else if (valueNode instanceof ASTClassLiteral) {
             // class
-            JTypeDeclSymbol symbol = ((ASTClassLiteral) valueNode).getTypeNode().getTypeMirror().getSymbol();
+            JTypeDeclSymbol symbol =
+                    ((ASTClassLiteral) valueNode).getTypeNode().getTypeMirror().getSymbol();
             if (symbol instanceof JClassSymbol) {
                 return SymClass.ofBinaryName(symbol.getTypeSystem(), ((JClassSymbol) symbol).getBinaryName());
             }
@@ -106,9 +104,8 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
             ASTNamedReferenceExpr refExpr = (ASTNamedReferenceExpr) valueNode;
             JTypeMirror t = refExpr.getTypeMirror();
             if (t instanceof JClassType && ((JClassType) t).getSymbol().isEnum()) {
-                return SymEnum.fromBinaryName(t.getTypeSystem(),
-                                              ((JClassType) t).getSymbol().getBinaryName(),
-                                              refExpr.getName());
+                return SymEnum.fromBinaryName(
+                        t.getTypeSystem(), ((JClassType) t).getSymbol().getBinaryName(), refExpr.getName());
             }
         }
         return null;

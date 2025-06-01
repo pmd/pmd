@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.regexProperty;
@@ -9,7 +8,6 @@ import static net.sourceforge.pmd.properties.PropertyFactory.regexProperty;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.properties.PropertyBuilder;
@@ -27,7 +25,8 @@ abstract class AbstractNamingConventionsRule extends AbstractApexRule {
         checkMatches(propertyDescriptor, getProperty(propertyDescriptor), node, data);
     }
 
-    protected void checkMatches(PropertyDescriptor<Pattern> propertyDescriptor, Pattern overridePattern, ApexNode<?> node, Object data) {
+    protected void checkMatches(
+            PropertyDescriptor<Pattern> propertyDescriptor, Pattern overridePattern, ApexNode<?> node, Object data) {
         String name = Objects.requireNonNull(node.getImage());
         if (!overridePattern.matcher(name).matches()) {
             String displayName = displayName(propertyDescriptor.name());
@@ -35,7 +34,8 @@ abstract class AbstractNamingConventionsRule extends AbstractApexRule {
         }
     }
 
-    protected static PropertyBuilder.RegexPropertyBuilder prop(String name, String displayName, Map<String, String> descriptorToDisplayNames) {
+    protected static PropertyBuilder.RegexPropertyBuilder prop(
+            String name, String displayName, Map<String, String> descriptorToDisplayNames) {
         descriptorToDisplayNames.put(name, displayName);
         return regexProperty(name).desc("Regex which applies to " + displayName + " names");
     }

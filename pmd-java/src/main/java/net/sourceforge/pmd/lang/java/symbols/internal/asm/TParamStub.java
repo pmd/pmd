@@ -6,14 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.TypePath;
-import org.objectweb.asm.TypeReference;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -24,6 +16,12 @@ import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.TypeReference;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 class TParamStub implements JTypeParameterSymbol {
 
@@ -46,7 +44,6 @@ class TParamStub implements JTypeParameterSymbol {
         this.typeVar = ts.newTypeVar(this);
     }
 
-
     @Override
     public @NonNull String getSimpleName() {
         return name;
@@ -56,23 +53,22 @@ class TParamStub implements JTypeParameterSymbol {
     public JTypeMirror computeUpperBound() {
         if (!canComputeBound) {
             throw new IllegalStateException(
-                "Can't compute upper bound of " + name + " in " + owner.getEnclosingTypeParameterOwner());
+                    "Can't compute upper bound of " + name + " in " + owner.getEnclosingTypeParameterOwner());
         }
         JTypeMirror bound = sigParser.parseTypeVarBound(owner.getLexicalScope(), boundSignature);
         if (typeAnnotationsOnBound == null) {
             return bound;
         }
         // apply all type annotations.
-        return typeAnnotationsOnBound.reduce(
-            bound,
-            (tyRef, path, annot, acc) -> {
-                int boundIdx = tyRef.getTypeParameterBoundIndex();
+        return typeAnnotationsOnBound.reduce(bound, (tyRef, path, annot, acc) -> {
+            int boundIdx = tyRef.getTypeParameterBoundIndex();
 
-                return applyTypeAnnotationToBound(path, annot, boundIdx, acc);
-            });
+            return applyTypeAnnotationToBound(path, annot, boundIdx, acc);
+        });
     }
 
-    private static JTypeMirror applyTypeAnnotationToBound(@Nullable TypePath path, SymAnnot annot, int boundIdx, JTypeMirror ub) {
+    private static JTypeMirror applyTypeAnnotationToBound(
+            @Nullable TypePath path, SymAnnot annot, int boundIdx, JTypeMirror ub) {
         if (ub instanceof JIntersectionType) {
             JIntersectionType intersection = (JIntersectionType) ub;
 
@@ -139,7 +135,7 @@ class TParamStub implements JTypeParameterSymbol {
 
     void addAnnotationOnBound(TypeReference tyRef, @Nullable TypePath path, SymAnnot annot) {
         assert tyRef.getSort() == TypeReference.CLASS_TYPE_PARAMETER_BOUND
-            || tyRef.getSort() == TypeReference.METHOD_TYPE_PARAMETER_BOUND;
+                || tyRef.getSort() == TypeReference.METHOD_TYPE_PARAMETER_BOUND;
 
         if (typeAnnotationsOnBound == null) {
             typeAnnotationsOnBound = new TypeAnnotationSetWithReferences();

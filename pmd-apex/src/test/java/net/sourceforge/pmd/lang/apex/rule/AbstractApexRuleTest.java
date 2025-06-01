@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.rule;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTAnonymousClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
@@ -14,6 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.lang.test.ast.TestUtilsKt;
 import net.sourceforge.pmd.reporting.Report;
+import org.junit.jupiter.api.Test;
 
 class AbstractApexRuleTest extends ApexParserTestBase {
 

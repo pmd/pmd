@@ -4,15 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Locale;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A Java modifier. The ordering of constants respects the ordering
@@ -47,7 +44,6 @@ public enum JModifier {
     TRANSIENT(Modifier.TRANSIENT),
     VOLATILE(Modifier.VOLATILE);
 
-
     private final String token;
     private final int reflect;
 
@@ -81,7 +77,6 @@ public enum JModifier {
         return reflect;
     }
 
-
     /**
      * Returns how the modifier is written in source.
      */
@@ -93,7 +88,6 @@ public enum JModifier {
     public String toString() {
         return getToken();
     }
-
 
     public static int toReflect(Collection<JModifier> mods) {
         int res = 0;
@@ -111,5 +105,4 @@ public enum JModifier {
     public static @NonNull JModifier fromToken(@NonNull String token) {
         return valueOf(token.toLowerCase(Locale.ROOT));
     }
-
 }

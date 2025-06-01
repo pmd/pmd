@@ -1,4 +1,3 @@
-
 package net.sourceforge.pmd.lang.velocity.ast;
 
 /*
@@ -45,5 +44,4 @@ public final class ASTStringLiteral extends AbstractVtlNode {
     public boolean isConstant() {
         return false;
     }
-
 }

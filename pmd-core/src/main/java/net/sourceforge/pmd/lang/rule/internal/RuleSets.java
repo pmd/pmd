@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.rule.internal;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -56,9 +54,9 @@ public class RuleSets {
         List<RuleSet> suppressionRules = new ArrayList<>();
 
         /*
-         Suppression rules are separated because they must be run last.
-         They are packed into their own rulesets. and added at the end of the ruleset list.
-         */
+        Suppression rules are separated because they must be run last.
+        They are packed into their own rulesets. and added at the end of the ruleset list.
+        */
 
         for (RuleSet ruleSet : ruleSets) {
             RuleSetBuilder noSuppressions = ruleSet.toBuilder();
@@ -92,13 +90,13 @@ public class RuleSets {
     public void initializeRules(LanguageProcessorRegistry lpReg, PmdReporter reporter) {
         // this is abusing the mutability of RuleSet, will go away eventually.
         for (RuleSet rset : ruleSets) {
-            for (Iterator<Rule> iterator = rset.getRules().iterator(); iterator.hasNext();) {
+            for (Iterator<Rule> iterator = rset.getRules().iterator(); iterator.hasNext(); ) {
                 Rule rule = iterator.next();
                 try {
                     rule.initialize(lpReg.getProcessor(rule.getLanguage()));
                 } catch (Exception e) {
                     reporter.errorEx(
-                        "Exception while initializing rule " + rule.getName() + ", the rule will not be run", e);
+                            "Exception while initializing rule " + rule.getName() + ", the rule will not be run", e);
                     iterator.remove();
                 }
             }
@@ -197,7 +195,7 @@ public class RuleSets {
      */
     public Rule getRuleByName(String ruleName) {
         Rule rule = null;
-        for (Iterator<RuleSet> i = ruleSets.iterator(); i.hasNext() && rule == null;) {
+        for (Iterator<RuleSet> i = ruleSets.iterator(); i.hasNext() && rule == null; ) {
             RuleSet ruleSet = i.next();
             rule = ruleSet.getRuleByName(ruleName);
         }
@@ -216,7 +214,6 @@ public class RuleSets {
         }
         return count;
     }
-
 
     /**
      * Remove and collect any rules that report problems.

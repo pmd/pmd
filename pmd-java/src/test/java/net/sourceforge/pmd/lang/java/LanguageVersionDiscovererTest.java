@@ -1,21 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
-
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
+import org.junit.jupiter.api.Test;
 
 class LanguageVersionDiscovererTest {
 
@@ -63,13 +59,14 @@ class LanguageVersionDiscovererTest {
         PMDConfiguration configuration = new PMDConfiguration();
         LanguageVersionDiscoverer languageVersionDiscoverer = configuration.getLanguageVersionDiscoverer();
         Language java = JavaLanguageModule.getInstance();
-        assertEquals(determineLatestNonPreviewVersion(),
-                     languageVersionDiscoverer.getDefaultLanguageVersion(java),
-                     "Default Java version");
-        configuration
-                .setDefaultLanguageVersion(java.getVersion("1.5"));
-        assertEquals(java.getVersion("1.5"),
-                     languageVersionDiscoverer.getDefaultLanguageVersion(java),
-                     "Modified Java version");
+        assertEquals(
+                determineLatestNonPreviewVersion(),
+                languageVersionDiscoverer.getDefaultLanguageVersion(java),
+                "Default Java version");
+        configuration.setDefaultLanguageVersion(java.getVersion("1.5"));
+        assertEquals(
+                java.getVersion("1.5"),
+                languageVersionDiscoverer.getDefaultLanguageVersion(java),
+                "Modified Java version");
     }
 }

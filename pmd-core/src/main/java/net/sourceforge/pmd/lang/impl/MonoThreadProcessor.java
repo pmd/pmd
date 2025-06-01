@@ -4,11 +4,10 @@
 
 package net.sourceforge.pmd.lang.impl;
 
-import org.slf4j.event.Level;
-
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
+import org.slf4j.event.Level;
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -41,7 +40,6 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
             super(textFile, task);
             this.ruleSets = task.getRulesets();
         }
-
 
         @Override
         protected RuleSets getRulesets() {

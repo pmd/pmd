@@ -4,6 +4,4 @@
 
 package javasymbols.testdata;
 
-
-public class SomeClassA {
-}
+public class SomeClassA {}

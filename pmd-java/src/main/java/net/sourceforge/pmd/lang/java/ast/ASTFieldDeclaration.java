@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
-
 
 /**
  * Represents a field declaration in the body of a type declaration.
@@ -22,16 +20,11 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
  * </pre>
  */
 public final class ASTFieldDeclaration extends AbstractJavaNode
-    implements LeftRecursiveNode,
-               ASTBodyDeclaration,
-               InternalInterfaces.MultiVariableIdOwner,
-               JavadocCommentOwner {
-
+        implements LeftRecursiveNode, ASTBodyDeclaration, InternalInterfaces.MultiVariableIdOwner, JavadocCommentOwner {
 
     ASTFieldDeclaration(int id) {
         super(id);
     }
-
 
     @Override
     public FileLocation getReportLocation() {
@@ -59,7 +52,6 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
     public String getVariableName() {
         return getVarIds().firstOrThrow().getName();
     }
-
 
     /**
      * Returns the type node at the beginning of this field declaration.

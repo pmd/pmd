@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Base class to scan a type signature.
@@ -16,7 +15,6 @@ class SignatureScanner {
     protected final String chars;
     protected final int start;
     protected final int end; // exclusive
-
 
     SignatureScanner(String descriptor) {
         if (descriptor == null || descriptor.isEmpty()) {
@@ -35,7 +33,6 @@ class SignatureScanner {
         this.start = start;
         this.end = end;
     }
-
 
     public char charAt(int off) {
         return off < end ? chars.charAt(off) : 0;
@@ -76,12 +73,11 @@ class SignatureScanner {
         return cur;
     }
 
-
     public RuntimeException expected(String expectedWhat, int pos) {
         final String indent = "    ";
         String sb = "Expected " + expectedWhat + ":\n"
-            + indent + bufferToString() + "\n"
-            + indent + StringUtils.repeat(' ', pos - start) + '^' + "\n";
+                + indent + bufferToString() + "\n"
+                + indent + StringUtils.repeat(' ', pos - start) + '^' + "\n";
         return new InvalidTypeSignatureException(sb);
     }
 

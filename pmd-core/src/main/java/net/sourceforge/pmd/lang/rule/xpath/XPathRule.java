@@ -1,19 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.rule.xpath;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.exception.ContextedRuntimeException;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -26,7 +18,11 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.IteratorUtil;
 import net.sourceforge.pmd.util.internal.ResourceLoader;
-
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Rule that tries to match an XPath expression against a DOM view of an AST.
@@ -35,21 +31,18 @@ public final class XPathRule extends AbstractRule {
 
     private static final Logger LOG = LoggerFactory.getLogger(XPathRule.class);
 
-    private static final PropertyDescriptor<String> XPATH_DESCRIPTOR =
-        PropertyFactory.stringProperty("xpath")
-                       .desc("XPath expression")
-                       .defaultValue("")
-                       .build();
+    private static final PropertyDescriptor<String> XPATH_DESCRIPTOR = PropertyFactory.stringProperty("xpath")
+            .desc("XPath expression")
+            .defaultValue("")
+            .build();
 
     /**
      * This is initialized only once when calling {@link #apply(Node, RuleContext)} or {@link #getTargetSelector()}.
      */
     private SaxonXPathRuleQuery xpathRuleQuery;
 
-
     // this is shared with rules forked by deepCopy, used by the XPathRuleQuery
     private DeprecatedAttrLogger attrLogger = DeprecatedAttrLogger.create(this);
-
 
     /**
      * This is only used by the ruleset loader.
@@ -76,7 +69,6 @@ public final class XPathRule extends AbstractRule {
         setProperty(XPathRule.XPATH_DESCRIPTOR, expression);
     }
 
-
     @Override
     public Rule deepCopy() {
         XPathRule rule = (XPathRule) super.deepCopy();
@@ -90,7 +82,6 @@ public final class XPathRule extends AbstractRule {
     public String getXPathExpression() {
         return getProperty(XPATH_DESCRIPTOR);
     }
-
 
     @Override
     public void apply(Node target, RuleContext ctx) {
@@ -134,11 +125,12 @@ public final class XPathRule extends AbstractRule {
         XPathVersion version = XPathVersion.DEFAULT;
 
         try {
-            xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
-                                                     version,
-                                                     getPropertiesByPropertyDescriptor(),
-                                                     languageProcessor.services().getXPathHandler(),
-                                                     attrLogger);
+            xpathRuleQuery = new SaxonXPathRuleQuery(
+                    xpath,
+                    version,
+                    getPropertiesByPropertyDescriptor(),
+                    languageProcessor.services().getXPathHandler(),
+                    attrLogger);
         } catch (PmdXPathException e) {
             throw addExceptionContext(e);
         }
@@ -151,7 +143,6 @@ public final class XPathRule extends AbstractRule {
         return xpathRuleQuery;
     }
 
-
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
 
@@ -159,18 +150,12 @@ public final class XPathRule extends AbstractRule {
 
         logXPathRuleChainUsage(!visits.isEmpty());
 
-        return visits.isEmpty() ? RuleTargetSelector.forRootOnly()
-                                : RuleTargetSelector.forXPathNames(visits);
+        return visits.isEmpty() ? RuleTargetSelector.forRootOnly() : RuleTargetSelector.forXPathNames(visits);
     }
-
 
     private void logXPathRuleChainUsage(boolean usesRuleChain) {
-        LOG.debug("{} rule chain for XPath rule: {} ({})",
-                usesRuleChain ? "Using" : "no",
-                getName(),
-                getRuleSetName());
+        LOG.debug("{} rule chain for XPath rule: {} ({})", usesRuleChain ? "Using" : "no", getName(), getRuleSetName());
     }
-
 
     @Override
     public String dysfunctionReason() {

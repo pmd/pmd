@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-
 import static net.sourceforge.pmd.util.CollectionUtil.associateByTo;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -45,5 +43,4 @@ public final class LexicalScope extends MapFunction<String, @Nullable JTypeVar> 
         }
         return new LexicalScope(associateByTo(new HashMap<>(getMap()), vars, JTypeVar::getName));
     }
-
 }

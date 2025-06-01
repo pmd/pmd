@@ -1,16 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Groups method and constructor declarations under a common type.
@@ -28,16 +25,10 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  * @since 5.8.1
  */
 public interface ASTExecutableDeclaration
-    extends ModifierOwner,
-            ASTBodyDeclaration,
-            TypeParamOwnerNode,
-            JavadocCommentOwner,
-            ReturnScopeNode {
-
+        extends ModifierOwner, ASTBodyDeclaration, TypeParamOwnerNode, JavadocCommentOwner, ReturnScopeNode {
 
     @Override
     JExecutableSymbol getSymbol();
-
 
     /**
      * Returns the generic signature for the method. This is a {@link JMethodSig}
@@ -47,13 +38,11 @@ public interface ASTExecutableDeclaration
      */
     JMethodSig getGenericSignature();
 
-
     /**
      * Returns the name of the method, or the simple name of the declaring class for
      * a constructor declaration.
      */
     String getName();
-
 
     /**
      * Returns true if this method is abstract, so doesn't
@@ -84,7 +73,6 @@ public interface ASTExecutableDeclaration
         return getFormalParameters().size();
     }
 
-
     /**
      * Returns the body of this method or constructor. Returns null if
      * this is the declaration of an abstract method.
@@ -112,7 +100,6 @@ public interface ASTExecutableDeclaration
         return lastFormal instanceof ASTFormalParameter && ((ASTFormalParameter) lastFormal).isVarargs();
     }
 
-
     /**
      * Returns true if this is a static method.
      * If this is a constructor, return false.
@@ -123,7 +110,6 @@ public interface ASTExecutableDeclaration
         return hasModifiers(JModifier.STATIC);
     }
 
-
     /**
      * Returns true if this is a final method.
      * If this is a constructor, return false.
@@ -133,5 +119,4 @@ public interface ASTExecutableDeclaration
     default boolean isFinal() {
         return hasModifiers(JModifier.FINAL);
     }
-
 }

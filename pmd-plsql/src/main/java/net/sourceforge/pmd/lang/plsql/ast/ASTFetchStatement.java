@@ -8,7 +8,6 @@ public final class ASTFetchStatement extends AbstractPLSQLNode {
     private boolean bulkcollect;
     private boolean limit;
 
-
     ASTFetchStatement(int id) {
         super(id);
     }

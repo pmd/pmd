@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.resolver.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaDeclaration;
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaType;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
@@ -73,12 +71,12 @@ public class ResolutionContext {
         private final boolean timedOut;
 
         Result(Class<A> tpe, List<?> best, List<?> hidden, boolean timedOut) {
-            for (Object b: best) {
+            for (Object b : best) {
                 if (tpe.isInstance(b)) {
                     bestCandidates.add((A) b);
                 }
             }
-            for (Object h: hidden) {
+            for (Object h : hidden) {
                 if (tpe.isInstance(h)) {
                     hiddenCandidates.add((A) h);
                 }

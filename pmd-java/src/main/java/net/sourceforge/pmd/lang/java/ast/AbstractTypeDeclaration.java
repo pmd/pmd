@@ -1,23 +1,21 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Abstract class for type declarations nodes.
  * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  */
-abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol> implements ASTTypeDeclaration, LeftRecursiveNode {
+abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol>
+        implements ASTTypeDeclaration, LeftRecursiveNode {
 
     private String binaryName;
     private @Nullable String canonicalName;
@@ -81,4 +79,3 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
         return isNested();
     }
 }
-

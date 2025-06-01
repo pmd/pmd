@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -9,11 +8,8 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
-
-abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
-    extends AbstractJavaNode
-    implements ASTExecutableDeclaration,
-               LeftRecursiveNode {
+abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol> extends AbstractJavaNode
+        implements ASTExecutableDeclaration, LeftRecursiveNode {
 
     private T symbol;
     private JMethodSig sig;
@@ -51,7 +47,6 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
         }
         return sig;
     }
-
 
     @Override
     public FileLocation getReportLocation() {

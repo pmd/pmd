@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.xml.rule;
 
 import java.util.Objects;
-
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
@@ -111,25 +109,21 @@ public class DomXPathRule extends AbstractRule {
 
     SaxonDomXPathQuery query;
 
-    private static final PropertyDescriptor<String> XPATH_EXPR
-        = PropertyFactory.stringProperty("xpath")
-                         .desc("An XPath 2.0 expression that will be evaluated against the root DOM")
-                         .defaultValue("") // no default value
-                         .build();
+    private static final PropertyDescriptor<String> XPATH_EXPR = PropertyFactory.stringProperty("xpath")
+            .desc("An XPath 2.0 expression that will be evaluated against the root DOM")
+            .defaultValue("") // no default value
+            .build();
 
-    private static final PropertyDescriptor<String> DEFAULT_NS_URI
-        = PropertyFactory.stringProperty("defaultNsUri")
-                         .desc("A URI for the default namespace of node tests in the XPath expression."
-                               + "This is provided to match documents based on their declared schema.")
-                         .defaultValue("")
-                         .build();
-
+    private static final PropertyDescriptor<String> DEFAULT_NS_URI = PropertyFactory.stringProperty("defaultNsUri")
+            .desc("A URI for the default namespace of node tests in the XPath expression."
+                    + "This is provided to match documents based on their declared schema.")
+            .defaultValue("")
+            .build();
 
     public DomXPathRule() {
         definePropertyDescriptor(XPATH_EXPR);
         definePropertyDescriptor(DEFAULT_NS_URI);
     }
-
 
     public DomXPathRule(String xpath) {
         this(xpath, "");
@@ -152,15 +146,14 @@ public class DomXPathRule extends AbstractRule {
 
     @Override
     public void initialize(LanguageProcessor languageProcessor) {
-        query = new SaxonDomXPathQuery(getProperty(XPATH_EXPR),
-                                       getProperty(DEFAULT_NS_URI),
-                                       getPropertyDescriptors(),
-                                       languageProcessor.services().getXPathHandler());
-
+        query = new SaxonDomXPathQuery(
+                getProperty(XPATH_EXPR),
+                getProperty(DEFAULT_NS_URI),
+                getPropertyDescriptors(),
+                languageProcessor.services().getXPathHandler());
     }
 
     private SaxonDomXPathQuery getXPathQuery() {
         return Objects.requireNonNull(query, "rule not initialized");
     }
-
 }

@@ -5,15 +5,13 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
-
+import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
-import net.sourceforge.pmd.lang.document.FileId;
-import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * An exception that occurs while processing a file. Subtypes include
@@ -86,7 +84,6 @@ public class FileAnalysisException extends ContextedRuntimeException {
         return result;
     }
 
-
     /**
      * Wraps the cause into an analysis exception. If it is itself an analysis
      * exception, just returns it after setting the filename for context.
@@ -97,7 +94,8 @@ public class FileAnalysisException extends ContextedRuntimeException {
      *
      * @return An exception
      */
-    public static FileAnalysisException wrap(@NonNull FileId fileId, @NonNull String message, @NonNull Throwable cause) {
+    public static FileAnalysisException wrap(
+            @NonNull FileId fileId, @NonNull String message, @NonNull Throwable cause) {
         if (cause instanceof FileAnalysisException) {
             return ((FileAnalysisException) cause).setFileId(fileId);
         }

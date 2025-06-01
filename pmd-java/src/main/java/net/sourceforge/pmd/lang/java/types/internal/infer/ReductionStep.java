@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
@@ -60,19 +59,16 @@ enum ReductionStep {
         @Override
         public boolean accepts(InferenceVar t, InferenceContext inferenceContext) {
             return t.isCaptured()
-                && inferenceContext.areAllGround(t.getBounds(BoundKind.LOWER))
-                && inferenceContext.areAllGround(t.getBounds(BoundKind.UPPER));
+                    && inferenceContext.areAllGround(t.getBounds(BoundKind.LOWER))
+                    && inferenceContext.areAllGround(t.getBounds(BoundKind.UPPER));
         }
 
         @Override
         JTypeMirror solve(InferenceVar uv, InferenceContext infCtx) {
-            JTypeMirror upper = !UPPER.filterBounds(uv, infCtx).isEmpty()
-                                ? UPPER.solve(uv, infCtx)
-                                : infCtx.ts.OBJECT;
+            JTypeMirror upper = !UPPER.filterBounds(uv, infCtx).isEmpty() ? UPPER.solve(uv, infCtx) : infCtx.ts.OBJECT;
 
-            JTypeMirror lower = !LOWER.filterBounds(uv, infCtx).isEmpty()
-                                ? LOWER.solve(uv, infCtx)
-                                : infCtx.ts.NULL_TYPE;
+            JTypeMirror lower =
+                    !LOWER.filterBounds(uv, infCtx).isEmpty() ? LOWER.solve(uv, infCtx) : infCtx.ts.NULL_TYPE;
 
             return uv.getBaseVar().cloneWithBounds(lower, upper);
         }
@@ -107,9 +103,7 @@ enum ReductionStep {
      * Sequence of steps to use in order when solving.
      */
     static final List<List<ReductionStep>> WAVES =
-        listOf(
-            listOf(EQ, LOWER, UPPER, CAPTURED),
-            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED));
+            listOf(listOf(EQ, LOWER, UPPER, CAPTURED), listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED));
     //                        ^^^^^^
 
     final BoundKind kind;
@@ -148,6 +142,4 @@ enum ReductionStep {
         }
         return res;
     }
-
-
 }

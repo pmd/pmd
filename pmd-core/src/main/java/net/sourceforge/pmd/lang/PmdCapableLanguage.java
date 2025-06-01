@@ -25,5 +25,4 @@ public interface PmdCapableLanguage extends Language {
      * @return A new language processor
      */
     LanguageProcessor createProcessor(LanguagePropertyBundle bundle);
-
 }

@@ -4,11 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyClassSignature;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType;
@@ -21,6 +17,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Parses type signatures. This is basically convenience wrappers for
@@ -45,7 +42,6 @@ class SignatureParser {
         return b.pop();
     }
 
-
     public JTypeMirror parseTypeVarBound(LexicalScope scope, String boundSig) {
         MyTypeBuilder b = new MyTypeBuilder(scope, boundSig);
         parseFully(b, TypeSigParser::typeVarBound);
@@ -58,7 +54,6 @@ class SignatureParser {
         type.setSuperInterfaces((List) b.popList());
         type.setSuperClass((JClassType) b.pop());
     }
-
 
     public void parseMethodType(LazyMethodType type, String genericSig) {
         TypeScanner b = typeParamsWrapper(type, genericSig);
@@ -94,7 +89,6 @@ class SignatureParser {
             return new MyTypeBuilder(owner.getEnclosingTypeParams(), sig);
         }
     }
-
 
     private static void parseFully(TypeScanner scanner, ParseFunction parser) {
         int endOffset = parser.parse(scanner.start, scanner);

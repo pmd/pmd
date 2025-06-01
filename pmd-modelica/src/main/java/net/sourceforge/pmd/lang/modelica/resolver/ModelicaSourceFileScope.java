@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;
@@ -37,7 +36,7 @@ public final class ModelicaSourceFileScope extends AbstractModelicaScope {
         String firstName = name.getHead();
         CompositeName furtherNames = name.getTail();
 
-        for (ModelicaDeclaration decl: getDirectlyDeclared(firstName)) {
+        for (ModelicaDeclaration decl : getDirectlyDeclared(firstName)) {
             ResolutionContext tmpContext = result.getState().createContext();
             ((ModelicaClassDeclaration) decl).lookupInInstanceScope(result, furtherNames);
             // According to "5.2 Enclosing classes" from MLS 3.4, the order of definitions inside the unnamed

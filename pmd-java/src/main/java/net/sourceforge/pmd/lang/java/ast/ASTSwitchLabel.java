@@ -1,13 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
-
 
 /**
  * Represents either a {@code case} or {@code default} label inside
@@ -32,11 +29,9 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
 
     private boolean isDefault;
 
-
     ASTSwitchLabel(int id) {
         super(id);
     }
-
 
     void setDefault() {
         isDefault = true;

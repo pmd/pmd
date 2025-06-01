@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.types.internal.infer.Graph.UniqueGraph;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Graph.Vertex;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
@@ -26,13 +25,11 @@ interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
     @Override
     Set<InferenceVar> next();
 
-
     /**
      * Returns true if there is no more batch to process.
      */
     @Override
     boolean hasNext();
-
 
     /**
      * Walk a DAG of the dependencies. Building the model is
@@ -122,5 +119,4 @@ interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
             return graph.topologicalSort().iterator();
         }
     }
-
 }

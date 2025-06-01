@@ -1,15 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
@@ -20,6 +16,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Finds encryption schemes using hardcoded IV, hardcoded key
@@ -49,19 +46,23 @@ public class ApexBadCryptoRule extends AbstractApexRule {
             return data;
         }
 
-        List<ASTFieldDeclaration> fieldDecl = node.descendants(ASTFieldDeclaration.class).toList();
+        List<ASTFieldDeclaration> fieldDecl =
+                node.descendants(ASTFieldDeclaration.class).toList();
         for (ASTFieldDeclaration var : fieldDecl) {
             findSafeVariables(var);
         }
 
-        List<ASTVariableDeclaration> variableDecl = node.descendants(ASTVariableDeclaration.class).toList();
+        List<ASTVariableDeclaration> variableDecl =
+                node.descendants(ASTVariableDeclaration.class).toList();
         for (ASTVariableDeclaration var : variableDecl) {
             findSafeVariables(var);
         }
 
-        List<ASTMethodCallExpression> methodCalls = node.descendants(ASTMethodCallExpression.class).toList();
+        List<ASTMethodCallExpression> methodCalls =
+                node.descendants(ASTMethodCallExpression.class).toList();
         for (ASTMethodCallExpression methodCall : methodCalls) {
-            if (Helper.isMethodName(methodCall, CRYPTO, ENCRYPT) || Helper.isMethodName(methodCall, CRYPTO, DECRYPT)
+            if (Helper.isMethodName(methodCall, CRYPTO, ENCRYPT)
+                    || Helper.isMethodName(methodCall, CRYPTO, DECRYPT)
                     || Helper.isMethodName(methodCall, CRYPTO, ENCRYPT_WITH_MANAGED_IV)
                     || Helper.isMethodName(methodCall, CRYPTO, DECRYPT_WITH_MANAGED_IV)) {
 
@@ -88,24 +89,23 @@ public class ApexBadCryptoRule extends AbstractApexRule {
         // .encrypt('AES128', key, exampleIv, data);
         int numberOfChildren = methodCall.getNumChildren();
         switch (numberOfChildren) {
-        // matching signature to encrypt(
-        case 5:
-            Object potentialIV = methodCall.getChild(3);
-            reportIfHardCoded(data, potentialIV);
-            Object potentialKey = methodCall.getChild(2);
-            reportIfHardCoded(data, potentialKey);
-            break;
+            // matching signature to encrypt(
+            case 5:
+                Object potentialIV = methodCall.getChild(3);
+                reportIfHardCoded(data, potentialIV);
+                Object potentialKey = methodCall.getChild(2);
+                reportIfHardCoded(data, potentialKey);
+                break;
 
-        // matching signature to encryptWithManagedIV(
-        case 4:
-            Object key = methodCall.getChild(2);
-            reportIfHardCoded(data, key);
-            break;
+            // matching signature to encryptWithManagedIV(
+            case 4:
+                Object key = methodCall.getChild(2);
+                reportIfHardCoded(data, key);
+                break;
 
-        default:
-            break;
+            default:
+                break;
         }
-
     }
 
     private void reportIfHardCoded(Object data, Object potentialIV) {

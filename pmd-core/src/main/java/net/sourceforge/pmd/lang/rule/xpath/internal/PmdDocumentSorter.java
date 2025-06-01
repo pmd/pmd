@@ -2,11 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.Comparator;
-
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -17,9 +15,7 @@ final class PmdDocumentSorter implements Comparator<Node> {
 
     public static final PmdDocumentSorter INSTANCE = new PmdDocumentSorter();
 
-    private PmdDocumentSorter() {
-
-    }
+    private PmdDocumentSorter() {}
 
     @Override
     @SuppressWarnings("PMD.CompareObjectsWithEquals")

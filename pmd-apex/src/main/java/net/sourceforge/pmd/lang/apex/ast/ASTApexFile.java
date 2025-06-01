@@ -1,14 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.ast;
 
+import com.google.summit.ast.CompilationUnit;
+import io.github.apexdevtools.api.Issue;
 import java.util.Collection;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
 import net.sourceforge.pmd.lang.ast.AstInfo;
@@ -17,19 +15,18 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
-
-import com.google.summit.ast.CompilationUnit;
-import io.github.apexdevtools.api.Issue;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> implements RootNode {
 
     private final AstInfo<ASTApexFile> astInfo;
     private final @NonNull ApexMultifileAnalysis multifileAnalysis;
 
-    ASTApexFile(ParserTask task,
-                CompilationUnit compilationUnit,
-                Collection<? extends SuppressionCommentWrapper> suppressMap,
-                @NonNull ApexLanguageProcessor apexLang) {
+    ASTApexFile(
+            ParserTask task,
+            CompilationUnit compilationUnit,
+            Collection<? extends SuppressionCommentWrapper> suppressMap,
+            @NonNull ApexLanguageProcessor apexLang) {
         super(compilationUnit);
         this.astInfo = new AstInfo<>(task, this).withSuppressionComments(suppressMap);
         this.multifileAnalysis = apexLang.getMultiFileState();
@@ -49,7 +46,6 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
     public @NonNull ASTApexFile getRoot() {
         return this;
     }
-
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {

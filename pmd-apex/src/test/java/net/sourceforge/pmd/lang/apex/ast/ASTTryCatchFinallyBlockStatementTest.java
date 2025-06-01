@@ -15,7 +15,8 @@ class ASTTryCatchFinallyBlockStatementTest extends ApexParserTestBase {
     @Test
     void testTryFinally() {
         ApexNode<?> node = parse("class Foo { void bar() { try { methodCall(); } finally { methodCall(); } } }");
-        ASTTryCatchFinallyBlockStatement statement = node.descendants(ASTTryCatchFinallyBlockStatement.class).first();
+        ASTTryCatchFinallyBlockStatement statement =
+                node.descendants(ASTTryCatchFinallyBlockStatement.class).first();
         assertNotNull(statement.getTryBlock());
         assertEquals(0, statement.getTryBlock().getIndexInParent());
         assertNotNull(statement.getFinallyBlock());
@@ -25,8 +26,10 @@ class ASTTryCatchFinallyBlockStatementTest extends ApexParserTestBase {
 
     @Test
     void testTryCatch() {
-        ApexNode<?> node = parse("class Foo { void bar() { try { methodCall(); } catch (Exception e) { methodCall(); } } }");
-        ASTTryCatchFinallyBlockStatement statement = node.descendants(ASTTryCatchFinallyBlockStatement.class).first();
+        ApexNode<?> node =
+                parse("class Foo { void bar() { try { methodCall(); } catch (Exception e) { methodCall(); } } }");
+        ASTTryCatchFinallyBlockStatement statement =
+                node.descendants(ASTTryCatchFinallyBlockStatement.class).first();
         assertNotNull(statement.getTryBlock());
         assertEquals(0, statement.getTryBlock().getIndexInParent());
         assertNull(statement.getFinallyBlock());
@@ -37,8 +40,10 @@ class ASTTryCatchFinallyBlockStatementTest extends ApexParserTestBase {
 
     @Test
     void testTryCatchFinally() {
-        ApexNode<?> node = parse("class Foo { void bar() { try { methodCall(); } catch (Exception e) { methodCall(); } finally { } } }");
-        ASTTryCatchFinallyBlockStatement statement = node.descendants(ASTTryCatchFinallyBlockStatement.class).first();
+        ApexNode<?> node = parse(
+                "class Foo { void bar() { try { methodCall(); } catch (Exception e) { methodCall(); } finally { } } }");
+        ASTTryCatchFinallyBlockStatement statement =
+                node.descendants(ASTTryCatchFinallyBlockStatement.class).first();
         assertNotNull(statement.getTryBlock());
         assertEquals(0, statement.getTryBlock().getIndexInParent());
         assertNotNull(statement.getFinallyBlock());

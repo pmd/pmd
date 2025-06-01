@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -20,7 +19,6 @@ public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssigna
         super(id);
     }
 
-
     /**
      * Returns the expression to the left of the "[".
      * This can never be a {@linkplain ASTTypeExpression type},
@@ -36,7 +34,6 @@ public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssigna
     public ASTExpression getIndexExpression() {
         return (ASTExpression) getChild(1);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

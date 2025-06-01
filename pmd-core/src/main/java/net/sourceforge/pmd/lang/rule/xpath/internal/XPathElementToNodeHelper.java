@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
-import net.sourceforge.pmd.lang.ast.Node;
-
 import net.sf.saxon.tree.wrapper.AbstractNodeWrapper;
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * A function that returns the current file name.
@@ -17,9 +16,7 @@ public final class XPathElementToNodeHelper {
 
     public static final String PMD_NODE_USER_DATA = "pmd.node";
 
-    private XPathElementToNodeHelper() {
-
-    }
+    private XPathElementToNodeHelper() {}
 
     static Node itemToNode(Object item) {
         if (item instanceof Node) {

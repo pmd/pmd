@@ -6,15 +6,13 @@ package net.sourceforge.pmd.lang.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.InternalApiBridge;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.PmdCapableLanguage;
 import net.sourceforge.pmd.lang.document.TextFile;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A base class for language processors. It processes all files of the
@@ -34,8 +32,7 @@ public abstract class BatchLanguageProcessor<P extends LanguagePropertyBundle> i
     protected BatchLanguageProcessor(P bundle) {
         if (!(bundle.getLanguage() instanceof PmdCapableLanguage)) {
             throw new IllegalArgumentException(
-                "Cannot create a processor for a language which does not support PMD: " + bundle.getLanguage()
-            );
+                    "Cannot create a processor for a language which does not support PMD: " + bundle.getLanguage());
         }
         this.language = (PmdCapableLanguage) bundle.getLanguage();
         this.bundle = bundle;

@@ -9,16 +9,14 @@ import static net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 /**
  * Represents class and interface types, including functional interface
@@ -57,7 +55,6 @@ public interface JClassType extends JTypeMirror {
     @NonNull
     JClassSymbol getSymbol();
 
-
     @Override
     JClassType withAnnotations(PSet<SymAnnot> newTypeAnnots);
 
@@ -79,10 +76,8 @@ public interface JClassType extends JTypeMirror {
         if (newArgs == targs && encl == getEnclosingType()) { // NOPMD CompareObjectsWithEquals
             return this;
         }
-        return encl != null ? encl.selectInner(getSymbol(), newArgs, getTypeAnnotations())
-                            : withTypeArguments(newArgs);
+        return encl != null ? encl.selectInner(getSymbol(), newArgs, getTypeAnnotations()) : withTypeArguments(newArgs);
     }
-
 
     /**
      * Returns true if this type is erased. In that case, all the generic
@@ -91,7 +86,6 @@ public interface JClassType extends JTypeMirror {
      * type parameters, then it is a {@linkplain #isRaw() raw type}.
      */
     boolean hasErasedSuperTypes();
-
 
     /**
      * Returns true if this type represents a raw type, ie a type whose
@@ -105,10 +99,8 @@ public interface JClassType extends JTypeMirror {
     @Override
     boolean isRaw();
 
-
     @Override
     boolean isGenericTypeDeclaration();
-
 
     /**
      * If this type is generic, returns the type that represents its
@@ -117,7 +109,6 @@ public interface JClassType extends JTypeMirror {
      * @see #isGenericTypeDeclaration()
      */
     JClassType getGenericTypeDeclaration();
-
 
     /**
      * Returns true if the symbol of this type declares some type
@@ -129,14 +120,12 @@ public interface JClassType extends JTypeMirror {
     @Override
     boolean isGeneric();
 
-
     /**
      * Returns the type immediately enclosing this type. This may be null
      * if this is a top-level type.
      */
     @Nullable
     JClassType getEnclosingType();
-
 
     /**
      * A specific instantiation of the type variables in {@link #getFormalTypeParams()}.
@@ -154,7 +143,6 @@ public interface JClassType extends JTypeMirror {
      */
     List<JTypeMirror> getTypeArgs();
 
-
     /**
      * Returns the list of type variables declared by the generic type declaration.
      *
@@ -164,7 +152,6 @@ public interface JClassType extends JTypeMirror {
      * @see #getTypeArgs()
      */
     List<JTypeVar> getFormalTypeParams();
-
 
     /**
      * Returns the substitution mapping the formal type parameters of all
@@ -180,7 +167,6 @@ public interface JClassType extends JTypeMirror {
      * It is suitable for use in e.g. {@link JMethodSymbol#getReturnType(Substitution)}.
      */
     Substitution getTypeParamSubst();
-
 
     /**
      * Select an inner type. This can only be called if the given
@@ -231,20 +217,18 @@ public interface JClassType extends JTypeMirror {
      */
     JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, PSet<SymAnnot> typeAnnotations);
 
-
     /**
      * Returns the generic superclass type. Returns null if this is
      * {@link TypeSystem#OBJECT Object}. Returns {@link TypeSystem#OBJECT}
      * if this is an interface type.
      */
-    @Nullable JClassType getSuperClass();
-
+    @Nullable
+    JClassType getSuperClass();
 
     @Override
     default @Nullable JClassType getAsSuper(@NonNull JClassSymbol symbol) {
         return (JClassType) JTypeMirror.super.getAsSuper(symbol);
     }
-
 
     /**
      * Returns the typed signature for the symbol, if it is declared
@@ -252,7 +236,8 @@ public interface JClassType extends JTypeMirror {
      *
      * @param sym Method or constructor symbol
      */
-    @Nullable JMethodSig getDeclaredMethod(JExecutableSymbol sym);
+    @Nullable
+    JMethodSig getDeclaredMethod(JExecutableSymbol sym);
 
     /**
      * Return the list of declared nested classes. They are substituted
@@ -273,22 +258,21 @@ public interface JClassType extends JTypeMirror {
      * Return the field with the given name, or null if there
      * is none. Does not look into supertypes.
      */
-    @Nullable FieldSig getDeclaredField(String simpleName);
+    @Nullable
+    FieldSig getDeclaredField(String simpleName);
 
     /**
      * Return the nested class with the given name, or null if there
      * is none. Does not look into supertypes.
      */
-    @Nullable JClassType getDeclaredClass(String simpleName);
-
+    @Nullable
+    JClassType getDeclaredClass(String simpleName);
 
     @Override
     JClassType getErasure();
 
-
     /** Return the list of interface types directly implemented by this type. */
     List<JClassType> getSuperInterfaces();
-
 
     /**
      * Returns another class type which has the same erasure, but new
@@ -306,11 +290,8 @@ public interface JClassType extends JTypeMirror {
      */
     JClassType withTypeArguments(List<? extends JTypeMirror> args);
 
-
     @Override
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
         return visitor.visitClass(this, p);
     }
-
-
 }

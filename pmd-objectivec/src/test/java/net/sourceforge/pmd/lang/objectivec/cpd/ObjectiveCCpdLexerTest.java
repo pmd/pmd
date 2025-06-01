@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.objectivec.cpd;
 
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
-
 class ObjectiveCCpdLexerTest extends CpdTextComparisonTest {
-
 
     ObjectiveCCpdLexerTest() {
         super("objectivec", ".m");

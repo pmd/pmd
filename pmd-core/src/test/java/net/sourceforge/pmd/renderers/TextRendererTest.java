@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
@@ -26,8 +25,7 @@ class TextRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpectedMultiple() {
-        return getSourceCodeFilename() + ":1:\tFoo:\tblah" + EOL
-                + getSourceCodeFilename() + ":1:\tBoo:\tblah" + EOL;
+        return getSourceCodeFilename() + ":1:\tFoo:\tblah" + EOL + getSourceCodeFilename() + ":1:\tBoo:\tblah" + EOL;
     }
 
     @Override

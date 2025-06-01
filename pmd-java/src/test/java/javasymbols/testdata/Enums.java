@@ -4,11 +4,12 @@
 
 package javasymbols.testdata;
 
-
 public class Enums {
 
     public enum Empty {}
 
-    public enum SomeConstants {A, B}
-
+    public enum SomeConstants {
+        A,
+        B
+    }
 }

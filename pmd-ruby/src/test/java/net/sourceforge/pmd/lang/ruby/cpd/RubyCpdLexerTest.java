@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.ruby.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
+import org.junit.jupiter.api.Test;
 
 class RubyCpdLexerTest extends CpdTextComparisonTest {
 

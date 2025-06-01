@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Context of a poly expression. Includes info about an expected target
@@ -17,7 +16,6 @@ public class PolySite<E extends PolyExprMirror> {
 
     private final JTypeMirror expectedType;
     private final E expr;
-
 
     PolySite(E expr, @Nullable JTypeMirror expectedType) {
         this.expectedType = expectedType;
@@ -37,6 +35,4 @@ public class PolySite<E extends PolyExprMirror> {
     public String toString() {
         return "PolySite:" + expr;
     }
-
-
 }

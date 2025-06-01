@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An expression that may be assigned by an {@linkplain ASTAssignmentExpression assignment expression},
@@ -44,8 +43,9 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
 
         Node parent = this.getParent();
 
-        if (parent instanceof ASTUnaryExpression && !((ASTUnaryExpression) parent).getOperator().isPure()
-            || getIndexInParent() == 0 && parent instanceof ASTAssignmentExpression) {
+        if (parent instanceof ASTUnaryExpression
+                        && !((ASTUnaryExpression) parent).getOperator().isPure()
+                || getIndexInParent() == 0 && parent instanceof ASTAssignmentExpression) {
             return AccessType.WRITE;
         }
 
@@ -78,7 +78,10 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
          * relevant for fields, as they may be inherited from some
          * parameterized supertype.
          */
-        @Nullable JVariableSig getSignature(); // TODO this is probably multiplying the api points for nothing. You have symbol + type with getTypeMirror and getReferencedSym
+        @Nullable
+        JVariableSig
+                getSignature(); // TODO this is probably multiplying the api points for nothing. You have symbol + type
+        // with getTypeMirror and getReferencedSym
 
         /**
          * Returns the symbol referenced by this variable.
@@ -87,9 +90,7 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
             JVariableSig sig = getSignature();
             return sig == null ? null : sig.getSymbol();
         }
-
     }
-
 
     /**
      * Represents the type of access of an {@linkplain ASTAssignableExpr assignable expression}.

@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.expression.CallExpression;
-
+import java.util.List;
+import java.util.stream.Collectors;
 
 public final class ASTMethodCallExpression extends AbstractApexNode.Single<CallExpression> {
 
@@ -24,7 +22,6 @@ public final class ASTMethodCallExpression extends AbstractApexNode.Single<CallE
         this.receiverComponents = receiverComponents;
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -35,7 +32,8 @@ public final class ASTMethodCallExpression extends AbstractApexNode.Single<CallE
     }
 
     public String getFullMethodName() {
-        return receiverComponents.stream().map(id -> id.getString() + ".").collect(Collectors.joining()) + getMethodName();
+        return receiverComponents.stream().map(id -> id.getString() + ".").collect(Collectors.joining())
+                + getMethodName();
     }
 
     public int getInputParametersSize() {

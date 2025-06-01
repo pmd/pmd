@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 
 class ASTUserClassTest extends ApexParserTestBase {
@@ -33,13 +31,15 @@ class ASTUserClassTest extends ApexParserTestBase {
 
     @Test
     void testSuperClassName2() {
-        ASTUserClass toplevel = (ASTUserClass) parse("public class AccountTriggerHandler extends Other.TriggerHandler {}");
+        ASTUserClass toplevel =
+                (ASTUserClass) parse("public class AccountTriggerHandler extends Other.TriggerHandler {}");
         assertEquals("Other.TriggerHandler", toplevel.getSuperClassName());
     }
 
     @Test
     void testInterfaces() {
-        ASTUserClass toplevel = (ASTUserClass) parse("public class AccountTriggerHandler implements TriggerHandler, Other.Interface2 {}");
+        ASTUserClass toplevel = (ASTUserClass)
+                parse("public class AccountTriggerHandler implements TriggerHandler, Other.Interface2 {}");
         assertEquals(Arrays.asList("TriggerHandler", "Other.Interface2"), toplevel.getInterfaceNames());
     }
 }

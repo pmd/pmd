@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.xml;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.test.AbstractAntTestHelper;
+import org.junit.jupiter.api.Test;
 
 class PMDTaskTest extends AbstractAntTestHelper {
 

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.test;
 
 import static java.io.File.separator;
@@ -9,6 +8,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.not;
 
+import com.github.stefanbirkner.systemlambda.Statement;
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
-
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
@@ -24,11 +25,6 @@ import org.apache.tools.ant.ProjectHelper;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;
-
-import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-
-import com.github.stefanbirkner.systemlambda.Statement;
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 /**
  * Base test class for ant tests.
@@ -99,9 +95,10 @@ public abstract class AbstractAntTestHelper {
         return tmpname == null ? null : new File(tmpname);
     }
 
-
     private void validatePostConstruct() {
-        if (pathToTestScript == null || "".equals(pathToTestScript) || antTestScriptFilename == null
+        if (pathToTestScript == null
+                || "".equals(pathToTestScript)
+                || antTestScriptFilename == null
                 || "".equals(antTestScriptFilename)) {
             throw new IllegalStateException("Unit tests for Ant script badly initialized");
         }
@@ -132,11 +129,9 @@ public abstract class AbstractAntTestHelper {
         assertThat(output, containsString(text));
     }
 
-
     public void assertContains(String text, String toFind) {
         assertThat(text, containsString(toFind));
     }
-
 
     public void assertDoesntContain(String text, String toFind) {
         assertThat(text, not(containsString(toFind)));

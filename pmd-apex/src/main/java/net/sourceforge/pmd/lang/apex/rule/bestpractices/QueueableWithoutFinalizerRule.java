@@ -5,15 +5,13 @@
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Scans classes which implement the `Queueable` interface. If the `public void
@@ -72,8 +70,10 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
         if (!EXECUTE.equalsIgnoreCase(theMethod.getCanonicalName())) {
             return false;
         }
-        List<ASTParameter> parameters = theMethod.descendants(ASTParameter.class).toList();
-        return parameters.size() == 1 && QUEUEABLE_CONTEXT.equalsIgnoreCase(parameters.get(0).getType());
+        List<ASTParameter> parameters =
+                theMethod.descendants(ASTParameter.class).toList();
+        return parameters.size() == 1
+                && QUEUEABLE_CONTEXT.equalsIgnoreCase(parameters.get(0).getType());
     }
 
     /**
@@ -81,8 +81,8 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
      * method.
      */
     private boolean callsTheSystemAttachFinalizerMethod(ASTMethod theMethod) {
-        for (ASTMethodCallExpression methodCallExpression : theMethod.descendants(ASTMethodCallExpression.class)
-                .toList()) {
+        for (ASTMethodCallExpression methodCallExpression :
+                theMethod.descendants(ASTMethodCallExpression.class).toList()) {
             if (SYSTEM_ATTACH_FINALIZER.equalsIgnoreCase(methodCallExpression.getFullMethodName())) {
                 return true;
             }

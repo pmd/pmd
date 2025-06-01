@@ -1,20 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@link JavaComment} that has Javadoc content.
@@ -26,7 +23,6 @@ public final class JavadocComment extends JavaComment {
     // markdown comments consist of multiple single line comments
     private final List<JavaccToken> tokens;
 
-
     JavadocComment(JavaccToken t) {
         super(t);
         assert t.kind == JavaTokenKinds.FORMAL_COMMENT || JavaAstUtils.isMarkdownComment(t);
@@ -36,10 +32,7 @@ public final class JavadocComment extends JavaComment {
     JavadocComment(List<JavaComment> currentMarkdownBlock) {
         super(currentMarkdownBlock.get(0).getToken());
         assert currentMarkdownBlock.stream().map(JavaComment::getToken).allMatch(JavaAstUtils::isMarkdownComment);
-        this.tokens = currentMarkdownBlock
-                .stream()
-                .map(JavaComment::getToken)
-                .collect(Collectors.toList());
+        this.tokens = currentMarkdownBlock.stream().map(JavaComment::getToken).collect(Collectors.toList());
     }
 
     @Override
@@ -63,7 +56,8 @@ public final class JavadocComment extends JavaComment {
 
         JavaccToken firstToken = tokens.get(0);
         JavaccToken lastToken = tokens.get(tokens.size() - 1);
-        TextRegion region = TextRegion.fromBothOffsets(firstToken.getRegion().getStartOffset(), lastToken.getRegion().getEndOffset());
+        TextRegion region = TextRegion.fromBothOffsets(
+                firstToken.getRegion().getStartOffset(), lastToken.getRegion().getEndOffset());
         return firstToken.getDocument().getTextDocument().toLocation(region);
     }
 
@@ -80,11 +74,10 @@ public final class JavadocComment extends JavaComment {
     }
 
     /**
-     * Returns the owner of this comment. Null if this comment is 
+     * Returns the owner of this comment. Null if this comment is
      * misplaced.
      */
     public @Nullable JavadocCommentOwner getOwner() {
         return owner;
     }
-
 }

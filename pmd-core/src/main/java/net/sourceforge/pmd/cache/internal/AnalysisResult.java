@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cache.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.sourceforge.pmd.reporting.RuleViolation;
 
 /**

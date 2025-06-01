@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.visualforce.DataType;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTArguments;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTDotExpression;
@@ -26,33 +25,83 @@ import net.sourceforge.pmd.lang.visualforce.ast.VfTypedNode;
  * Helps detect visualforce encoding in EL Expressions
  * (porting over code previously living in VfUnescapeElRule for reusability)
  */
-
 public final class ElEscapeDetector {
 
     private static final Set<String> SAFE_PROPERTIES = new HashSet<>(Arrays.asList("id", "size", "caseNumber"));
     private static final Set<String> SAFE_BUILTIN_FUNCTIONS = new HashSet<>(Arrays.asList(
             // These DateTime functions accept or return dates, and therefore don't need escaping.
-            "addmonths", "date", "datevalue", "datetimevalue", "day", "hour", "millisecond", "minute", "month", "now",
-            "second", "timenow", "timevalue", "today", "weekday", "year",
+            "addmonths",
+            "date",
+            "datevalue",
+            "datetimevalue",
+            "day",
+            "hour",
+            "millisecond",
+            "minute",
+            "month",
+            "now",
+            "second",
+            "timenow",
+            "timevalue",
+            "today",
+            "weekday",
+            "year",
             // These Logical functions accept or return booleans, and therefore don't need escaping.
-            "and", "isblank", "isclone", "isnew", "isnull", "isnumber", "not", "or",
+            "and",
+            "isblank",
+            "isclone",
+            "isnew",
+            "isnull",
+            "isnumber",
+            "not",
+            "or",
             // These Math functions return numbers, and therefore don't require escaping.
-            "abs", "ceiling", "exp", "floor", "ln", "log", "max", "mceiling", "mfloor", "min", "mod", "round", "sqrt",
+            "abs",
+            "ceiling",
+            "exp",
+            "floor",
+            "ln",
+            "log",
+            "max",
+            "mceiling",
+            "mfloor",
+            "min",
+            "mod",
+            "round",
+            "sqrt",
             // These Text functions are safe, either because of what they accept or what they return.
-            "begins", "br", "casesafeid", "contains", "find", "getsessionid", "ispickval", "len",
+            "begins",
+            "br",
+            "casesafeid",
+            "contains",
+            "find",
+            "getsessionid",
+            "ispickval",
+            "len",
             // These Advanced functions are safe because of what they accept or what they return.
-            "currencyrate", "getrecordids", "ischanged", "junctionidlist", "linkto", "regex", "urlfor"
-    ));
+            "currencyrate",
+            "getrecordids",
+            "ischanged",
+            "junctionidlist",
+            "linkto",
+            "regex",
+            "urlfor"));
     private static final Set<String> FUNCTIONS_WITH_XSSABLE_ARG0 = new HashSet<>(Arrays.asList(
             // For these methods, the first argument is a string that must be escaped.
-            "left", "lower", "lpad", "mid", "right", "rpad", "upper"
-    ));
+            "left", "lower", "lpad", "mid", "right", "rpad", "upper"));
     private static final Set<String> FUNCTIONS_WITH_XSSABLE_ARG2 = new HashSet<>(Arrays.asList(
             // For these methods, the third argument is a string that must be escaped.
-            "lpad", "rpad"
-    ));
-    private static final Set<String> SAFE_GLOBAL_VARS = new HashSet<>(Arrays.asList("$action", "$page", "$site",
-            "$resource", "$label", "$objecttype", "$component", "$remoteaction", "$messagechannel"));
+            "lpad", "rpad"));
+    private static final Set<String> SAFE_GLOBAL_VARS = new HashSet<>(Arrays.asList(
+            "$action",
+            "$page",
+            "$site",
+            "$resource",
+            "$label",
+            "$objecttype",
+            "$component",
+            "$remoteaction",
+            "$messagechannel"));
 
     private ElEscapeDetector() {
         // utility class
@@ -90,7 +139,8 @@ public final class ElEscapeDetector {
                     prevId = child.getImage();
                     continue;
                 }
-                // If there's no next node, or the next node isn't one of the desired types, then this Identifier is a raw
+                // If there's no next node, or the next node isn't one of the desired types, then this Identifier is a
+                // raw
                 // variable.
                 if (typedNodeIsSafe((ASTIdentifier) child)) {
                     // If the raw variable is of an inherently safe type, we can keep going.
@@ -122,7 +172,8 @@ public final class ElEscapeDetector {
                 // If none of those things are true, then we need to determine whether the field being accessed is
                 // definitely safe.
                 ASTIdentifier propId = child.firstChild(ASTIdentifier.class);
-                // If there's an identifier for a field/property, we need to check whether that property is inherently safe,
+                // If there's an identifier for a field/property, we need to check whether that property is inherently
+                // safe,
                 // either because it corresponds to a safe field or because its data type is known to be safe.
                 if (propId != null && !isSafeProperty(propId.getImage()) && !typedNodeIsSafe(propId)) {
                     // If the node isn't definitely safe, it ought to be escaped. Return false.
@@ -271,7 +322,6 @@ public final class ElEscapeDetector {
                     return true;
                 }
             }
-
         }
 
         return false;
@@ -307,8 +357,8 @@ public final class ElEscapeDetector {
         return doesElContainAnyUnescapedIdentifiers(elExpression, EnumSet.of(escape));
     }
 
-    public static boolean doesElContainAnyUnescapedIdentifiers(final ASTElExpression elExpression,
-                                                         Set<Escaping> escapes) {
+    public static boolean doesElContainAnyUnescapedIdentifiers(
+            final ASTElExpression elExpression, Set<Escaping> escapes) {
         if (elExpression == null) {
             return false;
         }
@@ -343,14 +393,12 @@ public final class ElEscapeDetector {
                             }
                         }
                     }
-
                 }
 
                 if (!isEscaped) {
                     nonEscapedIds.add(id);
                 }
             }
-
         }
 
         return !nonEscapedIds.isEmpty();

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.List;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;

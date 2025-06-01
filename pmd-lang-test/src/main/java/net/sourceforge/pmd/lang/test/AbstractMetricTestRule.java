@@ -8,7 +8,6 @@ import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOption;
@@ -17,7 +16,6 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
-
 
 /**
  * Abstract test rule for a metric. Tests of metrics use the standard
@@ -32,17 +30,16 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> extends AbstractRule {
 
-    private final PropertyDescriptor<List<MetricOption>> optionsDescriptor =
-        PropertyFactory.enumListProperty("metricOptions", optionMappings())
-                       .desc("Choose a variant of the metric or the standard")
-                       .emptyDefaultValue()
-                       .build();
+    private final PropertyDescriptor<List<MetricOption>> optionsDescriptor = PropertyFactory.enumListProperty(
+                    "metricOptions", optionMappings())
+            .desc("Choose a variant of the metric or the standard")
+            .emptyDefaultValue()
+            .build();
 
-    private final PropertyDescriptor<String> reportLevelDescriptor =
-        PropertyFactory.stringProperty("reportLevel")
-                       .desc("Minimum value required to report")
-                       .defaultValue("" + defaultReportLevel())
-                       .build();
+    private final PropertyDescriptor<String> reportLevelDescriptor = PropertyFactory.stringProperty("reportLevel")
+            .desc("Minimum value required to report")
+            .defaultValue("" + defaultReportLevel())
+            .build();
 
     private final Metric<?, N> metric;
 
@@ -67,7 +64,6 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
     protected Map<String, MetricOption> optionMappings() {
         return new HashMap<>();
     }
-
 
     /**
      * Default report level, which is 0.
@@ -97,7 +93,6 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
             apply(child, ctx);
         }
     }
-
 
     public abstract static class OfInt extends AbstractMetricTestRule<Integer> {
 
@@ -132,5 +127,4 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>> e
             return 0.;
         }
     }
-
 }

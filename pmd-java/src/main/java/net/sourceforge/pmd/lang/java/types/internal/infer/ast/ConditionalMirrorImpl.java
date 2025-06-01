@@ -2,15 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.function.Predicate;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -20,6 +16,7 @@ import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> implements BranchingMirror {
 
@@ -27,13 +24,17 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     ExprMirror elseBranch;
     private final boolean mayBePoly;
 
-    ConditionalMirrorImpl(JavaExprMirrors mirrors, ASTConditionalExpression expr, boolean isStandalone, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+    ConditionalMirrorImpl(
+            JavaExprMirrors mirrors,
+            ASTConditionalExpression expr,
+            boolean isStandalone,
+            @Nullable ExprMirror parent,
+            MirrorMaker subexprMaker) {
         super(mirrors, expr, parent, subexprMaker);
         thenBranch = mirrors.getBranchMirrorSubexpression(myNode.getThenBranch(), isStandalone, this, subexprMaker);
         elseBranch = mirrors.getBranchMirrorSubexpression(myNode.getElseBranch(), isStandalone, this, subexprMaker);
         this.mayBePoly = !isStandalone;
     }
-
 
     @Override
     public boolean branchesMatch(Predicate<? super ExprMirror> condition) {
@@ -62,7 +63,6 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         assert mayBePoly || condType != null : "This conditional expression is standalone!";
         return condType;
     }
-
 
     /**
      * Conditional expressions are standalone iff both their branches
@@ -111,12 +111,12 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
         return TypeConversion.capture(factory.ts.lub(listOf(thenType.box(), elseType.box())));
     }
 
-
     private JTypeMirror standaloneExprTypeInConditional(ExprMirror mirror, ASTExpression e) {
 
         if (mirror instanceof StandaloneExprMirror) {
             // An expression of a standalone form (§15.2) that has type boolean or Boolean.
-            // An expression of a standalone form (§15.2) with a type that is convertible to a numeric type (§4.2, §5.1.8).
+            // An expression of a standalone form (§15.2) with a type that is convertible to a numeric type (§4.2,
+            // §5.1.8).
 
             return mirror.getStandaloneType();
         }

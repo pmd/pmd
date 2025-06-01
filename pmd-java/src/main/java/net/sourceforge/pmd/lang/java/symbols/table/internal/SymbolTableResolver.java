@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnalysis.canCompleteNormally;
@@ -18,10 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
@@ -77,7 +72,8 @@ import net.sourceforge.pmd.lang.java.symbols.internal.ast.SymbolResolutionPass;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.PSet;
 
 /**
  * Visitor that builds all symbol table stacks for a compilation unit.
@@ -153,20 +149,18 @@ public final class SymbolTableResolver {
             this.newDeferred = newDeferred;
         }
 
-
         /**
          * Start the analysis.
          */
         void traverse(DeferredNode task) {
-            assert stack.isEmpty()
-                : "Stack should be empty when starting the traversal";
+            assert stack.isEmpty() : "Stack should be empty when starting the traversal";
 
             stack.push(task.localStackTop);
             task.node.acceptVisitor(this, task.enclosingCtx);
             JSymbolTable last = stack.pop();
 
-            assert last == task.localStackTop  // NOPMD CompareObjectsWithEquals
-                : "Unbalanced stack push/pop! Started with " + task.localStackTop + ", finished on " + last;
+            assert last == task.localStackTop // NOPMD CompareObjectsWithEquals
+                    : "Unbalanced stack push/pop! Started with " + task.localStackTop + ", finished on " + last;
         }
 
         @Override
@@ -252,7 +246,6 @@ public final class SymbolTableResolver {
             return null;
         }
 
-
         private void processTypeHeader(ASTTypeDeclaration node, ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
 
@@ -290,14 +283,10 @@ public final class SymbolTableResolver {
             setTopSymbolTable(node.getBody());
 
             // preprocess siblings
-            node.getDeclarations(ASTTypeDeclaration.class)
-                .forEach(d -> processTypeHeader(d, bodyCtx));
-
+            node.getDeclarations(ASTTypeDeclaration.class).forEach(d -> processTypeHeader(d, bodyCtx));
 
             // process fields first, their type is needed for JSymbolTable#resolveValue
-            f.disambig(node.getDeclarations(ASTFieldDeclaration.class)
-                           .map(ASTFieldDeclaration::getTypeNode),
-                       bodyCtx);
+            f.disambig(node.getDeclarations(ASTFieldDeclaration.class).map(ASTFieldDeclaration::getTypeNode), bodyCtx);
             visitChildren(node.getBody(), bodyCtx);
 
             enclosingType.pop();
@@ -327,7 +316,8 @@ public final class SymbolTableResolver {
         @Override
         public Void visitMethodOrCtor(ASTExecutableDeclaration node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
-            int pushed = pushOnStack(f.bodyDeclaration(top(), enclosing(), node.getFormalParameters(), node.getTypeParameters()));
+            int pushed = pushOnStack(
+                    f.bodyDeclaration(top(), enclosing(), node.getFormalParameters(), node.getTypeParameters()));
             setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
@@ -341,7 +331,6 @@ public final class SymbolTableResolver {
             return null;
         }
 
-
         @Override
         public Void visit(ASTCompactConstructorDeclaration node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node.getModifiers());
@@ -350,7 +339,6 @@ public final class SymbolTableResolver {
             popStack(pushed);
             return null;
         }
-
 
         @Override
         public Void visit(ASTLambdaExpression node, @NonNull ReferenceCtx ctx) {
@@ -377,7 +365,6 @@ public final class SymbolTableResolver {
             return visitSwitch(node, ctx);
         }
 
-
         private Void visitSwitch(ASTSwitchLike node, @NonNull ReferenceCtx ctx) {
             setTopSymbolTable(node);
             node.getTestedExpression().acceptVisitor(this, ctx);
@@ -387,9 +374,8 @@ public final class SymbolTableResolver {
             for (ASTSwitchBranch branch : node.getBranches()) {
                 ASTSwitchLabel label = branch.getLabel();
                 // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
-                BindSet bindings =
-                    label.children(ASTPattern.class)
-                         .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
+                BindSet bindings = label.children(ASTPattern.class)
+                        .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
                 setTopSymbolTableAndVisit(label, ctx);
@@ -407,7 +393,6 @@ public final class SymbolTableResolver {
             popStack(pushed);
             return null;
         }
-
 
         /**
          * Note: caller is responsible for popping.
@@ -483,13 +468,11 @@ public final class SymbolTableResolver {
 
             ASTResourceList resources = node.getResources();
             if (resources != null) {
-                NodeStream<JavaNode> union =
-                    NodeStream.union(
+                NodeStream<JavaNode> union = NodeStream.union(
                         stmtsOfResources(resources),
                         // use the body instead of unwrapping it so
                         // that it has the correct symbol table too
-                        NodeStream.of(node.getBody())
-                    );
+                        NodeStream.of(node.getBody()));
                 popStack(visitBlockLike(union, ctx));
 
                 for (Node child : node.getBody().asStream().followingSiblings()) {
@@ -504,7 +487,8 @@ public final class SymbolTableResolver {
 
         @Override
         public Void visit(ASTCatchClause node, @NonNull ReferenceCtx ctx) {
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId()));
+            int pushed = pushOnStack(
+                    f.localVarSymTable(top(), enclosing(), node.getParameter().getVarId()));
             setTopSymbolTableAndVisitAllChildren(node, ctx);
             popStack(pushed);
             return null;
@@ -520,7 +504,8 @@ public final class SymbolTableResolver {
             BinaryOp op = node.getOperator();
             if (op == BinaryOp.CONDITIONAL_AND) {
 
-                PSet<ASTVariableId> trueBindings = bindersOfExpr(node.getLeftOperand()).getTrueBindings();
+                PSet<ASTVariableId> trueBindings =
+                        bindersOfExpr(node.getLeftOperand()).getTrueBindings();
                 if (!trueBindings.isEmpty()) {
                     int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), trueBindings));
                     setTopSymbolTableAndVisit(node.getRightOperand(), ctx);
@@ -530,14 +515,14 @@ public final class SymbolTableResolver {
 
             } else if (op == BinaryOp.CONDITIONAL_OR) {
 
-                PSet<ASTVariableId> falseBindings = bindersOfExpr(node.getLeftOperand()).getFalseBindings();
+                PSet<ASTVariableId> falseBindings =
+                        bindersOfExpr(node.getLeftOperand()).getFalseBindings();
                 if (!falseBindings.isEmpty()) {
                     int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), falseBindings));
                     setTopSymbolTableAndVisit(node.getRightOperand(), ctx);
                     popStack(pushed);
                     return null;
                 }
-
             }
 
             // not a special case, finish visiting right operand
@@ -650,7 +635,8 @@ public final class SymbolTableResolver {
 
                 MyVisitor.this.setTopSymbolTableAndVisit(node.getCondition(), ctx);
 
-                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getTrueBindings())));
+                int pushed = pushOnStack(
+                        f.localVarSymTable(top(), enclosing(), NodeStream.fromIterable(bindSet.getTrueBindings())));
                 setTopSymbolTableAndVisit(node.getBody(), ctx);
                 popStack(pushed);
 
@@ -696,11 +682,11 @@ public final class SymbolTableResolver {
 
             private boolean hasNoBreakContainingStmt(ASTLoopStatement node) {
                 Set<JavaNode> containingStatements = node.ancestorsOrSelf()
-                                                         .filter(JavaAstUtils::mayBeBreakTarget)
-                                                         .collect(Collectors.toSet());
+                        .filter(JavaAstUtils::mayBeBreakTarget)
+                        .collect(Collectors.toSet());
                 return node.getBody()
-                           .descendants(ASTBreakStatement.class)
-                           .none(it -> containingStatements.contains(it.getTarget()));
+                        .descendants(ASTBreakStatement.class)
+                        .none(it -> containingStatements.contains(it.getTarget()));
             }
 
             // shadow the methods of the outer class to visit with this visitor.
@@ -722,7 +708,6 @@ public final class SymbolTableResolver {
                 node.acceptVisitor(this, ctx);
             }
         }
-
 
         // <editor-fold defaultstate="collapsed" desc="Stack manipulation routines">
 
@@ -777,16 +762,13 @@ public final class SymbolTableResolver {
             return stack.getFirst();
         }
 
-
         // </editor-fold>
 
         // <editor-fold defaultstate="collapsed" desc="Convenience methods">
 
-
         static NodeStream<JavaNode> stmtsOfResources(ASTResourceList node) {
             return node.toStream().map(GenericNode::getFirstChild);
         }
-
 
         static NodeStream<ASTVariableId> formalsOf(ASTLambdaExpression node) {
             return node.getParameters().toStream().map(ASTLambdaParameter::getVarId);
@@ -794,7 +776,5 @@ public final class SymbolTableResolver {
 
         // </editor-fold>
 
-
     }
-
 }

@@ -8,10 +8,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -41,6 +37,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnalysis.ReachabilityVisitor.VisitResult;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Implementation of {@link #canCompleteNormally(ASTStatement)}, which
@@ -153,8 +151,8 @@ final class AbruptCompletionAnalysis {
             recordReachableNode(node, data);
 
             boolean thenCanCompleteNormally = node.getThenBranch().acceptVisitor(this, data);
-            boolean elseCanCompleteNormally = node.getElseBranch() == null
-                || node.getElseBranch().acceptVisitor(this, data);
+            boolean elseCanCompleteNormally =
+                    node.getElseBranch() == null || node.getElseBranch().acceptVisitor(this, data);
 
             return thenCanCompleteNormally || elseCanCompleteNormally;
         }
@@ -187,7 +185,7 @@ final class AbruptCompletionAnalysis {
             boolean isNotDoWhileTrue = !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
 
             return isNotDoWhileTrue && (bodyCompletesNormally || data.containsContinue(node))
-                || data.containsBreak(node);
+                    || data.containsBreak(node);
         }
 
         @Override
@@ -211,8 +209,8 @@ final class AbruptCompletionAnalysis {
                 } else if (branch instanceof ASTSwitchFallthroughBranch) {
                     NodeStream<ASTStatement> statements = ((ASTSwitchFallthroughBranch) branch).getStatements();
                     SubtreeState branchState = new SubtreeState(data);
-                    branchCompletesNormally = blockCanCompleteNormally(statements, branchState)
-                        || branchState.containsBreak(node);
+                    branchCompletesNormally =
+                            blockCanCompleteNormally(statements, branchState) || branchState.containsBreak(node);
                 } else {
                     throw AssertionUtil.shouldNotReachHere("Not a branch type: " + branch);
                 }
@@ -226,10 +224,10 @@ final class AbruptCompletionAnalysis {
             }
 
             return completesNormally;
-
         }
 
-        private boolean switchArrowBranchCompletesNormally(SubtreeState state, ASTSwitchStatement switchStmt, ASTSwitchArrowRHS rhs) {
+        private boolean switchArrowBranchCompletesNormally(
+                SubtreeState state, ASTSwitchStatement switchStmt, ASTSwitchArrowRHS rhs) {
             if (rhs instanceof ASTExpression) {
                 return true;
             } else if (rhs instanceof ASTThrowStatement) {
@@ -251,18 +249,16 @@ final class AbruptCompletionAnalysis {
             return isNotWhileTrue || data.containsBreak(node);
         }
 
-
         @Override
         public Boolean visit(ASTForStatement node, SubtreeState data) {
             recordReachableNode(node, data);
 
             node.getBody().acceptVisitor(this, data);
-            boolean isNotForTrue = node.getCondition() != null
-                && !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
+            boolean isNotForTrue =
+                    node.getCondition() != null && !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
 
             return isNotForTrue || data.containsBreak(node);
         }
-
 
         @Override
         public Boolean visit(ASTTryStatement node, SubtreeState data) {
@@ -296,8 +292,7 @@ final class AbruptCompletionAnalysis {
                 anyCatchClauseCompletesNormally |= catchClause.getBody().acceptVisitor(this, subtree);
             }
 
-            return finallyCompletesNormally
-                && (bodyCompletesNormally || anyCatchClauseCompletesNormally);
+            return finallyCompletesNormally && (bodyCompletesNormally || anyCatchClauseCompletesNormally);
         }
 
         private SubtreeState tryClauseState(SubtreeState data, boolean finallyCompletesNormally) {
@@ -391,6 +386,5 @@ final class AbruptCompletionAnalysis {
                 parent.addContinue(continueStatement);
             }
         }
-
     }
 }

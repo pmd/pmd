@@ -1,18 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.util.StringUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a string literal. The image of this node is the literal as it appeared
@@ -28,7 +25,6 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     ASTStringLiteral(int id) {
         super(id);
     }
-
 
     // TODO deprecate / remove this
     // it's ambiguous whether it returns getOriginalText or getTranslatedText
@@ -80,7 +76,6 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     /** Returns the value without delimiters and unescaped. */
     @Override
@@ -182,41 +177,41 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
             }
             char cnext = line.charAt(i + 1);
             switch (cnext) {
-            case '\\':
-            case 'n':
-            case 't':
-            case 'b':
-            case 'r':
-            case 'f':
-            case 's':
-            case '"':
-            case '\'':
-                // append up to and not including backslash
-                line.appendChars(out, appended, i);
-                // append the translation
-                out.append(translateBackslashEscape(cnext));
-                // next time, start appending after the char
-                i += 2;
-                appended = i;
-                continue;
-            // octal digits
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-                // append up to and not including backslash
-                line.appendChars(out, appended, i);
-                i = translateOctalEscape(line, i + 1, out);
-                appended = i;
-                continue;
-            default:
-                // unknown escape - do nothing - it stays
-                i++;
-                break;
+                case '\\':
+                case 'n':
+                case 't':
+                case 'b':
+                case 'r':
+                case 'f':
+                case 's':
+                case '"':
+                case '\'':
+                    // append up to and not including backslash
+                    line.appendChars(out, appended, i);
+                    // append the translation
+                    out.append(translateBackslashEscape(cnext));
+                    // next time, start appending after the char
+                    i += 2;
+                    appended = i;
+                    continue;
+                // octal digits
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                    // append up to and not including backslash
+                    line.appendChars(out, appended, i);
+                    i = translateOctalEscape(line, i + 1, out);
+                    appended = i;
+                    continue;
+                default:
+                    // unknown escape - do nothing - it stays
+                    i++;
+                    break;
             }
         }
 
@@ -229,17 +224,26 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
 
     private static char translateBackslashEscape(char c) {
         switch (c) {
-        case '\\': return '\\';
-        case 'n': return '\n';
-        case 't': return '\t';
-        case 'b': return '\b';
-        case 'r': return '\r';
-        case 'f': return '\f';
-        case 's': return ' ';
-        case '"': return '"';
-        case '\'': return '\'';
-        default:
-            throw new IllegalArgumentException("Not a valid escape \\" + c);
+            case '\\':
+                return '\\';
+            case 'n':
+                return '\n';
+            case 't':
+                return '\t';
+            case 'b':
+                return '\b';
+            case 'r':
+                return '\r';
+            case 'f':
+                return '\f';
+            case 's':
+                return ' ';
+            case '"':
+                return '"';
+            case '\'':
+                return '\'';
+            default:
+                throw new IllegalArgumentException("Not a valid escape \\" + c);
         }
     }
 

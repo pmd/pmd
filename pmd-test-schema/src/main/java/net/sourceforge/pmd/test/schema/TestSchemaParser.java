@@ -4,17 +4,6 @@
 
 package net.sourceforge.pmd.test.schema;
 
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.function.Consumer;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.InputSource;
-
-import net.sourceforge.pmd.lang.rule.Rule;
-
 import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
 import com.github.oowekyala.ooxml.messages.OoxmlFacade;
 import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
@@ -25,7 +14,14 @@ import com.github.oowekyala.ooxml.messages.XmlMessageReporterBase;
 import com.github.oowekyala.ooxml.messages.XmlPosition;
 import com.github.oowekyala.ooxml.messages.XmlPositioner;
 import com.github.oowekyala.ooxml.messages.XmlSeverity;
-
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.function.Consumer;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import net.sourceforge.pmd.lang.rule.Rule;
+import org.xml.sax.InputSource;
 
 /**
  * Entry point to parse a test file.
@@ -78,14 +74,11 @@ public class TestSchemaParser {
         PmdXmlReporter newScope();
     }
 
-    private static class PmdXmlReporterImpl
-        extends XmlMessageReporterBase<Reporter>
-        implements PmdXmlReporter {
+    private static class PmdXmlReporterImpl extends XmlMessageReporterBase<Reporter> implements PmdXmlReporter {
 
         private boolean hasError;
 
-        protected PmdXmlReporterImpl(OoxmlFacade ooxml,
-                                     XmlPositioner positioner) {
+        protected PmdXmlReporterImpl(OoxmlFacade ooxml, XmlPositioner positioner) {
             super(ooxml, positioner);
         }
 
@@ -115,7 +108,6 @@ public class TestSchemaParser {
         public boolean hasError() {
             return hasError;
         }
-
     }
 
     private DocumentBuilder newDocumentBuilder() {
@@ -130,7 +122,6 @@ public class TestSchemaParser {
         }
     }
 
-
     static final class Reporter {
 
         private final XmlPosition position;
@@ -139,7 +130,8 @@ public class TestSchemaParser {
 
         private final Consumer<XmlException> handler;
 
-        private Reporter(XmlPosition position, XmlPositioner positioner, OoxmlFacade ooxml, Consumer<XmlException> handler) {
+        private Reporter(
+                XmlPosition position, XmlPositioner positioner, OoxmlFacade ooxml, Consumer<XmlException> handler) {
             this.position = position;
             this.positioner = positioner;
             this.ooxml = ooxml;
@@ -148,7 +140,6 @@ public class TestSchemaParser {
 
         public void warn(String messageFormat, Object... args) {
             reportImpl(XmlSeverity.WARNING, MessageFormat.format(messageFormat, args));
-
         }
 
         public void error(String messageFormat, Object... args) {
@@ -156,13 +147,10 @@ public class TestSchemaParser {
         }
 
         private void reportImpl(XmlSeverity severity, String formattedMessage) {
-            NiceXmlMessageSpec spec =
-                new NiceXmlMessageSpec(position, formattedMessage)
-                    .withSeverity(severity);
+            NiceXmlMessageSpec spec = new NiceXmlMessageSpec(position, formattedMessage).withSeverity(severity);
             String fullMessage = ooxml.getFormatter().formatSpec(ooxml, spec, positioner);
             XmlException ex = new XmlException(spec, fullMessage);
             handler.accept(ex);
         }
     }
-
 }

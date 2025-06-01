@@ -18,7 +18,6 @@ public abstract class BaseAntlrErrorNode<N extends AntlrNode<N>> extends BaseAnt
         return (AntlrErrorPmdAdapter<N>) super.asAntlrNode();
     }
 
-
     @Override
     public @NonNull String getText() {
         return getFirstAntlrToken().getText();

@@ -12,7 +12,6 @@ public final class ASTAttribute extends AbstractVfNode {
         super(id);
     }
 
-
     public String getName() {
         return name;
     }

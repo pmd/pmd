@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
 
 /**
  * Groups a variable ID and its initializer if it exists.
@@ -28,12 +26,10 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     /**
      * Returns the name of the declared variable.
@@ -41,7 +37,6 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
     public String getName() {
         return getVarId().getName();
     }
-
 
     /**
      * Returns the id of the declared variable.
@@ -52,7 +47,6 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
         return (ASTVariableId) getChild(0);
     }
 
-
     /**
      * Returns true if the declared variable is initialized.
      * Otherwise, {@link #getInitializer()} returns null.
@@ -61,7 +55,6 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
         return getLastChild() instanceof ASTExpression;
     }
 
-
     /**
      * Returns the initializer, of the variable, or null if it doesn't exist.
      */
@@ -69,6 +62,4 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
     public ASTExpression getInitializer() {
         return hasInitializer() ? (ASTExpression) getLastChild() : null;
     }
-
-
 }

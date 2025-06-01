@@ -1,24 +1,24 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.reporting.ReportTestUtil.getReport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.impl.DummyTreeUtil;
+import org.junit.jupiter.api.Test;
 
 class RuleContextTest {
 
-
     @Test
     void testMessage() throws Exception {
-        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
+        Report report = getReport(
+                new FooRule(),
+                (r, ctx) ->
+                        ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
 
         assertEquals("message with \"{\"", report.getViolations().get(0).getDescription());
     }
@@ -44,5 +44,4 @@ class RuleContextTest {
         });
         return report.getViolations().get(0);
     }
-
 }

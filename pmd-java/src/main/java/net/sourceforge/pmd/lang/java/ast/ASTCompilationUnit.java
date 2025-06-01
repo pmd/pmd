@@ -1,15 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -18,7 +13,8 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * The root node of all Java ASTs.
@@ -102,7 +98,6 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         this.comments = result;
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -114,7 +109,6 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
     public @Nullable ASTPackageDeclaration getPackageDeclaration() {
         return AstImplUtil.getChildAs(this, 0, ASTPackageDeclaration.class);
     }
-
 
     /**
      * Returns the package name of this compilation unit. If there is no
@@ -151,7 +145,8 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         this.lazyTypeResolver = typeResolver;
     }
 
-    @NonNull LazyTypeResolver getLazyTypeResolver() {
+    @NonNull
+    LazyTypeResolver getLazyTypeResolver() {
         assert lazyTypeResolver != null : "Type resolution not initialized";
         return lazyTypeResolver;
     }

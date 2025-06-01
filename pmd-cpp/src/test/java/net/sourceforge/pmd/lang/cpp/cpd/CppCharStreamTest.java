@@ -7,13 +7,11 @@ package net.sourceforge.pmd.lang.cpp.cpd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import org.junit.jupiter.api.Test;
 
 class CppCharStreamTest {
 

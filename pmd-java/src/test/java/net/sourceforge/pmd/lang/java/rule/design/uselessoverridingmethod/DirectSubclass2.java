@@ -10,7 +10,7 @@ public class DirectSubclass2 extends DirectSubclass {
     public void doBase() {
         super.doBase();
     }
- 
+
     @Override
     public void doBaseWithArg(String foo) {
         super.doBaseWithArg(foo);

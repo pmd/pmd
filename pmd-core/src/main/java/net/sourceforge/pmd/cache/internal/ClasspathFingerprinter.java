@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.zip.Adler32;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +20,7 @@ public class ClasspathFingerprinter {
             new ZipFileFingerprinter(),
             new RawFileFingerprinter(),
             new NoopFingerprinter() // catch-all fingerprinter, MUST be last
-        ));
+            ));
 
     public long fingerprint(final URL... classpathEntry) {
         final Adler32 adler32 = new Adler32();

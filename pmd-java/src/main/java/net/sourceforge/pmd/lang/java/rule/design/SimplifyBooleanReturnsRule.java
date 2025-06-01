@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.CONDITIONAL_AND;
@@ -19,9 +18,6 @@ import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isInfixExp
 
 import java.util.EnumSet;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -36,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
 
@@ -49,8 +46,8 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
     public Object visit(ASTReturnStatement node, Object data) {
         ASTExpression expr = node.getExpr();
         if (expr == null
-            || !expr.getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN)
-            || !isThenBranchOfSomeIf(node)) {
+                || !expr.getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN)
+                || !isThenBranchOfSomeIf(node)) {
             return null;
         }
         checkIf(node.ancestors(ASTIfStatement.class).firstOrThrow(), asCtx(data), expr);
@@ -64,9 +61,9 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
             return node.getIndexInParent() == 1;
         }
         return node.getParent() instanceof ASTBlock
-            && ((ASTBlock) node.getParent()).size() == 1
-            && node.getParent().getParent() instanceof ASTIfStatement
-            && node.getParent().getIndexInParent() == 1;
+                && ((ASTBlock) node.getParent()).size() == 1
+                && node.getParent().getParent() instanceof ASTIfStatement
+                && node.getParent().getIndexInParent() == 1;
     }
 
     private void checkIf(ASTIfStatement node, RuleContext data, ASTExpression thenExpr) {
@@ -100,16 +97,14 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
      * Note that both the `expr` and the `condition` may require parentheses
      * (if the cond has to be negated).
      */
-    private String needsToBeReportedWhenOneBranchIsBoolean(ASTExpression condition,
-                                                           ASTExpression thenExpr,
-                                                           ASTExpression elseExpr) {
+    private String needsToBeReportedWhenOneBranchIsBoolean(
+            ASTExpression condition, ASTExpression thenExpr, ASTExpression elseExpr) {
         // at least one of these is true
         boolean thenFalse = isBooleanLiteral(thenExpr, false);
         boolean thenTrue = isBooleanLiteral(thenExpr, true);
         boolean elseTrue = isBooleanLiteral(elseExpr, true);
         boolean elseFalse = isBooleanLiteral(elseExpr, false);
-        assert thenFalse || elseFalse || thenTrue || elseTrue
-            : "expected boolean branch";
+        assert thenFalse || elseFalse || thenTrue || elseTrue : "expected boolean branch";
 
         if (isBooleanLiteral(thenExpr) && isBooleanLiteral(elseExpr)) {
             // both are boolean
@@ -133,9 +128,7 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
         // the branch that is not a literal, if both are literals, prefers elseExpr
         ASTExpression branch = thenFalse || thenTrue ? elseExpr : thenExpr;
 
-
-        if (doesNotNeedNewParensUnderInfix(condition, op)
-            && doesNotNeedNewParensUnderInfix(branch, op)) {
+        if (doesNotNeedNewParensUnderInfix(condition, op) && doesNotNeedNewParensUnderInfix(branch, op)) {
             if (thenTrue) {
                 return "return {condition} || {elseBranch};";
             } else if (thenFalse) {
@@ -151,21 +144,20 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
 
     private static boolean needsNewParensWhenNegating(ASTExpression e) {
         if (e instanceof ASTPrimaryExpression
-            || e instanceof ASTCastExpression
-            // parenthesized expressions are primary
-            || e.isParenthesized()
-            // == -> !=
-            || isInfixExprWithOperator(e, NEGATABLE_OPS)
-            // !! ->
-            || JavaAstUtils.isBooleanNegation(e)) {
+                || e instanceof ASTCastExpression
+                // parenthesized expressions are primary
+                || e.isParenthesized()
+                // == -> !=
+                || isInfixExprWithOperator(e, NEGATABLE_OPS)
+                // !! ->
+                || JavaAstUtils.isBooleanNegation(e)) {
             return false;
-        } else if (isInfixExprWithOperator(e, CONDITIONAL_OR)
-            || isInfixExprWithOperator(e, CONDITIONAL_AND)) {
+        } else if (isInfixExprWithOperator(e, CONDITIONAL_OR) || isInfixExprWithOperator(e, CONDITIONAL_AND)) {
             // negating these ops can be replaced with complement op
             // and the negation pushed down branches using De Morgan's laws
             ASTInfixExpression infix = (ASTInfixExpression) e;
             return needsNewParensWhenNegating(infix.getLeftOperand())
-                || needsNewParensWhenNegating(infix.getRightOperand());
+                    || needsNewParensWhenNegating(infix.getRightOperand());
         }
         return true;
     }
@@ -173,10 +165,10 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
     private static boolean doesNotNeedNewParensUnderInfix(ASTExpression e, BinaryOp op) {
         // those nodes have greater precedence than infix
         return e instanceof ASTPrimaryExpression
-            || e instanceof ASTCastExpression
-            || e instanceof ASTUnaryExpression
-            || e.isParenthesized()
-            || isInfixExprWithOperator(e, opsWithGreaterPrecedence(op));
+                || e instanceof ASTCastExpression
+                || e instanceof ASTUnaryExpression
+                || e.isParenthesized()
+                || isInfixExprWithOperator(e, opsWithGreaterPrecedence(op));
     }
 
     private @Nullable ASTExpression getReturnExpr(JavaNode node) {
@@ -189,9 +181,8 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
     }
 
     private @Nullable ASTExpression getElseExpr(ASTIfStatement node) {
-        return node.hasElse() ? getReturnExpr(node.getElseBranch())
-                              : getReturnExpr(node.getNextSibling()); // may be followed immediately by return
+        return node.hasElse()
+                ? getReturnExpr(node.getElseBranch())
+                : getReturnExpr(node.getNextSibling()); // may be followed immediately by return
     }
-
-
 }

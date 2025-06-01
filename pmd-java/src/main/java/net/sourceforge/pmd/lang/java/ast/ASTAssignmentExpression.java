@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,11 +18,9 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements I
 
     private AssignmentOp operator;
 
-
     ASTAssignmentExpression(int id) {
         super(id);
     }
-
 
     void setOp(AssignmentOp op) {
         this.operator = op;
@@ -36,14 +33,12 @@ public final class ASTAssignmentExpression extends AbstractJavaExpr implements I
         return (ASTAssignableExpr) getChild(0);
     }
 
-
     /**
      * Returns whether this is a compound assignment (any operator except "=").
      */
     public boolean isCompound() {
         return operator.isCompound();
     }
-
 
     @Override
     @NonNull

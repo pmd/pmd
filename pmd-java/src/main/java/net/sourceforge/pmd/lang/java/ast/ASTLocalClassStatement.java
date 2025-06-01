@@ -35,7 +35,6 @@ public final class ASTLocalClassStatement extends AbstractStatement {
         return visitor.visit(this, data);
     }
 
-
     /**
      * Returns the contained declaration.
      */

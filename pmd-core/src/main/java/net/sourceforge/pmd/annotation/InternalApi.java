@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.annotation;
 
 import java.lang.annotation.Documented;
-
 
 /**
  * Tags API members that are not publicly supported API but have to live in
@@ -17,5 +15,4 @@ import java.lang.annotation.Documented;
  * @since 6.7.0
  */
 @Documented
-public @interface InternalApi {
-}
+public @interface InternalApi {}

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.metrics.testdata;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -14,7 +13,6 @@ public class SetterDetection {
     private double speed;
     private MutableInt mutX;
     private boolean bool;
-
 
     public void setValue(int x) {
         value = x;

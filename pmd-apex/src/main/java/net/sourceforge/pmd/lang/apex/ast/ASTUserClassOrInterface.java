@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An Apex type declaration.

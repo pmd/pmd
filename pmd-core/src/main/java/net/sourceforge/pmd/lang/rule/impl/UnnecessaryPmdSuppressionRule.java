@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.rule.impl;
 
 import java.util.List;
 import java.util.Set;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -36,22 +34,17 @@ public class UnnecessaryPmdSuppressionRule extends AbstractRule {
     public void apply(Node rootNode, RuleContext ctx) {
         assert rootNode instanceof RootNode;
 
-        LanguageVersionHandler handler = rootNode.getAstInfo().getLanguageProcessor().services();
+        LanguageVersionHandler handler =
+                rootNode.getAstInfo().getLanguageProcessor().services();
         List<ViolationSuppressor> suppressors = CollectionUtil.concatView(
-            handler.getExtraViolationSuppressors(),
-            InternalApiBridge.DEFAULT_SUPPRESSORS
-        );
+                handler.getExtraViolationSuppressors(), InternalApiBridge.DEFAULT_SUPPRESSORS);
 
         for (ViolationSuppressor suppressor : suppressors) {
             Set<UnusedSuppressorNode> unusedSuppressors = suppressor.getUnusedSuppressors((RootNode) rootNode);
             for (UnusedSuppressorNode unusedSuppressor : unusedSuppressors) {
                 ctx.addViolationNoSuppress(
-                    unusedSuppressor.getLocation(),
-                    rootNode.getAstInfo(),
-                    unusedSuppressor.unusedReason()
-                );
+                        unusedSuppressor.getLocation(), rootNode.getAstInfo(), unusedSuppressor.unusedReason());
             }
         }
     }
-
 }

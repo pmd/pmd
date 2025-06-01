@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.metrics.testdata;
 
 /**
@@ -16,13 +15,9 @@ public class MetricsVisitorTestData {
     protected String z;
     String t;
 
-    public MetricsVisitorTestData() {
+    public MetricsVisitorTestData() {}
 
-    }
-
-    private MetricsVisitorTestData(String x) {
-
-    }
+    private MetricsVisitorTestData(String x) {}
 
     public String getX() {
         return x;
@@ -40,36 +35,20 @@ public class MetricsVisitorTestData {
         y = n;
     }
 
-
     public static class NestedClass {
 
-        public NestedClass() {
+        public NestedClass() {}
 
-        }
-
-        public void nestedMethod1() {
-
-        }
+        public void nestedMethod1() {}
     }
 
-    public void mymethod1() {
+    public void mymethod1() {}
 
-    }
+    private void mymethod2() {}
 
-    private void mymethod2() {
+    protected static void mystatic1() {}
 
-    }
+    private static void mystatic2(String k) {}
 
-    protected static void mystatic1() {
-
-    }
-
-    private static void mystatic2(String k) {
-
-    }
-
-    private static void mystatic2(String k, String l) {
-
-    }
-
+    private static void mystatic2(String k, String l) {}
 }

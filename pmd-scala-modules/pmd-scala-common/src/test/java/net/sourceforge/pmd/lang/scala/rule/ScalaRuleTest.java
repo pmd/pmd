@@ -7,9 +7,6 @@ package net.sourceforge.pmd.lang.scala.rule;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.scala.ast.ASTSource;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermApply;
 import net.sourceforge.pmd.lang.scala.ast.ASTTermName;
@@ -17,6 +14,7 @@ import net.sourceforge.pmd.lang.scala.ast.BaseScalaTest;
 import net.sourceforge.pmd.lang.scala.ast.ScalaNode;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.junit.jupiter.api.Test;
 
 class ScalaRuleTest extends BaseScalaTest {
 

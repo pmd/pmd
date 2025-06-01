@@ -20,22 +20,20 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class CppLanguageModule extends CpdOnlyLanguageModuleBase {
     private static final String ID = "cpp";
 
-    public static final PropertyDescriptor<String> CPD_SKIP_BLOCKS =
-        PropertyFactory.stringProperty("cpdSkipBlocksPattern")
-                       .defaultValue(CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN)
-                       .desc("Specifies a start and end delimiter for CPD to completely ignore. "
-                                 + "The delimiters are separated by a pipe |. The default skips code "
-                                 + " that is conditionally compiled out. Set this property to empty to disable this.")
-                       .build();
+    public static final PropertyDescriptor<String> CPD_SKIP_BLOCKS = PropertyFactory.stringProperty(
+                    "cpdSkipBlocksPattern")
+            .defaultValue(CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN)
+            .desc("Specifies a start and end delimiter for CPD to completely ignore. "
+                    + "The delimiters are separated by a pipe |. The default skips code "
+                    + " that is conditionally compiled out. Set this property to empty to disable this.")
+            .build();
 
     /**
      * Creates a new instance of {@link CppLanguageModule} with the default extensions
      * for c/c++ files.
      */
     public CppLanguageModule() {
-        super(LanguageMetadata.withId(ID)
-                              .name("C++")
-                              .extensions("h", "hpp", "hxx", "c", "cpp", "cxx", "cc", "C"));
+        super(LanguageMetadata.withId(ID).name("C++").extensions("h", "hpp", "hxx", "c", "cpp", "cxx", "cc", "C"));
     }
 
     public static CppLanguageModule getInstance() {

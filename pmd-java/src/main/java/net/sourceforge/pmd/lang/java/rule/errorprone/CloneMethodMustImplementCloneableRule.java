@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
@@ -49,11 +48,10 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
     private static boolean justThrowsCloneNotSupported(ASTBlock body) {
         return body.size() == 1
                 && body.getChild(0)
-                   .asStream()
-                   .filterIs(ASTThrowStatement.class)
-                   .map(ASTThrowStatement::getExpr)
-                   .filter(it -> TypeTestUtil.isA(CloneNotSupportedException.class, it))
-                   .nonEmpty();
+                        .asStream()
+                        .filterIs(ASTThrowStatement.class)
+                        .map(ASTThrowStatement::getExpr)
+                        .filter(it -> TypeTestUtil.isA(CloneNotSupportedException.class, it))
+                        .nonEmpty();
     }
-
 }

@@ -9,7 +9,6 @@ package net.sourceforge.pmd.lang.java.symbols;
  */
 public interface SymbolVisitor<R, P> {
 
-
     R visitSymbol(JElementSymbol sym, P p);
 
     default R visitTypeDecl(JTypeDeclSymbol sym, P param) {
@@ -31,7 +30,6 @@ public interface SymbolVisitor<R, P> {
         return visitTypeDecl(sym, param);
     }
 
-
     default R visitExecutable(JExecutableSymbol sym, P param) {
         return visitSymbol(sym, param);
     }
@@ -45,7 +43,6 @@ public interface SymbolVisitor<R, P> {
     default R visitMethod(JMethodSymbol sym, P param) {
         return visitExecutable(sym, param);
     }
-
 
     default R visitVariable(JVariableSymbol sym, P param) {
         return visitSymbol(sym, param);
@@ -70,5 +67,4 @@ public interface SymbolVisitor<R, P> {
     default R visitFormal(JFormalParamSymbol sym, P param) {
         return visitLocal(sym, param);
     }
-
 }

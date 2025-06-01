@@ -1,20 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+import org.junit.jupiter.api.Test;
 
 class ASTVariableIdTest extends BaseParserTest {
-
 
     @Test
     void testIsExceptionBlockParameter() {
@@ -61,8 +58,7 @@ class ASTVariableIdTest extends BaseParserTest {
     private static final String EXCEPTION_PARAMETER = "public class Test { { try {} catch(Exception ie) {} } }";
     private static final String TEST_ANNOTATIONS = "public class Foo {\n    public void bar(@A1 @A2 String s) {}\n}";
     private static final String TEST_LAMBDA_WITH_TYPE =
-        "public class Foo {\n    public void bar() {\n        FileFilter java = (File f) -> f.getName().endsWith(\".java\");\n    }\n}\n";
+            "public class Foo {\n    public void bar() {\n        FileFilter java = (File f) -> f.getName().endsWith(\".java\");\n    }\n}\n";
     private static final String TEST_LAMBDA_WITHOUT_TYPE =
-        "public class Foo {\n    public void bar() {\n        FileFilter java2 = f -> f.getName().endsWith(\".java\");\n    }\n}\n";
-
+            "public class Foo {\n    public void bar() {\n        FileFilter java2 = f -> f.getName().endsWith(\".java\");\n    }\n}\n";
 }

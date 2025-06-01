@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.List;
-
 import org.apache.commons.lang3.ArrayUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -60,7 +59,6 @@ public interface SymbolResolver {
 
         return null;
     }
-
 
     /**
      * Produce a symbol resolver that asks the given resolvers in order.

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -48,8 +47,7 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
-        if (isTrimCall(call.getQualifier())
-            && (isLengthZeroCheck(call) || isIsEmptyCall(call))) {
+        if (isTrimCall(call.getQualifier()) && (isLengthZeroCheck(call) || isIsEmptyCall(call))) {
             asCtx(data).addViolation(call);
         }
         return null;
@@ -57,26 +55,24 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
 
     private static boolean isLengthZeroCheck(ASTMethodCall call) {
         return "length".equals(call.getMethodName())
-            && call.getArguments().size() == 0
-            && JavaRuleUtil.isZeroChecked(call);
+                && call.getArguments().size() == 0
+                && JavaRuleUtil.isZeroChecked(call);
     }
 
     private static boolean isTrimCall(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expr;
             return "trim".equals(call.getMethodName())
-                && call.getArguments().size() == 0
-                && TypeTestUtil.isA(String.class, call.getQualifier());
+                    && call.getArguments().size() == 0
+                    && TypeTestUtil.isA(String.class, call.getQualifier());
         }
         return false;
     }
 
-
     private static boolean isIsEmptyCall(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expr;
-            return "isEmpty".equals(call.getMethodName())
-                && call.getArguments().size() == 0;
+            return "isEmpty".equals(call.getMethodName()) && call.getArguments().size() == 0;
         }
         return false;
     }

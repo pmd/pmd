@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.python.cpd;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.cpd.impl.JavaccCpdLexer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
@@ -33,18 +32,17 @@ public class PythonCpdLexer extends JavaccCpdLexer {
     @Override
     protected String getImage(JavaccToken token) {
         switch (token.kind) {
-        case PythonTokenKinds.SINGLE_STRING:
-        case PythonTokenKinds.SINGLE_STRING2:
-        case PythonTokenKinds.SINGLE_BSTRING:
-        case PythonTokenKinds.SINGLE_BSTRING2:
-        case PythonTokenKinds.SINGLE_USTRING:
-        case PythonTokenKinds.SINGLE_USTRING2:
-            // linebreak escapes, only for single-quoted strings
-            // todo other escapes?
-            return STRING_NL_ESCAPE.matcher(token.getImage()).replaceAll("");
-        default:
-            return token.getImage();
+            case PythonTokenKinds.SINGLE_STRING:
+            case PythonTokenKinds.SINGLE_STRING2:
+            case PythonTokenKinds.SINGLE_BSTRING:
+            case PythonTokenKinds.SINGLE_BSTRING2:
+            case PythonTokenKinds.SINGLE_USTRING:
+            case PythonTokenKinds.SINGLE_USTRING2:
+                // linebreak escapes, only for single-quoted strings
+                // todo other escapes?
+                return STRING_NL_ESCAPE.matcher(token.getImage()).replaceAll("");
+            default:
+                return token.getImage();
         }
     }
-
 }

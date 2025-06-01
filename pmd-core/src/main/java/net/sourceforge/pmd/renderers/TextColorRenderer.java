@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.renderers;
 
 import java.io.BufferedReader;
@@ -13,13 +12,11 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * <p>
@@ -102,7 +99,8 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                     .append("    src:  ")
                     .append(this.cyan)
                     .append(lastFile.substring(lastFile.lastIndexOf(File.separator) + 1))
-                    .append(this.colorReset).append(":")
+                    .append(this.colorReset)
+                    .append(":")
                     .append(this.cyan)
                     .append(rv.getBeginLine())
                     .append(rv.getEndLine() == -1 ? "" : ":" + rv.getEndLine())
@@ -194,7 +192,6 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
                 + this.colorReset);
     }
 
-
     /**
      * Calculate a summary of violation counts per fully classified class name.
      *
@@ -218,7 +215,6 @@ public class TextColorRenderer extends AbstractAccumulatingRenderer {
         String className = rv.getAdditionalInfo().getOrDefault(RuleViolation.CLASS_NAME, "");
         return StringUtils.isNotBlank(packageName) ? packageName + '.' + className : "";
     }
-
 
     /**
      * Retrieves the requested line from the specified file.

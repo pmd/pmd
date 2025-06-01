@@ -12,7 +12,6 @@ public final class ASTDoLoopStatement extends AbstractApexNode.Single<DoWhileLoo
         super(doWhileLoopStatement);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

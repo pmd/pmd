@@ -19,5 +19,4 @@ public interface JavadocCommentOwner extends JavaNode {
     default @Nullable JavadocComment getJavadocComment() {
         return CommentAssignmentPass.getComment(this);
     }
-
 }

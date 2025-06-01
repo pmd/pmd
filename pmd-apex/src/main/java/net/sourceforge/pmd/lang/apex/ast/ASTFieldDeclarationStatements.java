@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.declaration.FieldDeclarationGroup;
-
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ASTFieldDeclarationStatements extends AbstractApexNode.Single<FieldDeclarationGroup> {
 
@@ -17,12 +15,10 @@ public final class ASTFieldDeclarationStatements extends AbstractApexNode.Single
         super(fieldDeclarationStatements);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     public ASTModifierNode getModifiers() {
         return firstChild(ASTModifierNode.class);

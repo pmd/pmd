@@ -18,12 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -35,6 +29,10 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
+import org.pcollections.PSet;
 
 class ClassStubTest {
     // while parsing the annotation type, ClassStub's parseLock.ensureParsed()
@@ -48,7 +46,6 @@ class ClassStubTest {
         PSet<String> annotationAttributeNames = classSymbol.getAnnotationAttributeNames();
         assertFalse(annotationAttributeNames.isEmpty());
     }
-
 
     @Test
     void recordReflectionTest() {
@@ -64,10 +61,7 @@ class ClassStubTest {
         JClassType ty = (JClassType) ts.typeOf(pointRecord, false);
         assertEquals(ty.getDeclaredField("x").getTypeMirror(), ts.INT);
         assertEquals(ty.getDeclaredField("y").getTypeMirror(), ts.INT);
-
     }
-
-
 
     @Test
     void varargsRecordReflectionTest() {
@@ -84,7 +78,6 @@ class ClassStubTest {
         assertTrue(ctors.get(0).isVarargs(), "varargs");
         assertEquals(ctors.get(0).getFormalParameterTypes(Substitution.EMPTY).get(0), ts.arrayType(ts.FLOAT));
     }
-
 
     @Test
     void annotatedRecordReflectionTest() {
@@ -103,12 +96,14 @@ class ClassStubTest {
         assertNotNull(annot, "annot should exist");
 
         JClassType ty = (JClassType) ts.typeOf(record, false);
-        JClassType withTyAnnotation = (JClassType) ty.getDeclaredField("strings").getTypeMirror();
+        JClassType withTyAnnotation =
+                (JClassType) ty.getDeclaredField("strings").getTypeMirror();
         assertIsListWithTyAnnotation(withTyAnnotation);
 
         List<JConstructorSymbol> ctors = record.getConstructors();
         assertThat(ctors, hasSize(1));
-        JClassType secondParm = (JClassType) ctors.get(0).getFormalParameterTypes(Substitution.EMPTY).get(1);
+        JClassType secondParm = (JClassType)
+                ctors.get(0).getFormalParameterTypes(Substitution.EMPTY).get(1);
         assertIsListWithTyAnnotation(secondParm);
     }
 
@@ -121,7 +116,6 @@ class ClassStubTest {
 
         assertThat(components.get(0).getSimpleName(), equalTo("x"));
         assertThat(components.get(0).getDeclaredAnnotations(), hasSize(1));
-
     }
 
     @Test
@@ -140,7 +134,6 @@ class ClassStubTest {
         assertThat(innerOfObj, hasProperty("modifiers", equalTo(Modifier.PRIVATE | Modifier.STATIC)));
     }
 
-
     @Test
     void testLoadAnonClassFromEnum() {
         TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
@@ -149,7 +142,7 @@ class ClassStubTest {
 
         AsmSymbolResolver resolver = (AsmSymbolResolver) ts.bootstrapResolver();
         JClassSymbol anonClass = resolver.resolveFromInternalNameCannotFail(
-            ClassNamesUtil.getInternalName(EnumConstantWithBody.class) + "$1");
+                ClassNamesUtil.getInternalName(EnumConstantWithBody.class) + "$1");
         assertThat(anonClass, hasProperty("unresolved", equalTo(false)));
         assertThat(anonClass, hasProperty("simpleName", equalTo("")));
         assertThat(anonClass.getEnclosingClass(), sameInstance(enumClass));
@@ -162,7 +155,7 @@ class ClassStubTest {
 
         AsmSymbolResolver resolver = (AsmSymbolResolver) ts.bootstrapResolver();
         JClassSymbol local1 = resolver.resolveFromInternalNameCannotFail(
-            ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local1");
+                ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local1");
 
         assertThat(local1, hasProperty("unresolved", equalTo(false)));
         assertThat(local1, hasProperty("simpleName", equalTo("Local1")));
@@ -172,7 +165,7 @@ class ClassStubTest {
         assertThat(local1.getEnclosingClass(), sameInstance(outerClass));
 
         JClassSymbol local2 = resolver.resolveFromInternalNameCannotFail(
-            ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local2");
+                ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local2");
         assertThat(local2, hasProperty("unresolved", equalTo(false)));
         assertThat(local2, hasProperty("simpleName", equalTo("Local2")));
         assertThat(local2, hasProperty("localClass", equalTo(true)));
@@ -181,17 +174,16 @@ class ClassStubTest {
         assertThat(local2.getEnclosingClass(), sameInstance(outerClass));
     }
 
-
-
-
     private static void assertIsListWithTyAnnotation(JClassType withTyAnnotation) {
         assertThat(withTyAnnotation.getSymbol().getBinaryName(), equalTo("java.util.List"));
         JTypeMirror tyArg = withTyAnnotation.getTypeArgs().get(0);
         assertThat(tyArg.getTypeAnnotations(), hasSize(1));
-        assertThat(CollectionUtil.asSingle(tyArg.getTypeAnnotations()).getAnnotationSymbol().getBinaryName(),
-                   equalTo("net.sourceforge.pmd.lang.java.symbols.recordclasses.TypeAnnotation"));
+        assertThat(
+                CollectionUtil.asSingle(tyArg.getTypeAnnotations())
+                        .getAnnotationSymbol()
+                        .getBinaryName(),
+                equalTo("net.sourceforge.pmd.lang.java.symbols.recordclasses.TypeAnnotation"));
     }
-
 
     private static @NonNull JClassSymbol loadScalaClass(TypeSystem typeSystem, String simpleName) {
         return loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.scalaclasses", simpleName, typeSystem);
@@ -202,7 +194,8 @@ class ClassStubTest {
     }
 
     private static @NonNull JClassSymbol loadRecordClass(TypeSystem typeSystem, String simpleName) {
-        JClassSymbol symbol = loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.recordclasses", simpleName, typeSystem);
+        JClassSymbol symbol =
+                loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.recordclasses", simpleName, typeSystem);
         assertTrue(symbol.isRecord(), "is a record");
         return symbol;
     }

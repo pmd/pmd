@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
 import com.google.summit.ast.modifier.ElementArgument;
 import com.google.summit.ast.modifier.ElementValue;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class ASTAnnotationParameter extends AbstractApexNode.Single<ElementArgument> {
     public static final String SEE_ALL_DATA = "seeAllData";
@@ -17,7 +16,6 @@ public final class ASTAnnotationParameter extends AbstractApexNode.Single<Elemen
     ASTAnnotationParameter(ElementArgument elementArgument) {
         super(elementArgument);
     }
-
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,11 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.test.AbstractAntTestHelper;
+import org.junit.jupiter.api.Test;
 
 class PMDTaskTest extends AbstractAntTestHelper {
 
@@ -126,7 +123,6 @@ class PMDTaskTest extends AbstractAntTestHelper {
 
         assertTrue(currentTempFile().exists());
     }
-
 
     @Test
     void testDisableIncrementalAnalysis() {

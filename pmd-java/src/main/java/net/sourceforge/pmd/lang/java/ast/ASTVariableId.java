@@ -1,22 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 // @formatter:off
 /**
@@ -73,7 +70,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
 
     void addUsage(ASTNamedReferenceExpr usage) {
         if (usages.isEmpty()) {
-            usages = new ArrayList<>(4); //make modifiable
+            usages = new ArrayList<>(4); // make modifiable
         }
         usages.add(usage);
     }
@@ -116,10 +113,10 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
 
     @Override
     public Visibility getVisibility() {
-        return isPatternBinding() ? Visibility.V_LOCAL
-                                  : getModifierOwnerParent().getVisibility();
+        return isPatternBinding()
+                ? Visibility.V_LOCAL
+                : getModifierOwnerParent().getVisibility();
     }
-
 
     private ModifierOwner getModifierOwnerParent() {
         JavaNode parent = getParent();
@@ -157,7 +154,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return getExtraDimensions() != null || getTypeNode() instanceof ASTArrayType;
     }
 
-
     /**
      * Returns true if this nodes declares an exception parameter in
      * a {@code catch} statement.
@@ -165,7 +161,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     public boolean isExceptionBlockParameter() {
         return getParent() instanceof ASTCatchParameter;
     }
-
 
     /**
      * Returns true if this node declares a formal parameter for a method
@@ -184,15 +179,14 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return getParent() instanceof ASTRecordComponent;
     }
 
-
     /**
      * Returns true if this node declares a local variable from within
      * a regular {@link ASTLocalVariableDeclaration}.
      */
     public boolean isLocalVariable() {
         return ancestors().get(1) instanceof ASTLocalVariableDeclaration
-            && !isResourceDeclaration()
-            && !isForeachVariable();
+                && !isResourceDeclaration()
+                && !isForeachVariable();
     }
 
     /**
@@ -213,7 +207,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return ancestors().get(2) instanceof ASTForInit;
     }
 
-
     /**
      * Returns true if this node declares a formal parameter for
      * a lambda expression. In that case, the type of this parameter
@@ -222,7 +215,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     public boolean isLambdaParameter() {
         return getParent() instanceof ASTLambdaParameter;
     }
-
 
     /**
      * Returns true if this node declares a field from a regular
@@ -241,7 +233,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         return getParent() instanceof ASTEnumConstant;
     }
 
-
     /**
      * Returns true if this declarator id declares a resource in a try-with-resources statement.
      */
@@ -249,7 +240,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         // Resource/LocalVariableDeclaration/VariableDeclarator
         return getParent().getParent().getParent() instanceof ASTResource;
     }
-
 
     /**
      * Returns true if the declared variable's type is inferred by
@@ -281,7 +271,8 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
             return false;
         }
         @SuppressWarnings("PMD.CloseResource")
-        JavaLanguageProcessor javaLanguage = (JavaLanguageProcessor) typeNode.getAstInfo().getLanguageProcessor();
+        JavaLanguageProcessor javaLanguage =
+                (JavaLanguageProcessor) typeNode.getAstInfo().getLanguageProcessor();
         if (!javaLanguage.hasFirstClassLombokSupport()) {
             return false;
         }
@@ -289,7 +280,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
         // type lombok.var unless it uses a qualified name. `var` is interpreted
         // as a keyword by the parser and produces no type node.
         return TypeTestUtil.isExactlyA("lombok.val", typeNode)
-            || !onlyVal && TypeTestUtil.isExactlyA("lombok.var", typeNode);
+                || !onlyVal && TypeTestUtil.isExactlyA("lombok.var", typeNode);
     }
 
     /**
@@ -299,7 +290,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     public boolean isPatternBinding() {
         return getParent() instanceof ASTPattern;
     }
-
 
     /**
      * Returns the initializer of the variable, or null if it doesn't exist.
@@ -322,7 +312,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     public Node getTypeNameNode() {
         return getTypeNode();
     }
-
 
     /**
      * Determines the type node of this variable id, that is, the type node

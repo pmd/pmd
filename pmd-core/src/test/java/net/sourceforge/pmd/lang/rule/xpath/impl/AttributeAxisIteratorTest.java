@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
-
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,15 +14,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.impl.dummyast.ConcreteNode;
 import net.sourceforge.pmd.util.CollectionUtil;
-
+import org.junit.jupiter.api.Test;
 
 /**
  * Unit test for {@link AttributeAxisIterator}
@@ -95,7 +91,8 @@ class AttributeAxisIteratorTest {
     public static class DummyNodeWithEnum extends DummyNode {
 
         public enum MyEnum {
-            FOO, BAR
+            FOO,
+            BAR
         }
 
         public MyEnum getEnum() {

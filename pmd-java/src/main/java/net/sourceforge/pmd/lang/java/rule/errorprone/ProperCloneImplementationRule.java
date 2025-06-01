@@ -2,10 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -14,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
 
@@ -37,10 +35,9 @@ public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
     }
 
     private boolean hasAnyAllocationOfClass(ASTMethodDeclaration method, ASTTypeDeclaration enclosingType) {
-        @NonNull
-        JClassSymbol typeSymbol = enclosingType.getTypeMirror().getSymbol();
+        @NonNull JClassSymbol typeSymbol = enclosingType.getTypeMirror().getSymbol();
         return method.descendants(ASTConstructorCall.class)
-            .filter(ctor -> ctor.getTypeMirror().getSymbol().equals(typeSymbol))
-            .nonEmpty();
+                .filter(ctor -> ctor.getTypeMirror().getSymbol().equals(typeSymbol))
+                .nonEmpty();
     }
 }

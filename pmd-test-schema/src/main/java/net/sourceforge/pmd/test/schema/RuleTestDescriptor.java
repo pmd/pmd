@@ -6,7 +6,6 @@ package net.sourceforge.pmd.test.schema;
 
 import java.util.List;
 import java.util.Properties;
-
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.Rule;
 
@@ -78,7 +77,8 @@ public class RuleTestDescriptor {
         this.code = code;
     }
 
-    public void recordExpectedViolations(int expectedProblems, List<Integer> expectedLineNumbers, List<String> expectedMessages) {
+    public void recordExpectedViolations(
+            int expectedProblems, List<Integer> expectedLineNumbers, List<String> expectedMessages) {
         checkListSize(expectedProblems, expectedLineNumbers);
         checkListSize(expectedProblems, expectedMessages);
 
@@ -87,7 +87,11 @@ public class RuleTestDescriptor {
         this.expectedMessages = expectedMessages;
     }
 
-    public void recordExpectedViolations(int expectedProblems, List<Integer> expectedLineNumbers, List<Integer> expectedEndLineNumbers, List<String> expectedMessages) {
+    public void recordExpectedViolations(
+            int expectedProblems,
+            List<Integer> expectedLineNumbers,
+            List<Integer> expectedEndLineNumbers,
+            List<String> expectedMessages) {
         checkListSize(expectedProblems, expectedEndLineNumbers);
         this.expectedEndLineNumbers = expectedEndLineNumbers;
         recordExpectedViolations(expectedProblems, expectedLineNumbers, expectedMessages);
@@ -96,7 +100,7 @@ public class RuleTestDescriptor {
     private void checkListSize(int expectedProblems, List<?> expectedMessages) {
         if (!expectedMessages.isEmpty() && expectedProblems != expectedMessages.size()) {
             throw new IllegalArgumentException(
-                "Expected list of size " + expectedProblems + ", got " + expectedMessages);
+                    "Expected list of size " + expectedProblems + ", got " + expectedMessages);
         }
     }
 

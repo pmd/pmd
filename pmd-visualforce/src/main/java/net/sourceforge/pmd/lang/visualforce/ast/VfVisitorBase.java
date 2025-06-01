@@ -6,6 +6,4 @@ package net.sourceforge.pmd.lang.visualforce.ast;
 
 import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 
-public abstract class VfVisitorBase<P, R> extends AstVisitorBase<P, R> implements VfVisitor<P, R> {
-
-}
+public abstract class VfVisitorBase<P, R> extends AstVisitorBase<P, R> implements VfVisitor<P, R> {}

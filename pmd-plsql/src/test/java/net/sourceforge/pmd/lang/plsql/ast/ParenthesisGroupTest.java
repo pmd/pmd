@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import org.junit.jupiter.api.Test;
 
 class ParenthesisGroupTest extends AbstractPLSQLParserTst {
 
@@ -24,5 +22,4 @@ class ParenthesisGroupTest extends AbstractPLSQLParserTst {
     void parseParenthesisGroup2() {
         doTest("ParenthesisGroup2");
     }
-
 }

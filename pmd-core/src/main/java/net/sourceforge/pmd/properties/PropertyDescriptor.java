@@ -1,17 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.properties;
 
 import java.util.Objects;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.rule.RuleSetWriter;
 import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
 import net.sourceforge.pmd.properties.internal.PropertyTypeId;
-
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Describes a property of a rule or a renderer.
@@ -31,7 +27,6 @@ import net.sourceforge.pmd.properties.internal.PropertyTypeId;
  */
 public final class PropertyDescriptor<T> {
 
-
     private final PropertySerializer<T> parser;
     private final PropertyTypeId typeId;
     private final String name;
@@ -39,12 +34,13 @@ public final class PropertyDescriptor<T> {
     private final T defaultValue;
     private final boolean isXPathAvailable;
 
-    PropertyDescriptor(String name,
-                       String description,
-                       T defaultValue,
-                       PropertySerializer<T> parser,
-                       @Nullable PropertyTypeId typeId,
-                       boolean isXPathAvailable) {
+    PropertyDescriptor(
+            String name,
+            String description,
+            T defaultValue,
+            PropertySerializer<T> parser,
+            @Nullable PropertyTypeId typeId,
+            boolean isXPathAvailable) {
 
         this.name = name;
         this.description = description;
@@ -53,12 +49,8 @@ public final class PropertyDescriptor<T> {
         this.typeId = typeId;
         this.isXPathAvailable = isXPathAvailable;
 
-        PropertyParsingUtil.checkConstraintsThrow(
-            defaultValue,
-            parser.getConstraints()
-        );
+        PropertyParsingUtil.checkConstraintsThrow(defaultValue, parser.getConstraints());
     }
-
 
     /**
      * The name of the property without spaces as it serves as the key
@@ -70,7 +62,6 @@ public final class PropertyDescriptor<T> {
         return name;
     }
 
-
     /**
      * Describes the property and the role it plays within the rule it
      * is specified for. Could be used in a tooltip.
@@ -81,7 +72,6 @@ public final class PropertyDescriptor<T> {
         return description;
     }
 
-
     /**
      * Default value to use when the user hasn't specified one or when
      * they wish to revert to a known-good state.
@@ -91,7 +81,6 @@ public final class PropertyDescriptor<T> {
     public T defaultValue() {
         return defaultValue;
     }
-
 
     /**
      * Returns the strategy used to read and write this property to XML.
@@ -108,7 +97,8 @@ public final class PropertyDescriptor<T> {
      *
      * @apiNote Internal API
      */
-    @Nullable PropertyTypeId getTypeId() {
+    @Nullable
+    PropertyTypeId getTypeId() {
         return typeId;
     }
 
@@ -119,15 +109,14 @@ public final class PropertyDescriptor<T> {
         return isXPathAvailable;
     }
 
-
     @Override
     public String toString() {
         return "PropertyDescriptor{ "
-            + "name='" + name + '\''
-            + ", parser=" + parser
-            + ", typeId=" + typeId
-            + ", description='" + description + '\''
-            + ", defaultValue=" + defaultValue + '}';
+                + "name='" + name + '\''
+                + ", parser=" + parser
+                + ", typeId=" + typeId
+                + ", description='" + description + '\''
+                + ", defaultValue=" + defaultValue + '}';
     }
 
     // TODO these equality routines needs to go away, should be implemented in Rule::equals
@@ -140,8 +129,7 @@ public final class PropertyDescriptor<T> {
             return false;
         }
         PropertyDescriptor<?> that = (PropertyDescriptor<?>) o;
-        return name.equals(that.name)
-            && description.equals(that.description);
+        return name.equals(that.name) && description.equals(that.description);
     }
 
     @Override

@@ -26,7 +26,6 @@ interface TopoOrder<K> {
 
         List<Class<?>> succs = new ArrayList<>();
 
-
         Class<?> superclass = node.getSuperclass();
         if (superclass != null) {
             succs.add(superclass);
@@ -40,7 +39,6 @@ interface TopoOrder<K> {
         return succs;
     };
 
-
     /**
      * Returns the strict direct successors of the given value.
      * Successive invocation of this method must at some point
@@ -48,6 +46,4 @@ interface TopoOrder<K> {
      * for the same argument.
      */
     Iterable<K> directSuccessors(K key);
-
-
 }

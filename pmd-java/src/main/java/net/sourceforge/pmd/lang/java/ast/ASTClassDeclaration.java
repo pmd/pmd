@@ -1,14 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-
 
 /**
  * Represents class and interface declarations.
@@ -57,7 +54,6 @@ public final class ASTClassDeclaration extends AbstractTypeDeclaration {
     void setInterface() {
         this.isInterface = true;
     }
-
 
     /**
      * @deprecated Use {@link #getPermitsClause()} or {@link JClassSymbol#getPermittedSubtypes()}

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.FileNotFoundException;
@@ -12,21 +11,19 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
-
+import net.sourceforge.pmd.internal.util.IOUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Base fingerprinter for raw files.
  */
 public class RawFileFingerprinter implements ClasspathEntryFingerprinter {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(RawFileFingerprinter.class);
-    
+
     private static final Set<String> SUPPORTED_EXTENSIONS;
-    
+
     static {
         final Set<String> extensions = new HashSet<>();
         extensions.add("class"); // Java class files
@@ -49,5 +46,4 @@ public class RawFileFingerprinter implements ClasspathEntryFingerprinter {
             LOG.warn("Classpath entry {} doesn't exist, ignoring it", entry);
         }
     }
-
 }

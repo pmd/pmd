@@ -38,5 +38,4 @@ public enum ScopeInfo {
     SAME_FILE,
     /** Method or constructor formal parameter (lambdas are treated as locals). */
     FORMAL_PARAM
-
 }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -15,13 +14,11 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public final class ASTConditionalExpression extends AbstractJavaExpr {
 
-
     private boolean isStandalone;
 
     ASTConditionalExpression(int id) {
         super(id);
     }
-
 
     /**
      * Returns the node that represents the guard of this conditional.
@@ -31,7 +28,6 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
         return (ASTExpression) getChild(0);
     }
 
-
     /**
      * Returns the node that represents the expression that will be evaluated
      * if the guard evaluates to true.
@@ -40,7 +36,6 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
         return (ASTExpression) getChild(1);
     }
 
-
     /**
      * Returns the node that represents the expression that will be evaluated
      * if the guard evaluates to false.
@@ -48,7 +43,6 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
     public ASTExpression getElseBranch() {
         return (ASTExpression) getChild(2);
     }
-
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -62,8 +56,7 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
      */
     // very internal
     boolean isStandalone() {
-        assert getLanguageVersion().compareToVersion("8") >= 0
-            : "This method's result is undefined in pre java 8 code";
+        assert getLanguageVersion().compareToVersion("8") >= 0 : "This method's result is undefined in pre java 8 code";
         return this.isStandalone;
     }
 

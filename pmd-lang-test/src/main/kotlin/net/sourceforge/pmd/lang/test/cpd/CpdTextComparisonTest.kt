@@ -18,20 +18,23 @@ import net.sourceforge.pmd.lang.test.BaseTextComparisonTest
 import org.apache.commons.lang3.StringUtils
 
 /**
- * CPD test comparing a dump of a file against a saved baseline.
- * Each token is printed on a separate line.
+ * CPD test comparing a dump of a file against a saved baseline. Each token is printed on a separate
+ * line.
  *
- * @param extensionIncludingDot File extension for the language.
- *                              Baseline files are saved in txt files.
+ * @param extensionIncludingDot File extension for the language. Baseline files are saved in txt
+ *   files.
  */
 abstract class CpdTextComparisonTest(
     val language: CpdCapableLanguage,
-    override val extensionIncludingDot: String
+    override val extensionIncludingDot: String,
 ) : BaseTextComparisonTest() {
 
-    constructor(langId: String, extensionIncludingDot: String) : this(
+    constructor(
+        langId: String,
+        extensionIncludingDot: String,
+    ) : this(
         LanguageRegistry.CPD.getLanguageById(langId) as CpdCapableLanguage,
-        extensionIncludingDot
+        extensionIncludingDot,
     )
 
     fun newCpdLexer(config: LanguagePropertyConfig): CpdLexer {
@@ -45,26 +48,26 @@ abstract class CpdTextComparisonTest(
     override val resourcePrefix: String
         get() = "testdata"
 
-
-    open fun defaultProperties(): LanguagePropertyConfig = object : LanguagePropertyConfig {
-        override fun setProperties(properties: LanguagePropertyBundle) {
-            // use defaults
+    open fun defaultProperties(): LanguagePropertyConfig =
+        object : LanguagePropertyConfig {
+            override fun setProperties(properties: LanguagePropertyBundle) {
+                // use defaults
+            }
         }
-    }
 
     /**
      * A test comparing the output of the tokenizer.
      *
-     * @param fileBaseName   Name of the source file (without extension or resource prefix)
-     * @param expectedSuffix Suffix to append to the expected file. This allows reusing the same source file
-     *                       with different configurations, provided the suffix is different
-     * @param config     Properties to configure the tokenizer
+     * @param fileBaseName Name of the source file (without extension or resource prefix)
+     * @param expectedSuffix Suffix to append to the expected file. This allows reusing the same
+     *   source file with different configurations, provided the suffix is different
+     * @param config Properties to configure the tokenizer
      */
     @JvmOverloads
     fun doTest(
         fileBaseName: String,
         expectedSuffix: String = "",
-        config: LanguagePropertyConfig = defaultProperties()
+        config: LanguagePropertyConfig = defaultProperties(),
     ) {
         super.doTest(fileBaseName, expectedSuffix) { fdata ->
             val tokens = tokenize(newCpdLexer(config), fdata)
@@ -76,19 +79,14 @@ abstract class CpdTextComparisonTest(
     fun expectLexException(
         source: String,
         fileName: FileId = FileId.UNKNOWN,
-        properties: LanguagePropertyConfig = defaultProperties()
-    ): LexException =
-        expectLexException(FileData(fileName, source), properties)
+        properties: LanguagePropertyConfig = defaultProperties(),
+    ): LexException = expectLexException(FileData(fileName, source), properties)
 
     @JvmOverloads
     fun expectLexException(
         fileData: FileData,
-        config: LanguagePropertyConfig = defaultProperties()
-    ): LexException =
-        shouldThrow {
-            tokenize(newCpdLexer(config), fileData)
-        }
-
+        config: LanguagePropertyConfig = defaultProperties(),
+    ): LexException = shouldThrow { tokenize(newCpdLexer(config), fileData) }
 
     private fun StringBuilder.format(tokens: Tokens) {
         appendHeader().appendLine()
@@ -111,24 +109,21 @@ abstract class CpdTextComparisonTest(
         }
     }
 
-
     private fun StringBuilder.appendHeader() =
-            formatLine(
-                    escapedImage = "[Image] or [Truncated image[",
-                    bcol = "Bcol",
-                    ecol = "Ecol"
-            )
-
+        formatLine(escapedImage = "[Image] or [Truncated image[", bcol = "Bcol", ecol = "Ecol")
 
     private fun StringBuilder.formatLine(token: TokenEntry, tokens: Tokens) =
-            formatLine(
-                    escapedImage = escapeImage(token.getImage(tokens)),
-                    bcol = token.beginColumn,
-                    ecol = token.endColumn
-            )
+        formatLine(
+            escapedImage = escapeImage(token.getImage(tokens)),
+            bcol = token.beginColumn,
+            ecol = token.endColumn,
+        )
 
-
-    private fun StringBuilder.formatLine(escapedImage: String, bcol: Any, ecol: Any): StringBuilder {
+    private fun StringBuilder.formatLine(
+        escapedImage: String,
+        bcol: Any,
+        ecol: Any,
+    ): StringBuilder {
         var colStart = length
         colStart = append(INDENT).append(escapedImage).padCol(colStart, COL_0_WIDTH)
         @Suppress("UNUSED_VALUE")
@@ -137,33 +132,32 @@ abstract class CpdTextComparisonTest(
     }
 
     private fun StringBuilder.padCol(colStart: Int, colWidth: Int): Int {
-        for (i in 1..(colStart + colWidth - this.length))
-            append(' ')
+        for (i in 1..(colStart + colWidth - this.length)) append(' ')
 
         return length
     }
 
-
     private fun escapeImage(str: String): String {
-        val escaped = str
-                .replace("\\", "\\\\")                 // escape backslashes
-                .replace("\r\n", "\\r\\n")             // CRLF (treated specially because it has a different length)
-                .replace("\t", "\\t")                  // TAB
-                .replace(Regex("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]"), "\\\\n")       // escape other newlines (normalizing), use \\R with java8+
-                .replace(Regex("[]\\[]"), "\\\\$0")   // escape []
+        val escaped =
+            str.replace("\\", "\\\\") // escape backslashes
+                .replace(
+                    "\r\n",
+                    "\\r\\n",
+                ) // CRLF (treated specially because it has a different length)
+                .replace("\t", "\\t") // TAB
+                .replace(
+                    Regex("\\u000D\\u000A|[\\u000A\\u000B\\u000C\\u000D\\u0085\\u2028\\u2029]"),
+                    "\\\\n",
+                ) // escape other newlines (normalizing), use \\R with java8+
+                .replace(Regex("[]\\[]"), "\\\\$0") // escape []
 
         var truncated = StringUtils.truncate(escaped, IMAGE_SIZE)
 
         if (truncated.endsWith('\\') && !truncated.endsWith("\\\\"))
             truncated = truncated.substring(0, truncated.length - 1) // cut inside an escape
 
-        return if (truncated.length < escaped.length)
-            "[$truncated["
-        else
-            "[$truncated]"
-
+        return if (truncated.length < escaped.length) "[$truncated[" else "[$truncated]"
     }
-
 
     private fun sourceCodeOf(fileData: FileData): TextDocument =
         TextDocument.readOnlyString(fileData.fileText, fileData.fileName, language.defaultVersion)

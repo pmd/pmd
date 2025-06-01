@@ -1,21 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.StringUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class ParseException extends FileAnalysisException {
 
@@ -39,8 +36,7 @@ public class ParseException extends FileAnalysisException {
     /**
      * This constructor is called by Javacc.
      */
-    public ParseException(@NonNull JavaccToken currentTokenVal,
-                          int[][] expectedTokenSequencesVal) {
+    public ParseException(@NonNull JavaccToken currentTokenVal, int[][] expectedTokenSequencesVal) {
         super(makeMessage(currentTokenVal, expectedTokenSequencesVal));
         location = currentTokenVal.getNext().getReportLocation();
     }
@@ -54,7 +50,6 @@ public class ParseException extends FileAnalysisException {
     public ParseException withLocation(Reportable reportable) {
         return withLocation(reportable.getReportLocation());
     }
-
 
     @Override
     protected String errorKind() {
@@ -73,8 +68,7 @@ public class ParseException extends FileAnalysisException {
      * from the parser) the correct error message
      * gets displayed.
      */
-    private static String makeMessage(@NonNull JavaccToken currentToken,
-                                      int[][] expectedTokenSequences) {
+    private static String makeMessage(@NonNull JavaccToken currentToken, int[][] expectedTokenSequences) {
 
         JavaccTokenDocument document = currentToken.getDocument();
         String eol = System.lineSeparator();
@@ -143,5 +137,4 @@ public class ParseException extends FileAnalysisException {
     private static boolean isEnquotedVersion(String kindStr, String image) {
         return kindStr.equals('"' + image + '"');
     }
-
 }

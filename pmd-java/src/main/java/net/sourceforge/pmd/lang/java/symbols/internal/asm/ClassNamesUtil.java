@@ -44,7 +44,6 @@ public final class ClassNamesUtil {
         // utility class
     }
 
-
     public static String getTypeDescriptor(Class<?> klass) {
         if (klass.isPrimitive()) {
             throw new NotImplementedException("Doesn't handle primitive types");
@@ -74,5 +73,4 @@ public final class ClassNamesUtil {
     public static String binaryToInternal(String binary) {
         return binary.replace('.', '/');
     }
-
 }

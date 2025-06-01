@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -25,7 +24,6 @@ public final class ASTDefaultValue extends AbstractJavaNode {
     public ASTMemberValue getConstant() {
         return (ASTMemberValue) getChild(0);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

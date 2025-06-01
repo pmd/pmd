@@ -10,10 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.document.FileId;
+import org.junit.jupiter.api.Test;
 
 class ConfigurableFileNameRendererTest {
 
@@ -31,14 +29,11 @@ class ConfigurableFileNameRendererTest {
         assertEquals(displayName, Paths.get("..", "a", "b", "c").toString());
     }
 
-
     @Test
     void testRelativizeWithRoot() {
         Path path = Paths.get("a", "b", "c");
         FileId file = FileId.fromPath(path);
         String displayName = getDisplayName(file, listOf(Paths.get("/")));
-        assertEquals(path.toAbsolutePath().toString(),
-                     displayName);
+        assertEquals(path.toAbsolutePath().toString(), displayName);
     }
-
 }

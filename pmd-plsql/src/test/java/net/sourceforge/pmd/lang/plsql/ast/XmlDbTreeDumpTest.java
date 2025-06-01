@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.plsql.PlsqlParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
+import org.junit.jupiter.api.Test;
 
 class XmlDbTreeDumpTest extends BaseTreeDumpTest {
     XmlDbTreeDumpTest() {

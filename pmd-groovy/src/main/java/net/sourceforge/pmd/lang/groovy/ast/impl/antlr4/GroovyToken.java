@@ -4,18 +4,17 @@
 
 package net.sourceforge.pmd.lang.groovy.ast.impl.antlr4;
 
+import groovyjarjarantlr4.v4.runtime.Lexer;
+import groovyjarjarantlr4.v4.runtime.Token;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
-import groovyjarjarantlr4.v4.runtime.Lexer;
-import groovyjarjarantlr4.v4.runtime.Token;
-
 /**
  * A Groovy specific token representation.
- * 
+ *
  * This is simply a copy of {@link AntlrToken} but
  * referencing the jarjared version of antlr4 used by the groovy lexer.
  */
@@ -25,7 +24,6 @@ public class GroovyToken implements GenericToken<GroovyToken> {
     private final GroovyToken previousComment;
     private final TextDocument textDoc;
     GroovyToken next;
-
 
     /**
      * Constructor

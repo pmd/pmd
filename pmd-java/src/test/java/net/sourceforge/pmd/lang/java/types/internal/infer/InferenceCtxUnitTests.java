@@ -24,15 +24,13 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphWalk;
 import net.sourceforge.pmd.util.IteratorUtil;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -83,7 +81,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         verify(log).boundAdded(ctx, v2, BoundKind.UPPER, listOfV1, false);
     }
 
-
     @Test
     void testNullTypeCannotBeLowerBound() {
         TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
@@ -92,7 +89,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         InferenceVar v1 = newIvar(ctx);
 
         addSubtypeConstraint(ctx, ts.NULL_TYPE, v1);
-
 
         assertThat(v1, hasBoundsExactly(upper(ts.OBJECT)));
 
@@ -126,7 +122,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertEquals(ts.OBJECT, v2.getInst());
         assertEquals(listType(ts.OBJECT), v1.getInst());
     }
-
 
     @Test
     void testEqBoundMergesIvar() {
@@ -202,18 +197,18 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     /* Remember:
-            let S, T != Object, S <: T
+           let S, T != Object, S <: T
 
-            G<? super T> </: G<? extends T>
-            G<? extends T> </: G<? super T>
+           G<? super T> </: G<? extends T>
+           G<? extends T> </: G<? super T>
 
-            G<? super T> <: G<? super S>
-            G<? extends S> <: G<? extends T>
+           G<? super T> <: G<? super S>
+           G<? extends S> <: G<? extends T>
 
-            if T = Object, then G<? extends T> = G<?>, and
+           if T = Object, then G<? extends T> = G<?>, and
 
-            G<A> <: G<?> forall A (incl. wildcards)
-     */
+           G<A> <: G<?> forall A (incl. wildcards)
+    */
 
     @Test
     void testWildLowerUpper() {
@@ -257,8 +252,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(a, hasBoundsExactly(upper(ts.OBJECT)));
     }
 
-
-
     @Test
     void testIntersectionRight() {
         InferenceContext ctx = emptyCtx();
@@ -271,14 +264,11 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         // ~> 'b >: Serializable
 
         JTypeMirror listOfB = listType(extendsWild(b));
-        addSubtypeConstraint(ctx,
-                             a,
-                             intersect(listOfB, ts.SERIALIZABLE));
+        addSubtypeConstraint(ctx, a, intersect(listOfB, ts.SERIALIZABLE));
 
         assertThat(a, hasBoundsExactly(upper(ts.SERIALIZABLE), upper(listOfB)));
         assertThat(b, hasBoundsExactly(upper(ts.OBJECT)));
     }
-
 
     @Test
     void testIntersectionLeft() {
@@ -302,9 +292,7 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         // in order to have more constraints to propagate
 
         JTypeMirror listOfA = listType(extendsWild(a));
-        addSubtypeConstraint(ctx,
-                             intersect(listOfA, ts.SERIALIZABLE),
-                             b);
+        addSubtypeConstraint(ctx, intersect(listOfA, ts.SERIALIZABLE), b);
 
         assertThat(a, hasBoundsExactly(upper(ts.OBJECT)));
         assertThat(b, hasBoundsExactly(lower(intersect(listOfA, ts.SERIALIZABLE))));
@@ -318,9 +306,7 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
         // Boolean[] <: 'a[]
         // ~> Boolean <: 'a
-        addSubtypeConstraint(ctx,
-                             ts.arrayType(ts.BOOLEAN.box()),
-                             ts.arrayType(a));
+        addSubtypeConstraint(ctx, ts.arrayType(ts.BOOLEAN.box()), ts.arrayType(a));
 
         assertThat(a, hasBoundsExactly(lower(ts.BOOLEAN.box())));
     }
@@ -333,13 +319,10 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
         // 'a[] <: Boolean[]
         // ~> 'a <: Boolean
-        addSubtypeConstraint(ctx,
-                             ts.arrayType(a),
-                             ts.arrayType(ts.BOOLEAN.box()));
+        addSubtypeConstraint(ctx, ts.arrayType(a), ts.arrayType(ts.BOOLEAN.box()));
 
         assertThat(a, hasBoundsExactly(upper(ts.BOOLEAN.box())));
     }
-
 
     private static @NotNull List<Set<InferenceVar>> createBatchSetsFromGraph(InferenceContext ctx) {
         GraphWalk graphWalk = new GraphWalk(ctx, false);
@@ -387,9 +370,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(batches, contains(setOf(b, a)));
     }
 
-
-
-
     @Test
     void testGraphBuildingWithExtraDependency() {
         InferenceContext ctx = emptyCtx();
@@ -418,10 +398,8 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         b.addBound(BoundKind.LOWER, a);
         b.addBound(BoundKind.LOWER, listType(c));
 
-
         List<Set<InferenceVar>> batches = createBatchSetsFromGraph(ctx);
 
         assertThat(batches, contains(setOf(c), setOf(b, a)));
     }
-
 }

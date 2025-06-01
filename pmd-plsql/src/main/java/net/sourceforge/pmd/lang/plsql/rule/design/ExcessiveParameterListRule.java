@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
@@ -26,5 +25,4 @@ public class ExcessiveParameterListRule extends AbstractCounterCheckRule<ASTForm
     protected int getMetric(ASTFormalParameters node) {
         return node.children(ASTFormalParameter.class).count();
     }
-
 }

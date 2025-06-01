@@ -5,9 +5,5 @@
 package javasymbols.testdata.deep;
 
 import static javasymbols.testdata.Statics.*;
-import javasymbols.testdata.SomeClassA;
 
-
-
-public class StaticIOD2 {
-}
+public class StaticIOD2 {}

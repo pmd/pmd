@@ -8,11 +8,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A mapping of variables to types.
@@ -58,7 +56,8 @@ public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable 
             return this;
         }
 
-        Map<JVariableSymbol, JTypeMirror> newMap = new HashMap<>(symbols.size() + this.getMap().size());
+        Map<JVariableSymbol, JTypeMirror> newMap =
+                new HashMap<>(symbols.size() + this.getMap().size());
         newMap.putAll(getMap());
         for (int i = 0; i < symbols.size(); i++) {
             newMap.put(symbols.get(i), types.get(i));
@@ -69,5 +68,4 @@ public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable 
     public static TypingContext zip(List<JVariableSymbol> symbols, List<JTypeMirror> types) {
         return DEFAULT.andThenZip(symbols, types);
     }
-
 }

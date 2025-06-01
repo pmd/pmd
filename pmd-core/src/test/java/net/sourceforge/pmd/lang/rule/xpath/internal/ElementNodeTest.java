@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,28 +9,22 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-
+import net.sf.saxon.Configuration;
+import net.sf.saxon.type.Type;
 import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
-
-import net.sf.saxon.Configuration;
-import net.sf.saxon.type.Type;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 
 class ElementNodeTest {
-
 
     @RegisterExtension
     private final DummyParsingHelper helper = new DummyParsingHelper();
 
     @Test
     void testCompareOrder() {
-        DummyRootNode root = helper.parse(
-            "(#foo)"
-                + "(#foo)"
-        );
+        DummyRootNode root = helper.parse("(#foo)" + "(#foo)");
 
         DummyNode c0 = root.getChild(0);
         DummyNode c1 = root.getChild(1);
@@ -61,7 +54,6 @@ class ElementNodeTest {
         assertTrue(elementFoo1.compareOrder(elementFoo0) > 0);
         assertEquals(0, elementFoo0.compareOrder(elementFoo0));
         assertEquals(0, elementFoo1.compareOrder(elementFoo1));
-
     }
 
     @Test
@@ -106,5 +98,4 @@ class ElementNodeTest {
         assertSame(c1, elementComment.getUnderlyingNode());
         assertSame(elementComment, treeInfo.findWrapperFor(c1));
     }
-
 }

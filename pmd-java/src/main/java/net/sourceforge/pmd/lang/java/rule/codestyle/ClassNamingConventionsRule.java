@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -16,28 +14,34 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 /**
  * Configurable naming conventions for type declarations.
  */
 public class ClassNamingConventionsRule extends AbstractNamingConventionRule<ASTTypeDeclaration> {
 
-    private final PropertyDescriptor<Pattern> classRegex = defaultProp("class", "concrete class").build();
-    private final PropertyDescriptor<Pattern> abstractClassRegex = defaultProp("abstract class").build();
-    private final PropertyDescriptor<Pattern> interfaceRegex = defaultProp("interface").build();
-    private final PropertyDescriptor<Pattern> enumerationRegex = defaultProp("enum").build();
-    private final PropertyDescriptor<Pattern> annotationRegex = defaultProp("annotation").build();
-    private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").build();
+    private final PropertyDescriptor<Pattern> classRegex =
+            defaultProp("class", "concrete class").build();
+    private final PropertyDescriptor<Pattern> abstractClassRegex =
+            defaultProp("abstract class").build();
+    private final PropertyDescriptor<Pattern> interfaceRegex =
+            defaultProp("interface").build();
+    private final PropertyDescriptor<Pattern> enumerationRegex =
+            defaultProp("enum").build();
+    private final PropertyDescriptor<Pattern> annotationRegex =
+            defaultProp("annotation").build();
+    private final PropertyDescriptor<Pattern> utilityClassRegex =
+            defaultProp("utility class").build();
     private final PropertyDescriptor<Pattern> testClassRegex = defaultProp("test class")
             .desc("Regex which applies to test class names. Since PMD 6.52.0.")
-            .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$").build();
-
+            .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$")
+            .build();
 
     public ClassNamingConventionsRule() {
-        super(ASTClassDeclaration.class,
-              ASTEnumDeclaration.class,
-              ASTAnnotationTypeDeclaration.class,
-              ASTRecordDeclaration.class);
+        super(
+                ASTClassDeclaration.class,
+                ASTEnumDeclaration.class,
+                ASTAnnotationTypeDeclaration.class,
+                ASTRecordDeclaration.class);
         definePropertyDescriptor(classRegex);
         definePropertyDescriptor(abstractClassRegex);
         definePropertyDescriptor(interfaceRegex);
@@ -46,7 +50,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(utilityClassRegex);
         definePropertyDescriptor(testClassRegex);
     }
-
 
     private boolean isTestClass(ASTClassDeclaration node) {
         return !node.isNested() && TestFrameworksUtil.isTestClass(node);
@@ -73,7 +76,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return data;
     }
 
-
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         checkMatches(node, enumerationRegex, data);
@@ -92,7 +94,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return data;
     }
 
-
     @Override
     String defaultConvention() {
         return PASCAL_CASE;
@@ -102,7 +103,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     String nameExtractor(ASTTypeDeclaration node) {
         return node.getSimpleName();
     }
-
 
     @Override
     String kindDisplayName(ASTTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {

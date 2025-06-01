@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
@@ -33,8 +32,7 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
             // node is the last param in an arguments list
             InvocationNode call = (InvocationNode) parent.getParent();
             OverloadSelectionResult info = call.getOverloadSelectionInfo();
-            if (info.isFailed() || info.isVarargsCall()
-                || !info.getMethodType().isVarargs()) {
+            if (info.isFailed() || info.isVarargsCall() || !info.getMethodType().isVarargs()) {
                 return null;
             }
 

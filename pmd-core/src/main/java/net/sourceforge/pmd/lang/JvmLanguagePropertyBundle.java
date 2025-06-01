@@ -5,14 +5,12 @@
 package net.sourceforge.pmd.lang;
 
 import java.io.IOException;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Base properties class for JVM languages that use a classpath to resolve
@@ -22,14 +20,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
 
-    public static final PropertyDescriptor<String> AUX_CLASSPATH
-        = PropertyFactory.stringProperty("auxClasspath")
-                         .desc("A classpath to use to resolve references to external types in the analysed sources. "
-                                   + "Individual paths are separated by ; on Windows and : on other platforms. "
-                                   + "All classes of the analysed project should be found on this classpath, including "
-                                   + "the compiled classes corresponding to the analyzed sources themselves, and the JDK classes.")
-                         .defaultValue("")
-                         .build();
+    public static final PropertyDescriptor<String> AUX_CLASSPATH = PropertyFactory.stringProperty("auxClasspath")
+            .desc("A classpath to use to resolve references to external types in the analysed sources. "
+                    + "Individual paths are separated by ; on Windows and : on other platforms. "
+                    + "All classes of the analysed project should be found on this classpath, including "
+                    + "the compiled classes corresponding to the analyzed sources themselves, and the JDK classes.")
+            .defaultValue("")
+            .build();
 
     private ClassLoader classLoader;
 

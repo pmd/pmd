@@ -12,7 +12,6 @@ public final class ASTArrayLoadExpression extends AbstractApexNode.Single<ArrayE
         super(arrayLoadExpression);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

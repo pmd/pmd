@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,10 +12,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.Collections;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -27,9 +22,12 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class RuleTstTest {
-    private final LanguageVersion dummyLanguage = DummyLanguageModule.getInstance().getDefaultVersion();
+    private final LanguageVersion dummyLanguage =
+            DummyLanguageModule.getInstance().getDefaultVersion();
 
     private Rule rule = spy(AbstractRule.class);
 
@@ -60,17 +58,19 @@ class RuleTstTest {
 
         final String code = "(a)(b)\n(c)";
         Mockito.doAnswer(invocation -> {
-            RuleContext context = invocation.getArgument(1, RuleContext.class);
-            DummyRootNode node = invocation.getArgument(0, DummyRootNode.class);
+                    RuleContext context = invocation.getArgument(1, RuleContext.class);
+                    DummyRootNode node = invocation.getArgument(0, DummyRootNode.class);
 
-            assertEquals(3, node.getNumChildren());
-            // the violations are reported out of order
-            // line 2
-            context.addViolation(node.getChild(2));
-            // line 1
-            context.addViolation(node.getChild(1));
-            return null;
-        }).when(rule).apply(any(Node.class), Mockito.any(RuleContext.class));
+                    assertEquals(3, node.getNumChildren());
+                    // the violations are reported out of order
+                    // line 2
+                    context.addViolation(node.getChild(2));
+                    // line 1
+                    context.addViolation(node.getChild(1));
+                    return null;
+                })
+                .when(rule)
+                .apply(any(Node.class), Mockito.any(RuleContext.class));
 
         RuleTestDescriptor testDescriptor = new RuleTestDescriptor(0, rule);
         testDescriptor.setLanguageVersion(dummyLanguage);

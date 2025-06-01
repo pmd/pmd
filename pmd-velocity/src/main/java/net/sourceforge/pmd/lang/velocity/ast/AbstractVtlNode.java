@@ -1,4 +1,3 @@
-
 package net.sourceforge.pmd.lang.velocity.ast;
 
 /*
@@ -30,12 +29,10 @@ abstract class AbstractVtlNode extends AbstractJjtreeNode<AbstractVtlNode, VtlNo
         super(i);
     }
 
-
     @Override
     public String getXPathNodeName() {
         return VtlParserImplTreeConstants.jjtNodeName[id];
     }
-
 
     protected abstract <P, R> R acceptVtlVisitor(VtlVisitor<? super P, ? extends R> visitor, P data);
 
@@ -66,5 +63,4 @@ abstract class AbstractVtlNode extends AbstractJjtreeNode<AbstractVtlNode, VtlNo
         }
         return sb.toString();
     }
-
 }

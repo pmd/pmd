@@ -6,5 +6,4 @@ package net.sourceforge.pmd.lang.visualforce.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 
-public interface VfNode extends JjtreeNode<VfNode> {
-}
+public interface VfNode extends JjtreeNode<VfNode> {}

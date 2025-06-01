@@ -10,12 +10,11 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
+import org.junit.jupiter.api.Test;
 
 class JavaAstUtilTest extends BaseParserTest {
 
@@ -24,8 +23,9 @@ class JavaAstUtilTest extends BaseParserTest {
         ASTExpression e = parseExpr("s1+s2+s3");
 
         assertTrue(isStringConcatExpr(e));
-        assertEquals(e.descendants(ASTVariableAccess.class).toList(),
-                     flattenOperands(e).toList());
+        assertEquals(
+                e.descendants(ASTVariableAccess.class).toList(),
+                flattenOperands(e).toList());
     }
 
     @Test
@@ -37,8 +37,8 @@ class JavaAstUtilTest extends BaseParserTest {
 
         //                      This is (i+j)
         //                  vvvvvvvvvvvvvvvvvvvvv
-        assertEquals(listOf(left.getLeftOperand(), left.getRightOperand(), e.getRightOperand()),
-                     flattenOperands(e).toList());
+        assertEquals(
+                listOf(left.getLeftOperand(), left.getRightOperand(), e.getRightOperand()),
+                flattenOperands(e).toList());
     }
-
 }

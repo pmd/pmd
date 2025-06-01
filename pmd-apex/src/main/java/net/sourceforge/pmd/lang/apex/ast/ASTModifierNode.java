@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.ImmutableMap;
 import com.google.summit.ast.modifier.AnnotationModifier;
 import com.google.summit.ast.modifier.KeywordModifier;
 import com.google.summit.ast.modifier.KeywordModifier.Keyword;
 import com.google.summit.ast.modifier.Modifier;
+import java.util.List;
+import java.util.Map;
 
 public final class ASTModifierNode extends AbstractApexNode.Many<Modifier> implements AccessNode {
 
@@ -29,7 +28,6 @@ public final class ASTModifierNode extends AbstractApexNode.Many<Modifier> imple
         super(modifierNode);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -37,8 +35,7 @@ public final class ASTModifierNode extends AbstractApexNode.Many<Modifier> imple
 
     @Override
     public int getModifiers() {
-        int modifiers = nodes
-                .stream()
+        int modifiers = nodes.stream()
                 .filter(mod -> mod instanceof KeywordModifier)
                 .map(mod -> (KeywordModifier) mod)
                 .filter(mod -> OPCODES.containsKey(mod.getKeyword()))
@@ -99,16 +96,14 @@ public final class ASTModifierNode extends AbstractApexNode.Many<Modifier> imple
     }
 
     private boolean hasKeyword(Keyword keyword) {
-        return nodes
-                .stream()
+        return nodes.stream()
                 .filter(mod -> mod instanceof KeywordModifier)
                 .map(mod -> (KeywordModifier) mod)
                 .anyMatch(mod -> mod.getKeyword() == keyword);
     }
 
     private boolean hasAnnotation(String name) {
-        return nodes
-                .stream()
+        return nodes.stream()
                 .filter(mod -> mod instanceof AnnotationModifier)
                 .map(mod -> (AnnotationModifier) mod)
                 .anyMatch(mod -> mod.getName().getString().equalsIgnoreCase(name));

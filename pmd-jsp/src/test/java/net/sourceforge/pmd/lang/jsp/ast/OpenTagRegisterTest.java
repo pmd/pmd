@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -142,5 +141,4 @@ class OpenTagRegisterTest {
         elm.setName(name);
         return elm;
     }
-
 }

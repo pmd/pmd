@@ -18,18 +18,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.internal.ResourceLoader;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 class RuleSetFactoryTest extends RulesetFactoryTestBase {
     private static final String TEST_RULESET_1 = "net/sourceforge/pmd/lang/rule/TestRuleset1.xml";
@@ -140,9 +137,8 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testMultipleRules() {
         RuleSet rs = loadRuleSet(rulesetXml(
-            dummyRule(attrs -> attrs.put(NAME, "MockRuleName1")),
-            dummyRule(attrs -> attrs.put(NAME, "MockRuleName2"))
-        ));
+                dummyRule(attrs -> attrs.put(NAME, "MockRuleName1")),
+                dummyRule(attrs -> attrs.put(NAME, "MockRuleName2"))));
         assertEquals(2, rs.size());
         Set<String> expected = new HashSet<>();
         expected.add("MockRuleName1");
@@ -154,12 +150,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testSingleRuleWithPriority() {
-        Rule rule = loadFirstRule(rulesetXml(
-            rule(
-                dummyRuleDefAttrs(),
-                priority("3")
-            )
-        ));
+        Rule rule = loadFirstRule(rulesetXml(rule(dummyRuleDefAttrs(), priority("3"))));
         assertEquals(RulePriority.MEDIUM, rule.getPriority());
     }
 
@@ -177,19 +168,15 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testStringMultiPropertyDefaultDelimiter() {
         Rule r = loadFirstRule(
-            rulesetXml(
-                dummyRule(
-                    priority("3"),
-                    properties(
-                        "<property name=\"packageRegEx\" value=\"com.aptsssss,com.abc\" \ntype=\"List[String]\" description=\"valid packages\"/>"
-                    )
-                )
-            ));
+                rulesetXml(
+                        dummyRule(
+                                priority("3"),
+                                properties(
+                                        "<property name=\"packageRegEx\" value=\"com.aptsssss,com.abc\" \ntype=\"List[String]\" description=\"valid packages\"/>"))));
         Object propValue = r.getProperty(r.getPropertyDescriptor("packageRegEx"));
 
         assertEquals(listOf("com.aptsssss", "com.abc"), propValue);
     }
-
 
     /**
      * Verifies that empty values for properties are possible. Empty values can be used to disable a property.
@@ -216,9 +203,9 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testRuleSetWithDeprecatedRule() {
         RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"ruleset\">\n"
-                                     + "  <description>ruleset desc</description>\n"
-                                     + "     <rule deprecated=\"true\" ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\"/>"
-                                     + "</ruleset>");
+                + "  <description>ruleset desc</description>\n"
+                + "     <rule deprecated=\"true\" ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\"/>"
+                + "</ruleset>");
         assertEquals(1, rs.getRules().size());
         Rule rule = rs.getRuleByName("DummyBasicMockRule");
         assertNotNull(rule);
@@ -237,8 +224,8 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testRuleSetWithDeprecatedButRenamedRule() throws Exception {
         SystemLambda.tapSystemErr(() -> {
-            RuleSet rs = loadRuleSetWithDeprecationWarnings(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+            RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                    + "<ruleset name=\"test\">\n"
                     + "  <description>ruleset desc</description>\n"
                     + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
                     + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.xpath.XPathRule\" language=\"dummy\">"
@@ -265,15 +252,16 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testRuleSetWithDeprecatedRenamedRuleForDoc() {
         RuleSetLoader loader = new RuleSetLoader().includeDeprecatedRuleReferences(true);
-        RuleSet rs = loader.loadFromString("ruleset.xml",
-                                           "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
-                                               + "  <description>ruleset desc</description>\n"
-                                               + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
-                                               + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.xpath.XPathRule\" language=\"dummy\">"
-                                               + "         <description>d</description>\n"
-                                               + "         <priority>2</priority>\n"
-                                               + "     </rule>"
-                                               + "</ruleset>");
+        RuleSet rs = loader.loadFromString(
+                "ruleset.xml",
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                        + "  <description>ruleset desc</description>\n"
+                        + "     <rule deprecated=\"true\" ref=\"NewName\" name=\"OldName\"/>"
+                        + "     <rule name=\"NewName\" message=\"m\" class=\"net.sourceforge.pmd.lang.rule.xpath.XPathRule\" language=\"dummy\">"
+                        + "         <description>d</description>\n"
+                        + "         <priority>2</priority>\n"
+                        + "     </rule>"
+                        + "</ruleset>");
         assertEquals(2, rs.getRules().size());
         assertNotNull(rs.getRuleByName("NewName"));
         assertNotNull(rs.getRuleByName("OldName"));
@@ -286,8 +274,8 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testRuleSetReferencesADeprecatedRenamedRule() throws Exception {
         SystemLambda.tapSystemErr(() -> {
-            RuleSet rs = loadRuleSetWithDeprecationWarnings(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+            RuleSet rs = loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                    + "<ruleset name=\"test\">\n"
                     + "  <description>ruleset desc</description>\n"
                     + "     <rule ref=\"rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule\"/>" + "</ruleset>");
             assertEquals(1, rs.getRules().size());
@@ -295,10 +283,8 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
             assertNotNull(rule);
         });
 
-        verifyFoundAWarningWithMessage(
-            containing("Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule "
-                           + "instead of the deprecated Rule name rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule")
-        );
+        verifyFoundAWarningWithMessage(containing("Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule "
+                + "instead of the deprecated Rule name rulesets/dummy/basic.xml/OldNameOfDummyBasicMockRule"));
     }
 
     /**
@@ -319,9 +305,9 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     void testRuleSetReferencesRulesetWithADeprecatedRenamedRule() throws Exception {
         SystemLambda.tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
-                    + "  <description>ruleset desc</description>\n"
-                    + "     <rule ref=\"rulesets/dummy/basic.xml\"/>" + "</ruleset>");
+                    "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + "<ruleset name=\"test\">\n"
+                            + "  <description>ruleset desc</description>\n"
+                            + "     <rule ref=\"rulesets/dummy/basic.xml\"/>" + "</ruleset>");
             assertEquals(2, rs.getRules().size());
             assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
             assertNotNull(rs.getRuleByName("SampleXPathRule"));
@@ -376,22 +362,16 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     void testRuleSetReferencesRulesetWithAExcludedNonExistingRule() throws Exception {
         SystemLambda.tapSystemErr(() -> {
             RuleSet rs = loadRuleSetWithDeprecationWarnings(
-                rulesetXml(
-                    rulesetRef("rulesets/dummy/basic.xml",
-                               excludeRule("NonExistingRule"))
+                    rulesetXml(rulesetRef("rulesets/dummy/basic.xml", excludeRule("NonExistingRule"))));
 
-                ));
             assertEquals(2, rs.getRules().size());
             assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
             assertNotNull(rs.getRuleByName("SampleXPathRule"));
         });
         verifyFoundWarningWithMessage(
-            Mockito.never(),
-            containing("Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule")
-        );
-        verifyFoundAWarningWithMessage(containing(
-            "Exclude pattern 'NonExistingRule' did not match any rule in ruleset"
-        ));
+                Mockito.never(), containing("Discontinue using Rule rulesets/dummy/basic.xml/DeprecatedRule"));
+        verifyFoundAWarningWithMessage(
+                containing("Exclude pattern 'NonExistingRule' did not match any rule in ruleset"));
     }
 
     /**
@@ -401,18 +381,14 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testRuleSetReferencesDeprecatedRuleset() throws Exception {
         SystemLambda.tapSystemErr(() -> {
-            RuleSet rs = loadRuleSetWithDeprecationWarnings(
-                rulesetXml(
-                    rulesetRef("rulesets/dummy/deprecated.xml")
-                ));
+            RuleSet rs = loadRuleSetWithDeprecationWarnings(rulesetXml(rulesetRef("rulesets/dummy/deprecated.xml")));
             assertEquals(2, rs.getRules().size());
             assertNotNull(rs.getRuleByName("DummyBasicMockRule"));
             assertNotNull(rs.getRuleByName("SampleXPathRule"));
         });
 
-        verifyFoundAWarningWithMessage(containing(
-            "The RuleSet rulesets/dummy/deprecated.xml has been deprecated and will be removed in PMD"
-        ));
+        verifyFoundAWarningWithMessage(
+                containing("The RuleSet rulesets/dummy/deprecated.xml has been deprecated and will be removed in PMD"));
     }
 
     /**
@@ -423,19 +399,15 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testRuleSetReferencesRulesetWithAMovedRule() throws Exception {
         SystemLambda.tapSystemErr(() -> {
-            RuleSet rs = loadRuleSetWithDeprecationWarnings(
-                rulesetXml(
-                    ruleRef("rulesets/dummy/basic2.xml")
-                )
-            );
+            RuleSet rs = loadRuleSetWithDeprecationWarnings(rulesetXml(ruleRef("rulesets/dummy/basic2.xml")));
             assertEquals(1, rs.getRules().size());
             assertNotNull(rs.getRuleByName("DummyBasic2MockRule"));
         });
 
         verifyFoundWarningWithMessage(
-            Mockito.never(),
-            containing("Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic2.xml/DummyBasicMockRule")
-        );
+                Mockito.never(),
+                containing(
+                        "Use Rule name rulesets/dummy/basic.xml/DummyBasicMockRule instead of the deprecated Rule name rulesets/dummy/basic2.xml/DummyBasicMockRule"));
     }
 
     @Test
@@ -466,11 +438,8 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testExternalReferenceOverrideNonExistent() {
-        assertThrows(RuleSetLoadException.class,
-                     () -> loadFirstRule(REF_OVERRIDE_NONEXISTENT));
-        verifyFoundAnErrorWithMessage(
-            containing("Cannot set non-existent property 'test4' on rule TestNameOverride")
-        );
+        assertThrows(RuleSetLoadException.class, () -> loadFirstRule(REF_OVERRIDE_NONEXISTENT));
+        verifyFoundAnErrorWithMessage(containing("Cannot set non-existent property 'test4' on rule TestNameOverride"));
     }
 
     @Test
@@ -566,8 +535,8 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testOverridePriorityLoadWithMinimum() {
-        RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW)
-                .warnDeprecated(true);
+        RuleSetLoader rulesetLoader =
+                new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(true);
         RuleSet ruleset = rulesetLoader.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority.xml");
         // only one rule should remain, since we filter out the other rule by minimum priority
         assertEquals(1, ruleset.getRules().size(), "Number of Rules");
@@ -589,8 +558,8 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testExcludeWithMinimumPriority() {
         RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.HIGH);
-        RuleSet ruleset = rulesetLoader
-                .loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
+        RuleSet ruleset =
+                rulesetLoader.loadFromResource("net/sourceforge/pmd/rulesets/ruleset-minimum-priority-exclusion.xml");
         // no rules should be loaded
         assertEquals(0, ruleset.getRules().size(), "Number of Rules");
 
@@ -624,124 +593,92 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testSetPriority() {
-        RuleSetLoader rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_HIGH).warnDeprecated(false);
+        RuleSetLoader rulesetLoader = new RuleSetLoader()
+                .filterAbovePriority(RulePriority.MEDIUM_HIGH)
+                .warnDeprecated(false);
         assertEquals(0, rulesetLoader.loadFromString("ruleset.xml", SINGLE_RULE).size());
-        rulesetLoader = new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(false);
+        rulesetLoader =
+                new RuleSetLoader().filterAbovePriority(RulePriority.MEDIUM_LOW).warnDeprecated(false);
         assertEquals(1, rulesetLoader.loadFromString("ruleset.xml", SINGLE_RULE).size());
     }
 
     @Test
     void testLanguage() {
-        Rule r = loadFirstRule(rulesetXml(
-            dummyRule(
-                attrs -> attrs.put(SchemaConstants.LANGUAGE, "dummy")
-            )
-        ));
+        Rule r = loadFirstRule(rulesetXml(dummyRule(attrs -> attrs.put(SchemaConstants.LANGUAGE, "dummy"))));
         assertEquals(dummyLanguage(), r.getLanguage());
     }
 
     @Test
     void testIncorrectLanguage() {
-        assertCannotParse(rulesetXml(
-            dummyRule(
-                attrs -> attrs.put(SchemaConstants.LANGUAGE, "bogus")
-            )
-        ));
+        assertCannotParse(rulesetXml(dummyRule(attrs -> attrs.put(SchemaConstants.LANGUAGE, "bogus"))));
     }
 
     @Test
     void testIncorrectPriority() {
-        assertCannotParse(rulesetXml(
-            dummyRule(
-                priority("not a priority")
-            )
-        ));
+        assertCannotParse(rulesetXml(dummyRule(priority("not a priority"))));
         verifyFoundAnErrorWithMessage(containing("Not a valid priority: 'not a priority'"));
     }
 
     @Test
     void testMinimumLanguageVersion() {
-        Rule r = loadFirstRule(rulesetXml(
-            dummyRule(
-                attrs -> attrs.put(SchemaConstants.MINIMUM_LANGUAGE_VERSION, "1.4")
-            )
-        ));
-        assertEquals(dummyLanguage().getVersion("1.4"),
-                     r.getMinimumLanguageVersion());
+        Rule r = loadFirstRule(
+                rulesetXml(dummyRule(attrs -> attrs.put(SchemaConstants.MINIMUM_LANGUAGE_VERSION, "1.4"))));
+        assertEquals(dummyLanguage().getVersion("1.4"), r.getMinimumLanguageVersion());
     }
 
     @Test
     void testIncorrectMinimumLanguageVersion() {
-        assertCannotParse(rulesetXml(
-            dummyRule(
-                attrs -> attrs.put(SchemaConstants.MINIMUM_LANGUAGE_VERSION, "bogus")
-            )
-        ));
+        assertCannotParse(rulesetXml(dummyRule(attrs -> attrs.put(SchemaConstants.MINIMUM_LANGUAGE_VERSION, "bogus"))));
         verifyFoundAnErrorWithMessage(
-            containing("valid language version")
-                .and(containing("'1.0', '1.1', '1.2'")) // and not "dummy 1.0, dummy 1.1, ..."
-        );
+                containing("valid language version")
+                        .and(containing("'1.0', '1.1', '1.2'")) // and not "dummy 1.0, dummy 1.1, ..."
+                );
     }
 
     @Test
     void testIncorrectMinimumLanguageVersionWithLanguageSetInJava() {
         assertCannotParse("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                              + "<ruleset name=\"TODO\">\n"
-                              + "    <description>TODO</description>\n"
-                              + "\n"
-                              + "    <rule name=\"TODO\"\n"
-                              + "          message=\"TODO\"\n"
-                              + "          class=\"net.sourceforge.pmd.util.FooRuleWithLanguageSetInJava\"\n"
-                              + "          minimumLanguageVersion=\"12\">\n"
-                              + "        <description>TODO</description>\n"
-                              + "        <priority>2</priority>\n"
-                              + "    </rule>\n"
-                              + "\n"
-                              + "</ruleset>");
+                + "<ruleset name=\"TODO\">\n"
+                + "    <description>TODO</description>\n"
+                + "\n"
+                + "    <rule name=\"TODO\"\n"
+                + "          message=\"TODO\"\n"
+                + "          class=\"net.sourceforge.pmd.util.FooRuleWithLanguageSetInJava\"\n"
+                + "          minimumLanguageVersion=\"12\">\n"
+                + "        <description>TODO</description>\n"
+                + "        <priority>2</priority>\n"
+                + "    </rule>\n"
+                + "\n"
+                + "</ruleset>");
 
-        verifyFoundAnErrorWithMessage(
-            containing("valid language version")
-        );
+        verifyFoundAnErrorWithMessage(containing("valid language version"));
     }
 
     @Test
     void testMaximumLanguageVersion() {
-        Rule r = loadFirstRule(rulesetXml(
-            dummyRule(attrs -> attrs.put(SchemaConstants.MAXIMUM_LANGUAGE_VERSION, "1.7"))
-        ));
-        assertEquals(dummyLanguage().getVersion("1.7"),
-                     r.getMaximumLanguageVersion());
+        Rule r = loadFirstRule(
+                rulesetXml(dummyRule(attrs -> attrs.put(SchemaConstants.MAXIMUM_LANGUAGE_VERSION, "1.7"))));
+        assertEquals(dummyLanguage().getVersion("1.7"), r.getMaximumLanguageVersion());
     }
 
     @Test
     void testIncorrectMaximumLanguageVersion() {
-        assertCannotParse(rulesetXml(
-            dummyRule(attrs -> attrs.put(SchemaConstants.MAXIMUM_LANGUAGE_VERSION, "bogus"))
-        ));
-        verifyFoundAnErrorWithMessage(
-            containing("valid language version")
-                .and(containing("'1.0', '1.1', '1.2'"))
-        );
+        assertCannotParse(rulesetXml(dummyRule(attrs -> attrs.put(SchemaConstants.MAXIMUM_LANGUAGE_VERSION, "bogus"))));
+        verifyFoundAnErrorWithMessage(containing("valid language version").and(containing("'1.0', '1.1', '1.2'")));
     }
 
     @Test
     void testInvertedMinimumMaximumLanguageVersions() {
-        assertCannotParse(rulesetXml(
-            dummyRule(
-                attrs -> {
-                    attrs.put(SchemaConstants.MINIMUM_LANGUAGE_VERSION, "1.7");
-                    attrs.put(SchemaConstants.MAXIMUM_LANGUAGE_VERSION, "1.4");
-                }
-            )
-        ));
+        assertCannotParse(rulesetXml(dummyRule(attrs -> {
+            attrs.put(SchemaConstants.MINIMUM_LANGUAGE_VERSION, "1.7");
+            attrs.put(SchemaConstants.MAXIMUM_LANGUAGE_VERSION, "1.4");
+        })));
         verifyFoundAnErrorWithMessage(containing("version range"));
     }
 
     @Test
     void testDirectDeprecatedRule() {
-        Rule r = loadFirstRule(rulesetXml(
-            dummyRule(attrs -> attrs.put(DEPRECATED, "true"))
-        ));
+        Rule r = loadFirstRule(rulesetXml(dummyRule(attrs -> attrs.put(DEPRECATED, "true"))));
         assertNotNull(r, "Direct Deprecated Rule");
         assertTrue(r.isDeprecated());
     }
@@ -779,10 +716,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testExternalReferences() {
         RuleSet rs = loadRuleSet(
-            rulesetXml(
-                ruleRef("net/sourceforge/pmd/lang/rule/external-reference-ruleset.xml/MockRule")
-            )
-        );
+                rulesetXml(ruleRef("net/sourceforge/pmd/lang/rule/external-reference-ruleset.xml/MockRule")));
         assertEquals(1, rs.size());
         assertEquals(MockRule.class.getName(), rs.getRuleByName("MockRule").getRuleClass());
     }
@@ -809,18 +743,12 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testBug1202() {
-        assertCannotParse(
-            rulesetXml(
-                ruleRef(
-                    "net.sourceforge.pmd.rules.XPathRule",
-                    priority("1"),
-                    properties(
+        assertCannotParse(rulesetXml(ruleRef(
+                "net.sourceforge.pmd.rules.XPathRule",
+                priority("1"),
+                properties(
                         propertyWithValueAttr("xpath", "//TypeDeclaration"),
-                        propertyWithValueAttr("message", "Foo")
-                    )
-                )
-            )
-        );
+                        propertyWithValueAttr("message", "Foo")))));
     }
 
     /**
@@ -828,10 +756,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testEmptyRuleSetFile() {
-        RuleSet ruleset = loadRuleSet(
-            rulesetXml(
-                excludePattern(".*Test.*")
-            ));
+        RuleSet ruleset = loadRuleSet(rulesetXml(excludePattern(".*Test.*")));
         assertEquals(0, ruleset.getRules().size());
     }
 
@@ -841,11 +766,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testEmptyRuleSetReferencedShouldNotBeDeprecated() {
-        RuleSet ruleset = loadRuleSet(
-            rulesetXml(
-                ruleRef("rulesets/dummy/empty-ruleset.xml")
-            )
-        );
+        RuleSet ruleset = loadRuleSet(rulesetXml(ruleRef("rulesets/dummy/empty-ruleset.xml")));
         assertEquals(0, ruleset.getRules().size());
 
         verifyNoWarnings();
@@ -856,9 +777,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testWrongRuleNameReferenced() {
-        assertCannotParse(rulesetXml(
-            ruleRef("net/sourceforge/pmd/lang/rule/TestRuleset1.xml/ThisRuleDoesNotExist")
-        ));
+        assertCannotParse(rulesetXml(ruleRef("net/sourceforge/pmd/lang/rule/TestRuleset1.xml/ThisRuleDoesNotExist")));
     }
 
     /**
@@ -867,14 +786,14 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testRuleReferenceWithNameOverridden() {
         RuleSet rs = loadRuleSet("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                                     + "<ruleset xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                                     + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                     + "         name=\"pmd-eclipse\"\n"
-                                     + "         xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                                     + "   <description>PMD Plugin preferences rule set</description>\n"
-                                     + "<rule name=\"OverriddenDummyBasicMockRule\"\n"
-                                     + "    ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\">\n" + "</rule>\n" + "\n"
-                                     + "</ruleset>");
+                + "<ruleset xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "         name=\"pmd-eclipse\"\n"
+                + "         xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
+                + "   <description>PMD Plugin preferences rule set</description>\n"
+                + "<rule name=\"OverriddenDummyBasicMockRule\"\n"
+                + "    ref=\"rulesets/dummy/basic.xml/DummyBasicMockRule\">\n" + "</rule>\n" + "\n"
+                + "</ruleset>");
 
         Rule r = rs.getRules().iterator().next();
         assertEquals("OverriddenDummyBasicMockRule", r.getName());
@@ -891,13 +810,13 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     @Test
     void testWrongRuleNameExcluded() {
         RuleSet ruleset = loadRuleSet("<?xml version=\"1.0\"?>\n" + "<ruleset name=\"Custom ruleset for tests\"\n"
-                                          + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                                          + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                                          + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                                          + "  <description>Custom ruleset for tests</description>\n"
-                                          + "  <rule ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml\">\n"
-                                          + "    <exclude name=\"ThisRuleDoesNotExist\"/>\n" + "  </rule>\n"
-                                          + "</ruleset>\n");
+                + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
+                + "  <description>Custom ruleset for tests</description>\n"
+                + "  <rule ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml\">\n"
+                + "    <exclude name=\"ThisRuleDoesNotExist\"/>\n" + "  </rule>\n"
+                + "</ruleset>\n");
         assertEquals(4, ruleset.getRules().size());
     }
 
@@ -916,49 +835,32 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      */
     @Test
     void testExcludeAndImportTwice() {
-        RuleSet ruleset = loadRuleSet(
-            rulesetXml(
-                rulesetRef("rulesets/dummy/basic.xml",
-                           excludeRule("DummyBasicMockRule")
-                )
-            )
-        );
+        RuleSet ruleset =
+                loadRuleSet(rulesetXml(rulesetRef("rulesets/dummy/basic.xml", excludeRule("DummyBasicMockRule"))));
 
         assertNull(ruleset.getRuleByName("DummyBasicMockRule"));
 
-        RuleSet ruleset2 = loadRuleSet(
-            rulesetXml(
-                rulesetRef("rulesets/dummy/basic.xml",
-                           excludeRule("DummyBasicMockRule")
-                ),
-                rulesetRef("rulesets/dummy/basic.xml")
-            )
-        );
+        RuleSet ruleset2 = loadRuleSet(rulesetXml(
+                rulesetRef("rulesets/dummy/basic.xml", excludeRule("DummyBasicMockRule")),
+                rulesetRef("rulesets/dummy/basic.xml")));
         assertNotNull(ruleset2.getRuleByName("DummyBasicMockRule"));
 
-        RuleSet ruleset3 = loadRuleSet(
-            rulesetXml(
+        RuleSet ruleset3 = loadRuleSet(rulesetXml(
                 rulesetRef("rulesets/dummy/basic.xml"),
-                rulesetRef("rulesets/dummy/basic.xml",
-                           excludeRule("DummyBasicMockRule")
-                )
-            )
-        );
+                rulesetRef("rulesets/dummy/basic.xml", excludeRule("DummyBasicMockRule"))));
         assertNotNull(ruleset3.getRuleByName("DummyBasicMockRule"));
     }
 
     @Test
     void testMissingRuleSetNameIsWarning() throws Exception {
         SystemLambda.tapSystemErr(() -> {
-            loadRuleSetWithDeprecationWarnings(
-                "<?xml version=\"1.0\"?>\n" + "<ruleset \n"
+            loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\"?>\n" + "<ruleset \n"
                     + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
                     + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
                     + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
                     + "  <description>Custom ruleset for tests</description>\n"
                     + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
-                    + "  </ruleset>\n"
-            );
+                    + "  </ruleset>\n");
         });
 
         verifyFoundAWarningWithMessage(containing("RuleSet name is missing."));
@@ -966,180 +868,162 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
 
     @Test
     void testMissingRuleSetDescriptionIsWarning() {
-        loadRuleSetWithDeprecationWarnings(
-                "<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
-                        + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
-                        + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                        + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
-                        + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
-                        + "  </ruleset>\n"
-        );
+        loadRuleSetWithDeprecationWarnings("<?xml version=\"1.0\"?>\n" + "<ruleset name=\"then name\"\n"
+                + "    xmlns=\"http://pmd.sourceforge.net/ruleset/2.0.0\"\n"
+                + "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "    xsi:schemaLocation=\"http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd\">\n"
+                + "  <rule ref=\"rulesets/dummy/basic.xml\"/>\n"
+                + "  </ruleset>\n");
         verifyFoundAWarningWithMessage(containing("RuleSet description is missing."));
     }
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + " <description>testdesc</description>\n"
-        + " <rule \n"
-        + "\n"
-        + "  ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"> \n"
-        + "\n"
-        + " </rule>\n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + " <description>testdesc</description>\n"
+            + " <rule \n"
+            + "\n"
+            + "  ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"> \n"
+            + "\n"
+            + " </rule>\n"
+            + "</ruleset>";
 
     private static final String REF_MISSPELLED_XREF = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + "\n"
-        + " <description>testdesc</description>\n"
-        + " <rule \n"
-        + "  ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/FooMockRule1\"> \n"
-        + " </rule>\n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + "\n"
+            + " <description>testdesc</description>\n"
+            + " <rule \n"
+            + "  ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/FooMockRule1\"> \n"
+            + " </rule>\n"
+            + "</ruleset>";
 
     private static final String REF_OVERRIDE_ORIGINAL_NAME_ONE_ELEM = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + " <description>testdesc</description>\n"
-        + " <rule ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"/> \n"
-        + "\n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + " <description>testdesc</description>\n"
+            + " <rule ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule1\" message=\"TestMessageOverride\"/> \n"
+            + "\n"
+            + "</ruleset>";
 
     private static final String REF_OVERRIDE = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + " <description>testdesc</description>\n"
-        + " <rule \n"
-        + "  ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule4\" \n"
-        + "  name=\"TestNameOverride\" \n"
-        + "\n"
-        + "  message=\"Test message override\"> \n"
-        + "  <description>Test description override</description>\n"
-        + "  <example>Test example override</example>\n"
-        + "  <priority>3</priority>\n"
-        + "  <properties>\n"
-        + "   <property name=\"test2\" description=\"test2\" type=\"String\" value=\"override2\"/>\n"
-        + "   <property name=\"test3\" type=\"String\" description=\"test3\"><value>override3</value></property>\n"
-        + "\n"
-        + "  </properties>\n"
-        + " </rule>\n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + " <description>testdesc</description>\n"
+            + " <rule \n"
+            + "  ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule4\" \n"
+            + "  name=\"TestNameOverride\" \n"
+            + "\n"
+            + "  message=\"Test message override\"> \n"
+            + "  <description>Test description override</description>\n"
+            + "  <example>Test example override</example>\n"
+            + "  <priority>3</priority>\n"
+            + "  <properties>\n"
+            + "   <property name=\"test2\" description=\"test2\" type=\"String\" value=\"override2\"/>\n"
+            + "   <property name=\"test3\" type=\"String\" description=\"test3\"><value>override3</value></property>\n"
+            + "\n"
+            + "  </properties>\n"
+            + " </rule>\n"
+            + "</ruleset>";
 
     private static final String REF_OVERRIDE_NONEXISTENT = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + "\n"
-        + " <description>testdesc</description>\n"
-        + " <rule \n"
-        + "  ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule4\" \n"
-        + "  name=\"TestNameOverride\" \n"
-        + "\n"
-        + "  message=\"Test message override\"> \n"
-        + "  <description>Test description override</description>\n"
-        + "  <example>Test example override</example>\n"
-        + "  <priority>3</priority>\n"
-        + "  <properties>\n"
-        + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>\n"
-        + "  </properties>\n"
-        + " </rule>\n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + "\n"
+            + " <description>testdesc</description>\n"
+            + " <rule \n"
+            + "  ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule4\" \n"
+            + "  name=\"TestNameOverride\" \n"
+            + "\n"
+            + "  message=\"Test message override\"> \n"
+            + "  <description>Test description override</description>\n"
+            + "  <example>Test example override</example>\n"
+            + "  <priority>3</priority>\n"
+            + "  <properties>\n"
+            + "   <property name=\"test4\" description=\"test4\" type=\"String\" value=\"new property\"/>\n"
+            + "  </properties>\n"
+            + " </rule>\n"
+            + "</ruleset>";
 
     private static final String REF_INTERNAL_TO_INTERNAL = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + " <description>testdesc</description>\n"
-        + "<rule \n"
-        + "\n"
-        + "language=\"dummy\" \n"
-        + "name=\"MockRuleName\" \n"
-        + "message=\"avoid the mock rule\" \n"
-        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
-        + "</rule>\n"
-        + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"/> \n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + " <description>testdesc</description>\n"
+            + "<rule \n"
+            + "\n"
+            + "language=\"dummy\" \n"
+            + "name=\"MockRuleName\" \n"
+            + "message=\"avoid the mock rule\" \n"
+            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+            + "</rule>\n"
+            + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"/> \n"
+            + "</ruleset>";
 
     private static final String REF_INTERNAL_TO_INTERNAL_CHAIN = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + " <description>testdesc</description>\n"
-        + "<rule \n"
-        + "\n"
-        + "language=\"dummy\" \n"
-        + "name=\"MockRuleName\" \n"
-        + "message=\"avoid the mock rule\" \n"
-        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
-        + "</rule>\n"
-        + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"><priority>2</priority></rule> \n"
-        + " <rule ref=\"MockRuleNameRef\" name=\"MockRuleNameRefRef\"><priority>1</priority></rule> \n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + " <description>testdesc</description>\n"
+            + "<rule \n"
+            + "\n"
+            + "language=\"dummy\" \n"
+            + "name=\"MockRuleName\" \n"
+            + "message=\"avoid the mock rule\" \n"
+            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+            + "</rule>\n"
+            + " <rule ref=\"MockRuleName\" name=\"MockRuleNameRef\"><priority>2</priority></rule> \n"
+            + " <rule ref=\"MockRuleNameRef\" name=\"MockRuleNameRefRef\"><priority>1</priority></rule> \n"
+            + "</ruleset>";
 
     private static final String REF_INTERNAL_TO_EXTERNAL = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + " <description>testdesc</description>\n"
-        + "<rule \n"
-        + "\n"
-        + "name=\"ExternalRefRuleName\" \n"
-        + "ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule1\"/>\n"
-        + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"/> \n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + " <description>testdesc</description>\n"
+            + "<rule \n"
+            + "\n"
+            + "name=\"ExternalRefRuleName\" \n"
+            + "ref=\"net/sourceforge/pmd/lang/rule/TestRuleset1.xml/MockRule1\"/>\n"
+            + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"/> \n"
+            + "</ruleset>";
 
     private static final String REF_INTERNAL_TO_EXTERNAL_CHAIN = "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + " <description>testdesc</description>\n"
-        + "<rule \n"
-        + "\n"
-        + "name=\"ExternalRefRuleName\" \n"
-        + "ref=\"net/sourceforge/pmd/lang/rule/TestRuleset2.xml/TestRule\"/>\n"
-        + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"><priority>2</priority></rule> \n"
-        + "\n"
-        + " <rule ref=\"ExternalRefRuleNameRef\" name=\"ExternalRefRuleNameRefRef\"><priority>1</priority></rule> \n"
-        + "\n"
-        + "</ruleset>";
+            + "<ruleset name=\"test\">\n"
+            + " <description>testdesc</description>\n"
+            + "<rule \n"
+            + "\n"
+            + "name=\"ExternalRefRuleName\" \n"
+            + "ref=\"net/sourceforge/pmd/lang/rule/TestRuleset2.xml/TestRule\"/>\n"
+            + " <rule ref=\"ExternalRefRuleName\" name=\"ExternalRefRuleNameRef\"><priority>2</priority></rule> \n"
+            + "\n"
+            + " <rule ref=\"ExternalRefRuleNameRef\" name=\"ExternalRefRuleNameRefRef\"><priority>1</priority></rule> \n"
+            + "\n"
+            + "</ruleset>";
 
     private static final String EMPTY_RULESET = rulesetXml();
 
-    private static final String SINGLE_RULE =
-        rulesetXml(
-            rule(
-                dummyRuleDefAttrs(),
-                priority("3")
-            )
-        );
+    private static final String SINGLE_RULE = rulesetXml(rule(dummyRuleDefAttrs(), priority("3")));
 
-    private static final String SINGLE_RULE_EMPTY_REF =
-        "<?xml version=\"1.0\"?>\n"
-        + "<ruleset name=\"test\">\n"
-        + "<description>testdesc</description>\n"
-        + "<rule \n"
-        + "language=\"dummy\" \n"
-        + "ref=\"\" \n"
-        + "name=\"MockRuleName\" \n"
-        + "message=\"avoid the mock rule\" \n"
-        + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
-        + "<priority>3</priority>\n"
-        + "</rule></ruleset>";
+    private static final String SINGLE_RULE_EMPTY_REF = "<?xml version=\"1.0\"?>\n"
+            + "<ruleset name=\"test\">\n"
+            + "<description>testdesc</description>\n"
+            + "<rule \n"
+            + "language=\"dummy\" \n"
+            + "ref=\"\" \n"
+            + "name=\"MockRuleName\" \n"
+            + "message=\"avoid the mock rule\" \n"
+            + "class=\"net.sourceforge.pmd.lang.rule.MockRule\">\n"
+            + "<priority>3</priority>\n"
+            + "</rule></ruleset>";
 
-    private static final String PROPERTIES =
-        rulesetXml(
-            rule(dummyRuleDefAttrs(),
-                 description("testdesc2"),
-                 properties(
-                     "<property name=\"fooBoolean\" description=\"test\" type=\"Boolean\" value=\"true\" />\n",
-                     "<property name=\"fooChar\" description=\"test\" type=\"Character\" value=\"B\" />\n",
-                     "<property name=\"fooInt\" description=\"test\" type=\"Integer\" min=\"1\" max=\"10\" value=\"3\" />",
-                     "<property name=\"fooDouble\" description=\"test\" type=\"Double\" min=\"1.0\" max=\"9.0\" value=\"3.0\"  />\n",
-                     "<property name=\"fooString\" description=\"test\" type=\"String\" value=\"bar\" />\n"
-                 ))
-        );
+    private static final String PROPERTIES = rulesetXml(rule(
+            dummyRuleDefAttrs(),
+            description("testdesc2"),
+            properties(
+                    "<property name=\"fooBoolean\" description=\"test\" type=\"Boolean\" value=\"true\" />\n",
+                    "<property name=\"fooChar\" description=\"test\" type=\"Character\" value=\"B\" />\n",
+                    "<property name=\"fooInt\" description=\"test\" type=\"Integer\" min=\"1\" max=\"10\" value=\"3\" />",
+                    "<property name=\"fooDouble\" description=\"test\" type=\"Double\" min=\"1.0\" max=\"9.0\" value=\"3.0\"  />\n",
+                    "<property name=\"fooString\" description=\"test\" type=\"String\" value=\"bar\" />\n")));
 
-    private static final String XPATH =
-        rulesetXml(
-            rule(
-                dummyRuleDefAttrs(),
-                description("testDesc"),
-                properties(
-                    "<property name=\"xpath\" description=\"test\" type=\"String\">\n"
-                        + "<value>\n"
-                        + "<![CDATA[ //Block ]]>\n"
-                        + "</value>"
-                        + "</property>"
-                )
-            )
-        );
+    private static final String XPATH = rulesetXml(rule(
+            dummyRuleDefAttrs(),
+            description("testDesc"),
+            properties("<property name=\"xpath\" description=\"test\" type=\"String\">\n"
+                    + "<value>\n"
+                    + "<![CDATA[ //Block ]]>\n"
+                    + "</value>"
+                    + "</property>")));
 
     // Note: Update this RuleSet name to a different RuleSet with deprecated
     // Rules when the Rules are finally removed.
@@ -1150,23 +1034,15 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
     private static final String DEPRECATED_RULE_NAME = "MockRule3";
 
     private static final String REFERENCE_TO_DEPRECATED_RULE =
-        rulesetXml(
-            ruleRef(DEPRECATED_RULE_RULESET_NAME + "/" + DEPRECATED_RULE_NAME)
-        );
+            rulesetXml(ruleRef(DEPRECATED_RULE_RULESET_NAME + "/" + DEPRECATED_RULE_NAME));
 
     private static final String REFERENCE_TO_RULESET_WITH_DEPRECATED_RULE =
-        rulesetXml(
-            rulesetRef(DEPRECATED_RULE_RULESET_NAME)
-        );
+            rulesetXml(rulesetRef(DEPRECATED_RULE_RULESET_NAME));
 
-    private static final String INCLUDE_EXCLUDE_RULESET =
-        rulesetXml(
+    private static final String INCLUDE_EXCLUDE_RULESET = rulesetXml(
             includePattern("include1"),
             includePattern("include2"),
             excludePattern("exclude1"),
             excludePattern("exclude2"),
-            excludePattern("exclude3")
-        );
-
-
+            excludePattern("exclude3"));
 }

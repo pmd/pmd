@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.document;
 
 import java.util.Arrays;
-
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -25,6 +24,7 @@ final class SourceCodePositioner {
      * The last entry has the offset of the EOF, to avoid overflows.
      */
     private final int[] lineOffsets;
+
     private final int sourceCodeLength;
 
     private SourceCodePositioner(int[] offsets, int len) {
@@ -145,7 +145,7 @@ final class SourceCodePositioner {
     public int offsetOfEndOfLine(final int line) {
         if (!isValidLine(line)) {
             throw new IndexOutOfBoundsException(
-                line + " is not a valid line number, expected at most " + lineOffsets.length);
+                    line + " is not a valid line number, expected at most " + lineOffsets.length);
         }
 
         return lineOffsets[line];
@@ -235,8 +235,7 @@ final class SourceCodePositioner {
         private void addLineImpl(int offset, boolean isEof) {
             if (offset < 0 || offset < lastLineOffset || offset == lastLineOffset && !isEof) {
                 throw new IllegalArgumentException(
-                    "Invalid offset " + offset + " (last offset " + lastLineOffset + ")"
-                );
+                        "Invalid offset " + offset + " (last offset " + lastLineOffset + ")");
             }
             lastLineOffset = offset;
             if (count >= buf.length) {

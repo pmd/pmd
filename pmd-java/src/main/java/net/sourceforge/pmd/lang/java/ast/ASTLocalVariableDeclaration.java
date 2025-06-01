@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.document.FileLocation;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},
@@ -25,9 +23,9 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  */
 // TODO extend AbstractStatement
 public final class ASTLocalVariableDeclaration extends AbstractJavaNode
-    implements ASTStatement,
-               LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
-               InternalInterfaces.MultiVariableIdOwner {
+        implements ASTStatement,
+                LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
+                InternalInterfaces.MultiVariableIdOwner {
 
     ASTLocalVariableDeclaration(int id) {
         super(id);

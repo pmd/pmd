@@ -1,9 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
 
 /**
  * A directive of a {@linkplain ASTModuleDeclaration module declaration}.
@@ -21,9 +19,7 @@ package net.sourceforge.pmd.lang.java.ast;
  */
 public abstract class ASTModuleDirective extends AbstractJavaNode {
 
-
     ASTModuleDirective(int id) {
         super(id);
     }
-
 }

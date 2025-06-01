@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.util.designerbindings;
 
 import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -22,7 +21,6 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public interface RelatedNodesSelector {
 
-
     /**
      * Returns a list of nodes that should be highlighted when selecting
      * the given node. This is eg the nodes that correspond to usages of
@@ -35,6 +33,4 @@ public interface RelatedNodesSelector {
      * @return A list of nodes to highlight
      */
     List<Node> getHighlightedNodesWhenSelecting(Node node);
-
-
 }

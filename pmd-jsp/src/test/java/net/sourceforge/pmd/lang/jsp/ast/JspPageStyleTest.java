@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 class JspPageStyleTest extends AbstractJspNodesTst {
@@ -30,12 +28,14 @@ class JspPageStyleTest extends AbstractJspNodesTst {
     void testDirective() {
         ASTCompilationUnit root = jsp.parse(JSP_DIRECTIVE);
 
-        List<ASTJspDirective> directives = root.descendants(ASTJspDirective.class).toList();
+        List<ASTJspDirective> directives =
+                root.descendants(ASTJspDirective.class).toList();
         assertEquals(1, directives.size(), "One directive expected!");
         ASTJspDirective directive = directives.iterator().next();
         assertEquals("page", directive.getName(), "Correct directive name expected!");
 
-        List<ASTJspDirectiveAttribute> directiveAttrs = root.descendants(ASTJspDirectiveAttribute.class).toList();
+        List<ASTJspDirectiveAttribute> directiveAttrs =
+                root.descendants(ASTJspDirectiveAttribute.class).toList();
         assertEquals(2, directiveAttrs.size(), "Two directive attributes expected!");
 
         ASTJspDirectiveAttribute attr = directiveAttrs.get(0);
@@ -45,7 +45,6 @@ class JspPageStyleTest extends AbstractJspNodesTst {
         attr = directiveAttrs.get(1);
         assertEquals("session", attr.getName(), "Correct directive attribute name expected!");
         assertEquals("true", attr.getValue(), "Correct directive attribute value expected!");
-
     }
 
     /**
@@ -67,8 +66,8 @@ class JspPageStyleTest extends AbstractJspNodesTst {
         List<ASTJspScriptlet> scriptlets = jsp.getNodes(ASTJspScriptlet.class, JSP_SCRIPTLET);
         assertEquals(1, scriptlets.size(), "One scriptlet expected!");
         ASTJspScriptlet scriptlet = scriptlets.iterator().next();
-        assertEquals("someString = someString + \"suffix\";",
-                scriptlet.getContent(), "Correct scriptlet content expected!");
+        assertEquals(
+                "someString = someString + \"suffix\";", scriptlet.getContent(), "Correct scriptlet content expected!");
     }
 
     /**
@@ -87,7 +86,8 @@ class JspPageStyleTest extends AbstractJspNodesTst {
      */
     @Test
     void testExpressionInAttribute() {
-        List<ASTJspExpressionInAttribute> expressions = jsp.getNodes(ASTJspExpressionInAttribute.class, JSP_EXPRESSION_IN_ATTRIBUTE);
+        List<ASTJspExpressionInAttribute> expressions =
+                jsp.getNodes(ASTJspExpressionInAttribute.class, JSP_EXPRESSION_IN_ATTRIBUTE);
         assertEquals(1, expressions.size(), "One expression expected!");
         ASTJspExpressionInAttribute expression = expressions.iterator().next();
         assertEquals("style.getClass()", expression.getContent(), "Correct expression content expected!");
@@ -136,11 +136,15 @@ class JspPageStyleTest extends AbstractJspNodesTst {
 
     private static final String JSP_EXPRESSION = "<html><head><title> <%= someString %> </title></head></html>";
 
-    private static final String JSP_EXPRESSION_IN_ATTRIBUTE = "<html> <body> <p class='<%= style.getClass() %>'> Hello </p> </body> </html>";
+    private static final String JSP_EXPRESSION_IN_ATTRIBUTE =
+            "<html> <body> <p class='<%= style.getClass() %>'> Hello </p> </body> </html>";
 
-    private static final String JSP_EL_EXPRESSION = "<html><title>Hello ${myBean.get(\"${ World }\") } .jsp</title></html>";
+    private static final String JSP_EL_EXPRESSION =
+            "<html><title>Hello ${myBean.get(\"${ World }\") } .jsp</title></html>";
 
-    private static final String JSP_EL_EXPRESSION_IN_ATTRIBUTE = "<html> <f:validator type=\"get('type').${myValidator.find(\"'jsp'\")}\" /> </html>";
+    private static final String JSP_EL_EXPRESSION_IN_ATTRIBUTE =
+            "<html> <f:validator type=\"get('type').${myValidator.find(\"'jsp'\")}\" /> </html>";
 
-    private static final String JSF_VALUE_BINDING = "<html> <body> <p class='#{myValidator.find(\"'jsf'\")}'> Hello </p> </body> </html>";
+    private static final String JSF_VALUE_BINDING =
+            "<html> <body> <p class='#{myValidator.find(\"'jsf'\")}'> Hello </p> </body> </html>";
 }

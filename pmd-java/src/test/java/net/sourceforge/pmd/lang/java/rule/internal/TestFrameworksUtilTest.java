@@ -6,11 +6,10 @@ package net.sourceforge.pmd.lang.java.rule.internal;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import org.junit.jupiter.api.Test;
 
 class TestFrameworksUtilTest {
 
@@ -22,5 +21,4 @@ class TestFrameworksUtilTest {
         ASTMethodCall m = root.descendants(ASTMethodCall.class).toList().get(0);
         assertThat(TestFrameworksUtil.isProbableAssertCall(m)).isTrue();
     }
-
 }

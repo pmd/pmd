@@ -6,11 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.List;
 import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -33,6 +28,9 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Checks usages of explicity type arguments in a constructor call that
@@ -51,7 +49,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
  */
 public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
-    private static final String REPLACE_TYPE_ARGS_MESSAGE = "Explicit type arguments can be replaced by a diamond: `{0}`";
+    private static final String REPLACE_TYPE_ARGS_MESSAGE =
+            "Explicit type arguments can be replaced by a diamond: `{0}`";
     private static final String RAW_TYPE_MESSAGE = "Raw type use may be avoided by using a diamond: `{0}`";
     /**
      * Maximum length of the argument list (including parentheses) for
@@ -70,13 +69,13 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
         ASTTypeArguments targs = newTypeNode.getTypeArguments();
         if (targs != null && targs.isDiamond()
-            // if unresolved we can't know whether the class is generic or not
-            || TypeOps.hasUnresolvedSymbol(newType)) {
+                // if unresolved we can't know whether the class is generic or not
+                || TypeOps.hasUnresolvedSymbol(newType)) {
             return null;
         }
 
         if (!newType.isGeneric() // targs may be null, in which case this would be a raw type
-            || ctorCall.isAnonymousClass() && !supportsDiamondOnAnonymousClass(ctorCall)) {
+                || ctorCall.isAnonymousClass() && !supportsDiamondOnAnonymousClass(ctorCall)) {
             return null;
         }
 
@@ -94,7 +93,6 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         return ctorCall.getLanguageVersion().compareToVersion("9") >= 0;
     }
 
-
     /** Redo inference as described in the javadoc of this class. */
     private static boolean inferenceSucceedsWithoutTypeArgs(ASTConstructorCall call) {
         ExprContext context = call.getConversionContext();
@@ -106,7 +104,8 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         // this may not mutate the AST
         JavaExprMirrors factory = JavaExprMirrors.forObservation(infer);
 
-        InvocationNode invocContext = InternalApiBridge.getTopLevelExprContext(call).getInvocNodeIfInvocContext();
+        InvocationNode invocContext =
+                InternalApiBridge.getTopLevelExprContext(call).getInvocNodeIfInvocContext();
         ExprContext topmostContext;
         InvocationMirror mirror;
         if (invocContext == null) {
@@ -133,10 +132,8 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         MethodCallSite fakeCallSite = infer.newCallSite(mirror, targetType);
         infer.inferInvocationRecursively(fakeCallSite);
 
-        return mirror.isEquivalentToUnderlyingAst()
-            && topmostContext.acceptsType(mirror.getInferredType());
+        return mirror.isEquivalentToUnderlyingAst() && topmostContext.acceptsType(mirror.getInferredType());
     }
-
 
     private static String produceSuggestedExprImage(ASTConstructorCall ctor) {
         StringBuilder sb = new StringBuilder(30);
@@ -171,7 +168,6 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         sb.append(type.getSimpleName());
         return topLevel ? sb.append("<>") : sb;
     }
-
 
     /** Proxy that pretends it has diamond type args. */
     private static final class SpyInvocMirror implements CtorInvocationMirror {
@@ -282,5 +278,4 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             return base.isEquivalentToUnderlyingAst();
         }
     }
-
 }

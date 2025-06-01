@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
@@ -15,8 +14,10 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> IGNORE_FOR_EACH =
-        booleanProperty("ignoreForEachDecl").defaultValue(false).desc("Ignore non-final loop variables in a for-each statement.").build();
+    private static final PropertyDescriptor<Boolean> IGNORE_FOR_EACH = booleanProperty("ignoreForEachDecl")
+            .defaultValue(false)
+            .desc("Ignore non-final loop variables in a for-each statement.")
+            .build();
 
     public LocalVariableCouldBeFinalRule() {
         super(ASTLocalVariableDeclaration.class);
@@ -43,5 +44,4 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
         }
         return data;
     }
-
 }

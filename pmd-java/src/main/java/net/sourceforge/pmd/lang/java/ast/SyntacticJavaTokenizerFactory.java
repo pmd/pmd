@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.ast;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -19,7 +18,6 @@ public final class ASTWhileStatement extends AbstractStatement implements ASTLoo
         super(id);
     }
 
-
     /**
      * Returns the node that represents the guard of this loop.
      * This may be any expression of type boolean.
@@ -28,8 +26,6 @@ public final class ASTWhileStatement extends AbstractStatement implements ASTLoo
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(0);
     }
-
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.modelica.ast.ASTComponentReference;
@@ -23,7 +22,8 @@ public class ConnectUsingNonConnectorRule extends AbstractModelicaRule {
                 ResolutionResult componentTypes = componentDecl.getTypeCandidates();
                 if (!componentTypes.isUnresolved()) {
                     if (componentTypes.getBestCandidates().get(0) instanceof ModelicaClassType) {
-                        ModelicaClassType classDecl = (ModelicaClassType) componentTypes.getBestCandidates().get(0);
+                        ModelicaClassType classDecl = (ModelicaClassType)
+                                componentTypes.getBestCandidates().get(0);
                         ModelicaClassSpecialization restriction = classDecl.getSpecialization();
                         if (!classDecl.isConnectorLike()) {
                             asCtx(data).addViolation(ref, restriction.toString());

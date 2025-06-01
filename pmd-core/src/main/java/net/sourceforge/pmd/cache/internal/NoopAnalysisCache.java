@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cache.internal;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
@@ -35,7 +33,8 @@ public class NoopAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(
+            RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
         // noop
     }
 
@@ -48,5 +47,4 @@ public class NoopAnalysisCache implements AnalysisCache {
     public FileAnalysisListener startFileAnalysis(TextDocument filename) {
         return FileAnalysisListener.noop();
     }
-
 }

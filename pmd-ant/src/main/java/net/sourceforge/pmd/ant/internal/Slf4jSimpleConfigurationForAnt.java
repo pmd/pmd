@@ -9,7 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.DefaultLogger;
 import org.apache.tools.ant.Project;
@@ -17,20 +17,18 @@ import org.apache.tools.ant.XmlLogger;
 import org.apache.tools.ant.taskdefs.RecorderEntry;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-
 public final class Slf4jSimpleConfigurationForAnt {
-    private Slf4jSimpleConfigurationForAnt() { }
+    private Slf4jSimpleConfigurationForAnt() {}
 
     private static final Level DEFAULT_LEVEL = Level.INFO;
 
     // Maps from ant's Project.MSG_* to org.slf4j.event.Level
     private static final Level[] LOG_LEVELS = {
-        Level.ERROR,   // Project.MSG_ERR=0
-        Level.WARN,    // Project.MSG_WARN=1
-        Level.INFO,    // Project.MSG_INFO=2
-        Level.DEBUG,   // Project.MSG_VERBOSE=3
-        Level.TRACE,   // Project.MSG_DEBUG=4
+        Level.ERROR, // Project.MSG_ERR=0
+        Level.WARN, // Project.MSG_WARN=1
+        Level.INFO, // Project.MSG_INFO=2
+        Level.DEBUG, // Project.MSG_VERBOSE=3
+        Level.TRACE, // Project.MSG_DEBUG=4
     };
 
     @SuppressWarnings("PMD.CloseResource")
@@ -118,7 +116,8 @@ public final class Slf4jSimpleConfigurationForAnt {
                     declaredField = XmlLogger.class.getDeclaredField("msgOutputLevel");
                 } else if (l instanceof RecorderEntry) {
                     declaredField = RecorderEntry.class.getDeclaredField("loglevel");
-                } else if ("org.gradle.api.internal.project.ant.AntLoggingAdapter".equals(l.getClass().getName())) {
+                } else if ("org.gradle.api.internal.project.ant.AntLoggingAdapter"
+                        .equals(l.getClass().getName())) {
                     return determineGradleLogLevel(project, l);
                 } else {
                     try {
@@ -142,8 +141,10 @@ public final class Slf4jSimpleConfigurationForAnt {
             }
         }
 
-        project.log("Could not determine ant log level, no supported build listeners found. "
-                + "Log level is set to " + DEFAULT_LEVEL, Project.MSG_WARN);
+        project.log(
+                "Could not determine ant log level, no supported build listeners found. " + "Log level is set to "
+                        + DEFAULT_LEVEL,
+                Project.MSG_WARN);
 
         return DEFAULT_LEVEL;
     }
@@ -165,12 +166,12 @@ public final class Slf4jSimpleConfigurationForAnt {
             Object[] logLevels = gradleLogLevel.getEnumConstants();
             // the log levels in gradle are declared in the order DEBUG, INFO, LIFECYCLE, WARN, QUIET, ERROR
             Level[] mapping = new Level[] {
-                Level.TRACE,   // DEBUG
-                Level.DEBUG,   // INFO
-                Level.INFO,     // LIFECYCLE
-                Level.WARN,  // WARN
-                Level.ERROR,   // QUIET
-                Level.ERROR,   // ERROR
+                Level.TRACE, // DEBUG
+                Level.DEBUG, // INFO
+                Level.INFO, // LIFECYCLE
+                Level.WARN, // WARN
+                Level.ERROR, // QUIET
+                Level.ERROR, // ERROR
             };
 
             for (int i = 0; i < Math.min(logLevels.length, mapping.length); i++) {
@@ -186,5 +187,4 @@ public final class Slf4jSimpleConfigurationForAnt {
         project.log("Could not determine log level, falling back to default: " + DEFAULT_LEVEL, Project.MSG_WARN);
         return DEFAULT_LEVEL;
     }
-
 }

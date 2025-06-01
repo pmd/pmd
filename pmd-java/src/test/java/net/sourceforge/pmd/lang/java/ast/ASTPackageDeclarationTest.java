@@ -1,16 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
+import org.junit.jupiter.api.Test;
 
 class ASTPackageDeclarationTest extends BaseParserTest {
 
@@ -29,25 +27,13 @@ class ASTPackageDeclarationTest extends BaseParserTest {
 
     @Test
     void testReportLocation() {
-        ASTCompilationUnit nodes = java.parse(
-            "/** a javadoc comment */\n"
-                + "package \n"
-                + "     foo.\n"
-                + "     bar\n"
-                + ";"
-        );
+        ASTCompilationUnit nodes =
+                java.parse("/** a javadoc comment */\n" + "package \n" + "     foo.\n" + "     bar\n" + ";");
         ASTPackageDeclaration packageDecl = nodes.getPackageDeclaration();
         // this is the range of the Name.
         FileLocation loc = packageDecl.getReportLocation();
-        assertEquals(
-            TextPos2d.pos2d(3, 6),
-            loc.getStartPos()
-        );
-        assertEquals(
-            TextPos2d.pos2d(4, 9),
-            loc.getEndPos()
-        );
-        assertEquals(packageDecl.getTextRegion(),
-                     nodes.getTextDocument().getEntireRegion());
+        assertEquals(TextPos2d.pos2d(3, 6), loc.getStartPos());
+        assertEquals(TextPos2d.pos2d(4, 9), loc.getEndPos());
+        assertEquals(packageDecl.getTextRegion(), nodes.getTextDocument().getEntireRegion());
     }
 }

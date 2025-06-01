@@ -4,12 +4,10 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrNameDictionary;
 import org.antlr.v4.runtime.Vocabulary;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrNameDictionary;
-
 
 final class SwiftNameDictionary extends AntlrNameDictionary {
 
@@ -31,12 +29,18 @@ final class SwiftNameDictionary extends AntlrNameDictionary {
         }
 
         switch (name) {
-        case "unowned(safe)": return "unowned-safe";
-        case "unowned(unsafe)": return "unowned-unsafe";
-        case "getter:": return "getter";
-        case "setter:": return "setter";
-        case "OSXApplicationExtension\u00AD": return "OSXApplicationExtension-";
-        default: return null;
+            case "unowned(safe)":
+                return "unowned-safe";
+            case "unowned(unsafe)":
+                return "unowned-unsafe";
+            case "getter:":
+                return "getter";
+            case "setter:":
+                return "setter";
+            case "OSXApplicationExtension\u00AD":
+                return "OSXApplicationExtension-";
+            default:
+                return null;
         }
     }
 }

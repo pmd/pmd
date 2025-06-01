@@ -14,13 +14,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.visualforce.DataType;
 import net.sourceforge.pmd.lang.visualforce.VFTestUtils;
 import net.sourceforge.pmd.lang.visualforce.VfLanguageProperties;
+import org.junit.jupiter.api.Test;
 
 class ObjectFieldTypesTest {
     private static final Map<String, DataType> EXPECTED_SFDX_DATA_TYPES;
@@ -55,10 +53,13 @@ class ObjectFieldTypesTest {
      */
     @Test
     void testSfdxAccountIsProperlyParsed() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        validateSfdxAccount(objectFieldTypes, vfPagePath, VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
+        validateSfdxAccount(
+                objectFieldTypes, vfPagePath, VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     /**
@@ -66,10 +67,13 @@ class ObjectFieldTypesTest {
      */
     @Test
     void testMdapiAccountIsProperlyParsed() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf)
+                .resolve("SomePage.page");
 
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
-        validateMDAPIAccount(objectFieldTypes, vfPagePath, VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
+        validateMDAPIAccount(
+                objectFieldTypes, vfPagePath, VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue());
     }
 
     /**
@@ -78,11 +82,16 @@ class ObjectFieldTypesTest {
     @Test
     void testFieldsAreFoundInMultipleDirectories() {
         ObjectFieldTypes objectFieldTypes;
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
-            .resolve("SomePage.page");
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("SomePage.page");
 
-        List<String> paths = Arrays.asList(VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR.defaultValue().get(0),
-                                           VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Objects).toString());
+        List<String> paths = Arrays.asList(
+                VfLanguageProperties.OBJECTS_DIRECTORIES_DESCRIPTOR
+                        .defaultValue()
+                        .get(0),
+                VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Objects)
+                        .toString());
         objectFieldTypes = new ObjectFieldTypes();
         validateSfdxAccount(objectFieldTypes, vfPagePath, paths);
         validateMDAPIAccount(objectFieldTypes, vfPagePath, paths);
@@ -95,10 +104,13 @@ class ObjectFieldTypesTest {
 
     @Test
     void testInvalidDirectoryDoesNotCauseAnException() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("SomePage.page");
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("SomePage.page");
         FileId vfFileName = FileId.fromPath(vfPagePath);
 
-        List<String> paths = Arrays.asList(Paths.get("..", "objects-does-not-exist").toString());
+        List<String> paths =
+                Arrays.asList(Paths.get("..", "objects-does-not-exist").toString());
         ObjectFieldTypes objectFieldTypes = new ObjectFieldTypes();
         assertNull(objectFieldTypes.getDataType("Account.DoesNotExist__c", vfFileName, paths));
     }
@@ -121,8 +133,11 @@ class ObjectFieldTypesTest {
      * Verify that return values of {@link SalesforceFieldTypes#getDataType(String, FileId, List)} using the keys of
      * {@code expectedDataTypes} matches the values of {@code expectedDataTypes}
      */
-    static void validateDataTypes(Map<String, DataType> expectedDataTypes, SalesforceFieldTypes fieldTypes,
-                                         Path vfPagePath, List<String> paths) {
+    static void validateDataTypes(
+            Map<String, DataType> expectedDataTypes,
+            SalesforceFieldTypes fieldTypes,
+            Path vfPagePath,
+            List<String> paths) {
         FileId vfFileName = FileId.fromPath(vfPagePath);
 
         for (Map.Entry<String, DataType> entry : expectedDataTypes.entrySet()) {

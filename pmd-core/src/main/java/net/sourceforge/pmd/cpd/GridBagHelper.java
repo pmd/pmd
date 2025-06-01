@@ -58,5 +58,4 @@ class GridBagHelper {
     public void addLabel(String label) {
         add(new JLabel(label, labelAlignment));
     }
-
 }

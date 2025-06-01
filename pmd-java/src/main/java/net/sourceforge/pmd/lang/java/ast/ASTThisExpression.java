@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
-
 
 /**
  * The "this" expression. Related to the {@link ASTSuperExpression "super"} pseudo-expression.
@@ -22,7 +20,6 @@ public final class ASTThisExpression extends AbstractJavaExpr implements ASTPrim
     ASTThisExpression(int id) {
         super(id);
     }
-
 
     @Nullable
     public ASTClassType getQualifier() {

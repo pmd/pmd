@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;
@@ -37,5 +36,4 @@ public class ClassNameDeclaration extends AbstractNameDeclaration {
     public String toString() {
         return "Object " + node.getImage();
     }
-
 }

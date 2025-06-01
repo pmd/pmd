@@ -10,16 +10,14 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata;
 import net.sourceforge.pmd.lang.impl.SimpleLanguageModuleBase;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
  */
 class LanguageModuleBaseTest {
-
 
     @Test
     void testInvalidId() {
@@ -30,33 +28,48 @@ class LanguageModuleBaseTest {
         assertInvalidId("ab-c");
         assertThrows(NullPointerException.class, () -> LanguageMetadata.withId(null));
 
-        Exception e = assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId("dummy").addVersion(""),
+        Exception e = assertThrows(
+                IllegalArgumentException.class,
+                () -> LanguageMetadata.withId("dummy").addVersion(""),
                 "Empty versions should not be allowed.");
         assertEquals("Invalid version name: ''", e.getMessage());
-        assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId("dummy").addVersion(" "),
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> LanguageMetadata.withId("dummy").addVersion(" "),
                 "Empty versions should not be allowed.");
-        assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId("dummy").addVersion(null),
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> LanguageMetadata.withId("dummy").addVersion(null),
                 "Empty versions should not be allowed.");
-        assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId("dummy").addVersion("1.0", ""),
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> LanguageMetadata.withId("dummy").addVersion("1.0", ""),
                 "Empty versions should not be allowed.");
     }
 
     @Test
     void testVersions() {
-        LanguageModuleBase lang = makeLanguage(LanguageMetadata.withId("dumdum").name("Name").extensions("o").addDefaultVersion("abc"));
+        LanguageModuleBase lang = makeLanguage(
+                LanguageMetadata.withId("dumdum").name("Name").extensions("o").addDefaultVersion("abc"));
         assertThat(lang.getDefaultVersion(), equalTo(lang.getVersion("abc")));
     }
 
     @Test
     void testMissingVersions() {
-        Exception e = assertThrows(IllegalStateException.class, () -> makeLanguage(LanguageMetadata.withId("dumdum").name("Name").extensions("o")),
+        Exception e = assertThrows(
+                IllegalStateException.class,
+                () -> makeLanguage(
+                        LanguageMetadata.withId("dumdum").name("Name").extensions("o")),
                 "Languages without versions should not be allowed.");
         assertEquals("No versions for 'dumdum'", e.getMessage());
     }
 
     @Test
     void testNoExtensions() {
-        Exception ex = assertThrows(IllegalStateException.class, () -> makeLanguage(LanguageMetadata.withId("dumdum").name("Name").addVersion("abc")));
+        Exception ex = assertThrows(
+                IllegalStateException.class,
+                () -> makeLanguage(
+                        LanguageMetadata.withId("dumdum").name("Name").addVersion("abc")));
         assertThat(ex.getMessage(), containsString("extension"));
     }
 
@@ -79,7 +92,6 @@ class LanguageModuleBaseTest {
             throw new UnsupportedOperationException("fake instance");
         });
     }
-
 
     private static void assertInvalidId(String id) {
         assertThrows(IllegalArgumentException.class, () -> LanguageMetadata.withId(id));

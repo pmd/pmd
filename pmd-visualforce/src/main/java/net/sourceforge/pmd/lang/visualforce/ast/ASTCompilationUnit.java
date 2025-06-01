@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 public final class ASTCompilationUnit extends AbstractVfNode implements RootNode {
     private AstInfo<ASTCompilationUnit> astInfo;
 
-
     ASTCompilationUnit(int id) {
         super(id);
     }

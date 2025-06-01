@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.matlab.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
+import org.junit.jupiter.api.Test;
 
 class MatlabCpdLexerTest extends CpdTextComparisonTest {
 
@@ -22,7 +21,6 @@ class MatlabCpdLexerTest extends CpdTextComparisonTest {
     @Test
     void testIgnoreBetweenSpecialComments() {
         doTest("specialComments");
-
     }
 
     @Test

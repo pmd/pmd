@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -10,16 +9,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
 import net.sourceforge.pmd.reporting.RuleViolation;
-
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Renderer the results to a comma-delimited text format. All available columns
@@ -42,16 +38,22 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
     @SuppressWarnings("unchecked")
     private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
         newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
-        newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
+        newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo()
+                .getOrDefault(RuleViolation.PACKAGE_NAME, "")),
         newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
-        newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
+        newColDescriptor(
+                "priority",
+                "Priority",
+                (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
         newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
-        newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
+        newColDescriptor(
+                "desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
         newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
         newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
     };
 
-    private static @NonNull ColumnDescriptor<RuleViolation> newColDescriptor(String id, String title, Accessor<RuleViolation> accessor) {
+    private static @NonNull ColumnDescriptor<RuleViolation> newColDescriptor(
+            String id, String title, Accessor<RuleViolation> accessor) {
         return new ColumnDescriptor<>(id, title, accessor);
     }
 
@@ -84,7 +86,10 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
             return prop;
         }
 
-        prop = PropertyFactory.booleanProperty(id).defaultValue(true).desc("Include " + label + " column").build();
+        prop = PropertyFactory.booleanProperty(id)
+                .defaultValue(true)
+                .desc("Include " + label + " column")
+                .build();
         PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
         return prop;
     }
@@ -98,7 +103,6 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
             if (getProperty(prop)) {
                 actives.add(desc);
             }
-
         }
         return actives;
     }

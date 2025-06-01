@@ -4,16 +4,14 @@
 
 package net.sourceforge.pmd.lang.dart.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
+import org.junit.jupiter.api.Test;
 
 class DartCpdLexerTest extends CpdTextComparisonTest {
 
     DartCpdLexerTest() {
         super("dart", ".dart");
     }
-
 
     @Test
     void testComment() {
@@ -35,12 +33,10 @@ class DartCpdLexerTest extends CpdTextComparisonTest {
         doTest("escaped_string");
     }
 
-
     @Test
     void testIncrement() {
         doTest("increment");
     }
-
 
     @Test
     void testImports() {
@@ -61,7 +57,6 @@ class DartCpdLexerTest extends CpdTextComparisonTest {
     void testRegex() {
         doTest("regex");
     }
-
 
     @Test
     void testRegex2() {
@@ -87,5 +82,4 @@ class DartCpdLexerTest extends CpdTextComparisonTest {
     void testTabWidth() {
         doTest("tabWidth");
     }
-
 }

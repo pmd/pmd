@@ -55,7 +55,6 @@ public abstract class EscapeTranslator {
         this.builder = new FragmentedDocBuilder(original);
     }
 
-
     /**
      * Translate all the input in the buffer. This consumes this object.
      *
@@ -140,7 +139,6 @@ public abstract class EscapeTranslator {
         this.input = null;
     }
 
-
     /** Check to make sure that the stream has not been closed */
     protected final void ensureOpen() {
         if (input == null) {
@@ -151,5 +149,4 @@ public abstract class EscapeTranslator {
     protected FileLocation locationAt(int indexInInput) {
         return builder.toLocation(indexInInput);
     }
-
 }

@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.ElementType;
@@ -13,12 +12,6 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymEnum;
@@ -27,7 +20,10 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 /**
  * Abstraction over a {@link Class} instance. This is not a type, it's
@@ -45,10 +41,7 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  *
  * @since 7.0.0
  */
-public interface JClassSymbol extends JTypeDeclSymbol,
-                                      JTypeParameterOwnerSymbol,
-                                      BoundToNode<ASTTypeDeclaration> {
-
+public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol, BoundToNode<ASTTypeDeclaration> {
 
     /**
      * Returns the binary name of this type, as specified by the JLS:
@@ -75,14 +68,12 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     @NonNull
     String getBinaryName();
 
-
     /**
      * Returns the simple name of this class, as specified by
      * {@link Class#getCanonicalName()}.
      */
     @Nullable
     String getCanonicalName();
-
 
     /**
      * Returns the method or constructor this symbol is declared in, if
@@ -95,7 +86,8 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      *
      * @see Class#getEnclosingMethod()
      */
-    @Nullable JExecutableSymbol getEnclosingMethod();
+    @Nullable
+    JExecutableSymbol getEnclosingMethod();
 
     @Override
     default JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
@@ -103,14 +95,12 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return enclosingMethod != null ? enclosingMethod : getEnclosingClass();
     }
 
-
     /**
      * Returns the member classes declared directly in this class.
      *
      * @see Class#getDeclaredClasses()
      */
     List<JClassSymbol> getDeclaredClasses();
-
 
     /** Returns a class with the given name defined in this class. */
     @Nullable
@@ -123,7 +113,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return null;
     }
 
-
     /**
      * Returns the methods declared directly in this class.
      * <i>This excludes bridges and other synthetic methods.</i>
@@ -135,7 +124,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * @see Class#getDeclaredMethods()
      */
     List<JMethodSymbol> getDeclaredMethods();
-
 
     /**
      * Returns the constructors declared by this class.
@@ -150,7 +138,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      */
     List<JConstructorSymbol> getConstructors();
 
-
     /**
      * Returns the fields declared directly in this class.
      * <i>This excludes synthetic fields.</i>
@@ -162,7 +149,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * @see Class#getDeclaredFields()
      */
     List<JFieldSymbol> getDeclaredFields();
-
 
     /** Returns a field with the given name defined in this class. */
     @Nullable
@@ -185,7 +171,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return Collections.emptyList();
     }
 
-
     /**
      * Returns a list with all record components. If this symbol does
      * not represent a record, returns an empty list. The order of values
@@ -195,14 +180,12 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return Collections.emptyList();
     }
 
-
     /** Returns the list of super interface types, under the given substitution. */
     List<JClassType> getSuperInterfaceTypes(Substitution substitution);
 
-
     /** Returns the superclass type, under the given substitution. */
-    @Nullable JClassType getSuperclassType(Substitution substitution);
-
+    @Nullable
+    JClassType getSuperclassType(Substitution substitution);
 
     /**
      * Returns the superclass symbol if it exists. Returns null if this
@@ -212,20 +195,16 @@ public interface JClassSymbol extends JTypeDeclSymbol,
     @Nullable
     JClassSymbol getSuperclass();
 
-
     /** Returns the direct super-interfaces of this class or interface symbol. */
     List<JClassSymbol> getSuperInterfaces();
-
 
     default boolean isAbstract() {
         return Modifier.isAbstract(getModifiers());
     }
 
-
     /** Returns the component symbol, returns null if this is not an array. */
     @Nullable
     JTypeDeclSymbol getArrayComponent();
-
 
     boolean isArray();
 
@@ -323,10 +302,10 @@ public interface JClassSymbol extends JTypeDeclSymbol,
             return null;
         }
         return Optional.ofNullable(getDeclaredAnnotation(Retention.class))
-                       .map(annot -> annot.getAttribute("value"))
-                       .filter(value -> value instanceof SymEnum)
-                       .map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))
-                       .orElse(RetentionPolicy.CLASS);
+                .map(annot -> annot.getAttribute("value"))
+                .filter(value -> value instanceof SymEnum)
+                .map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))
+                .orElse(RetentionPolicy.CLASS);
     }
 
     /**
@@ -356,7 +335,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         return !isInterface() && !isArray() && !isPrimitive();
     }
 
-
     /**
      * Returns the toplevel class containing this class. If this is a
      * toplevel class, returns this.
@@ -368,7 +346,6 @@ public interface JClassSymbol extends JTypeDeclSymbol,
         }
         return e;
     }
-
 
     @Override
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {

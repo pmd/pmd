@@ -5,11 +5,9 @@
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.util.Objects;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A {@link FileAnalysisException} thrown when the source format is invalid,

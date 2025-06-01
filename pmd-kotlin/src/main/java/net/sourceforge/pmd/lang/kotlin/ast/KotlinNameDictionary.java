@@ -4,10 +4,8 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import org.antlr.v4.runtime.Vocabulary;
-
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrNameDictionary;
-
+import org.antlr.v4.runtime.Vocabulary;
 
 final class KotlinNameDictionary extends AntlrNameDictionary {
 

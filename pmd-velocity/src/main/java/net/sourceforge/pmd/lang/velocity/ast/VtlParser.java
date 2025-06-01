@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.velocity.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Adapter for the VtlParser.
@@ -46,6 +45,4 @@ public class VtlParser extends JjtreeParserAdapter<ASTTemplate> {
     protected ASTTemplate parseImpl(CharStream cs, ParserTask task) throws ParseException {
         return new VtlParserImpl(cs).Template().makeTaskInfo(task);
     }
-
-
 }

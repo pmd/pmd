@@ -18,12 +18,14 @@ public class VtlLanguageModule extends SimpleLanguageModuleBase {
     static final String NAME = "Velocity Template Language (VTL)";
 
     public VtlLanguageModule() {
-        super(LanguageMetadata.withId(ID).name(NAME)
-                              .extensions("vm")
-                              .addVersion("2.0")
-                              .addVersion("2.1")
-                              .addVersion("2.2")
-                              .addDefaultVersion("2.3"),
+        super(
+                LanguageMetadata.withId(ID)
+                        .name(NAME)
+                        .extensions("vm")
+                        .addVersion("2.0")
+                        .addVersion("2.1")
+                        .addVersion("2.2")
+                        .addDefaultVersion("2.3"),
                 new VtlHandler());
     }
 

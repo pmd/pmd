@@ -17,7 +17,6 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -26,8 +25,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class FileUtil {
 
-    private FileUtil() {
-    }
+    private FileUtil() {}
 
     /**
      * Helper method to get a filename without its extension
@@ -114,12 +112,10 @@ public final class FileUtil {
      */
     public static List<Path> readFilelistEntries(Path filelist) throws IOException {
         return Files.readAllLines(filelist).stream()
-                    .flatMap(it -> Arrays.stream(it.split(",")))
-                    .map(String::trim)
-                    .filter(StringUtils::isNotBlank)
-                    .map(Paths::get)
-                    .collect(Collectors.toList());
+                .flatMap(it -> Arrays.stream(it.split(",")))
+                .map(String::trim)
+                .filter(StringUtils::isNotBlank)
+                .map(Paths::get)
+                .collect(Collectors.toList());
     }
-
-
 }

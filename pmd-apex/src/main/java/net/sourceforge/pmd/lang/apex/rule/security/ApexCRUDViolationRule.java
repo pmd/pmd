@@ -1,12 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.intProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
 
+import com.google.common.base.Objects;
+import com.google.common.collect.HashMultimap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,9 +21,6 @@ import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
@@ -57,9 +55,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
-
-import com.google.common.base.Objects;
-import com.google.common.collect.HashMultimap;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Finding missed CRUD checks for SOQL and DML operations.
@@ -68,10 +64,10 @@ import com.google.common.collect.HashMultimap;
  *
  */
 public class ApexCRUDViolationRule extends AbstractApexRule {
-    private static final Pattern SELECT_FROM_PATTERN = Pattern.compile("[\\S|\\s]+?FROM[\\s]+?(\\w+)",
-            Pattern.CASE_INSENSITIVE);
-    private static final Pattern EXTRACT_SIMPLE_TYPE_PATTERN = Pattern.compile("^(?:list<)?list<(\\S+?)>>?$",
-            Pattern.CASE_INSENSITIVE);
+    private static final Pattern SELECT_FROM_PATTERN =
+            Pattern.compile("[\\S|\\s]+?FROM[\\s]+?(\\w+)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern EXTRACT_SIMPLE_TYPE_PATTERN =
+            Pattern.compile("^(?:list<)?list<(\\S+?)>>?$", Pattern.CASE_INSENSITIVE);
 
     private static final String IS_CREATEABLE = "isCreateable";
     private static final String IS_DELETABLE = "isDeletable";
@@ -86,63 +82,87 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static final String ACCESS_LEVEL = "AccessLevel";
 
     // ESAPI.accessController().isAuthorizedToView(Lead.sObject, fields)
-    private static final String[] ESAPI_ISAUTHORIZED_TO_VIEW = new String[] { "ESAPI", "accessController",
-        "isAuthorizedToView", };
-    private static final String[] ESAPI_ISAUTHORIZED_TO_CREATE = new String[] { "ESAPI", "accessController",
-        "isAuthorizedToCreate", };
-    private static final String[] ESAPI_ISAUTHORIZED_TO_UPDATE = new String[] { "ESAPI", "accessController",
-        "isAuthorizedToUpdate", };
-    private static final String[] ESAPI_ISAUTHORIZED_TO_DELETE = new String[] { "ESAPI", "accessController",
-        "isAuthorizedToDelete", };
+    private static final String[] ESAPI_ISAUTHORIZED_TO_VIEW = new String[] {
+        "ESAPI", "accessController", "isAuthorizedToView",
+    };
+    private static final String[] ESAPI_ISAUTHORIZED_TO_CREATE = new String[] {
+        "ESAPI", "accessController", "isAuthorizedToCreate",
+    };
+    private static final String[] ESAPI_ISAUTHORIZED_TO_UPDATE = new String[] {
+        "ESAPI", "accessController", "isAuthorizedToUpdate",
+    };
+    private static final String[] ESAPI_ISAUTHORIZED_TO_DELETE = new String[] {
+        "ESAPI", "accessController", "isAuthorizedToDelete",
+    };
     // ESAPI doesn't provide support for undelete or merge
 
-    private static final String[] RESERVED_KEYS_FLS = new String[] { "Schema", S_OBJECT_TYPE, };
+    private static final String[] RESERVED_KEYS_FLS = new String[] {
+        "Schema", S_OBJECT_TYPE,
+    };
 
-    private static final Pattern WITH_SECURITY_ENFORCED = Pattern.compile("(?is).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
+    private static final Pattern WITH_SECURITY_ENFORCED =
+            Pattern.compile("(?is).*[^']\\s*WITH\\s+SECURITY_ENFORCED\\s*[^']*");
 
-    //Added For USER MODE
+    // Added For USER MODE
     private static final Pattern WITH_USER_MODE = Pattern.compile("(?is).*[^']\\s*WITH\\s+USER_MODE\\s*[^']*");
-    //Added For SYSTEM MODE
+    // Added For SYSTEM MODE
     private static final Pattern WITH_SYSTEM_MODE = Pattern.compile("(?is).*[^']\\s*WITH\\s+SYSTEM_MODE\\s*[^']*");
 
     // <operation>AuthMethodPattern config properties; these are string properties instead of regex properties to help
     // ensure that the compiled patterns are case-insensitive vs. requiring the pattern author to use "(?i)"
-    private static final PropertyDescriptor<String> CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("create");
-    private static final PropertyDescriptor<String> READ_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("read");
-    private static final PropertyDescriptor<String> UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("update");
-    private static final PropertyDescriptor<String> DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("delete");
-    private static final PropertyDescriptor<String> UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("undelete");
-    private static final PropertyDescriptor<String> MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR = authMethodPatternProperty("merge");
+    private static final PropertyDescriptor<String> CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR =
+            authMethodPatternProperty("create");
+    private static final PropertyDescriptor<String> READ_AUTH_METHOD_PATTERN_DESCRIPTOR =
+            authMethodPatternProperty("read");
+    private static final PropertyDescriptor<String> UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR =
+            authMethodPatternProperty("update");
+    private static final PropertyDescriptor<String> DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR =
+            authMethodPatternProperty("delete");
+    private static final PropertyDescriptor<String> UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR =
+            authMethodPatternProperty("undelete");
+    private static final PropertyDescriptor<String> MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR =
+            authMethodPatternProperty("merge");
 
     // <operation>AuthMethodTypeParamIndex config properties
-    private static final PropertyDescriptor<Integer> CREATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("create");
-    private static final PropertyDescriptor<Integer> READ_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("read");
-    private static final PropertyDescriptor<Integer> UPDATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("update");
-    private static final PropertyDescriptor<Integer> DELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("delete");
-    private static final PropertyDescriptor<Integer> UNDELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("undelete");
-    private static final PropertyDescriptor<Integer> MERGE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR = authMethodTypeParamIndexProperty("merge");
+    private static final PropertyDescriptor<Integer> CREATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR =
+            authMethodTypeParamIndexProperty("create");
+    private static final PropertyDescriptor<Integer> READ_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR =
+            authMethodTypeParamIndexProperty("read");
+    private static final PropertyDescriptor<Integer> UPDATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR =
+            authMethodTypeParamIndexProperty("update");
+    private static final PropertyDescriptor<Integer> DELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR =
+            authMethodTypeParamIndexProperty("delete");
+    private static final PropertyDescriptor<Integer> UNDELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR =
+            authMethodTypeParamIndexProperty("undelete");
+    private static final PropertyDescriptor<Integer> MERGE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR =
+            authMethodTypeParamIndexProperty("merge");
 
     // Auth method config property correlation information
-    private static final Map<PropertyDescriptor<String>, PropertyDescriptor<Integer>> AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP = new HashMap<PropertyDescriptor<String>, PropertyDescriptor<Integer>>() {
-        {
-            put(CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR, CREATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
-            put(READ_AUTH_METHOD_PATTERN_DESCRIPTOR, READ_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
-            put(UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR, UPDATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
-            put(DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, DELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
-            put(UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, UNDELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
-            put(MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR, MERGE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
-        }
-    };
-    private static final Map<PropertyDescriptor<String>, String> AUTH_METHOD_TO_DML_OPERATION_MAP = new HashMap<PropertyDescriptor<String>, String>() {
-        {
-            put(CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_CREATEABLE);
-            put(READ_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_ACCESSIBLE);
-            put(UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_UPDATEABLE);
-            put(DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_DELETABLE);
-            put(UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_UNDELETABLE);
-            put(MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_MERGEABLE);
-        }
-    };
+    private static final Map<PropertyDescriptor<String>, PropertyDescriptor<Integer>>
+            AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP =
+                    new HashMap<PropertyDescriptor<String>, PropertyDescriptor<Integer>>() {
+                        {
+                            put(CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR, CREATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+                            put(READ_AUTH_METHOD_PATTERN_DESCRIPTOR, READ_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+                            put(UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR, UPDATE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+                            put(DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, DELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+                            put(
+                                    UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR,
+                                    UNDELETE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+                            put(MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR, MERGE_AUTH_METHOD_TYPE_PARAM_INDEX_DESCRIPTOR);
+                        }
+                    };
+    private static final Map<PropertyDescriptor<String>, String> AUTH_METHOD_TO_DML_OPERATION_MAP =
+            new HashMap<PropertyDescriptor<String>, String>() {
+                {
+                    put(CREATE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_CREATEABLE);
+                    put(READ_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_ACCESSIBLE);
+                    put(UPDATE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_UPDATEABLE);
+                    put(DELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_DELETABLE);
+                    put(UNDELETE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_UNDELETABLE);
+                    put(MERGE_AUTH_METHOD_PATTERN_DESCRIPTOR, IS_MERGEABLE);
+                }
+            };
 
     // Compiled pattern cache for configured method name patterns
     private final Map<String, Pattern> compiledAuthMethodPatternCache = new HashMap<>();
@@ -155,7 +175,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     public ApexCRUDViolationRule() {
         // Register auth method config properties
-        for (Map.Entry<PropertyDescriptor<String>, PropertyDescriptor<Integer>> entry : AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.entrySet()) {
+        for (Map.Entry<PropertyDescriptor<String>, PropertyDescriptor<Integer>> entry :
+                AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.entrySet()) {
             PropertyDescriptor<String> authMethodPatternDescriptor = entry.getKey();
             PropertyDescriptor<Integer> authMethodTypeParamIndexDescriptor = entry.getValue();
             definePropertyDescriptor(authMethodPatternDescriptor);
@@ -182,8 +203,11 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
 
         for (ASTMethod n : node.descendants(ASTMethod.class)) {
-            StringBuilder sb = new StringBuilder().append(n.getDefiningType()).append(":")
-                    .append(n.getCanonicalName()).append(":")
+            StringBuilder sb = new StringBuilder()
+                    .append(n.getDefiningType())
+                    .append(":")
+                    .append(n.getCanonicalName())
+                    .append(":")
                     .append(n.getArity());
             classMethods.put(sb.toString(), n);
         }
@@ -200,33 +224,33 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             }
 
             switch (node.getMethodName().toLowerCase(Locale.ROOT)) {
-            case "insert":
-            case "insertasync":
-            case "insertimmediate":
-                checkForCRUD(node, data, IS_CREATEABLE);
-                break;
-            case "update":
-            case "updateasync":
-            case "updateimmediate":
-                checkForCRUD(node, data, IS_UPDATEABLE);
-                break;
-            case "delete":
-            case "deleteasync":
-            case "deleteimmediate":
-                checkForCRUD(node, data, IS_DELETABLE);
-                break;
-            case "undelete":
-                checkForCRUD(node, data, IS_UNDELETABLE);
-                break;
-            case "upsert":
-                checkForCRUD(node, data, IS_CREATEABLE);
-                checkForCRUD(node, data, IS_UPDATEABLE);
-                break;
-            case "merge":
-                checkForCRUD(node, data, IS_MERGEABLE);
-                break;
-            default:
-                break;
+                case "insert":
+                case "insertasync":
+                case "insertimmediate":
+                    checkForCRUD(node, data, IS_CREATEABLE);
+                    break;
+                case "update":
+                case "updateasync":
+                case "updateimmediate":
+                    checkForCRUD(node, data, IS_UPDATEABLE);
+                    break;
+                case "delete":
+                case "deleteasync":
+                case "deleteimmediate":
+                    checkForCRUD(node, data, IS_DELETABLE);
+                    break;
+                case "undelete":
+                    checkForCRUD(node, data, IS_UNDELETABLE);
+                    break;
+                case "upsert":
+                    checkForCRUD(node, data, IS_CREATEABLE);
+                    checkForCRUD(node, data, IS_UPDATEABLE);
+                    break;
+                case "merge":
+                    checkForCRUD(node, data, IS_MERGEABLE);
+                    break;
+                default:
+                    break;
             }
 
         } else {
@@ -252,7 +276,9 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 List<String> names = ref.getNames();
                 if (names.size() == 1 && ACCESS_LEVEL.equalsIgnoreCase(names.get(0))) {
                     return true;
-                } else if (names.size() == 2 && "System".equalsIgnoreCase(names.get(0)) && ACCESS_LEVEL.equalsIgnoreCase(names.get(1))) {
+                } else if (names.size() == 2
+                        && "System".equalsIgnoreCase(names.get(0))
+                        && ACCESS_LEVEL.equalsIgnoreCase(names.get(1))) {
                     return true;
                 }
             }
@@ -346,7 +372,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
 
         return data;
-
     }
 
     @Override
@@ -358,7 +383,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(final ASTFieldDeclaration node, Object data) {
-        ASTFieldDeclarationStatements field = node.ancestors(ASTFieldDeclarationStatements.class).first();
+        ASTFieldDeclarationStatements field =
+                node.ancestors(ASTFieldDeclarationStatements.class).first();
         if (field != null) {
             String namesString = field.getTypeName();
             addVariableToMapping(Helper.getFQVariableName(node), namesString);
@@ -420,7 +446,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
 
         return data;
-
     }
 
     private void collectCRUDMethodLevelChecks(final ASTMethodCallExpression node) {
@@ -454,8 +479,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             // ESAPI doesn't provide support for undelete or merge
 
             // see if getDescribe()
-            final ASTMethodCallExpression nestedMethodCall = ref
-                    .firstChild(ASTMethodCallExpression.class);
+            final ASTMethodCallExpression nestedMethodCall = ref.firstChild(ASTMethodCallExpression.class);
             if (nestedMethodCall != null) {
                 if (isLastMethodName(nestedMethodCall, S_OBJECT_TYPE, GET_DESCRIBE)) {
                     String resolvedType = getType(nestedMethodCall);
@@ -472,12 +496,12 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private boolean isLastMethodName(final ASTMethodCallExpression methodNode, final String className,
-            final String methodName) {
+    private boolean isLastMethodName(
+            final ASTMethodCallExpression methodNode, final String className, final String methodName) {
         final ASTReferenceExpression reference = methodNode.firstChild(ASTReferenceExpression.class);
         if (reference != null && !reference.getNames().isEmpty()) {
-            if (reference.getNames().get(reference.getNames().size() - 1)
-                    .equalsIgnoreCase(className) && Helper.isMethodName(methodNode, methodName)) {
+            if (reference.getNames().get(reference.getNames().size() - 1).equalsIgnoreCase(className)
+                    && Helper.isMethodName(methodNode, methodName)) {
                 return true;
             }
         }
@@ -487,37 +511,46 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     private boolean isWithSecurityEnforced(final ApexNode<?> node) {
         return node instanceof ASTSoqlExpression
-                && WITH_SECURITY_ENFORCED.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+                && WITH_SECURITY_ENFORCED
+                        .matcher(((ASTSoqlExpression) node).getQuery())
+                        .matches();
     }
 
-    //For USER_MODE
+    // For USER_MODE
     private boolean isWithUserMode(final ApexNode<?> node) {
         return node instanceof ASTSoqlExpression
-            && WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+                && WITH_USER_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
     }
 
-    //For System Mode
+    // For System Mode
     private boolean isWithSystemMode(final ApexNode<?> node) {
         return node instanceof ASTSoqlExpression
-            && WITH_SYSTEM_MODE.matcher(((ASTSoqlExpression) node).getQuery()).matches();
+                && WITH_SYSTEM_MODE
+                        .matcher(((ASTSoqlExpression) node).getQuery())
+                        .matches();
     }
 
     private String getType(final ASTMethodCallExpression methodNode) {
         final ASTReferenceExpression reference = methodNode.firstChild(ASTReferenceExpression.class);
         if (!reference.getNames().isEmpty()) {
-            return new StringBuilder().append(reference.getDefiningType()).append(":")
-                    .append(reference.getNames().get(0)).toString();
+            return new StringBuilder()
+                    .append(reference.getDefiningType())
+                    .append(":")
+                    .append(reference.getNames().get(0))
+                    .toString();
         }
         return "";
     }
 
-    private void extractObjectAndFields(final List<String> listIdentifiers, final String method,
-            final String definingType) {
+    private void extractObjectAndFields(
+            final List<String> listIdentifiers, final String method, final String definingType) {
 
         int flsIndex = Collections.lastIndexOfSubList(listIdentifiers, Arrays.asList(RESERVED_KEYS_FLS));
         if (flsIndex != -1) {
             String objectTypeName = listIdentifiers.get(flsIndex + RESERVED_KEYS_FLS.length);
-            if (!typeToDMLOperationMapping.get(definingType + ":" + objectTypeName).contains(method)) {
+            if (!typeToDMLOperationMapping
+                    .get(definingType + ":" + objectTypeName)
+                    .contains(method)) {
                 typeToDMLOperationMapping.put(definingType + ":" + objectTypeName, method);
             }
         }
@@ -544,8 +577,10 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         if (variable != null) {
             final String type = varToTypeMapping.get(Helper.getFQVariableName(variable));
             if (type != null) {
-                StringBuilder typeCheck = new StringBuilder().append(node.getDefiningType())
-                        .append(":").append(type);
+                StringBuilder typeCheck = new StringBuilder()
+                        .append(node.getDefiningType())
+                        .append(":")
+                        .append(type);
 
                 validateCRUDCheckPresent(node, data, crudMethod, typeCheck.toString());
             }
@@ -591,7 +626,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
             final List<ASTMethod> constructorMethods = findConstructorMethods();
             for (ASTMethod method : constructorMethods) {
-                innerMethodCalls.addAll(method.descendants(ASTMethodCallExpression.class).toList());
+                innerMethodCalls.addAll(
+                        method.descendants(ASTMethodCallExpression.class).toList());
             }
 
             // some methods might be within this class
@@ -601,15 +637,18 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         return innerMethodCalls;
     }
 
-    private void recursivelyEvaluateCRUDMethodCalls(final ApexNode<?> self,
-            final Set<ASTMethodCallExpression> innerMethodCalls, final ASTBlockStatement blockStatement) {
+    private void recursivelyEvaluateCRUDMethodCalls(
+            final ApexNode<?> self,
+            final Set<ASTMethodCallExpression> innerMethodCalls,
+            final ASTBlockStatement blockStatement) {
         if (blockStatement != null) {
             int numberOfStatements = blockStatement.getNumChildren();
             for (int i = 0; i < numberOfStatements; i++) {
                 Node n = blockStatement.getChild(i);
 
                 if (n instanceof ASTIfElseBlockStatement) {
-                    List<ASTBlockStatement> innerBlocks = n.descendants(ASTBlockStatement.class).toList();
+                    List<ASTBlockStatement> innerBlocks =
+                            n.descendants(ASTBlockStatement.class).toList();
                     for (ASTBlockStatement innerBlock : innerBlocks) {
                         recursivelyEvaluateCRUDMethodCalls(self, innerMethodCalls, innerBlock);
                     }
@@ -619,17 +658,19 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                 if (Objects.equal(match, self)) {
                     break;
                 }
-                ASTMethodCallExpression methodCall = n.descendants(ASTMethodCallExpression.class).first();
+                ASTMethodCallExpression methodCall =
+                        n.descendants(ASTMethodCallExpression.class).first();
                 if (methodCall != null) {
                     mapCallToMethodDecl(self, innerMethodCalls, Arrays.asList(methodCall));
                 }
             }
-
         }
     }
 
-    private void mapCallToMethodDecl(final ApexNode<?> self,
-            final Set<ASTMethodCallExpression> innerMethodCalls, final List<ASTMethodCallExpression> nodes) {
+    private void mapCallToMethodDecl(
+            final ApexNode<?> self,
+            final Set<ASTMethodCallExpression> innerMethodCalls,
+            final List<ASTMethodCallExpression> nodes) {
         for (ASTMethodCallExpression node : nodes) {
             if (Objects.equal(node, self)) {
                 break;
@@ -637,7 +678,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
             final ASTMethod methodBody = resolveMethodCalls(node);
             if (methodBody != null) {
-                innerMethodCalls.addAll(methodBody.descendants(ASTMethodCallExpression.class).toList());
+                innerMethodCalls.addAll(
+                        methodBody.descendants(ASTMethodCallExpression.class).toList());
             } else {
                 // If we couldn't resolve it locally, add any calls for configured authorization patterns
                 if (isAuthMethodInvocation(node)) {
@@ -648,12 +690,18 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     private List<ASTMethod> findConstructorMethods() {
-        return classMethods.values().stream().filter(m -> m.isConstructor() || m.isStaticInitializer()).collect(Collectors.toList());
+        return classMethods.values().stream()
+                .filter(m -> m.isConstructor() || m.isStaticInitializer())
+                .collect(Collectors.toList());
     }
 
     private ASTMethod resolveMethodCalls(final ASTMethodCallExpression node) {
-        StringBuilder sb = new StringBuilder().append(node.getDefiningType()).append(":")
-                .append(node.getMethodName()).append(":").append(node.getInputParametersSize());
+        StringBuilder sb = new StringBuilder()
+                .append(node.getDefiningType())
+                .append(":")
+                .append(node.getMethodName())
+                .append(":")
+                .append(node.getInputParametersSize());
         return classMethods.get(sb.toString());
     }
 
@@ -678,18 +726,18 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             if (reference != null) {
                 List<String> identifiers = reference.getNames();
                 if (identifiers.size() == 1) {
-                    StringBuilder sb = new StringBuilder().append(node.getDefiningType())
-                            .append(":").append(identifiers.get(0));
+                    StringBuilder sb = new StringBuilder()
+                            .append(node.getDefiningType())
+                            .append(":")
+                            .append(identifiers.get(0));
                     checkedTypeToDMLOperationViaESAPI.put(sb.toString(), dmlOperation);
                 }
-
             }
         }
-
     }
 
-    private boolean validateCRUDCheckPresent(final ApexNode<?> node, final Object data, final String crudMethod,
-            final String typeCheck) {
+    private boolean validateCRUDCheckPresent(
+            final ApexNode<?> node, final Object data, final String crudMethod, final String typeCheck) {
         boolean missingKey = !typeToDMLOperationMapping.containsKey(typeCheck);
         boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod)
                 && !isProperAuthPatternBasedCheckForDML(typeCheck, crudMethod);
@@ -743,7 +791,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         final ASTUserClass wrappingClass = node.ancestors(ASTUserClass.class).first();
 
         if (wrappingClass != null && Helper.isTestMethodOrClass(wrappingClass)
-            || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
+                || wrappingMethod != null && Helper.isTestMethodOrClass(wrappingMethod)) {
             return;
         }
 
@@ -751,12 +799,15 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             returnType = getReturnType(wrappingMethod);
         }
         boolean violationAdded = false;
-        final ASTVariableDeclaration variableDecl = node.ancestors(ASTVariableDeclaration.class).first();
+        final ASTVariableDeclaration variableDecl =
+                node.ancestors(ASTVariableDeclaration.class).first();
         if (variableDecl != null) {
             String type = variableDecl.getType();
             type = getSimpleType(type);
-            StringBuilder typeCheck = new StringBuilder().append(variableDecl.getDefiningType())
-                    .append(":").append(type);
+            StringBuilder typeCheck = new StringBuilder()
+                    .append(variableDecl.getDefiningType())
+                    .append(":")
+                    .append(type);
 
             if (typesFromSOQL.isEmpty()) {
                 violationAdded = validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
@@ -772,7 +823,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return;
         }
 
-        final ASTAssignmentExpression assignment = node.ancestors(ASTAssignmentExpression.class).first();
+        final ASTAssignmentExpression assignment =
+                node.ancestors(ASTAssignmentExpression.class).first();
         if (assignment != null) {
             final ASTVariableExpression variable = assignment.firstChild(ASTVariableExpression.class);
             if (variable != null) {
@@ -788,7 +840,6 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     }
                 }
             }
-
         }
 
         // If the node's already in violation, we don't need to keep checking.
@@ -796,7 +847,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return;
         }
 
-        final ASTReturnStatement returnStatement = node.ancestors(ASTReturnStatement.class).first();
+        final ASTReturnStatement returnStatement =
+                node.ancestors(ASTReturnStatement.class).first();
         if (returnStatement != null) {
             if (typesFromSOQL.isEmpty()) {
                 violationAdded = validateCRUDCheckPresent(node, data, ANY, returnType);
@@ -812,16 +864,20 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return;
         }
 
-        final ASTForEachStatement forEachStatement = node.ancestors(ASTForEachStatement.class).first();
+        final ASTForEachStatement forEachStatement =
+                node.ancestors(ASTForEachStatement.class).first();
         if (forEachStatement != null) {
             if (typesFromSOQL.isEmpty()) {
 
-                final ASTVariableDeclaration variableDeclFor = forEachStatement.ancestors(ASTVariableDeclaration.class).first();
+                final ASTVariableDeclaration variableDeclFor =
+                        forEachStatement.ancestors(ASTVariableDeclaration.class).first();
                 if (variableDeclFor != null) {
                     String type = variableDeclFor.getType();
                     type = getSimpleType(type);
-                    StringBuilder typeCheck = new StringBuilder().append(variableDeclFor.getDefiningType())
-                            .append(":").append(type);
+                    StringBuilder typeCheck = new StringBuilder()
+                            .append(variableDeclFor.getDefiningType())
+                            .append(":")
+                            .append(type);
 
                     violationAdded = validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
                 }
@@ -838,12 +894,15 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             return;
         }
 
-        final ASTFieldDeclarationStatements fieldDeclarationStatements = node.ancestors(ASTFieldDeclarationStatements.class).first();
+        final ASTFieldDeclarationStatements fieldDeclarationStatements =
+                node.ancestors(ASTFieldDeclarationStatements.class).first();
         if (fieldDeclarationStatements != null) {
             String type = fieldDeclarationStatements.getTypeName();
             type = getSimpleType(type);
-            StringBuilder typeCheck = new StringBuilder().append(fieldDeclarationStatements.getDefiningType())
-                    .append(":").append(type);
+            StringBuilder typeCheck = new StringBuilder()
+                    .append(fieldDeclarationStatements.getDefiningType())
+                    .append(":")
+                    .append(type);
 
             if (typesFromSOQL.isEmpty()) {
                 validateCRUDCheckPresent(node, data, ANY, typeCheck.toString());
@@ -861,15 +920,21 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
         Matcher m = SELECT_FROM_PATTERN.matcher(canonQuery);
         while (m.find()) {
-            retVal.add(new StringBuilder().append(node.getDefiningType()).append(":")
-                    .append(m.group(1)).toString());
+            retVal.add(new StringBuilder()
+                    .append(node.getDefiningType())
+                    .append(":")
+                    .append(m.group(1))
+                    .toString());
         }
         return retVal;
     }
 
     private String getReturnType(final ASTMethod method) {
-        return new StringBuilder().append(method.getDefiningType()).append(":")
-                .append(method.getReturnType()).toString();
+        return new StringBuilder()
+                .append(method.getDefiningType())
+                .append(":")
+                .append(method.getReturnType())
+                .toString();
     }
 
     // Configured authorization method pattern support
@@ -877,7 +942,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static PropertyDescriptor<String> authMethodPatternProperty(String operation) {
         final String propertyName = operation + "AuthMethodPattern";
         return stringProperty(propertyName)
-                .desc("A regular expression for one or more custom " + operation + " authorization method name patterns.")
+                .desc("A regular expression for one or more custom " + operation
+                        + " authorization method name patterns.")
                 .defaultValue("")
                 .build();
     }
@@ -885,7 +951,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     private static PropertyDescriptor<Integer> authMethodTypeParamIndexProperty(String operation) {
         final String propertyName = operation + "AuthMethodTypeParamIndex";
         return intProperty(propertyName)
-                .desc("The 0-based index of the " + S_OBJECT_TYPE + " parameter for the custom " + operation + " authorization method. Defaults to 0.")
+                .desc("The 0-based index of the " + S_OBJECT_TYPE + " parameter for the custom " + operation
+                        + " authorization method. Defaults to 0.")
                 .defaultValue(0)
                 .build();
     }
@@ -899,34 +966,47 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         return false;
     }
 
-    private void extractObjectTypeFromConfiguredMethodPatternInvocation(final ASTMethodCallExpression methodNode, final PropertyDescriptor<String> authMethodPatternDescriptor) {
+    private void extractObjectTypeFromConfiguredMethodPatternInvocation(
+            final ASTMethodCallExpression methodNode, final PropertyDescriptor<String> authMethodPatternDescriptor) {
         if (isAuthMethodInvocation(methodNode, authMethodPatternDescriptor)) {
             // See which parameter index contains the object type expression and try to find that invocation argument
-            final PropertyDescriptor<Integer> authMethodTypeParamIndexDescriptor = AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.get(authMethodPatternDescriptor);
-            final Integer authMethodTypeParamIndex = authMethodTypeParamIndexDescriptor != null ? getProperty(authMethodTypeParamIndexDescriptor) : 0;
+            final PropertyDescriptor<Integer> authMethodTypeParamIndexDescriptor =
+                    AUTH_METHOD_TO_TYPE_PARAM_INDEX_MAP.get(authMethodPatternDescriptor);
+            final Integer authMethodTypeParamIndex =
+                    authMethodTypeParamIndexDescriptor != null ? getProperty(authMethodTypeParamIndexDescriptor) : 0;
             final int numParameters = methodNode.getInputParametersSize();
             if (numParameters > authMethodTypeParamIndex) {
                 final List<ASTVariableExpression> parameters = new ArrayList<>(numParameters);
-                for (int parameterIndex = 0, numChildren = methodNode.getNumChildren(); parameterIndex < numChildren; parameterIndex++) {
+                for (int parameterIndex = 0, numChildren = methodNode.getNumChildren();
+                        parameterIndex < numChildren;
+                        parameterIndex++) {
                     final ApexNode<?> childNode = methodNode.getChild(parameterIndex);
                     if (childNode instanceof ASTVariableExpression) {
                         parameters.add((ASTVariableExpression) childNode);
                     }
                 }
-                // Make sure that it looks like "sObjectType.<objectTypeName>" as VariableExpression > ReferenceExpression
-                final ASTVariableExpression sobjectTypeParameterCandidate = parameters.size() > authMethodTypeParamIndex ? parameters.get(authMethodTypeParamIndex) : null;
-                if (sobjectTypeParameterCandidate != null && S_OBJECT_TYPE.equalsIgnoreCase(sobjectTypeParameterCandidate.getImage())) {
-                    final ASTReferenceExpression objectTypeCandidate = sobjectTypeParameterCandidate.firstChild(ASTReferenceExpression.class);
+                // Make sure that it looks like "sObjectType.<objectTypeName>" as VariableExpression >
+                // ReferenceExpression
+                final ASTVariableExpression sobjectTypeParameterCandidate =
+                        parameters.size() > authMethodTypeParamIndex ? parameters.get(authMethodTypeParamIndex) : null;
+                if (sobjectTypeParameterCandidate != null
+                        && S_OBJECT_TYPE.equalsIgnoreCase(sobjectTypeParameterCandidate.getImage())) {
+                    final ASTReferenceExpression objectTypeCandidate =
+                            sobjectTypeParameterCandidate.firstChild(ASTReferenceExpression.class);
                     if (objectTypeCandidate != null) {
                         final String objectType = objectTypeCandidate.getImage();
                         if (StringUtils.isNotBlank(objectType)) {
-                            // Create a (relatively) unique key for this that is prefixed by the current invocation's containing type name
-                            final StringBuilder checkedTypeBuilder = new StringBuilder().append(methodNode.getDefiningType())
-                                    .append(":").append(objectType);
+                            // Create a (relatively) unique key for this that is prefixed by the current invocation's
+                            // containing type name
+                            final StringBuilder checkedTypeBuilder = new StringBuilder()
+                                    .append(methodNode.getDefiningType())
+                                    .append(":")
+                                    .append(objectType);
                             final String checkedType = checkedTypeBuilder.toString();
 
                             // And get the appropriate DML operation based on this method pattern
-                            final String dmlOperation = AUTH_METHOD_TO_DML_OPERATION_MAP.get(authMethodPatternDescriptor);
+                            final String dmlOperation =
+                                    AUTH_METHOD_TO_DML_OPERATION_MAP.get(authMethodPatternDescriptor);
                             if (StringUtils.isNotBlank(dmlOperation)) {
                                 checkedTypeToDMLOperationsViaAuthPattern.put(checkedType, dmlOperation);
                             }
@@ -937,7 +1017,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private boolean isAuthMethodInvocation(final ASTMethodCallExpression methodNode, final PropertyDescriptor<String> authMethodPatternDescriptor) {
+    private boolean isAuthMethodInvocation(
+            final ASTMethodCallExpression methodNode, final PropertyDescriptor<String> authMethodPatternDescriptor) {
         final String authMethodPattern = getProperty(authMethodPatternDescriptor);
         final Pattern compiledAuthMethodPattern = getCompiledAuthMethodPattern(authMethodPattern);
         if (compiledAuthMethodPattern != null) {
@@ -965,7 +1046,8 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
                     throw e;
                 }
             } else {
-                // Otherwise use the cached value, either the successfully compiled pattern or null if pattern compilation failed
+                // Otherwise use the cached value, either the successfully compiled pattern or null if pattern
+                // compilation failed
                 compiledAuthMethodPattern = compiledAuthMethodPatternCache.get(authMethodPattern);
             }
         }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -36,12 +35,9 @@ public class MethodArgumentCouldBeFinalRule extends AbstractJavaRulechainRule {
     private void lookForViolation(ASTExecutableDeclaration node, Object data) {
         for (ASTFormalParameter param : node.getFormalParameters()) {
             ASTVariableId varId = param.getVarId();
-            if (!param.isFinal()
-                && !JavaAstUtils.isNeverUsed(varId)
-                && JavaAstUtils.isEffectivelyFinal(varId)) {
+            if (!param.isFinal() && !JavaAstUtils.isNeverUsed(varId) && JavaAstUtils.isEffectivelyFinal(varId)) {
                 asCtx(data).addViolation(varId, varId.getName());
             }
         }
     }
-
 }

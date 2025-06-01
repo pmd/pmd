@@ -20,13 +20,15 @@ public class ScalaLanguageModule extends SimpleLanguageModuleBase {
      * Create a new instance of Scala Language Module.
      */
     public ScalaLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("Scala")
-                              .extensions("scala")
-                              .addVersion("2.10")
-                              .addVersion("2.11")
-                              .addVersion("2.12")
-                              .addDefaultVersion("2.13"),
-              new ScalaLanguageHandler());
+        super(
+                LanguageMetadata.withId(ID)
+                        .name("Scala")
+                        .extensions("scala")
+                        .addVersion("2.10")
+                        .addVersion("2.11")
+                        .addVersion("2.12")
+                        .addDefaultVersion("2.13"),
+                new ScalaLanguageHandler());
     }
 
     public static ScalaLanguageModule getInstance() {

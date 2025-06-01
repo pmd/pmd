@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,11 +12,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.concurrent.TimeUnit;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
-
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -26,6 +20,9 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.types.AstTestUtil;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 class ParserCornersTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT.withResourceContext(getClass());
@@ -44,9 +41,13 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
 
     @Test
     void testInvalidUnicodeEscape() {
-        MalformedSourceException thrown = assertThrows(MalformedSourceException.class, // previously Error
+        MalformedSourceException thrown = assertThrows(
+                MalformedSourceException.class, // previously Error
                 () -> java.parse("\\u00k0", null, FileId.fromPathLikeString("x/filename.java")));
-        assertThat(thrown.getMessage(), startsWith("Source format error in file 'x/filename.java' at line 1, column 1: Invalid unicode escape"));
+        assertThat(
+                thrown.getMessage(),
+                startsWith(
+                        "Source format error in file 'x/filename.java' at line 1, column 1: Invalid unicode escape"));
     }
 
     /**
@@ -56,10 +57,10 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testInnerOuterClass() {
         java7.parse("/**\n" + " * @author azagorulko\n" + " *\n" + " */\n"
-                        + "public class TestInnerClassCallsOuterParent {\n" + "\n" + "    public void test() {\n"
-                        + "        new Runnable() {\n" + "            @Override\n" + "            public void run() {\n"
-                        + "                TestInnerClassCallsOuterParent.super.toString();\n" + "            }\n"
-                        + "        };\n" + "    }\n" + "}\n");
+                + "public class TestInnerClassCallsOuterParent {\n" + "\n" + "    public void test() {\n"
+                + "        new Runnable() {\n" + "            @Override\n" + "            public void run() {\n"
+                + "                TestInnerClassCallsOuterParent.super.toString();\n" + "            }\n"
+                + "        };\n" + "    }\n" + "}\n");
     }
 
     /**
@@ -68,25 +69,25 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testDiamondUsageJava8() {
         java8.parse("public class PMDExceptionTest {\n"
-                        + "  private Component makeUI() {\n"
-                        + "    String[] model = {\"123456\", \"7890\"};\n"
-                        + "    JComboBox<String> comboBox = new JComboBox<>(model);\n"
-                        + "    comboBox.setEditable(true);\n"
-                        + "    comboBox.setEditor(new BasicComboBoxEditor() {\n"
-                        + "      private Component editorComponent;\n"
-                        + "      @Override public Component getEditorComponent() {\n"
-                        + "        if (editorComponent == null) {\n"
-                        + "          JTextField tc = (JTextField) super.getEditorComponent();\n"
-                        + "          editorComponent = new JLayer<>(tc, new ValidationLayerUI<>());\n"
-                        + "        }\n"
-                        + "        return editorComponent;\n"
-                        + "      }\n"
-                        + "    });\n"
-                        + "    JPanel p = new JPanel();\n"
-                        + "    p.add(comboBox);\n"
-                        + "    return p;\n"
-                        + "  }\n"
-                        + "}");
+                + "  private Component makeUI() {\n"
+                + "    String[] model = {\"123456\", \"7890\"};\n"
+                + "    JComboBox<String> comboBox = new JComboBox<>(model);\n"
+                + "    comboBox.setEditable(true);\n"
+                + "    comboBox.setEditor(new BasicComboBoxEditor() {\n"
+                + "      private Component editorComponent;\n"
+                + "      @Override public Component getEditorComponent() {\n"
+                + "        if (editorComponent == null) {\n"
+                + "          JTextField tc = (JTextField) super.getEditorComponent();\n"
+                + "          editorComponent = new JLayer<>(tc, new ValidationLayerUI<>());\n"
+                + "        }\n"
+                + "        return editorComponent;\n"
+                + "      }\n"
+                + "    });\n"
+                + "    JPanel p = new JPanel();\n"
+                + "    p.add(comboBox);\n"
+                + "    return p;\n"
+                + "  }\n"
+                + "}");
     }
 
     @Test
@@ -98,44 +99,44 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testUnicodeEscapes2() {
         java.parse("\n"
-                       + "public final class TimeZoneNames_zh_TW extends TimeZoneNamesBundle {\n"
-                       + "\n"
-                       + "        String ACT[] = new String[] {\"Acre \\u6642\\u9593\", \"ACT\",\n"
-                       + "                                     \"Acre \\u590f\\u4ee4\\u6642\\u9593\", \"ACST\",\n"
-                       + "                                     \"Acre \\u6642\\u9593\", \"ACT\"};"
-                       + "}");
+                + "public final class TimeZoneNames_zh_TW extends TimeZoneNamesBundle {\n"
+                + "\n"
+                + "        String ACT[] = new String[] {\"Acre \\u6642\\u9593\", \"ACT\",\n"
+                + "                                     \"Acre \\u590f\\u4ee4\\u6642\\u9593\", \"ACST\",\n"
+                + "                                     \"Acre \\u6642\\u9593\", \"ACT\"};"
+                + "}");
     }
 
     @Test
     void testUnicodeEscapesInComment() {
         java.parse("class Foo {"
-                       + "\n"
-                       + "    /**\n"
-                       + "     * The constant value of this field is the smallest value of type\n"
-                       + "     * {@code char}, {@code '\\u005Cu0000'}.\n"
-                       + "     *\n"
-                       + "     * @since   1.0.2\n"
-                       + "     */\n"
-                       + "    public static final char MIN_VALUE = '\\u0000';\n"
-                       + "\n"
-                       + "    /**\n"
-                       + "     * The constant value of this field is the largest value of type\n"
-                       + "     * {@code char}, {@code '\\u005C\\uFFFF'}.\n"
-                       + "     *\n"
-                       + "     * @since   1.0.2\n"
-                       + "     */\n"
-                       + "    public static final char MAX_VALUE = '\\uFFFF';"
-                       + "}");
+                + "\n"
+                + "    /**\n"
+                + "     * The constant value of this field is the smallest value of type\n"
+                + "     * {@code char}, {@code '\\u005Cu0000'}.\n"
+                + "     *\n"
+                + "     * @since   1.0.2\n"
+                + "     */\n"
+                + "    public static final char MIN_VALUE = '\\u0000';\n"
+                + "\n"
+                + "    /**\n"
+                + "     * The constant value of this field is the largest value of type\n"
+                + "     * {@code char}, {@code '\\u005C\\uFFFF'}.\n"
+                + "     *\n"
+                + "     * @since   1.0.2\n"
+                + "     */\n"
+                + "    public static final char MAX_VALUE = '\\uFFFF';"
+                + "}");
     }
 
     @Test
     final void testGetFirstASTNameImageNull() {
         java4.parse("public class Test {\n"
-            + "  void bar() {\n"
-            + "   abstract class X { public abstract void f(); }\n"
-            + "   class Y extends X { public void f() { new Y().f(); } }\n"
-            + "  }\n"
-            + "}");
+                + "  void bar() {\n"
+                + "   abstract class X { public abstract void f(); }\n"
+                + "   class Y extends X { public void f() { new Y().f(); } }\n"
+                + "  }\n"
+                + "}");
     }
 
     @Test
@@ -147,27 +148,27 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     void testTryWithResourcesConcise() {
         // https://github.com/pmd/pmd/issues/3697
         java9.parse("import java.io.InputStream;\n"
-                        + "public class Foo {\n"
-                        + "    public InputStream in;\n"
-                        + "    public void bar() {\n"
-                        + "        Foo f = this;\n"
-                        + "        try (f.in) {\n"
-                        + "        }\n"
-                        + "    }\n"
-                        + "}");
+                + "public class Foo {\n"
+                + "    public InputStream in;\n"
+                + "    public void bar() {\n"
+                + "        Foo f = this;\n"
+                + "        try (f.in) {\n"
+                + "        }\n"
+                + "    }\n"
+                + "}");
     }
 
     @Test
     void testTryWithResourcesThis() {
         // https://github.com/pmd/pmd/issues/3697
         java9.parse("import java.io.InputStream;\n"
-                        + "public class Foo {\n"
-                        + "    public InputStream in;\n"
-                        + "    public void bar() {\n"
-                        + "        try (this.in) {\n"
-                        + "        }\n"
-                        + "    }\n"
-                        + "}");
+                + "public class Foo {\n"
+                + "    public InputStream in;\n"
+                + "    public void bar() {\n"
+                + "        try (this.in) {\n"
+                + "        }\n"
+                + "    }\n"
+                + "}");
     }
 
     @Test
@@ -179,7 +180,7 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
                 + "  \"\"\";\n"
                 + "}");
     }
-    
+
     /**
      * Tests a specific generic notation for calling methods. See:
      * https://jira.codehaus.org/browse/MPMD-139
@@ -187,10 +188,10 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testGenericsProblem() {
         String code = "public class Test {\n"
-            + " public void test() {\n"
-            + "   String o = super.<String> doStuff(\"\");\n"
-            + " }\n"
-            + "}";
+                + " public void test() {\n"
+                + "   String o = super.<String> doStuff(\"\");\n"
+                + " }\n"
+                + "}";
         java5.parse(code);
         java7.parse(code);
     }
@@ -237,7 +238,6 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
         getParser().parse("// just a comment");
     }
 
-
     @Test
     void testBug1429ParseError() {
         doTest("Bug1429", java8);
@@ -262,10 +262,7 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     void testGitHubBug2767() {
         // PMD fails to parse an initializer block.
         // PMD 6.26.0 parses this code just fine.
-        java.withDefaultVersion("16")
-            .parse("class Foo {\n"
-                       + "    {final int I;}\n"
-                       + "}\n");
+        java.withDefaultVersion("16").parse("class Foo {\n" + "    {final int I;}\n" + "}\n");
     }
 
     @Test
@@ -286,19 +283,20 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     @Timeout(value = 30, unit = TimeUnit.SECONDS)
     void testInfiniteLoopInLookahead() {
-        assertThrows(ParseException.class, () ->
-            // https://github.com/pmd/pmd/issues/3117
-            java8.parseResource("InfiniteLoopInLookahead.java"));
+        assertThrows(
+                ParseException.class,
+                () ->
+                        // https://github.com/pmd/pmd/issues/3117
+                        java8.parseResource("InfiniteLoopInLookahead.java"));
     }
 
     @Test
     void stringConcatentationShouldNotBeCast() {
         // https://github.com/pmd/pmd/issues/1484
         String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
-            + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
+                + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
         assertEquals(0, java8.parse(code).descendants(ASTCastExpression.class).count());
     }
-
 
     /**
      * Empty statements should be allowed.
@@ -346,7 +344,6 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     void testSynchronizedStatements() {
         doTest("SynchronizedStmts");
     }
-
 
     @Test
     void testGithubBug3101UnresolvedTypeParams() {

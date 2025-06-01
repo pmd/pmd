@@ -16,5 +16,4 @@ public class HardCodedCryptoKeyRule extends AbstractHardCodedConstructorArgsVisi
     public HardCodedCryptoKeyRule() {
         super(javax.crypto.spec.SecretKeySpec.class);
     }
-
 }

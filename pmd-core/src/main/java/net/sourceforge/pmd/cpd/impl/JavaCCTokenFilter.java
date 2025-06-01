@@ -20,5 +20,4 @@ public class JavaCCTokenFilter extends BaseTokenFilter<JavaccToken> {
     public JavaCCTokenFilter(final TokenManager<JavaccToken> tokenManager) {
         super(tokenManager);
     }
-
 }

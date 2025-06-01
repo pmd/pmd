@@ -6,7 +6,6 @@ package net.sourceforge.pmd.internal.util;
 
 import java.util.List;
 import java.util.Set;
-
 import org.apache.commons.lang3.exception.ExceptionContext;
 import org.apache.commons.lang3.tuple.Pair;
 

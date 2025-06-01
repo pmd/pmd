@@ -1,16 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 // @formatter:off
 /**
@@ -52,7 +50,6 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
         this.setSimpleName(simpleName);
     }
 
-
     ASTClassType(ASTAmbiguousName simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSTYPE);
         this.setSimpleName(simpleName.getFirstToken().getImage());
@@ -68,7 +65,6 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
         this.setFirstToken(firstToken);
         this.setLastToken(identifier);
     }
-
 
     ASTClassType(int id) {
         super(id);
@@ -125,7 +121,6 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
         return firstChild(ASTTypeArguments.class);
     }
 
-
     /**
      * Return the package qualifier, if this is a fully qualified name.
      * Note that this will only be the case if we could resolve the
@@ -157,7 +152,6 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
         return visitor.visit(this, data);
     }
 
-
     void setSimpleName(String simpleName) {
         this.simpleName = simpleName;
         assertSimpleNameOk();
@@ -165,8 +159,8 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
 
     private void assertSimpleNameOk() {
         assert this.simpleName != null
-                && this.simpleName.indexOf('.') < 0
-                && AssertionUtil.isJavaIdentifier(this.simpleName)
+                        && this.simpleName.indexOf('.') < 0
+                        && AssertionUtil.isJavaIdentifier(this.simpleName)
                 : "Invalid simple name '" + this.simpleName + "'";
     }
 

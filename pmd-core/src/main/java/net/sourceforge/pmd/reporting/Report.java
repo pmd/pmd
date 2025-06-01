@@ -14,7 +14,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -127,7 +126,7 @@ public final class Report {
 
         public String getDetail() {
             try (StringWriter stringWriter = new StringWriter();
-                 PrintWriter writer = new PrintWriter(stringWriter)) {
+                    PrintWriter writer = new PrintWriter(stringWriter)) {
                 error.printStackTrace(writer);
                 return stringWriter.toString();
             } catch (IOException e) {
@@ -236,7 +235,6 @@ public final class Report {
         return Collections.unmodifiableList(violations);
     }
 
-
     /**
      * Returns an unmodifiable list of processing errors that have been
      * recorded until now.
@@ -244,7 +242,6 @@ public final class Report {
     public List<ProcessingError> getProcessingErrors() {
         return Collections.unmodifiableList(errors);
     }
-
 
     /**
      * Returns an unmodifiable list of configuration errors that have
@@ -266,7 +263,8 @@ public final class Report {
      * A {@link FileAnalysisListener} that accumulates events into a
      * {@link Report}.
      */
-    public static final class ReportBuilderListener extends BaseResultProducingCloseable<Report> implements FileAnalysisListener {
+    public static final class ReportBuilderListener extends BaseResultProducingCloseable<Report>
+            implements FileAnalysisListener {
 
         private final Report report;
 
@@ -308,7 +306,8 @@ public final class Report {
      * A {@link GlobalAnalysisListener} that accumulates the events of
      * all files into a {@link Report}.
      */
-    public static final class GlobalReportBuilderListener extends BaseResultProducingCloseable<Report> implements GlobalAnalysisListener {
+    public static final class GlobalReportBuilderListener extends BaseResultProducingCloseable<Report>
+            implements GlobalAnalysisListener {
 
         private final Report report = new Report();
 

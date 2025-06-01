@@ -7,9 +7,7 @@ package net.sourceforge.pmd.cli.commands.typesupport.internal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.rule.RulePriority;
-
 import picocli.CommandLine.ITypeConverter;
 import picocli.CommandLine.TypeConversionException;
 
@@ -20,7 +18,9 @@ public class RulePriorityTypeSupport implements ITypeConverter<RulePriority>, It
             String descriptiveName = rulePriority.getName();
             String name = rulePriority.name();
             String priority = String.valueOf(rulePriority.getPriority());
-            if (descriptiveName.equalsIgnoreCase(value) || name.equalsIgnoreCase(value) || priority.equalsIgnoreCase(value)) {
+            if (descriptiveName.equalsIgnoreCase(value)
+                    || name.equalsIgnoreCase(value)
+                    || priority.equalsIgnoreCase(value)) {
                 return rulePriority;
             }
         }

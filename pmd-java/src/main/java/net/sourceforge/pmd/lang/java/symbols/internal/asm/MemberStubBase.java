@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.symbols.JAccessibleElementSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 abstract class MemberStubBase implements JAccessibleElementSymbol, AsmStub, AnnotationOwner {
 
@@ -19,7 +18,6 @@ abstract class MemberStubBase implements JAccessibleElementSymbol, AsmStub, Anno
     private final int accessFlags;
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
-
 
     protected MemberStubBase(ClassStub classStub, String simpleName, int accessFlags) {
         this.classStub = classStub;

@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.lua.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
+import org.junit.jupiter.api.Test;
 
 class LuaCpdLexerTest extends CpdTextComparisonTest {
     LuaCpdLexerTest() {

@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.util;
 
-import org.apache.commons.lang3.exception.DefaultExceptionContext;
-
 import net.sourceforge.pmd.internal.util.ExceptionContextDefaultImpl;
+import org.apache.commons.lang3.exception.DefaultExceptionContext;
 
 /**
  * A {@link StackOverflowError} with nice messages.
  */
-public final class ContextedStackOverflowError extends StackOverflowError implements ExceptionContextDefaultImpl<ContextedStackOverflowError> {
+public final class ContextedStackOverflowError extends StackOverflowError
+        implements ExceptionContextDefaultImpl<ContextedStackOverflowError> {
     /** The serialization version. */
     private static final long serialVersionUID = 4111035582093848670L;
 
@@ -22,10 +22,10 @@ public final class ContextedStackOverflowError extends StackOverflowError implem
         setStackTrace(e.getStackTrace()); // pretend we're a regular assertion error
     }
 
-
     public static ContextedStackOverflowError wrap(StackOverflowError e) {
-        return e instanceof ContextedStackOverflowError ? (ContextedStackOverflowError) e
-                                                        : new ContextedStackOverflowError(e);
+        return e instanceof ContextedStackOverflowError
+                ? (ContextedStackOverflowError) e
+                : new ContextedStackOverflowError(e);
     }
 
     @Override

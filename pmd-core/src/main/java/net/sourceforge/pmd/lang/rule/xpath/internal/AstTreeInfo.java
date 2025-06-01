@@ -9,15 +9,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.apache.commons.lang3.mutable.MutableInt;
-
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
-
 import net.sf.saxon.Configuration;
 import net.sf.saxon.om.GenericTreeInfo;
-
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 /**
  * A wrapper around the root node of an AST, implementing {@link net.sf.saxon.om.TreeInfo}.
@@ -106,7 +102,6 @@ public final class AstTreeInfo extends GenericTreeInfo {
     public AstDocumentNode getRootNode() {
         return (AstDocumentNode) super.getRootNode();
     }
-
 
     public void setAttrCtx(DeprecatedAttrLogger attrCtx) {
         this.logger = attrCtx;

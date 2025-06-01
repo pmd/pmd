@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -23,8 +22,6 @@ public final class ASTSwitchExpression extends AbstractJavaExpr implements ASTSw
     ASTSwitchExpression(int id) {
         super(id);
     }
-
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -52,14 +49,13 @@ public final class ASTSwitchExpression extends AbstractJavaExpr implements ASTSw
     public NodeStream<ASTExpression> getYieldExpressions() {
 
         return NodeStream.forkJoin(
-            getBranches(),
-            br -> br.descendants(ASTYieldStatement.class)
-                    .filter(it -> it.getYieldTarget() == this)
-                    .map(ASTYieldStatement::getExpr),
-            br -> br.asStream()
-                    .filterIs(ASTSwitchArrowBranch.class)
-                    .map(ASTSwitchArrowBranch::getRightHandSide)
-                    .filterIs(ASTExpression.class)
-        );
+                getBranches(),
+                br -> br.descendants(ASTYieldStatement.class)
+                        .filter(it -> it.getYieldTarget() == this)
+                        .map(ASTYieldStatement::getExpr),
+                br -> br.asStream()
+                        .filterIs(ASTSwitchArrowBranch.class)
+                        .map(ASTSwitchArrowBranch::getRightHandSide)
+                        .filterIs(ASTExpression.class));
     }
 }

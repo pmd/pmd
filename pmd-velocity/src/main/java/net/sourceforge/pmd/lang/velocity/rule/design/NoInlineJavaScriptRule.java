@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.velocity.rule.design;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.velocity.ast.ASTText;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
 

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
@@ -10,14 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
+import org.junit.jupiter.api.Test;
 
 class ReportTest {
-
 
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
@@ -47,8 +43,7 @@ class ReportTest {
 
     @Test
     void testExclusionsInReportWithAnnotations() {
-        Report rpt =
-            java.executeRule(new FooRule(), TEST2);
+        Report rpt = java.executeRule(new FooRule(), TEST2);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);
     }

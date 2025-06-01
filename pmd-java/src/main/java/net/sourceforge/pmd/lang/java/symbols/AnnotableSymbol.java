@@ -5,11 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.Annotation;
-
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
-
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * A symbol that can have annotations.
@@ -26,7 +24,6 @@ public interface AnnotableSymbol extends JElementSymbol {
         return HashTreePSet.empty();
     }
 
-
     /**
      * Return an annotation of the given type, if it is present on this declaration.
      * This does not consider inherited annotations.
@@ -39,7 +36,6 @@ public interface AnnotableSymbol extends JElementSymbol {
         }
         return null;
     }
-
 
     /**
      * Return true if an annotation of the given type is present on this declaration.

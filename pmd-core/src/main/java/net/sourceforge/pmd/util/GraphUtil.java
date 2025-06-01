@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.util;
 
 import java.util.ArrayList;
@@ -13,15 +12,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Function;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class GraphUtil {
 
-    private GraphUtil() {
-
-    }
-
+    private GraphUtil() {}
 
     /**
      * Generate a DOT representation for a graph.
@@ -33,11 +28,10 @@ public final class GraphUtil {
      * @param <V>          Type of vertex, must be usable as map key (equals/hash)
      */
     public static <V> String toDot(
-        Collection<? extends V> vertices,
-        Function<? super V, ? extends Collection<? extends V>> successorFun,
-        Function<? super V, DotColor> colorFun,
-        Function<? super V, String> labelFun
-    ) {
+            Collection<? extends V> vertices,
+            Function<? super V, ? extends Collection<? extends V>> successorFun,
+            Function<? super V, DotColor> colorFun,
+            Function<? super V, String> labelFun) {
         // generates a DOT representation of the lattice
         // Visualize eg at http://webgraphviz.com/
         StringBuilder sb = new StringBuilder("strict digraph {\n");
@@ -49,11 +43,11 @@ public final class GraphUtil {
             String id = "n" + i++;
             ids.put(node, id);
             sb.append(id)
-              .append(" [ shape=box, color=")
-              .append(colorFun.apply(node).toDot())
-              .append(", label=\"")
-              .append(escapeDotString(labelFun.apply(node)))
-                .append("\" ];\n");
+                    .append(" [ shape=box, color=")
+                    .append(colorFun.apply(node).toDot())
+                    .append(", label=\"")
+                    .append(escapeDotString(labelFun.apply(node)))
+                    .append("\" ];\n");
         }
 
         List<String> edges = new ArrayList<>();
@@ -73,19 +67,17 @@ public final class GraphUtil {
         return sb.append('}').toString();
     }
 
-
     @NonNull
     private static String escapeDotString(String string) {
-        return string.replaceAll("\\R", "\\\n")
-                     .replaceAll("\"", "\\\"");
+        return string.replaceAll("\\R", "\\\n").replaceAll("\"", "\\\"");
     }
 
     public enum DotColor {
-        GREEN, BLACK;
+        GREEN,
+        BLACK;
 
         String toDot() {
             return name().toLowerCase(Locale.ROOT);
         }
     }
-
 }

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.annotation;
 
 import java.lang.annotation.Documented;
 
-
 /**
  * Tagged API members are subject to change.
  * It is an indication that the feature is in experimental, unstable state.
@@ -20,5 +19,4 @@ public @interface Experimental {
 
     /** A reason given for the experimental status. */
     String value() default "";
-
 }

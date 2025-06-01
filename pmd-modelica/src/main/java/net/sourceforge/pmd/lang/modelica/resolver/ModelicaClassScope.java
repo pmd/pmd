@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
@@ -39,7 +38,8 @@ public final class ModelicaClassScope extends AbstractModelicaScope {
 
     String getFullyQualifiedClassName() {
         if (getParent() instanceof ModelicaClassScope) {
-            return ((ModelicaClassScope) getParent()).getFullyQualifiedClassName() + "." + classDeclaration.getSimpleTypeName();
+            return ((ModelicaClassScope) getParent()).getFullyQualifiedClassName() + "."
+                    + classDeclaration.getSimpleTypeName();
         } else {
             return ((ModelicaSourceFileScope) getParent()).getFileFQCN();
         }

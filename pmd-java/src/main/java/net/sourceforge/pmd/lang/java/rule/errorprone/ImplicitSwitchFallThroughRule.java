@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
@@ -23,8 +22,8 @@ import net.sourceforge.pmd.util.OptionalBool;
 
 public class ImplicitSwitchFallThroughRule extends AbstractJavaRulechainRule {
 
-    private static final Pattern IGNORED_COMMENT = Pattern.compile("/[/*].*\\bfalls?[ -]?thr(ough|u)\\b.*",
-                                                                   Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
+    private static final Pattern IGNORED_COMMENT =
+            Pattern.compile("/[/*].*\\bfalls?[ -]?thr(ough|u)\\b.*", Pattern.DOTALL | Pattern.CASE_INSENSITIVE);
 
     public ImplicitSwitchFallThroughRule() {
         super(ASTSwitchStatement.class, ASTSwitchExpression.class);
@@ -67,7 +66,7 @@ public class ImplicitSwitchFallThroughRule extends AbstractJavaRulechainRule {
         }
         for (JavaccToken special : GenericToken.previousSpecials(nextBranch.getFirstToken())) {
             if (JavaAstUtils.isComment(special)
-                && IGNORED_COMMENT.matcher(special.getImageCs()).find()) {
+                    && IGNORED_COMMENT.matcher(special.getImageCs()).find()) {
                 return true;
             }
         }

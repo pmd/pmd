@@ -21,11 +21,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -91,7 +89,7 @@ class CharsTest {
         Chars bc = Chars.wrap("abcd").slice(1, 2);
 
         bc.getChars(0, arr, 1, 2);
-        assertArrayEquals(arr, new char[] { 0, 'b', 'c', 0 });
+        assertArrayEquals(arr, new char[] {0, 'b', 'c', 0});
 
         assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(2, arr, 0, 1));
         assertThrows(IndexOutOfBoundsException.class, () -> bc.getChars(-1, arr, 0, 1));
@@ -114,7 +112,6 @@ class CharsTest {
         assertEquals(-1, bc.indexOf('a', -1));
     }
 
-
     @Test
     void indexOfWithEndOffset() {
         Chars bc = Chars.wrap("aaaaabcdb").slice(5, 2);
@@ -132,7 +129,6 @@ class CharsTest {
         assertEquals(1, bc.indexOf('c', 1, 15));
 
         assertEquals(-1, bc.indexOf('d', 0, 60));
-
     }
 
     @Test
@@ -154,7 +150,6 @@ class CharsTest {
         assertEquals(-1, bc.indexOf('d', 0, 60));
 
         assertEquals(-1, bc.indexOf('d', 60, 65));
-
     }
 
     @Test
@@ -206,23 +201,21 @@ class CharsTest {
         assertTrue(bc.startsWith("bc"));
         assertTrue(bc.startsWith("bc", 0));
         assertTrue(bc.startsWith("c", 1));
-        assertTrue(bc.startsWith('c', 1)); //with a char
+        assertTrue(bc.startsWith('c', 1)); // with a char
         assertTrue(bc.startsWith("", 1));
         assertTrue(bc.startsWith("", 0));
 
-
         assertFalse(bc.startsWith("c", 0));
-        assertFalse(bc.startsWith('c', 0)); //with a char
+        assertFalse(bc.startsWith('c', 0)); // with a char
 
         assertFalse(bc.startsWith("bcd", 0));
         assertFalse(bc.startsWith("xcd", 0));
 
         assertFalse(bc.startsWith("b", -1));
-        assertFalse(bc.startsWith('b', -1)); //with a char
+        assertFalse(bc.startsWith('b', -1)); // with a char
 
         assertFalse(bc.startsWith("", -1));
         assertFalse(bc.startsWith("", 5));
-
     }
 
     @Test
@@ -324,7 +317,6 @@ class CharsTest {
     @Test
     void testEqualsHashCode() {
 
-
         Chars chars = Chars.wrap("a_a_b_c_s").slice(2, 5);
         //                          -----
         assertEquals(Chars.wrap("a_b_c"), chars);
@@ -335,12 +327,10 @@ class CharsTest {
 
         assertEquals("a_b_c".hashCode(), Chars.wrap("a_b_c").hashCode());
         assertEquals("a_b_c".hashCode(), chars.hashCode());
-
     }
 
     @Test
     void testContentEquals() {
-
 
         Chars chars = Chars.wrap("a_a_b_c_s").slice(2, 5);
         //                          -----
@@ -369,7 +359,6 @@ class CharsTest {
         assertEquals("_b_c", chars.toString());
 
         assertEquals(listOf("", "b", "c"), listSplits(chars, "_"));
-
 
         testSplits(Chars.wrap("abc"), "");
         testSplits(Chars.wrap(""), "");
@@ -417,11 +406,9 @@ class CharsTest {
         assertThrows(IndexOutOfBoundsException.class, () -> chars.substring(0, 6));
     }
 
-
     @Test
     void testTrimBlankLines() {
-        assertTrimBlankLinesEquals(" \n \n abc \n \n de \n \n ",
-                                   " abc \n \n de ");
+        assertTrimBlankLinesEquals(" \n \n abc \n \n de \n \n ", " abc \n \n de ");
         assertTrimBlankLinesEquals("", "");
     }
 
@@ -429,7 +416,6 @@ class CharsTest {
         Chars actual = Chars.wrap(input).trimBlankLines();
         assertEquals(Chars.wrap(expected), actual);
     }
-
 
     @Test
     void testReaderSingleChars() throws IOException {
@@ -585,5 +571,4 @@ class CharsTest {
         String actual = new String(cbuf);
         assertEquals(expected, actual);
     }
-
 }

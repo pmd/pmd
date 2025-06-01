@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -21,7 +20,6 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
         super(id);
     }
 
-
     @Override
     public NodeStream<ASTAnnotation> getDeclaredAnnotations() {
         return getDimensions().getFirstChild().getDeclaredAnnotations();
@@ -30,7 +28,6 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
     public ASTArrayDimensions getDimensions() {
         return (ASTArrayDimensions) getChild(1);
     }
-
 
     public ASTType getElementType() {
         return (ASTType) getChild(0);

@@ -12,7 +12,6 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-
 /**
  * This is a Rule implementation which can be used in scenarios where an actual
  * functional Rule is not needed. For example, during unit testing, or as an
@@ -21,10 +20,11 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public class MockRule extends MockRuleWithNoProperties {
 
-    public static final PropertyDescriptor<Integer> PROP =
-        PropertyFactory.intProperty("testIntProperty")
-                       .desc("testIntProperty")
-                       .require(inRange(1, 100)).defaultValue(1).build();
+    public static final PropertyDescriptor<Integer> PROP = PropertyFactory.intProperty("testIntProperty")
+            .desc("testIntProperty")
+            .require(inRange(1, 100))
+            .defaultValue(1)
+            .build();
 
     public MockRule() {
         super();

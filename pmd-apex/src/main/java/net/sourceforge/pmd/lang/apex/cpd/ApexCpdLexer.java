@@ -4,20 +4,17 @@
 
 package net.sourceforge.pmd.lang.apex.cpd;
 
+import io.github.apexdevtools.apexparser.ApexLexer;
+import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 import java.io.IOException;
 import java.util.Locale;
-
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
 import net.sourceforge.pmd.lang.document.TextDocument;
-
-import io.github.apexdevtools.apexparser.ApexLexer;
-import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 
 public class ApexCpdLexer implements CpdLexer {
     @Override

@@ -20,11 +20,13 @@ public class VfLanguageModule extends SimpleLanguageModuleBase implements CpdCap
     static final String NAME = "Salesforce Visualforce";
 
     public VfLanguageModule() {
-        super(LanguageMetadata.withId(ID).name(NAME)
-                              .extensions("page", "component")
-                              .dependsOnLanguage(ApexLanguageModule.getInstance().getId())
-                              .addAllVersionsOf(ApexLanguageModule.getInstance()),
-              p -> new VfHandler((VfLanguageProperties) p));
+        super(
+                LanguageMetadata.withId(ID)
+                        .name(NAME)
+                        .extensions("page", "component")
+                        .dependsOnLanguage(ApexLanguageModule.getInstance().getId())
+                        .addAllVersionsOf(ApexLanguageModule.getInstance()),
+                p -> new VfHandler((VfLanguageProperties) p));
     }
 
     public static VfLanguageModule getInstance() {

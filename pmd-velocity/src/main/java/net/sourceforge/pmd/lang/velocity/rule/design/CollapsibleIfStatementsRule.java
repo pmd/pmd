@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.velocity.rule.design;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.velocity.ast.ASTBlock;
 import net.sourceforge.pmd.lang.velocity.ast.ASTElseIfStatement;
@@ -14,6 +12,7 @@ import net.sourceforge.pmd.lang.velocity.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.velocity.ast.ASTText;
 import net.sourceforge.pmd.lang.velocity.ast.VtlNode;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
+import org.apache.commons.lang3.StringUtils;
 
 public class CollapsibleIfStatementsRule extends AbstractVtlRule {
 
@@ -33,15 +32,15 @@ public class CollapsibleIfStatementsRule extends AbstractVtlRule {
     }
 
     private void handleIfElseIf(final VtlNode node, final Object data) {
-        if (node.firstChild(ASTElseStatement.class) == null
-                && node.firstChild(ASTElseIfStatement.class) == null) {
+        if (node.firstChild(ASTElseStatement.class) == null && node.firstChild(ASTElseIfStatement.class) == null) {
             final ASTBlock ifBlock = node.firstChild(ASTBlock.class);
             boolean violationFound = false;
             int ifCounter = 0;
             for (int i = 0; i < ifBlock.getNumChildren(); i++) {
                 final Node blockChild = ifBlock.getChild(i);
                 if (blockChild instanceof ASTText) {
-                    if (StringUtils.isNotBlank(((ASTText) blockChild).getFirstToken().getImage())) {
+                    if (StringUtils.isNotBlank(
+                            ((ASTText) blockChild).getFirstToken().getImage())) {
                         violationFound = false;
                         break;
                     }
@@ -75,5 +74,4 @@ public class CollapsibleIfStatementsRule extends AbstractVtlRule {
         return parentIfNode.firstChild(ASTElseStatement.class) != null
                 || parentIfNode.firstChild(ASTElseIfStatement.class) != null;
     }
-
 }

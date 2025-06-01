@@ -1,16 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
@@ -19,6 +15,7 @@ import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.junit.jupiter.api.Test;
 
 class SummaryHTMLRendererTest extends AbstractRendererTest {
 
@@ -47,10 +44,10 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL
                 + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"center\">1</td>" + EOL
-                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
+                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">"
+                + getSourceCodeFilename() + "</a></td>" + EOL
                 + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\">blah</td>" + EOL + "</tr>"
                 + EOL + "</table></tr></table></body></html>" + EOL;
-
     }
 
     @Override
@@ -77,10 +74,12 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL
                 + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"center\">1</td>" + EOL
-                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
+                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">"
+                + getSourceCodeFilename() + "</a></td>" + EOL
                 + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\">blah</td>" + EOL + "</tr>"
                 + EOL + "<tr> " + EOL + "<td align=\"center\">2</td>" + EOL
-                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
+                + "<td width=\"*%\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">"
+                + getSourceCodeFilename() + "</a></td>" + EOL
                 + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\">blah</td>" + EOL + "</tr>"
                 + EOL + "</table></tr></table></body></html>" + EOL;
     }
@@ -96,7 +95,8 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
                 + EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL
                 + "</table><hr/><center><h3>Processing errors</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL + "<th>File</th><th>Problem</th></tr>" + EOL + "<tr bgcolor=\"lightgrey\"> " + EOL
-                + "<td><a href=\"link_prefixfile.html#\">file</a></td>" + EOL + "<td><pre>" + error.getDetail() + "</pre></td>" + EOL + "</tr>" + EOL
+                + "<td><a href=\"link_prefixfile.html#\">file</a></td>" + EOL + "<td><pre>" + error.getDetail()
+                + "</pre></td>" + EOL + "</tr>" + EOL
                 + "</table></tr></table></body></html>" + EOL;
     }
 
@@ -120,20 +120,25 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
         Renderer renderer = getRenderer();
         renderer.setShowSuppressedViolations(true);
         String actual = renderReport(renderer, createEmptyReportWithSuppression());
-        assertEquals("<html><head><title>PMD</title></head><body>" + EOL + "<center><h2>Summary</h2></center>"
-                + EOL + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + EOL
-                + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + EOL + "</table>" + EOL
-                + "<center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
-                + EOL
-                + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
-                + EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL
-                + "</table><hr/><center><h3>Suppressed warnings</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
-                + EOL + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>"
-                         + EOL + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"left\"><a href=\"link_prefix" + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>" + EOL
-                + "<td align=\"center\">1</td>" + EOL + "<td align=\"center\">Foo</td>" + EOL
-                         + "<td align=\"center\">//NOPMD</td>" + EOL + "<td align=\"center\">test</td>" + EOL
-                         + "</tr>"
-                + EOL + "</table></tr></table></body></html>" + EOL, actual);
+        assertEquals(
+                "<html><head><title>PMD</title></head><body>" + EOL + "<center><h2>Summary</h2></center>"
+                        + EOL + "<table align=\"center\" cellspacing=\"0\" cellpadding=\"3\">" + EOL
+                        + "<tr><th>Rule name</th><th>Number of violations</th></tr>" + EOL + "</table>" + EOL
+                        + "<center><h2>Detail</h2></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
+                        + EOL
+                        + "<center><h3>PMD report</h3></center><center><h3>Problems found</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
+                        + EOL + "<th>#</th><th>File</th><th>Line</th><th>Problem</th></tr>" + EOL
+                        + "</table><hr/><center><h3>Suppressed warnings</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
+                        + EOL
+                        + "<th>File</th><th>Line</th><th>Rule</th><th>NOPMD or Annotation</th><th>Reason</th></tr>"
+                        + EOL + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"left\"><a href=\"link_prefix"
+                        + getSourceCodeFilename() + ".html#line_prefix1\">" + getSourceCodeFilename() + "</a></td>"
+                        + EOL
+                        + "<td align=\"center\">1</td>" + EOL + "<td align=\"center\">Foo</td>" + EOL
+                        + "<td align=\"center\">//NOPMD</td>" + EOL + "<td align=\"center\">test</td>" + EOL
+                        + "</tr>"
+                        + EOL + "</table></tr></table></body></html>" + EOL,
+                actual);
     }
 
     @Test

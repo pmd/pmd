@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Method or constructor reference expression.
@@ -24,10 +23,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  * </pre>
  */
 public final class ASTMethodReference extends AbstractJavaExpr
-    implements QualifiableExpression,
-               LeftRecursiveNode,
-               MethodUsage,
-               FunctionalExpression {
+        implements QualifiableExpression, LeftRecursiveNode, MethodUsage, FunctionalExpression {
 
     private JMethodSig functionalMethod;
     private OverloadSelectionResult compileTimeDecl;
@@ -37,7 +33,6 @@ public final class ASTMethodReference extends AbstractJavaExpr
     ASTMethodReference(int id) {
         super(id);
     }
-
 
     @Override
     public void jjtClose() {
@@ -82,7 +77,6 @@ public final class ASTMethodReference extends AbstractJavaExpr
         return (ASTExpression) getChild(0);
     }
 
-
     /**
      * Returns the explicit type arguments mentioned after the "::" if they exist.
      * Type arguments mentioned before the "::", if any, are contained within
@@ -91,7 +85,6 @@ public final class ASTMethodReference extends AbstractJavaExpr
     public @Nullable ASTTypeArguments getExplicitTypeArguments() {
         return firstChild(ASTTypeArguments.class);
     }
-
 
     /**
      * Returns the method name, or an {@link JConstructorSymbol#CTOR_NAME}
@@ -169,5 +162,4 @@ public final class ASTMethodReference extends AbstractJavaExpr
     void setCompileTimeDecl(OverloadSelectionResult ctdecl) {
         this.compileTimeDecl = ctdecl;
     }
-
 }

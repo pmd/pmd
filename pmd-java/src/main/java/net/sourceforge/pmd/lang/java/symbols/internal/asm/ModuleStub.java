@@ -8,18 +8,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-
+import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ModuleVisitor;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
-
-import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 class ModuleStub implements JModuleSymbol, AsmStub, AnnotationOwner {
 
@@ -44,7 +42,8 @@ class ModuleStub implements JModuleSymbol, AsmStub, AnnotationOwner {
                         ClassVisitor classVisitor = new ClassVisitor(AsmSymbolResolver.ASM_API_V) {
                             @Override
                             public ModuleVisitor visitModule(String name, int access, String version) {
-                                assert name.equals(moduleName) : "Expected module-info.class for " + moduleName + ", but got " + name;
+                                assert name.equals(moduleName)
+                                        : "Expected module-info.class for " + moduleName + ", but got " + name;
 
                                 return new ModuleVisitor(AsmSymbolResolver.ASM_API_V) {
                                     @Override
@@ -59,7 +58,8 @@ class ModuleStub implements JModuleSymbol, AsmStub, AnnotationOwner {
                                 return new AnnotationBuilderVisitor(ModuleStub.this, resolver, visible, descriptor);
                             }
                         };
-                        classReader.accept(classVisitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+                        classReader.accept(
+                                classVisitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
                         return true;
                     } else {
                         return false;

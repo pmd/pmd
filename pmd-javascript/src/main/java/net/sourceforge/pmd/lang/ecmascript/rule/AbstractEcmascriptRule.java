@@ -9,9 +9,7 @@ import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-
-public abstract class AbstractEcmascriptRule extends AbstractRule
-        implements EcmascriptVisitor<Object, Object> {
+public abstract class AbstractEcmascriptRule extends AbstractRule implements EcmascriptVisitor<Object, Object> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {

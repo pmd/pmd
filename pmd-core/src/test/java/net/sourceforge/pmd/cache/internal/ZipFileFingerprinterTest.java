@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cache.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,7 +16,6 @@ import java.util.zip.Checksum;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
-
 import org.junit.jupiter.api.Test;
 
 class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
@@ -40,7 +38,7 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
         assertEquals(baselineFingerprint, updateFingerprint(file));
         assertNotEquals(originalFileSize, file.length());
     }
-    
+
     @Test
     void zipEntryOrderDoesNotAffectFingerprint() throws IOException {
         final File zipFile = tempDir.resolve("foo.jar").toFile();
@@ -48,12 +46,12 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
         final ZipEntry barEntry = new ZipEntry("lib/Bar.class");
         overwriteZipFileContents(zipFile, fooEntry, barEntry);
         final long baselineFingerprint = getBaseLineFingerprint(zipFile);
-        
+
         // swap order
         overwriteZipFileContents(zipFile, barEntry, fooEntry);
         assertEquals(baselineFingerprint, updateFingerprint(zipFile));
     }
-    
+
     @Test
     void nonClassZipEntryDoesNotAffectFingerprint() throws IOException {
         final File zipFile = tempDir.resolve("foo.jar").toFile();
@@ -61,7 +59,7 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
         final ZipEntry barEntry = new ZipEntry("bar.properties");
         overwriteZipFileContents(zipFile, fooEntry);
         final long baselineFingerprint = getBaseLineFingerprint(zipFile);
-        
+
         // add a properties file to the jar
         overwriteZipFileContents(zipFile, fooEntry, barEntry);
         assertEquals(baselineFingerprint, updateFingerprint(zipFile));
@@ -74,12 +72,12 @@ class ZipFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
 
     @Override
     protected String[] getValidFileExtensions() {
-        return new String[] { "zip", "jar" };
+        return new String[] {"zip", "jar"};
     }
 
     @Override
     protected String[] getInvalidFileExtensions() {
-        return new String[] { "xml" };
+        return new String[] {"xml"};
     }
 
     @Override

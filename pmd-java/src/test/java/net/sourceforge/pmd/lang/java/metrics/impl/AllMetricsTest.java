@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -17,7 +16,6 @@ import net.sourceforge.pmd.test.SimpleAggregatorTst;
  * @author Clément Fournier
  */
 class AllMetricsTest extends SimpleAggregatorTst {
-
 
     private static final String RULESET = "rulesets/java/metrics_test.xml";
 
@@ -37,13 +35,13 @@ class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "CfoTest");
     }
 
-
     static String formatJavaMessage(Node node, Object result) {
         String qname;
         if (node instanceof ASTTypeDeclaration) {
             qname = ((ASTTypeDeclaration) node).getBinaryName();
         } else if (node instanceof ASTExecutableDeclaration) {
-            String enclosing = ((ASTExecutableDeclaration) node).getEnclosingType().getBinaryName();
+            String enclosing =
+                    ((ASTExecutableDeclaration) node).getEnclosingType().getBinaryName();
             qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTExecutableDeclaration) node);
         } else if (node instanceof ASTLambdaExpression) {
             qname = "(lambda) on line " + node.getBeginLine();
@@ -53,5 +51,4 @@ class AllMetricsTest extends SimpleAggregatorTst {
 
         return "''" + qname + "'' has value " + result + ".";
     }
-
 }

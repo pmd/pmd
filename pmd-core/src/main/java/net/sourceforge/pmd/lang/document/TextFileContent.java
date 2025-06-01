@@ -19,13 +19,11 @@ import java.util.regex.Pattern;
 import java.util.zip.Adler32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
-
+import net.sourceforge.pmd.internal.util.IOUtil;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Contents of a text file.
@@ -58,7 +56,8 @@ public final class TextFileContent {
     private final long checkSum;
     private final SourceCodePositioner positioner;
 
-    private TextFileContent(Chars normalizedText, String lineTerminator, long checkSum, SourceCodePositioner positioner) {
+    private TextFileContent(
+            Chars normalizedText, String lineTerminator, long checkSum, SourceCodePositioner positioner) {
         this.cdata = normalizedText;
         this.lineTerminator = lineTerminator;
         this.checkSum = checkSum;
@@ -80,7 +79,6 @@ public final class TextFileContent {
         return cdata;
     }
 
-
     /**
      * Returns the original line terminator found in the file. This is
      * the terminator that should be used to write the file back to disk.
@@ -91,7 +89,6 @@ public final class TextFileContent {
     public String getLineTerminator() {
         return lineTerminator;
     }
-
 
     /**
      * Returns a checksum for the contents of the file. The checksum is
@@ -138,7 +135,6 @@ public final class TextFileContent {
         }
     }
 
-
     /**
      * Reads the contents of the input stream into a TextFileContent.
      * This closes the input stream. This takes care of buffering.
@@ -151,11 +147,12 @@ public final class TextFileContent {
     }
 
     // test only
-    static TextFileContent fromInputStream(InputStream inputStream, Charset sourceEncoding, String fallbackLineSep) throws IOException {
+    static TextFileContent fromInputStream(InputStream inputStream, Charset sourceEncoding, String fallbackLineSep)
+            throws IOException {
         Checksum checksum = newChecksum();
         try (CheckedInputStream checkedIs = new CheckedInputStream(new BufferedInputStream(inputStream), checksum);
-             // no need to buffer this reader as we already use our own char buffer
-             Reader reader = new InputStreamReader(checkedIs, sourceEncoding)) {
+                // no need to buffer this reader as we already use our own char buffer
+                Reader reader = new InputStreamReader(checkedIs, sourceEncoding)) {
             return normalizingRead(reader, DEFAULT_BUFSIZE, fallbackLineSep, checksum, false);
         }
     }
@@ -201,7 +198,9 @@ public final class TextFileContent {
         return normalizingRead(input, bufSize, fallbackLineSep, newChecksum(), true);
     }
 
-    static TextFileContent normalizingRead(Reader input, int bufSize, String fallbackLineSep, Checksum checksum, boolean updateChecksum) throws IOException {
+    static TextFileContent normalizingRead(
+            Reader input, int bufSize, String fallbackLineSep, Checksum checksum, boolean updateChecksum)
+            throws IOException {
         char[] cbuf = new char[bufSize];
         StringBuilder result = new StringBuilder(bufSize);
         String detectedLineTerm = null;
@@ -291,7 +290,8 @@ public final class TextFileContent {
             detectedLineTerm = fallbackLineSep;
         }
 
-        return new TextFileContent(Chars.wrap(result), detectedLineTerm, checksum.getValue(), positionerBuilder.build(bufOffset));
+        return new TextFileContent(
+                Chars.wrap(result), detectedLineTerm, checksum.getValue(), positionerBuilder.build(bufOffset));
     }
 
     private static String detectLineTerm(@Nullable String curLineTerm, String newLineTerm, String fallback) {
@@ -319,7 +319,6 @@ public final class TextFileContent {
         assert bytes.hasArray() : "Encoder should produce a heap buffer";
         checksum.update(bytes.array(), bytes.arrayOffset(), bytes.remaining());
     }
-
 
     private static Checksum newChecksum() {
         return new Adler32();

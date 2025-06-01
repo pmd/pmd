@@ -13,13 +13,7 @@ public class SomeClassWithAnon {
         new Runnable() {
 
             @Override
-            public void run() {
-
-            }
+            public void run() {}
         };
-
-
     }
-
-
 }

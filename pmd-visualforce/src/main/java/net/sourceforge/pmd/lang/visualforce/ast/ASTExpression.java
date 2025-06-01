@@ -8,11 +8,9 @@ import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.stream.Collectors;
-
+import net.sourceforge.pmd.lang.ast.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.lang.ast.Node;
 
 public final class ASTExpression extends AbstractVfNode {
     private static final Logger LOG = LoggerFactory.getLogger(ASTExpression.class);
@@ -27,10 +25,7 @@ public final class ASTExpression extends AbstractVfNode {
     }
 
     private void logWarning(String warning, Node node) {
-        LOG.warn("{}: {}\n{}",
-                node.getReportLocation().startPosToStringWithFile(),
-                warning,
-                node);
+        LOG.warn("{}: {}\n{}", node.getReportLocation().startPosToStringWithFile(), warning, node);
     }
 
     /**
@@ -70,7 +65,7 @@ public final class ASTExpression extends AbstractVfNode {
      * <Expression Image=''>
      *     <Literal Image='&apos;Text__c&apos;'>
      * </Expression>
-
+     *
      * <apex:outputText value="{!MyObject__c[AnotherObject__c.Id]}" /> results in AST
      * <Identifier Image='MyObject__c'/>
      * <Expression Image=''>
@@ -133,20 +128,16 @@ public final class ASTExpression extends AbstractVfNode {
             }
 
             // Convert the list of nodes to a string representation, store the last node in the list as the map's key
-            String idString = String.join(".", identifierNodes.stream()
-                    .map(i -> i.getImage())
-                    .collect(Collectors.toList()));
+            String idString = String.join(
+                    ".", identifierNodes.stream().map(i -> i.getImage()).collect(Collectors.toList()));
             result.put(identifierNodes.getLast(), idString);
         }
         return result;
     }
 
-
     /**
      * Thrown in cases where the the Identifiers in this node aren't ALL successfully parsed in a call to
      * {@link #getDataNodes()}
      */
-    public static final class DataNodeStateException extends Exception {
-    }
-
+    public static final class DataNodeStateException extends Exception {}
 }

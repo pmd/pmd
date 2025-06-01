@@ -13,5 +13,4 @@ public interface SymbolDeclaratorNode extends JavaNode {
 
     /** Returns the symbol this node declares. */
     JElementSymbol getSymbol();
-
 }

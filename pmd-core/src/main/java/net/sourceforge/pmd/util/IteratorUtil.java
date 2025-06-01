@@ -21,10 +21,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
 
 /**
  * Operations for dealing with {@link Iterator}s.
@@ -38,9 +36,7 @@ public final class IteratorUtil {
     private static final int MATCH_ALL = 1;
     private static final int MATCH_NONE = 2;
 
-    private IteratorUtil() {
-
-    }
+    private IteratorUtil() {}
 
     public static <T> Iterator<T> takeWhile(Iterator<T> iter, Predicate<? super T> predicate) {
         return new AbstractIterator<T>() {
@@ -64,7 +60,8 @@ public final class IteratorUtil {
         return tmp.iterator();
     }
 
-    public static <T, R> Iterator<R> flatMap(Iterator<? extends T> iter, Function<? super T, ? extends @Nullable Iterator<? extends R>> f) {
+    public static <T, R> Iterator<R> flatMap(
+            Iterator<? extends T> iter, Function<? super T, ? extends @Nullable Iterator<? extends R>> f) {
         return new AbstractIterator<R>() {
             private Iterator<? extends R> current = null;
 
@@ -93,7 +90,8 @@ public final class IteratorUtil {
      * input iterator are both yielded by the returned iterator and passed
      * to the stepper. If the stepper returns null, that result is ignored.
      */
-    public static <R> Iterator<R> flatMapWithSelf(Iterator<? extends R> iter, Function<? super R, ? extends @Nullable Iterator<? extends R>> f) {
+    public static <R> Iterator<R> flatMapWithSelf(
+            Iterator<? extends R> iter, Function<? super R, ? extends @Nullable Iterator<? extends R>> f) {
         return new AbstractIterator<R>() {
             private Iterator<? extends R> current = null;
 
@@ -120,7 +118,8 @@ public final class IteratorUtil {
         return filter(it, Objects::nonNull);
     }
 
-    public static <T, R> Iterator<@NonNull R> mapNotNull(Iterator<? extends T> it, Function<@NonNull ? super T, @Nullable ? extends R> mapper) {
+    public static <T, R> Iterator<@NonNull R> mapNotNull(
+            Iterator<? extends T> it, Function<@NonNull ? super T, @Nullable ? extends R> mapper) {
         return new AbstractIterator<R>() {
             @Override
             protected void computeNext() {
@@ -179,7 +178,8 @@ public final class IteratorUtil {
     /**
      * Apply a transform on the iterator of an iterable.
      */
-    public static <T, R> Iterable<R> mapIterator(Iterable<? extends T> iter, Function<? super Iterator<? extends T>, ? extends Iterator<R>> mapper) {
+    public static <T, R> Iterable<R> mapIterator(
+            Iterable<? extends T> iter, Function<? super Iterator<? extends T>, ? extends Iterator<R>> mapper) {
         return () -> mapper.apply(iter.iterator());
     }
 
@@ -275,7 +275,7 @@ public final class IteratorUtil {
             protected void computeNext() {
                 if (it.hasNext()) {
                     setNext((T) ringBuffer[idx]); // yield element X from the buffer
-                    ringBuffer[idx] = it.next();  // overwrite with the element X+n
+                    ringBuffer[idx] = it.next(); // overwrite with the element X+n
                     idx = (idx + 1) % ringBuffer.length; // compute idx of element X+1
                 } else {
                     // that's it: our buffer contains the n tail elements
@@ -327,7 +327,6 @@ public final class IteratorUtil {
         advance(iterator, n);
         return iterator.hasNext() ? iterator.next() : null;
     }
-
 
     /** Advance {@code n} times. */
     public static void advance(Iterator<?> iterator, int n) {
@@ -395,7 +394,8 @@ public final class IteratorUtil {
      * @param stepper Step function
      * @param <T>     Type of values
      */
-    public static <T> Iterator<@NonNull T> generate(@Nullable T seed, Function<? super @NonNull T, ? extends @Nullable T> stepper) {
+    public static <T> Iterator<@NonNull T> generate(
+            @Nullable T seed, Function<? super @NonNull T, ? extends @Nullable T> stepper) {
         return new AbstractIterator<T>() {
             T next = seed;
 
@@ -482,18 +482,15 @@ public final class IteratorUtil {
 
             ListIterator<T> li = lst.listIterator(lst.size());
 
-
             @Override
             public boolean hasNext() {
                 return li.hasPrevious();
             }
 
-
             @Override
             public T next() {
                 return li.previous();
             }
-
 
             @Override
             public void remove() {
@@ -522,21 +519,20 @@ public final class IteratorUtil {
         private State state = State.NOT_READY;
         private T next = null;
 
-
         @Override
         public boolean hasNext() {
             switch (state) {
-            case DONE:
-                return false;
-            case READY:
-                return true;
-            default:
-                state = null;
-                computeNext();
-                if (state == null) {
-                    throw new IllegalStateException("Should have called done or setNext");
-                }
-                return state == State.READY;
+                case DONE:
+                    return false;
+                case READY:
+                    return true;
+                default:
+                    state = null;
+                    computeNext();
+                    if (state == null) {
+                        throw new IllegalStateException("Should have called done or setNext");
+                    }
+                    return state == State.READY;
             }
         }
 
@@ -567,7 +563,9 @@ public final class IteratorUtil {
         protected abstract void computeNext();
 
         enum State {
-            READY, NOT_READY, DONE
+            READY,
+            NOT_READY,
+            DONE
         }
 
         /**
@@ -581,7 +579,6 @@ public final class IteratorUtil {
         public final void remove() {
             throw new UnsupportedOperationException("remove");
         }
-
     }
 
     public abstract static class AbstractPausingIterator<T> extends AbstractIterator<T> {

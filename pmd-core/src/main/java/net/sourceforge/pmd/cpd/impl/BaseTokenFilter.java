@@ -9,7 +9,6 @@ import static net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.LinkedList;
-
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 
@@ -160,8 +159,6 @@ public class BaseTokenFilter<T extends GenericToken<T>> implements TokenManager<
                     setNext(nextToken);
                 }
             }
-
         }
     }
-
 }

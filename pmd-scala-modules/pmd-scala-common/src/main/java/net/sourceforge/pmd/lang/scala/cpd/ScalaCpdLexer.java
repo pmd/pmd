@@ -1,10 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.scala.cpd;
-
-import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.TokenFactory;
@@ -14,7 +11,7 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.scala.internal.ScalaDialect;
-
+import org.apache.commons.lang3.StringUtils;
 import scala.collection.Iterator;
 import scala.meta.Dialect;
 import scala.meta.inputs.Input;
@@ -44,13 +41,13 @@ public class ScalaCpdLexer implements CpdLexer {
     @Override
     public void tokenize(TextDocument document, TokenFactory tokenEntries) {
 
-
         try {
             String fullCode = document.getText().toString();
 
             // create the input file for scala
             Input.VirtualFile vf = new Input.VirtualFile(document.getFileId().getOriginalPath(), fullCode);
-            ScalametaTokenizer tokenizer = new ScalametaTokenizer(vf, dialect, TokenizerOptions.implicitTokenizerOptions());
+            ScalametaTokenizer tokenizer =
+                    new ScalametaTokenizer(vf, dialect, TokenizerOptions.implicitTokenizerOptions());
 
             // tokenize with a filter
             scala.meta.tokens.Tokens tokens = tokenizer.tokenize();
@@ -63,8 +60,7 @@ public class ScalaCpdLexer implements CpdLexer {
                 if (StringUtils.isEmpty(token.getImage())) {
                     continue;
                 }
-                tokenEntries.recordToken(token.getImage(),
-                                         token.getReportLocation());
+                tokenEntries.recordToken(token.getImage(), token.getReportLocation());
             }
         } catch (Exception e) {
             if (e instanceof TokenizeException) { // NOPMD
@@ -72,12 +68,11 @@ public class ScalaCpdLexer implements CpdLexer {
                 TokenizeException tokE = (TokenizeException) e;
                 Position pos = tokE.pos();
                 throw tokenEntries.makeLexException(
-                    pos.startLine() + 1, pos.startColumn() + 1, "Scalameta threw", tokE);
+                        pos.startLine() + 1, pos.startColumn() + 1, "Scalameta threw", tokE);
             } else {
                 throw e;
             }
         }
-
     }
 
     /**
@@ -92,8 +87,15 @@ public class ScalaCpdLexer implements CpdLexer {
         private final Iterator<Token> tokenIter;
         private final TextDocument textDocument;
         private static final Class<?>[] SKIPPABLE_TOKENS = {
-            Token.Space.class, Token.Tab.class, Token.CR.class,
-            Token.LF.class, Token.FF.class, Token.LFLF.class, Token.EOF.class, Token.Comment.class };
+            Token.Space.class,
+            Token.Tab.class,
+            Token.CR.class,
+            Token.LF.class,
+            Token.FF.class,
+            Token.LFLF.class,
+            Token.EOF.class,
+            Token.Comment.class
+        };
 
         private ScalaTokenAdapter previousComment = null;
 
@@ -143,7 +145,5 @@ public class ScalaCpdLexer implements CpdLexer {
         protected boolean shouldStopProcessing(ScalaTokenAdapter currentToken) {
             return currentToken == null;
         }
-
     }
-
 }

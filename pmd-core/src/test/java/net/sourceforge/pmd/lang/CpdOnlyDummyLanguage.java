@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
-
 import net.sourceforge.pmd.cpd.AnyCpdLexer;
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.impl.CpdOnlyLanguageModuleBase;
@@ -19,8 +17,10 @@ public class CpdOnlyDummyLanguage extends CpdOnlyLanguageModuleBase {
     public static final String TERSE_NAME = "dummy_cpd_only";
 
     public CpdOnlyDummyLanguage() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy", "txt")
-                              .addDefaultVersion("1.7", "7"));
+        super(LanguageMetadata.withId(TERSE_NAME)
+                .name(NAME)
+                .extensions("dummy", "txt")
+                .addDefaultVersion("1.7", "7"));
     }
 
     public static CpdOnlyDummyLanguage getInstance() {

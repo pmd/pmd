@@ -12,7 +12,6 @@ public final class ASTRunAsBlockStatement extends AbstractApexNode.Single<RunAsS
         super(runAsStatement);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

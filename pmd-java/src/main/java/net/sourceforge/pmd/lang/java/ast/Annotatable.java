@@ -1,15 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Collection;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Marks nodes that can be annotated. {@linkplain ASTAnnotation Annotations}
@@ -28,7 +25,6 @@ public interface Annotatable extends JavaNode {
         return children(ASTAnnotation.class);
     }
 
-
     /**
      * Returns true if an annotation with the given qualified name is
      * applied to this node.
@@ -39,7 +35,6 @@ public interface Annotatable extends JavaNode {
         return getDeclaredAnnotations().any(t -> TypeTestUtil.isA(StringUtils.deleteWhitespace(annotQualifiedName), t));
     }
 
-
     /**
      * Returns true if an annotation with the given type is
      * applied to this node.
@@ -47,7 +42,6 @@ public interface Annotatable extends JavaNode {
     default boolean isAnnotationPresent(Class<?> type) {
         return getDeclaredAnnotations().any(t -> TypeTestUtil.isA(type, t));
     }
-
 
     /**
      * Returns a specific annotation on this node, or null if absent.
@@ -57,7 +51,9 @@ public interface Annotatable extends JavaNode {
      *            Note: for now, canonical names are tolerated, this may be changed in PMD 7.
      */
     default ASTAnnotation getAnnotation(String binaryName) {
-        return getDeclaredAnnotations().filter(t -> TypeTestUtil.isA(StringUtils.deleteWhitespace(binaryName), t)).first();
+        return getDeclaredAnnotations()
+                .filter(t -> TypeTestUtil.isA(StringUtils.deleteWhitespace(binaryName), t))
+                .first();
     }
 
     /**

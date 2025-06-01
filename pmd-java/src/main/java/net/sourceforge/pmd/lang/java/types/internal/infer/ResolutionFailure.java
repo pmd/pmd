@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An exception occurring during overload resolution. Some of those
@@ -28,7 +27,6 @@ public class ResolutionFailure {
 
     private final @Nullable JavaNode location;
 
-
     ResolutionFailure(@Nullable JavaNode location, String reason) {
         this.location = location;
         this.reason = reason;
@@ -44,9 +42,9 @@ public class ResolutionFailure {
      * Returns the location on which the failure should be reported.
      */
     public @Nullable JavaNode getLocation() {
-        return location != null ? location
-                                : callSite != null ? callSite.getExpr().getLocation()
-                                                   : null;
+        return location != null
+                ? location
+                : callSite != null ? callSite.getExpr().getLocation() : null;
     }
 
     /**
@@ -77,12 +75,11 @@ public class ResolutionFailure {
     @Override
     public String toString() {
         return "ResolutionFailure{"
-            + "failedMethod=" + failedMethod
-            + ", callSite=" + callSite
-            + ", phase=" + phase
-            + ", reason='" + reason + '\''
-            + ", location=" + location
-            + '}';
+                + "failedMethod=" + failedMethod
+                + ", callSite=" + callSite
+                + ", phase=" + phase
+                + ", reason='" + reason + '\''
+                + ", location=" + location
+                + '}';
     }
-
 }

@@ -23,7 +23,6 @@ public abstract class BaseCloseable implements Closeable {
         }
     }
 
-
     /**
      * Noop if called several times. Thread-safe.
      */

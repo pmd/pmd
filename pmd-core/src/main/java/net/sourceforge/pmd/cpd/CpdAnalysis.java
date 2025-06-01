@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
@@ -14,12 +13,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -34,6 +27,10 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.util.log.PmdReporter;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Main programmatic API of CPD. This is not a CLI entry point, see module
@@ -78,14 +75,10 @@ public final class CpdAnalysis implements AutoCloseable {
     private final @Nullable CPDReportRenderer renderer;
     private @NonNull CPDListener listener = new CPDNullListener();
 
-
     private CpdAnalysis(CPDConfiguration config) {
         this.configuration = config;
         this.reporter = config.getReporter();
-        this.files = InternalApiBridge.newCollector(
-            config.getLanguageVersionDiscoverer(),
-            reporter
-        );
+        this.files = InternalApiBridge.newCollector(config.getLanguageVersionDiscoverer(), reporter);
 
         this.renderer = config.getCPDReportRenderer();
 
@@ -118,14 +111,20 @@ public final class CpdAnalysis implements AutoCloseable {
         LanguagePropertyBundle props = configuration.getLanguageProperties(language);
 
         setPropertyIfMissing(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS, props, configuration.isIgnoreLiterals());
-        setPropertyIfMissing(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS, props, configuration.isIgnoreIdentifiers());
+        setPropertyIfMissing(
+                CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS, props, configuration.isIgnoreIdentifiers());
         setPropertyIfMissing(CpdLanguageProperties.CPD_IGNORE_METADATA, props, configuration.isIgnoreAnnotations());
         setPropertyIfMissing(CpdLanguageProperties.CPD_IGNORE_IMPORTS, props, configuration.isIgnoreUsings());
-        setPropertyIfMissing(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES, props, configuration.isIgnoreLiteralSequences());
-        setPropertyIfMissing(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES, props, configuration.isIgnoreIdentifierAndLiteralSequences());
+        setPropertyIfMissing(
+                CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES, props, configuration.isIgnoreLiteralSequences());
+        setPropertyIfMissing(
+                CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES,
+                props,
+                configuration.isIgnoreIdentifierAndLiteralSequences());
         if (!configuration.isNoSkipBlocks()) {
             // see net.sourceforge.pmd.lang.cpp.CppLanguageModule.CPD_SKIP_BLOCKS
-            PropertyDescriptor<String> skipBlocks = (PropertyDescriptor) props.getPropertyDescriptor("cpdSkipBlocksPattern");
+            PropertyDescriptor<String> skipBlocks =
+                    (PropertyDescriptor) props.getPropertyDescriptor("cpdSkipBlocksPattern");
             setPropertyIfMissing(skipBlocks, props, configuration.getSkipBlocksPattern());
         }
     }
@@ -149,7 +148,7 @@ public final class CpdAnalysis implements AutoCloseable {
     }
 
     public void performAnalysis() {
-        performAnalysis(r -> { });
+        performAnalysis(r -> {});
     }
 
     @SuppressWarnings("PMD.CloseResource")
@@ -157,15 +156,16 @@ public final class CpdAnalysis implements AutoCloseable {
 
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
             if (sourceManager.isEmpty()) {
-                reporter.warn("No files to analyze. Check input paths and exclude parameters, use --debug to see file collection traces.");
+                reporter.warn(
+                        "No files to analyze. Check input paths and exclude parameters, use --debug to see file collection traces.");
             }
 
-            Map<Language, CpdLexer> tokenizers =
-                sourceManager.getTextFiles().stream()
-                             .map(it -> it.getLanguageVersion().getLanguage())
-                             .distinct()
-                             .filter(it -> it instanceof CpdCapableLanguage)
-                             .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdLexer(configuration.getLanguageProperties(lang))));
+            Map<Language, CpdLexer> tokenizers = sourceManager.getTextFiles().stream()
+                    .map(it -> it.getLanguageVersion().getLanguage())
+                    .distinct()
+                    .filter(it -> it instanceof CpdCapableLanguage)
+                    .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang)
+                            .createCpdLexer(configuration.getLanguageProperties(lang))));
 
             Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
 
@@ -175,7 +175,10 @@ public final class CpdAnalysis implements AutoCloseable {
                 TextDocument textDocument = sourceManager.get(textFile);
                 Tokens.State savedState = tokens.savePoint();
                 try {
-                    int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
+                    int newTokens = doTokenize(
+                            textDocument,
+                            tokenizers.get(textFile.getLanguageVersion().getLanguage()),
+                            tokens);
                     numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
                     listener.addedFile(1);
                 } catch (IOException | FileAnalysisException e) {
@@ -189,7 +192,8 @@ public final class CpdAnalysis implements AutoCloseable {
                 }
             }
             if (!processingErrors.isEmpty() && !configuration.isSkipLexicalErrors()) {
-                reporter.error("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+                reporter.error(
+                        "Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
                 return;
             }
 
@@ -203,7 +207,8 @@ public final class CpdAnalysis implements AutoCloseable {
 
             if (renderer != null) {
                 Path reportFilePath = configuration.getReportFilePath();
-                String reportFileAsString = reportFilePath != null ? reportFilePath.toAbsolutePath().toString() : null;
+                String reportFileAsString =
+                        reportFilePath != null ? reportFilePath.toAbsolutePath().toString() : null;
                 try (Writer writer = IOUtil.createWriter(Charset.defaultCharset(), reportFileAsString)) {
                     renderer.render(cpdReport, writer);
                 }
@@ -216,10 +221,8 @@ public final class CpdAnalysis implements AutoCloseable {
         // source manager is closed and closes all text files now.
     }
 
-
     @Override
     public void close() throws IOException {
         // nothing for now
     }
-
 }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.xml.wsdl;
 
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -17,11 +16,12 @@ public class WsdlDialectModule extends SimpleDialectLanguageModuleBase {
     private static final String ID = "wsdl";
 
     public WsdlDialectModule() {
-        super(LanguageMetadata.withId(ID).name("WSDL")
-                              .extensions("wsdl")
-                              .addVersion("1.1")
-                              .addDefaultVersion("2.0")
-                              .asDialectOf("xml"));
+        super(LanguageMetadata.withId(ID)
+                .name("WSDL")
+                .extensions("wsdl")
+                .addVersion("1.1")
+                .addDefaultVersion("2.0")
+                .asDialectOf("xml"));
     }
 
     public static WsdlDialectModule getInstance() {

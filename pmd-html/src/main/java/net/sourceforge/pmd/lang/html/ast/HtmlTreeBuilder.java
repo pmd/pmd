@@ -2,11 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.html.ast;
 
 import java.util.Map;
-
+import net.sourceforge.pmd.lang.ast.Parser;
 import org.jsoup.nodes.CDataNode;
 import org.jsoup.nodes.Comment;
 import org.jsoup.nodes.Document;
@@ -16,13 +15,9 @@ import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.nodes.XmlDeclaration;
 
-import net.sourceforge.pmd.lang.ast.Parser;
-
 final class HtmlTreeBuilder {
 
-    public ASTHtmlDocument build(Document doc,
-                                 Parser.ParserTask task,
-                                 Map<Integer, String> suppressMap) {
+    public ASTHtmlDocument build(Document doc, Parser.ParserTask task, Map<Integer, String> suppressMap) {
         ASTHtmlDocument root = new ASTHtmlDocument(doc, task, suppressMap);
         addChildren(root, doc);
 
@@ -31,7 +26,7 @@ final class HtmlTreeBuilder {
 
         return root;
     }
-    
+
     private void addChildren(AbstractHtmlNode<?> parent, Node node) {
         for (Node child : node.childNodes()) {
             AbstractHtmlNode<?> converted = convertJsoupNode(child);

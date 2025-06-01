@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
@@ -41,9 +40,15 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
             if (parent instanceof ASTTryStatement) {
                 // maybe the exception is being caught here.
                 for (ASTCatchClause catchClause : ((ASTTryStatement) parent).getCatchClauses()) {
-                    if (catchClause.getParameter().getAllExceptionTypes().any(it -> thrownType.isSubtypeOf(it.getTypeMirror()))) {
+                    if (catchClause
+                            .getParameter()
+                            .getAllExceptionTypes()
+                            .any(it -> thrownType.isSubtypeOf(it.getTypeMirror()))) {
                         if (!JavaAstUtils.isJustRethrowException(catchClause)) {
-                            asCtx(data).addViolation(catchClause, node.getReportLocation().getStartLine());
+                            asCtx(data)
+                                    .addViolation(
+                                            catchClause,
+                                            node.getReportLocation().getStartLine());
                             return null;
                         } else {
                             break;
@@ -55,5 +60,4 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
         }
         return null;
     }
-
 }

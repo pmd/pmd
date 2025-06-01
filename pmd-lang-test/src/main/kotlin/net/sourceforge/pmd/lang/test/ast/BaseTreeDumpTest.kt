@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.test.ast
 import net.sourceforge.pmd.lang.test.BaseTextComparisonTest
 import net.sourceforge.pmd.util.treeexport.TreeRenderer
 
-
 /**
  * Compare a dump of an AST against a saved baseline.
  *
@@ -15,8 +14,8 @@ import net.sourceforge.pmd.util.treeexport.TreeRenderer
  * @param extensionIncludingDot Extension that the unparsed source file is supposed to have
  */
 abstract class BaseTreeDumpTest(
-        private val printer: TreeRenderer,
-        override val extensionIncludingDot: String
+    private val printer: TreeRenderer,
+    override val extensionIncludingDot: String,
 ) : BaseTextComparisonTest() {
 
     abstract val parser: BaseParsingHelper<*, *>
@@ -27,17 +26,12 @@ abstract class BaseTreeDumpTest(
     override val resourcePrefix: String
         get() = parser.resourcePrefix
 
-    /**
-     * @see BaseTextComparisonTest.doTest
-     */
+    /** @see BaseTextComparisonTest.doTest */
     @JvmOverloads
     fun doTest(fileBaseName: String, parser: BaseParsingHelper<*, *> = this.parser) {
         super.doTest(fileBaseName, "") { fileData ->
             buildString {
-                val ast = parser.parse(
-                    sourceCode = fileData.fileText,
-                    fileName = fileData.fileName
-                )
+                val ast = parser.parse(sourceCode = fileData.fileText, fileName = fileData.fileName)
                 printer.renderSubtree(ast, this)
             }
         }

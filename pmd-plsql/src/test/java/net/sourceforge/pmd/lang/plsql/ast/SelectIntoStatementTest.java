@@ -1,15 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import org.junit.jupiter.api.Test;
 
 class SelectIntoStatementTest extends AbstractPLSQLParserTst {
 

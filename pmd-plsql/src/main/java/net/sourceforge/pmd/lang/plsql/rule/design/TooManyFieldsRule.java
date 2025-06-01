@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
@@ -9,7 +8,6 @@ import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageSpecification;
@@ -27,12 +25,11 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     private Map<String, Integer> stats;
     private Map<String, PLSQLNode> nodes;
 
-    private static final PropertyDescriptor<Integer> MAX_FIELDS_DESCRIPTOR
-            = PropertyFactory.intProperty("maxfields")
-                             .desc("Max allowable fields")
-                             .defaultValue(DEFAULT_MAXFIELDS)
-                             .require(positive())
-                             .build();
+    private static final PropertyDescriptor<Integer> MAX_FIELDS_DESCRIPTOR = PropertyFactory.intProperty("maxfields")
+            .desc("Max allowable fields")
+            .defaultValue(DEFAULT_MAXFIELDS)
+            .require(positive())
+            .build();
 
     public TooManyFieldsRule() {
         definePropertyDescriptor(MAX_FIELDS_DESCRIPTOR);
@@ -52,7 +49,8 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
 
-        List<ASTVariableOrConstantDeclaration> l = node.descendants(ASTVariableOrConstantDeclaration.class).toList();
+        List<ASTVariableOrConstantDeclaration> l =
+                node.descendants(ASTVariableOrConstantDeclaration.class).toList();
 
         for (ASTVariableOrConstantDeclaration fd : l) {
             bumpCounterFor(fd);
@@ -72,7 +70,8 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
 
-        List<ASTVariableOrConstantDeclaration> l = node.descendants(ASTVariableOrConstantDeclaration.class).toList();
+        List<ASTVariableOrConstantDeclaration> l =
+                node.descendants(ASTVariableOrConstantDeclaration.class).toList();
 
         for (ASTVariableOrConstantDeclaration fd : l) {
             bumpCounterFor(fd);

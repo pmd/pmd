@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.util.database;
 
 import java.io.IOException;
@@ -13,7 +12,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +68,6 @@ public class DBURI {
      * Example: jdbc:oracle:thin:@//myserver.com/customer_db
      * jdbc:oracle:oci:scott/tiger@//myserver.com:5521/customer_db
      */
-
     private URI uri;
 
     private DBType dbType;
@@ -204,7 +201,6 @@ public class DBURI {
         // Explode URL into its separate components
         setFields();
 
-
         // If the original URI string contained a query component, split it
         // into parameters
         if (splitURI.length > 1) {
@@ -240,9 +236,7 @@ public class DBURI {
             if (null != sourceCodeTypes) {
                 sourceCodeTypesList = Arrays.asList(sourceCodeTypes.split(","));
             }
-
         }
-
     }
 
     /**
@@ -280,9 +274,18 @@ public class DBURI {
      */
     static void dump(String description, URI dburi) {
 
-        LOG.debug("dump ({})\n: isOpaque={}, isAbsolute={} Scheme={},\n SchemeSpecificPart={},\n Host={},\n Port={},\n Path={},\n Fragment={},\n Query={}",
-                description, dburi.isOpaque(), dburi.isAbsolute(), dburi.getScheme(), dburi.getSchemeSpecificPart(),
-                dburi.getHost(), dburi.getPort(), dburi.getPath(), dburi.getFragment(), dburi.getQuery());
+        LOG.debug(
+                "dump ({})\n: isOpaque={}, isAbsolute={} Scheme={},\n SchemeSpecificPart={},\n Host={},\n Port={},\n Path={},\n Fragment={},\n Query={}",
+                description,
+                dburi.isOpaque(),
+                dburi.isAbsolute(),
+                dburi.getScheme(),
+                dburi.getSchemeSpecificPart(),
+                dburi.getHost(),
+                dburi.getPort(),
+                dburi.getPath(),
+                dburi.getFragment(),
+                dburi.getQuery());
 
         String query = dburi.getQuery();
         if (null != query && !"".equals(query)) {
@@ -454,8 +457,10 @@ public class DBURI {
             // Set values from DBType defaults
             this.dbType = new DBType(subprotocol, subnamePrefix);
 
-            LOG.debug("DBType properties found at {} with {} properties.",
-                    dbType.getPropertiesSource(), dbType.getProperties().size());
+            LOG.debug(
+                    "DBType properties found at {} with {} properties.",
+                    dbType.getPropertiesSource(),
+                    dbType.getProperties().size());
 
             LOG.trace("DBType properties are:- {}", dbType.getProperties());
 
@@ -478,7 +483,8 @@ public class DBURI {
             LOG.debug("DBType other properties follow  ...");
 
             if (null != dbType.getProperties().getProperty("schemas")) {
-                schemasList = Arrays.asList(dbType.getProperties().getProperty("schemas").split(","));
+                schemasList = Arrays.asList(
+                        dbType.getProperties().getProperty("schemas").split(","));
             }
 
             if (null != dbType.getProperties().getProperty("sourcecodenames")) {
@@ -506,7 +512,6 @@ public class DBURI {
 
             LOG.debug("DBType lists generated");
         }
-
     }
 
     @Override

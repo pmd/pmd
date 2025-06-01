@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import java.util.stream.Collectors;
-
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -41,7 +39,6 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
         return this;
     }
 
-
     /**
      * Returns whether this source file contains Byte Order Mark.
      */
@@ -50,7 +47,8 @@ public class ASTStoredDefinition extends AbstractModelicaNode implements RootNod
     }
 
     public String getName() {
-        return children(ASTWithinClause.class).toStream()
+        return children(ASTWithinClause.class)
+                .toStream()
                 .map(ASTWithinClause::getName)
                 .collect(Collectors.joining(CompositeName.NAME_COMPONENT_SEPARATOR));
     }

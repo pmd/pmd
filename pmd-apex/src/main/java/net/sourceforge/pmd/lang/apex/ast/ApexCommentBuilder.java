@@ -6,19 +6,14 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static java.util.stream.Collectors.toList;
 
+import io.github.apexdevtools.apexparser.ApexLexer;
+import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.RandomAccess;
-
-import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.Token;
-
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
@@ -26,9 +21,11 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
-
-import io.github.apexdevtools.apexparser.ApexLexer;
-import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
+import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.RecognitionException;
+import org.antlr.v4.runtime.Recognizer;
+import org.antlr.v4.runtime.Token;
 
 @InternalApi
 final class ApexCommentBuilder {
@@ -60,8 +57,7 @@ final class ApexCommentBuilder {
         // now check whether the next comment after the node is still inside the node
         if (index >= 0 && index < commentInfo.allCommentsByStartIndex.size()) {
             int commentStartIndex = commentInfo.allCommentsByStartIndex.get(index);
-            return nodeRegion.getStartOffset() < commentStartIndex
-                    && nodeRegion.getEndOffset() >= commentStartIndex;
+            return nodeRegion.getStartOffset() < commentStartIndex && nodeRegion.getEndOffset() >= commentStartIndex;
         }
         return false;
     }
@@ -101,8 +97,7 @@ final class ApexCommentBuilder {
                 break;
             }
 
-            if (docToken.nearestNode == null
-                || nodeRegion.compareTo(docToken.nearestNode.getTextRegion()) < 0) {
+            if (docToken.nearestNode == null || nodeRegion.compareTo(docToken.nearestNode.getTextRegion()) < 0) {
 
                 docToken.nearestNode = node;
             }
@@ -115,7 +110,13 @@ final class ApexCommentBuilder {
         lexer.removeErrorListeners();
         lexer.addErrorListener(new BaseErrorListener() {
             @Override
-            public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine, String msg, RecognitionException e) {
+            public void syntaxError(
+                    Recognizer<?, ?> recognizer,
+                    Object offendingSymbol,
+                    int line,
+                    int charPositionInLine,
+                    String msg,
+                    RecognitionException e) {
                 throw new LexException(line, charPositionInLine, sourceCode.getFileId(), msg, e);
             }
         });
@@ -130,8 +131,7 @@ final class ApexCommentBuilder {
         while (token.getType() != Token.EOF) {
             // Keep track of all comment tokens
             if (token.getChannel() == ApexLexer.COMMENT_CHANNEL) {
-                assert lastStartIndex < token.getStartIndex()
-                    : "Comments should be sorted";
+                assert lastStartIndex < token.getStartIndex() : "Comments should be sorted";
                 allCommentTokens.add(token);
             }
 
@@ -140,12 +140,11 @@ final class ApexCommentBuilder {
                 String trimmedCommentText = token.getText().substring(2).trim();
 
                 if (trimmedCommentText.startsWith(suppressMarker)) {
-                    String userMessage = trimmedCommentText.substring(suppressMarker.length()).trim();
+                    String userMessage = trimmedCommentText
+                            .substring(suppressMarker.length())
+                            .trim();
                     FileLocation loc = FileLocation.caret(
-                        sourceCode.getFileId(),
-                        token.getLine(),
-                        token.getCharPositionInLine() + 1
-                    );
+                            sourceCode.getFileId(), token.getLine(), token.getCharPositionInLine() + 1);
                     suppressionComments.add(new SuppressionCommentImpl<>(() -> loc, userMessage));
                 }
             }
@@ -166,9 +165,9 @@ final class ApexCommentBuilder {
         CommentInformation(Collection<SuppressionCommentWrapper> suppressMap, List<Token> allCommentTokens) {
             this.suppressionComments = suppressMap;
             this.docTokens = allCommentTokens.stream()
-                .filter(token -> token.getType() == ApexLexer.DOC_COMMENT)
-                .map(ApexDocToken::new)
-                .collect(toList());
+                    .filter(token -> token.getType() == ApexLexer.DOC_COMMENT)
+                    .map(ApexDocToken::new)
+                    .collect(toList());
             this.allCommentsByStartIndex = new TokenListByStartIndex(new ArrayList<>(allCommentTokens));
         }
     }

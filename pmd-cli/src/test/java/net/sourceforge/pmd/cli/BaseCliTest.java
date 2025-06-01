@@ -1,13 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
-
+import net.sourceforge.pmd.cli.internal.CliExitCode;
 import org.apache.commons.lang3.StringUtils;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -24,10 +24,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.function.ThrowingConsumer;
 import org.opentest4j.AssertionFailedError;
-
-import net.sourceforge.pmd.cli.internal.CliExitCode;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 abstract class BaseCliTest {
 
@@ -62,24 +58,19 @@ abstract class BaseCliTest {
             System.setOut(new PrintStream(out));
             System.setErr(new PrintStream(err));
             // restoring system properties: --debug might change logging properties
-            SystemLambda.restoreSystemProperties(
-                () -> {
-                    int actualExitCode = PmdCli.mainWithoutExit(argList.toArray(new String[0]));
-                    exitCode.set(CliExitCode.fromInt(actualExitCode));
-                }
-            );
+            SystemLambda.restoreSystemProperties(() -> {
+                int actualExitCode = PmdCli.mainWithoutExit(argList.toArray(new String[0]));
+                exitCode.set(CliExitCode.fromInt(actualExitCode));
+            });
         } finally {
             System.setOut(formerOut);
             System.setErr(formerErr);
         }
 
-        return new CliExecutionResult(
-            out, err, exitCode.get()
-        ).verify(e -> assertEquals(expectedExitCode, e.exitCode));
+        return new CliExecutionResult(out, err, exitCode.get()).verify(e -> assertEquals(expectedExitCode, e.exitCode));
     }
 
     protected abstract List<String> cliStandardArgs();
-
 
     public static Matcher<String> containsPattern(final String regex) {
         return new BaseMatcher<String>() {
@@ -107,12 +98,10 @@ abstract class BaseCliTest {
 
             @Override
             public boolean matches(Object o) {
-                return o instanceof String
-                    && StringUtils.countMatches((String) o, substring) == times;
+                return o instanceof String && StringUtils.countMatches((String) o, substring) == times;
             }
         };
     }
-
 
     static class CliExecutionResult {
 
@@ -120,9 +109,7 @@ abstract class BaseCliTest {
         private final ByteArrayOutputStream err;
         private final CliExitCode exitCode;
 
-        CliExecutionResult(ByteArrayOutputStream out,
-                           ByteArrayOutputStream err,
-                           CliExitCode exitCode) {
+        CliExecutionResult(ByteArrayOutputStream out, ByteArrayOutputStream err, CliExitCode exitCode) {
             this.out = out;
             this.err = err;
             this.exitCode = exitCode;
@@ -135,7 +122,6 @@ abstract class BaseCliTest {
         public String getErr() {
             return err.toString();
         }
-
 
         public void checkOk() {
             assertEquals(CliExitCode.OK, exitCode);
@@ -182,5 +168,4 @@ abstract class BaseCliTest {
             return this;
         }
     }
-
 }

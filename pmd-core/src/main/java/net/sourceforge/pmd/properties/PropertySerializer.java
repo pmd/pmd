@@ -6,9 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
-
 
 /**
  * Strategy to serialize a value to and from strings.
@@ -19,7 +17,6 @@ public abstract class PropertySerializer<T> {
         // package private, we want to control available mappers to
         // put them into the ruleset schema
     }
-
 
     /**
      * Returns the constraints that this mapper applies to values
@@ -52,6 +49,4 @@ public abstract class PropertySerializer<T> {
      * @throws IllegalArgumentException      if something goes wrong (but should be reported on the error reporter)
      */
     public abstract @NonNull String toString(T value);
-
-
 }

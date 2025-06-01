@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.util.Collection;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
@@ -58,7 +56,8 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
 
     private boolean notArrayAssignment(JavaNode node) {
         JavaNode childOfAssignment = node.ancestorsOrSelf()
-                .filter(n -> n.getParent() instanceof ASTAssignmentExpression).first();
+                .filter(n -> n.getParent() instanceof ASTAssignmentExpression)
+                .first();
 
         if (childOfAssignment != null && childOfAssignment.getIndexInParent() == 1) {
             Node assignee = childOfAssignment.getParent().getFirstChild();
@@ -71,13 +70,14 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
         // checks whether the given ConstructorCall/ArrayAllocation is
         // part of a MethodCall on a Collection.
         return node.ancestors(ASTArgumentList.class)
-            .filter(n -> n.getParent() instanceof ASTMethodCall)
-            .filter(n -> TypeTestUtil.isA(Collection.class, ((ASTMethodCall) n.getParent()).getQualifier()))
-            .isEmpty();
+                .filter(n -> n.getParent() instanceof ASTMethodCall)
+                .filter(n -> TypeTestUtil.isA(Collection.class, ((ASTMethodCall) n.getParent()).getQualifier()))
+                .isEmpty();
     }
 
     private boolean notBreakFollowing(JavaNode node) {
-        JavaNode statement = node.ancestors().filter(n -> n.getParent() instanceof ASTBlock).first();
+        JavaNode statement =
+                node.ancestors().filter(n -> n.getParent() instanceof ASTBlock).first();
         return statement == null || !(statement.getNextSibling() instanceof ASTBreakStatement);
     }
 
@@ -115,7 +115,8 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
                  * ASTForStatement but continue higher up to detect nested loops
                  */
                 n = n.getParent();
-            } else if (n.getParent() instanceof ASTForeachStatement && n.getParent().getNumChildren() > 1
+            } else if (n.getParent() instanceof ASTForeachStatement
+                    && n.getParent().getNumChildren() > 1
                     && n == n.getParent().getChild(1)) {
                 // it is the second child of a ForeachStatement.
                 // In that case, we can ignore this allocation expression, as

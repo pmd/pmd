@@ -24,7 +24,6 @@ public interface PLSQLNode extends ScopedNode, JjtreeNode<PLSQLNode> {
         return PLSQLParserImpl.canonicalName(this.getImage());
     }
 
-
     /**
      * Convert arbitrary String to normal Oracle format, under assumption that
      * the passed image is an Oracle name.

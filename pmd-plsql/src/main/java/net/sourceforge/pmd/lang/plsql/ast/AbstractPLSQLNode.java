@@ -47,7 +47,6 @@ abstract class AbstractPLSQLNode extends AbstractJjtreeNode<AbstractPLSQLNode, P
         return PLSQLParserImplTreeConstants.jjtNodeName[id];
     }
 
-
     @Override
     public Scope getScope() {
         if (scope == null) {

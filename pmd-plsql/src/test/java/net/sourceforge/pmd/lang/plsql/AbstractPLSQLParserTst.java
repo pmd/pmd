@@ -1,15 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public abstract class AbstractPLSQLParserTst extends BaseTreeDumpTest {
 
@@ -23,5 +21,4 @@ public abstract class AbstractPLSQLParserTst extends BaseTreeDumpTest {
     }
 
     protected final PlsqlParsingHelper plsql = PlsqlParsingHelper.DEFAULT.withResourceContext(getClass());
-
 }

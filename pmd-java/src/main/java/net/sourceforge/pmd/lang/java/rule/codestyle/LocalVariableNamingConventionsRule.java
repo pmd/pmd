@@ -1,14 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-
 
 /**
  * Enforces a naming convention for local variables and other locally scoped variables.
@@ -20,11 +17,13 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
     // These are not exhaustive, but are chosen to be the most useful, for a start
 
-    private final PropertyDescriptor<Pattern> localVarRegex = defaultProp("localVar", "non-final local variable").build();
-    private final PropertyDescriptor<Pattern> finalVarRegex = defaultProp("finalVar", "final local variable").build();
+    private final PropertyDescriptor<Pattern> localVarRegex =
+            defaultProp("localVar", "non-final local variable").build();
+    private final PropertyDescriptor<Pattern> finalVarRegex =
+            defaultProp("finalVar", "final local variable").build();
 
-    private final PropertyDescriptor<Pattern> exceptionBlockParameterRegex = defaultProp("catchParameter", "exception block parameter").build();
-
+    private final PropertyDescriptor<Pattern> exceptionBlockParameterRegex =
+            defaultProp("catchParameter", "exception block parameter").build();
 
     public LocalVariableNamingConventionsRule() {
         super(ASTVariableId.class);
@@ -33,8 +32,6 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
         definePropertyDescriptor(finalVarRegex);
         definePropertyDescriptor(exceptionBlockParameterRegex);
     }
-
-
 
     @Override
     public Object visit(ASTVariableId node, Object data) {
@@ -52,18 +49,15 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
         return data;
     }
 
-
     @Override
     String defaultConvention() {
         return CAMEL_CASE;
     }
 
-
     @Override
     String nameExtractor(ASTVariableId node) {
         return node.getName();
     }
-
 
     @Override
     String kindDisplayName(ASTVariableId node, PropertyDescriptor<Pattern> descriptor) {

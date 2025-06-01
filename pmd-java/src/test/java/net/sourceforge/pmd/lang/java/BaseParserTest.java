@@ -18,7 +18,6 @@ public abstract class BaseParserTest {
     protected final JavaParsingHelper java8 = java.withDefaultVersion("1.8");
     protected final JavaParsingHelper java9 = java.withDefaultVersion("9");
 
-
     protected ASTCompilationUnit parseCode(final String code) {
         return java.parse(code);
     }
@@ -27,10 +26,8 @@ public abstract class BaseParserTest {
      * Parse and return an expression. Some variables are predeclared.
      */
     protected ASTExpression parseExpr(String expr) {
-        ASTCompilationUnit ast = java.parse("class Foo {{ "
-                                                + "String s1,s2,s3; "
-                                                + "int i,j,k; "
-                                                + "Object o = (" + expr + "); }}");
+        ASTCompilationUnit ast =
+                java.parse("class Foo {{ " + "String s1,s2,s3; " + "int i,j,k; " + "Object o = (" + expr + "); }}");
         return ast.descendants(ASTExpression.class).crossFindBoundaries().firstOrThrow();
     }
 }

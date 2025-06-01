@@ -18,13 +18,11 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
+import net.sourceforge.pmd.internal.util.PredicateUtil;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
-
-import net.sourceforge.pmd.internal.util.PredicateUtil;
 
 class LatticeRelationTest {
 
@@ -32,7 +30,6 @@ class LatticeRelationTest {
     void testCustomTopo() {
 
         LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(PredicateUtil.always());
-
 
         lattice.put(setOf(1, 2, 3), "123");
         lattice.put(setOf(4), "4");
@@ -73,7 +70,6 @@ class LatticeRelationTest {
         assertEquals(emptySet(), lattice.get(emptySet()));
     }
 
-
     @Test
     void testTopoFilter() {
 
@@ -83,7 +79,6 @@ class LatticeRelationTest {
         // are still connected to successors (size < 2)
 
         LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(it -> it.size() != 2);
-
 
         lattice.put(setOf(1, 2, 3), "123");
         lattice.put(setOf(4), "4");
@@ -108,17 +103,14 @@ class LatticeRelationTest {
         assertEquals(setOf("4", "43", "435", "436"), lattice.get(setOf(4)));
     }
 
-
     @Test
     void testInitialSetFilter() {
 
-        LatticeRelation<Set<Integer>, String, Set<String>> lattice =
-            new LatticeRelation<>(
+        LatticeRelation<Set<Integer>, String, Set<String>> lattice = new LatticeRelation<>(
                 setTopoOrder(),
                 setOf(setOf(1, 2), setOf(1, 2, 3), setOf(2, 3), emptySet()),
                 Objects::toString,
-                Collectors.toSet()
-            );
+                Collectors.toSet());
 
         lattice.put(setOf(1, 2, 3), "123");
         lattice.put(setOf(1, 2), "12");
@@ -139,7 +131,6 @@ class LatticeRelationTest {
 
         assertEquals(setOf("123", "234", "234*"), lattice.get(setOf(2, 3))); // value "43" has been pruned
     }
-
 
     @Test
     void testDiamond() {
@@ -165,7 +156,6 @@ class LatticeRelationTest {
         assertEquals(setOf("12"), lattice.get(setOf(2)));
         assertEquals(setOf("12"), lattice.get(setOf(1, 2)));
     }
-
 
     @Test
     void testFilterOnChainSetup() {
@@ -206,8 +196,7 @@ class LatticeRelationTest {
     @Test
     void testTransitiveSucc() {
 
-        LatticeRelation<String, String, Set<String>> lattice =
-            stringLattice(s -> s.equals("c") || s.equals("bc"));
+        LatticeRelation<String, String, Set<String>> lattice = stringLattice(s -> s.equals("c") || s.equals("bc"));
 
         lattice.put("abc", "val");
         lattice.put("bc", "v2");
@@ -233,8 +222,7 @@ class LatticeRelationTest {
     @Test
     void testTransitiveSuccWithHoleInTheMiddle() {
 
-        LatticeRelation<String, String, Set<String>> lattice =
-            stringLattice(setOf("abc", "bbc", "c")::contains);
+        LatticeRelation<String, String, Set<String>> lattice = stringLattice(setOf("abc", "bbc", "c")::contains);
 
         lattice.put("abc", "v1");
         lattice.put("bbc", "v2");
@@ -263,7 +251,6 @@ class LatticeRelationTest {
         assertEquals(setOf("v1", "v2"), lattice.get("c"));
     }
 
-
     @Test
     void testToString() {
         LatticeRelation<Set<Integer>, String, Set<String>> lattice = setLattice(set -> set.size() < 2);
@@ -278,17 +265,19 @@ class LatticeRelationTest {
 
         // all {1}, {2}, and { } are query nodes, not {1,2}
 
-        assertEquals("strict digraph {\n"
-                         + "n0 [ shape=box, color=black, label=\"[1, 2]\" ];\n"
-                         + "n1 [ shape=box, color=green, label=\"[1]\" ];\n"
-                         + "n2 [ shape=box, color=green, label=\"[2]\" ];\n"
-                         + "n3 [ shape=box, color=green, label=\"[]\" ];\n"
-                         + "n0 -> n1;\n" // {1}   -> { }
-                         + "n0 -> n2;\n" // {2}   -> { }
-                         + "n0 -> n3;\n" // {1,2} -> { }
-                         + "n1 -> n3;\n" // {1,2} -> {1}
-                         + "n2 -> n3;\n" // {1,2} -> {2}
-                         + "}", lattice.toString());
+        assertEquals(
+                "strict digraph {\n"
+                        + "n0 [ shape=box, color=black, label=\"[1, 2]\" ];\n"
+                        + "n1 [ shape=box, color=green, label=\"[1]\" ];\n"
+                        + "n2 [ shape=box, color=green, label=\"[2]\" ];\n"
+                        + "n3 [ shape=box, color=green, label=\"[]\" ];\n"
+                        + "n0 -> n1;\n" // {1}   -> { }
+                        + "n0 -> n2;\n" // {2}   -> { }
+                        + "n0 -> n3;\n" // {1,2} -> { }
+                        + "n1 -> n3;\n" // {1,2} -> {1}
+                        + "n2 -> n3;\n" // {1,2} -> {2}
+                        + "}",
+                lattice.toString());
     }
 
     @Test
@@ -301,20 +290,18 @@ class LatticeRelationTest {
         };
 
         LatticeRelation<String, String, Set<String>> lattice =
-            new LatticeRelation<>(cyclicOrder, PredicateUtil.always(), Objects::toString, Collectors.toSet());
+                new LatticeRelation<>(cyclicOrder, PredicateUtil.always(), Objects::toString, Collectors.toSet());
 
         IllegalStateException exception = assertThrows(IllegalStateException.class, () -> {
             lattice.put("a", "1");
         });
         assertEquals("Cycle in graph: a -> b -> c -> d -> a", exception.getMessage());
-
     }
 
     @NonNull
     private LatticeRelation<String, String, Set<String>> stringLattice(Predicate<String> filter) {
         return new LatticeRelation<>(stringTopoOrder(), filter, Objects::toString, Collectors.toSet());
     }
-
 
     @NonNull
     private LatticeRelation<Set<Integer>, String, Set<String>> setLattice(Predicate<Set<Integer>> filter) {
@@ -357,9 +344,6 @@ class LatticeRelationTest {
      * }</pre>
      */
     private static TopoOrder<String> stringTopoOrder() {
-        return str -> str.isEmpty() ? emptyList()
-                                    : singletonList(str.substring(1));
+        return str -> str.isEmpty() ? emptyList() : singletonList(str.substring(1));
     }
-
-
 }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -11,11 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.AstInfo;
@@ -28,6 +22,9 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * The API for rules to report violations or errors during analysis.
@@ -44,9 +41,10 @@ public final class RuleContext {
     // they are stack-local
 
     private static final Object[] NO_ARGS = new Object[0];
-    static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
-                                                                        ViolationSuppressor.REGEX_SUPPRESSOR,
-                                                                        ViolationSuppressor.XPATH_SUPPRESSOR);
+    static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(
+            ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+            ViolationSuppressor.REGEX_SUPPRESSOR,
+            ViolationSuppressor.XPATH_SUPPRESSOR);
 
     private final FileAnalysisListener listener;
     private final Rule rule;
@@ -137,8 +135,8 @@ public final class RuleContext {
     public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
         FileLocation location;
         if (beginLine != -1 && endLine != -1) {
-            location = FileLocation.range(node.getTextDocument().getFileId(),
-                                          TextRange2d.range2d(beginLine, 1, endLine, 1));
+            location = FileLocation.range(
+                    node.getTextDocument().getFileId(), TextRange2d.range2d(beginLine, 1, endLine, 1));
         } else {
             location = node.getReportLocation();
         }
@@ -162,8 +160,8 @@ public final class RuleContext {
      *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
      */
     @Experimental
-    public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
-                                         String message, Object... formatArgs) {
+    public void addViolationWithPosition(
+            Reportable reportable, AstInfo<?> astInfo, FileLocation location, String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
@@ -183,8 +181,8 @@ public final class RuleContext {
      * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
      */
     @Experimental
-    public void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,
-                                String message, Object... formatArgs) {
+    public void addViolationNoSuppress(
+            Reportable reportable, AstInfo<?> astInfo, String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
@@ -194,7 +192,8 @@ public final class RuleContext {
         listener.onRuleViolation(violation);
     }
 
-    private RuleViolation createViolation(Reportable reportable, AstInfo<?> astInfo, Node nearestNode, String message, Object... formatArgs) {
+    private RuleViolation createViolation(
+            Reportable reportable, AstInfo<?> astInfo, Node nearestNode, String message, Object... formatArgs) {
         LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
         Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), nearestNode);
         String description = makeMessage(message, formatArgs, extraVariables);
@@ -222,7 +221,8 @@ public final class RuleContext {
 
     private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, AstInfo<?> astInfo) {
         LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
-        SuppressedViolation suppressed = ViolationSuppressor.suppressOrNull(handler.getExtraViolationSuppressors(), rv, location);
+        SuppressedViolation suppressed =
+                ViolationSuppressor.suppressOrNull(handler.getExtraViolationSuppressors(), rv, location);
         if (suppressed == null) {
             suppressed = ViolationSuppressor.suppressOrNull(DEFAULT_SUPPRESSORS, rv, location);
         }
@@ -236,7 +236,6 @@ public final class RuleContext {
         String formatted = MessageFormat.format(escapedMessage, args);
         return expandVariables(formatted, extraVars);
     }
-
 
     private String expandVariables(String message, Map<String, String> extraVars) {
 

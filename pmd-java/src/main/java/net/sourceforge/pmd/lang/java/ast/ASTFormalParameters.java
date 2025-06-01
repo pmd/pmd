@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
-
 
 /**
  * A list of {@linkplain ASTFormalParameter formal parameters} in a
@@ -34,10 +32,8 @@ public final class ASTFormalParameters extends ASTList<ASTFormalParameter> {
      */
     @Override
     public int size() {
-        return getFirstChild() instanceof ASTReceiverParameter ? getNumChildren() - 1
-                                                               : getNumChildren();
+        return getFirstChild() instanceof ASTReceiverParameter ? getNumChildren() - 1 : getNumChildren();
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

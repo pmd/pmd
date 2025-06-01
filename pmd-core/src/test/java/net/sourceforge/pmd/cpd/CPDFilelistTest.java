@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cpd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -10,13 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.junit.jupiter.api.Test;
 
 class CPDFilelistTest {
 
@@ -41,9 +38,6 @@ class CPDFilelistTest {
 
         assertEquals(2, paths.size());
         List<String> simpleNames = CollectionUtil.map(paths, FileId::getFileName);
-        assertEquals(
-            listOf("anotherfile.dummy", "somefile.dummy"),
-            simpleNames
-        );
+        assertEquals(listOf("anotherfile.dummy", "somefile.dummy"), simpleNames);
     }
 }

@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A resource of a {@linkplain ASTTryStatement try-with-resources}. This contains another
@@ -28,7 +26,6 @@ public final class ASTResource extends AbstractJavaNode {
     ASTResource(int id) {
         super(id);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -67,7 +64,6 @@ public final class ASTResource extends AbstractJavaNode {
     public ASTLocalVariableDeclaration asLocalVariableDeclaration() {
         return AstImplUtil.getChildAs(this, 0, ASTLocalVariableDeclaration.class);
     }
-
 
     /**
      * Returns the initializer of the expression.

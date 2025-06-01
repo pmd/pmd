@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.test.AbstractLanguageVersionTest.TestDescriptor.defaultVersionIs;
@@ -9,7 +8,6 @@ import static net.sourceforge.pmd.test.AbstractLanguageVersionTest.TestDescripto
 
 import java.util.Arrays;
 import java.util.Collection;
-
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.test.AbstractLanguageVersionTest;
 
@@ -43,13 +41,11 @@ class LanguageVersionTest extends AbstractLanguageVersionTest {
                 new TestDescriptor(java, "23-preview"),
                 new TestDescriptor(java, "24"),
                 new TestDescriptor(java, "24-preview"),
-
                 defaultVersionIs(java, "24"),
 
                 // this one won't be found: case-sensitive!
                 versionDoesNotExist("JAVA", "JAVA", "1.7"),
                 // not supported anymore
-                versionDoesNotExist(java, "20-preview")
-        );
+                versionDoesNotExist(java, "20-preview"));
     }
 }

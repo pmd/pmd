@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 public class DummyNodeWithListAndEnum extends DummyNode.DummyRootNode {
@@ -17,7 +16,8 @@ public class DummyNodeWithListAndEnum extends DummyNode.DummyRootNode {
     }
 
     public enum MyEnum {
-        FOO, BAR
+        FOO,
+        BAR
     }
 
     public MyEnum getEnum() {

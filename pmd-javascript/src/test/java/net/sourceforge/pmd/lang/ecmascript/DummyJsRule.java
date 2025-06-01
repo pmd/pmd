@@ -13,9 +13,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public class DummyJsRule extends AbstractEcmascriptRule {
 
-    public void apply(Node node, RuleContext ctx) {
-
-    }
+    public void apply(Node node, RuleContext ctx) {}
 
     public static class DummyRuleOneViolationPerFile extends DummyJsRule {
 
@@ -24,5 +22,4 @@ public class DummyJsRule extends AbstractEcmascriptRule {
             ctx.addViolation(node);
         }
     }
-
 }

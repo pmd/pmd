@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod;
 
 /**
@@ -19,6 +18,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod;
  */
 public class ClassWithPublicEnum {
     public enum PublicEnum {
-        VALUE1, VALUE2
+        VALUE1,
+        VALUE2
     }
 }

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -32,9 +31,7 @@ public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainR
         // node is the last param in an arguments list
         InvocationNode call = (InvocationNode) argList.getParent();
         OverloadSelectionResult info = call.getOverloadSelectionInfo();
-        if (info.isFailed()
-            || info.isVarargsCall()
-            || !info.getMethodType().isVarargs()) {
+        if (info.isFailed() || info.isVarargsCall() || !info.getMethodType().isVarargs()) {
             return null;
         }
 
@@ -46,17 +43,22 @@ public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainR
         ASTExpression varargsArg = argList.getLastChild();
         assert varargsArg != null;
         if (varargsArg.getTypeMirror().isSubtypeOf(expectedComponent)
-            && !varargsArg.getTypeMirror().equals(lastFormal)
-            && !TypeOps.isSpecialUnresolvedOrArray(varargsArg.getTypeMirror())) {
+                && !varargsArg.getTypeMirror().equals(lastFormal)
+                && !TypeOps.isSpecialUnresolvedOrArray(varargsArg.getTypeMirror())) {
             // confusing
 
             String message;
-            if (varargsArg instanceof ASTArrayAllocation && ((ASTArrayAllocation) varargsArg).getArrayInitializer() != null) {
-                message = "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent.";
+            if (varargsArg instanceof ASTArrayAllocation
+                    && ((ASTArrayAllocation) varargsArg).getArrayInitializer() != null) {
+                message =
+                        "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent.";
             } else {
-                message = "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[] to clarify intent.";
+                message =
+                        "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[] to clarify intent.";
             }
-            asCtx(data).addViolationWithMessage(varargsArg, message, TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent));
+            asCtx(data)
+                    .addViolationWithMessage(
+                            varargsArg, message, TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent));
         }
 
         return null;

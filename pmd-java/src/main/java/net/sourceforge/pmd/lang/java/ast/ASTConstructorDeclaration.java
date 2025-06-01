@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A constructor of a {@linkplain ASTConstructorDeclaration class} or
@@ -34,12 +32,10 @@ public final class ASTConstructorDeclaration extends AbstractExecutableDeclarati
         return visitor.visit(this, data);
     }
 
-
     @Override
     public String getImage() {
         return getName();
     }
-
 
     public boolean containsComment() {
         return getBody().containsComment();
@@ -49,5 +45,4 @@ public final class ASTConstructorDeclaration extends AbstractExecutableDeclarati
     public @NonNull ASTBlock getBody() {
         return (ASTBlock) getLastChild();
     }
-
 }

@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.util.Objects;
-
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -30,7 +28,6 @@ import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
  * @see AbstractIncrementingRenderer
  */
 public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
-
 
     public AbstractAccumulatingRenderer(String name, String description) {
         super(name, description);
@@ -71,7 +68,6 @@ public abstract class AbstractAccumulatingRenderer extends AbstractRenderer {
      * {@inheritDoc}
      */
     protected abstract void outputReport(Report report) throws IOException;
-
 
     @Override
     public GlobalAnalysisListener newListener() throws IOException {

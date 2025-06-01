@@ -15,12 +15,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Helper class for {@link TypeSystem#lub(Collection)} and {@link TypeSystem#glb(Collection)}.
@@ -29,8 +27,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  */
 final class Lub {
 
-    private Lub() {
-    }
+    private Lub() {}
 
     static JTypeMirror lub(TypeSystem ts, Collection<? extends JTypeMirror> us) {
         return new LubJudge(ts).lub(us);
@@ -70,7 +67,8 @@ final class Lub {
      *
      * @return null if G is not a generic type, otherwise Relevant(G)
      */
-    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull") // null is explicit mentioned as a possible return value
+    @SuppressWarnings(
+            "PMD.ReturnEmptyCollectionRatherThanNull") // null is explicit mentioned as a possible return value
     static @Nullable List<JClassType> relevant(JClassType g, Set<JTypeMirror> stunion) {
         if (!g.isRaw()) {
             return null;
@@ -80,8 +78,7 @@ final class Lub {
 
         List<JClassType> list = new ArrayList<>();
         for (JTypeMirror it : stunion) {
-            if (it instanceof JClassType
-                && it.getErasure().equals(g) && !it.isRaw()) {
+            if (it instanceof JClassType && it.getErasure().equals(g) && !it.isRaw()) {
                 list.add((JClassType) it);
             }
         }
@@ -140,7 +137,8 @@ final class Lub {
             }
 
             // This is the union of all generic supertypes of the Uis
-            Set<JTypeMirror> stunion = new LinkedHashSet<>(uIterator.next().box().getSuperTypeSet());
+            Set<JTypeMirror> stunion =
+                    new LinkedHashSet<>(uIterator.next().box().getSuperTypeSet());
             // Let EC, the erased candidate set for U1 ... Uk, be the intersection of all the sets EST(Ui)
             Set<JTypeMirror> ec = erasedSuperTypes(stunion);
 
@@ -257,7 +255,6 @@ final class Lub {
                 return ts.wildcard(false, this.glb(lowerBound(t), lowerBound(s)));
             }
 
-
             // otherwise ? extends lub(U, V)
 
             return ts.wildcard(true, this.lub(t, s));
@@ -275,7 +272,6 @@ final class Lub {
             this.right = right;
         }
 
-
         @Override
         public boolean equals(Object o) {
             if (this == o) {
@@ -285,8 +281,7 @@ final class Lub {
                 return false;
             }
             TypePair pair = (TypePair) o;
-            return Objects.equals(left, pair.left)
-                && Objects.equals(right, pair.right);
+            return Objects.equals(left, pair.left) && Objects.equals(right, pair.right);
         }
 
         @Override
@@ -300,14 +295,12 @@ final class Lub {
         }
     }
 
-
     static JTypeMirror glb(TypeSystem ts, Collection<? extends JTypeMirror> types) {
         if (types.isEmpty()) {
             throw new IllegalArgumentException("Cannot compute GLB of empty set");
         } else if (types.size() == 1) {
             return types.iterator().next();
         }
-
 
         List<JTypeMirror> flat = flattenRemoveTrivialBound(types);
 
@@ -341,8 +334,11 @@ final class Lub {
                     // that A is unrelated to B. Therefore if both B and A are classes,
                     // then A & B cannot exist and so (A & B)[] similarly does not exist.
 
-                    JTypeMirror componentGlb = glb(ts, setOf(((JArrayType) ci).getComponentType(),
-                                                             ((JArrayType) primaryBound).getComponentType()));
+                    JTypeMirror componentGlb = glb(
+                            ts,
+                            setOf(
+                                    ((JArrayType) ci).getComponentType(),
+                                    ((JArrayType) primaryBound).getComponentType()));
                     primaryBound = ts.arrayType(componentGlb);
 
                 } else {
@@ -353,9 +349,8 @@ final class Lub {
 
                     int cmp = compareRelatedness(ci.getErasure(), primaryBound.getErasure());
                     if (cmp == 0) {
-                        throw new IllegalArgumentException(
-                            "Bad intersection, unrelated class types " + ci + " and " + primaryBound + " in " + types
-                        );
+                        throw new IllegalArgumentException("Bad intersection, unrelated class types " + ci + " and "
+                                + primaryBound + " in " + types);
                     } else if (cmp < 0) {
                         primaryBound = ci;
                     }
@@ -364,7 +359,6 @@ final class Lub {
                 bounds.add(ci);
             }
         }
-
 
         if (primaryBound == null) {
             primaryBound = ts.OBJECT;
@@ -414,12 +408,9 @@ final class Lub {
         return bounds;
     }
 
-
     static boolean isExclusiveIntersectionBound(JTypeMirror ci) {
         return !ci.isInterface()
-            && !(ci instanceof InferenceVar)
-            && (ci.getSymbol() == null || !ci.getSymbol().isUnresolved());
+                && !(ci instanceof InferenceVar)
+                && (ci.getSymbol() == null || !ci.getSymbol().isUnresolved());
     }
-
-
 }

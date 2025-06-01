@@ -7,14 +7,12 @@ package net.sourceforge.pmd.lang.visualforce.ast;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.lang3.tuple.Pair;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
+import org.apache.commons.lang3.tuple.Pair;
 
 /**
  * Visits an Apex class to determine a mapping of referenceable expressions to expression type.
@@ -62,7 +60,7 @@ final class ApexClassPropertyTypesVisitor extends ApexVisitorBase<Void, Void> {
                 sb.append(parent.getSimpleName()).append(".");
             }
             String name = node.getImage();
-            for (String prefix : new String[]{BEAN_GETTER_PREFIX, PROPERTY_PREFIX_ACCESSOR}) {
+            for (String prefix : new String[] {BEAN_GETTER_PREFIX, PROPERTY_PREFIX_ACCESSOR}) {
                 if (name.startsWith(prefix)) {
                     name = name.substring(prefix.length());
                 }

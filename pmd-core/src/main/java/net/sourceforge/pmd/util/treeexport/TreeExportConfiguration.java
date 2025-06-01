@@ -7,15 +7,13 @@ package net.sourceforge.pmd.util.treeexport;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Properties;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TreeExportConfiguration extends AbstractConfiguration {
     private static final Logger LOG = LoggerFactory.getLogger(TreeExportConfiguration.class);
@@ -47,7 +45,7 @@ public class TreeExportConfiguration extends AbstractConfiguration {
     public Properties getProperties() {
         return properties;
     }
-    
+
     public Path getFile() {
         return file;
     }
@@ -59,15 +57,15 @@ public class TreeExportConfiguration extends AbstractConfiguration {
     public boolean isReadStdin() {
         return readStdin;
     }
-    
+
     public void setFormat(String format) {
         this.format = format;
     }
-    
+
     public void setLanguage(Language language) {
         this.language = language;
     }
-    
+
     public void setProperties(Properties properties) {
         this.properties = properties;
     }
@@ -79,7 +77,7 @@ public class TreeExportConfiguration extends AbstractConfiguration {
     public void setFile(Path file) {
         this.file = file;
     }
-    
+
     public void setReadStdin(boolean readStdin) {
         this.readStdin = readStdin;
     }

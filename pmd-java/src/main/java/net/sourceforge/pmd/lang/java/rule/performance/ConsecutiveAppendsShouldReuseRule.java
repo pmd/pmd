@@ -1,11 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -21,6 +17,8 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
 
@@ -51,15 +49,15 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
             @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
             if (nextVariable != null) {
                 ASTVariableId varDecl = nextVariable.tryGetNode();
-                if (varDecl != null && node.getVarIds().any(it -> it == varDecl)
-                    && isStringBuilderAppend(varDecl.getInitializer())) {
+                if (varDecl != null
+                        && node.getVarIds().any(it -> it == varDecl)
+                        && isStringBuilderAppend(varDecl.getInitializer())) {
                     asCtx(data).addViolation(node);
                 }
             }
         }
         return data;
     }
-
 
     private @Nullable JVariableSymbol getVariableAppended(ASTExpressionStatement node) {
         ASTExpression expr = node.getExpr();
@@ -97,8 +95,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     private boolean isStringBuilderAppend(@Nullable ASTExpression e) {
         if (e instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) e;
-            return "append".equals(call.getMethodName())
-                && isStringBuilderAppend(call.getOverloadSelectionInfo());
+            return "append".equals(call.getMethodName()) && isStringBuilderAppend(call.getOverloadSelectionInfo());
         }
         return false;
     }
@@ -110,7 +107,6 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
 
         JExecutableSymbol symbol = result.getMethodType().getSymbol();
         return TypeTestUtil.isExactlyA(StringBuffer.class, symbol.getEnclosingClass())
-            || TypeTestUtil.isExactlyA(StringBuilder.class, symbol.getEnclosingClass());
+                || TypeTestUtil.isExactlyA(StringBuilder.class, symbol.getEnclosingClass());
     }
-
 }

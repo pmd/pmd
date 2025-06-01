@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.util;
 
 import static java.util.Arrays.asList;
@@ -33,7 +32,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collector;
 import java.util.stream.Collector.Characteristics;
 import java.util.stream.Collectors;
-
+import net.sourceforge.pmd.lang.document.Chars;
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -42,8 +41,6 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PMap;
 import org.pcollections.PSequence;
 import org.pcollections.PSet;
-
-import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * Generic collection-related utility functions for java.util types.
@@ -55,8 +52,7 @@ public final class CollectionUtil {
 
     private static final int UNKNOWN_SIZE = -1;
 
-    private CollectionUtil() {
-    }
+    private CollectionUtil() {}
 
     /**
      * Returns a list view that pretends it is the concatenation of
@@ -101,7 +97,10 @@ public final class CollectionUtil {
 
                     @Override
                     public Iterator<Entry<K, U>> iterator() {
-                        return IteratorUtil.map(map.entrySet().iterator(), entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), valueMapper.apply(entry.getValue())));
+                        return IteratorUtil.map(
+                                map.entrySet().iterator(),
+                                entry -> new AbstractMap.SimpleEntry<>(
+                                        entry.getKey(), valueMapper.apply(entry.getValue())));
                     }
 
                     @Override
@@ -113,7 +112,6 @@ public final class CollectionUtil {
         };
     }
 
-
     /**
      * Returns the set union of the given collections.
      *
@@ -123,7 +121,8 @@ public final class CollectionUtil {
      * @return Union of both arguments
      */
     @SafeVarargs
-    public static <T> Set<T> union(Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
+    public static <T> Set<T> union(
+            Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
         Set<T> union = new LinkedHashSet<>(c1);
         union.addAll(c2);
         for (Collection<? extends T> ts : rest) {
@@ -141,7 +140,8 @@ public final class CollectionUtil {
      * @return Intersection of both arguments
      */
     @SafeVarargs
-    public static <T> Set<T> intersect(Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
+    public static <T> Set<T> intersect(
+            Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
         Set<T> union = new LinkedHashSet<>(c1);
         union.retainAll(c2);
         for (Collection<? extends T> ts : rest) {
@@ -149,7 +149,6 @@ public final class CollectionUtil {
         }
         return union;
     }
-
 
     /**
      * Returns the set difference of the first collection with the other
@@ -161,7 +160,8 @@ public final class CollectionUtil {
      * @return Difference of arguments
      */
     @SafeVarargs
-    public static <T> Set<T> diff(Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
+    public static <T> Set<T> diff(
+            Collection<? extends T> c1, Collection<? extends T> c2, Collection<? extends T>... rest) {
         Set<T> union = new LinkedHashSet<>(c1);
         union.removeAll(c2);
         for (Collection<? extends T> ts : rest) {
@@ -210,7 +210,6 @@ public final class CollectionUtil {
         return Collections.unmodifiableSet(EnumSet.of(first, rest));
     }
 
-
     @SafeVarargs
     public static <T> List<T> listOf(T first, T... rest) {
         if (rest.length == 0) {
@@ -245,7 +244,8 @@ public final class CollectionUtil {
         return Collections.unmodifiableMap(map);
     }
 
-    public static <T, R> List<@NonNull R> mapNotNull(Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
+    public static <T, R> List<@NonNull R> mapNotNull(
+            Iterable<? extends T> from, Function<? super T, ? extends @Nullable R> f) {
         Iterator<? extends T> it = from.iterator();
         if (!it.hasNext()) {
             return Collections.emptyList();
@@ -337,7 +337,6 @@ public final class CollectionUtil {
         return null;
     }
 
-
     /**
      * Returns a map associating each key in the first list to its
      * corresponding value in the second.
@@ -351,7 +350,7 @@ public final class CollectionUtil {
         AssertionUtil.requireParamNotNull("values", to);
         Validate.isTrue(from.size() == to.size(), "Mismatched list sizes %s to %s", from, to);
 
-        if (from.isEmpty()) { //NOPMD: we really want to compare references here
+        if (from.isEmpty()) { // NOPMD: we really want to compare references here
             return emptyMap();
         }
 
@@ -370,7 +369,8 @@ public final class CollectionUtil {
         return map;
     }
 
-    public static <K, V> Map<K, V> associateWith(Collection<? extends @NonNull K> keys, Function<? super K, ? extends V> mapper) {
+    public static <K, V> Map<K, V> associateWith(
+            Collection<? extends @NonNull K> keys, Function<? super K, ? extends V> mapper) {
         AssertionUtil.requireParamNotNull("keys", keys);
         if (keys.isEmpty()) {
             return emptyMap();
@@ -379,7 +379,8 @@ public final class CollectionUtil {
         return associateWithTo(new HashMap<>(keys.size()), keys, mapper);
     }
 
-    public static <K, V> Map<K, V> associateWithTo(Map<K, V> collector, Collection<? extends @NonNull K> keys, Function<? super K, ? extends V> mapper) {
+    public static <K, V> Map<K, V> associateWithTo(
+            Map<K, V> collector, Collection<? extends @NonNull K> keys, Function<? super K, ? extends V> mapper) {
         AssertionUtil.requireParamNotNull("collector", collector);
         AssertionUtil.requireParamNotNull("keys", keys);
         AssertionUtil.requireParamNotNull("mapper", mapper);
@@ -389,8 +390,8 @@ public final class CollectionUtil {
         return collector;
     }
 
-
-    public static <K, V> Map<K, V> associateBy(Collection<? extends @NonNull V> values, Function<? super V, ? extends K> keyMapper) {
+    public static <K, V> Map<K, V> associateBy(
+            Collection<? extends @NonNull V> values, Function<? super V, ? extends K> keyMapper) {
         AssertionUtil.requireParamNotNull("values", values);
         if (values.isEmpty()) {
             return emptyMap();
@@ -399,8 +400,8 @@ public final class CollectionUtil {
         return associateByTo(new HashMap<>(values.size()), values, keyMapper);
     }
 
-
-    public static <K, V> Map<K, V> associateByTo(Map<K, V> collector, Collection<? extends @NonNull V> values, Function<? super V, ? extends K> keyMapper) {
+    public static <K, V> Map<K, V> associateByTo(
+            Map<K, V> collector, Collection<? extends @NonNull V> values, Function<? super V, ? extends K> keyMapper) {
         AssertionUtil.requireParamNotNull("collector", collector);
         AssertionUtil.requireParamNotNull("values", values);
         AssertionUtil.requireParamNotNull("keyMapper", keyMapper);
@@ -471,9 +472,10 @@ public final class CollectionUtil {
      * Map each element of the given iterable with the given function,
      * and accumulates it into the collector.
      */
-    public static <T, U, A, C> C map(Collector<? super U, A, ? extends C> collector,
-                                     Iterable<? extends T> from,
-                                     Function<? super T, ? extends U> f) {
+    public static <T, U, A, C> C map(
+            Collector<? super U, A, ? extends C> collector,
+            Iterable<? extends T> from,
+            Function<? super T, ? extends U> f) {
         if (from == null) {
             return map(collector, emptyIterator(), f);
         }
@@ -485,9 +487,10 @@ public final class CollectionUtil {
      * and accumulates it into the collector.
      */
     // one more type param and we can write tupac
-    public static <T, U, A, C> C map(Collector<? super U, A, ? extends C> collector,
-                                     Iterator<? extends T> from,
-                                     Function<? super T, ? extends U> f) {
+    public static <T, U, A, C> C map(
+            Collector<? super U, A, ? extends C> collector,
+            Iterator<? extends T> from,
+            Function<? super T, ? extends U> f) {
         A a = collector.supplier().get();
         BiConsumer<A, ? super U> accumulator = collector.accumulator();
         from.forEachRemaining(t -> accumulator.accept(a, f.apply(t)));
@@ -504,7 +507,6 @@ public final class CollectionUtil {
     public static <T> Collector<T, ?, List<T>> toMutableList() {
         return Collectors.toCollection(ArrayList::new);
     }
-
 
     /**
      * A collector that returns a mutable set. This contrasts with
@@ -553,14 +555,13 @@ public final class CollectionUtil {
         }
 
         return Collector.of(
-            Holder::new,
-            (h, t) -> h.set = h.set.plus(t),
-            (left, right) -> {
-                left.set = left.set.plusAll(right.set);
-                return left;
-            },
-            a -> a.set
-        );
+                Holder::new,
+                (h, t) -> h.set = h.set.plus(t),
+                (left, right) -> {
+                    left.set = left.set.plusAll(right.set);
+                    return left;
+                },
+                a -> a.set);
     }
 
     /**
@@ -577,16 +578,13 @@ public final class CollectionUtil {
     public static <T> List<T> drop(List<T> list, int n) {
         AssertionUtil.requireNonNegative("n", n);
 
-        return list.size() <= n ? emptyList()
-                                : list.subList(n, list.size());
+        return list.size() <= n ? emptyList() : list.subList(n, list.size());
     }
 
     public static <T> List<T> take(List<T> list, int n) {
         AssertionUtil.requireNonNegative("n", n);
-        return list.size() <= n ? list
-                                : list.subList(0, n);
+        return list.size() <= n ? list : list.subList(0, n);
     }
-
 
     public static <T> List<T> listOfNotNull(T t) {
         return t == null ? emptyList() : ConsPStack.singleton(t);
@@ -660,10 +658,11 @@ public final class CollectionUtil {
      * Like {@link String#join(CharSequence, Iterable)}, except it appends
      * on a preexisting {@link StringBuilder}. The result value is that StringBuilder.
      */
-    public static <T> StringBuilder joinOn(StringBuilder sb,
-                                           Iterable<? extends T> iterable,
-                                           BiConsumer<? super StringBuilder, ? super T> appendItem,
-                                           String delimiter) {
+    public static <T> StringBuilder joinOn(
+            StringBuilder sb,
+            Iterable<? extends T> iterable,
+            BiConsumer<? super StringBuilder, ? super T> appendItem,
+            String delimiter) {
         boolean first = true;
         for (T t : iterable) {
             if (first) {
@@ -677,14 +676,8 @@ public final class CollectionUtil {
     }
 
     public static @NonNull StringBuilder joinCharsIntoStringBuilder(List<Chars> lines, String delimiter) {
-        return joinOn(
-            new StringBuilder(),
-            lines,
-            (buf, line) -> line.appendChars(buf),
-            delimiter
-        );
+        return joinOn(new StringBuilder(), lines, (buf, line) -> line.appendChars(buf), delimiter);
     }
-
 
     /**
      * Merge the second map into the first. If some keys are in common,
@@ -713,7 +706,6 @@ public final class CollectionUtil {
         if (list instanceof PSequence) {
             return (List<T>) list;
         }
-        return list == null || list.isEmpty() ? emptyList()
-                                              : Collections.unmodifiableList(list);
+        return list == null || list.isEmpty() ? emptyList() : Collections.unmodifiableList(list);
     }
 }

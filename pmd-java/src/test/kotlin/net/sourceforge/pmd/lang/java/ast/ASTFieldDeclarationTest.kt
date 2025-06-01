@@ -2,85 +2,83 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.textOfReportLocation
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.*
 
-class ASTFieldDeclarationTest : ParserTestSpec({
-    parserTestContainer("Extra dimensions") {
-        inContext(TypeBodyParsingCtx) {
-            // int x[][] = null;
-            // int[] x[][] = null;
+class ASTFieldDeclarationTest :
+    ParserTestSpec({
+        parserTestContainer("Extra dimensions") {
+            inContext(TypeBodyParsingCtx) {
+                // int x[][] = null;
+                // int[] x[][] = null;
 
-            "int x @A@B[];" should parseAs {
-                fieldDecl {
+                "int x @A@B[];" should
+                    parseAs {
+                        fieldDecl {
+                            it::getModifiers shouldBe modifiers {}
 
-                    it::getModifiers shouldBe modifiers { }
+                            it.hasVisibility(ModifierOwner.Visibility.V_PUBLIC) shouldBe false
+                            it.hasExplicitModifiers(JModifier.PUBLIC) shouldBe false
+                            it.hasVisibility(ModifierOwner.Visibility.V_PACKAGE) shouldBe true
 
-                    it.hasVisibility(ModifierOwner.Visibility.V_PUBLIC) shouldBe false
-                    it.hasExplicitModifiers(JModifier.PUBLIC) shouldBe false
-                    it.hasVisibility(ModifierOwner.Visibility.V_PACKAGE) shouldBe true
+                            primitiveType(INT)
 
-                    primitiveType(INT)
+                            varDeclarator {
+                                variableId("x") {
+                                    it::isField shouldBe true
 
-                    varDeclarator {
-                        variableId("x") {
-
-                            it::isField shouldBe true
-
-                            it::getExtraDimensions shouldBe child {
-                                arrayDim {
-                                    annotation("A")
-                                    annotation("B")
+                                    it::getExtraDimensions shouldBe
+                                        child {
+                                            arrayDim {
+                                                annotation("A")
+                                                annotation("B")
+                                            }
+                                        }
                                 }
                             }
                         }
                     }
-                }
             }
         }
-    }
 
-    parserTestContainer("In annotation") {
-        genClassHeader = "@interface A"
+        parserTestContainer("In annotation") {
+            genClassHeader = "@interface A"
 
-        inContext(TypeBodyParsingCtx) {
-            // int x[][] = null;
-            // int[] x[][] = null;
+            inContext(TypeBodyParsingCtx) {
+                // int x[][] = null;
+                // int[] x[][] = null;
 
-            "@A int x[] = { 2 };" should parseAs {
-                fieldDecl {
-                    it.textOfReportLocation() shouldBe "x" // the ident
+                "@A int x[] = { 2 };" should
+                    parseAs {
+                        fieldDecl {
+                            it.textOfReportLocation() shouldBe "x" // the ident
 
-                    it::getModifiers shouldBe modifiers {
-                        it::getExplicitModifiers shouldBe emptySet()
-                        it::getEffectiveModifiers shouldBe setOf(JModifier.PUBLIC, JModifier.STATIC, JModifier.FINAL)
+                            it::getModifiers shouldBe
+                                modifiers {
+                                    it::getExplicitModifiers shouldBe emptySet()
+                                    it::getEffectiveModifiers shouldBe
+                                        setOf(JModifier.PUBLIC, JModifier.STATIC, JModifier.FINAL)
 
-                        annotation("A")
-                    }
+                                    annotation("A")
+                                }
 
-                    primitiveType(INT)
+                            primitiveType(INT)
 
-                    varDeclarator {
-                        variableId("x") {
+                            varDeclarator {
+                                variableId("x") {
+                                    it::isField shouldBe true
 
-                            it::isField shouldBe true
+                                    it::getExtraDimensions shouldBe child { arrayDim {} }
+                                }
 
-                            it::getExtraDimensions shouldBe child {
-                                arrayDim { }
+                                it::getInitializer shouldBe arrayInitializer { int(2) }
                             }
                         }
-
-                        it::getInitializer shouldBe arrayInitializer {
-                            int(2)
-                        }
                     }
-                }
             }
         }
-    }
-})
+    })

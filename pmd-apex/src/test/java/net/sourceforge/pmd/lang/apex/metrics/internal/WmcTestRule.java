@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import net.sourceforge.pmd.lang.apex.metrics.ApexMetrics;
@@ -17,10 +16,8 @@ public class WmcTestRule extends AbstractMetricTestRule.OfInt {
         super(ApexMetrics.WEIGHED_METHOD_COUNT);
     }
 
-
     @Override
     protected String violationMessage(Node node, Integer result) {
         return AllMetricsTest.formatApexMessage(node, result, super.violationMessage(node, result));
     }
-
 }

@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.plsql.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.lang.plsql.PLSQLLanguageModule;
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.test.cpd.LanguagePropertyConfig;
+import org.junit.jupiter.api.Test;
 
 class PLSQLCpdLexerTest extends CpdTextComparisonTest {
 

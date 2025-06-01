@@ -1,17 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.tsql.cpd;
 
 import java.util.Locale;
-
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Lexer;
-
 import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.tsql.ast.TSqlLexer;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
 
 /**
  * <p>Note: This class has been called TSqlTokenizer in PMD 6</p>.

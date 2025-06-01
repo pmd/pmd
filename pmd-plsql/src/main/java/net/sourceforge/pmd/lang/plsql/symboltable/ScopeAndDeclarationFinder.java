@@ -6,10 +6,6 @@ package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.lang.plsql.ast.ASTBlock;
 import net.sourceforge.pmd.lang.plsql.ast.ASTDeclarativeUnit;
 import net.sourceforge.pmd.lang.plsql.ast.ASTForAllStatement;
@@ -31,6 +27,8 @@ import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Visitor for scope creation. Visits all nodes of an AST and creates scope
@@ -274,24 +272,28 @@ public class ScopeAndDeclarationFinder extends PlsqlVisitorBase<Object, Object> 
             // Schema name
             LOG.trace("ProgramUnit getEnclosingClassScope Exception string=\"{}\"", e.getMessage());
             if ("getEnclosingClassScope() called on SourceFileScope".equals(e.getMessage())) {
-                LOG.trace("ClassScope skipped for Schema-level method: methodName={}; Image={}",
-                        md.getImage(), node.getImage());
+                LOG.trace(
+                        "ClassScope skipped for Schema-level method: methodName={}; Image={}",
+                        md.getImage(),
+                        node.getImage());
 
                 // A File-level/Schema-level object may have a Schema-name
                 // explicitly specified in the declaration
                 ASTObjectNameDeclaration on = md.firstChild(ASTObjectNameDeclaration.class);
                 if (1 < on.getNumChildren()) {
                     ASTID schemaName = on.firstChild(ASTID.class);
-                    LOG.trace("SchemaName for Schema-level method: methodName={}; Image={} is {}",
-                            md.getImage(), node.getImage(), schemaName.getImage());
-
+                    LOG.trace(
+                            "SchemaName for Schema-level method: methodName={}; Image={} is {}",
+                            md.getImage(),
+                            node.getImage(),
+                            schemaName.getImage());
                 }
             }
         }
         cont(node);
         return data;
     }
-    
+
     @Override
     public Object visit(ASTTypeMethod node, Object data) {
         return visitMethodLike(node, data);

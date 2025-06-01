@@ -12,7 +12,6 @@ public final class ASTNewSetLiteralExpression extends AbstractApexNode.Single<Va
         super(valuesInitializer);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

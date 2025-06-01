@@ -12,17 +12,15 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.Report.ReportBuilderListener;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A listener that mediates access to another listener to order events
@@ -50,21 +48,22 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
     private final Object lock = new Object();
     private int nextToOutput;
 
-
     public DeterministicOutputListenerWrapper(GlobalAnalysisListener listener) {
         this.listener = Objects.requireNonNull(listener);
     }
 
     @Override
     public ListenerInitializer initializer() {
-        return ListenerInitializer.tee(listOf(new ListenerInitializer() {
-            @Override
-            public void setFilesToAnalyze(List<FileId> files) {
-                for (int i = 0; i < files.size(); i++) {
-                    filesToIdx.put(files.get(i), i);
-                }
-            }
-        }, listener.initializer()));
+        return ListenerInitializer.tee(listOf(
+                new ListenerInitializer() {
+                    @Override
+                    public void setFilesToAnalyze(List<FileId> files) {
+                        for (int i = 0; i < files.size(); i++) {
+                            filesToIdx.put(files.get(i), i);
+                        }
+                    }
+                },
+                listener.initializer()));
     }
 
     @Override
@@ -127,7 +126,8 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
         synchronized (lock) {
             tryToFlushBuffer();
             if (!reportBuffer.isEmpty()) {
-                // this would be a problem in PmdAnalysis, maybe because it didn't join on the parallel processing tasks.
+                // this would be a problem in PmdAnalysis, maybe because it didn't join on the parallel processing
+                // tasks.
                 throw new AssertionError("Closed listener but not all files have been processed");
             }
         }

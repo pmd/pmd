@@ -1,15 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
-
+import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 
 /**
  * Represents an expression, in the most general sense.
@@ -52,7 +49,6 @@ public interface ASTExpression extends TypeNode, ASTMemberValue, ASTSwitchArrowR
         return true;
     }
 
-
     /**
      * Returns the number of parenthesis levels around this expression.
      * If this method returns 0, then no parentheses are present.
@@ -71,7 +67,6 @@ public interface ASTExpression extends TypeNode, ASTMemberValue, ASTSwitchArrowR
      * were mentioned, so no information is lost.
      */
     int getParenthesisDepth();
-
 
     /**
      * Returns true if this expression has at least one level of parentheses.

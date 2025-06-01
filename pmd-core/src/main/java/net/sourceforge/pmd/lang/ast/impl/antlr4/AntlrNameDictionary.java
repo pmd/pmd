@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Stream;
-
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.Vocabulary;
@@ -66,7 +65,6 @@ public class AntlrNameDictionary {
                 } // otherwise something like "final"
             }
 
-
             assert name != null : "Token of kind " + i + " has no XPath name (literal " + vocab.getLiteralName(i) + ")";
 
             String finalName = "T-" + name;
@@ -77,9 +75,8 @@ public class AntlrNameDictionary {
             terminalXPathNames[i] = finalName;
         }
 
-
         assert Stream.of(terminalXPathNames).distinct().count() == terminalXPathNames.length
-            : "Duplicate names in " + Arrays.toString(terminalXPathNames);
+                : "Duplicate names in " + Arrays.toString(terminalXPathNames);
     }
 
     public Vocabulary getVocabulary() {
@@ -95,76 +92,129 @@ public class AntlrNameDictionary {
      */
     protected @Nullable String nonAlphaNumName(String name) {
         switch (name) {
-        case "!": return "bang";
-        case "!!": return "double-bang";
+            case "!":
+                return "bang";
+            case "!!":
+                return "double-bang";
 
-        case "?": return "question";
-        case "??": return "double-question";
-        case "?:": return "elvis";
-        case "?.": return "question-dot";
+            case "?":
+                return "question";
+            case "??":
+                return "double-question";
+            case "?:":
+                return "elvis";
+            case "?.":
+                return "question-dot";
 
-        case ":": return "colon";
-        case ";": return "semi";
-        case ",": return "comma";
+            case ":":
+                return "colon";
+            case ";":
+                return "semi";
+            case ",":
+                return "comma";
 
-        case "(": return "lparen";
-        case ")": return "rparen";
-        case "[": return "lbracket";
-        case "]": return "rbracket";
-        case "{": return "lbrace";
-        case "}": return "rbrace";
+            case "(":
+                return "lparen";
+            case ")":
+                return "rparen";
+            case "[":
+                return "lbracket";
+            case "]":
+                return "rbracket";
+            case "{":
+                return "lbrace";
+            case "}":
+                return "rbrace";
 
-        case "_": return "underscore";
+            case "_":
+                return "underscore";
 
-        case ".": return "dot";
-        case "..": return "double-dot";
-        case "...": return "ellipsis";
+            case ".":
+                return "dot";
+            case "..":
+                return "double-dot";
+            case "...":
+                return "ellipsis";
 
-        case "@": return "at-symbol";
-        case "$": return "dollar";
-        case "#": return "hash";
+            case "@":
+                return "at-symbol";
+            case "$":
+                return "dollar";
+            case "#":
+                return "hash";
 
-        case "\\": return "backslash";
-        case "/": return "slash";
-        case "//": return "double-slash";
-        case "`": return "backtick";
-        case "'": return "squote";
-        case "\"": return "dquote";
-        case "\"\"\"": return "triple-quote";
+            case "\\":
+                return "backslash";
+            case "/":
+                return "slash";
+            case "//":
+                return "double-slash";
+            case "`":
+                return "backtick";
+            case "'":
+                return "squote";
+            case "\"":
+                return "dquote";
+            case "\"\"\"":
+                return "triple-quote";
 
-        case ">": return "gt";
-        case ">=": return "ge";
-        case "<": return "lt";
-        case "<=": return "le";
+            case ">":
+                return "gt";
+            case ">=":
+                return "ge";
+            case "<":
+                return "lt";
+            case "<=":
+                return "le";
 
-        case ">>": return "double-gt";
-        case "<<": return "double-lt";
-        case ">>>": return "triple-gt";
-        case "<<<": return "triple-lt";
+            case ">>":
+                return "double-gt";
+            case "<<":
+                return "double-lt";
+            case ">>>":
+                return "triple-gt";
+            case "<<<":
+                return "triple-lt";
 
-        case "=": return "eq";
-        case "==": return "double-eq";
-        case "===": return "triple-eq";
-        case "!=": return "not-eq";
+            case "=":
+                return "eq";
+            case "==":
+                return "double-eq";
+            case "===":
+                return "triple-eq";
+            case "!=":
+                return "not-eq";
 
-        case "&": return "amp";
-        case "&&": return "double-amp";
-        case "|": return "pipe";
-        case "||": return "double-pipe";
+            case "&":
+                return "amp";
+            case "&&":
+                return "double-amp";
+            case "|":
+                return "pipe";
+            case "||":
+                return "double-pipe";
 
-        case "*": return "star";
-        case "**": return "double-star";
+            case "*":
+                return "star";
+            case "**":
+                return "double-star";
 
-        case "+": return "plus";
-        case "++": return "double-plus";
-        case "-": return "minus";
-        case "--": return "double-minus";
+            case "+":
+                return "plus";
+            case "++":
+                return "double-plus";
+            case "-":
+                return "minus";
+            case "--":
+                return "double-minus";
 
-        case "->": return "rarrow";
-        case "<-": return "larrow";
+            case "->":
+                return "rarrow";
+            case "<-":
+                return "larrow";
 
-        default:
-            return null;
+            default:
+                return null;
         }
     }
 

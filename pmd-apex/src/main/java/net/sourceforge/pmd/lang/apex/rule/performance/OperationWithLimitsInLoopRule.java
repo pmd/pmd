@@ -1,10 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.performance;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
@@ -18,6 +15,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Warn users when code that could trigger governor limits is executing within a looping construct.
@@ -28,29 +26,28 @@ public class OperationWithLimitsInLoopRule extends AbstractAvoidNodeInLoopsRule 
     private static final String MESSAGING_CLASS_NAME = "Messaging";
     private static final String SYSTEM_CLASS_NAME = "System";
 
-    private static final String[] MESSAGING_LIMIT_METHODS = new String[] { "renderEmailTemplate", "renderStoredEmailTemplate", "sendEmail" };
-    private static final String[] SYSTEM_LIMIT_METHODS = new String[] { "enqueueJob", "schedule", "scheduleBatch" };
+    private static final String[] MESSAGING_LIMIT_METHODS =
+            new String[] {"renderEmailTemplate", "renderStoredEmailTemplate", "sendEmail"};
+    private static final String[] SYSTEM_LIMIT_METHODS = new String[] {"enqueueJob", "schedule", "scheduleBatch"};
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
         return RuleTargetSelector.forTypes(
-            // DML
-            ASTDmlDeleteStatement.class,
-            ASTDmlInsertStatement.class,
-            ASTDmlMergeStatement.class,
-            ASTDmlUndeleteStatement.class,
-            ASTDmlUpdateStatement.class,
-            ASTDmlUpsertStatement.class,
-            // SOQL
-            ASTSoqlExpression.class,
-            // SOSL
-            ASTSoslExpression.class,
-            // Other limit consuming methods
-            ASTMethodCallExpression.class,
-            ASTRunAsBlockStatement.class
-        );
+                // DML
+                ASTDmlDeleteStatement.class,
+                ASTDmlInsertStatement.class,
+                ASTDmlMergeStatement.class,
+                ASTDmlUndeleteStatement.class,
+                ASTDmlUpdateStatement.class,
+                ASTDmlUpsertStatement.class,
+                // SOQL
+                ASTSoqlExpression.class,
+                // SOSL
+                ASTSoslExpression.class,
+                // Other limit consuming methods
+                ASTMethodCallExpression.class,
+                ASTRunAsBlockStatement.class);
     }
-
 
     // Begin DML Statements
     @Override
@@ -108,9 +105,9 @@ public class OperationWithLimitsInLoopRule extends AbstractAvoidNodeInLoopsRule 
     @Override
     public Object visit(ASTMethodCallExpression node, Object data) {
         if (Helper.isAnyDatabaseMethodCall(node)
-            || Helper.isMethodName(node, APPROVAL_CLASS_NAME, Helper.ANY_METHOD)
-            || checkLimitClassMethods(node, MESSAGING_CLASS_NAME, MESSAGING_LIMIT_METHODS)
-            || checkLimitClassMethods(node, SYSTEM_CLASS_NAME, SYSTEM_LIMIT_METHODS)) {
+                || Helper.isMethodName(node, APPROVAL_CLASS_NAME, Helper.ANY_METHOD)
+                || checkLimitClassMethods(node, MESSAGING_CLASS_NAME, MESSAGING_LIMIT_METHODS)
+                || checkLimitClassMethods(node, SYSTEM_CLASS_NAME, SYSTEM_LIMIT_METHODS)) {
 
             return checkForViolation(node, data);
         } else {

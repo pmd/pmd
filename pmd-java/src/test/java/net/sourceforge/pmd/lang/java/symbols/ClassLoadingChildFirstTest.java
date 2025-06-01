@@ -12,19 +12,16 @@ import static org.hamcrest.Matchers.hasSize;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
  */
 class ClassLoadingChildFirstTest {
-
 
     /**
      * In this test I packed a jar with a custom version of {@link Void}.
@@ -39,9 +36,8 @@ class ClassLoadingChildFirstTest {
      */
     @Test
     void testClassLoading() {
-        Path file = Paths.get("src/test/resources",
-                getClass().getPackage().getName().replace('.', '/'),
-                "custom_java_lang.jar");
+        Path file = Paths.get(
+                "src/test/resources", getClass().getPackage().getName().replace('.', '/'), "custom_java_lang.jar");
 
         PMDConfiguration config = new PMDConfiguration();
         config.prependAuxClasspath(file.toAbsolutePath().toString());
@@ -53,5 +49,4 @@ class ClassLoadingChildFirstTest {
         assertThat(declaredMethods, hasSize(1));
         assertThat(declaredMethods.get(0), hasProperty("simpleName", equalTo("customMethodOnJavaLangVoid")));
     }
-
 }

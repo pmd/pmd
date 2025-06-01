@@ -14,10 +14,7 @@ class ScalaParserTests : BaseTreeDumpTest(SimpleNodePrinter, ".scala") {
     override val parser: BaseParsingHelper<*, *>
         get() = ScalaParsingHelper.DEFAULT.withResourceContext(javaClass, "testdata")
 
-    @Test
-    fun testSomeScalaFeatures() = doTest("List")
+    @Test fun testSomeScalaFeatures() = doTest("List")
 
-    @Test
-    fun testPackageObject() = doTest("package")
-
+    @Test fun testPackageObject() = doTest("package")
 }

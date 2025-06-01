@@ -1,19 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-
 
 /**
  * Common supertype for {@linkplain ASTSwitchStatement switch statements}
@@ -44,14 +41,12 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
         return getBranches().any(it -> it.getLabel().isDefault());
     }
 
-
     /**
      * Returns a stream of all branches of this switch.
      */
     default NodeStream<ASTSwitchBranch> getBranches() {
         return children(ASTSwitchBranch.class);
     }
-
 
     /**
      * Gets the expression tested by this switch.
@@ -60,7 +55,6 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
     default ASTExpression getTestedExpression() {
         return (ASTExpression) getChild(0);
     }
-
 
     /**
      * Returns true if this switch block tests an expression
@@ -103,8 +97,7 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
         // shortcut1 - if we have any type patterns and there is no default case,
         // then the compiler already ensured that the switch is exhaustive.
         // This assumes, we only analyze valid, compiled source code.
-        boolean hasPatterns = getBranches().map(ASTSwitchBranch::getLabel)
-                .any(ASTSwitchLabel::isPatternLabel);
+        boolean hasPatterns = getBranches().map(ASTSwitchBranch::getLabel).any(ASTSwitchLabel::isPatternLabel);
         if (hasPatterns && !hasDefaultCase()) {
             return true;
         }
@@ -114,7 +107,8 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
 
             // shortcut2 - if we are dealing with a sealed type or a boolean (java 23 preview, JEP 455)
             // and there is no default case then the compiler already checked for exhaustiveness
-            if (classSymbol.isSealed() || classSymbol.equals(getTypeSystem().BOOLEAN.getSymbol())) {
+            if (classSymbol.isSealed()
+                    || classSymbol.equals(getTypeSystem().BOOLEAN.getSymbol())) {
                 if (!hasDefaultCase()) {
                     return true;
                 }
@@ -170,5 +164,4 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
     default boolean isFallthroughSwitch() {
         return getBranches().filterIs(ASTSwitchFallthroughBranch.class).nonEmpty();
     }
-
 }

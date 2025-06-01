@@ -28,5 +28,4 @@ public final class NodeIsFunction extends BaseRewrittenFunction<Class<?>, JavaNo
     protected boolean matches(JavaNode contextNode, String arg, Class<?> parsedArg, boolean isConstant) {
         return parsedArg.isInstance(contextNode);
     }
-
 }

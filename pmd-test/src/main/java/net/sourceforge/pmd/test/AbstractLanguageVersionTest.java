@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,16 +10,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 import java.util.Properties;
-
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Base test class for {@link LanguageVersion} implementations. <br>
@@ -67,8 +64,11 @@ public abstract class AbstractLanguageVersionTest {
         }
 
         public TestDescriptor(Language language, String version) {
-            this(language, version,
-                    Objects.requireNonNull(language.getVersion(version), "language version '" + version + "' doesn't exist"));
+            this(
+                    language,
+                    version,
+                    Objects.requireNonNull(
+                            language.getVersion(version), "language version '" + version + "' doesn't exist"));
         }
 
         public static TestDescriptor versionDoesNotExist(String name, String terseName, String version) {
@@ -87,7 +87,6 @@ public abstract class AbstractLanguageVersionTest {
             this(language.getName(), language.getId(), version, expected);
         }
 
-
         public String getName() {
             return name;
         }
@@ -104,7 +103,6 @@ public abstract class AbstractLanguageVersionTest {
             return expected;
         }
     }
-
 
     protected static Language getLanguage(String name) {
         return LanguageRegistry.PMD.getLanguageByFullName(name);
@@ -197,8 +195,10 @@ public abstract class AbstractLanguageVersionTest {
             }
         }
 
-        assertEquals(1, count, "Expected exactly one occurrence of " + expected
-                + " in the language versions of its language");
+        assertEquals(
+                1,
+                count,
+                "Expected exactly one occurrence of " + expected + " in the language versions of its language");
     }
 
     private void assertRulesetsAndCategoriesProperties(Properties props) throws IOException {

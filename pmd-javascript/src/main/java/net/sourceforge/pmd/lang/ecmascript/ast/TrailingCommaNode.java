@@ -6,5 +6,4 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 
 public interface TrailingCommaNode {
     boolean isTrailingComma();
-
 }

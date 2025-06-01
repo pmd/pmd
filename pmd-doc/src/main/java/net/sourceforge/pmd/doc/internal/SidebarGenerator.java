@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.doc.internal;
 
 import java.io.IOException;
@@ -15,7 +14,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
+import net.sourceforge.pmd.lang.Language;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 import org.apache.commons.lang3.SystemUtils;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.DumperOptions.FlowStyle;
@@ -25,9 +25,6 @@ import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.representer.Representer;
 
-import net.sourceforge.pmd.lang.Language;
-import net.sourceforge.pmd.lang.rule.RuleSet;
-
 public class SidebarGenerator {
     private static final String SIDEBAR_YML = "docs/_data/sidebars/pmd_sidebar.yml";
 
@@ -36,7 +33,8 @@ public class SidebarGenerator {
 
     public SidebarGenerator(FileWriter writer, Path basePath) {
         this.writer = Objects.requireNonNull(writer, "A file writer must be provided");
-        this.sidebarPath = Objects.requireNonNull(basePath, "A base directory must be provided").resolve(SIDEBAR_YML);
+        this.sidebarPath = Objects.requireNonNull(basePath, "A base directory must be provided")
+                .resolve(SIDEBAR_YML);
     }
 
     @SuppressWarnings("unchecked")
@@ -79,7 +77,10 @@ public class SidebarGenerator {
                 Map<String, Object> subfolderitem = new LinkedHashMap<>();
                 subfolderitem.put("title", ruleset.getName());
                 subfolderitem.put("output", "web, pdf");
-                subfolderitem.put("url", "/pmd_rules_" + entry.getKey().getId() + "_" + RuleSetUtils.getRuleSetFilename(ruleset) + ".html");
+                subfolderitem.put(
+                        "url",
+                        "/pmd_rules_" + entry.getKey().getId() + "_" + RuleSetUtils.getRuleSetFilename(ruleset)
+                                + ".html");
                 subfolderitems.add(subfolderitem);
             }
 

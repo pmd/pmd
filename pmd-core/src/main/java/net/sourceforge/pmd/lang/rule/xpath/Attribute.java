@@ -8,13 +8,11 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Objects;
-
+import net.sourceforge.pmd.lang.ast.Node;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Represents an XPath attribute of a specific node.
@@ -75,7 +73,6 @@ public final class Attribute {
         this.invoked = true;
     }
 
-
     /**
      * Gets the generic type of the value of this attribute.
      */
@@ -87,7 +84,6 @@ public final class Attribute {
     public @NonNull String getName() {
         return name;
     }
-
 
     /** Return the node that owns this attribute. */
     public @NonNull Node getParent() {
@@ -106,10 +102,8 @@ public final class Attribute {
         } else {
             DeprecatedAttribute annot = method.getAnnotation(DeprecatedAttribute.class);
             return annot != null
-                   ? annot.replaceWith()
-                   : method.isAnnotationPresent(Deprecated.class)
-                     ? DeprecatedAttribute.NO_REPLACEMENT
-                     : null;
+                    ? annot.replaceWith()
+                    : method.isAnnotationPresent(Deprecated.class) ? DeprecatedAttribute.NO_REPLACEMENT : null;
         }
     }
 
@@ -165,7 +159,6 @@ public final class Attribute {
         return stringValue;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -175,10 +168,8 @@ public final class Attribute {
             return false;
         }
         Attribute attribute = (Attribute) o;
-        return Objects.equals(parent, attribute.parent)
-            && Objects.equals(name, attribute.name);
+        return Objects.equals(parent, attribute.parent) && Objects.equals(name, attribute.name);
     }
-
 
     @Override
     public int hashCode() {

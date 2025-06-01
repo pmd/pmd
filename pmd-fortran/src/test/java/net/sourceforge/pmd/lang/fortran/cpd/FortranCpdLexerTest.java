@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.fortran.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author rpelisse

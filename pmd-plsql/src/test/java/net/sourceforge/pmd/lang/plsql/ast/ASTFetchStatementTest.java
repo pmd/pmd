@@ -9,17 +9,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import org.junit.jupiter.api.Test;
 
 class ASTFetchStatementTest extends AbstractPLSQLParserTst {
 
     @Test
     void testBulkCollectLimit() {
         ASTInput input = plsql.parseResource("FetchStatementBulkCollectLimit.pls");
-        List<ASTFetchStatement> fetchStatements = input.descendants(ASTFetchStatement.class).toList();
+        List<ASTFetchStatement> fetchStatements =
+                input.descendants(ASTFetchStatement.class).toList();
         assertEquals(1, fetchStatements.size());
         ASTFetchStatement fetch = fetchStatements.get(0);
         assertTrue(fetch.isBulkCollect());
@@ -29,7 +28,8 @@ class ASTFetchStatementTest extends AbstractPLSQLParserTst {
     @Test
     void testFetch() {
         ASTInput input = plsql.parseResource("FetchStatement.pls");
-        List<ASTFetchStatement> fetchStatements = input.descendants(ASTFetchStatement.class).toList();
+        List<ASTFetchStatement> fetchStatements =
+                input.descendants(ASTFetchStatement.class).toList();
         assertEquals(1, fetchStatements.size());
         ASTFetchStatement fetch = fetchStatements.get(0);
         assertFalse(fetch.isBulkCollect());

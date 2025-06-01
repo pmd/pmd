@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
@@ -26,6 +25,7 @@ public abstract class AbstractTokenManager implements TokenManager<JavaccToken> 
      */
     @Deprecated
     protected Map<Integer, String> suppressMap = new HashMap<>();
+
     protected String suppressMarker = PMDConfiguration.DEFAULT_SUPPRESS_MARKER;
 
     public void setSuppressMarker(String marker) {

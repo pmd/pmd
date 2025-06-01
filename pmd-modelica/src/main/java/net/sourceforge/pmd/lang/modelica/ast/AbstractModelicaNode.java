@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.ast.AstVisitor;
@@ -17,14 +16,14 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaScope;
  *
  * @see ModelicaNode for public API.
  */
-abstract class AbstractModelicaNode extends AbstractJjtreeNode<AbstractModelicaNode, ModelicaNode> implements ModelicaNode {
+abstract class AbstractModelicaNode extends AbstractJjtreeNode<AbstractModelicaNode, ModelicaNode>
+        implements ModelicaNode {
 
     private ModelicaScope ownScope;
 
     AbstractModelicaNode(int id) {
         super(id);
     }
-
 
     @Override
     @SuppressWarnings("unchecked")

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
-
 import static net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent;
 import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
@@ -17,16 +16,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collector;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.util.OptionalBool;
+import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Tracks a set of overloads, automatically pruning override-equivalent
@@ -46,18 +43,18 @@ public abstract class OverloadSet<T> {
             T existing = iterator.next();
 
             switch (shouldTakePrecedence(existing, sig)) {
-            case YES:
-                // new sig is less specific than an existing one, don't add it
-                return;
-            case NO:
-                // new sig is more specific than an existing one
-                iterator.remove();
-                break;
-            case UNKNOWN:
-                // neither sig is more specific
-                break;
-            default:
-                throw new AssertionError();
+                case YES:
+                    // new sig is less specific than an existing one, don't add it
+                    return;
+                case NO:
+                    // new sig is more specific than an existing one
+                    iterator.remove();
+                    break;
+                case UNKNOWN:
+                    // neither sig is more specific
+                    break;
+                default:
+                    throw new AssertionError();
             }
         }
         overloads.add(sig);
@@ -86,13 +83,12 @@ public abstract class OverloadSet<T> {
      */
     public static Collector<JMethodSig, ?, List<JMethodSig>> collectMostSpecific(JTypeMirror commonSubtype) {
         return Collector.of(
-            () -> new ContextIndependentSet(commonSubtype),
-            OverloadSet::add,
-            (left, right) -> {
-                throw new NotImplementedException("Cannot use this in a parallel stream");
-            },
-            o -> Collections.unmodifiableList(o.getOverloadsMutable())
-        );
+                () -> new ContextIndependentSet(commonSubtype),
+                OverloadSet::add,
+                (left, right) -> {
+                    throw new NotImplementedException("Cannot use this in a parallel stream");
+                },
+                o -> Collections.unmodifiableList(o.getOverloadsMutable()));
     }
 
     static final class ContextIndependentSet extends OverloadSet<JMethodSig> {
@@ -104,12 +100,11 @@ public abstract class OverloadSet<T> {
             this.viewingSite = viewingSite;
         }
 
-
         @Override
         protected OptionalBool shouldTakePrecedence(JMethodSig m1, JMethodSig m2) {
             return areOverrideEquivalent(m1, m2)
-                   ? shouldAlwaysTakePrecedence(m1, m2, viewingSite)
-                   : OptionalBool.UNKNOWN;
+                    ? shouldAlwaysTakePrecedence(m1, m2, viewingSite)
+                    : OptionalBool.UNKNOWN;
         }
 
         @Override
@@ -123,7 +118,6 @@ public abstract class OverloadSet<T> {
         }
     }
 
-
     /**
      * Given that m1 and m2 are override-equivalent, should m1 be chosen
      * over m2 (YES/NO), for ANY call expression, or could both be applicable
@@ -132,7 +126,8 @@ public abstract class OverloadSet<T> {
      *
      * <p>If m1 and m2 are equal, returns the first one by convention.
      */
-    static OptionalBool shouldAlwaysTakePrecedence(@NonNull JMethodSig m1, @NonNull JMethodSig m2, @NonNull JTypeMirror commonSubtype) {
+    static OptionalBool shouldAlwaysTakePrecedence(
+            @NonNull JMethodSig m1, @NonNull JMethodSig m2, @NonNull JTypeMirror commonSubtype) {
         // select
         // 1. the non-bridge
         // 2. the one that overrides the other
@@ -160,8 +155,7 @@ public abstract class OverloadSet<T> {
             return m1InClass && m2Class ? UNKNOWN : definitely(m1InClass);
         }
 
-        if (Modifier.isPrivate(m1.getModifiers() | m2.getModifiers())
-            && commonSubtype instanceof JClassType) {
+        if (Modifier.isPrivate(m1.getModifiers() | m2.getModifiers()) && commonSubtype instanceof JClassType) {
             // One of them is private, which means, they can't be overridden,
             // so they failed the above test
             // Maybe it's shadowing then

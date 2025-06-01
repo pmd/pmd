@@ -24,7 +24,6 @@ enum MethodResolutionPhase {
      */
     VARARGS,
 
-
     INVOC_STRICT,
     INVOC_LOOSE,
     INVOC_VARARGS;
@@ -36,14 +35,14 @@ enum MethodResolutionPhase {
 
     MethodResolutionPhase asInvoc() {
         switch (this) {
-        case STRICT:
-            return INVOC_STRICT;
-        case LOOSE:
-            return INVOC_LOOSE;
-        case VARARGS:
-            return INVOC_VARARGS;
-        default:
-            return this;
+            case STRICT:
+                return INVOC_STRICT;
+            case LOOSE:
+                return INVOC_LOOSE;
+            case VARARGS:
+                return INVOC_VARARGS;
+            default:
+                return this;
         }
     }
 

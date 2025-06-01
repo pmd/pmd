@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -22,18 +21,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * </pre>
  */
-public final class ASTConstructorCall extends AbstractInvocationExpr implements QualifiableExpression, LeftRecursiveNode {
+public final class ASTConstructorCall extends AbstractInvocationExpr
+        implements QualifiableExpression, LeftRecursiveNode {
 
     ASTConstructorCall(int id) {
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     /**
      * Returns true if this expression begins with a primary expression.
@@ -62,7 +60,6 @@ public final class ASTConstructorCall extends AbstractInvocationExpr implements 
         return firstChild(ASTTypeArguments.class);
     }
 
-
     @Override
     public @NonNull ASTArgumentList getArguments() {
         JavaNode child = getLastChild();
@@ -78,14 +75,12 @@ public final class ASTConstructorCall extends AbstractInvocationExpr implements 
         return targs != null && targs.isDiamond();
     }
 
-
     /**
      * Returns the type node.
      */
     public ASTClassType getTypeNode() {
         return firstChild(ASTClassType.class);
     }
-
 
     /**
      * Returns true if this expression defines a body,
@@ -96,11 +91,8 @@ public final class ASTConstructorCall extends AbstractInvocationExpr implements 
         return getLastChild() instanceof ASTAnonymousClassDeclaration;
     }
 
-
     @Nullable
     public ASTAnonymousClassDeclaration getAnonymousClassDeclaration() {
-        return isAnonymousClass()
-               ? (ASTAnonymousClassDeclaration) getLastChild()
-               : null;
+        return isAnonymousClass() ? (ASTAnonymousClassDeclaration) getLastChild() : null;
     }
 }

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.properties;
 
-
 import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
 
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
@@ -18,12 +17,9 @@ import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
  */
 public final class NumericConstraints {
 
-    private NumericConstraints() {
-
-    }
+    private NumericConstraints() {}
 
     // Methods are named to mix well with the "require" syntax.
-
 
     /**
      * Requires the number to be inside a range.
@@ -34,12 +30,13 @@ public final class NumericConstraints {
      */
     public static <N extends Comparable<N>> PropertyConstraint<N> inRange(final N minInclusive, final N maxInclusive) {
         return PropertyConstraint.fromPredicate(
-            t -> minInclusive.compareTo(t) <= 0 && maxInclusive.compareTo(t) >= 0,
-            "Should be between " + minInclusive + " and " + maxInclusive,
-                mapOf(SchemaConstants.PROPERTY_MIN.xmlName(), String.valueOf(minInclusive),
-                        SchemaConstants.PROPERTY_MAX.xmlName(), String.valueOf(maxInclusive))
-        );
-
+                t -> minInclusive.compareTo(t) <= 0 && maxInclusive.compareTo(t) >= 0,
+                "Should be between " + minInclusive + " and " + maxInclusive,
+                mapOf(
+                        SchemaConstants.PROPERTY_MIN.xmlName(),
+                        String.valueOf(minInclusive),
+                        SchemaConstants.PROPERTY_MAX.xmlName(),
+                        String.valueOf(maxInclusive)));
     }
 
     /**
@@ -51,10 +48,9 @@ public final class NumericConstraints {
      */
     public static <N extends Comparable<N>> PropertyConstraint<N> above(final N minInclusive) {
         return PropertyConstraint.fromPredicate(
-            t -> minInclusive.compareTo(t) <= 0,
-            "Should be greater or equal to " + minInclusive,
-                mapOf(SchemaConstants.PROPERTY_MIN.xmlName(), String.valueOf(minInclusive))
-        );
+                t -> minInclusive.compareTo(t) <= 0,
+                "Should be greater or equal to " + minInclusive,
+                mapOf(SchemaConstants.PROPERTY_MIN.xmlName(), String.valueOf(minInclusive)));
     }
 
     /**
@@ -66,12 +62,10 @@ public final class NumericConstraints {
      */
     public static <N extends Comparable<N>> PropertyConstraint<N> below(final N maxInclusive) {
         return PropertyConstraint.fromPredicate(
-            t -> maxInclusive.compareTo(t) >= 0,
-            "Should be smaller or equal to " + maxInclusive,
-                mapOf(SchemaConstants.PROPERTY_MAX.xmlName(), String.valueOf(maxInclusive))
-        );
+                t -> maxInclusive.compareTo(t) >= 0,
+                "Should be smaller or equal to " + maxInclusive,
+                mapOf(SchemaConstants.PROPERTY_MAX.xmlName(), String.valueOf(maxInclusive)));
     }
-
 
     /**
      * Requires the number to be strictly positive.
@@ -86,9 +80,6 @@ public final class NumericConstraints {
      * @return A positivity constraint
      */
     public static <N extends Number> PropertyConstraint<N> positive() {
-        return PropertyConstraint.fromPredicate(
-            t -> t.intValue() > 0,
-                "Should be positive"
-        );
+        return PropertyConstraint.fromPredicate(t -> t.intValue() > 0, "Should be positive");
     }
 }

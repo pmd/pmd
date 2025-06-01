@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import java.text.Format;
 import java.util.Arrays;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -35,14 +33,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * @see <a href="https://sourceforge.net/p/pmd/feature-requests/226/">feature #226 Check for SimpleDateFormat as singleton?</a>
  */
 public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule {
-    private static final List<String> THREAD_SAFE_FORMATTER = Arrays.asList(
-        "org.apache.commons.lang3.time.FastDateFormat"
-    );
+    private static final List<String> THREAD_SAFE_FORMATTER =
+            Arrays.asList("org.apache.commons.lang3.time.FastDateFormat");
 
-    private static final PropertyDescriptor<Boolean> ALLOW_METHOD_LEVEL_SYNC =
-        PropertyFactory.booleanProperty("allowMethodLevelSynchronization")
+    private static final PropertyDescriptor<Boolean> ALLOW_METHOD_LEVEL_SYNC = PropertyFactory.booleanProperty(
+                    "allowMethodLevelSynchronization")
             .desc("If true, method level synchronization is allowed as well as synchronized block. Otherwise"
-                + " only synchronized blocks are allowed.")
+                    + " only synchronized blocks are allowed.")
             .defaultValue(false)
             .build();
 
@@ -64,13 +61,12 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
             return data;
         }
         ASTType cit = node.getTypeNode();
-        if (!(cit instanceof ASTClassType)
-            || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
+        if (!(cit instanceof ASTClassType) || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
             return data;
         }
 
         ASTVariableId var = node.getVarIds().firstOrThrow();
-        for (String formatter: THREAD_SAFE_FORMATTER) {
+        for (String formatter : THREAD_SAFE_FORMATTER) {
             if (TypeTestUtil.isA(formatter, var)) {
                 return data;
             }
@@ -86,7 +82,8 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
             }
 
             // is there a block-level synch?
-            ASTSynchronizedStatement syncStatement = ref.ancestors(ASTSynchronizedStatement.class).first();
+            ASTSynchronizedStatement syncStatement =
+                    ref.ancestors(ASTSynchronizedStatement.class).first();
             if (syncStatement != null) {
                 ASTExpression lockExpression = syncStatement.getLockExpression();
                 if (JavaAstUtils.isReferenceToSameVar(lockExpression, methodCall.getQualifier())) {
@@ -96,7 +93,8 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
 
             // method level synch enabled and used?
             if (getProperty(ALLOW_METHOD_LEVEL_SYNC)) {
-                ASTMethodDeclaration method = ref.ancestors(ASTMethodDeclaration.class).first();
+                ASTMethodDeclaration method =
+                        ref.ancestors(ASTMethodDeclaration.class).first();
                 if (method != null && method.hasModifiers(JModifier.SYNCHRONIZED, JModifier.STATIC)) {
                     continue;
                 }

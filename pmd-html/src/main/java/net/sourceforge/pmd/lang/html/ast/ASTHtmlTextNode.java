@@ -2,12 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.html.ast;
 
 import org.jsoup.nodes.TextNode;
 
-public class ASTHtmlTextNode extends AbstractHtmlNode<TextNode> implements net.sourceforge.pmd.lang.rule.xpath.TextNode {
+public class ASTHtmlTextNode extends AbstractHtmlNode<TextNode>
+        implements net.sourceforge.pmd.lang.rule.xpath.TextNode {
 
     ASTHtmlTextNode(TextNode node) {
         super(node);

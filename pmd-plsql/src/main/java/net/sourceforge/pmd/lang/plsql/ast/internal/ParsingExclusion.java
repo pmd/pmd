@@ -12,7 +12,7 @@ import java.util.Locale;
 public final class ParsingExclusion {
 
     private static final String BEGIN_MARKER = "PMD-EXCLUDE-BEGIN";
-    //private static final String END_MARKER = "PMD-EXCLUDE-END";
+    // private static final String END_MARKER = "PMD-EXCLUDE-END";
     private static final int LEN_BEGIN_MARKER = BEGIN_MARKER.length();
 
     private final int beginLine;
@@ -29,7 +29,7 @@ public final class ParsingExclusion {
         int i2 = sourceUpper.indexOf("\n");
         String reason = source.substring(i1 + LEN_BEGIN_MARKER, i2).trim();
         if (reason.startsWith(":")) {
-            this.reason = reason.substring(2).trim(); 
+            this.reason = reason.substring(2).trim();
         } else {
             this.reason = null;
         }

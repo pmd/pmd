@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -34,23 +32,23 @@ public interface Rule extends PropertySource {
      * The property descriptor to universally suppress violations with messages
      * matching a regular expression.
      */
-    PropertyDescriptor<Optional<Pattern>> VIOLATION_SUPPRESS_REGEX_DESCRIPTOR =
-        PropertyFactory.regexProperty("violationSuppressRegex")
-                       .desc("Suppress violations with messages matching a regular expression")
-                       .toOptional("")
-                       .defaultValue(Optional.empty())
-                       .build();
+    PropertyDescriptor<Optional<Pattern>> VIOLATION_SUPPRESS_REGEX_DESCRIPTOR = PropertyFactory.regexProperty(
+                    "violationSuppressRegex")
+            .desc("Suppress violations with messages matching a regular expression")
+            .toOptional("")
+            .defaultValue(Optional.empty())
+            .build();
 
     /**
      * Name of the property to universally suppress violations on nodes which
      * match a given relative XPath expression.
      */
-    PropertyDescriptor<Optional<String>> VIOLATION_SUPPRESS_XPATH_DESCRIPTOR =
-        PropertyFactory.stringProperty("violationSuppressXPath")
-                       .desc("Suppress violations on nodes which match a given relative XPath expression.")
-                       .toOptional("")
-                       .defaultValue(Optional.empty())
-                       .build();
+    PropertyDescriptor<Optional<String>> VIOLATION_SUPPRESS_XPATH_DESCRIPTOR = PropertyFactory.stringProperty(
+                    "violationSuppressXPath")
+            .desc("Suppress violations on nodes which match a given relative XPath expression.")
+            .toOptional("")
+            .defaultValue(Optional.empty())
+            .build();
 
     /**
      * Get the Language of this Rule.
@@ -260,7 +258,6 @@ public interface Rule extends PropertySource {
      */
     void setPriority(RulePriority priority);
 
-
     /**
      * Returns the object that selects the nodes to which this rule applies.
      * The selected nodes will be handed to {@link #apply(Node, RuleContext)}.
@@ -273,7 +270,7 @@ public interface Rule extends PropertySource {
      * @param languageProcessor The processor for the rule's language
      */
     default void initialize(LanguageProcessor languageProcessor) {
-         // by default do nothing
+        // by default do nothing
     }
 
     /**
@@ -282,7 +279,6 @@ public interface Rule extends PropertySource {
      * @param ctx the rule context
      */
     void start(RuleContext ctx);
-
 
     /**
      * Process the given node. The nodes that are fed to this method
@@ -306,6 +302,4 @@ public interface Rule extends PropertySource {
      * @return A new exact copy of this rule
      */
     Rule deepCopy();
-
-
 }

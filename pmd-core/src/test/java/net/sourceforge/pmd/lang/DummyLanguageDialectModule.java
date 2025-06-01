@@ -1,14 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.impl.BasePmdDialectLanguageVersionHandler;
 import net.sourceforge.pmd.lang.impl.SimpleDialectLanguageModuleBase;
@@ -19,6 +14,8 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase {
 
@@ -26,19 +23,22 @@ public class DummyLanguageDialectModule extends SimpleDialectLanguageModuleBase 
     public static final String TERSE_NAME = "dummydialect";
 
     public static final Metric<Node, Number> DUMMY_DIALECT_METRIC =
-            Metric.of((node, options) -> null, (node) -> node,
-            "Constant NULL metric", "null");
+            Metric.of((node, options) -> null, (node) -> node, "Constant NULL metric", "null");
 
-    public static final PropertyDescriptor<Boolean> DUMMY_DIALECT_PROP =
-            PropertyFactory.booleanProperty("dummyDialectProperty")
-                    .defaultValue(false)
-                    .desc("Some dummy boolean without purpose")
-                    .build();
+    public static final PropertyDescriptor<Boolean> DUMMY_DIALECT_PROP = PropertyFactory.booleanProperty(
+                    "dummyDialectProperty")
+            .defaultValue(false)
+            .desc("Some dummy boolean without purpose")
+            .build();
 
     public DummyLanguageDialectModule() {
-        super(LanguageMetadata.withId(TERSE_NAME).name(NAME)
-                .extensions("txt", "dummydlc")
-                .addDefaultVersion("1.0").asDialectOf(DummyLanguageModule.TERSE_NAME), new Handler());
+        super(
+                LanguageMetadata.withId(TERSE_NAME)
+                        .name(NAME)
+                        .extensions("txt", "dummydlc")
+                        .addDefaultVersion("1.0")
+                        .asDialectOf(DummyLanguageModule.TERSE_NAME),
+                new Handler());
     }
 
     public static DummyLanguageDialectModule getInstance() {

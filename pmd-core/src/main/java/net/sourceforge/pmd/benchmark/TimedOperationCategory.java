@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.benchmark;
 
 import java.util.Locale;
-
 import org.apache.commons.lang3.StringUtils;
 
 /**

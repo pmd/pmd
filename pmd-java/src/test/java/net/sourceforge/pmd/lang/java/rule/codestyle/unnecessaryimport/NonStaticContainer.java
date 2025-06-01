@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
 /**
@@ -10,13 +9,11 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
  */
 public class NonStaticContainer {
 
-    private NonStaticContainer() {
-    }
+    private NonStaticContainer() {}
 
-    public static void foo() {
-    }
+    public static void foo() {}
 
-    public class NonStatic { }
+    public class NonStatic {}
 
-    public static class Static { }
+    public static class Static {}
 }

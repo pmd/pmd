@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -40,5 +39,4 @@ public interface ASTSwitchBranch extends JavaNode {
         JavaNode prev = getPreviousSibling();
         return prev instanceof ASTSwitchBranch ? (ASTSwitchBranch) prev : null;
     }
-
 }

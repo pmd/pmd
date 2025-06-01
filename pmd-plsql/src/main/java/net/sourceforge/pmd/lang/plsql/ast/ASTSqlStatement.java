@@ -8,7 +8,14 @@ public final class ASTSqlStatement extends AbstractPLSQLNode {
 
     private Type type;
 
-    public enum Type { COMMIT, ROLLBACK, SAVEPOINT, SET_TRANSACTION, LOCK_TABLE, MERGE }
+    public enum Type {
+        COMMIT,
+        ROLLBACK,
+        SAVEPOINT,
+        SET_TRANSACTION,
+        LOCK_TABLE,
+        MERGE
+    }
 
     ASTSqlStatement(int id) {
         super(id);

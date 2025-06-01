@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
@@ -39,5 +38,4 @@ public final class ASTResourceList extends ASTNonEmptyList<ASTResource> {
     public boolean hasTrailingSemiColon() {
         return trailingSemi;
     }
-
 }

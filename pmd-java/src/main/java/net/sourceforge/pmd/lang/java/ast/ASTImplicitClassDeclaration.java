@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.annotation.Experimental;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  *

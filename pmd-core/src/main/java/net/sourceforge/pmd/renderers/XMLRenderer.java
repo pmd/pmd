@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
@@ -21,9 +20,6 @@ import javax.xml.XMLConstants;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -31,6 +27,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Renderer to XML format.
@@ -39,8 +36,10 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "xml";
 
-    public static final PropertyDescriptor<String> ENCODING =
-        PropertyFactory.stringProperty("encoding").desc("XML encoding format").defaultValue("UTF-8").build();
+    public static final PropertyDescriptor<String> ENCODING = PropertyFactory.stringProperty("encoding")
+            .desc("XML encoding format")
+            .defaultValue("UTF-8")
+            .build();
 
     private static final String PMD_REPORT_NS_URI = "http://pmd.sourceforge.net/report/2.0.0";
     private static final String PMD_REPORT_NS_LOCATION = "https://pmd.github.io/schema/report_2_0_0.xsd";
@@ -78,7 +77,10 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
             xmlWriter.writeStartElement(PMD_REPORT_NS_URI, "pmd");
             xmlWriter.writeDefaultNamespace(PMD_REPORT_NS_URI);
             xmlWriter.writeNamespace(XSI_NS_PREFIX, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI);
-            xmlWriter.writeAttribute(XSI_NS_PREFIX, XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "schemaLocation",
+            xmlWriter.writeAttribute(
+                    XSI_NS_PREFIX,
+                    XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                    "schemaLocation",
                     PMD_REPORT_NS_URI + " " + PMD_REPORT_NS_LOCATION);
             xmlWriter.writeAttribute("version", PMDVersion.VERSION);
             xmlWriter.writeAttribute("timestamp", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS").format(new Date()));
@@ -171,7 +173,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 maybeAdd("variable", rv.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME));
                 // todo other additional info keys are not rendered
                 maybeAdd("externalInfoUrl", rv.getRule().getExternalInfoUrl());
-                xmlWriter.writeAttribute("priority", String.valueOf(rv.getRule().getPriority().getPriority()));
+                xmlWriter.writeAttribute(
+                        "priority", String.valueOf(rv.getRule().getPriority().getPriority()));
                 writeNewLine();
                 xmlWriter.writeCharacters(StringUtil.removedInvalidXml10Characters(rv.getDescription()));
                 writeNewLine();
@@ -213,8 +216,10 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
                 for (Report.SuppressedViolation s : suppressed) {
                     writeNewLine();
                     xmlWriter.writeStartElement("suppressedviolation");
-                    xmlWriter.writeAttribute("filename", determineFileName(s.getRuleViolation().getFileId()));
-                    xmlWriter.writeAttribute("suppressiontype", s.getSuppressor().getId().toLowerCase(Locale.ROOT));
+                    xmlWriter.writeAttribute(
+                            "filename", determineFileName(s.getRuleViolation().getFileId()));
+                    xmlWriter.writeAttribute(
+                            "suppressiontype", s.getSuppressor().getId().toLowerCase(Locale.ROOT));
                     xmlWriter.writeAttribute("msg", s.getRuleViolation().getDescription());
                     xmlWriter.writeAttribute("usermsg", s.getUserMessage() == null ? "" : s.getUserMessage());
                     xmlWriter.writeEndElement();
@@ -250,7 +255,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
 
         try {
             this.stream = StringUtils.isBlank(reportFilename)
-                    ? System.out : Files.newOutputStream(new File(reportFilename).toPath());
+                    ? System.out
+                    : Files.newOutputStream(new File(reportFilename).toPath());
 
             XMLOutputFactory outputFactory = XMLOutputFactory.newFactory();
             this.xmlWriter = outputFactory.createXMLStreamWriter(this.stream, encoding);
@@ -281,7 +287,8 @@ public class XMLRenderer extends AbstractIncrementingRenderer {
     private static class WrappedOutputStreamWriter extends OutputStreamWriter {
         private final XMLStreamWriter xmlWriter;
 
-        WrappedOutputStreamWriter(XMLStreamWriter xmlWriter, OutputStream out, String charset) throws UnsupportedEncodingException {
+        WrappedOutputStreamWriter(XMLStreamWriter xmlWriter, OutputStream out, String charset)
+                throws UnsupportedEncodingException {
             super(out, charset);
             this.xmlWriter = xmlWriter;
         }

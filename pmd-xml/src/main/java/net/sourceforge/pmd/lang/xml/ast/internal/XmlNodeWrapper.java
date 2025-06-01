@@ -4,19 +4,12 @@
 
 package net.sourceforge.pmd.lang.xml.ast.internal;
 
-
 import static java.util.Collections.emptyIterator;
 
 import java.util.AbstractList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
-
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
@@ -26,7 +19,10 @@ import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 import net.sourceforge.pmd.util.IteratorUtil;
-
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 
 /**
  * Proxy wrapping an XML DOM node ({@link org.w3c.dom.Node}) to implement PMD interfaces.
@@ -43,7 +39,6 @@ class XmlNodeWrapper implements XmlNode {
     int startOffset;
     int endOffset;
     TextDocument textDoc;
-
 
     XmlNodeWrapper(XmlParserImpl parser, org.w3c.dom.Node domNode) {
         super();
@@ -68,7 +63,6 @@ class XmlNodeWrapper implements XmlNode {
         return parent != null ? parser.wrapDomNode(parent) : null;
     }
 
-
     @Override
     public int getIndexInParent() {
         org.w3c.dom.Node parent = node.getParentNode();
@@ -84,12 +78,10 @@ class XmlNodeWrapper implements XmlNode {
         throw new IllegalStateException("This node is not a child of its parent: " + node);
     }
 
-
     @Override
     public XmlNode getChild(int index) {
         return parser.wrapDomNode(node.getChildNodes().item(index));
     }
-
 
     @Override
     public int getNumChildren() {
@@ -117,25 +109,23 @@ class XmlNodeWrapper implements XmlNode {
         return dataMap;
     }
 
-
     @Override
     public String getXPathNodeName() {
         return node.getNodeName().replace("#", "");
     }
-
 
     @Override
     public String toString() {
         return node.getNodeName().replace("#", "");
     }
 
-
     @Override
     public Iterator<Attribute> getXPathAttributesIterator() {
 
         // Expose Text/CDATA nodes to have an 'Text' attribute like AST Nodes
         if (node instanceof Text) {
-            return Collections.singletonList(new Attribute(this, "Text", getText())).iterator();
+            return Collections.singletonList(new Attribute(this, "Text", getText()))
+                    .iterator();
         }
 
         // Expose DOM Attributes
@@ -143,9 +133,8 @@ class XmlNodeWrapper implements XmlNode {
             return emptyIterator();
         } else {
             return IteratorUtil.map(
-                asList(node.getAttributes()).iterator(),
-                n -> new Attribute(this, n.getNodeName(), n.getNodeValue())
-            );
+                    asList(node.getAttributes()).iterator(),
+                    n -> new Attribute(this, n.getNodeName(), n.getNodeValue()));
         }
     }
 
@@ -155,7 +144,6 @@ class XmlNodeWrapper implements XmlNode {
             public Node get(int index) {
                 return nodeList.item(index);
             }
-
 
             @Override
             public int size() {
@@ -168,5 +156,4 @@ class XmlNodeWrapper implements XmlNode {
     public org.w3c.dom.Node getNode() {
         return node;
     }
-
 }

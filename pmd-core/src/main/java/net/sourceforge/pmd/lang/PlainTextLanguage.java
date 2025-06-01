@@ -31,10 +31,12 @@ public final class PlainTextLanguage extends SimpleLanguageModuleBase implements
     private static final PlainTextLanguage INSTANCE = new PlainTextLanguage();
 
     private PlainTextLanguage() {
-        super(LanguageMetadata.withId(ID).name("Plain text")
-                              .extensions("plain-text-file-goo-extension")
-                              .addDefaultVersion("default"),
-              new TextLvh());
+        super(
+                LanguageMetadata.withId(ID)
+                        .name("Plain text")
+                        .extensions("plain-text-file-goo-extension")
+                        .addDefaultVersion("default"),
+                new TextLvh());
     }
 
     /**
@@ -62,7 +64,6 @@ public final class PlainTextLanguage extends SimpleLanguageModuleBase implements
     public static class PlainTextFile extends AbstractNode<PlainTextFile, PlainTextFile> implements RootNode {
 
         private final AstInfo<PlainTextFile> astInfo;
-
 
         PlainTextFile(ParserTask task) {
             this.astInfo = new AstInfo<>(task, this);
@@ -93,5 +94,4 @@ public final class PlainTextLanguage extends SimpleLanguageModuleBase implements
             return astInfo;
         }
     }
-
 }

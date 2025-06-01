@@ -1,18 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.JModifier.ABSTRACT;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Groups class, enum, record, annotation and interface declarations under a common
@@ -33,17 +30,16 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
  * node around type declarations. This node has been removed in PMD 7 and the name has been reused.
  */
 public interface ASTTypeDeclaration
-    extends TypeNode,
-        ModifierOwner,
-            TypeParamOwnerNode,
-            ASTBodyDeclaration,
-            ASTTopLevelDeclaration,
-            JavadocCommentOwner {
+        extends TypeNode,
+                ModifierOwner,
+                TypeParamOwnerNode,
+                ASTBodyDeclaration,
+                ASTTopLevelDeclaration,
+                JavadocCommentOwner {
 
     @Override
     @NonNull
     JClassSymbol getSymbol();
-
 
     /**
      * Returns the {@linkplain JClassType#getGenericTypeDeclaration() generic type declaration}
@@ -55,8 +51,8 @@ public interface ASTTypeDeclaration
      * though, not the anonymous class.
      */
     @Override
-    @NonNull JClassType getTypeMirror();
-
+    @NonNull
+    JClassType getTypeMirror();
 
     /**
      * Returns the simple name of this type declaration. Returns the
@@ -72,14 +68,12 @@ public interface ASTTypeDeclaration
         return getRoot().getPackageName();
     }
 
-
     /**
      * Returns the binary name of this type declaration. This
      * is like {@link Class#getName()}.
      */
     @NonNull
     String getBinaryName();
-
 
     /**
      * Returns the canonical name of this class, if it exists.
@@ -115,7 +109,6 @@ public interface ASTTypeDeclaration
     @Nullable
     String getCanonicalName();
 
-
     /**
      * Returns true if this is an abstract type. Interfaces and annotations
      * types are implicitly abstract.
@@ -143,7 +136,6 @@ public interface ASTTypeDeclaration
         return firstChild(ASTEnumBody.class).children(ASTEnumConstant.class);
     }
 
-
     /**
      * Returns the record components declared by this class. If this is not
      * a record declaration, returns null.
@@ -151,7 +143,6 @@ public interface ASTTypeDeclaration
     default @Nullable ASTRecordComponentList getRecordComponents() {
         return null;
     }
-
 
     /**
      * Retrieves the member declarations (fields, methods, classes, etc.)
@@ -171,14 +162,12 @@ public interface ASTTypeDeclaration
         return getDeclarations().filterIs(klass);
     }
 
-
     /**
      * Returns the operations declared in this class (methods and constructors).
      */
     default NodeStream<ASTExecutableDeclaration> getOperations() {
         return getDeclarations().filterIs(ASTExecutableDeclaration.class);
     }
-
 
     /**
      * Returns the body of this type declaration.
@@ -195,7 +184,6 @@ public interface ASTTypeDeclaration
         return getParent() instanceof ASTTypeBody;
     }
 
-
     /**
      * Returns true if the class is declared inside a block other
      * than the body of another class, or the top level. Anonymous
@@ -206,15 +194,12 @@ public interface ASTTypeDeclaration
         return getParent() instanceof ASTLocalClassStatement;
     }
 
-
-
     /**
      * Returns true if this type is declared at the top-level of a file.
      */
     default boolean isTopLevel() {
         return getParent() instanceof ASTCompilationUnit;
     }
-
 
     /**
      * Returns true if this is an {@linkplain ASTAnonymousClassDeclaration anonymous class declaration}.
@@ -262,7 +247,6 @@ public interface ASTTypeDeclaration
         return false;
     }
 
-
     /**
      * Returns true if this is a regular interface declaration (not an annotation).
      * Note that {@link #isInterface()} counts annotations in.
@@ -271,20 +255,18 @@ public interface ASTTypeDeclaration
         return false;
     }
 
-
     /** Returns true if this is an {@linkplain ASTAnnotationTypeDeclaration annotation type declaration}. */
     default boolean isAnnotation() {
         return this instanceof ASTAnnotationTypeDeclaration;
     }
-
 
     /**
      * Returns the list of interfaces implemented by this class, or
      * extended by this interface. Returns null if no such list is declared.
      */
     default @NonNull NodeStream<ASTClassType> getSuperInterfaceTypeNodes() {
-        return ASTList.orEmptyStream(isInterface() ? firstChild(ASTExtendsList.class)
-                                                   : firstChild(ASTImplementsList.class));
+        return ASTList.orEmptyStream(
+                isInterface() ? firstChild(ASTExtendsList.class) : firstChild(ASTImplementsList.class));
     }
 
     /**

@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cache.internal;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 
@@ -34,7 +32,8 @@ class CachedRuleMapper {
      */
     public void initialize(final RuleSets rs) {
         for (final Rule r : rs.getAllRules()) {
-            cachedRulesInstances.put(getRuleKey(r.getRuleClass(), r.getName(), r.getLanguage().getId()), r);
+            cachedRulesInstances.put(
+                    getRuleKey(r.getRuleClass(), r.getName(), r.getLanguage().getId()), r);
         }
     }
 

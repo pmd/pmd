@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
@@ -31,7 +30,10 @@ public final class ASTAnnotationMemberList extends ASTMaybeEmptyListOf<ASTMember
      * @param attrName Name of an attribute
      */
     public ASTMemberValue getAttribute(String attrName) {
-        return toStream().filter(it -> it.getName().equals(attrName)).map(ASTMemberValuePair::getValue).first();
+        return toStream()
+                .filter(it -> it.getName().equals(attrName))
+                .map(ASTMemberValuePair::getValue)
+                .first();
     }
 
     @Override

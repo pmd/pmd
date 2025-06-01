@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.TypePath;
-
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSet;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.TypePath;
 
 class LazyTypeSig {
 
@@ -19,9 +18,7 @@ class LazyTypeSig {
     private JTypeMirror parsed;
     private TypeAnnotationSet typeAnnots;
 
-    LazyTypeSig(ClassStub ctx,
-                String descriptor,
-                @Nullable String signature) {
+    LazyTypeSig(ClassStub ctx, String descriptor, @Nullable String signature) {
         this.ctx = ctx;
         this.sig = signature == null ? descriptor : signature;
     }
@@ -37,14 +34,12 @@ class LazyTypeSig {
         return parsed;
     }
 
-
     JTypeMirror get(Substitution subst) {
         if (Substitution.isEmptySubst(subst)) {
             return get();
         }
         return get().subst(subst);
     }
-
 
     @Override
     public String toString() {
@@ -60,6 +55,4 @@ class LazyTypeSig {
         }
         typeAnnots.add(path, annot);
     }
-
-
 }

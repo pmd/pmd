@@ -16,51 +16,41 @@ public interface JTypeVisitor<R, P> {
 
     R visit(JTypeMirror t, P p);
 
-
     default R visitClass(JClassType t, P p) {
         return visit(t, p);
     }
-
 
     default R visitWildcard(JWildcardType t, P p) {
         return visit(t, p);
     }
 
-
     default R visitPrimitive(JPrimitiveType t, P p) {
         return visit(t, p);
     }
-
 
     default R visitTypeVar(JTypeVar t, P p) {
         return visit(t, p);
     }
 
-
     default R visitInferenceVar(InferenceVar t, P p) {
         return visit(t, p);
     }
-
 
     default R visitMethodType(JMethodSig t, P p) {
         throw new UnsupportedOperationException("You can't do this by accident");
     }
 
-
     default R visitIntersection(JIntersectionType t, P p) {
         return visit(t, p);
     }
-
 
     default R visitArray(JArrayType t, P p) {
         return visit(t, p);
     }
 
-
     default R visitNullType(JTypeMirror t, P p) {
         return visit(t, p);
     }
-
 
     /**
      * Visit a sentinel type. The argument may be one of
@@ -70,5 +60,4 @@ public interface JTypeVisitor<R, P> {
     default R visitSentinel(JTypeMirror t, P p) {
         return visit(t, p);
     }
-
 }

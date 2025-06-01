@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.util.log.internal;
 
-import org.slf4j.event.Level;
-
 import net.sourceforge.pmd.util.log.PmdReporter;
+import org.slf4j.event.Level;
 
 /**
  * Turns errors into warnings reported on another logger.

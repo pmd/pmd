@@ -20,23 +20,20 @@ import net.sourceforge.pmd.util.treeexport.TextTreeRenderer
  *                   ├── VariableId
  *                   └── VariableInitializer
  *                       └── 1 child not shown
- *
  */
 val SimpleNodePrinter = TextTreeRenderer(true, -1)
 
-
 open class RelevantAttributePrinter : BaseNodeAttributePrinter() {
 
-    private val defaultIgnoredAttributes = setOf("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine")
+    private val defaultIgnoredAttributes =
+        setOf("BeginLine", "EndLine", "BeginColumn", "EndColumn", "FindBoundary", "SingleLine")
 
     override fun ignoreAttribute(node: Node, attribute: Attribute): Boolean =
-            defaultIgnoredAttributes.contains(attribute.name) || attribute.name == "Image" && attribute.value == null
-
+        defaultIgnoredAttributes.contains(attribute.name) ||
+            attribute.name == "Image" && attribute.value == null
 }
 
-/**
- * Only prints the begin/end coordinates.
- */
+/** Only prints the begin/end coordinates. */
 object CoordinatesPrinter : BaseNodeAttributePrinter() {
 
     private val Considered = setOf("BeginLine", "EndLine", "BeginColumn", "EndColumn")
@@ -49,13 +46,10 @@ object CoordinatesPrinter : BaseNodeAttributePrinter() {
     }
 
     override fun ignoreAttribute(node: Node, attribute: Attribute): Boolean =
-            attribute.name !in Considered
-
+        attribute.name !in Considered
 }
 
-/**
- * Base attribute printer, subclass to filter attributes.
- */
+/** Base attribute printer, subclass to filter attributes. */
 open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
     data class AttributeInfo(val name: String, val value: Any?)
@@ -64,12 +58,11 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
     protected open fun fillAttributes(node: Node, result: MutableList<AttributeInfo>) {
         node.xPathAttributesIterator
-                .asSequence()
-                .filterNot { ignoreAttribute(node, it) }
-                .map { AttributeInfo(it.name, it.value) }
-                .forEach { result += it }
+            .asSequence()
+            .filterNot { ignoreAttribute(node, it) }
+            .map { AttributeInfo(it.name, it.value) }
+            .forEach { result += it }
     }
-
 
     override fun appendNodeInfoLn(out: Appendable, node: Node) {
         out.append(node.xPathNodeName)
@@ -88,27 +81,31 @@ open class BaseNodeAttributePrinter : TextTreeRenderer(true, -1) {
 
     protected open fun valueToString(value: Any?): String? {
         return when (value) {
-            is String, is Chars -> "\"" + StringUtil.escapeJava(value.toString()) + "\""
-            is Char -> '\''.toString() + value.toString().replace("'".toRegex(), "\\'") + '\''.toString()
+            is String,
+            is Chars -> "\"" + StringUtil.escapeJava(value.toString()) + "\""
+            is Char ->
+                '\''.toString() + value.toString().replace("'".toRegex(), "\\'") + '\''.toString()
             is Enum<*> -> value.enumDeclaringClass.simpleName + "." + value.name
             is Class<*> -> value.canonicalName?.let { "$it.class" }
-            is Number, is Boolean -> value.toString()
-            is Collection<*> -> value.joinToString(prefix = "(", postfix = ")", separator = ", ") {
-                "${valueToString(it)}"
-            }
+            is Number,
+            is Boolean -> value.toString()
+            is Collection<*> ->
+                value.joinToString(prefix = "(", postfix = ")", separator = ", ") {
+                    "${valueToString(it)}"
+                }
             null -> "null"
             else -> null
         }
     }
 
     private val Enum<*>.enumDeclaringClass: Class<*>
-        get() = this.javaClass.let {
-            when {
-                it.isEnum -> it
-                else -> it.enclosingClass.takeIf { clazz -> clazz.isEnum }
-                        ?: throw IllegalStateException()
+        get() =
+            this.javaClass.let {
+                when {
+                    it.isEnum -> it
+                    else ->
+                        it.enclosingClass.takeIf { clazz -> clazz.isEnum }
+                            ?: throw IllegalStateException()
+                }
             }
-        }
-
 }
-

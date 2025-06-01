@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.xml;
 
 import net.sourceforge.pmd.cpd.CpdLexer;
@@ -17,10 +16,12 @@ public class XmlLanguageModule extends SimpleLanguageModuleBase {
     private static final String ID = "xml";
 
     public XmlLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("XML")
-                              .extensions("xml")
-                              .addVersion("1.0")
-                              .addDefaultVersion("1.1"),
+        super(
+                LanguageMetadata.withId(ID)
+                        .name("XML")
+                        .extensions("xml")
+                        .addVersion("1.0")
+                        .addDefaultVersion("1.1"),
                 new XmlHandler());
     }
 

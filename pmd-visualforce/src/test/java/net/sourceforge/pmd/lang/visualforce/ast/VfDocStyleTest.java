@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.visualforce.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,7 +12,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -42,7 +40,6 @@ class VfDocStyleTest extends AbstractVfTest {
     void testElementAttributeAndNamespace() {
         ASTCompilationUnit root = vf.parse(TEST_ELEMENT_AND_NAMESPACE);
 
-
         List<ASTElement> elementNodes = root.descendants(ASTElement.class).toList();
         assertEquals(1, elementNodes.size(), "One element node expected!");
         ASTElement element = elementNodes.iterator().next();
@@ -59,7 +56,6 @@ class VfDocStyleTest extends AbstractVfTest {
         assertTrue(attribute.isHasNamespacePrefix(), "Has namespace prefix!");
         assertEquals("MyNsPrefix", attribute.getNamespacePrefix(), "Correct namespace prefix of element expected!");
         assertEquals("MyAttr", attribute.getLocalName(), "Correct local name of element expected!");
-
     }
 
     /**
@@ -75,18 +71,15 @@ class VfDocStyleTest extends AbstractVfTest {
 
         ASTAttribute attr = attributes.get(0);
         assertEquals("something", attr.getName(), "Correct attribute name expected!");
-        assertEquals("#yes#", attr.descendants(ASTText.class).first().getImage(),
-                "Correct attribute value expected!");
+        assertEquals("#yes#", attr.descendants(ASTText.class).first().getImage(), "Correct attribute value expected!");
 
         attr = attributes.get(1);
         assertEquals("foo", attr.getName(), "Correct attribute name expected!");
-        assertEquals("CREATE", attr.descendants(ASTText.class).first().getImage(),
-                "Correct attribute value expected!");
+        assertEquals("CREATE", attr.descendants(ASTText.class).first().getImage(), "Correct attribute value expected!");
 
         attr = attributes.get(2);
         assertEquals("href", attr.getName(), "Correct attribute name expected!");
         assertEquals("#", attr.descendants(ASTText.class).first().getImage(), "Correct attribute value expected!");
-
     }
 
     /**
@@ -108,18 +101,19 @@ class VfDocStyleTest extends AbstractVfTest {
     void testDoctype() {
         ASTCompilationUnit root = vf.parse(TEST_DOCTYPE);
 
-        List<ASTDoctypeDeclaration> docTypeDeclarations = root.descendants(ASTDoctypeDeclaration.class).toList();
+        List<ASTDoctypeDeclaration> docTypeDeclarations =
+                root.descendants(ASTDoctypeDeclaration.class).toList();
         assertEquals(1, docTypeDeclarations.size(), "One doctype declaration expected!");
         ASTDoctypeDeclaration docTypeDecl = docTypeDeclarations.iterator().next();
         assertEquals("html", docTypeDecl.getName(), "Correct doctype-name expected!");
 
-        List<ASTDoctypeExternalId> externalIds = root.descendants(ASTDoctypeExternalId.class).toList();
+        List<ASTDoctypeExternalId> externalIds =
+                root.descendants(ASTDoctypeExternalId.class).toList();
         assertEquals(1, externalIds.size(), "One doctype external id expected!");
         ASTDoctypeExternalId externalId = externalIds.iterator().next();
         assertEquals("-//W3C//DTD XHTML 1.1//EN", externalId.getPublicId(), "Correct external public id expected!");
-        assertEquals("http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd", externalId.getUri(),
-                "Correct external uri expected!");
-
+        assertEquals(
+                "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd", externalId.getUri(), "Correct external uri expected!");
     }
 
     /**
@@ -142,10 +136,10 @@ class VfDocStyleTest extends AbstractVfTest {
         List<ASTElement> elements = vf.getNodes(ASTElement.class, TEST_EL_IN_TAG_ATTRIBUTE);
         assertEquals(1, elements.size(), "One element expected!");
         ASTElement element = elements.iterator().next();
-        ASTAttributeValue attribute = element.descendants(ASTAttributeValue.class).first();
+        ASTAttributeValue attribute =
+                element.descendants(ASTAttributeValue.class).first();
         ASTIdentifier id = attribute.descendants(ASTIdentifier.class).first();
         assertEquals("foo", id.getImage(), "Correct identifier expected");
-
     }
 
     /**
@@ -172,7 +166,6 @@ class VfDocStyleTest extends AbstractVfTest {
         ASTElExpression elExpr = element.descendants(ASTElExpression.class).first();
         ASTIdentifier id = elExpr.descendants(ASTIdentifier.class).first();
         assertEquals("init", id.getImage(), "Correct identifier expected");
-
     }
 
     /**
@@ -261,7 +254,6 @@ class VfDocStyleTest extends AbstractVfTest {
         ASTHtmlScript next = script.iterator().next();
         ASTText text = next.firstChild(ASTText.class);
         assertTrue(text.getImage().contains("<!--"));
-
     }
 
     /**
@@ -332,7 +324,6 @@ class VfDocStyleTest extends AbstractVfTest {
             id = node.descendants(ASTIdentifier.class).first();
             assertEquals("expr2", id.getImage(), "Correct content expected!");
         }
-
     }
 
     /**
@@ -403,7 +394,6 @@ class VfDocStyleTest extends AbstractVfTest {
         ASTAttributeValue attr = iterator.next();
         ASTText text = attr.firstChild(ASTText.class);
         assertEquals("\t", text.getImage(), "Expected to detect proper value for attribute!");
-
     }
 
     @Test
@@ -479,7 +469,6 @@ class VfDocStyleTest extends AbstractVfTest {
         // html
         assertFalse(sortedElmnts.get(3).isEmpty());
         assertFalse(sortedElmnts.get(3).isUnclosed());
-
     }
 
     /**
@@ -521,7 +510,6 @@ class VfDocStyleTest extends AbstractVfTest {
         // html not empty and closed
         assertFalse(sortedElmnts.get(5).isEmpty());
         assertFalse(sortedElmnts.get(5).isUnclosed());
-
     }
 
     /**
@@ -679,22 +667,29 @@ class VfDocStyleTest extends AbstractVfTest {
             + "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" "
             + "\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n" + "<greeting>Hello, world!</greeting>";
 
-    private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH = "<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
+    private static final String TEST_ATTRIBUTE_VALUE_CONTAINING_HASH =
+            "<tag:if something=\"#yes#\" foo=\"CREATE\">  <a href=\"#\">foo</a> </tag:if>";
 
     private static final String TEST_HTML_SCRIPT = "<html><head><script>Script!</script></head></html>";
 
     private static final String TEST_EL_IN_TAG_ATTRIBUTE = "<apex:page action=\"{!foo}\">text</apex:page>";
-    private static final String TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT = "<apex:page action=\"{!/*comment here*/init}\">text</apex:page>";
-    private static final String TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT_SQ = "<apex:page action='{!/*comment here*/init}'>text</apex:page>";
+    private static final String TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT =
+            "<apex:page action=\"{!/*comment here*/init}\">text</apex:page>";
+    private static final String TEST_EL_IN_TAG_ATTRIBUTE_WITH_COMMENT_SQ =
+            "<apex:page action='{!/*comment here*/init}'>text</apex:page>";
 
-    private static final String TEST_EL_IN_HTML_SCRIPT = "<html><head><script>var text={!elInScript};</script></head></html>";
-    private static final String TEST_EL_IN_HTML_SCRIPT_WITH_COMMENT = "<html><head><script>var text={!/*junk1*/elInScript/*junk2*/};</script></head></html>";
+    private static final String TEST_EL_IN_HTML_SCRIPT =
+            "<html><head><script>var text={!elInScript};</script></head></html>";
+    private static final String TEST_EL_IN_HTML_SCRIPT_WITH_COMMENT =
+            "<html><head><script>var text={!/*junk1*/elInScript/*junk2*/};</script></head></html>";
 
-    private static final String TEST_QUOTED_EL_IN_HTML_SCRIPT = "<html><head><script>var text='textHere{!elInScript}';</script></head></html>";
+    private static final String TEST_QUOTED_EL_IN_HTML_SCRIPT =
+            "<html><head><script>var text='textHere{!elInScript}';</script></head></html>";
 
     private static final String TEST_IMPORT_JAVASCRIPT = "<html><head><script src=\"filename.js\" /></head></html>";
 
-    private static final String TEST_HTML_SCRIPT_WITH_ATTRIBUTE = "<html><head><script type=\"text/javascript\">Script!</script></head></html>";
+    private static final String TEST_HTML_SCRIPT_WITH_ATTRIBUTE =
+            "<html><head><script type=\"text/javascript\">Script!</script></head></html>";
 
     private static final String TEST_COMPLEX_SCRIPT = "<HTML><BODY><!--Java Script-->"
             + "<SCRIPT language='JavaScript' type='text/javascript'>" + "<!--function calcDays(){"
@@ -719,7 +714,8 @@ class VfDocStyleTest extends AbstractVfTest {
 
     private static final String TEST_ATTR = "<tag:if something=\"yes|\" > </tag:if>";
 
-    private static final String TEST_EMPTY_ATTR = "<tag:if something= >  <a href=\"http://someHost:/some_URL\" >foo</a> </tag:if>";
+    private static final String TEST_EMPTY_ATTR =
+            "<tag:if something= >  <a href=\"http://someHost:/some_URL\" >foo</a> </tag:if>";
 
     private static final String TEST_TAB_ATTR = "<tag:if something='\t' >   </tag:if>";
 
@@ -728,7 +724,8 @@ class VfDocStyleTest extends AbstractVfTest {
     /**
      * someTag is closed just once
      */
-    private static final String TEST_UNCLOSED_MULTIPLE_LEVELS = "<tag:x> <tag:someTag> <tag:someTag something=\"x\" > </tag:someTag> </tag:x>";
+    private static final String TEST_UNCLOSED_MULTIPLE_LEVELS =
+            "<tag:x> <tag:someTag> <tag:someTag something=\"x\" > </tag:someTag> </tag:x>";
 
     /**
      * nested empty tags
@@ -759,5 +756,6 @@ class VfDocStyleTest extends AbstractVfTest {
 
     private static final String TEST_UNCLOSED_ATTR = "<tag:someTag> <tag:if something='x' > </tag:someTag>";
 
-    private static final String TEST_NO_QUOTE_ATTR_WITH_EL = "<apex:someTag something={!something} > foo </apex:someTag>";
+    private static final String TEST_NO_QUOTE_ATTR_WITH_EL =
+            "<apex:someTag something={!something} > foo </apex:someTag>";
 }

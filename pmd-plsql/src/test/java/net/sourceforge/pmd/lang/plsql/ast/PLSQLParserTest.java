@@ -8,18 +8,16 @@ import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import org.junit.jupiter.api.Test;
 
 class PLSQLParserTest extends AbstractPLSQLParserTst {
 
     @Test
     void testExceptions() {
         plsql.parse("CREATE OR REPLACE PROCEDURE bar IS BEGIN" + "    doSomething;" + "    EXCEPTION"
-                       + "    WHEN FooException THEN" + "        doSomethingElse;" + "    WHEN OTHERS THEN"
-                       + "        doSomethingElse;" + "END;");
+                + "    WHEN FooException THEN" + "        doSomethingElse;" + "    WHEN OTHERS THEN"
+                + "        doSomethingElse;" + "END;");
     }
 
     /**
@@ -28,16 +26,17 @@ class PLSQLParserTest extends AbstractPLSQLParserTst {
     @Test
     void testBOM() {
         plsql.parse("\ufeff" + "CREATE OR REPLACE PROCEDURE bar IS BEGIN" + "    doSomething;" + "    EXCEPTION"
-                       + "    WHEN FooException THEN" + "        doSomethingElse;" + "    WHEN OTHERS THEN"
-                       + "        doSomethingElse;" + "END;");
+                + "    WHEN FooException THEN" + "        doSomethingElse;" + "    WHEN OTHERS THEN"
+                + "        doSomethingElse;" + "END;");
     }
 
     @Test
     void testBug1531() {
-        assertTimeout(Duration.of(5, ChronoUnit.SECONDS), () ->
-            plsql.parse("create or replace force view oxa.o_xa_function_role_types as\n"
-                           + "select \"CFT_ID\",\"CFR_ID\",\"CFT_NAME\",\"TCN\",\"LOG_MODULE\",\"LOG_USER\",\"LOG_DATE\",\"LOG_TIME\" from crm_function_role_types\n"
-                           + "/"));
+        assertTimeout(
+                Duration.of(5, ChronoUnit.SECONDS),
+                () -> plsql.parse("create or replace force view oxa.o_xa_function_role_types as\n"
+                        + "select \"CFT_ID\",\"CFR_ID\",\"CFT_NAME\",\"TCN\",\"LOG_MODULE\",\"LOG_USER\",\"LOG_DATE\",\"LOG_TIME\" from crm_function_role_types\n"
+                        + "/"));
     }
 
     @Test

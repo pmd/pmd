@@ -6,14 +6,12 @@ package net.sourceforge.pmd.lang;
 
 import java.util.Collections;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.util.log.PmdReporter;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Stateful object managing the analysis for a given language.
@@ -25,7 +23,8 @@ public interface LanguageProcessor extends AutoCloseable {
     /**
      * A collection of extension points implemented by the language.
      */
-    @NonNull LanguageVersionHandler services();
+    @NonNull
+    LanguageVersionHandler services();
 
     /**
      * Launch the analysis based on the given {@link AnalysisTask analysis task}.
@@ -38,19 +37,20 @@ public interface LanguageProcessor extends AutoCloseable {
      *
      * @return A closeable - the analysis is only ended when the close method returns.
      */
-    @NonNull AutoCloseable launchAnalysis(
-        @NonNull AnalysisTask analysisTask
-    );
+    @NonNull
+    AutoCloseable launchAnalysis(@NonNull AnalysisTask analysisTask);
 
     /**
      * The language of this processor.
      */
-    @NonNull PmdCapableLanguage getLanguage();
+    @NonNull
+    PmdCapableLanguage getLanguage();
 
     /**
      * The language version that was configured when creating this processor.
      */
-    @NonNull LanguageVersion getLanguageVersion();
+    @NonNull
+    LanguageVersion getLanguageVersion();
 
     /**
      * Configuration of an analysis, as given to {@link #launchAnalysis(AnalysisTask)}.
@@ -67,20 +67,20 @@ public interface LanguageProcessor extends AutoCloseable {
         private final PmdReporter messageReporter;
         private final LanguageProcessorRegistry lpRegistry;
 
-
         /**
          * Create a new task. This constructor is internal and will be
          * called by PMD.
          *
          * @apiNote Internal API
          */
-        AnalysisTask(RuleSets rulesets,
-                            List<TextFile> files,
-                            GlobalAnalysisListener listener,
-                            int threadCount,
-                            AnalysisCache analysisCache,
-                            PmdReporter messageReporter,
-                            LanguageProcessorRegistry lpRegistry) {
+        AnalysisTask(
+                RuleSets rulesets,
+                List<TextFile> files,
+                GlobalAnalysisListener listener,
+                int threadCount,
+                AnalysisCache analysisCache,
+                PmdReporter messageReporter,
+                LanguageProcessorRegistry lpRegistry) {
             this.rulesets = rulesets;
             this.files = files;
             this.listener = listener;
@@ -125,16 +125,7 @@ public interface LanguageProcessor extends AutoCloseable {
          */
         AnalysisTask withFiles(List<TextFile> newFiles) {
             return new AnalysisTask(
-                rulesets,
-                newFiles,
-                listener,
-                threadCount,
-                analysisCache,
-                messageReporter,
-                lpRegistry
-            );
+                    rulesets, newFiles, listener, threadCount, analysisCache, messageReporter, lpRegistry);
         }
     }
-
-
 }

@@ -12,7 +12,6 @@ public final class ASTParameter extends AbstractApexNode.Single<ParameterDeclara
         super(parameterDeclaration);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
@@ -22,15 +21,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
+import net.sourceforge.pmd.internal.util.IOUtil;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.properties.PropertyFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
  * Renderer to XML format with a XSL Transformation applied.
@@ -41,8 +38,7 @@ public class XSLTRenderer extends XMLRenderer {
 
     public static final String NAME = "xslt";
 
-    public static final PropertyDescriptor<String> XSLT_FILENAME = PropertyFactory
-            .stringProperty("xsltFilename")
+    public static final PropertyDescriptor<String> XSLT_FILENAME = PropertyFactory.stringProperty("xsltFilename")
             .desc("The XSLT file name.")
             .defaultValue("")
             .build();

@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A bundle of properties used by languages (see {@link Language#newPropertyBundle()}).
@@ -24,12 +23,11 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
     // todo for now i think an empty value might interpret every comment
     //  as a suppression. I think it should disable suppression comments.
     //  #4846
-    public static final PropertyDescriptor<String> SUPPRESS_MARKER
-        = PropertyFactory.stringProperty("suppressMarker")
-                         .desc("Marker to identify suppression comments. "
-                                   + "Eg a value of NOPMD will make `// NOPMD` a suppression comment in Java or JavaScript.")
-                         .defaultValue(PMDConfiguration.DEFAULT_SUPPRESS_MARKER)
-                         .build();
+    public static final PropertyDescriptor<String> SUPPRESS_MARKER = PropertyFactory.stringProperty("suppressMarker")
+            .desc("Marker to identify suppression comments. "
+                    + "Eg a value of NOPMD will make `// NOPMD` a suppression comment in Java or JavaScript.")
+            .defaultValue(PMDConfiguration.DEFAULT_SUPPRESS_MARKER)
+            .build();
     public static final String LANGUAGE_VERSION = "version";
 
     private final PropertyDescriptor<LanguageVersion> languageVersion;
@@ -43,15 +41,12 @@ public class LanguagePropertyBundle extends AbstractPropertySource {
 
         definePropertyDescriptor(SUPPRESS_MARKER);
 
-        languageVersion =
-            PropertyFactory.enumProperty(
-                               LANGUAGE_VERSION,
-                               CollectionUtil.associateBy(language.getVersions(), LanguageVersion::getVersion)
-                           )
-                           .desc("Language version to use for this language. See the --use-version CLI switch as well.")
-
-                           .defaultValue(language.getDefaultVersion())
-                           .build();
+        languageVersion = PropertyFactory.enumProperty(
+                        LANGUAGE_VERSION,
+                        CollectionUtil.associateBy(language.getVersions(), LanguageVersion::getVersion))
+                .desc("Language version to use for this language. See the --use-version CLI switch as well.")
+                .defaultValue(language.getDefaultVersion())
+                .build();
 
         definePropertyDescriptor(languageVersion);
     }

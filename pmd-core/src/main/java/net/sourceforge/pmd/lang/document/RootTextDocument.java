@@ -6,10 +6,8 @@ package net.sourceforge.pmd.lang.document;
 
 import java.io.IOException;
 import java.util.Objects;
-
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
-
 
 /**
  * A text document directly backed by a {@link TextFile}. In the future
@@ -19,7 +17,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 final class RootTextDocument extends BaseCloseable implements TextDocument {
 
     private final TextFile backend;
-
 
     // to support CPD with the same api, we could probably just store
     // a soft reference to the contents, and build the positioner eagerly.
@@ -67,17 +64,9 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
         // We use longs to return both numbers at the same time
         // This limits us to 2 billion lines or columns, which is FINE
         TextPos2d bpos = positioner.lineColFromOffset(region.getStartOffset(), true);
-        TextPos2d epos = region.isEmpty() ? bpos
-                                          : positioner.lineColFromOffset(region.getEndOffset(), false);
+        TextPos2d epos = region.isEmpty() ? bpos : positioner.lineColFromOffset(region.getEndOffset(), false);
 
-        return new FileLocation(
-            fileId,
-            bpos.getLine(),
-            bpos.getColumn(),
-            epos.getLine(),
-            epos.getColumn(),
-            region
-        );
+        return new FileLocation(fileId, bpos.getLine(), bpos.getColumn(), epos.getLine(), epos.getColumn(), region);
     }
 
     @Override
@@ -95,8 +84,8 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
         SourceCodePositioner positioner = content.getPositioner();
 
         if (!positioner.isValidLine(startLineInclusive)
-            || !positioner.isValidLine(endLineInclusive)
-            || startLineInclusive > endLineInclusive) {
+                || !positioner.isValidLine(endLineInclusive)
+                || startLineInclusive > endLineInclusive) {
             throw invalidLineRange(startLineInclusive, endLineInclusive, positioner.getLastLine());
         }
 
@@ -122,8 +111,10 @@ final class RootTextDocument extends BaseCloseable implements TextDocument {
     }
 
     private static final String NOT_IN_RANGE = "Region [start=%d, end=%d[ is not in range of this document (length %d)";
-    private static final String INVALID_LINE_RANGE = "Line range %d..%d is not in range of this document (%d lines) (line numbers are 1-based)";
-    private static final String INVALID_OFFSET = "Offset %d is not in range of this document (length %d) (offsets are 0-based)";
+    private static final String INVALID_LINE_RANGE =
+            "Line range %d..%d is not in range of this document (%d lines) (line numbers are 1-based)";
+    private static final String INVALID_OFFSET =
+            "Offset %d is not in range of this document (length %d) (offsets are 0-based)";
 
     static IndexOutOfBoundsException invalidLineRange(int start, int end, int numLines) {
         return new IndexOutOfBoundsException(String.format(INVALID_LINE_RANGE, start, end, numLines));

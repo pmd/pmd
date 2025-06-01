@@ -19,5 +19,4 @@ public @interface Generated {
 
     /** The generator that produced this code */
     String value() default "";
-
 }

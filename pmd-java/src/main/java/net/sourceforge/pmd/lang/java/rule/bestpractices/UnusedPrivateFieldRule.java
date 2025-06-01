@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -23,19 +21,20 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<List<String>> IGNORED_FIELD_NAMES =
-            PropertyFactory.stringListProperty("ignoredFieldNames")
-                    .defaultValues("serialVersionUID", "serialPersistentFields")
-                    .desc("Field Names that are ignored from the unused check")
-                    .build();
-
-    private static final PropertyDescriptor<List<String>> REPORT_FOR_ANNOTATIONS_DESCRIPTOR
-            = PropertyFactory.stringListProperty("reportForAnnotations")
-            .desc("Fully qualified names of the annotation types that should be reported anyway. If an unused field "
-                    + "has any of these annotations, then it is reported. If it has any other annotation, then "
-                    + "it is still considered to used and is not reported.")
-            .defaultValue(new ArrayList<>())
+    private static final PropertyDescriptor<List<String>> IGNORED_FIELD_NAMES = PropertyFactory.stringListProperty(
+                    "ignoredFieldNames")
+            .defaultValues("serialVersionUID", "serialPersistentFields")
+            .desc("Field Names that are ignored from the unused check")
             .build();
+
+    private static final PropertyDescriptor<List<String>> REPORT_FOR_ANNOTATIONS_DESCRIPTOR =
+            PropertyFactory.stringListProperty("reportForAnnotations")
+                    .desc(
+                            "Fully qualified names of the annotation types that should be reported anyway. If an unused field "
+                                    + "has any of these annotations, then it is reported. If it has any other annotation, then "
+                                    + "it is still considered to used and is not reported.")
+                    .defaultValue(new ArrayList<>())
+                    .build();
 
     public UnusedPrivateFieldRule() {
         super(ASTTypeDeclaration.class);
@@ -65,9 +64,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isIgnored(ASTFieldDeclaration field) {
-        return field.getVisibility() != Visibility.V_PRIVATE
-            || isOK(field)
-            || hasAnyAnnotation(field);
+        return field.getVisibility() != Visibility.V_PRIVATE || isOK(field) || hasAnyAnnotation(field);
     }
 
     private boolean isOK(ASTFieldDeclaration field) {
@@ -77,7 +74,7 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
     private boolean hasAnyAnnotation(Annotatable node) {
         NodeStream<ASTAnnotation> declaredAnnotations = node.getDeclaredAnnotations();
         for (String reportAnnotation : getProperty(REPORT_FOR_ANNOTATIONS_DESCRIPTOR)) {
-            for (ASTAnnotation annotation: declaredAnnotations) {
+            for (ASTAnnotation annotation : declaredAnnotations) {
                 if (TypeTestUtil.isA(reportAnnotation, annotation)) {
                     return false;
                 }

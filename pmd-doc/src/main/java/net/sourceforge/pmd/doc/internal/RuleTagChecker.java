@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +60,8 @@ public class RuleTagChecker {
     }
 
     private void checkFile(Path file) throws IOException {
-        if (file == null || !file.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".md")) {
+        if (file == null
+                || !file.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(".md")) {
             return;
         }
 
@@ -93,7 +93,8 @@ public class RuleTagChecker {
             String category = ruleRefMatcher.group(2);
             String rule = ruleRefMatcher.group(3);
 
-            Path ruleDocPage = pagesDirectory.resolve("pmd/rules/" + language + "/" + category.toLowerCase(Locale.ROOT) + ".md");
+            Path ruleDocPage =
+                    pagesDirectory.resolve("pmd/rules/" + language + "/" + category.toLowerCase(Locale.ROOT) + ".md");
             Set<String> rules = getRules(ruleDocPage);
             return rules.contains(rule);
         } else if (simpleRefMatcher.matches()) {

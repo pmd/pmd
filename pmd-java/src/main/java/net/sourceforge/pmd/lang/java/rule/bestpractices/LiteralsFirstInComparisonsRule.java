@@ -8,23 +8,18 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
     private static final Set<String> STRING_COMPARISONS =
-        setOf("equalsIgnoreCase",
-              "compareTo",
-              "compareToIgnoreCase",
-              "contentEquals");
+            setOf("equalsIgnoreCase", "compareTo", "compareToIgnoreCase", "contentEquals");
 
     public LiteralsFirstInComparisonsRule() {
         super(ASTMethodCall.class);
@@ -33,12 +28,12 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodCall call, Object data) {
         if ("equals".equals(call.getMethodName())
-            && call.getArguments().size() == 1
-            && isEqualsObjectAndNotAnOverload(call)) {
+                && call.getArguments().size() == 1
+                && isEqualsObjectAndNotAnOverload(call)) {
             checkArgs((RuleContext) data, call);
         } else if (STRING_COMPARISONS.contains(call.getMethodName())
-            && call.getArguments().size() == 1
-            && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
+                && call.getArguments().size() == 1
+                && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
             checkArgs((RuleContext) data, call);
         }
         return data;
@@ -50,8 +45,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isConstantString(@Nullable ASTExpression node) {
-        return node instanceof ASTStringLiteral
-            || node != null && node.getConstValue() instanceof String;
+        return node instanceof ASTStringLiteral || node != null && node.getConstValue() instanceof String;
     }
 
     private void checkArgs(RuleContext ctx, ASTMethodCall call) {

@@ -7,11 +7,10 @@ package net.sourceforge.pmd.cpd;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.junit.jupiter.api.Test;
 
 class CPDReportTest {
 
@@ -32,15 +31,14 @@ class CPDReportTest {
         assertEquals(3, original.getMatches().size());
 
         CPDReport filtered = original.filterMatches(
-            // only keep file1.java
-            match -> CollectionUtil.any(match, mark -> mark.getLocation().getFileId().equals(file1))
-        );
+                // only keep file1.java
+                match -> CollectionUtil.any(
+                        match, mark -> mark.getLocation().getFileId().equals(file1)));
 
         assertEquals(2, filtered.getMatches().size());
         for (Match match : filtered.getMatches()) {
             boolean containsFile1 =
-                match.getMarkSet().stream().map(Mark::getFileId)
-                     .anyMatch(file1::equals);
+                    match.getMarkSet().stream().map(Mark::getFileId).anyMatch(file1::equals);
             assertTrue(containsFile1);
         }
 
@@ -49,8 +47,9 @@ class CPDReportTest {
     }
 
     private Match createMatch(CpdReportBuilder builder, FileId file1, FileId file2, int line) {
-        return new Match(5,
-                         builder.tokens.addToken("firstToken", file1, line, 1, line, 1),
-                         builder.tokens.addToken("secondToken", file2, line, 2, line, 2));
+        return new Match(
+                5,
+                builder.tokens.addToken("firstToken", file1, line, 1, line, 1),
+                builder.tokens.addToken("secondToken", file2, line, 2, line, 2));
     }
 }

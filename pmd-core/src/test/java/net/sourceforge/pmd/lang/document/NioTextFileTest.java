@@ -12,12 +12,10 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class NioTextFileTest {
 
@@ -41,7 +39,8 @@ class NioTextFileTest {
             List<TextFile> collectedFiles = pmd.files().getCollectedFiles();
             assertEquals(1, collectedFiles.size());
             TextFile textFile = collectedFiles.get(0);
-            assertEquals(zipArchive.toAbsolutePath() + "!/path/inside/someSource.dummy",
+            assertEquals(
+                    zipArchive.toAbsolutePath() + "!/path/inside/someSource.dummy",
                     pmd.fileNameRenderer().getDisplayName(textFile));
         }
     }

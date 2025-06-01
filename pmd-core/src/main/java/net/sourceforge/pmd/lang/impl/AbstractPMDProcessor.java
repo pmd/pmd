@@ -40,8 +40,7 @@ abstract class AbstractPMDProcessor implements AutoCloseable {
      */
     public static AbstractPMDProcessor newFileProcessor(AnalysisTask analysisTask) {
         return analysisTask.getThreadCount() > 0
-               ? new MultiThreadProcessor(analysisTask)
-               : new MonoThreadProcessor(analysisTask);
+                ? new MultiThreadProcessor(analysisTask)
+                : new MonoThreadProcessor(analysisTask);
     }
-
 }

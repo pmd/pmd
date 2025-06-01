@@ -15,10 +15,6 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.lang.document.FileCollector;
@@ -29,6 +25,8 @@ import net.sourceforge.pmd.util.database.DBURI;
 import net.sourceforge.pmd.util.database.SourceObject;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.ErrorsAsWarningsReporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Clément Fournier
@@ -37,9 +35,7 @@ public final class FileCollectionUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(FileCollectionUtil.class);
 
-    private FileCollectionUtil() {
-
-    }
+    private FileCollectionUtil() {}
 
     public static void collectFiles(CPDConfiguration cpdConfiguration, FileCollector collector) {
         if (cpdConfiguration.isSkipDuplicates()) {
@@ -56,7 +52,8 @@ public final class FileCollectionUtil {
                 try {
                     String signature = path.getFileName() + "_" + Files.size(path);
                     if (!alreadyAddedFileNamesWithSize.add(signature)) {
-                        LOG.info("Skipping {} since it appears to be a duplicate file and --skip-duplicate-files is set",
+                        LOG.info(
+                                "Skipping {} since it appears to be a duplicate file and --skip-duplicate-files is set",
                                 path);
                         return false;
                     }
@@ -76,19 +73,18 @@ public final class FileCollectionUtil {
             collector.setRecursive(configuration.collectFilesRecursively());
         }
 
-
         collectFiles(collector, configuration.getInputPathList());
 
         if (configuration.getUri() != null) {
             collectDB(collector, configuration.getUri());
         }
 
-
         if (configuration.getInputFile() != null) {
             collectFileList(collector, configuration.getInputFile());
         }
 
-        if (configuration.getIgnoreFile() != null || !configuration.getExcludes().isEmpty()) {
+        if (configuration.getIgnoreFile() != null
+                || !configuration.getExcludes().isEmpty()) {
             // This is to be able to interpret the log (will report 'adding' xxx)
             LOG.debug("Now collecting files to exclude.");
             // errors like "excluded file does not exist" are reported as warnings.
@@ -105,13 +101,12 @@ public final class FileCollectionUtil {
         }
     }
 
-
     public static void collectFiles(FileCollector collector, List<Path> filePaths) {
         for (Path rootLocation : filePaths) {
             try {
                 addRoot(collector, rootLocation);
             } catch (IOException e) {
-                collector.getReporter().errorEx("Error collecting {0}", new Object[]{ rootLocation }, e);
+                collector.getReporter().errorEx("Error collecting {0}", new Object[] {rootLocation}, e);
             }
         }
     }
@@ -127,7 +122,7 @@ public final class FileCollectionUtil {
         try {
             filePaths = FileUtil.readFilelistEntries(fileList);
         } catch (IOException e) {
-            collector.getReporter().errorEx("Error reading {0}", new Object[] { fileList }, e);
+            collector.getReporter().errorEx("Error reading {0}", new Object[] {fileList}, e);
             return;
         }
         collectFiles(collector, filePaths);
@@ -169,15 +164,15 @@ public final class FileCollectionUtil {
                     String source = IOUtil.readToString(sourceCode);
                     collector.addSourceFile(FileId.fromPathLikeString(falseFilePath), source);
                 } catch (SQLException ex) {
-                    collector.getReporter().warnEx("Cannot get SourceCode for {0}  - skipping ...",
-                                                   new Object[] { falseFilePath },
-                                                   ex);
+                    collector
+                            .getReporter()
+                            .warnEx("Cannot get SourceCode for {0}  - skipping ...", new Object[] {falseFilePath}, ex);
                 }
             }
         } catch (ClassNotFoundException e) {
             collector.getReporter().errorEx("Cannot get files from DB - probably missing database JDBC driver", e);
         } catch (Exception e) {
-            collector.getReporter().errorEx("Cannot get files from DB - ''{0}''", new Object[] { uri }, e);
+            collector.getReporter().errorEx("Cannot get files from DB - ''{0}''", new Object[] {uri}, e);
         }
     }
 }

@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.multifile;
 
+import com.nawforce.apexlink.api.Org;
+import com.nawforce.pkgforce.diagnostics.LoggerOps;
+import io.github.apexdevtools.api.Issue;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,17 +13,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
+import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
+import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
-import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
-
-import com.nawforce.apexlink.api.Org;
-import com.nawforce.pkgforce.diagnostics.LoggerOps;
-import io.github.apexdevtools.api.Issue;
 
 /**
  * Stores multi-file analysis data. The 'Org' here is the primary ApexLink structure for maintaining information
@@ -51,7 +47,6 @@ public final class ApexMultifileAnalysis {
         LoggerOps.setLoggingLevel(LoggerOps.NO_LOGGING());
     }
 
-
     ApexMultifileAnalysis(ApexLanguageProperties properties) {
         Optional<String> rootDir = properties.getProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY);
         LOG.debug("MultiFile Analysis created for {}", rootDir);
@@ -71,9 +66,9 @@ public final class ApexMultifileAnalysis {
                     // FIXME: Syntax & Semantic errors found during Org loading are not currently being reported. These
                     // should be routed to the new SemanticErrorReporter but that is not available for use just yet.
                     // Specifically we should check sfdx-project.json was ok as errors will disable further analysis
-                    Issue[] projectErrors =
-                            Arrays.stream(org.issues().issuesForFile(sfdxProjectJson.toString()))
-                                    .filter(Issue::isError).toArray(Issue[]::new);
+                    Issue[] projectErrors = Arrays.stream(org.issues().issuesForFile(sfdxProjectJson.toString()))
+                            .filter(Issue::isError)
+                            .toArray(Issue[]::new);
                     Arrays.stream(projectErrors).forEach(issue -> LOG.info(issue.toString()));
                     if (projectErrors.length != 0) {
                         org = null;
@@ -89,11 +84,13 @@ public final class ApexMultifileAnalysis {
             // https://github.com/nawforce/apex-link/blob/7688adcb7a2d7f8aa28d0618ffb2a3aa81151858/apexlink/src/main/scala/com/nawforce/apexlink/types/platform/PlatformTypeDeclaration.scala#L260-L273
             // However, when running as an Eclipse plugin, we have a special bundle classloader, that returns
             // URIs in the form "bundleresource://...". For the schema "bundleresource", no FileSystemProvider can be
-            // found, so we get a java.nio.file.ProviderNotFoundException. Since all this happens during initialization of the class
+            // found, so we get a java.nio.file.ProviderNotFoundException. Since all this happens during initialization
+            // of the class
             // com.nawforce.apexlink.types.platform.PlatformTypeDeclaration we get a ExceptionInInitializerError
             // and later NoClassDefFoundErrors, because PlatformTypeDeclaration couldn't be loaded.
             LOG.error("Exception while initializing Apexlink ({})", e.getMessage(), e);
-            LOG.error("PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
+            LOG.error(
+                    "PMD will not attempt to initialize Apexlink further, this can cause rules like UnusedMethod to be dysfunctional");
         }
         this.org = org;
     }
@@ -110,8 +107,9 @@ public final class ApexMultifileAnalysis {
 
     public List<Issue> getFileIssues(String filename) {
         // Extract issues for a specific metadata file from the org
-        return org == null ? Collections.emptyList()
-                           : Collections.unmodifiableList(Arrays.asList(org.issues().issuesForFile(filename)));
+        return org == null
+                ? Collections.emptyList()
+                : Collections.unmodifiableList(Arrays.asList(org.issues().issuesForFile(filename)));
     }
 
     /*

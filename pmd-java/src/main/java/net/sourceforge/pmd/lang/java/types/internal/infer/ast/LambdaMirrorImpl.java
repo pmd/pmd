@@ -6,9 +6,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import java.util.Collections;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -29,19 +26,25 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> implements LambdaExprMirror {
 
     private final List<JVariableSymbol> formalSymbols;
 
-    LambdaMirrorImpl(JavaExprMirrors mirrors, ASTLambdaExpression lambda, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+    LambdaMirrorImpl(
+            JavaExprMirrors mirrors,
+            ASTLambdaExpression lambda,
+            @Nullable ExprMirror parent,
+            MirrorMaker subexprMaker) {
         super(mirrors, lambda, parent, subexprMaker);
 
         if (isExplicitlyTyped()) {
             formalSymbols = Collections.emptyList();
         } else {
             // we'll have one tentative binding per formal param
-            formalSymbols = myNode.getParameters().toStream().toList(p -> p.getVarId().getSymbol());
+            formalSymbols =
+                    myNode.getParameters().toStream().toList(p -> p.getVarId().getSymbol());
 
             // initialize the typing context
             TypingContext parentCtx = parent == null ? TypingContext.DEFAULT : parent.getTypingContext();
@@ -54,8 +57,8 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
     public boolean isEquivalentToUnderlyingAst() {
         JTypeMirror inferredType = getInferredType();
         JMethodSig inferredMethod = getInferredMethod();
-        AssertionUtil.validateState(inferredType != null && inferredMethod != null,
-                                    "overload resolution is not complete");
+        AssertionUtil.validateState(
+                inferredType != null && inferredMethod != null, "overload resolution is not complete");
 
         ASTLambdaParameterList astFormals = myNode.getParameters();
         List<JTypeMirror> thisFormals = inferredMethod.getFormalParameters();
@@ -82,15 +85,14 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
             return null; // NOPMD ReturnEmptyCollectionRatherThanNull
         }
 
-        return parameters.toStream()
-                         .toList(e -> {
-                             ASTType typeNode = e.getTypeNode();
-                             if (typeNode == null) {
-                                 // var type
-                                 return factory.ts.UNKNOWN;
-                             }
-                             return typeNode.getTypeMirror();
-                         });
+        return parameters.toStream().toList(e -> {
+            ASTType typeNode = e.getTypeNode();
+            if (typeNode == null) {
+                // var type
+                return factory.ts.UNKNOWN;
+            }
+            return typeNode.getTypeMirror();
+        });
     }
 
     @Override
@@ -105,8 +107,8 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
             return Collections.singletonList(createSubexpression(myNode.getExpressionBody()));
         } else {
             return block.descendants(ASTReturnStatement.class)
-                        .map(ASTReturnStatement::getExpr)
-                        .toList(this::createSubexpression);
+                    .map(ASTReturnStatement::getExpr)
+                    .toList(this::createSubexpression);
         }
     }
 
@@ -134,7 +136,6 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
         }
     }
 
-
     /**
      * Malformed bodies may be neither (it's a compile error)
      */
@@ -153,10 +154,9 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
     private static boolean isExpressionStatement(ASTExpression body) {
         // statement expression
         return body instanceof ASTMethodCall
-            || body instanceof ASTConstructorCall
-            || body instanceof ASTAssignmentExpression
-            || body instanceof ASTUnaryExpression && !((ASTUnaryExpression) body).getOperator().isPure();
-
+                || body instanceof ASTConstructorCall
+                || body instanceof ASTAssignmentExpression
+                || body instanceof ASTUnaryExpression
+                        && !((ASTUnaryExpression) body).getOperator().isPure();
     }
-
 }

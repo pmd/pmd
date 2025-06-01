@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.velocity.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.velocity.VtlLanguageModule;
+import org.junit.jupiter.api.Test;
 
 class VtlCpdLexerTest extends CpdTextComparisonTest {
     VtlCpdLexerTest() {

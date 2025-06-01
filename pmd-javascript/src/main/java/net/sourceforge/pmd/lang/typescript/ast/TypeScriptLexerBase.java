@@ -4,20 +4,17 @@
  *
  * Slightly modified to adapt to pmd's style.
  */
-
 package net.sourceforge.pmd.lang.typescript.ast;
-
-import org.antlr.v4.runtime.*;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import org.antlr.v4.runtime.*;
 
 /**
  * All lexer methods that used in grammar (IsStrictMode)
  * should start with Upper Case Char similar to Lexer rules.
  */
-abstract class TypeScriptLexerBase extends Lexer
-{
+abstract class TypeScriptLexerBase extends Lexer {
     /**
      * Stores values of nested modes. By default mode is strict or
      * defined externally (useStrictDefault)
@@ -102,26 +99,21 @@ abstract class TypeScriptLexerBase extends Lexer
         return next;
     }
 
-    protected void ProcessOpenBrace()
-    {
+    protected void ProcessOpenBrace() {
         bracesDepth++;
         useStrictCurrent = !scopeStrictModes.isEmpty() && scopeStrictModes.peek() || useStrictDefault;
         scopeStrictModes.push(useStrictCurrent);
     }
 
-    protected void ProcessCloseBrace()
-    {
+    protected void ProcessCloseBrace() {
         bracesDepth--;
         useStrictCurrent = !scopeStrictModes.isEmpty() ? scopeStrictModes.pop() : useStrictDefault;
     }
 
-    protected void ProcessStringLiteral()
-    {
-        if (lastToken == null || lastToken.getType() == TypeScriptLexer.OpenBrace)
-        {
+    protected void ProcessStringLiteral() {
+        if (lastToken == null || lastToken.getType() == TypeScriptLexer.OpenBrace) {
             String text = getText();
-            if ("\"use strict\"".equals(text) || "'use strict'".equals(text))
-            {
+            if ("\"use strict\"".equals(text) || "'use strict'".equals(text)) {
                 if (!scopeStrictModes.isEmpty()) {
                     scopeStrictModes.pop();
                 }

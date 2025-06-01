@@ -10,7 +10,7 @@ public abstract class AbstractThing implements Thing {
     }
 
     @Override
-    public void setName(String name) { }
+    public void setName(String name) {}
 
     @Override
     public String getName() {

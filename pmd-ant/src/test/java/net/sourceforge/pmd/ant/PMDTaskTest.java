@@ -15,13 +15,11 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-
+import net.sourceforge.pmd.internal.util.IOUtil;
 import org.apache.tools.ant.BuildException;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 class PMDTaskTest extends AbstractAntTest {
 
@@ -78,7 +76,8 @@ class PMDTaskTest extends AbstractAntTest {
             String actual = IOUtil.readToString(in, StandardCharsets.UTF_8);
             // remove any trailing newline
             actual = actual.replaceAll("\n|\r", "");
-            assertThat(actual, containsString("src" + File.separator + "sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
+            assertThat(
+                    actual, containsString("src" + File.separator + "sample.dummy:1:\tSampleXPathRule:\tTest Rule 2"));
         }
     }
 
@@ -87,7 +86,7 @@ class PMDTaskTest extends AbstractAntTest {
         executeTarget("testXmlFormatter");
 
         try (InputStream in = Files.newInputStream(Paths.get("target/pmd-ant-xml.xml"));
-             InputStream expectedStream = PMDTaskTest.class.getResourceAsStream("xml/expected-pmd-ant-xml.xml")) {
+                InputStream expectedStream = PMDTaskTest.class.getResourceAsStream("xml/expected-pmd-ant-xml.xml")) {
             String actual = readAndNormalize(in);
             String expected = readAndNormalize(expectedStream);
 

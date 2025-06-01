@@ -21,7 +21,6 @@ package net.sourceforge.pmd.lang.ast;
  */
 public interface AstVisitor<P, R> {
 
-
     /**
      * Called by a node when it detects that the visitor is not of the
      * language it is used to visiting. If a visitor wants to visit nodes
@@ -48,5 +47,4 @@ public interface AstVisitor<P, R> {
      * @return Some result
      */
     R visitNode(Node node, P param);
-
 }

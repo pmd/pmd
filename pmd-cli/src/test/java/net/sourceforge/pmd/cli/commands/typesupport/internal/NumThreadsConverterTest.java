@@ -9,7 +9,6 @@ import static org.junit.jupiter.params.provider.Arguments.of;
 
 import java.util.Arrays;
 import java.util.Collection;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,7 +29,6 @@ class NumThreadsConverterTest {
                 of("1", 1),
                 of("1C", Runtime.getRuntime().availableProcessors()),
                 of("2C", 2 * Runtime.getRuntime().availableProcessors()),
-                of("0.5C", (int) (0.5 * Runtime.getRuntime().availableProcessors()))
-                );
+                of("0.5C", (int) (0.5 * Runtime.getRuntime().availableProcessors())));
     }
 }

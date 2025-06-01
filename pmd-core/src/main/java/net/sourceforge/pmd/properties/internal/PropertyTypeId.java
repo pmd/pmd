@@ -1,19 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.properties.internal;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
 import net.sourceforge.pmd.properties.InternalApiBridge;
 import net.sourceforge.pmd.properties.PropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySerializer;
-
 
 /**
  * Enumerates the properties that can be built from the XML. Defining a property in
@@ -49,14 +46,12 @@ public enum PropertyTypeId {
     LONG_LIST("List[Long]", PropertyParsingUtil.LONG_LIST, PropertyFactory::longIntListProperty),
     DOUBLE("Double", PropertyParsingUtil.DOUBLE, PropertyFactory::doubleProperty),
     DOUBLE_LIST("List[Double]", PropertyParsingUtil.DOUBLE_LIST, PropertyFactory::doubleListProperty),
-    ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
-
+    ; // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
     private static final Map<String, PropertyTypeId> CONSTANTS_BY_MNEMONIC;
     private final String stringId;
     private final PropertySerializer<?> propertySerializer;
     private final Function<String, ? extends PropertyBuilder<?, ?>> factory;
-
 
     static {
         Map<String, PropertyTypeId> temp = new HashMap<>();
@@ -65,7 +60,6 @@ public enum PropertyTypeId {
         }
         CONSTANTS_BY_MNEMONIC = Collections.unmodifiableMap(temp);
     }
-
 
     <T> PropertyTypeId(String id, PropertySerializer<T> syntax, Function<String, PropertyBuilder<?, T>> factory) {
         this.stringId = id;
@@ -109,7 +103,6 @@ public enum PropertyTypeId {
         };
     }
 
-
     /**
      * Gets the value of the type attribute represented by this constant.
      *
@@ -119,7 +112,6 @@ public enum PropertyTypeId {
         return stringId;
     }
 
-
     /**
      * Returns the full mappings from type ids to enum constants.
      *
@@ -128,7 +120,6 @@ public enum PropertyTypeId {
     public static Map<String, PropertyTypeId> typeIdsToConstants() {
         return CONSTANTS_BY_MNEMONIC;
     }
-
 
     /**
      * Gets the enum constant corresponding to the given mnemonic.
@@ -140,6 +131,4 @@ public enum PropertyTypeId {
     public static PropertyTypeId lookupMnemonic(String stringId) {
         return CONSTANTS_BY_MNEMONIC.get(stringId);
     }
-
-
 }

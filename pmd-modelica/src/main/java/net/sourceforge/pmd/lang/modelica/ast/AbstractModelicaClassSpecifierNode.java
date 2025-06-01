@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge;
@@ -31,15 +30,11 @@ abstract class AbstractModelicaClassSpecifierNode extends AbstractModelicaNode i
                 InternalApiBridge.addExtendToClass(
                         classTypeDeclaration,
                         listNode.getVisibility(),
-                        child.firstChild(ASTName.class).getCompositeName()
-                );
+                        child.firstChild(ASTName.class).getCompositeName());
             }
             if (child instanceof ASTImportClause) {
                 InternalApiBridge.addImportToClass(
-                        classTypeDeclaration,
-                        listNode.getVisibility(),
-                        child.firstChild(ModelicaImportClause.class)
-                );
+                        classTypeDeclaration, listNode.getVisibility(), child.firstChild(ModelicaImportClause.class));
             }
         }
     }

@@ -1,13 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.document.Chars;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents a character literal. {@link #getConstValue()} allows to
@@ -16,17 +13,14 @@ import net.sourceforge.pmd.lang.document.Chars;
  */
 public final class ASTCharLiteral extends AbstractLiteral implements ASTLiteral {
 
-
     ASTCharLiteral(int id) {
         super(id);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     /**
      * Gets the char value of this literal.

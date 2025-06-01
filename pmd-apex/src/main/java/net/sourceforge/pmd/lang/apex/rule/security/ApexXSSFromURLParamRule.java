@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
@@ -29,23 +27,24 @@ import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
  *
  */
 public class ApexXSSFromURLParamRule extends AbstractApexRule {
-    private static final String[] URL_PARAMETER_METHOD = new String[] { "ApexPages", "currentPage", "getParameters",
-        "get", };
-    private static final String[] HTML_ESCAPING = new String[] { "ESAPI", "encoder", "SFDC_HTMLENCODE" };
-    private static final String[] JS_ESCAPING = new String[] { "ESAPI", "encoder", "SFDC_JSENCODE" };
-    private static final String[] JSINHTML_ESCAPING = new String[] { "ESAPI", "encoder", "SFDC_JSINHTMLENCODE" };
-    private static final String[] URL_ESCAPING = new String[] { "ESAPI", "encoder", "SFDC_URLENCODE" };
-    private static final String[] STRING_HTML3 = new String[] { "String", "escapeHtml3" };
-    private static final String[] STRING_HTML4 = new String[] { "String", "escapeHtml4" };
-    private static final String[] STRING_XML = new String[] { "String", "escapeXml" };
-    private static final String[] STRING_ECMASCRIPT = new String[] { "String", "escapeEcmaScript" };
-    private static final String[] INTEGER_VALUEOF = new String[] { "Integer", "valueOf" };
-    private static final String[] ID_VALUEOF = new String[] { "ID", "valueOf" };
-    private static final String[] DOUBLE_VALUEOF = new String[] { "Double", "valueOf" };
-    private static final String[] BOOLEAN_VALUEOF = new String[] { "Boolean", "valueOf" };
-    private static final String[] STRING_ISEMPTY = new String[] { "String", "isEmpty" };
-    private static final String[] STRING_ISBLANK = new String[] { "String", "isBlank" };
-    private static final String[] STRING_ISNOTBLANK = new String[] { "String", "isNotBlank" };
+    private static final String[] URL_PARAMETER_METHOD = new String[] {
+        "ApexPages", "currentPage", "getParameters", "get",
+    };
+    private static final String[] HTML_ESCAPING = new String[] {"ESAPI", "encoder", "SFDC_HTMLENCODE"};
+    private static final String[] JS_ESCAPING = new String[] {"ESAPI", "encoder", "SFDC_JSENCODE"};
+    private static final String[] JSINHTML_ESCAPING = new String[] {"ESAPI", "encoder", "SFDC_JSINHTMLENCODE"};
+    private static final String[] URL_ESCAPING = new String[] {"ESAPI", "encoder", "SFDC_URLENCODE"};
+    private static final String[] STRING_HTML3 = new String[] {"String", "escapeHtml3"};
+    private static final String[] STRING_HTML4 = new String[] {"String", "escapeHtml4"};
+    private static final String[] STRING_XML = new String[] {"String", "escapeXml"};
+    private static final String[] STRING_ECMASCRIPT = new String[] {"String", "escapeEcmaScript"};
+    private static final String[] INTEGER_VALUEOF = new String[] {"Integer", "valueOf"};
+    private static final String[] ID_VALUEOF = new String[] {"ID", "valueOf"};
+    private static final String[] DOUBLE_VALUEOF = new String[] {"Double", "valueOf"};
+    private static final String[] BOOLEAN_VALUEOF = new String[] {"Boolean", "valueOf"};
+    private static final String[] STRING_ISEMPTY = new String[] {"String", "isEmpty"};
+    private static final String[] STRING_ISBLANK = new String[] {"String", "isBlank"};
+    private static final String[] STRING_ISNOTBLANK = new String[] {"String", "isNotBlank"};
 
     private final Set<String> urlParameterStrings = new HashSet<>();
 
@@ -101,7 +100,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             }
         }
 
-        List<ASTVariableExpression> nodes = node.children(ASTVariableExpression.class).toList();
+        List<ASTVariableExpression> nodes =
+                node.children(ASTVariableExpression.class).toList();
 
         for (ASTVariableExpression varExpression : nodes) {
             if (urlParameterStrings.contains(Helper.getFQVariableName(varExpression))) {
@@ -123,7 +123,8 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
     private boolean isEscapingMethod(ASTMethodCallExpression methodNode) {
         // escaping methods
-        return Helper.isMethodCallChain(methodNode, HTML_ESCAPING) || Helper.isMethodCallChain(methodNode, JS_ESCAPING)
+        return Helper.isMethodCallChain(methodNode, HTML_ESCAPING)
+                || Helper.isMethodCallChain(methodNode, JS_ESCAPING)
                 || Helper.isMethodCallChain(methodNode, JSINHTML_ESCAPING)
                 || Helper.isMethodCallChain(methodNode, URL_ESCAPING)
                 || Helper.isMethodCallChain(methodNode, STRING_HTML3)
@@ -155,7 +156,6 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 asCtx(data).addViolation(methodNode);
             }
         }
-
     }
 
     private void findTaintedVariables(ApexNode<?> node, Object data) {
@@ -171,7 +171,6 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
                 if (node instanceof ASTVariableDeclaration) {
                     varType = ((ASTVariableDeclaration) node).getType();
-
                 }
 
                 if (left != null) {
@@ -200,7 +199,6 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 }
             }
         }
-
     }
 
     private void processVariableAssignments(ApexNode<?> node, Object data, final boolean reverseOrder) {
@@ -217,33 +215,35 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             }
         }
 
-        List<ASTVariableExpression> nodes = node.children(ASTVariableExpression.class).toList();
+        List<ASTVariableExpression> nodes =
+                node.children(ASTVariableExpression.class).toList();
 
         switch (nodes.size()) {
-        case 1: {
-            // Look for: foo + bar
-            final List<ASTBinaryExpression> ops = node.children(ASTBinaryExpression.class).toList();
-            if (!ops.isEmpty()) {
-                for (ASTBinaryExpression o : ops) {
-                    processBinaryExpression(o, data);
+            case 1:
+                {
+                    // Look for: foo + bar
+                    final List<ASTBinaryExpression> ops =
+                            node.children(ASTBinaryExpression.class).toList();
+                    if (!ops.isEmpty()) {
+                        for (ASTBinaryExpression o : ops) {
+                            processBinaryExpression(o, data);
+                        }
+                    }
                 }
-            }
+                break;
+            case 2:
+                {
+                    // Look for: foo = bar;
+                    final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
 
+                    if (urlParameterStrings.contains(Helper.getFQVariableName(right))) {
+                        asCtx(data).addViolation(right);
+                    }
+                }
+                break;
+            default:
+                break;
         }
-            break;
-        case 2: {
-            // Look for: foo = bar;
-            final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
-
-            if (urlParameterStrings.contains(Helper.getFQVariableName(right))) {
-                asCtx(data).addViolation(right);
-            }
-        }
-            break;
-        default:
-            break;
-        }
-
     }
 
     private void processBinaryExpression(ApexNode<?> node, Object data) {
@@ -264,5 +264,4 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             }
         }
     }
-
 }

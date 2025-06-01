@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Optional;
-
 import com.google.summit.ast.statement.DmlStatement;
+import java.util.Optional;
 
 public abstract class AbstractDmlStatement extends AbstractApexNode.Single<DmlStatement> {
     protected AbstractDmlStatement(DmlStatement node) {

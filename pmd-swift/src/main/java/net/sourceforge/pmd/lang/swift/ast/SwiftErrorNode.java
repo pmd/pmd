@@ -4,14 +4,12 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
-import org.antlr.v4.runtime.Token;
-
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrErrorNode;
+import org.antlr.v4.runtime.Token;
 
 public final class SwiftErrorNode extends BaseAntlrErrorNode<SwiftNode> implements SwiftNode {
 
     SwiftErrorNode(Token token) {
         super(token);
     }
-
 }

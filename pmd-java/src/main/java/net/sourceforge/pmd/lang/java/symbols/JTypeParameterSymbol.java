@@ -2,17 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents the declaration of a type variable, ie a type parameter. Type variables are reference
@@ -23,13 +19,11 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
  */
 public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTypeParameter> {
 
-
     /**
      * Returns the {@link JClassSymbol} or {@link JMethodSymbol} which declared
      * this type parameter.
      */
     JTypeParameterOwnerSymbol getDeclaringSymbol();
-
 
     JTypeVar getTypeMirror();
 
@@ -39,13 +33,11 @@ public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTy
      */
     JTypeMirror computeUpperBound();
 
-
     @Override
     @NonNull
     default String getPackageName() {
         return getDeclaringSymbol().getPackageName();
     }
-
 
     @Override
     default int getModifiers() {
@@ -58,7 +50,6 @@ public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTy
         JTypeParameterOwnerSymbol ownerSymbol = getDeclaringSymbol();
         return ownerSymbol instanceof JClassSymbol ? (JClassSymbol) ownerSymbol : ownerSymbol.getEnclosingClass();
     }
-
 
     @Override
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {

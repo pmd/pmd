@@ -4,18 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
-
 import java.util.List;
-
+import net.sourceforge.pmd.util.IteratorUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.util.IteratorUtil;
-import net.sourceforge.pmd.util.OptionalBool;
-
-class ShadowChainIteratorImpl<S, I>
-    extends IteratorUtil.AbstractPausingIterator<ShadowChainNode<S, I>>
-    implements ShadowChainIterator<S, I> {
+class ShadowChainIteratorImpl<S, I> extends IteratorUtil.AbstractPausingIterator<ShadowChainNode<S, I>>
+        implements ShadowChainIterator<S, I> {
 
     private ShadowChainNode<S, I> nextGroupToTest;
     private final String name;
@@ -37,7 +33,6 @@ class ShadowChainIteratorImpl<S, I>
         assert !next.resolveHere(name).isEmpty() : "Shadow iterator stopped on wrong node";
         setNext(next);
     }
-
 
     @Override
     protected void prepareViewOn(ShadowChainNode<S, I> current) {
@@ -79,5 +74,4 @@ class ShadowChainIteratorImpl<S, I>
         // of enclosing groups
         return group.getResolver().resolveFirst(name) != null;
     }
-
 }

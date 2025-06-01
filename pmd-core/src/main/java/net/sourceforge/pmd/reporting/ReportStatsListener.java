@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.reporting;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.util.BaseResultProducingCloseable;
@@ -15,7 +14,8 @@ import net.sourceforge.pmd.util.BaseResultProducingCloseable;
  *
  * @author Clément Fournier
  */
-public final class ReportStatsListener extends BaseResultProducingCloseable<ReportStats> implements GlobalAnalysisListener {
+public final class ReportStatsListener extends BaseResultProducingCloseable<ReportStats>
+        implements GlobalAnalysisListener {
 
     private final AtomicInteger numErrors = new AtomicInteger(0);
     private final AtomicInteger numViolations = new AtomicInteger(0);
@@ -52,11 +52,6 @@ public final class ReportStatsListener extends BaseResultProducingCloseable<Repo
 
     @Override
     protected ReportStats getResultImpl() {
-        return new ReportStats(
-            numErrors.get(),
-            numViolations.get()
-        );
+        return new ReportStats(numErrors.get(), numViolations.get());
     }
-
-
 }

@@ -33,7 +33,6 @@ public class UnnecessaryTypeAttributeRule extends AbstractHtmlRule {
         }
     }
 
-
     private void addViolation(ASTHtmlElement node, Object data) {
         RuleContext ctx = (RuleContext) data;
         ctx.addViolation(node);

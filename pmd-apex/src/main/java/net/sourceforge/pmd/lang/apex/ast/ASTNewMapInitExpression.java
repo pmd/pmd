@@ -12,7 +12,6 @@ public final class ASTNewMapInitExpression extends AbstractApexNode.Single<Const
         super(constructorInitializer);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

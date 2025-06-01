@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 
 import java.util.ArrayList;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
@@ -86,17 +85,19 @@ abstract class IncorporationAction {
                     if (otherBound != myBound && isClassType(otherBound)) { // NOPMD CompareObjectsWithEquals
                         // Since we are testing both directions we cannot let those tests add bounds on the ivars,
                         // because they could be contradictory.
-                        boolean areRelated = TypeOps.isConvertiblePure(myBound, otherBound).somehow()
-                            || TypeOps.isConvertiblePure(otherBound, myBound).somehow();
+                        boolean areRelated =
+                                TypeOps.isConvertiblePure(myBound, otherBound).somehow()
+                                        || TypeOps.isConvertiblePure(otherBound, myBound)
+                                                .somehow();
 
                         if (!areRelated) {
-                            throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
+                            throw ResolutionFailedException.incompatibleBound(
+                                    ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
                         }
                     }
                 }
             }
         }
-
 
         /**
          * Check compatibility between this bound and another.
@@ -125,8 +126,7 @@ abstract class IncorporationAction {
          */
         static boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
             // eq bounds are so rare we shouldn't care if they're cached
-            return eq ? InternalApiBridge.isSameTypeInInference(t, s)
-                      : checkSubtype(t, s, ctx);
+            return eq ? InternalApiBridge.isSameTypeInInference(t, s) : checkSubtype(t, s, ctx);
         }
 
         private static boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
@@ -154,8 +154,6 @@ abstract class IncorporationAction {
         public String toString() {
             return "Check " + myKind.format(ivar, myBound);
         }
-
-
     }
 
     /**
@@ -198,12 +196,11 @@ abstract class IncorporationAction {
         @Override
         void apply(InferenceContext ctx) {
             for (BoundKind kind : BoundKind.values()) {
-                for (JTypeMirror bound : new ArrayList<>(ivar.getBounds(kind))) { //copy to avoid comodification
+                for (JTypeMirror bound : new ArrayList<>(ivar.getBounds(kind))) { // copy to avoid comodification
                     new PropagateBounds(ivar, kind, bound).apply(ctx);
                 }
             }
         }
-
 
         @Override
         public String toString() {
@@ -216,7 +213,6 @@ abstract class IncorporationAction {
      * in its bounds.
      */
     static class PropagateBounds extends IncorporationAction {
-
 
         private final BoundKind kind;
         private final JTypeMirror bound;
@@ -281,5 +277,4 @@ abstract class IncorporationAction {
             return "Propagate bound " + kind.format(ivar, bound);
         }
     }
-
 }

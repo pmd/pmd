@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.apex;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.List;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotationParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
@@ -26,7 +25,6 @@ final class ApexAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
     private ApexAnnotationSuppressor() {
         super(ASTAnnotation.class);
     }
-
 
     @Override
     protected NodeStream<ASTAnnotation> getAnnotations(Node node) {
@@ -50,5 +48,4 @@ final class ApexAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
         }
         return false;
     }
-
 }

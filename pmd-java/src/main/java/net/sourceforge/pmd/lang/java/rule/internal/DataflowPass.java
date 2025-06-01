@@ -18,12 +18,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
@@ -100,6 +94,10 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sourceforge.pmd.util.OptionalBool;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 /**
  * A reaching definition analysis. This may be used to check whether
@@ -116,11 +114,15 @@ public final class DataflowPass {
 
     //  see also the todo comments in UnusedAssignmentRule
 
-    private static final SimpleDataKey<DataflowResult> DATAFLOW_RESULT_K = DataMap.simpleDataKey("java.dataflow.global");
-    private static final SimpleDataKey<ReachingDefinitionSet> REACHING_DEFS = DataMap.simpleDataKey("java.dataflow.reaching.backwards");
-    private static final SimpleDataKey<AssignmentEntry> VAR_DEFINITION = DataMap.simpleDataKey("java.dataflow.field.def");
-    private static final SimpleDataKey<OptionalBool> SWITCH_BRANCH_FALLS_THROUGH = DataMap.simpleDataKey("java.dataflow.switch.fallthrough");
-    
+    private static final SimpleDataKey<DataflowResult> DATAFLOW_RESULT_K =
+            DataMap.simpleDataKey("java.dataflow.global");
+    private static final SimpleDataKey<ReachingDefinitionSet> REACHING_DEFS =
+            DataMap.simpleDataKey("java.dataflow.reaching.backwards");
+    private static final SimpleDataKey<AssignmentEntry> VAR_DEFINITION =
+            DataMap.simpleDataKey("java.dataflow.field.def");
+    private static final SimpleDataKey<OptionalBool> SWITCH_BRANCH_FALLS_THROUGH =
+            DataMap.simpleDataKey("java.dataflow.switch.fallthrough");
+
     private DataflowPass() {
         // utility class
     }
@@ -159,13 +161,10 @@ public final class DataflowPass {
                 dataflowResult.unusedAssignments.addAll(unused);
             }
 
-            CollectionUtil.mergeMaps(
-                dataflowResult.killRecord,
-                subResult.killRecord,
-                (s1, s2) -> {
-                    s1.addAll(s2);
-                    return s1;
-                });
+            CollectionUtil.mergeMaps(dataflowResult.killRecord, subResult.killRecord, (s1, s2) -> {
+                s1.addAll(s2);
+                return s1;
+            });
         }
 
         return dataflowResult;
@@ -186,7 +185,6 @@ public final class DataflowPass {
         private boolean isNotFullyKnown;
         private boolean containsInitialFieldValue;
 
-
         static {
             assert !EMPTY_KNOWN.isNotFullyKnown();
             assert UNKNOWN.isNotFullyKnown();
@@ -198,7 +196,7 @@ public final class DataflowPass {
             this.isNotFullyKnown = true;
         }
 
-        ReachingDefinitionSet(/*Mutable*/Set<AssignmentEntry> reaching) {
+        ReachingDefinitionSet(/*Mutable*/ Set<AssignmentEntry> reaching) {
             this.reaching = reaching;
             this.containsInitialFieldValue = reaching.removeIf(AssignmentEntry::isFieldAssignmentAtStartOfMethod);
             // not || as we want the side effect
@@ -254,7 +252,6 @@ public final class DataflowPass {
         final Set<AssignmentEntry> unusedAssignments;
         final Map<AssignmentEntry, Set<AssignmentEntry>> killRecord;
 
-
         DataflowResult() {
             this.unusedAssignments = new LinkedHashSet<>();
             this.killRecord = new LinkedHashMap<>();
@@ -288,7 +285,6 @@ public final class DataflowPass {
             return OptionalBool.NO;
         }
 
-
         public @NonNull ReachingDefinitionSet getReachingDefinitions(ASTNamedReferenceExpr expr) {
             return expr.getUserMap().computeIfAbsent(REACHING_DEFS, () -> reachingFallback(expr));
         }
@@ -302,8 +298,7 @@ public final class DataflowPass {
                 return ReachingDefinitionSet.unknown();
             } else if (!sym.isField()) {
                 ASTVariableId node = sym.tryGetNode();
-                assert node != null
-                    : "Not a field, and symbol is known, so should be a local which has a node";
+                assert node != null : "Not a field, and symbol is known, so should be a local which has a node";
                 if (node.isLocalVariable()) {
                     assert node.getInitializer() == null : "Should be a blank local variable";
                     return ReachingDefinitionSet.blank();
@@ -318,23 +313,22 @@ public final class DataflowPass {
             if (node == null) {
                 return ReachingDefinitionSet.unknown(); // we don't care about non-local declarations
             }
-            Set<AssignmentEntry> assignments = node.getLocalUsages()
-                                                   .stream()
-                                                   .filter(it -> it.getAccessType() == AccessType.WRITE)
-                                                   .map(usage -> {
-                                                       JavaNode parent = usage.getParent();
-                                                       if (parent instanceof ASTUnaryExpression
-                                                           && !((ASTUnaryExpression) parent).getOperator().isPure()) {
-                                                           return parent;
-                                                       } else if (usage.getIndexInParent() == 0
-                                                           && parent instanceof ASTAssignmentExpression) {
-                                                           return ((ASTAssignmentExpression) parent).getRightOperand();
-                                                       } else {
-                                                           return null;
-                                                       }
-                                                   }).filter(Objects::nonNull)
-                                                   .map(it -> new AssignmentEntry(sym, node, it))
-                                                   .collect(CollectionUtil.toMutableSet());
+            Set<AssignmentEntry> assignments = node.getLocalUsages().stream()
+                    .filter(it -> it.getAccessType() == AccessType.WRITE)
+                    .map(usage -> {
+                        JavaNode parent = usage.getParent();
+                        if (parent instanceof ASTUnaryExpression
+                                && !((ASTUnaryExpression) parent).getOperator().isPure()) {
+                            return parent;
+                        } else if (usage.getIndexInParent() == 0 && parent instanceof ASTAssignmentExpression) {
+                            return ((ASTAssignmentExpression) parent).getRightOperand();
+                        } else {
+                            return null;
+                        }
+                    })
+                    .filter(Objects::nonNull)
+                    .map(it -> new AssignmentEntry(sym, node, it))
+                    .collect(CollectionUtil.toMutableSet());
 
             ASTExpression init = node.getInitializer(); // this one is not in the usages
             if (init != null) {
@@ -425,8 +419,8 @@ public final class DataflowPass {
             // (value not matched).
             // Todo make that an attribute of ASTSwitchLike, check for totality when pattern matching is involved
             boolean isTotal = switchLike.hasDefaultCase()
-                || switchLike instanceof ASTSwitchExpression
-                || switchLike.isExhaustiveEnumSwitch();
+                    || switchLike instanceof ASTSwitchExpression
+                    || switchLike.isExhaustiveEnumSwitch();
 
             PSet<SpanInfo> successors = HashTreePSet.empty();
             boolean allBranchesCompleteAbruptly = true;
@@ -434,7 +428,8 @@ public final class DataflowPass {
             for (ASTSwitchBranch branch : switchLike.getBranches()) {
                 if (branch instanceof ASTSwitchArrowBranch) {
                     current = acceptOpt(((ASTSwitchArrowBranch) branch).getRightHandSide(), before.fork());
-                    current = global.breakTargets.doBreak(current, null); // process this as if it was followed by a break
+                    current =
+                            global.breakTargets.doBreak(current, null); // process this as if it was followed by a break
                 } else {
                     // fallthrough branch
                     current = acceptOpt(branch, before.fork().absorb(current));
@@ -456,7 +451,8 @@ public final class DataflowPass {
             if (isTotal && allBranchesCompleteAbruptly && externalTargets.equals(successors)) {
                 // then all branches complete abruptly, and none of them because of a break to this switch
                 switchCompletesAbruptly = OptionalBool.YES;
-            } else if (successors.isEmpty() || asSingle(successors) == breakTarget) { // NOPMD CompareObjectsWithEqual this is what we want
+            } else if (successors.isEmpty()
+                    || asSingle(successors) == breakTarget) { // NOPMD CompareObjectsWithEqual this is what we want
                 // then the branches complete normally, or they just break the switch
                 switchCompletesAbruptly = OptionalBool.NO;
             } else {
@@ -473,7 +469,10 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTIfStatement node, SpanInfo data) {
-            return processBreakableStmt(node, data, () -> makeConditional(data, node.getCondition(), node.getThenBranch(), node.getElseBranch()));
+            return processBreakableStmt(
+                    node,
+                    data,
+                    () -> makeConditional(data, node.getCondition(), node.getThenBranch(), node.getElseBranch()));
         }
 
         @Override
@@ -520,7 +519,8 @@ public final class DataflowPass {
          *      Eg for `a && b`, this is the `then` state (all evaluated to true)
          *
          */
-        private SpanInfo linkConditional(SpanInfo before, ASTExpression condition, SpanInfo thenState, SpanInfo elseState, boolean isTopLevel) {
+        private SpanInfo linkConditional(
+                SpanInfo before, ASTExpression condition, SpanInfo thenState, SpanInfo elseState, boolean isTopLevel) {
             if (condition == null) {
                 return before;
             }
@@ -544,10 +544,8 @@ public final class DataflowPass {
             return state;
         }
 
-        SpanInfo visitShortcutOrExpr(ASTInfixExpression orExpr,
-                                     SpanInfo before,
-                                     SpanInfo thenState,
-                                     SpanInfo elseState) {
+        SpanInfo visitShortcutOrExpr(
+                ASTInfixExpression orExpr, SpanInfo before, SpanInfo thenState, SpanInfo elseState) {
 
             //  if (<a> || <b> || ... || <n>) <then>
             //  else <else>
@@ -591,35 +589,33 @@ public final class DataflowPass {
         public SpanInfo visit(ASTTryStatement node, final SpanInfo before) {
 
             /*
-                <before>
-                try (<resources>) {
-                    <body>
-                } catch (IOException e) {
-                    <catch>
-                } finally {
-                    <finally>
-                }
-                <end>
+               <before>
+               try (<resources>) {
+                   <body>
+               } catch (IOException e) {
+                   <catch>
+               } finally {
+                   <finally>
+               }
+               <end>
 
-                There is a path      <before> -> <resources> -> <body> -> <finally> -> <end>
-                and for each catch,  <before> -> <catch> -> <finally> -> <end>
+               There is a path      <before> -> <resources> -> <body> -> <finally> -> <end>
+               and for each catch,  <before> -> <catch> -> <finally> -> <end>
 
-                Except that abrupt completion before the <finally> jumps
-                to the <finally> and completes abruptly for the same
-                reason (if the <finally> completes normally), which
-                means it doesn't go to <end>
-             */
+               Except that abrupt completion before the <finally> jumps
+               to the <finally> and completes abruptly for the same
+               reason (if the <finally> completes normally), which
+               means it doesn't go to <end>
+            */
             ASTFinallyClause finallyClause = node.getFinallyClause();
 
             SpanInfo finalState = processBreakableStmt(node, before, () -> {
-
                 if (finallyClause != null) {
                     before.myFinally = before.forkEmpty();
                 }
 
                 final List<ASTCatchClause> catchClauses = node.getCatchClauses().toList();
-                final List<SpanInfo> catchSpans = catchClauses.isEmpty() ? Collections.emptyList()
-                                                                         : new ArrayList<>();
+                final List<SpanInfo> catchSpans = catchClauses.isEmpty() ? Collections.emptyList() : new ArrayList<>();
 
                 // pre-fill catch spans
                 for (int i = 0; i < catchClauses.size(); i++) {
@@ -638,11 +634,11 @@ public final class DataflowPass {
                 int i = 0;
                 for (ASTCatchClause catchClause : node.getCatchClauses()) {
                     /*
-                        Note: here we absorb the end state of the body, which is not necessary.
-                        We do that to conform to the language's definition of "effective-finality",
-                        which is more conservative than needed. Doing this fixes FPs in LocalVariableCouldBeFinal
-                        at the cost of some FNs in UnusedAssignment.
-                     */
+                       Note: here we absorb the end state of the body, which is not necessary.
+                       We do that to conform to the language's definition of "effective-finality",
+                       which is more conservative than needed. Doing this fixes FPs in LocalVariableCouldBeFinal
+                       at the cost of some FNs in UnusedAssignment.
+                    */
                     SpanInfo catchSpan = catchSpans.get(i);
                     catchSpan.absorb(bodyState);
 
@@ -672,7 +668,7 @@ public final class DataflowPass {
                     // Control first passes to the finally, then tries to get out of the function
                     // (stopping on finally).
                     // before.myFinally = null;
-                    //finalState.abruptCompletionByThrow(false); // propagate to enclosing catch/finallies
+                    // finalState.abruptCompletionByThrow(false); // propagate to enclosing catch/finallies
                     target.absorb(finalState);
                 }
             }
@@ -736,17 +732,17 @@ public final class DataflowPass {
             return handleLoop(node, data, init, cond, update, body, true, null);
         }
 
+        private SpanInfo handleLoop(
+                ASTLoopStatement loop,
+                SpanInfo before,
+                JavaNode init,
+                ASTExpression cond,
+                JavaNode update,
+                ASTStatement body,
+                boolean checkFirstIter,
+                ASTVariableId foreachVar) {
 
-        private SpanInfo handleLoop(ASTLoopStatement loop,
-                                    SpanInfo before,
-                                    JavaNode init,
-                                    ASTExpression cond,
-                                    JavaNode update,
-                                    ASTStatement body,
-                                    boolean checkFirstIter,
-                                    ASTVariableId foreachVar) {
-
-            //todo while(true) and do {}while(true); are special-cased
+            // todo while(true) and do {}while(true); are special-cased
             // by the compiler and there is no fork
 
             SpanInfo breakTarget = before.forkEmpty();
@@ -768,7 +764,6 @@ public final class DataflowPass {
                 // in foreach loops, the loop variable is assigned before the first iteration
                 before.assign(foreachVar.getSymbol(), foreachVar);
             }
-
 
             // make the defs of the body reach the other parts of the loop,
             // including itself
@@ -803,7 +798,7 @@ public final class DataflowPass {
 
             // These targets are now obsolete
             result.abruptCompletionTargets =
-                result.abruptCompletionTargets.minus(breakTarget).minus(continueTarget);
+                    result.abruptCompletionTargets.minus(breakTarget).minus(continueTarget);
             return result;
         }
 
@@ -822,7 +817,8 @@ public final class DataflowPass {
                 return processFun.get();
             }
             GlobalAlgoState globalState = input.global;
-            // this will be filled with the reaching defs of the break statements, then merged with the actual exit state
+            // this will be filled with the reaching defs of the break statements, then merged with the actual exit
+            // state
             SpanInfo placeholderForExitState = input.forkEmpty();
 
             PSet<String> labels = accLabels(statement, globalState, placeholderForExitState, null);
@@ -835,7 +831,11 @@ public final class DataflowPass {
             return result;
         }
 
-        private static PSet<String> accLabels(JavaNode statement, GlobalAlgoState globalState, SpanInfo breakTarget, @Nullable SpanInfo continueTarget) {
+        private static PSet<String> accLabels(
+                JavaNode statement,
+                GlobalAlgoState globalState,
+                SpanInfo breakTarget,
+                @Nullable SpanInfo continueTarget) {
             Node parent = statement.getParent();
             PSet<String> labels = HashTreePSet.empty();
             // collect labels and give a name to the exit state.
@@ -896,7 +896,6 @@ public final class DataflowPass {
             // treat as break, ie abrupt completion + link reaching defs to outer context
             return data.global.breakTargets.doBreak(data, null);
         }
-
 
         // both of those exit the scope of the method/ctor, so their assignments go dead
 
@@ -990,24 +989,23 @@ public final class DataflowPass {
             data = acceptOpt(node.getRightOperand(), data);
             data = acceptOpt(node.getLeftOperand(), data);
 
-            return processAssignment(node.getLeftOperand(),
-                                     node.getRightOperand(),
-                                     node.getOperator().isCompound(),
-                                     data);
-
+            return processAssignment(
+                    node.getLeftOperand(),
+                    node.getRightOperand(),
+                    node.getOperator().isCompound(),
+                    data);
         }
 
-        private SpanInfo processAssignment(ASTExpression lhs0, // LHS or unary operand
-                                           ASTExpression rhs,  // RHS or unary
-                                           boolean useBeforeAssigning,
-                                           SpanInfo result) {
+        private SpanInfo processAssignment(
+                ASTExpression lhs0, // LHS or unary operand
+                ASTExpression rhs, // RHS or unary
+                boolean useBeforeAssigning,
+                SpanInfo result) {
 
             if (lhs0 instanceof ASTNamedReferenceExpr) {
                 ASTNamedReferenceExpr lhs = (ASTNamedReferenceExpr) lhs0;
                 JVariableSymbol lhsVar = lhs.getReferencedSym();
-                if (lhsVar != null
-                    && (lhsVar instanceof JLocalVariableSymbol
-                    || isRelevantField(lhs))) {
+                if (lhsVar != null && (lhsVar instanceof JLocalVariableSymbol || isRelevantField(lhs))) {
 
                     if (useBeforeAssigning) {
                         // compound assignment, to use BEFORE assigning
@@ -1022,14 +1020,15 @@ public final class DataflowPass {
         }
 
         private boolean isRelevantField(ASTExpression lhs) {
-            return lhs instanceof ASTNamedReferenceExpr && (trackThisInstance() && JavaAstUtils.isThisFieldAccess(lhs)
-                || isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
+            return lhs instanceof ASTNamedReferenceExpr
+                    && (trackThisInstance() && JavaAstUtils.isThisFieldAccess(lhs)
+                            || isStaticFieldOfThisClass(((ASTNamedReferenceExpr) lhs).getReferencedSym()));
         }
 
         private boolean isStaticFieldOfThisClass(JVariableSymbol var) {
             return var instanceof JFieldSymbol
-                && ((JFieldSymbol) var).isStatic()
-                && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
+                    && ((JFieldSymbol) var).isStatic()
+                    && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
         }
 
         private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) { // NOPMD UnusedPrivateMethod
@@ -1068,8 +1067,8 @@ public final class DataflowPass {
         }
 
         private static boolean isThisExprLeaking(ASTThisExpression node) {
-            boolean isAllowed = node.getParent() instanceof ASTFieldAccess
-                || node.getParent() instanceof ASTSynchronizedStatement;
+            boolean isAllowed =
+                    node.getParent() instanceof ASTFieldAccess || node.getParent() instanceof ASTSynchronizedStatement;
             return !isAllowed;
         }
 
@@ -1098,7 +1097,8 @@ public final class DataflowPass {
             return state;
         }
 
-        private <T extends InvocationNode & QualifiableExpression> SpanInfo visitInvocationExpr(T node, SpanInfo state) {
+        private <T extends InvocationNode & QualifiableExpression> SpanInfo visitInvocationExpr(
+                T node, SpanInfo state) {
             state = acceptOpt(node.getQualifier(), state);
             state = acceptOpt(node.getArguments(), state);
 
@@ -1109,7 +1109,6 @@ public final class DataflowPass {
             state.abruptCompletionByThrow(true); // this is a noop if we're outside a try block that has catch/finally
             return state;
         }
-
 
         // ctor/initializer handling
 
@@ -1122,8 +1121,7 @@ public final class DataflowPass {
             ReachingDefsVisitor instanceVisitor = new ReachingDefsVisitor(node.getSymbol(), false);
             ReachingDefsVisitor staticVisitor = new ReachingDefsVisitor(node.getSymbol(), true);
             // process initializers and ctors first
-            processInitializers(node.getDeclarations(), data, node.getSymbol(),
-                                instanceVisitor, staticVisitor);
+            processInitializers(node.getDeclarations(), data, node.getSymbol(), instanceVisitor, staticVisitor);
 
             for (ASTBodyDeclaration decl : node.getDeclarations()) {
                 if (decl instanceof ASTMethodDeclaration) {
@@ -1147,11 +1145,12 @@ public final class DataflowPass {
             return data;
         }
 
-        private static void processInitializers(NodeStream<ASTBodyDeclaration> declarations,
-                                                SpanInfo beforeLocal,
-                                                @NonNull JClassSymbol classSymbol,
-                                                ReachingDefsVisitor instanceVisitor,
-                                                ReachingDefsVisitor staticVisitor) {
+        private static void processInitializers(
+                NodeStream<ASTBodyDeclaration> declarations,
+                SpanInfo beforeLocal,
+                @NonNull JClassSymbol classSymbol,
+                ReachingDefsVisitor instanceVisitor,
+                ReachingDefsVisitor staticVisitor) {
 
             // All static field initializers + static initializers
             SpanInfo staticInit = beforeLocal.forkEmptyNonLocal();
@@ -1169,7 +1168,7 @@ public final class DataflowPass {
                 } else if (declaration instanceof ASTInitializer) {
                     isStatic = ((ASTInitializer) declaration).isStatic();
                 } else if (declaration instanceof ASTConstructorDeclaration
-                    || declaration instanceof ASTCompactConstructorDeclaration) {
+                        || declaration instanceof ASTCompactConstructorDeclaration) {
                     ctors.add(declaration);
                     continue;
                 } else {
@@ -1185,7 +1184,6 @@ public final class DataflowPass {
 
             // Static init is done, mark all static fields as escaping
             useAllSelfFields(staticInit, true, classSymbol);
-
 
             // All field initializers + instance initializers
             // This also contains the static definitions, as the class must be
@@ -1238,19 +1236,17 @@ public final class DataflowPass {
         // continue jumps to the condition check, while break jumps to after the loop
         final TargetStack continueTargets = new TargetStack();
 
-        private GlobalAlgoState(Set<AssignmentEntry> allAssignments,
-                                Set<AssignmentEntry> usedAssignments,
-                                Map<AssignmentEntry, Set<AssignmentEntry>> killRecord) {
+        private GlobalAlgoState(
+                Set<AssignmentEntry> allAssignments,
+                Set<AssignmentEntry> usedAssignments,
+                Map<AssignmentEntry, Set<AssignmentEntry>> killRecord) {
             this.allAssignments = allAssignments;
             this.usedAssignments = usedAssignments;
             this.killRecord = killRecord;
-
         }
 
         private GlobalAlgoState() {
-            this(new LinkedHashSet<>(),
-                 new LinkedHashSet<>(),
-                 new LinkedHashMap<>());
+            this(new LinkedHashSet<>(), new LinkedHashSet<>(), new LinkedHashMap<>());
         }
     }
 
@@ -1279,7 +1275,6 @@ public final class DataflowPass {
         public String toString() {
             return "VarLocalInfo{reachingDefs=" + reachingDefs + '}';
         }
-
     }
 
     /**
@@ -1296,7 +1291,6 @@ public final class DataflowPass {
         // If != null, then abrupt completion in this span of code (and any descendant)
         // needs to go through the finally span (the finally must absorb it)
         SpanInfo myFinally = null;
-
 
         /**
          * Inside a try block, we assume that any method/ctor call may
@@ -1338,14 +1332,12 @@ public final class DataflowPass {
          */
         private final SpanInfo returnOrThrowTarget;
 
-
         private SpanInfo(GlobalAlgoState global) {
             this(null, global, new LinkedHashMap<>());
         }
 
-        private SpanInfo(@Nullable SpanInfo parent,
-                         GlobalAlgoState global,
-                         Map<JVariableSymbol, VarLocalInfo> symtable) {
+        private SpanInfo(
+                @Nullable SpanInfo parent, GlobalAlgoState global, Map<JVariableSymbol, VarLocalInfo> symtable) {
             this.parent = parent;
             this.returnOrThrowTarget = parent == null ? this : parent.returnOrThrowTarget;
             this.global = global;
@@ -1372,8 +1364,8 @@ public final class DataflowPass {
                 return null; // we don't care about non-local declarations
             }
             AssignmentEntry entry = kind != SpecialAssignmentKind.NOT_SPECIAL
-                                    ? new UnboundAssignment(var, node, rhs, kind)
-                                    : new AssignmentEntry(var, node, rhs);
+                    ? new UnboundAssignment(var, node, rhs, kind)
+                    : new AssignmentEntry(var, node, rhs);
             VarLocalInfo newInfo = new VarLocalInfo(Collections.singleton(entry));
             if (kind.shouldJoinWithPreviousAssignment()) {
                 // For unknown method calls, we don't know if the existing reaching defs were killed or not.
@@ -1391,8 +1383,9 @@ public final class DataflowPass {
                         continue;
                     }
 
-                    global.killRecord.computeIfAbsent(killed, k -> new LinkedHashSet<>(1))
-                                     .add(entry);
+                    global.killRecord
+                            .computeIfAbsent(killed, k -> new LinkedHashSet<>(1))
+                            .add(entry);
                 }
             }
             global.allAssignments.add(entry);
@@ -1413,7 +1406,6 @@ public final class DataflowPass {
                 assign(field, id, SpecialAssignmentKind.INITIAL_FIELD_VALUE);
             }
         }
-
 
         void assignOutOfScope(@Nullable JVariableSymbol var, JavaNode escapingNode, SpecialAssignmentKind kind) {
             if (var == null) {
@@ -1441,7 +1433,8 @@ public final class DataflowPass {
             }
         }
 
-        private static void updateReachingDefs(@NonNull ASTNamedReferenceExpr reachingDefSink, JVariableSymbol var, VarLocalInfo info) {
+        private static void updateReachingDefs(
+                @NonNull ASTNamedReferenceExpr reachingDefSink, JVariableSymbol var, VarLocalInfo info) {
             ReachingDefinitionSet reaching;
             if (info == null || var.isField() && var.isFinal()) {
                 return;
@@ -1500,7 +1493,6 @@ public final class DataflowPass {
             return doFork(this, new LinkedHashMap<>());
         }
 
-
         SpanInfo forkEmptyNonLocal() {
             return doFork(null, new LinkedHashMap<>());
         }
@@ -1534,14 +1526,12 @@ public final class DataflowPass {
                     break;
                 }
                 parent = parent.parent;
-
             }
 
             // rest of this block is dead code so we don't track declarations
             this.symtable.clear();
             return this;
         }
-
 
         /**
          * Record an abrupt completion occurring because of a thrown
@@ -1581,7 +1571,6 @@ public final class DataflowPass {
                 parent = parent.parent;
             }
 
-
             if (!byMethodCall) {
                 this.symtable.clear(); // following is dead code
             }
@@ -1606,7 +1595,8 @@ public final class DataflowPass {
 
             CollectionUtil.mergeMaps(this.symtable, other.symtable, VarLocalInfo::merge);
             this.hasCompletedAbruptly = mergeCertitude(this.hasCompletedAbruptly, other.hasCompletedAbruptly);
-            this.abruptCompletionTargets = CollectionUtil.union(this.abruptCompletionTargets, other.abruptCompletionTargets);
+            this.abruptCompletionTargets =
+                    CollectionUtil.union(this.abruptCompletionTargets, other.abruptCompletionTargets);
             return this;
         }
 
@@ -1616,7 +1606,6 @@ public final class DataflowPass {
             }
             return OptionalBool.UNKNOWN;
         }
-
 
         @Override
         public String toString() {
@@ -1628,7 +1617,6 @@ public final class DataflowPass {
 
         final Deque<SpanInfo> unnamedTargets = new ArrayDeque<>();
         final Map<String, SpanInfo> namedTargets = new LinkedHashMap<>();
-
 
         void push(SpanInfo state) {
             unnamedTargets.push(state);
@@ -1682,8 +1670,7 @@ public final class DataflowPass {
         }
 
         public boolean isInitializer() {
-            return rhs.getParent() instanceof ASTVariableDeclarator
-                && rhs.getIndexInParent() > 0;
+            return rhs.getParent() instanceof ASTVariableDeclarator && rhs.getIndexInParent() > 0;
         }
 
         public boolean isBlankDeclaration() {
@@ -1703,7 +1690,7 @@ public final class DataflowPass {
 
         public boolean isUnaryReassign() {
             return rhs instanceof ASTUnaryExpression
-                && ReachingDefsVisitor.getVarIfUnaryAssignment((ASTUnaryExpression) rhs) == var; // NOPMD #3205
+                    && ReachingDefsVisitor.getVarIfUnaryAssignment((ASTUnaryExpression) rhs) == var; // NOPMD #3205
         }
 
         @Override
@@ -1726,7 +1713,6 @@ public final class DataflowPass {
         public ASTVariableId getVarId() {
             return node;
         }
-
 
         public JavaNode getLocation() {
             return rhs;
@@ -1758,11 +1744,11 @@ public final class DataflowPass {
          */
         public @Nullable JTypeMirror getRhsType() {
             /* test case
-               List<A> as;
-               for (Object o : as) {
-                 // the rhs type of o should be A
-               }
-             */
+              List<A> as;
+              for (Object o : as) {
+                // the rhs type of o should be A
+              }
+            */
             if (isUnbound() || isBlankDeclaration()) {
                 return null;
             } else if (rhs instanceof ASTExpression) {
@@ -1815,8 +1801,7 @@ public final class DataflowPass {
                 return false;
             }
             AssignmentEntry that = (AssignmentEntry) o;
-            return Objects.equals(var, that.var)
-                && Objects.equals(rhs, that.rhs);
+            return Objects.equals(var, that.var) && Objects.equals(rhs, that.rhs);
         }
 
         @Override

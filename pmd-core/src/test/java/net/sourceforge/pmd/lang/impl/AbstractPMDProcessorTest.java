@@ -9,11 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.slf4j.event.Level;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
@@ -31,6 +26,9 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.log.PmdReporter;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.slf4j.event.Level;
 
 abstract class AbstractPMDProcessorTest {
     protected SimpleReportListener reportListener;
@@ -49,7 +47,8 @@ abstract class AbstractPMDProcessorTest {
     }
 
     private LanguageProcessor.AnalysisTask createTask(int threads) {
-        return InternalApiBridge.createAnalysisTask(null, null, null, threads, null, Mockito.mock(PmdReporter.class), null);
+        return InternalApiBridge.createAnalysisTask(
+                null, null, null, threads, null, Mockito.mock(PmdReporter.class), null);
     }
 
     @Test
@@ -84,11 +83,8 @@ abstract class AbstractPMDProcessorTest {
         pmd.files().addFile(TextFile.forCharSeq("DEF", FileId.fromPathLikeString("file2-foo.dummy"), lv));
 
         reportListener = new SimpleReportListener();
-        GlobalAnalysisListener listener = GlobalAnalysisListener.tee(listOf(
-                new Report.GlobalReportBuilderListener(),
-                reportListener
-        ));
-
+        GlobalAnalysisListener listener =
+                GlobalAnalysisListener.tee(listOf(new Report.GlobalReportBuilderListener(), reportListener));
 
         pmd.addListener(listener);
         return pmd;
@@ -140,8 +136,6 @@ abstract class AbstractPMDProcessorTest {
         }
 
         @Override
-        public void close() throws Exception {
-
-        }
+        public void close() throws Exception {}
     }
 }

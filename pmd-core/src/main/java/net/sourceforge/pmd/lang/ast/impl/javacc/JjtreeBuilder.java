@@ -17,8 +17,8 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
     private final List<N> nodes = new ArrayList<>();
     private final List<Integer> marks = new ArrayList<>();
 
-    private int sp = 0;        // number of nodes on stack
-    private int mk = 0;        // current mark
+    private int sp = 0; // number of nodes on stack
+    private int mk = 0; // current mark
     private boolean nodeCreated;
 
     /*** If non-zero, then the top "n" nodes of the stack will be injected as the first children of the next
@@ -27,7 +27,6 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
      * eg A() B() #N(2) instead of (A() B()) #N, so as not to open N before A.
      */
     private int numPendingInjection;
-
 
     /**
      * Determines whether the current node was actually closed and
@@ -74,7 +73,6 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
     }
 
     /** Pushes a node on to the stack. */
-
     public void pushNode(N n) {
         nodes.add(n);
         ++sp;
@@ -105,14 +103,12 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
         return sp - mk;
     }
 
-
     public void clearNodeScope(N n) {
         while (sp > mk) {
             popNode();
         }
         mk = marks.remove(marks.size() - 1);
     }
-
 
     public void openNodeScope(N n, JavaccToken firstToken) {
         marks.add(mk);
@@ -126,7 +122,6 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
         n.setFirstToken(firstToken);
         n.jjtOpen();
     }
-
 
     /**
      * Close the node scope and adds the given number of children to the
@@ -154,7 +149,6 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
         closeImpl(n, lastToken);
     }
 
-
     /**
      * Close the node scope if the condition is true.
      * All the nodes that have been pushed since the node was opened are
@@ -179,7 +173,6 @@ public final class JjtreeBuilder<N extends AbstractJjtreeNode<N, ?>> {
             nodeCreated = false;
         }
     }
-
 
     private void closeImpl(N n, JavaccToken lastToken) {
         if (lastToken.getNext() == n.getFirstToken()) { // NOPMD CompareObjectsWithEquals

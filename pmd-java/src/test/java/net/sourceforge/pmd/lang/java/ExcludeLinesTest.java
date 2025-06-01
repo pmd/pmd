@@ -1,18 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
 import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSuppressed;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
+import org.junit.jupiter.api.Test;
 
 class ExcludeLinesTest extends BaseParserTest {
 
@@ -43,21 +41,11 @@ class ExcludeLinesTest extends BaseParserTest {
         assertSuppressed(rpt, 1);
     }
 
-    private static final String TEST1 = "public class Foo {\n"
-                                        + " void foo() {\n"
-                                        + "  int x; //NOPMD \n"
-                                        + " } \n"
-                                        + "}";
+    private static final String TEST1 =
+            "public class Foo {\n" + " void foo() {\n" + "  int x; //NOPMD \n" + " } \n" + "}";
 
-    private static final String TEST2 = "public class Foo {\n"
-                                        + " void foo() {\n"
-                                        + "  int x;\n"
-                                        + " } \n"
-                                        + "}";
+    private static final String TEST2 = "public class Foo {\n" + " void foo() {\n" + "  int x;\n" + " } \n" + "}";
 
-    private static final String TEST3 = "public class Foo {\n"
-                                        + " void foo() {\n"
-                                        + "  int x; // FOOBAR\n"
-                                        + " } \n"
-                                        + "}";
+    private static final String TEST3 =
+            "public class Foo {\n" + " void foo() {\n" + "  int x; // FOOBAR\n" + " } \n" + "}";
 }

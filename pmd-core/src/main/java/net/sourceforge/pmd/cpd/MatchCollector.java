@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -68,7 +67,9 @@ class MatchCollector {
          *  - BC
          * It should be reduced to a single match with 3 marks
          */
-        if (tokenMatchSets.computeIfAbsent(mark1.getIndex(), (i) -> new HashSet<>()).contains(mark2.getIndex())) {
+        if (tokenMatchSets
+                .computeIfAbsent(mark1.getIndex(), (i) -> new HashSet<>())
+                .contains(mark2.getIndex())) {
             return;
         }
 
@@ -89,10 +90,12 @@ class MatchCollector {
                 }
 
                 // does the new match supersedes this one?
-                if (otherEnd.getIndex() < mark2.getIndex() && otherEnd.getIndex() + m.getTokenCount() >= mark2.getIndex() + dupes) {
+                if (otherEnd.getIndex() < mark2.getIndex()
+                        && otherEnd.getIndex() + m.getTokenCount() >= mark2.getIndex() + dupes) {
                     // this match is embedded in the previous one… ignore it.
                     return;
-                } else if (mark2.getIndex() < otherEnd.getIndex() && mark2.getIndex() + dupes >= otherEnd.getIndex() + m.getTokenCount()) {
+                } else if (mark2.getIndex() < otherEnd.getIndex()
+                        && mark2.getIndex() + dupes >= otherEnd.getIndex() + m.getTokenCount()) {
                     // the new match is longer and overlaps with the old one - replace it
                     matchIterator.remove();
                     break;
@@ -140,8 +143,6 @@ class MatchCollector {
     }
 
     private boolean matchEnded(TokenEntry token1, TokenEntry token2) {
-        return token1.getIdentifier() != token2.getIdentifier()
-                || token1.isEof()
-                || token2.isEof();
+        return token1.getIdentifier() != token2.getIdentifier() || token1.isEof() || token2.isEof();
     }
 }

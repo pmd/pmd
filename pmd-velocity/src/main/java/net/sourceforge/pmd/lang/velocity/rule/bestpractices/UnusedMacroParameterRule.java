@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.velocity.rule.bestpractices;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.velocity.ast.ASTBlock;
 import net.sourceforge.pmd.lang.velocity.ast.ASTDirective;
 import net.sourceforge.pmd.lang.velocity.ast.ASTReference;
@@ -60,7 +59,13 @@ public class UnusedMacroParameterRule extends AbstractVtlRule {
 
     private String[] formatNameVariations(final String param) {
         final String actualName = param.substring(1);
-        return new String[] { param, "${" + actualName + "}", "${" + actualName + ".", "$!" + actualName,
-            "$!{" + actualName + ".", "$!{" + actualName + "}", };
+        return new String[] {
+            param,
+            "${" + actualName + "}",
+            "${" + actualName + ".",
+            "$!" + actualName,
+            "$!{" + actualName + ".",
+            "$!{" + actualName + "}",
+        };
     }
 }

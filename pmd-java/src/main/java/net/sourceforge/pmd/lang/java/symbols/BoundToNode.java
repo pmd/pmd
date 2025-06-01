@@ -2,13 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.symbols;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Constrains the return type of getDeclaration. This is used to avoid having
@@ -19,7 +16,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
  * @since 7.0.0
  */
 interface BoundToNode<N extends JavaNode> extends JElementSymbol {
-
 
     @Override
     default @Nullable N tryGetNode() {

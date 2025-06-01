@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -13,12 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
@@ -27,40 +24,26 @@ class JavaCommentTest extends BaseParserTest {
 
     @Test
     void testFilteredLines() {
-        JavaComment comment = parseComment(
-            "/**\n"
-                + " * @author Clément Fournier\n"
-                + " *\n"
-                + " */\n"
-        );
+        JavaComment comment = parseComment("/**\n" + " * @author Clément Fournier\n" + " *\n" + " */\n");
 
-        assertThat(comment.getFilteredLines(),
-                   contains(Chars.wrap("@author Clément Fournier")));
+        assertThat(comment.getFilteredLines(), contains(Chars.wrap("@author Clément Fournier")));
     }
 
     @Test
     void testFilteredLinesMarkdown() {
         JavadocComment comment = new JavadocComment(Arrays.asList(
-                parseComment("///\n"),
-                parseComment("/// @author Clément Fournier\n"),
-                parseComment("///\n")
-        ));
+                parseComment("///\n"), parseComment("/// @author Clément Fournier\n"), parseComment("///\n")));
 
-        assertThat(comment.getFilteredLines(),
-                   contains(Chars.wrap("@author Clément Fournier")));
+        assertThat(comment.getFilteredLines(), contains(Chars.wrap("@author Clément Fournier")));
     }
 
     @Test
     void testFilteredLinesKeepBlankLines() {
-        JavaComment comment = parseComment(
-            "/**\n"
-                + " * @author Clément Fournier\n"
-                + " *\n"
-                + " */\n"
-        );
+        JavaComment comment = parseComment("/**\n" + " * @author Clément Fournier\n" + " *\n" + " */\n");
 
-        assertThat(comment.getFilteredLines(true),
-                   contains(Chars.wrap(""), Chars.wrap("@author Clément Fournier"), Chars.wrap(""), Chars.wrap("")));
+        assertThat(
+                comment.getFilteredLines(true),
+                contains(Chars.wrap(""), Chars.wrap("@author Clément Fournier"), Chars.wrap(""), Chars.wrap("")));
     }
 
     JavaComment parseComment(String text) {
@@ -68,11 +51,11 @@ class JavaCommentTest extends BaseParserTest {
         return JavaComment.getLeadingComments(parsed).findFirst().get();
     }
 
-
     @Test
     void getLeadingComments() {
         ASTCompilationUnit parsed = java.parse("/** a */ class Fooo { /** b */ int field; }");
-        List<JavadocCommentOwner> docCommentOwners = parsed.descendants(JavadocCommentOwner.class).toList();
+        List<JavadocCommentOwner> docCommentOwners =
+                parsed.descendants(JavadocCommentOwner.class).toList();
 
         checkCommentMatches(docCommentOwners.get(0), "/** a */");
         checkCommentMatches(docCommentOwners.get(1), "/** b */");
@@ -80,16 +63,19 @@ class JavaCommentTest extends BaseParserTest {
 
     @Test
     void getLeadingCommentsAnnotatedMethod() {
-        ASTCompilationUnit parsed = java.parse("/* a */ class Foo { /* b */ @SuppressWarnings(\"\") /* c */ void noOp() {}; }");
+        ASTCompilationUnit parsed =
+                java.parse("/* a */ class Foo { /* b */ @SuppressWarnings(\"\") /* c */ void noOp() {}; }");
 
         assertLeadingCommentsMatch(parsed, "/* a */", "/* b */", "/* c */");
     }
 
     @Test
     void getLeadingCommentsAnnotatedConstructor() {
-        ASTCompilationUnit parsed = java.parse("/* a */ class Foo { /* b */ @SuppressWarnings(\"\") /* c */ Foo() /* d */ {}; }");
+        ASTCompilationUnit parsed =
+                java.parse("/* a */ class Foo { /* b */ @SuppressWarnings(\"\") /* c */ Foo() /* d */ {}; }");
 
-        final ASTConstructorDeclaration constructorNode = parsed.descendants(ASTConstructorDeclaration.class).first();
+        final ASTConstructorDeclaration constructorNode =
+                parsed.descendants(ASTConstructorDeclaration.class).first();
         assertLeadingCommentsMatch(constructorNode, "/* b */", "/* c */", "/* d */");
     }
 
@@ -105,7 +91,8 @@ class JavaCommentTest extends BaseParserTest {
         assertEquals(expectedText, comment.getText().toString());
 
         // this is fetched adhoc
-        List<JavaComment> collected = JavaComment.getLeadingComments(commentOwner).collect(Collectors.toList());
+        List<JavaComment> collected =
+                JavaComment.getLeadingComments(commentOwner).collect(Collectors.toList());
         assertEquals(listOf(comment), collected);
     }
 }

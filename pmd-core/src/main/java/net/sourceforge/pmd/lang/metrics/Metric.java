@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.metrics;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -9,13 +8,11 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.DataMap.DataKey;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A named computation that can be carried out on some nodes. Example
@@ -64,7 +61,6 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
      */
     List<String> nameAliases();
 
-
     /**
      * Checks if the metric can be computed on the node.
      *
@@ -88,8 +84,8 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
      *
      * @throws NullPointerException If the parameter is null
      */
-    @Nullable N castIfSupported(@NonNull Node node);
-
+    @Nullable
+    N castIfSupported(@NonNull Node node);
 
     /**
      * Computes the value of the metric for the given node. Behavior if
@@ -106,7 +102,6 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
      */
     R computeFor(N node, MetricOptions options);
 
-
     /**
      * Factory method for a metric. The returned instance does not override
      * equals/hashcode.
@@ -122,10 +117,11 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
      *
      * @throws NullPointerException If either parameter is null
      */
-    static <T extends Node, R extends Number> Metric<T, R> of(BiFunction<? super T, MetricOptions, ? extends R> compute,
-                                                              Function<? super Node, ? extends @Nullable T> cast,
-                                                              @NonNull String fullName,
-                                                              String... aliases) {
+    static <T extends Node, R extends Number> Metric<T, R> of(
+            BiFunction<? super T, MetricOptions, ? extends R> compute,
+            Function<? super Node, ? extends @Nullable T> cast,
+            @NonNull String fullName,
+            String... aliases) {
         AssertionUtil.requireParamNotNull("compute", compute);
         AssertionUtil.requireParamNotNull("cast", cast);
         AssertionUtil.requireParamNotNull("fullName", fullName);
@@ -153,7 +149,6 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
             public R computeFor(T node, MetricOptions options) {
                 return compute.apply(node, options);
             }
-
         };
     }
 
@@ -172,12 +167,12 @@ public interface Metric<N extends Node, R extends Number> extends DataKey<Metric
      *
      * @throws NullPointerException if any of the parameters is null
      */
-    static <N extends Node, R extends Number> @Nullable R compute(Metric<N, R> metric, Node node, MetricOptions options) {
+    static <N extends Node, R extends Number> @Nullable R compute(
+            Metric<N, R> metric, Node node, MetricOptions options) {
         N n = metric.castIfSupported(node);
         if (n != null) {
             return metric.computeFor(n, options);
         }
         return null;
     }
-
 }

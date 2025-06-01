@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 /**
  * A record pattern, a Java 21 language feature.
  *
@@ -16,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * @see ASTRecordDeclaration
  * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
-*/
+ */
 public final class ASTRecordPattern extends AbstractJavaPattern {
 
     ASTRecordPattern(int id) {
@@ -35,7 +34,6 @@ public final class ASTRecordPattern extends AbstractJavaPattern {
         return firstChild(ASTReferenceType.class);
     }
 
-
     /**
      * Return the patterns for each record component.
      *
@@ -44,7 +42,6 @@ public final class ASTRecordPattern extends AbstractJavaPattern {
     public ASTPatternList getComponentPatterns() {
         return firstChild(ASTPatternList.class);
     }
-
 
     /**
      * Returns the declared variable.

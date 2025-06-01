@@ -8,14 +8,11 @@ import static net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeSigParser.i
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
 final class TypeParamsParser {
 
-    private TypeParamsParser() {
-
-    }
+    private TypeParamsParser() {}
 
     static boolean hasTypeParams(String descriptor) {
         return descriptor.charAt(0) == '<';
@@ -40,7 +37,6 @@ final class TypeParamsParser {
 
         return cur;
     }
-
 
     /**
      * This just skips the bound entirely, they will be parsed lazily
@@ -71,36 +67,36 @@ final class TypeParamsParser {
         while (cur < b.end) {
             c = b.charAt(cur);
             switch (c) {
-            case 'T':
-                cur = b.nextIndexOf(cur, ';');
-                continue;
-            case '.':
-            case 'L':
-                cur = b.nextIndexOfAny(cur, ';', '<');
-                continue;
-            case '<':
-                targDepth++;
-                cur++;
-                break;
-            case '>':
-                targDepth--;
-                cur++;
-                break;
-            case ';':
-                if (targDepth == 0) {
-                    return cur + 1;
-                }
-                cur++;
-                break;
-            case '[':
-            case '+':
-            case '-':
-            case '*':
-                // pass
-                cur++;
-                break;
-            default:
-                throw b.expected("reference type part TL<;>[+-*.", cur);
+                case 'T':
+                    cur = b.nextIndexOf(cur, ';');
+                    continue;
+                case '.':
+                case 'L':
+                    cur = b.nextIndexOfAny(cur, ';', '<');
+                    continue;
+                case '<':
+                    targDepth++;
+                    cur++;
+                    break;
+                case '>':
+                    targDepth--;
+                    cur++;
+                    break;
+                case ';':
+                    if (targDepth == 0) {
+                        return cur + 1;
+                    }
+                    cur++;
+                    break;
+                case '[':
+                case '+':
+                case '-':
+                case '*':
+                    // pass
+                    cur++;
+                    break;
+                default:
+                    throw b.expected("reference type part TL<;>[+-*.", cur);
             }
         }
         return cur;

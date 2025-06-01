@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.util.OptionalBool;
 import org.apache.commons.lang3.AnnotationUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ClassUtils;
@@ -22,10 +24,6 @@ import org.apache.commons.lang3.reflect.MethodUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
-
-import net.sourceforge.pmd.lang.java.symbols.internal.asm.ClassNamesUtil;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Structure to represent constant values of annotations symbolically.
@@ -54,7 +52,6 @@ import net.sourceforge.pmd.util.OptionalBool;
  * {@link AnnotableSymbol}.
  */
 public interface SymbolicValue {
-
 
     /**
      * Returns true if this symbolic value represents the same value as
@@ -119,12 +116,14 @@ public interface SymbolicValue {
          * the attribute does not exist, is unresolved, or has no default.
          * TODO do we need separate sentinels for that?
          */
-        @Nullable SymbolicValue getAttribute(String attrName);
+        @Nullable
+        SymbolicValue getAttribute(String attrName);
 
         /**
          * Return the symbol for the declaring class of the annotation.
          */
-        @NonNull JClassSymbol getAnnotationSymbol();
+        @NonNull
+        JClassSymbol getAnnotationSymbol();
 
         /**
          * Return the simple names of all attributes, including those
@@ -234,7 +233,6 @@ public interface SymbolicValue {
 
             return OptionalBool.definitely(SymbolicValueHelper.equalsModuloWrapper(attr, attrValue));
         }
-
     }
 
     /**
@@ -286,7 +284,7 @@ public interface SymbolicValue {
                 Object[] arr = (Object[]) array;
                 if (!isOkComponentType(arr.getClass().getComponentType())) {
                     throw new IllegalArgumentException(
-                        "Unsupported component type" + arr.getClass().getComponentType());
+                            "Unsupported component type" + arr.getClass().getComponentType());
                 }
 
                 List<SymbolicValue> lst = new ArrayList<>(arr.length);
@@ -303,16 +301,15 @@ public interface SymbolicValue {
 
         static boolean isOkComponentType(Class<?> compType) {
             return compType.isPrimitive()
-                || compType == String.class
-                || compType == Class.class
-                || compType.isEnum()
-                || compType.isAnnotation();
+                    || compType == String.class
+                    || compType == Class.class
+                    || compType.isEnum()
+                    || compType.isAnnotation();
         }
 
         public int length() {
             return length;
         }
-
 
         /**
          * Return true if this array contains the given object. If the
@@ -351,7 +348,6 @@ public interface SymbolicValue {
                 }
             }
             return true;
-
         }
 
         @Override
@@ -390,7 +386,6 @@ public interface SymbolicValue {
         }
     }
 
-
     /**
      * Symbolic representation of an enum constant.
      */
@@ -412,8 +407,7 @@ public interface SymbolicValue {
          * @param <E>       Return type
          */
         public <E extends Enum<E>> @Nullable E toEnum(Class<E> enumClass) {
-            return enumClass.getName().equals(enumBinaryName) ? EnumUtils.getEnum(enumClass, enumName)
-                                                              : null;
+            return enumClass.getName().equals(enumBinaryName) ? EnumUtils.getEnum(enumClass, enumName) : null;
         }
 
         /**
@@ -456,7 +450,7 @@ public interface SymbolicValue {
             }
             Enum<?> value = (Enum<?>) o;
             return this.enumName.equals(value.name())
-                && enumBinaryName.equals(value.getDeclaringClass().getName());
+                    && enumBinaryName.equals(value.getDeclaringClass().getName());
         }
 
         @Override
@@ -468,8 +462,7 @@ public interface SymbolicValue {
                 return false;
             }
             SymEnum that = (SymEnum) o;
-            return Objects.equals(enumBinaryName, that.enumBinaryName)
-                && Objects.equals(enumName, that.enumName);
+            return Objects.equals(enumBinaryName, that.enumBinaryName) && Objects.equals(enumName, that.enumName);
         }
 
         @Override
@@ -496,8 +489,7 @@ public interface SymbolicValue {
         }
 
         private static boolean isOkValue(@NonNull Object value) {
-            return ClassUtils.isPrimitiveWrapper(value.getClass())
-                || value instanceof String;
+            return ClassUtils.isPrimitiveWrapper(value.getClass()) || value instanceof String;
         }
 
         @Override
@@ -528,7 +520,6 @@ public interface SymbolicValue {
         }
     }
 
-
     /**
      * Represents a class constant.
      */
@@ -539,7 +530,6 @@ public interface SymbolicValue {
         private SymClass(String binaryName) {
             this.binaryName = binaryName;
         }
-
 
         public static SymClass ofBinaryName(TypeSystem ts, String binaryName) {
             return new SymClass(binaryName);

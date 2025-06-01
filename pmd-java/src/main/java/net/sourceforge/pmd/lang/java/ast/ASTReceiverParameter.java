@@ -37,7 +37,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class ASTReceiverParameter extends AbstractJavaNode {
 
-
     ASTReceiverParameter(int id) {
         super(id);
     }
@@ -61,5 +60,4 @@ public final class ASTReceiverParameter extends AbstractJavaNode {
     public ASTClassType getReceiverType() {
         return (ASTClassType) getChild(0);
     }
-
 }

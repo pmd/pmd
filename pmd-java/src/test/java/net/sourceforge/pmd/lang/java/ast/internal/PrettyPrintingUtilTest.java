@@ -10,13 +10,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -29,6 +22,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.util.StringUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Test;
 
 class PrettyPrintingUtilTest extends BaseParserTest {
 
@@ -52,8 +50,10 @@ class PrettyPrintingUtilTest extends BaseParserTest {
 
     @Test
     void ppMethodCallArgsTooBig() {
-        testPrettyPrint("this.foo(\"a long string\", 12, 12, 12, 12, 12)",
-            ASTMethodCall.class, "this.foo(\"a long string\", 12...)");
+        testPrettyPrint(
+                "this.foo(\"a long string\", 12, 12, 12, 12, 12)",
+                ASTMethodCall.class,
+                "this.foo(\"a long string\", 12...)");
     }
 
     @Test
@@ -68,8 +68,7 @@ class PrettyPrintingUtilTest extends BaseParserTest {
 
     @Test
     void ppMethodRefWithTyArgs() {
-        testPrettyPrint("foo(ASTW::<String>meth)", ASTMethodReference.class,
-            "ASTW::<String>meth");
+        testPrettyPrint("foo(ASTW::<String>meth)", ASTMethodReference.class, "ASTW::<String>meth");
     }
 
     @Test
@@ -81,7 +80,6 @@ class PrettyPrintingUtilTest extends BaseParserTest {
     void ppUnary() {
         testPrettyPrintIdentity("-+4", ASTUnaryExpression.class);
     }
-
 
     @Test
     void ppConditional() {
@@ -95,8 +93,6 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         testPrettyPrint("(1+2)*2", ASTInfixExpression.class, "(1 + 2) * 2");
     }
 
-
-
     @Test
     void ppLambdaExpr() {
         testPrettyPrintIdentity("(a, b) -> new Foo()", ASTLambdaExpression.class);
@@ -107,8 +103,7 @@ class PrettyPrintingUtilTest extends BaseParserTest {
 
     @Test
     void ppLambdaBlock() {
-        testPrettyPrint("(a, b) -> {return new Foo(); }", ASTLambdaExpression.class,
-            "(a, b) -> { ... }");
+        testPrettyPrint("(a, b) -> {return new Foo(); }", ASTLambdaExpression.class, "(a, b) -> { ... }");
     }
 
     private <T extends ASTExpression> void testPrettyPrint(String expr, Class<T> nodeTy, String expected) {

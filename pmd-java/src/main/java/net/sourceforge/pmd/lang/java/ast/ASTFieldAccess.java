@@ -1,16 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A field access expression.
@@ -24,7 +22,6 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr, QualifiableExpression {
 
     private FieldSig typedSym;
-
 
     ASTFieldAccess(int id) {
         super(id);
@@ -49,12 +46,10 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         this.setLastToken(identifier);
     }
 
-
     @Override
     public @NonNull ASTExpression getQualifier() {
         return (ASTExpression) getChild(0);
     }
-
 
     @Override
     public String getName() {

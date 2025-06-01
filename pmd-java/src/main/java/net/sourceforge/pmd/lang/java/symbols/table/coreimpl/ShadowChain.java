@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import java.util.List;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -38,7 +37,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public interface ShadowChain<S, I> {
 
-
     /**
      * Returns the list of symbols accessible by simple name in the scope
      * of this group. No name in this list shadows another. An empty list
@@ -52,8 +50,8 @@ public interface ShadowChain<S, I> {
      *
      * @return A list of symbols
      */
-    @NonNull List<S> resolve(String name);
-
+    @NonNull
+    List<S> resolve(String name);
 
     /**
      * Returns the first symbol that would be yielded by {@link #resolve(String)},
@@ -65,7 +63,6 @@ public interface ShadowChain<S, I> {
      */
     S resolveFirst(String name);
 
-
     /**
      * Returns an iterator that iterates over sets of shadowed declarations
      * with the given name.
@@ -76,10 +73,8 @@ public interface ShadowChain<S, I> {
         return new ShadowChainIteratorImpl<>(asNode(), name);
     }
 
-
     /**
      * Returns the API of this instance that views the chain as individual nodes.
      */
     ShadowChainNode<S, I> asNode();
-
 }

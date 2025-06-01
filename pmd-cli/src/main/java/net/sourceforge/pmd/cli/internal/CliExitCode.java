@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cli.internal;
 
 import net.sourceforge.pmd.AbstractConfiguration;
@@ -50,13 +49,18 @@ public enum CliExitCode {
 
     public static CliExitCode fromInt(int i) {
         switch (i) {
-        case 0: return OK;
-        case 1: return ERROR;
-        case 2: return USAGE_ERROR;
-        case 4: return VIOLATIONS_FOUND;
-        case 5: return RECOVERED_ERRORS_OR_VIOLATIONS;
-        default:
-            throw new IllegalArgumentException("Not a known exit code: " + i);
+            case 0:
+                return OK;
+            case 1:
+                return ERROR;
+            case 2:
+                return USAGE_ERROR;
+            case 4:
+                return VIOLATIONS_FOUND;
+            case 5:
+                return RECOVERED_ERRORS_OR_VIOLATIONS;
+            default:
+                throw new IllegalArgumentException("Not a known exit code: " + i);
         }
     }
 }

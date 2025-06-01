@@ -76,7 +76,6 @@ class TextRegionTest {
         assertTrue(inter.isEmpty());
     }
 
-
     @Test
     void testIntersectZeroLen4() {
         TextRegion r1 = TextRegion.fromOffsetLength(0, 0);
@@ -143,7 +142,6 @@ class TextRegionTest {
         assertNoOverlap(r1, r2);
     }
 
-
     @Test
     void testOverlapBoundary() {
         // r1:  -- -[---[
@@ -173,7 +171,6 @@ class TextRegionTest {
 
         assertIsBefore(r1, r2);
     }
-
 
     @Test
     void testUnion() {
@@ -259,7 +256,6 @@ class TextRegionTest {
         assertThrows(AssertionError.class, () -> r1.growRight(-2));
     }
 
-
     private static void assertRegionEquals(TextRegion region, int start, int len) {
         assertEquals(start, region.getStartOffset(), "Start offset");
         assertEquals(len, region.getLength(), "Length");
@@ -277,7 +273,6 @@ class TextRegionTest {
     private static void assertOverlap(TextRegion r1, TextRegion r2) {
         assertTrue(r1.overlaps(r2), "Regions " + r1 + " and " + r2 + " should overlap");
     }
-
 
     private TextRegion doIntersect(TextRegion r1, TextRegion r2) {
         TextRegion inter = TextRegion.intersect(r1, r2);
@@ -306,5 +301,4 @@ class TextRegionTest {
         TextRegion symmetric = TextRegion.intersect(r2, r1);
         assertEquals(inter, symmetric, "Intersection of " + r1 + " and " + r2 + " must be symmetric");
     }
-
 }

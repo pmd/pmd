@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import java.util.stream.Collectors;
-
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolvableEntity;
@@ -37,9 +35,11 @@ public final class ASTName extends AbstractModelicaNode implements ResolvableMod
 
     public String getName() {
         String prefix = absolute ? "." : "";
-        return prefix + children(ASTSimpleName.class).toStream()
-                .map(ASTSimpleName::getName)
-                .collect(Collectors.joining("."));
+        return prefix
+                + children(ASTSimpleName.class)
+                        .toStream()
+                        .map(ASTSimpleName::getName)
+                        .collect(Collectors.joining("."));
     }
 
     void markAbsolute() {
@@ -69,7 +69,8 @@ public final class ASTName extends AbstractModelicaNode implements ResolvableMod
     @Override
     public ResolutionResult<ResolvableEntity> getResolutionCandidates() {
         if (resolutionCandidates == null) {
-            resolutionCandidates = getMostSpecificScope().safeResolveLexically(ResolvableEntity.class, ResolutionState.forType(), getCompositeName());
+            resolutionCandidates = getMostSpecificScope()
+                    .safeResolveLexically(ResolvableEntity.class, ResolutionState.forType(), getCompositeName());
         }
         return resolutionCandidates;
     }

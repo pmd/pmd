@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.function.BiPredicate;
-
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -25,9 +24,12 @@ public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFun
     private final Class<T> klass;
     private final BiPredicate<String, T> checker;
 
-    public static final BaseJavaXPathFunction TYPE_IS_EXACTLY = new BaseContextNodeTestFun<>(TypeNode.class, "typeIsExactly", TypeTestUtil::isExactlyA);
-    public static final BaseJavaXPathFunction TYPE_IS = new BaseContextNodeTestFun<>(TypeNode.class, "typeIs", TypeTestUtil::isA);
-    public static final BaseJavaXPathFunction HAS_ANNOTATION = new BaseContextNodeTestFun<>(Annotatable.class, "hasAnnotation", (name, node) -> node.isAnnotationPresent(name));
+    public static final BaseJavaXPathFunction TYPE_IS_EXACTLY =
+            new BaseContextNodeTestFun<>(TypeNode.class, "typeIsExactly", TypeTestUtil::isExactlyA);
+    public static final BaseJavaXPathFunction TYPE_IS =
+            new BaseContextNodeTestFun<>(TypeNode.class, "typeIs", TypeTestUtil::isA);
+    public static final BaseJavaXPathFunction HAS_ANNOTATION = new BaseContextNodeTestFun<>(
+            Annotatable.class, "hasAnnotation", (name, node) -> node.isAnnotationPresent(name));
 
     protected BaseContextNodeTestFun(Class<T> klass, String localName, BiPredicate<String, T> checker) {
         super(localName);

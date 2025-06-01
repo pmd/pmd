@@ -7,10 +7,8 @@ package net.sourceforge.pmd.lang.java;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.LanguageVersion;
+import org.junit.jupiter.api.Test;
 
 class JavaLanguageModuleTest {
 
@@ -42,8 +40,7 @@ class JavaLanguageModuleTest {
         for (int i = 1; i < versions.size(); i++) {
             LanguageVersion previous = versions.get(i - 1);
             LanguageVersion current = versions.get(i);
-            assertTrue(previous.compareTo(current) < 0,
-                    "Version " + previous + " should be smaller than " + current);
+            assertTrue(previous.compareTo(current) < 0, "Version " + previous + " should be smaller than " + current);
         }
     }
 }

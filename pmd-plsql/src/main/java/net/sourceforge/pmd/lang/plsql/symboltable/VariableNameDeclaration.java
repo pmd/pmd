@@ -1,16 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql.symboltable;
-
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.plsql.ast.ASTVariableOrConstantDeclaratorId;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VariableNameDeclaration extends AbstractNameDeclaration {
     private static final Logger LOG = LoggerFactory.getLogger(VariableNameDeclaration.class);
@@ -24,8 +21,10 @@ public class VariableNameDeclaration extends AbstractNameDeclaration {
         try {
             return node.getScope().getEnclosingScope(ClassScope.class);
         } catch (Exception e) {
-            LOG.trace("This Node does not have an enclosing Class: {}/{} => {}",
-                    node.getBeginLine(), node.getBeginColumn(),
+            LOG.trace(
+                    "This Node does not have an enclosing Class: {}/{} => {}",
+                    node.getBeginLine(),
+                    node.getBeginColumn(),
                     this.getImage());
             return null; // @TODO SRT a cop-out
         }

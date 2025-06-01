@@ -14,5 +14,4 @@ public class VtlHandler extends AbstractPmdLanguageVersionHandler {
     public Parser getParser() {
         return new VtlParser();
     }
-
 }

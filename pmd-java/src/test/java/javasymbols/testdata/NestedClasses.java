@@ -6,27 +6,18 @@ package javasymbols.testdata;
 
 public class NestedClasses {
 
-
     void foo() {
         class InMethod {
-            class IInMethod {
-
-            }
+            class IInMethod {}
         }
     }
 
     public class Inner {
 
-        public Inner() {
+        public Inner() {}
 
-        }
+        public <T> Inner(T t) {}
 
-        public <T> Inner(T t) {
-
-        }
-
-        class IInner {
-
-        }
+        class IInner {}
     }
 }

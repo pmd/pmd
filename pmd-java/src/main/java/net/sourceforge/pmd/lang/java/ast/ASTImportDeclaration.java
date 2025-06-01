@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.annotation.Experimental;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents an import declaration in a Java file.
@@ -29,7 +27,6 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         super(id);
     }
 
-
     void setImportOnDemand() {
         isImportOnDemand = true;
     }
@@ -51,11 +48,9 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         return isImportOnDemand;
     }
 
-
     void setStatic() {
         isStatic = true;
     }
-
 
     /**
      * Returns true if this is a static import. If this import is not on-demand,
@@ -65,7 +60,6 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         return isStatic;
     }
 
-
     /**
      * Returns the full name of the import. For on-demand imports, this is the name without
      * the final dot and asterisk. For {@link #isModuleImport() module declaration imports},
@@ -74,7 +68,6 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
     public @NonNull String getImportedName() {
         return super.getImage();
     }
-
 
     @Override
     public String getImage() {
@@ -97,7 +90,6 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         String importName = getImportedName();
         return importName.substring(importName.lastIndexOf('.') + 1);
     }
-
 
     /**
      * Returns the "package" prefix of the imported name. For type imports, including on-demand

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -54,7 +52,6 @@ public class RuleReference implements Rule {
         ruleSetReference = theRuleSetReference;
     }
 
-
     /** copy constructor */
     private RuleReference(RuleReference ref) {
         this.rule = ref.rule.deepCopy();
@@ -84,7 +81,8 @@ public class RuleReference implements Rule {
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!Objects.equals(minimumLanguageVersion, rule.getMinimumLanguageVersion()) || this.minimumLanguageVersion != null) {
+        if (!Objects.equals(minimumLanguageVersion, rule.getMinimumLanguageVersion())
+                || this.minimumLanguageVersion != null) {
             rule.setMinimumLanguageVersion(minimumLanguageVersion); // might throw
             this.minimumLanguageVersion = minimumLanguageVersion;
         }
@@ -98,7 +96,8 @@ public class RuleReference implements Rule {
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
         // Only override if different than current value, or if already
         // overridden.
-        if (!Objects.equals(maximumLanguageVersion, rule.getMaximumLanguageVersion()) || this.maximumLanguageVersion != null) {
+        if (!Objects.equals(maximumLanguageVersion, rule.getMaximumLanguageVersion())
+                || this.maximumLanguageVersion != null) {
             rule.setMaximumLanguageVersion(maximumLanguageVersion); // might throw
             this.maximumLanguageVersion = maximumLanguageVersion;
         }
@@ -233,7 +232,6 @@ public class RuleReference implements Rule {
         }
     }
 
-
     @Override
     public List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
         return new ArrayList<>(getOverriddenPropertiesByPropertyDescriptor().keySet());
@@ -250,7 +248,6 @@ public class RuleReference implements Rule {
         }
         propertyDescriptors.add(propertyDescriptor);
     }
-
 
     @Override
     public Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
@@ -269,16 +266,13 @@ public class RuleReference implements Rule {
         }
     }
 
-
     public RuleSetReference getRuleSetReference() {
         return ruleSetReference;
     }
 
-
     private static boolean isSame(String s1, String s2) {
         return StringUtil.isSame(s1, s2, true, false, true);
     }
-
 
     private static boolean contains(Collection<String> collection, String s1) {
         for (String s2 : collection) {
@@ -312,10 +306,17 @@ public class RuleReference implements Rule {
      *     the referenced rule is referenced without any change.
      */
     public boolean hasOverriddenAttributes() {
-        return deprecated != null || description != null || examples != null || externalInfoUrl != null
-                || maximumLanguageVersion != null || minimumLanguageVersion != null
-                || message != null || name != null || priority != null
-                || propertyDescriptors != null || propertyValues != null;
+        return deprecated != null
+                || description != null
+                || examples != null
+                || externalInfoUrl != null
+                || maximumLanguageVersion != null
+                || minimumLanguageVersion != null
+                || message != null
+                || name != null
+                || priority != null
+                || propertyDescriptors != null
+                || propertyValues != null;
     }
 
     @Override

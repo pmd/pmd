@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,7 +36,8 @@ class BoundaryTraversalTest {
     void testBoundaryIsHonored() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
-        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).toList();
+        List<DummyNode> descendantsOfType =
+                rootNode.descendants(DummyNode.class).toList();
         assertEquals(1, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
     }
@@ -47,7 +46,10 @@ class BoundaryTraversalTest {
     void testSearchFromBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
-        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).first().descendants(DummyNode.class).toList();
+        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class)
+                .first()
+                .descendants(DummyNode.class)
+                .toList();
         assertEquals(1, descendantsOfType.size());
         assertFalse(descendantsOfType.get(0).isFindBoundary());
     }
@@ -56,7 +58,10 @@ class BoundaryTraversalTest {
     void testSearchFromBoundaryFromNonOptimisedStream() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
-        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).take(1).descendants(DummyNode.class).toList();
+        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class)
+                .take(1)
+                .descendants(DummyNode.class)
+                .toList();
         assertEquals(1, descendantsOfType.size());
         assertFalse(descendantsOfType.get(0).isFindBoundary());
     }
@@ -65,7 +70,8 @@ class BoundaryTraversalTest {
     void testSearchIgnoringBoundary() {
         addChild(rootNode, addChild(newDummyNode(true), newDummyNode(false)));
 
-        List<DummyNode> descendantsOfType = rootNode.descendants(DummyNode.class).crossFindBoundaries().toList();
+        List<DummyNode> descendantsOfType =
+                rootNode.descendants(DummyNode.class).crossFindBoundaries().toList();
         assertEquals(2, descendantsOfType.size());
         assertTrue(descendantsOfType.get(0).isFindBoundary());
         assertFalse(descendantsOfType.get(1).isFindBoundary());

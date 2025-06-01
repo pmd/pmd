@@ -9,5 +9,4 @@ package lombok;
  * Needed for test case for UnusedPrivateMethod.
  * See #5369.
  */
-public @interface val {
-}
+public @interface val {}

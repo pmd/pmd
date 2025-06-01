@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.io.InputStream;
 import java.util.Set;
-
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -25,7 +24,8 @@ public interface Classpath {
      *
      * @return A InputStream if the resource exists, otherwise null
      */
-    @Nullable InputStream findResource(String resourcePath);
+    @Nullable
+    InputStream findResource(String resourcePath);
 
     // <editor-fold  defaultstate="collapsed" desc="Transformation methods (defaults)">
 
@@ -53,7 +53,6 @@ public interface Classpath {
     // </editor-fold>
 
     // <editor-fold  defaultstate="collapsed" desc="Creator methods">
-
 
     /**
      * Returns a classpath instance that uses {@link ClassLoader#getResourceAsStream(String)}

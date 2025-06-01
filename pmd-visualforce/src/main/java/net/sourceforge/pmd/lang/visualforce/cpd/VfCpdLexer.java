@@ -34,5 +34,4 @@ public class VfCpdLexer extends JavaccCpdLexer {
             }
         };
     }
-
 }

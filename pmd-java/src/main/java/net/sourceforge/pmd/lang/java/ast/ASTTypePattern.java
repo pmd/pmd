@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -20,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * </pre>
  *
  * @see <a href="https://openjdk.org/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
-*/
+ */
 public final class ASTTypePattern extends AbstractJavaPattern implements ModifierOwner {
 
     ASTTypePattern(int id) {

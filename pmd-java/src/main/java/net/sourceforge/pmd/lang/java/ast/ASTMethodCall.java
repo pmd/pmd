@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -25,7 +24,6 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
         super(id);
     }
 
-
     @Override
     public void jjtClose() {
         super.jjtClose();
@@ -45,7 +43,6 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
         fstChild.shrinkOrDeleteInParentSetImage();
 
         assert getMethodName() != null;
-
     }
 
     @Override
@@ -58,7 +55,6 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
     public ASTArgumentList getArguments() {
         return (ASTArgumentList) getChild(getNumChildren() - 1);
     }
-
 
     @Override
     @Nullable

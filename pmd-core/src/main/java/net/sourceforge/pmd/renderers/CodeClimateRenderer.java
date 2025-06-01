@@ -1,23 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.renderers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleViolation;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Renderer for Code Climate JSON format
@@ -41,7 +37,8 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
     private static String getPmdPropertiesURL() {
         final String BASE_URL = "https://docs.pmd-code.org/";
         final String PAGE = "/pmd_userdocs_configuring_rules.html#rule-properties";
-        final String VERSION_PART = PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-doc-" + PMDVersion.VERSION;
+        final String VERSION_PART =
+                PMDVersion.isUnknown() || PMDVersion.isSnapshot() ? "latest" : "pmd-doc-" + PMDVersion.VERSION;
         return BASE_URL + VERSION_PART + PAGE;
     }
 
@@ -76,22 +73,22 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         issue.categories = getCategories();
 
         switch (rule.getPriority()) {
-        case HIGH:
-            issue.severity = "blocker";
-            break;
-        case MEDIUM_HIGH:
-            issue.severity = "critical";
-            break;
-        case MEDIUM:
-            issue.severity = "major";
-            break;
-        case MEDIUM_LOW:
-            issue.severity = "minor";
-            break;
-        case LOW:
-        default:
-            issue.severity = "info";
-            break;
+            case HIGH:
+                issue.severity = "blocker";
+                break;
+            case MEDIUM_HIGH:
+                issue.severity = "critical";
+                break;
+            case MEDIUM:
+                issue.severity = "major";
+                break;
+            case MEDIUM_LOW:
+                issue.severity = "minor";
+                break;
+            case LOW:
+            default:
+                issue.severity = "info";
+                break;
         }
 
         return issue;
@@ -126,10 +123,12 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 .append("Priority: ")
                 .append(rule.getPriority())
                 .append("\\n\\n")
-                .append("[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): ")
+                .append(
+                        "[Categories](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#categories): ")
                 .append(Arrays.toString(getCategories()).replaceAll("[\\[\\]]", ""))
                 .append("\\n\\n")
-                .append("[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): ")
+                .append(
+                        "[Remediation Points](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#remediation-points): ")
                 .append(getRemediationPoints())
                 .append("\\n\\n")
                 .append(cleaned(rule.getDescription()));
@@ -145,7 +144,9 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
         }
 
         if (!rule.getPropertyDescriptors().isEmpty()) {
-            result.append("\\n\\n### [PMD properties](").append(PMD_PROPERTIES_URL).append(")\\n\\n");
+            result.append("\\n\\n### [PMD properties](")
+                    .append(PMD_PROPERTIES_URL)
+                    .append(")\\n\\n");
             result.append("Name | Value | Description\\n");
             result.append("--- | --- | ---\\n");
 
@@ -161,7 +162,12 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
                 String propertyValue = typed.serializer().toString(value);
                 propertyValue = propertyValue.replaceAll("\\R", "\\\\n");
 
-                result.append(propertyName).append(" | ").append(propertyValue).append(" | ").append(property.description()).append("\\n");
+                result.append(propertyName)
+                        .append(" | ")
+                        .append(propertyValue)
+                        .append(" | ")
+                        .append(property.description())
+                        .append("\\n");
             }
         }
         return cleaned(result.toString());

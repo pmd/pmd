@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTArguments;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
@@ -46,7 +44,7 @@ public class NameFinder {
         }
         if (node.getNumChildren() > 0 && node.getChild(0) instanceof ASTName) {
             ASTName grandchild = (ASTName) node.getChild(0);
-            for (StringTokenizer st = new StringTokenizer(grandchild.getImage(), "."); st.hasMoreTokens();) {
+            for (StringTokenizer st = new StringTokenizer(grandchild.getImage(), "."); st.hasMoreTokens(); ) {
                 add(new PLSQLNameOccurrence(grandchild, st.nextToken()));
             }
         }

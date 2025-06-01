@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.jsp.rule.codestyle;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.StringTokenizer;
-
 import net.sourceforge.pmd.lang.jsp.ast.ASTJspDirectiveAttribute;
 import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -40,5 +39,4 @@ public class DuplicateJspImportsRule extends AbstractJspRule {
         }
         return super.visit(node, data);
     }
-
 }

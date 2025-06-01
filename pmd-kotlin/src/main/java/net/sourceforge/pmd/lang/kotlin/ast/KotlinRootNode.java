@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 // package private base class
 abstract class KotlinRootNode extends KotlinInnerNode implements RootNode {
@@ -30,5 +29,4 @@ abstract class KotlinRootNode extends KotlinInnerNode implements RootNode {
         this.astInfo = new AstInfo<>(task, me);
         return me;
     }
-
 }

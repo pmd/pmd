@@ -4,13 +4,6 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Arrays;
-import java.util.Optional;
-
-import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.document.TextPos2d;
-import net.sourceforge.pmd.lang.document.TextRegion;
-
 import com.google.summit.ast.Identifier;
 import com.google.summit.ast.Node;
 import com.google.summit.ast.SourceLocation;
@@ -18,6 +11,11 @@ import com.google.summit.ast.TypeRef;
 import com.google.summit.ast.declaration.EnumDeclaration;
 import com.google.summit.ast.expression.Expression;
 import com.google.summit.ast.expression.LiteralExpression;
+import java.util.Arrays;
+import java.util.Optional;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextPos2d;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 public final class ASTField extends AbstractApexNode.Many<Node> {
 
@@ -26,9 +24,7 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
     private final String typeName;
 
     ASTField(TypeRef typeRef, Identifier name, Optional<Expression> value) {
-        super(value.isPresent()
-              ? Arrays.asList(typeRef, name, value.get())
-              : Arrays.asList(typeRef, name));
+        super(value.isPresent() ? Arrays.asList(typeRef, name, value.get()) : Arrays.asList(typeRef, name));
         this.name = name;
         this.value = value;
         this.typeName = caseNormalizedTypeIfPrimitive(typeRef.asCodeString());
@@ -41,7 +37,6 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
         this.typeName = enumType.getId().asCodeString();
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -51,7 +46,6 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
     public String getImage() {
         return getName();
     }
-
 
     /**
      * Returns the type name.
@@ -89,7 +83,8 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
         // only special case if the first child is a TypeRef - then we need to look deeper
         // TypeRef itself doesn't have a source location
         TypeRef typeRef = (TypeRef) nodes.get(0);
-        boolean allHaveRealLoc = typeRef.getComponents().stream().noneMatch(c -> c.getId().getSourceLocation().isUnknown());
+        boolean allHaveRealLoc = typeRef.getComponents().stream()
+                .noneMatch(c -> c.getId().getSourceLocation().isUnknown());
         // check the remaining nodes (name and optional value)
         for (int i = 1; i < nodes.size(); i++) {
             allHaveRealLoc &= !nodes.get(i).getSourceLocation().isUnknown();
@@ -114,7 +109,6 @@ public final class ASTField extends AbstractApexNode.Many<Node> {
         // Column+1 because Summit columns are 0-based and PMD are 1-based
         setRegion(TextRegion.fromBothOffsets(
                 sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
-                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))
-        ));
+                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))));
     }
 }

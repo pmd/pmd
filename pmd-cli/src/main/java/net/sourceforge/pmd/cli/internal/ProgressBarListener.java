@@ -5,18 +5,16 @@
 package net.sourceforge.pmd.cli.internal;
 
 import java.util.concurrent.atomic.AtomicInteger;
-
+import me.tongfei.progressbar.PmdProgressBarFriend;
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarBuilder;
+import me.tongfei.progressbar.ProgressBarStyle;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
-
-import me.tongfei.progressbar.PmdProgressBarFriend;
-import me.tongfei.progressbar.ProgressBar;
-import me.tongfei.progressbar.ProgressBarBuilder;
-import me.tongfei.progressbar.ProgressBarStyle;
 
 /**
  * Collects runtime analysis statistics and displays them live on command line output.

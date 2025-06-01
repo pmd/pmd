@@ -1,15 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation
@@ -26,11 +24,9 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  */
 public final class ASTAnonymousClassDeclaration extends AbstractTypeDeclaration {
 
-
     ASTAnonymousClassDeclaration(int id) {
         super(id);
     }
-
 
     @Override
     public @NonNull String getSimpleName() {

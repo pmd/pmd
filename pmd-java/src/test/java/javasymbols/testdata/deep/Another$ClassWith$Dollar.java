@@ -11,13 +11,9 @@ public class Another$ClassWith$Dollar {
 
     public static class AnInner$ClassWithDollar {
 
-        public static class ADeeper$ClassWithDollar {
-
-        }
+        public static class ADeeper$ClassWithDollar {}
     }
 
     // looks like an anonymous class but isn't.
-    public static class DollarsAndNumbers$0 {
-
-    }
+    public static class DollarsAndNumbers$0 {}
 }

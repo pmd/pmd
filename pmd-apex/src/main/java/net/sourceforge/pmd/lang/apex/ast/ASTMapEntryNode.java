@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import java.util.Arrays;
-
 import com.google.summit.ast.expression.Expression;
+import java.util.Arrays;
 
 public final class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
 
@@ -18,7 +17,6 @@ public final class ASTMapEntryNode extends AbstractApexNode.Many<Expression> {
         this.key = key;
         this.value = value;
     }
-
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {

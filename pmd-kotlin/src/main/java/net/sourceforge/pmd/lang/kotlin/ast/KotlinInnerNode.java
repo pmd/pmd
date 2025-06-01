@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import org.antlr.v4.runtime.ParserRuleContext;
-
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode;
+import org.antlr.v4.runtime.ParserRuleContext;
 
 abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements KotlinNode {
 
@@ -23,7 +22,6 @@ abstract class KotlinInnerNode extends BaseAntlrInnerNode<KotlinNode> implements
         }
         return visitor.visitNode(this, data);
     }
-
 
     @Override // override to make visible in package
     protected PmdAsAntlrInnerNode<KotlinNode> asAntlrNode() {

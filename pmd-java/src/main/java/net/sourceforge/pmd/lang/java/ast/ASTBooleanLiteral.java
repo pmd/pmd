@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.document.Chars;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * The boolean literal, either "true" or "false".
@@ -15,11 +13,9 @@ public final class ASTBooleanLiteral extends AbstractLiteral implements ASTLiter
 
     private boolean isTrue;
 
-
     ASTBooleanLiteral(int id) {
         super(id);
     }
-
 
     void setTrue() {
         isTrue = true;

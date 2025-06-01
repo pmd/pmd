@@ -6,13 +6,11 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Keeps track of unresolved classes, can update some information about
@@ -37,7 +35,6 @@ public final class UnresolvedClassStore {
         this.ts = ts;
     }
 
-
     /**
      * Produces an unresolved class symbol from the given canonical name.
      *
@@ -49,10 +46,8 @@ public final class UnresolvedClassStore {
      * @throws NullPointerException If the name is null
      */
     public @NonNull JClassSymbol makeUnresolvedReference(@Nullable String canonicalName, int typeArity) {
-        UnresolvedClassImpl unresolved = this.unresolved.computeIfAbsent(
-            canonicalName,
-            n -> new FlexibleUnresolvedClassImpl(this.ts, null, n)
-        );
+        UnresolvedClassImpl unresolved =
+                this.unresolved.computeIfAbsent(canonicalName, n -> new FlexibleUnresolvedClassImpl(this.ts, null, n));
 
         unresolved.setTypeParameterCount(typeArity);
         return unresolved;

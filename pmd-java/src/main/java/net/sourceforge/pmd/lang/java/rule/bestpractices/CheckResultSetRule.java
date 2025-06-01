@@ -1,14 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.sql.ResultSet;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
@@ -49,6 +47,6 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     private boolean isResultSetMethod(ASTMethodCall node) {
         return METHODS.contains(node.getMethodName())
-            && TypeTestUtil.isDeclaredInClass(ResultSet.class, node.getMethodType());
+                && TypeTestUtil.isDeclaredInClass(ResultSet.class, node.getMethodType());
     }
 }

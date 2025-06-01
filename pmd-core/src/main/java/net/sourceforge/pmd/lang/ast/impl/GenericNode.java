@@ -4,13 +4,11 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Interface that binds the return type of some node methods to a type

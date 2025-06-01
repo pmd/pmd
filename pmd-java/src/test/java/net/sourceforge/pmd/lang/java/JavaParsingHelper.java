@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.ast.Parser.ParserTask;
@@ -13,14 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import kotlin.Pair;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -37,8 +29,12 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.Ve
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
-
-import kotlin.Pair;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTCompilationUnit> {
 
@@ -51,7 +47,8 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
     static {
         try {
-            TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(new ClasspathClassLoader("", JavaParsingHelper.class.getClassLoader()));
+            TEST_TYPE_SYSTEM = TypeSystem.usingClassLoaderClasspath(
+                    new ClasspathClassLoader("", JavaParsingHelper.class.getClassLoader()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -59,17 +56,17 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
     /** This runs all processing stages when parsing. */
     public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(
-        Params.getDefault(),
-        SemanticErrorReporter.noop(), // todo change this to unforgiving logger, need to update a lot of tests
-        TEST_TYPE_SYSTEM,
-        TypeInferenceLogger.noop()
-    );
+            Params.getDefault(),
+            SemanticErrorReporter.noop(), // todo change this to unforgiving logger, need to update a lot of tests
+            TEST_TYPE_SYSTEM,
+            TypeInferenceLogger.noop());
 
     private final SemanticErrorReporter semanticLogger;
     private final TypeSystem ts;
     private final TypeInferenceLogger typeInfLogger;
 
-    private JavaParsingHelper(Params params, SemanticErrorReporter logger, TypeSystem ts, TypeInferenceLogger typeInfLogger) {
+    private JavaParsingHelper(
+            Params params, SemanticErrorReporter logger, TypeSystem ts, TypeInferenceLogger typeInfLogger) {
         super(JavaLanguageModule.NAME, ASTCompilationUnit.class, params);
         this.semanticLogger = logger;
         this.ts = ts;
@@ -77,8 +74,9 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
     }
 
     @Override
-    protected @NonNull ASTCompilationUnit doParse(@NotNull LanguageProcessor processor, @NotNull Params params, @NotNull ParserTask task) {
-        @SuppressWarnings({ "PMD.CloseResource", "resource" })
+    protected @NonNull ASTCompilationUnit doParse(
+            @NotNull LanguageProcessor processor, @NotNull Params params, @NotNull ParserTask task) {
+        @SuppressWarnings({"PMD.CloseResource", "resource"})
         JavaLanguageProcessor proc = (JavaLanguageProcessor) processor;
         proc.setTypeSystem(ts);
         JavaParser parser = proc.getParserWithoutProcessing();
@@ -125,7 +123,6 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
         private final SemanticErrorReporter baseLogger;
 
-
         public TestCheckLogger(boolean doLogOnConsole) {
             this(defaultMessageReporter(doLogOnConsole));
         }
@@ -145,16 +142,14 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
         @Override
         public void warning(Node location, String message, Object... args) {
-            warnings.computeIfAbsent(message, k -> new ArrayList<>())
-                    .add(new Pair<>(location, args));
+            warnings.computeIfAbsent(message, k -> new ArrayList<>()).add(new Pair<>(location, args));
 
             baseLogger.warning(location, message, args);
         }
 
         @Override
         public SemanticException error(Node location, String message, Object... args) {
-            errors.computeIfAbsent(message, k -> new ArrayList<>())
-                  .add(new Pair<>(location, args));
+            errors.computeIfAbsent(message, k -> new ArrayList<>()).add(new Pair<>(location, args));
             return baseLogger.error(location, message, args);
         }
 
@@ -173,26 +168,20 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
         private static final int MAX_NODE_TEXT_WIDTH = 100;
         public static final UnforgivingSemanticLogger INSTANCE = new UnforgivingSemanticLogger();
 
-        private UnforgivingSemanticLogger() {
-
-        }
+        private UnforgivingSemanticLogger() {}
 
         @Override
         public void warning(Node location, String message, Object... formatArgs) {
             String warning = MessageFormat.format(message, formatArgs);
-            throw new AssertionError(
-                "Expected no warnings, but got: " + warning + "\n"
-                    + "at " + StringUtils.truncate(location.toString(), 100)
-            );
+            throw new AssertionError("Expected no warnings, but got: " + warning + "\n" + "at "
+                    + StringUtils.truncate(location.toString(), 100));
         }
 
         @Override
         public SemanticException error(Node location, String message, Object... formatArgs) {
             String error = MessageFormat.format(message, formatArgs);
-            throw new AssertionError(
-                "Expected no errors, but got: " + error + "\n"
-                    + "at " + StringUtils.truncate(location.toString(), MAX_NODE_TEXT_WIDTH)
-            );
+            throw new AssertionError("Expected no errors, but got: " + error + "\n" + "at "
+                    + StringUtils.truncate(location.toString(), MAX_NODE_TEXT_WIDTH));
         }
 
         @Override

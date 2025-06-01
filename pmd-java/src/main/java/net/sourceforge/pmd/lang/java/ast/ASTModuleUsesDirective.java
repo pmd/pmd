@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -24,12 +23,10 @@ public final class ASTModuleUsesDirective extends ASTModuleDirective {
         return visitor.visit(this, data);
     }
 
-
     /**
      * Returns the node representing the consumed service.
      */
     public ASTClassType getService() {
         return firstChild(ASTClassType.class);
     }
-
 }

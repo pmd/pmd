@@ -11,15 +11,13 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Optimised node stream implementation for a single element. Streams
@@ -114,7 +112,6 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
         return this;
     }
 
-
     @Override
     public NodeStream<T> takeWhile(Predicate<? super T> predicate) {
         return filter(predicate);
@@ -147,8 +144,8 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
     }
 
     /*
-        tree navigation
-     */
+       tree navigation
+    */
 
     @Override
     public NodeStream<Node> children() {

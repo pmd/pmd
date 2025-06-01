@@ -24,7 +24,6 @@ public class RuleTestCollection {
         tests.add(Objects.requireNonNull(descriptor));
     }
 
-
     public List<RuleTestDescriptor> getTests() {
         return Collections.unmodifiableList(tests);
     }

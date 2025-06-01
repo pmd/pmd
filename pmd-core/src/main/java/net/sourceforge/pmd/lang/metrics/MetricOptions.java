@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.metrics;
 
 import java.util.Collection;
@@ -23,33 +22,29 @@ public final class MetricOptions {
     private static final MetricOptions EMPTY_OPTIONS;
     private final Set<MetricOption> options;
 
-
     static {
         EMPTY_OPTIONS = new MetricOptions();
         POOL.put(EMPTY_OPTIONS, EMPTY_OPTIONS);
     }
 
-
     private MetricOptions() {
         options = Collections.emptySet();
     }
 
-
     private MetricOptions(Set<? extends MetricOption> opts) {
 
         switch (opts.size()) {
-        case 0:
-            options = Collections.emptySet();
-            break;
-        case 1:
-            options = Collections.<MetricOption>singleton(opts.iterator().next());
-            break;
-        default:
-            options = Collections.unmodifiableSet(opts);
-            break;
+            case 0:
+                options = Collections.emptySet();
+                break;
+            case 1:
+                options = Collections.<MetricOption>singleton(opts.iterator().next());
+                break;
+            default:
+                options = Collections.unmodifiableSet(opts);
+                break;
         }
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -65,12 +60,10 @@ public final class MetricOptions {
         return options.equals(other.options);
     }
 
-
     @Override
     public int hashCode() {
         return options.hashCode();
     }
-
 
     /**
      * Returns an immutable set of options. Metrics may use these options as they see fit.
@@ -81,7 +74,6 @@ public final class MetricOptions {
         return options;
     }
 
-
     /**
      * Returns true if this bundle contains the given option.
      *
@@ -91,25 +83,19 @@ public final class MetricOptions {
         return options.contains(option);
     }
 
-
     @Override
     public String toString() {
-        return "MetricOptions{"
-            + "options=" + options
-            + '}';
+        return "MetricOptions{" + "options=" + options + '}';
     }
-
 
     /**
      * Returns an empty options bundle.
      *
      * @return An empty options bundle
      */
-
     public static MetricOptions emptyOptions() {
         return EMPTY_OPTIONS;
     }
-
 
     /**
      * Gets an options bundle from a collection of options.
@@ -123,7 +109,6 @@ public final class MetricOptions {
         builder.addAll(options);
         return builder.build();
     }
-
 
     /**
      * Gets an options bundle from options.
@@ -145,12 +130,9 @@ public final class MetricOptions {
         return builder.build();
     }
 
-
     private static final class MetricOptionsBuilder {
 
-
         private Set<MetricOption> opts = new HashSet<>();
-
 
         void add(MetricOption option) {
             if (option != null) {
@@ -158,14 +140,12 @@ public final class MetricOptions {
             }
         }
 
-
         void addAll(Collection<? extends MetricOption> options) {
             if (options != null) {
                 this.opts.addAll(options);
                 opts.remove(null);
             }
         }
-
 
         MetricOptions build() {
             if (opts.isEmpty()) {
@@ -180,6 +160,5 @@ public final class MetricOptions {
 
             return POOL.get(result);
         }
-
     }
 }

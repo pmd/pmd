@@ -28,7 +28,6 @@ public interface CPDReportRenderer {
      */
     void render(CPDReport report, Writer writer) throws IOException;
 
-
     /**
      * Call the other render method on a StringWriter. IO exceptions
      * are rethrown as runtime exceptions.

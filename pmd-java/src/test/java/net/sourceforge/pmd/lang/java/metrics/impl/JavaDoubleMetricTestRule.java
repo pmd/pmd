@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Locale;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -23,9 +22,7 @@ public abstract class JavaDoubleMetricTestRule extends AbstractMetricTestRule.Of
 
     @Override
     protected boolean reportOn(Node node) {
-        return super.reportOn(node)
-            && (node instanceof ASTExecutableDeclaration
-            || node instanceof ASTTypeDeclaration);
+        return super.reportOn(node) && (node instanceof ASTExecutableDeclaration || node instanceof ASTTypeDeclaration);
     }
 
     @Override

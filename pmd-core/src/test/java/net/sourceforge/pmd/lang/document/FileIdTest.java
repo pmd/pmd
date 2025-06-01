@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -28,13 +27,17 @@ class FileIdTest {
         checkId(fileId, absPath.toString(), "a", path.toUri().toString(), path.toString());
     }
 
-
     @Test
     void testFromUri() {
         Path absPath = Paths.get("/a/b.c");
         String uriStr = absPath.toUri().toString();
         FileId fileId = FileId.fromURI(uriStr);
-        checkId(fileId, absPath.toAbsolutePath().toString(), "b.c", uriStr, absPath.toAbsolutePath().toString());
+        checkId(
+                fileId,
+                absPath.toAbsolutePath().toString(),
+                "b.c",
+                uriStr,
+                absPath.toAbsolutePath().toString());
     }
 
     @Test
@@ -55,9 +58,13 @@ class FileIdTest {
         FileId fileId = FileId.fromURI(uriStr);
         String absLocalPath = "/x/c.d".replace('/', File.separatorChar);
         checkId(fileId, absLocalPath, "c.d", uriStr, "/x/c.d");
-        checkId(fileId.getParentFsPath(), zipPath.toAbsolutePath().toString(), "b.zip", zipPath.toUri().toString(), zipPath.toAbsolutePath().toString());
+        checkId(
+                fileId.getParentFsPath(),
+                zipPath.toAbsolutePath().toString(),
+                "b.zip",
+                zipPath.toUri().toString(),
+                zipPath.toAbsolutePath().toString());
     }
-
 
     private static void checkId(FileId fileId, String absPath, String fileName, String uri, String originalPath) {
         assertNotNull(fileId);

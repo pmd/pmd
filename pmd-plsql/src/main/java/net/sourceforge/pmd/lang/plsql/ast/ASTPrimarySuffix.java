@@ -17,7 +17,6 @@ public final class ASTPrimarySuffix extends AbstractPLSQLNode {
         return visitor.visit(this, data);
     }
 
-
     void setIsArrayDereference() {
         isArrayDereference = true;
     }

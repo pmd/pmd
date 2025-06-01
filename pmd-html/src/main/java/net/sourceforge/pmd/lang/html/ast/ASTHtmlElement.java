@@ -2,17 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.html.ast;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.jsoup.nodes.Element;
-
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
-
+import org.jsoup.nodes.Element;
 
 public class ASTHtmlElement extends AbstractHtmlNode<Element> {
 

@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.xml.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.xml.XmlLanguageModule;
+import org.junit.jupiter.api.Test;
 
 class XmlCPDCpdLexerTest extends CpdTextComparisonTest {
 

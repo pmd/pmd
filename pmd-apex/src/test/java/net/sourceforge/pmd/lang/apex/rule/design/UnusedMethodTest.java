@@ -6,14 +6,12 @@ package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.nawforce.pkgforce.path.PathLike;
+import com.nawforce.runtime.platform.Environment;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.Language;
@@ -26,9 +24,8 @@ import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
-
-import com.nawforce.pkgforce.path.PathLike;
-import com.nawforce.runtime.platform.Environment;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import scala.Option;
 
 class UnusedMethodTest {
@@ -37,7 +34,8 @@ class UnusedMethodTest {
 
     @Test
     void findUnusedMethodsWithSfdxProject() throws Exception {
-        Path testProjectDir = Paths.get("src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1");
+        Path testProjectDir =
+                Paths.get("src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1");
         Report report = runRule(testProjectDir);
         assertEquals(1, report.getViolations().size());
         assertViolation(report.getViolations().get(0), "Foo.cls", 10); // line 10 is method unusedMethod()
@@ -61,7 +59,9 @@ class UnusedMethodTest {
         configuration.setThreads(0); // don't use separate threads
         configuration.prependAuxClasspath(".");
 
-        configuration.getLanguageProperties(apexLanguage).setProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY, Optional.of(testProjectDir.toString()));
+        configuration
+                .getLanguageProperties(apexLanguage)
+                .setProperty(ApexLanguageProperties.MULTIFILE_DIRECTORY, Optional.of(testProjectDir.toString()));
 
         RuleSet parsedRset = new RuleSetLoader().warnDeprecated(false).loadFromResource("category/apex/design.xml");
         Rule rule = parsedRset.getRuleByName("UnusedMethod");

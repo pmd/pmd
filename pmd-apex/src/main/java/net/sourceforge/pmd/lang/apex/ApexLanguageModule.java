@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex;
 
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
@@ -18,17 +17,18 @@ public class ApexLanguageModule extends LanguageModuleBase implements PmdCapable
     private static final ApexLanguageModule INSTANCE = new ApexLanguageModule();
 
     public ApexLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("Apex")
-                              .extensions("cls", "trigger")
-                              .addVersion("52")
-                              .addVersion("53")
-                              .addVersion("54")
-                              .addVersion("55")
-                              .addVersion("56")
-                              .addVersion("57")
-                              .addVersion("58")
-                              .addVersion("59")
-                              .addDefaultVersion("60"));
+        super(LanguageMetadata.withId(ID)
+                .name("Apex")
+                .extensions("cls", "trigger")
+                .addVersion("52")
+                .addVersion("53")
+                .addVersion("54")
+                .addVersion("55")
+                .addVersion("56")
+                .addVersion("57")
+                .addVersion("58")
+                .addVersion("59")
+                .addDefaultVersion("60"));
     }
 
     public static ApexLanguageModule getInstance() {

@@ -2,16 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
-
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a declaration that can declare type parameters,
@@ -27,7 +23,6 @@ public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
      */
     List<JTypeVar> getTypeParameters();
 
-
     /**
      * Returns the lexical scope of this symbol. This is little more than
      * a map of all the type parameters that are in scope at the point
@@ -42,16 +37,13 @@ public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
         return base.andThen(getTypeParameters());
     }
 
-
     default int getTypeParameterCount() {
         return getTypeParameters().size();
     }
 
-
     default boolean isGeneric() {
         return getTypeParameterCount() > 0;
     }
-
 
     /**
      * Returns the {@link JClassSymbol#getEnclosingMethod() enclosing method} or

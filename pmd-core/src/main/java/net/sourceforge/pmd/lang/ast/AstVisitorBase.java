@@ -37,5 +37,4 @@ public abstract class AstVisitorBase<P, R> implements AstVisitor<P, R> {
     public R visitNode(Node node, P param) {
         return visitChildren(node, param);
     }
-
 }

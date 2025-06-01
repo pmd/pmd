@@ -13,9 +13,7 @@ import net.sourceforge.pmd.lang.document.Chars;
 // it is made available in the subclass ConcreteNode.
 class AbstractNode extends DummyNode {
 
-    AbstractNode() {
-
-    }
+    AbstractNode() {}
 
     Chars getValue() {
         return Chars.wrap("actual_value");

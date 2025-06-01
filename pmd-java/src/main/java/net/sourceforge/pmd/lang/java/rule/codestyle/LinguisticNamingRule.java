@@ -11,9 +11,6 @@ import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -26,41 +23,58 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import org.apache.commons.lang3.StringUtils;
 
 public class LinguisticNamingRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
-        JavaPropertyUtil.ignoredAnnotationsDescriptor("java.lang.Override");
+            JavaPropertyUtil.ignoredAnnotationsDescriptor("java.lang.Override");
 
-    private static final PropertyDescriptor<Boolean> CHECK_BOOLEAN_METHODS =
-            booleanProperty("checkBooleanMethod").defaultValue(true).desc("Check method names and types for inconsistent naming.").build();
-    private static final PropertyDescriptor<Boolean> CHECK_GETTERS =
-            booleanProperty("checkGetters").defaultValue(true).desc("Check return type of getters.").build();
-    private static final PropertyDescriptor<Boolean> CHECK_SETTERS =
-            booleanProperty("checkSetters").defaultValue(true).desc("Check return type of setters.").build();
-    private static final PropertyDescriptor<Boolean> CHECK_PREFIXED_TRANSFORM_METHODS =
-            booleanProperty("checkPrefixedTransformMethods")
-                    .desc("Check return type of methods whose names start with the configured prefix (see transformMethodNames property).")
-                    .defaultValue(true).build();
-    private static final PropertyDescriptor<Boolean> CHECK_TRANSFORM_METHODS =
-            booleanProperty("checkTransformMethods")
-                    .desc("Check return type of methods which contain the configured infix in their name (see transformMethodNames property).")
-                    .defaultValue(false).build();
-    private static final PropertyDescriptor<Boolean> CHECK_FIELDS =
-            booleanProperty("checkFields").defaultValue(true).desc("Check field names and types for inconsistent naming.").build();
-    private static final PropertyDescriptor<Boolean> CHECK_VARIABLES =
-            booleanProperty("checkVariables").defaultValue(true).desc("Check local variable names and types for inconsistent naming.").build();
-    private static final PropertyDescriptor<List<String>> BOOLEAN_METHOD_PREFIXES_PROPERTY =
-            stringListProperty("booleanMethodPrefixes")
-                    .desc("The prefixes of methods that return boolean.")
-                    .defaultValues("is", "has", "can", "have", "will", "should").build();
-    private static final PropertyDescriptor<List<String>> TRANSFORM_METHOD_NAMES_PROPERTY =
-            stringListProperty("transformMethodNames")
-                    .desc("The prefixes and infixes that indicate a transform method.")
-                    .defaultValues("to", "as").build();
-    private static final PropertyDescriptor<List<String>> BOOLEAN_FIELD_PREFIXES_PROPERTY =
-            stringListProperty("booleanFieldPrefixes")
-                    .desc("The prefixes of fields and variables that indicate boolean.")
-                    .defaultValues("is", "has", "can", "have", "will", "should").build();
+    private static final PropertyDescriptor<Boolean> CHECK_BOOLEAN_METHODS = booleanProperty("checkBooleanMethod")
+            .defaultValue(true)
+            .desc("Check method names and types for inconsistent naming.")
+            .build();
+    private static final PropertyDescriptor<Boolean> CHECK_GETTERS = booleanProperty("checkGetters")
+            .defaultValue(true)
+            .desc("Check return type of getters.")
+            .build();
+    private static final PropertyDescriptor<Boolean> CHECK_SETTERS = booleanProperty("checkSetters")
+            .defaultValue(true)
+            .desc("Check return type of setters.")
+            .build();
+    private static final PropertyDescriptor<Boolean> CHECK_PREFIXED_TRANSFORM_METHODS = booleanProperty(
+                    "checkPrefixedTransformMethods")
+            .desc(
+                    "Check return type of methods whose names start with the configured prefix (see transformMethodNames property).")
+            .defaultValue(true)
+            .build();
+    private static final PropertyDescriptor<Boolean> CHECK_TRANSFORM_METHODS = booleanProperty("checkTransformMethods")
+            .desc(
+                    "Check return type of methods which contain the configured infix in their name (see transformMethodNames property).")
+            .defaultValue(false)
+            .build();
+    private static final PropertyDescriptor<Boolean> CHECK_FIELDS = booleanProperty("checkFields")
+            .defaultValue(true)
+            .desc("Check field names and types for inconsistent naming.")
+            .build();
+    private static final PropertyDescriptor<Boolean> CHECK_VARIABLES = booleanProperty("checkVariables")
+            .defaultValue(true)
+            .desc("Check local variable names and types for inconsistent naming.")
+            .build();
+    private static final PropertyDescriptor<List<String>> BOOLEAN_METHOD_PREFIXES_PROPERTY = stringListProperty(
+                    "booleanMethodPrefixes")
+            .desc("The prefixes of methods that return boolean.")
+            .defaultValues("is", "has", "can", "have", "will", "should")
+            .build();
+    private static final PropertyDescriptor<List<String>> TRANSFORM_METHOD_NAMES_PROPERTY = stringListProperty(
+                    "transformMethodNames")
+            .desc("The prefixes and infixes that indicate a transform method.")
+            .defaultValues("to", "as")
+            .build();
+    private static final PropertyDescriptor<List<String>> BOOLEAN_FIELD_PREFIXES_PROPERTY = stringListProperty(
+                    "booleanFieldPrefixes")
+            .desc("The prefixes of fields and variables that indicate boolean.")
+            .defaultValues("is", "has", "can", "have", "will", "should")
+            .build();
 
     public LinguisticNamingRule() {
         super(ASTMethodDeclaration.class, ASTFieldDeclaration.class, ASTLocalVariableDeclaration.class);
@@ -112,11 +126,15 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
     private void checkPrefixedTransformMethods(ASTMethodDeclaration node, Object data, String nameOfMethod) {
         List<String> prefixes = getProperty(TRANSFORM_METHOD_NAMES_PROPERTY);
         String[] splitMethodName = StringUtils.splitByCharacterTypeCamelCase(nameOfMethod);
-        if (node.isVoid() && splitMethodName.length > 0
+        if (node.isVoid()
+                && splitMethodName.length > 0
                 && prefixes.contains(splitMethodName[0].toLowerCase(Locale.ROOT))) {
             // "To" or any other configured prefix found
-            asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
-                                                nameOfMethod);
+            asCtx(data)
+                    .addViolationWithMessage(
+                            node,
+                            "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
+                            nameOfMethod);
         }
     }
 
@@ -124,8 +142,11 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
         for (String infix : getProperty(TRANSFORM_METHOD_NAMES_PROPERTY)) {
             if (node.isVoid() && containsCamelCaseWord(nameOfMethod, StringUtils.capitalize(infix))) {
                 // "To" or any other configured infix in the middle somewhere
-                asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
-                                                    nameOfMethod);
+                asCtx(data)
+                        .addViolationWithMessage(
+                                node,
+                                "Linguistics Antipattern - The transform method ''{0}'' should not return void linguistically",
+                                nameOfMethod);
                 // the first violation is sufficient - it is still the same method we are analyzing here
                 break;
             }
@@ -134,20 +155,28 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
 
     private void checkGetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
         if (startsWithCamelCaseWord(nameOfMethod, "get") && node.isVoid()) {
-            asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The getter ''{0}'' should not return void linguistically",
-                                                nameOfMethod);
+            asCtx(data)
+                    .addViolationWithMessage(
+                            node,
+                            "Linguistics Antipattern - The getter ''{0}'' should not return void linguistically",
+                            nameOfMethod);
         }
     }
 
     private void checkSetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
         if (startsWithCamelCaseWord(nameOfMethod, "set") && !node.isVoid() && returnsEnclosingType(node)) {
-            asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
-                                                nameOfMethod);
+            asCtx(data)
+                    .addViolationWithMessage(
+                            node,
+                            "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
+                            nameOfMethod);
         }
     }
 
     private static boolean returnsEnclosingType(ASTMethodDeclaration node) {
-        return !node.getResultTypeNode().getTypeMirror().equals(node.getEnclosingType().getTypeMirror());
+        return !node.getResultTypeNode()
+                .getTypeMirror()
+                .equals(node.getEnclosingType().getTypeMirror());
     }
 
     private boolean isBooleanType(ASTType node) {
@@ -161,8 +190,12 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
         if (!t.isVoid()) {
             for (String prefix : getProperty(BOOLEAN_METHOD_PREFIXES_PROPERTY)) {
                 if (startsWithCamelCaseWord(nameOfMethod, prefix) && !isBooleanType(t)) {
-                    asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The method ''{0}'' indicates linguistically it returns a boolean, but it returns ''{1}''",
-                                                        nameOfMethod, PrettyPrintingUtil.prettyPrintType(t));
+                    asCtx(data)
+                            .addViolationWithMessage(
+                                    node,
+                                    "Linguistics Antipattern - The method ''{0}'' indicates linguistically it returns a boolean, but it returns ''{1}''",
+                                    nameOfMethod,
+                                    PrettyPrintingUtil.prettyPrintType(t));
                 }
             }
         }
@@ -171,8 +204,12 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
     private void checkField(ASTType typeNode, ASTVariableDeclarator node, Object data) {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
             if (startsWithCamelCaseWord(node.getName(), prefix) && !isBooleanType(typeNode)) {
-                asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The field ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
-                                                    node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode));
+                asCtx(data)
+                        .addViolationWithMessage(
+                                node,
+                                "Linguistics Antipattern - The field ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
+                                node.getName(),
+                                PrettyPrintingUtil.prettyPrintType(typeNode));
             }
         }
     }
@@ -180,8 +217,12 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
     private void checkVariable(ASTType typeNode, ASTVariableDeclarator node, Object data) {
         for (String prefix : getProperty(BOOLEAN_FIELD_PREFIXES_PROPERTY)) {
             if (startsWithCamelCaseWord(node.getName(), prefix) && !isBooleanType(typeNode)) {
-                asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The variable ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
-                                                    node.getName(), PrettyPrintingUtil.prettyPrintType(typeNode));
+                asCtx(data)
+                        .addViolationWithMessage(
+                                node,
+                                "Linguistics Antipattern - The variable ''{0}'' indicates linguistically it is a boolean, but it is ''{1}''",
+                                node.getName(),
+                                PrettyPrintingUtil.prettyPrintType(typeNode));
             }
         }
     }
@@ -207,5 +248,4 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
         }
         return data;
     }
-
 }

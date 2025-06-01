@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cpd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -10,12 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import org.junit.jupiter.api.Test;
 
 class AnyCpdLexerTest {
 
@@ -54,7 +51,8 @@ class AnyCpdLexerTest {
     @Test
     void testTokenPosition() throws IOException {
         AnyCpdLexer tokenizer = new AnyCpdLexer();
-        TextDocument code = TextDocument.readOnlyString("a;\nbbbb\n;", FileId.UNKNOWN, DummyLanguageModule.getInstance().getDefaultVersion());
+        TextDocument code = TextDocument.readOnlyString(
+                "a;\nbbbb\n;", FileId.UNKNOWN, DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
         CpdLexer.tokenize(tokenizer, code, tokens);
         TokenEntry bbbbToken = tokens.getTokens().get(2);
@@ -63,9 +61,9 @@ class AnyCpdLexerTest {
         assertEquals(5, bbbbToken.getEndColumn());
     }
 
-
     private Tokens compareResult(AnyCpdLexer tokenizer, String source, List<String> expectedImages) throws IOException {
-        TextDocument code = TextDocument.readOnlyString(source, FileId.UNKNOWN, DummyLanguageModule.getInstance().getDefaultVersion());
+        TextDocument code = TextDocument.readOnlyString(
+                source, FileId.UNKNOWN, DummyLanguageModule.getInstance().getDefaultVersion());
         Tokens tokens = new Tokens();
         CpdLexer.tokenize(tokenizer, code, tokens);
 
@@ -83,16 +81,39 @@ class AnyCpdLexerTest {
     }
 
     private static final List<String> EXPECTED = listOf(
-        "using", "System", ";",
-        "namespace", "HelloNameSpace", "{",
-        "public", "class", "HelloWorld", "{", // note: comment is excluded
-        "static", "void", "Main", "(", "string", "[", "]", "args", ")", "{",
-        "Console", ".", "WriteLine", "(", "\"Hello World!\"", ")", ";",
-        "}", "}", "}", "EOF"
-    );
+            "using",
+            "System",
+            ";",
+            "namespace",
+            "HelloNameSpace",
+            "{",
+            "public",
+            "class",
+            "HelloWorld",
+            "{", // note: comment is excluded
+            "static",
+            "void",
+            "Main",
+            "(",
+            "string",
+            "[",
+            "]",
+            "args",
+            ")",
+            "{",
+            "Console",
+            ".",
+            "WriteLine",
+            "(",
+            "\"Hello World!\"",
+            ")",
+            ";",
+            "}",
+            "}",
+            "}",
+            "EOF");
 
-    private static final String TEST1 =
-        "using System;\n"
+    private static final String TEST1 = "using System;\n"
             + "namespace HelloNameSpace {\n"
             + "\n"
             + "    public class HelloWorld { // A comment\n"
@@ -103,5 +124,4 @@ class AnyCpdLexerTest {
             + "    }\n"
             + "\n"
             + "}\n";
-
 }

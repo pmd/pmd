@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.dist;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,11 +13,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-
+import net.sourceforge.pmd.internal.util.IOUtil;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipFile;
-
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Extracts a zip file with preserving the unix file permissions.
@@ -49,7 +46,7 @@ public class ZipFileExtractor {
                     assertTrue(file.mkdirs());
                 } else {
                     try (InputStream data = zip.getInputStream(entry);
-                         OutputStream fileOut = Files.newOutputStream(file.toPath());) {
+                            OutputStream fileOut = Files.newOutputStream(file.toPath()); ) {
                         IOUtil.copy(data, fileOut);
                     }
                     if ((entry.getUnixMode() & OWNER_EXECUTABLE) == OWNER_EXECUTABLE) {

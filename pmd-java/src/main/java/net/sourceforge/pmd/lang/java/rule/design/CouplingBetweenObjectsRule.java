@@ -1,14 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -23,7 +21,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-
 /**
  * CouplingBetweenObjects attempts to capture all unique Class attributes, local
  * variables, and return types to determine how many objects a class is coupled
@@ -35,10 +32,11 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
-        = PropertyFactory.intProperty("threshold")
-                         .desc("Unique type reporting threshold")
-                         .require(positive()).defaultValue(20).build();
+    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR = PropertyFactory.intProperty("threshold")
+            .desc("Unique type reporting threshold")
+            .require(positive())
+            .defaultValue(20)
+            .build();
 
     private int couplingCount;
     private boolean inInterface;
@@ -127,14 +125,14 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * @return boolean true if variableType is not what we care about
      */
     private boolean ignoreType(ASTType typeNode, JTypeMirror t) {
-        if (typeNode.getEnclosingType() != null && typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
+        if (typeNode.getEnclosingType() != null
+                && typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
             return true;
         }
         JTypeDeclSymbol symbol = t.getSymbol();
         return symbol == null
-            || JAccessibleElementSymbol.PRIMITIVE_PACKAGE.equals(symbol.getPackageName())
-            || t.isPrimitive()
-            || t.isBoxedPrimitive();
+                || JAccessibleElementSymbol.PRIMITIVE_PACKAGE.equals(symbol.getPackageName())
+                || t.isPrimitive()
+                || t.isBoxedPrimitive();
     }
-
 }

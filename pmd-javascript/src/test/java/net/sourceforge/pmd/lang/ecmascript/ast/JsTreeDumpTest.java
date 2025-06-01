@@ -2,14 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.ecmascript.ast;
-
-import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.NodePrintersKt;
+import org.junit.jupiter.api.Test;
 
 class JsTreeDumpTest extends BaseTreeDumpTest {
     JsTreeDumpTest() {

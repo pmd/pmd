@@ -10,16 +10,14 @@ import java.io.File;
 import java.io.PrintStream;
 import java.io.StringWriter;
 import java.nio.charset.Charset;
-
+import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import org.apache.tools.ant.BuildEvent;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.BuildListener;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.junit.jupiter.api.AfterAll;
-
-import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.IOUtil;
 
 class AbstractAntTest {
     protected Project project;
@@ -61,8 +59,10 @@ class AbstractAntTest {
         log = new StringBuilder();
         out = new StringWriter();
         err = new StringWriter();
-        PrintStream outStream = new PrintStream(IOUtil.fromWriter(out, Charset.defaultCharset().name()));
-        PrintStream errStream = new PrintStream(IOUtil.fromWriter(err, Charset.defaultCharset().name()));
+        PrintStream outStream =
+                new PrintStream(IOUtil.fromWriter(out, Charset.defaultCharset().name()));
+        PrintStream errStream =
+                new PrintStream(IOUtil.fromWriter(err, Charset.defaultCharset().name()));
         synchronized (System.out) {
             PrintStream originalOut = System.out;
             PrintStream originalErr = System.err;
@@ -86,30 +86,23 @@ class AbstractAntTest {
             this.logLevel = logLevel;
         }
 
+        @Override
+        public void buildStarted(BuildEvent event) {}
 
         @Override
-        public void buildStarted(BuildEvent event) {
-        }
+        public void buildFinished(BuildEvent event) {}
 
         @Override
-        public void buildFinished(BuildEvent event) {
-        }
+        public void targetStarted(BuildEvent event) {}
 
         @Override
-        public void targetStarted(BuildEvent event) {
-        }
+        public void targetFinished(BuildEvent event) {}
 
         @Override
-        public void targetFinished(BuildEvent event) {
-        }
+        public void taskStarted(BuildEvent event) {}
 
         @Override
-        public void taskStarted(BuildEvent event) {
-        }
-
-        @Override
-        public void taskFinished(BuildEvent event) {
-        }
+        public void taskFinished(BuildEvent event) {}
 
         @Override
         public void messageLogged(BuildEvent event) {

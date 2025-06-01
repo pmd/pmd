@@ -10,11 +10,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Renders a tree to XML. The resulting document is as close as possible
@@ -25,24 +23,23 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 public final class XmlTreeRenderer implements TreeRenderer {
 
     // See https://www.w3.org/TR/2008/REC-xml-20081126/#NT-Name
-    private static final String XML_START_CHAR = "[:A-Z_a-z\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\x{2FF}\\x{370}-\\x{37D}\\x{37F}-\\x{1FFF}\\x{200C}-\\x{200D}\\x{2070}-\\x{218F}\\x{2C00}-\\x{2FEF}\\x{3001}-\\x{D7FF}\\x{F900}-\\x{FDCF}\\x{FDF0}-\\x{FFFD}\\x{10000}-\\x{EFFFF}]";
+    private static final String XML_START_CHAR =
+            "[:A-Z_a-z\\xC0-\\xD6\\xD8-\\xF6\\xF8-\\x{2FF}\\x{370}-\\x{37D}\\x{37F}-\\x{1FFF}\\x{200C}-\\x{200D}\\x{2070}-\\x{218F}\\x{2C00}-\\x{2FEF}\\x{3001}-\\x{D7FF}\\x{F900}-\\x{FDCF}\\x{FDF0}-\\x{FFFD}\\x{10000}-\\x{EFFFF}]";
     private static final String XML_CHAR = "[" + XML_START_CHAR + ".\\-0-9\\xB7\\x{0300}-\\x{036F}\\x{203F}-\\x{2040}]";
     private static final Pattern XML_NAME = Pattern.compile(XML_START_CHAR + XML_CHAR + "*");
-
 
     private final XmlRenderingConfig strategy;
     private final char attrDelim;
 
     /*
-        TODO it's unclear to me how the strong typing of XPath 2.0 would
-         impact XPath queries run on the output XML. PMD maps attributes
-         to typed values, the XML only has untyped strings.
+       TODO it's unclear to me how the strong typing of XPath 2.0 would
+        impact XPath queries run on the output XML. PMD maps attributes
+        to typed values, the XML only has untyped strings.
 
-         OTOH users should expect differences, and it's even documented
-         on this class.
+        OTOH users should expect differences, and it's even documented
+        on this class.
 
-     */
-
+    */
 
     /**
      * Creates a new XML renderer.
@@ -83,9 +80,16 @@ public final class XmlTreeRenderer implements TreeRenderer {
     }
 
     private void renderProlog(Appendable out) throws IOException {
-        out.append("<?xml version=").append(attrDelim).append("1.0").append(attrDelim)
-           .append(" encoding=").append(attrDelim).append("UTF-8").append(attrDelim)
-           .append(" ?>").append(strategy.lineSeparator);
+        out.append("<?xml version=")
+                .append(attrDelim)
+                .append("1.0")
+                .append(attrDelim)
+                .append(" encoding=")
+                .append(attrDelim)
+                .append("UTF-8")
+                .append(attrDelim)
+                .append(" ?>")
+                .append(strategy.lineSeparator);
     }
 
     private void renderSubtree(int depth, Node node, Appendable out) throws IOException {
@@ -93,7 +97,6 @@ public final class XmlTreeRenderer implements TreeRenderer {
         String eltName = node.getXPathNodeName();
 
         checkValidName(eltName);
-
 
         indent(depth, out).append('<').append(eltName);
 
@@ -107,7 +110,6 @@ public final class XmlTreeRenderer implements TreeRenderer {
             out.append(" />");
             return;
         }
-
 
         out.append(">");
 
@@ -125,11 +127,11 @@ public final class XmlTreeRenderer implements TreeRenderer {
         checkValidName(name);
 
         out.append(' ')
-           .append(name)
-           .append('=')
-           .append(attrDelim)
-           .append(escapeXmlAttribute(value, strategy.singleQuoteAttributes))
-            .append(attrDelim);
+                .append(name)
+                .append('=')
+                .append(attrDelim)
+                .append(escapeXmlAttribute(value, strategy.singleQuoteAttributes))
+                .append(attrDelim);
     }
 
     private void checkValidName(String name) {
@@ -146,15 +148,14 @@ public final class XmlTreeRenderer implements TreeRenderer {
     }
 
     private static String escapeXmlText(String xml) {
-        return xml.replaceAll("<", "&lt;")
-                  .replaceAll("&", "&amp;");
-
+        return xml.replaceAll("<", "&lt;").replaceAll("&", "&amp;");
     }
 
     private static String escapeXmlAttribute(String xml, boolean isSingleQuoted) {
 
-        return isSingleQuoted ? escapeXmlText(xml).replaceAll("'", "&apos;")
-                              : escapeXmlText(xml).replaceAll("\"", "&quot;");
+        return isSingleQuoted
+                ? escapeXmlText(xml).replaceAll("'", "&apos;")
+                : escapeXmlText(xml).replaceAll("\"", "&quot;");
     }
 
     private static boolean isValidXmlName(String xml) {
@@ -233,17 +234,17 @@ public final class XmlTreeRenderer implements TreeRenderer {
 
         private static String interpretLineSep(String lineSeparator) {
             switch (lineSeparator) {
-            case "CR":
-            case "\\r":
-                return "\r";
-            case "CRLF":
-            case "\\r\\n":
-                return "\r\n";
-            case "LF":
-            case "\\n":
-                return "\n";
-            default:
-                return lineSeparator;
+                case "CR":
+                case "\\r":
+                    return "\r";
+                case "CRLF":
+                case "\\r\\n":
+                    return "\r\n";
+                case "LF":
+                case "\\n":
+                    return "\n";
+                default:
+                    return lineSeparator;
             }
         }
 
@@ -277,7 +278,5 @@ public final class XmlTreeRenderer implements TreeRenderer {
             this.indentString = Objects.requireNonNull(indentString);
             return this;
         }
-
     }
-
 }

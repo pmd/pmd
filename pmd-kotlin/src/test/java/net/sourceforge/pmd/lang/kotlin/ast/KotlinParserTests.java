@@ -15,5 +15,4 @@ class KotlinParserTests extends BaseKotlinTreeDumpTest {
     void testSimpleKotlin() {
         doTest("Simple");
     }
-
 }

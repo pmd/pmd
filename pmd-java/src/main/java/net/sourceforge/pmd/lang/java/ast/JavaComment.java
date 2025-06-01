@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.stream.Stream;
-
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
@@ -24,7 +22,7 @@ import net.sourceforge.pmd.util.IteratorUtil;
  * provides more API for Javadoc comments, see {@link JavadocComment}.
  */
 public class JavaComment implements Reportable {
-    //TODO maybe move part of this into pmd core
+    // TODO maybe move part of this into pmd core
 
     private final JavaccToken token;
 
@@ -80,13 +78,10 @@ public class JavaComment implements Reportable {
         if (preserveEmptyLines) {
             return () -> IteratorUtil.map(getText().lines().iterator(), JavaComment::removeCommentMarkup);
         } else {
-            return () -> IteratorUtil.mapNotNull(
-                getText().lines().iterator(),
-                line -> {
-                    line = removeCommentMarkup(line);
-                    return line.isEmpty() ? null : line;
-                }
-            );
+            return () -> IteratorUtil.mapNotNull(getText().lines().iterator(), line -> {
+                line = removeCommentMarkup(line);
+                return line.isEmpty() ? null : line;
+            });
         }
     }
 
@@ -97,12 +92,12 @@ public class JavaComment implements Reportable {
     @SuppressWarnings("PMD.LiteralsFirstInComparisons") // a fp
     public static boolean isMarkupWord(Chars word) {
         return word.length() <= 3
-            && (word.contentEquals("*")
-            || word.contentEquals("//")
-            || word.contentEquals("///")
-            || word.contentEquals("/*")
-            || word.contentEquals("*/")
-            || word.contentEquals("/**"));
+                && (word.contentEquals("*")
+                        || word.contentEquals("//")
+                        || word.contentEquals("///")
+                        || word.contentEquals("/*")
+                        || word.contentEquals("*/")
+                        || word.contentEquals("/**"));
     }
 
     /**
@@ -113,11 +108,9 @@ public class JavaComment implements Reportable {
         line = line.trim().removeSuffix("*/");
         int subseqFrom = 0;
         if (line.startsWith('/', 0)) {
-            if (line.startsWith("**", 1)
-                || line.startsWith("//", 1)) {
+            if (line.startsWith("**", 1) || line.startsWith("//", 1)) {
                 subseqFrom = 3;
-            } else if (line.startsWith('/', 1)
-                || line.startsWith('*', 1)) {
+            } else if (line.startsWith('/', 1) || line.startsWith('*', 1)) {
                 subseqFrom = 2;
             }
         } else if (line.startsWith('*', 0)) {
@@ -128,35 +121,35 @@ public class JavaComment implements Reportable {
 
     private static Stream<JavaccToken> getSpecialTokensIn(JjtreeNode<?> node) {
         return GenericToken.streamRange(node.getFirstToken(), node.getLastToken())
-                           .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
+                .flatMap(it ->
+                        IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
     }
 
     public static Stream<JavaComment> getLeadingComments(JavaNode node) {
         Stream<JavaccToken> specialTokens = getSpecialTokensIn(node);
-        
+
         if (node instanceof ModifierOwner && !(node instanceof ASTConstructorDeclaration)) {
             node = ((ModifierOwner) node).getModifiers();
             specialTokens = getSpecialTokensIn(node);
-            
+
             // if this was a non-implicit empty modifier node, we should also consider comments immediately after
             if (!node.getFirstToken().isImplicit()) {
                 specialTokens = Stream.concat(specialTokens, getSpecialTokensIn(node.getNextSibling()));
             }
         }
-        
-        return specialTokens.filter(JavaComment::isComment)
-                                         .map(JavaComment::toComment);
+
+        return specialTokens.filter(JavaComment::isComment).map(JavaComment::toComment);
     }
 
     private static JavaComment toComment(JavaccToken tok) {
         switch (tok.kind) {
-        case JavaTokenKinds.FORMAL_COMMENT:
-            return new JavadocComment(tok);
-        case JavaTokenKinds.MULTI_LINE_COMMENT:
-        case JavaTokenKinds.SINGLE_LINE_COMMENT:
-            return new JavaComment(tok);
-        default:
-            throw new IllegalArgumentException("Token is not a comment: " + tok);
+            case JavaTokenKinds.FORMAL_COMMENT:
+                return new JavadocComment(tok);
+            case JavaTokenKinds.MULTI_LINE_COMMENT:
+            case JavaTokenKinds.SINGLE_LINE_COMMENT:
+                return new JavaComment(tok);
+            default:
+                throw new IllegalArgumentException("Token is not a comment: " + tok);
         }
     }
 

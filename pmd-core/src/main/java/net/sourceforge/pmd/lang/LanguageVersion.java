@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang;
 
 import java.util.List;
 import java.util.Objects;
-
 import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
@@ -98,7 +96,7 @@ public final class LanguageVersion implements Comparable<LanguageVersion> {
         LanguageVersion otherVersion = language.getVersion(versionString);
         if (otherVersion == null) {
             throw new IllegalArgumentException(
-                "No such version '" + versionString + "' for language " + language.getName());
+                    "No such version '" + versionString + "' for language " + language.getName());
         }
         return this.compareTo(otherVersion);
     }
@@ -111,7 +109,6 @@ public final class LanguageVersion implements Comparable<LanguageVersion> {
         }
         return Integer.compare(this.index, o.index);
     }
-
 
     @Override
     public boolean equals(Object o) {

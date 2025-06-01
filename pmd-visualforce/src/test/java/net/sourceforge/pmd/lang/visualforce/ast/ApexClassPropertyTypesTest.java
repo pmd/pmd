@@ -12,21 +12,20 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.visualforce.DataType;
 import net.sourceforge.pmd.lang.visualforce.VFTestUtils;
 import net.sourceforge.pmd.lang.visualforce.VfLanguageProperties;
+import org.junit.jupiter.api.Test;
 
 class ApexClassPropertyTypesTest {
     private static final Map<String, DataType> EXPECTED_DATA_TYPES;
 
     static {
         // Intentionally use the wrong case for property names to ensure that they can be found. The Apex class name
-        // must have the correct case since it is used to lookup the file. The Apex class name is guaranteed to be correct
+        // must have the correct case since it is used to lookup the file. The Apex class name is guaranteed to be
+        // correct
         // in the Visualforce page, but the property names are not
         EXPECTED_DATA_TYPES = new HashMap<>();
         EXPECTED_DATA_TYPES.put("ApexController.accOuntIdProp", DataType.Lookup);
@@ -55,19 +54,23 @@ class ApexClassPropertyTypesTest {
 
     @Test
     void testApexClassIsProperlyParsed() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
-                                     .resolve("SomePage.page");
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("SomePage.page");
         try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
             ApexClassPropertyTypes apexClassPropertyTypes = new ApexClassPropertyTypes(lpReg);
-            ObjectFieldTypesTest.validateDataTypes(EXPECTED_DATA_TYPES, apexClassPropertyTypes, vfPagePath,
-                                                   VfLanguageProperties.APEX_DIRECTORIES_DESCRIPTOR.defaultValue());
+            ObjectFieldTypesTest.validateDataTypes(
+                    EXPECTED_DATA_TYPES,
+                    apexClassPropertyTypes,
+                    vfPagePath,
+                    VfLanguageProperties.APEX_DIRECTORIES_DESCRIPTOR.defaultValue());
         }
-
     }
 
     @Test
     void testInvalidDirectoryDoesNotCauseAnException() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve("SomePage.page");
         FileId vfFileName = FileId.fromPath(vfPagePath);
 

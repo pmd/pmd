@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.visualforce.rule.security;
 
 import java.util.EnumSet;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTContent;
@@ -22,7 +20,6 @@ import net.sourceforge.pmd.lang.visualforce.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTText;
 import net.sourceforge.pmd.lang.visualforce.rule.AbstractVfRule;
 import net.sourceforge.pmd.lang.visualforce.rule.security.internal.ElEscapeDetector;
-
 
 /**
  * @author sergey.gorbaty February 2017
@@ -46,7 +43,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final String FALSE = "false";
     private static final Pattern ON_EVENT = Pattern.compile("^on(\\w)+$");
     private static final Pattern PLACEHOLDERS = Pattern.compile("\\{(\\w|,|\\.|'|:|\\s)*\\}");
-    private static final Set<ElEscapeDetector.Escaping> JSENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
+    private static final Set<ElEscapeDetector.Escaping> JSENCODE_JSINHTMLENCODE =
+            EnumSet.of(ElEscapeDetector.Escaping.JSENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
     private static final Set<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
 
     @Override
@@ -97,12 +95,12 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
     private void checkLimitedFlags(ASTElement node, Object data) {
         switch (node.getName().toLowerCase(Locale.ROOT)) {
-        case IFRAME_CONST:
-        case APEXIFRAME_CONST:
-        case A_CONST:
-            break;
-        default:
-            return;
+            case IFRAME_CONST:
+            case APEXIFRAME_CONST:
+            case A_CONST:
+                break;
+            default:
+                return;
         }
 
         final List<ASTAttribute> attributes = node.children(ASTAttribute.class).toList();
@@ -120,7 +118,8 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 if (attrText != null) {
                     if (0 == attrText.getIndexInParent()) {
                         String lowerCaseImage = attrText.getImage().toLowerCase(Locale.ROOT);
-                        if (lowerCaseImage.startsWith("/") || lowerCaseImage.startsWith("http")
+                        if (lowerCaseImage.startsWith("/")
+                                || lowerCaseImage.startsWith("http")
                                 || lowerCaseImage.startsWith("mailto")) {
                             startingWithSlashText = true;
                         }
@@ -137,15 +136,14 @@ public class VfUnescapeElRule extends AbstractVfRule {
                             break;
                         }
 
-                        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(el, ElEscapeDetector.Escaping.URLENCODE)) {
+                        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
+                                el, ElEscapeDetector.Escaping.URLENCODE)) {
                             isEL = true;
                             toReport.add(el);
                         }
                     }
                 }
-
             }
-
         }
 
         if (isEL) {
@@ -153,7 +151,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 asCtx(data).addViolation(expr);
             }
         }
-
     }
 
     private void checkAllOnEventTags(ASTElement node, Object data) {
@@ -176,7 +173,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
                     }
                 }
             }
-
         }
 
         if (isEL) {
@@ -184,7 +180,6 @@ public class VfUnescapeElRule extends AbstractVfRule {
                 asCtx(data).addViolation(expr);
             }
         }
-
     }
 
     private boolean startsWithSlashLiteral(final ASTElExpression elExpression) {
@@ -193,13 +188,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
             final ASTLiteral literal = expression.firstChild(ASTLiteral.class);
             if (literal != null && literal.getIndexInParent() == 0) {
                 String lowerCaseLiteral = literal.getImage().toLowerCase(Locale.ROOT);
-                if (lowerCaseLiteral.startsWith("'/") || lowerCaseLiteral.startsWith("\"/")
+                if (lowerCaseLiteral.startsWith("'/")
+                        || lowerCaseLiteral.startsWith("\"/")
                         || lowerCaseLiteral.startsWith("'http")
                         || lowerCaseLiteral.startsWith("\"http")) {
                     return true;
                 }
             }
-
         }
 
         return false;
@@ -214,43 +209,41 @@ public class VfUnescapeElRule extends AbstractVfRule {
         for (ASTAttribute attr : node.children(ASTAttribute.class)) {
             String name = attr.getName().toLowerCase(Locale.ROOT);
             switch (name) {
-            case ESCAPE:
-            case ITEM_ESCAPED:
-                final ASTText text = attr.descendants(ASTText.class).first();
-                if (text != null) {
-                    if (FALSE.equalsIgnoreCase(text.getImage())) {
-                        isUnescaped = true;
+                case ESCAPE:
+                case ITEM_ESCAPED:
+                    final ASTText text = attr.descendants(ASTText.class).first();
+                    if (text != null) {
+                        if (FALSE.equalsIgnoreCase(text.getImage())) {
+                            isUnescaped = true;
+                        }
                     }
-                }
-                break;
-            case VALUE:
-            case ITEM_VALUE:
+                    break;
+                case VALUE:
+                case ITEM_VALUE:
+                    for (ASTElExpression el : attr.descendants(ASTElExpression.class)) {
+                        if (ElEscapeDetector.startsWithSafeResource(el)) {
+                            continue;
+                        }
 
-                for (ASTElExpression el : attr.descendants(ASTElExpression.class)) {
-                    if (ElEscapeDetector.startsWithSafeResource(el)) {
-                        continue;
+                        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
+                                el, ElEscapeDetector.Escaping.HTMLENCODE)) {
+                            isEL = true;
+                            toReport.add(el);
+                        }
                     }
 
-                    if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(el,
-                            ElEscapeDetector.Escaping.HTMLENCODE)) {
-                        isEL = true;
-                        toReport.add(el);
+                    final ASTText textValue = attr.descendants(ASTText.class).first();
+                    if (textValue != null) {
+
+                        if (PLACEHOLDERS.matcher(textValue.getImage()).matches()) {
+                            hasPlaceholders = true;
+                        }
                     }
-                }
 
-                final ASTText textValue = attr.descendants(ASTText.class).first();
-                if (textValue != null) {
-
-                    if (PLACEHOLDERS.matcher(textValue.getImage()).matches()) {
-                        hasPlaceholders = true;
-                    }
-                }
-
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
             }
-
         }
 
         if (hasPlaceholders && isUnescaped) {
@@ -272,15 +265,14 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
 
         switch (node.getName().toLowerCase(Locale.ROOT)) { // vf is case insensitive
-        case APEX_OUTPUT_TEXT:
-        case APEX_PAGE_MESSAGE:
-        case APEX_PAGE_MESSAGES:
-        case APEX_SELECT_OPTION:
-            return true;
-        default:
-            return false;
+            case APEX_OUTPUT_TEXT:
+            case APEX_PAGE_MESSAGE:
+            case APEX_PAGE_MESSAGES:
+            case APEX_SELECT_OPTION:
+                return true;
+            default:
+                return false;
         }
-
     }
 
     private Set<ASTElExpression> hasELInInnerElements(final ASTElement node) {
@@ -295,11 +287,10 @@ public class VfUnescapeElRule extends AbstractVfRule {
                                 continue;
                             }
 
-                            if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(el,
-                                    ElEscapeDetector.Escaping.HTMLENCODE)) {
+                            if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
+                                    el, ElEscapeDetector.Escaping.HTMLENCODE)) {
                                 toReturn.add(el);
                             }
-
                         }
                     }
                 }

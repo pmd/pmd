@@ -10,22 +10,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.apache.commons.lang3.exception.ContextedRuntimeException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
-import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
-import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
-import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
-import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.DataMap;
-import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
-
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.LocalVariableReference;
@@ -43,7 +27,19 @@ import net.sf.saxon.sxpath.XPathExpression;
 import net.sf.saxon.sxpath.XPathVariable;
 import net.sf.saxon.trans.UncheckedXPathException;
 import net.sf.saxon.trans.XPathException;
-
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
+import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
+import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
+import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
+import org.apache.commons.lang3.exception.ContextedRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a Saxon based XPathRule query.
@@ -63,8 +59,10 @@ public class SaxonXPathRuleQuery {
     private static final SimpleDataKey<AstTreeInfo> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
     private final String xpathExpr;
+
     @SuppressWarnings("PMD") // may be useful later, idk
     private final XPathVersion version;
+
     private final Map<PropertyDescriptor<?>, Object> properties;
     private final XPathHandler xPathHandler;
     private final List<String> rulechainQueries = new ArrayList<>();
@@ -82,12 +80,13 @@ public class SaxonXPathRuleQuery {
 
     private final DeprecatedAttrLogger attrCtx;
 
-
-    public SaxonXPathRuleQuery(String xpathExpr,
-                               XPathVersion version,
-                               Map<PropertyDescriptor<?>, Object> properties,
-                               XPathHandler xPathHandler,
-                               DeprecatedAttrLogger logger) throws PmdXPathException {
+    public SaxonXPathRuleQuery(
+            String xpathExpr,
+            XPathVersion version,
+            Map<PropertyDescriptor<?>, Object> properties,
+            XPathHandler xPathHandler,
+            DeprecatedAttrLogger logger)
+            throws PmdXPathException {
         this.xpathExpr = xpathExpr;
         this.version = version;
         this.properties = properties;
@@ -100,16 +99,13 @@ public class SaxonXPathRuleQuery {
         }
     }
 
-
     public String getXpathExpression() {
         return xpathExpr;
     }
 
-
     public List<String> getRuleChainVisits() {
         return rulechainQueries;
     }
-
 
     public List<Node> evaluate(final Node node) {
         final AstTreeInfo documentNode = getDocumentNodeForRootNode(node);
@@ -117,7 +113,8 @@ public class SaxonXPathRuleQuery {
         try {
 
             // Map AST Node -> Saxon Node
-            final XPathDynamicContext xpathDynamicContext = xpathExpression.createDynamicContext(documentNode.findWrapperFor(node));
+            final XPathDynamicContext xpathDynamicContext =
+                    xpathExpression.createDynamicContext(documentNode.findWrapperFor(node));
 
             // XPath 2.0 sequences may contain duplicates
             final Set<Node> results = new LinkedHashSet<>();
@@ -130,7 +127,8 @@ public class SaxonXPathRuleQuery {
                     if (current instanceof AstNodeOwner) {
                         results.add(((AstNodeOwner) current).getUnderlyingNode());
                     } else {
-                        throw new XPathException("XPath rule expression returned a non-node (" + current.getClass() + "): " + current);
+                        throw new XPathException(
+                                "XPath rule expression returned a non-node (" + current.getClass() + "): " + current);
                     }
                     current = iterator.next();
                 }
@@ -166,7 +164,6 @@ public class SaxonXPathRuleQuery {
         return nodeNameToXPaths.get(SaxonXPathRuleQuery.AST_ROOT).get(0);
     }
 
-
     /**
      * Gets the DocumentNode representation for the whole AST in which the node is, that is, if the node is not the root
      * of the AST, then the AST is traversed all the way up until the root node is found. If the DocumentNode was
@@ -180,7 +177,6 @@ public class SaxonXPathRuleQuery {
         final RootNode root = node.getRoot();
         return root.getUserMap().computeIfAbsent(SAXON_TREE_CACHE_KEY, () -> new AstTreeInfo(root, configuration));
     }
-
 
     private void addExpressionForNode(String nodeName, Expression expression) {
         nodeNameToXPaths.computeIfAbsent(nodeName, n -> new ArrayList<>(2)).add(expression);
@@ -213,7 +209,6 @@ public class SaxonXPathRuleQuery {
 
         xpathExpression = xpathEvaluator.createExpression(xpathExpr);
         analyzeXPathForRuleChain(xpathEvaluator);
-
     }
 
     private void analyzeXPathForRuleChain(final XPathEvaluator xpathEvaluator) {

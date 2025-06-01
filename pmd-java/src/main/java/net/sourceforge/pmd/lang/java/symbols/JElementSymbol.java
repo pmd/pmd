@@ -2,17 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.symbols;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a named program element that can be referred to by simple name. Abstracts over
@@ -47,14 +44,12 @@ public interface JElementSymbol {
         return name.equals(getSimpleName());
     }
 
-
     /**
      * Returns the type system that created this symbol. The symbol uses
      * this instance to create new types, for example to reflect its
      * superclass.
      */
     TypeSystem getTypeSystem();
-
 
     /**
      * Returns true if this symbol is a placeholder, created to fill-in
@@ -90,7 +85,6 @@ public interface JElementSymbol {
         return false;
     }
 
-
     /**
      * Returns the node that declares this symbol. Eg for {@link JMethodSymbol},
      * it's an {@link ASTMethodDeclaration}. Will only return non-null
@@ -117,10 +111,8 @@ public interface JElementSymbol {
     @Override
     boolean equals(Object o);
 
-
     /**
      * Dispatch to the appropriate visit method of the visitor and returns its result.
      */
     <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param);
-
 }

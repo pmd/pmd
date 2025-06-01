@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
+import net.sourceforge.pmd.lang.ast.Node;
 import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
@@ -11,8 +12,6 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * This is the base class for antlr generated parsers. The implementation
@@ -40,7 +39,6 @@ public abstract class AntlrGeneratedParserBase<N extends AntlrNode<N>> extends P
         super(input);
     }
 
-
     @Override
     public TerminalNode createTerminalNode(ParserRuleContext parent, Token t) {
         return createPmdTerminal(parent, t).asAntlrNode();
@@ -56,7 +54,6 @@ public abstract class AntlrGeneratedParserBase<N extends AntlrNode<N>> extends P
     protected abstract BaseAntlrTerminalNode<N> createPmdTerminal(ParserRuleContext parent, Token t);
 
     protected abstract BaseAntlrErrorNode<N> createPmdError(ParserRuleContext parent, Token t);
-
 
     protected Node asPmdNode(RuleContext ctx) {
         return ((BaseAntlrNode.AntlrToPmdParseTreeAdapter<?>) ctx).getPmdNode();
@@ -78,11 +75,9 @@ public abstract class AntlrGeneratedParserBase<N extends AntlrNode<N>> extends P
 
     protected void enterRecursionRule(BaseAntlrInnerNode<N> localctx, int state, int ruleIndex, int precedence) {
         enterRecursionRule(localctx.asAntlrNode(), state, ruleIndex, precedence);
-
     }
 
     protected boolean sempred(BaseAntlrInnerNode<N> localctx, int ruleIndex, int predIndex) {
         return sempred(localctx.asAntlrNode(), ruleIndex, predIndex);
     }
-
 }

@@ -11,8 +11,7 @@ import java.util.Objects;
  * A place in a text document, represented as line/column information.
  */
 public final class TextRange2d implements Comparable<TextRange2d> {
-    private static final Comparator<TextRange2d> COMPARATOR =
-        Comparator.comparingInt(TextRange2d::getStartLine)
+    private static final Comparator<TextRange2d> COMPARATOR = Comparator.comparingInt(TextRange2d::getStartLine)
             .thenComparingInt(TextRange2d::getStartColumn)
             .thenComparingInt(TextRange2d::getEndLine)
             .thenComparingInt(TextRange2d::getEndColumn);
@@ -28,9 +27,8 @@ public final class TextRange2d implements Comparable<TextRange2d> {
         this.endLine = endLine;
         this.endCol = endCol;
         assert startCol >= 1 && startLine >= 1 && endLine >= 1 && endCol >= 1
-            : "Not a valid range " + toDisplayStringWithColon();
+                : "Not a valid range " + toDisplayStringWithColon();
     }
-
 
     public TextPos2d getStartPos() {
         return TextPos2d.pos2d(startLine, startCol);
@@ -41,8 +39,7 @@ public final class TextRange2d implements Comparable<TextRange2d> {
     }
 
     public String toDisplayStringWithColon() {
-        return getStartPos().toDisplayStringWithColon() + "-"
-            + getEndPos().toDisplayStringWithColon();
+        return getStartPos().toDisplayStringWithColon() + "-" + getEndPos().toDisplayStringWithColon();
     }
 
     public int getStartLine() {
@@ -95,8 +92,7 @@ public final class TextRange2d implements Comparable<TextRange2d> {
             return false;
         }
         TextRange2d that = (TextRange2d) o;
-        return this.getStartPos().equals(that.getStartPos())
-            && this.getEndPos().equals(that.getEndPos());
+        return this.getStartPos().equals(that.getStartPos()) && this.getEndPos().equals(that.getEndPos());
     }
 
     @Override
@@ -106,8 +102,7 @@ public final class TextRange2d implements Comparable<TextRange2d> {
 
     @Override
     public String toString() {
-        return "!debug only! [" + getStartPos().toTupleString()
-            + " - " + getEndPos().toTupleString() + ']';
+        return "!debug only! [" + getStartPos().toTupleString() + " - "
+                + getEndPos().toTupleString() + ']';
     }
-
 }

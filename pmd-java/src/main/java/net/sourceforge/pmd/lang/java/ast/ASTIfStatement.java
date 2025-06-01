@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -20,16 +19,13 @@ public final class ASTIfStatement extends AbstractStatement {
 
     private boolean hasElse;
 
-
     ASTIfStatement(int id) {
         super(id);
     }
 
-
     void setHasElse() {
         this.hasElse = true;
     }
-
 
     /**
      * Returns true if this statement has an {@code else} clause.
@@ -37,7 +33,6 @@ public final class ASTIfStatement extends AbstractStatement {
     public boolean hasElse() {
         return this.hasElse;
     }
-
 
     /**
      * Returns the node that represents the guard of this conditional.
@@ -47,7 +42,6 @@ public final class ASTIfStatement extends AbstractStatement {
         return (ASTExpression) getChild(0);
     }
 
-
     /**
      * Returns the statement that will be run if the guard evaluates
      * to true.
@@ -56,14 +50,12 @@ public final class ASTIfStatement extends AbstractStatement {
         return (ASTStatement) getChild(1);
     }
 
-
     /**
      * Returns the statement of the {@code else} clause, if any.
      */
     public @Nullable ASTStatement getElseBranch() {
         return hasElse() ? (ASTStatement) getChild(2) : null;
     }
-
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

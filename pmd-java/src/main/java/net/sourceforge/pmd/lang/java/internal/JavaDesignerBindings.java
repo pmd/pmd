@@ -10,9 +10,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -43,14 +40,13 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings.DefaultDesignerBindings;
 import net.sourceforge.pmd.util.designerbindings.RelatedNodesSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class JavaDesignerBindings extends DefaultDesignerBindings {
 
     public static final JavaDesignerBindings INSTANCE = new JavaDesignerBindings();
 
-    private JavaDesignerBindings() {
-
-    }
+    private JavaDesignerBindings() {}
 
     @Override
     public Attribute getMainAttribute(Node node) {
@@ -72,8 +68,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
             return TreeIconId.CLASS;
         } else if (node instanceof ASTMethodDeclaration) {
             return TreeIconId.METHOD;
-        } else if (node instanceof ASTConstructorDeclaration
-            || node instanceof ASTCompactConstructorDeclaration) {
+        } else if (node instanceof ASTConstructorDeclaration || node instanceof ASTCompactConstructorDeclaration) {
             return TreeIconId.CONSTRUCTOR;
         } else if (node instanceof ASTVariableId) {
             return TreeIconId.VARIABLE;
@@ -96,17 +91,22 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         if (node instanceof InvocationNode) {
             InvocationNode invoc = (InvocationNode) node;
             info.add(new AdditionalInfo("Function: " + invoc.getMethodType()));
-            info.add(new AdditionalInfo("VarargsCall: " + invoc.getOverloadSelectionInfo().isVarargsCall()));
-            info.add(new AdditionalInfo("Unchecked: " + invoc.getOverloadSelectionInfo().needsUncheckedConversion()));
-            info.add(new AdditionalInfo("Failed: " + invoc.getOverloadSelectionInfo().isFailed()));
+            info.add(new AdditionalInfo(
+                    "VarargsCall: " + invoc.getOverloadSelectionInfo().isVarargsCall()));
+            info.add(new AdditionalInfo(
+                    "Unchecked: " + invoc.getOverloadSelectionInfo().needsUncheckedConversion()));
+            info.add(new AdditionalInfo(
+                    "Failed: " + invoc.getOverloadSelectionInfo().isFailed()));
         }
         if (node instanceof TypeNode) {
             JTypeMirror typeMirror = ((TypeNode) node).getTypeMirror();
             info.add(new AdditionalInfo("Type: " + typeMirror));
         }
         if (node instanceof ModifierOwner) {
-            String effective = formatModifierSet(((ModifierOwner) node).getModifiers().getEffectiveModifiers());
-            String explicit = formatModifierSet(((ModifierOwner) node).getModifiers().getExplicitModifiers());
+            String effective =
+                    formatModifierSet(((ModifierOwner) node).getModifiers().getEffectiveModifiers());
+            String explicit =
+                    formatModifierSet(((ModifierOwner) node).getModifiers().getExplicitModifiers());
             info.add(new AdditionalInfo("pmd-java:modifiers(): " + effective));
             info.add(new AdditionalInfo("pmd-java:explicitModifiers(): " + explicit));
         }
@@ -129,7 +129,6 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
             }
 
             return Collections.emptyList();
-
         };
     }
 
@@ -186,7 +185,6 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         public Attribute visit(ASTVariableAccess node, Void data) {
             return new Attribute(node, "Name", node.getName());
         }
-
 
         @Override
         public Attribute visit(ASTMethodDeclaration node, Void data) {

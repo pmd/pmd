@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.util.Locale;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
@@ -17,6 +14,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumen
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.plsql.symboltable.SymbolFacade;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
 
@@ -66,8 +64,8 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
                 // will be returned unchanged (they are already uppercase, see PLSQLParser),
                 // therefore creating fewer strings in memory.
                 if (kind != PLSQLTokenKinds.CHARACTER_LITERAL
-                    && kind != PLSQLTokenKinds.STRING_LITERAL
-                    && kind != PLSQLTokenKinds.QUOTED_LITERAL) {
+                        && kind != PLSQLTokenKinds.STRING_LITERAL
+                        && kind != PLSQLTokenKinds.QUOTED_LITERAL) {
                     image = image.toUpperCase(Locale.ROOT);
                 }
             }
@@ -87,5 +85,4 @@ public class PLSQLParser extends JjtreeParserAdapter<ASTInput> {
         TimeTracker.bench("PLSQL symbols", () -> SymbolFacade.process(root));
         return root;
     }
-
 }

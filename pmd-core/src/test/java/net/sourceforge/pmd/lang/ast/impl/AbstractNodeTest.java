@@ -13,15 +13,13 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
-
+import net.sourceforge.pmd.lang.ast.DummyNode;
+import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
+import net.sourceforge.pmd.lang.ast.Node;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import net.sourceforge.pmd.lang.ast.DummyNode;
-import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Unit test for {@link AbstractNode}.
@@ -55,7 +53,7 @@ class AbstractNodeTest {
         int i = 0;
         for (final int childIndex : childrenIndexes) {
             for (final int grandChildIndex : grandChildrenIndexes) {
-                indexes[i++] = new Integer[] { childIndex, grandChildIndex };
+                indexes[i++] = new Integer[] {childIndex, grandChildIndex};
             }
         }
         return indexes;
@@ -65,21 +63,18 @@ class AbstractNodeTest {
 
     @BeforeEach
     void setUpSampleNodeTree() {
-        rootNode = tree(
-            () -> {
-                DummyRootNode root = root();
+        rootNode = tree(() -> {
+            DummyRootNode root = root();
 
-                for (int i = 0; i < NUM_CHILDREN; i++) {
-                    final DummyNode child = node();
-                    for (int j = 0; j < NUM_GRAND_CHILDREN; j++) {
-                        child.addChild(node(), j);
-                    }
-                    root.addChild(child, i);
+            for (int i = 0; i < NUM_CHILDREN; i++) {
+                final DummyNode child = node();
+                for (int j = 0; j < NUM_GRAND_CHILDREN; j++) {
+                    child.addChild(node(), j);
                 }
-                return root;
+                root.addChild(child, i);
             }
-        );
-
+            return root;
+        });
     }
 
     /**
@@ -217,5 +212,4 @@ class AbstractNodeTest {
         // Check that this node still does not have any children
         assertEquals(0, grandChild.getNumChildren());
     }
-
 }

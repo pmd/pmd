@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge;
@@ -23,7 +22,6 @@ public final class ASTSimpleShortClassSpecifier extends AbstractModelicaClassSpe
         InternalApiBridge.addExtendToClass(
                 classTypeDeclaration,
                 Visibility.UNSPEC,
-                firstChild(ASTName.class).getCompositeName()
-        );
+                firstChild(ASTName.class).getCompositeName());
     }
 }

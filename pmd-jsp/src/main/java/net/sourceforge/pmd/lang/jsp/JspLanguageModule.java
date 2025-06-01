@@ -17,13 +17,15 @@ import net.sourceforge.pmd.lang.jsp.cpd.JspCpdLexer;
 public class JspLanguageModule extends SimpleLanguageModuleBase implements CpdCapableLanguage {
     private static final String ID = "jsp";
 
-
     public JspLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("Java Server Pages").shortName("JSP")
-                              .extensions("jsp", "jspx", "jspf", "tag")
-                              .addVersion("2")
-                              .addDefaultVersion("3"),
-              new JspHandler());
+        super(
+                LanguageMetadata.withId(ID)
+                        .name("Java Server Pages")
+                        .shortName("JSP")
+                        .extensions("jsp", "jspx", "jspf", "tag")
+                        .addVersion("2")
+                        .addDefaultVersion("3"),
+                new JspHandler());
     }
 
     public static JspLanguageModule getInstance() {

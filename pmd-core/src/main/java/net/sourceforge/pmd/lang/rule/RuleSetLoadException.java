@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An exception that is thrown when something wrong occurs while
@@ -29,5 +28,4 @@ public class RuleSetLoadException extends RuntimeException {
     RuleSetLoadException(RuleSetReferenceId rsetId, String message) {
         super("Cannot load ruleset " + rsetId + ": " + message);
     }
-
 }

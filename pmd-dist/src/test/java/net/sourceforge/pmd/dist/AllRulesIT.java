@@ -8,17 +8,26 @@ import static org.hamcrest.Matchers.containsString;
 
 import java.io.File;
 import java.util.Arrays;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 class AllRulesIT extends AbstractBinaryDistributionTest {
 
-
     static Iterable<String> languagesToTest() {
         // note: scala and wsdl have no rules
-        return Arrays.asList("java", "apex", "html", "javascript", "jsp", "modelica",
-                "plsql", "pom", "visualforce", "velocity", "xml", "xsl");
+        return Arrays.asList(
+                "java",
+                "apex",
+                "html",
+                "javascript",
+                "jsp",
+                "modelica",
+                "plsql",
+                "pom",
+                "visualforce",
+                "velocity",
+                "xml",
+                "xsl");
     }
 
     @ParameterizedTest
@@ -26,14 +35,13 @@ class AllRulesIT extends AbstractBinaryDistributionTest {
     void runRuleTests(String language) throws Exception {
         String srcDir = new File(".", "src/test/resources/sample-source/" + language + "/").getAbsolutePath();
 
-        ExecutionResult result = PMDExecutor.runPMDRules(createTemporaryReportFile(), tempDir, srcDir,
-                "src/test/resources/rulesets/all-" + language + ".xml");
+        ExecutionResult result = PMDExecutor.runPMDRules(
+                createTemporaryReportFile(), tempDir, srcDir, "src/test/resources/rulesets/all-" + language + ".xml");
         assertDefaultExecutionResult(result);
     }
 
     private static void assertDefaultExecutionResult(ExecutionResult result) {
-        result.assertExitCode(4)
-              .assertStdOut(containsString(""));
+        result.assertExitCode(4).assertStdOut(containsString(""));
 
         result.assertNoError("Exception applying rule");
         result.assertNoError("Ruleset not found");

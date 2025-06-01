@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaDeclaration;
@@ -32,12 +31,14 @@ public class ASTSingleDefinitionImportClause extends AbstractModelicaImportClaus
     }
 
     @Override
-    protected ResolutionResult<ModelicaDeclaration> getCacheableImportSources(ResolutionState state, ModelicaScope scope) {
+    protected ResolutionResult<ModelicaDeclaration> getCacheableImportSources(
+            ResolutionState state, ModelicaScope scope) {
         return scope.safeResolveLexically(ModelicaDeclaration.class, state, importWhat.getCompositeName());
     }
 
     @Override
-    protected void fetchImportedClassesFromSource(ResolutionContext result, ModelicaDeclaration source, String simpleName) {
+    protected void fetchImportedClassesFromSource(
+            ResolutionContext result, ModelicaDeclaration source, String simpleName) {
         if (importedName.equals(simpleName)) {
             result.addCandidate(source);
         }

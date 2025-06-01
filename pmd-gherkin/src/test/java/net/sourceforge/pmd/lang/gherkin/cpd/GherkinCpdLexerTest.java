@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.gherkin.cpd;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
+import org.junit.jupiter.api.Test;
 
 class GherkinCpdLexerTest extends CpdTextComparisonTest {
     GherkinCpdLexerTest() {

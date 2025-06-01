@@ -3,6 +3,10 @@
  */
 package net.sourceforge.pmd.lang.test.ast
 
+import java.io.InputStream
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Path
 import net.sourceforge.pmd.PMDConfiguration
 import net.sourceforge.pmd.PmdAnalysis
 import net.sourceforge.pmd.internal.util.IOUtil
@@ -19,23 +23,19 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRule
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener
 import net.sourceforge.pmd.reporting.Report
-import java.io.InputStream
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.Path
 
-/**
- * Language-independent base for a parser utils class.
- * Implementations are language-specific.
- */
+/** Language-independent base for a parser utils class. Implementations are language-specific. */
 abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode>(
-        protected val langName: String,
-        private val rootClass: Class<T>,
-        protected val params: Params
+    protected val langName: String,
+    private val rootClass: Class<T>,
+    protected val params: Params,
 ) {
 
-    constructor(lang: PmdCapableLanguage, rootClass: Class<T>, params: Params)
-            : this(lang.name, rootClass, params)
+    constructor(
+        lang: PmdCapableLanguage,
+        rootClass: Class<T>,
+        params: Params,
+    ) : this(lang.name, rootClass, params)
 
     data class Params(
         val doProcess: Boolean,
@@ -44,7 +44,7 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val resourcePrefix: String,
         val languageRegistry: LanguageRegistry = LanguageRegistry.PMD,
         val suppressMarker: String = PMDConfiguration.DEFAULT_SUPPRESS_MARKER,
-        val configLanguageProperties: LanguagePropertyBundle.() -> Unit = {}
+        val configLanguageProperties: LanguagePropertyBundle.() -> Unit = {},
     ) {
 
         @Deprecated("Overload added for binary compatibility")
@@ -62,7 +62,8 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             resourcePrefix,
             languageRegistry,
             suppressMarker,
-            configLanguageProperties = {})
+            configLanguageProperties = {},
+        )
 
         @Deprecated("Overload added for binary compatibility")
         fun copy(
@@ -72,35 +73,40 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             resourcePrefix: String,
             languageRegistry: LanguageRegistry = LanguageRegistry.PMD,
             suppressMarker: String = PMDConfiguration.DEFAULT_SUPPRESS_MARKER,
-        ) = copy(
-            doProcess, defaultVerString, resourceLoader, resourcePrefix, languageRegistry, suppressMarker,
-            configLanguageProperties
-        )
+        ) =
+            copy(
+                doProcess,
+                defaultVerString,
+                resourceLoader,
+                resourcePrefix,
+                languageRegistry,
+                suppressMarker,
+                configLanguageProperties,
+            )
 
         companion object {
 
-            @JvmStatic
-            val default = Params(true, null, null, "")
-
+            @JvmStatic val default = Params(true, null, null, "")
         }
     }
 
     internal val resourceLoader: Class<*>
         get() = params.resourceLoader ?: javaClass
 
-    internal val resourcePrefix: String get() = params.resourcePrefix
+    internal val resourcePrefix: String
+        get() = params.resourcePrefix
 
     /**
-     * Returns the language version with the given version string.
-     * If null, this defaults to the default language version for
-     * this instance (not necessarily the default language version
+     * Returns the language version with the given version string. If null, this defaults to the
+     * default language version for this instance (not necessarily the default language version
      * defined by the language module).
      */
     fun getVersion(version: String?): LanguageVersion {
         val language = language
         return if (version == null) language.defaultVersion
-        else language.getVersion(version)
-            ?: throw AssertionError("Unsupported version $version for language $language")
+        else
+            language.getVersion(version)
+                ?: throw AssertionError("Unsupported version $version for language $language")
     }
 
     val language: PmdCapableLanguage
@@ -108,61 +114,49 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             params.languageRegistry.getLanguageByFullName(langName) as? PmdCapableLanguage?
                 ?: run {
                     val langNames = params.languageRegistry.commaSeparatedList { it.name }
-                    throw AssertionError("'$langName' is not a supported language (available $langNames)")
+                    throw AssertionError(
+                        "'$langName' is not a supported language (available $langNames)"
+                    )
                 }
-
 
     val defaultVersion: LanguageVersion
         get() = getVersion(params.defaultVerString)
 
-
     protected abstract fun clone(params: Params): Self
 
     @JvmOverloads
-    fun withProcessing(doProcess: Boolean = true): Self =
-        clone(params.copy(doProcess = doProcess))
+    fun withProcessing(doProcess: Boolean = true): Self = clone(params.copy(doProcess = doProcess))
 
     /**
-     * Returns an instance of [Self] for which all parsing methods
-     * default their language version to the provided [version]
-     * If the [version] is null, then the default language version
-     * defined by the language module is used instead.
+     * Returns an instance of [Self] for which all parsing methods default their language version to
+     * the provided [version] If the [version] is null, then the default language version defined by
+     * the language module is used instead.
      */
-    fun withDefaultVersion(version: String?): Self =
-        clone(params.copy(defaultVerString = version))
+    fun withDefaultVersion(version: String?): Self = clone(params.copy(defaultVerString = version))
 
     /**
-     * Returns an instance of [Self] for which [parseResource] uses
-     * the provided [contextClass] and [resourcePrefix] to load resources.
+     * Returns an instance of [Self] for which [parseResource] uses the provided [contextClass] and
+     * [resourcePrefix] to load resources.
      */
     @JvmOverloads
     fun withResourceContext(contextClass: Class<*>, resourcePrefix: String = ""): Self =
-            clone(params.copy(resourceLoader = contextClass, resourcePrefix = resourcePrefix))
+        clone(params.copy(resourceLoader = contextClass, resourcePrefix = resourcePrefix))
 
-
-    fun withSuppressMarker(marker: String): Self =
-            clone(params.copy(suppressMarker = marker))
-
+    fun withSuppressMarker(marker: String): Self = clone(params.copy(suppressMarker = marker))
 
     fun withLanguageProperties(configFun: LanguagePropertyBundle.() -> Unit): Self =
         clone(params.copy(configLanguageProperties = configFun))
 
-
     @JvmOverloads
     fun <R : Node> getNodes(target: Class<R>, source: String, version: String? = null): List<R> =
-                parse(source, version).descendants(target).crossFindBoundaries(true).toList()
+        parse(source, version).descendants(target).crossFindBoundaries(true).toList()
 
     /**
-     * Parses the [sourceCode] with the given [version]. This may execute
-     * additional processing passes if this instance is configured to do
-     * so.
+     * Parses the [sourceCode] with the given [version]. This may execute additional processing
+     * passes if this instance is configured to do so.
      */
     @JvmOverloads
-    fun parse(
-        sourceCode: String,
-        version: String? = null,
-        fileName: FileId = FileId.UNKNOWN
-    ): T {
+    fun parse(sourceCode: String, version: String? = null, fileName: FileId = FileId.UNKNOWN): T {
         val lversion = if (version == null) defaultVersion else getVersion(version)
         val params = params.copy(defaultVerString = lversion.version)
         val textDoc = TextDocument.readOnlyString(sourceCode, fileName, lversion)
@@ -177,7 +171,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     protected open fun loadLanguages(params: Params): LanguageProcessorRegistry =
         LanguageProcessorRegistry.singleton(newProcessor(params))
 
-
     protected open fun doParse(processor: LanguageProcessor, params: Params, task: ParserTask): T {
         val root = parseImpl(params, processor, task)
         return rootClass.cast(root)
@@ -185,40 +178,43 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
     @JvmOverloads
     fun newProcessor(params: Params = this.params): LanguageProcessor {
-        val props = language.newPropertyBundle().apply {
-            setLanguageVersion(params.defaultVerString ?: defaultVersion.version)
-            setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)
-            params.configLanguageProperties(this)
-        }
+        val props =
+            language.newPropertyBundle().apply {
+                setLanguageVersion(params.defaultVerString ?: defaultVersion.version)
+                setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, params.suppressMarker)
+                params.configLanguageProperties(this)
+            }
         return language.createProcessor(props)
     }
 
-    protected open fun parseImpl(params: Params, processor: LanguageProcessor, task: ParserTask): RootNode =
-        processor.services().parser.parse(task)
+    protected open fun parseImpl(
+        params: Params,
+        processor: LanguageProcessor,
+        task: ParserTask,
+    ): RootNode = processor.services().parser.parse(task)
 
     /**
-     * Fetches and [parse]s the [resource] using the context defined for this
-     * instance (by default uses this class' classloader, but can be configured
-     * with [withResourceContext]).
+     * Fetches and [parse]s the [resource] using the context defined for this instance (by default
+     * uses this class' classloader, but can be configured with [withResourceContext]).
      */
     @JvmOverloads
     open fun parseResource(resource: String, version: String? = null): T =
         parse(
             readResource(resource),
             version,
-            fileName = FileId.fromPathLikeString(params.resourcePrefix + resource)
+            fileName = FileId.fromPathLikeString(params.resourcePrefix + resource),
         )
 
-    /**
-     * Fetches and [parse]s the [path].
-     */
+    /** Fetches and [parse]s the [path]. */
     @JvmOverloads
     open fun parseFile(path: Path, version: String? = null): T =
-        parse(IOUtil.readToString(Files.newBufferedReader(path)), version, fileName = FileId.fromPath(path))
+        parse(
+            IOUtil.readToString(Files.newBufferedReader(path)),
+            version,
+            fileName = FileId.fromPath(path),
+        )
 
-    /**
-     * Fetches the source of the given [clazz].
-     */
+    /** Fetches the source of the given [clazz]. */
     @JvmOverloads
     open fun parseClass(clazz: Class<*>, version: String? = null): T =
         parseClass(clazz.name, version)
@@ -229,8 +225,11 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
 
     fun readResource(resourceName: String): String {
 
-        val input = resourceLoader.getResourceAsStream(params.resourcePrefix + resourceName)
-                ?: throw IllegalArgumentException("Unable to find resource file ${params.resourcePrefix + resourceName} from $resourceLoader")
+        val input =
+            resourceLoader.getResourceAsStream(params.resourcePrefix + resourceName)
+                ?: throw IllegalArgumentException(
+                    "Unable to find resource file ${params.resourcePrefix + resourceName} from $resourceLoader"
+                )
 
         input.use {
             return consume(input)
@@ -238,17 +237,15 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
     }
 
     private fun consume(input: InputStream) =
-            IOUtil.readToString(input, StandardCharsets.UTF_8)
-                    .replace(Regex("\\R"), "\n")  // normalize line-endings
+        IOUtil.readToString(input, StandardCharsets.UTF_8)
+            .replace(Regex("\\R"), "\n") // normalize line-endings
 
     /**
-     * Gets the source from the source file in which the class was declared.
-     * Returns the source of the whole file even it it is not a top-level type.
+     * Gets the source from the source file in which the class was declared. Returns the source of
+     * the whole file even it it is not a top-level type.
      *
      * @param clazz Class to find the source for
-     *
      * @return The source
-     *
      * @throws IllegalArgumentException if the source file wasn't found
      */
     fun readClassSource(clazz: Class<*>): String = readClassSource(clazz.name)
@@ -258,8 +255,11 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val outerName = binaryName.substringBefore('$')
         val sourceFile = outerName.replace('.', '/') + ".java"
 
-        val input = resourceLoader.classLoader.getResourceAsStream(sourceFile)
-            ?: throw IllegalArgumentException("Unable to find source file $sourceFile for $binaryName")
+        val input =
+            resourceLoader.classLoader.getResourceAsStream(sourceFile)
+                ?: throw IllegalArgumentException(
+                    "Unable to find source file $sourceFile for $binaryName"
+                )
 
         input.use {
             return consume(input)
@@ -274,24 +274,24 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         }
 
     /**
-     * Execute the given [rule] on the [code]. Produce a report with the violations
-     * found by the rule. The language version of the piece of code is determined by the [params].
+     * Execute the given [rule] on the [code]. Produce a report with the violations found by the
+     * rule. The language version of the piece of code is determined by the [params].
      */
     @JvmOverloads
     fun executeRule(
         rule: Rule,
         code: String,
-        fileName: FileId = FileId.fromPathLikeString("testfile.${language.extensions[0]}")
+        fileName: FileId = FileId.fromPathLikeString("testfile.${language.extensions[0]}"),
     ): Report {
-        if (rule.language == null)
-            rule.language = language
+        if (rule.language == null) rule.language = language
 
-        val config = PMDConfiguration().apply {
-            suppressMarker = params.suppressMarker
-            forceLanguageVersion = defaultVersion
-            isIgnoreIncrementalAnalysis = true
-            threads = 0 // don't use separate threads for rule execution
-        }
+        val config =
+            PMDConfiguration().apply {
+                suppressMarker = params.suppressMarker
+                forceLanguageVersion = defaultVersion
+                isIgnoreIncrementalAnalysis = true
+                threads = 0 // don't use separate threads for rule execution
+            }
 
         return PmdAnalysis.create(config).use { pmd ->
             pmd.addListener(GlobalAnalysisListener.exceptionThrower())
@@ -308,6 +308,6 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         executeRule(
             rule,
             code = Files.newBufferedReader(path).readText(),
-            fileName = FileId.fromPath(path)
+            fileName = FileId.fromPath(path),
         )
 }

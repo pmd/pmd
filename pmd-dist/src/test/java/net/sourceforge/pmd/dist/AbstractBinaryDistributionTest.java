@@ -8,11 +8,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
+import net.sourceforge.pmd.PMDVersion;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.io.TempDir;
-
-import net.sourceforge.pmd.PMDVersion;
 
 abstract class AbstractBinaryDistributionTest {
     public static final String PMD_BIN_PREFIX = "pmd-bin-" + PMDVersion.VERSION;

@@ -9,7 +9,6 @@ import java.util.Objects;
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
 import org.xml.sax.SAXException;
 
 /**
@@ -51,5 +50,4 @@ enum TestSchemaVersion {
         URL resource = TestSchemaVersion.class.getResource(schemaLoc);
         return Objects.requireNonNull(resource, "Cannot find schema location " + schemaLoc);
     }
-
 }

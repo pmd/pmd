@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
@@ -9,7 +8,6 @@ import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -37,11 +35,15 @@ import net.sourceforge.pmd.properties.PropertySource;
  */
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR =
-            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().build();
+    private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR = stringListProperty("packages")
+            .desc("Restricted packages")
+            .emptyDefaultValue()
+            .build();
 
-    private static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR =
-            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().build();
+    private static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR = stringListProperty("classes")
+            .desc("Allowed classes")
+            .emptyDefaultValue()
+            .build();
 
     // The package of this source file
     private String thisPackage;
@@ -116,14 +118,14 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
             if (importedName.equals(clazz)) {
                 return true;
             }
-
         }
         return false;
     }
 
     public boolean checksNothing() {
 
-        return getProperty(PACKAGES_DESCRIPTOR).isEmpty() && getProperty(CLASSES_DESCRIPTOR).isEmpty();
+        return getProperty(PACKAGES_DESCRIPTOR).isEmpty()
+                && getProperty(CLASSES_DESCRIPTOR).isEmpty();
     }
 
     /**

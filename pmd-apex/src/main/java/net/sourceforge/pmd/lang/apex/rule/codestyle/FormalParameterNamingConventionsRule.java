@@ -1,27 +1,28 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class FormalParameterNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
-    private static final PropertyDescriptor<Pattern> FINAL_METHOD_PARAMETER_REGEX = prop("finalMethodParameterPattern", "final method parameter",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
+    private static final PropertyDescriptor<Pattern> FINAL_METHOD_PARAMETER_REGEX = prop(
+                    "finalMethodParameterPattern", "final method parameter", DESCRIPTOR_TO_DISPLAY_NAME)
+            .defaultValue(CAMEL_CASE)
+            .build();
 
-    private static final PropertyDescriptor<Pattern> METHOD_PARAMETER_REGEX = prop("methodParameterPattern", "method parameter",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
+    private static final PropertyDescriptor<Pattern> METHOD_PARAMETER_REGEX = prop(
+                    "methodParameterPattern", "method parameter", DESCRIPTOR_TO_DISPLAY_NAME)
+            .defaultValue(CAMEL_CASE)
+            .build();
 
     public FormalParameterNamingConventionsRule() {
         definePropertyDescriptor(FINAL_METHOD_PARAMETER_REGEX);

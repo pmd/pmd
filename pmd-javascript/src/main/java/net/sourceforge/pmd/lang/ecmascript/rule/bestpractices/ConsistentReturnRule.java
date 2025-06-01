@@ -1,15 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.ecmascript.rule.bestpractices;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ConsistentReturnRule extends AbstractEcmascriptRule {
 

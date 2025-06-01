@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
@@ -14,10 +13,13 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters").defaultValue(true).desc("If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.").build();
+    private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters")
+            .defaultValue(true)
+            .desc(
+                    "If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.")
+            .build();
 
     public UnnecessaryLocalBeforeReturnRule() {
         super(ASTReturnStatement.class);
@@ -36,7 +38,9 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
         }
 
         ASTVariableId varDecl = sym.tryGetNode();
-        if (varDecl == null || !varDecl.isLocalVariable() || varDecl.getDeclaredAnnotations().nonEmpty()) {
+        if (varDecl == null
+                || !varDecl.isLocalVariable()
+                || varDecl.getDeclaredAnnotations().nonEmpty()) {
             return null;
         }
 
@@ -46,7 +50,10 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
         // then this is the only usage
 
         if (!getProperty(STATEMENT_ORDER_MATTERS)
-            || varDecl.ancestors(ASTLocalVariableDeclaration.class).firstOrThrow().getNextSibling() == returnStmt) {
+                || varDecl.ancestors(ASTLocalVariableDeclaration.class)
+                                .firstOrThrow()
+                                .getNextSibling()
+                        == returnStmt) {
             asCtx(data).addViolation(varDecl, varDecl.getName());
         }
         return null;

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.modelica;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
@@ -14,5 +13,4 @@ public class ModelicaHandler extends AbstractPmdLanguageVersionHandler {
     public Parser getParser() {
         return new ModelicaParser();
     }
-
 }

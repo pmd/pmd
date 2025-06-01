@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.documentation;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
@@ -11,9 +10,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTFormalComment;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -26,6 +22,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ApexDocRule extends AbstractApexRule {
 
@@ -39,21 +36,26 @@ public class ApexDocRule extends AbstractApexRule {
     private static final String UNEXPECTED_RETURN_MESSAGE = "Unexpected ApexDoc @return";
     private static final String MISMATCHED_PARAM_MESSAGE = "Missing or mismatched ApexDoc @param";
 
-    private static final PropertyDescriptor<Boolean> REPORT_PRIVATE_DESCRIPTOR =
-            booleanProperty("reportPrivate")
-                    .desc("Report private classes, methods and properties").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> REPORT_PRIVATE_DESCRIPTOR = booleanProperty("reportPrivate")
+            .desc("Report private classes, methods and properties")
+            .defaultValue(false)
+            .build();
 
-    private static final PropertyDescriptor<Boolean> REPORT_PROTECTED_DESCRIPTOR =
-            booleanProperty("reportProtected")
-                    .desc("Report protected classes, methods and properties").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> REPORT_PROTECTED_DESCRIPTOR = booleanProperty("reportProtected")
+            .desc("Report protected classes, methods and properties")
+            .defaultValue(false)
+            .build();
 
-    private static final PropertyDescriptor<Boolean> REPORT_MISSING_DESCRIPTION_DESCRIPTOR =
-            booleanProperty("reportMissingDescription")
-                .desc("Report missing @description").defaultValue(true).build();
+    private static final PropertyDescriptor<Boolean> REPORT_MISSING_DESCRIPTION_DESCRIPTOR = booleanProperty(
+                    "reportMissingDescription")
+            .desc("Report missing @description")
+            .defaultValue(true)
+            .build();
 
-    private static final PropertyDescriptor<Boolean> REPORT_PROPERTY_DESCRIPTOR =
-            booleanProperty("reportProperty")
-                .desc("Report properties without comments").defaultValue(true).build();
+    private static final PropertyDescriptor<Boolean> REPORT_PROPERTY_DESCRIPTOR = booleanProperty("reportProperty")
+            .desc("Report properties without comments")
+            .defaultValue(true)
+            .build();
 
     public ApexDocRule() {
         definePropertyDescriptor(REPORT_PRIVATE_DESCRIPTOR);
@@ -64,7 +66,8 @@ public class ApexDocRule extends AbstractApexRule {
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
-        return RuleTargetSelector.forTypes(ASTUserClass.class, ASTUserInterface.class, ASTMethod.class, ASTProperty.class);
+        return RuleTargetSelector.forTypes(
+                ASTUserClass.class, ASTUserInterface.class, ASTMethod.class, ASTProperty.class);
     }
 
     @Override
@@ -107,8 +110,10 @@ public class ApexDocRule extends AbstractApexRule {
             }
 
             // Collect parameter names in order
-            final List<String> params = node.children(ASTParameter.class).toStream()
-                    .map(ASTParameter::getImage).collect(Collectors.toList());
+            final List<String> params = node.children(ASTParameter.class)
+                    .toStream()
+                    .map(ASTParameter::getImage)
+                    .collect(Collectors.toList());
 
             if (!comment.params.equals(params)) {
                 asCtx(data).addViolationWithMessage(node, MISMATCHED_PARAM_MESSAGE);
@@ -169,7 +174,8 @@ public class ApexDocRule extends AbstractApexRule {
         if (modifier != null) {
             boolean flagPrivate = getProperty(REPORT_PRIVATE_DESCRIPTOR) && modifier.isPrivate();
             boolean flagProtected = getProperty(REPORT_PROTECTED_DESCRIPTOR) && modifier.isProtected();
-            return (modifier.isPublic() || modifier.isGlobal() || flagPrivate || flagProtected) && !modifier.isOverride();
+            return (modifier.isPublic() || modifier.isGlobal() || flagPrivate || flagProtected)
+                    && !modifier.isOverride();
         }
 
         return false;

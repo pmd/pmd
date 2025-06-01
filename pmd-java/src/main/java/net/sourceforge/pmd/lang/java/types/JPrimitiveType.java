@@ -8,13 +8,11 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
-
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Mirror a primitive types. Even though {@code void.class.isPrimitive()}
@@ -32,9 +30,11 @@ public final class JPrimitiveType implements JTypeMirror {
     private final JClassSymbol type;
     /** Boxed representation. */
     private final JClassType box;
+
     private final PSet<SymAnnot> typeAnnots;
 
-    JPrimitiveType(TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType, PSet<SymAnnot> typeAnnots) {
+    JPrimitiveType(
+            TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType, PSet<SymAnnot> typeAnnots) {
         this.ts = ts;
         this.kind = kind;
         this.type = type;
@@ -93,7 +93,6 @@ public final class JPrimitiveType implements JTypeMirror {
     public boolean isNumeric() {
         return kind != PrimitiveTypeKind.BOOLEAN;
     }
-
 
     @Override
     public boolean isPrimitive(PrimitiveTypeKind kind) {
@@ -199,18 +198,25 @@ public final class JPrimitiveType implements JTypeMirror {
          */
         public static @Nullable PrimitiveTypeKind fromName(String token) {
             switch (token) {
-            case "boolean": return BOOLEAN;
-            case "char": return CHAR;
-            case "byte": return BYTE;
-            case "short": return SHORT;
-            case "int": return INT;
-            case "long": return LONG;
-            case "float": return FLOAT;
-            case "double": return DOUBLE;
-            default:
-                return null;
+                case "boolean":
+                    return BOOLEAN;
+                case "char":
+                    return CHAR;
+                case "byte":
+                    return BYTE;
+                case "short":
+                    return SHORT;
+                case "int":
+                    return INT;
+                case "long":
+                    return LONG;
+                case "float":
+                    return FLOAT;
+                case "double":
+                    return DOUBLE;
+                default:
+                    return null;
             }
         }
     }
-
 }

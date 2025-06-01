@@ -6,15 +6,14 @@ package net.sourceforge.pmd.lang.cpp.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.test.cpd.LanguagePropertyConfig;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
 
 class CppCpdLexerTest extends CpdTextComparisonTest {
 
@@ -120,7 +119,6 @@ class CppCpdLexerTest extends CpdTextComparisonTest {
         expectLexException(sourceText("issue-1559"), dontSkipBlocks());
     }
 
-
     @Test
     void testRawStringLiterals() {
         doTest("issue-1784");
@@ -183,8 +181,13 @@ class CppCpdLexerTest extends CpdTextComparisonTest {
         return properties(false, null, false, false, true, false);
     }
 
-
-    private static LanguagePropertyConfig properties(boolean skipBlocks, String skipPattern, boolean skipLiteralSequences, boolean skipSequences, boolean ignoreLiterals, boolean ignoreIdents) {
+    private static LanguagePropertyConfig properties(
+            boolean skipBlocks,
+            String skipPattern,
+            boolean skipLiteralSequences,
+            boolean skipSequences,
+            boolean ignoreLiterals,
+            boolean ignoreIdents) {
         return properties -> {
             if (!skipBlocks) {
                 properties.setProperty(CppLanguageModule.CPD_SKIP_BLOCKS, "");

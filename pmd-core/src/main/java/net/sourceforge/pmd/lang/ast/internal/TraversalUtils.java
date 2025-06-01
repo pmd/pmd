@@ -8,24 +8,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.Node;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 final class TraversalUtils {
 
     /*
-        Note that the methods of this class must not use node streams
-        to iterate on children, because node streams are implemented
-        using these methods.
-     */
+       Note that the methods of this class must not use node streams
+       to iterate on children, because node streams are implemented
+       using these methods.
+    */
 
-    private TraversalUtils() {
+    private TraversalUtils() {}
 
-    }
-
-    static <T extends Node> T getFirstParentOrSelfMatching(final Node node, final Filtermap<? super Node, ? extends T> filter) {
+    static <T extends Node> T getFirstParentOrSelfMatching(
+            final Node node, final Filtermap<? super Node, ? extends T> filter) {
         Node n = node;
         while (n != null) {
             T t = filter.apply(n);
@@ -37,7 +34,8 @@ final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getFirstChildMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
+    static <T extends Node> T getFirstChildMatching(
+            final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
         for (int i = from, last = from + len; i < last; i++) {
             Node c = node.getChild(i);
             T t = filter.apply(c);
@@ -48,7 +46,8 @@ final class TraversalUtils {
         return null;
     }
 
-    static <T extends Node> T getLastChildMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
+    static <T extends Node> T getLastChildMatching(
+            final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
         for (int i = from + len - 1; i >= from; i--) {
             Node c = node.getChild(i);
             T t = filter.apply(c);
@@ -59,11 +58,13 @@ final class TraversalUtils {
         return null;
     }
 
-    static <T> List<T> findChildrenMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
+    static <T> List<T> findChildrenMatching(
+            final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len) {
         return findChildrenMatching(node, filter, from, len, Integer.MAX_VALUE);
     }
 
-    static <T> List<T> findChildrenMatching(final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len, int maxSize) {
+    static <T> List<T> findChildrenMatching(
+            final Node node, final Filtermap<? super Node, ? extends T> filter, int from, int len, int maxSize) {
         if (maxSize == 0) {
             return Collections.emptyList();
         }
@@ -81,7 +82,8 @@ final class TraversalUtils {
         return list;
     }
 
-    static <T extends Node> int countChildrenMatching(final Node node, final Filtermap<Node, T> filter, int from, int len) {
+    static <T extends Node> int countChildrenMatching(
+            final Node node, final Filtermap<Node, T> filter, int from, int len) {
         int sum = 0;
         for (int i = from, last = from + len; i < last; i++) {
             Node c = node.getChild(i);
@@ -92,7 +94,6 @@ final class TraversalUtils {
         }
         return sum;
     }
-
 
     static Iterator<Node> childrenIterator(Node parent, final int from, final int to) {
         assert parent != null : "parent should not be null";
@@ -114,11 +115,9 @@ final class TraversalUtils {
             }
 
             @Override
-            public @NonNull
-            Node next() {
+            public @NonNull Node next() {
                 return parent.getChild(i++);
             }
         };
     }
-
 }

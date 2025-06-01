@@ -5,16 +5,14 @@
 package net.sourceforge.pmd.cli.internal;
 
 import java.util.function.Function;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
-
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 /**
  * Interacts with slf4j-simple to reconfigure logging levels based on
@@ -33,7 +31,8 @@ public final class PmdRootLogger {
         // utility class
     }
 
-    public static <C extends AbstractConfiguration, R> R executeInLoggingContext(C conf, boolean isDebug, Function<C, R> runnable) {
+    public static <C extends AbstractConfiguration, R> R executeInLoggingContext(
+            C conf, boolean isDebug, Function<C, R> runnable) {
         Level curLogLevel = Slf4jSimpleConfiguration.getDefaultLogLevel();
         boolean resetLogLevel = false;
         try {

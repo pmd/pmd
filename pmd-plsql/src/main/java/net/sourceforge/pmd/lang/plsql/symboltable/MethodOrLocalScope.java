@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
 import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
@@ -18,7 +17,8 @@ import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
 abstract class MethodOrLocalScope extends AbstractScope {
     @Override
     public void addDeclaration(NameDeclaration declaration) {
-        if (declaration instanceof VariableNameDeclaration && getDeclarations().keySet().contains(declaration)) {
+        if (declaration instanceof VariableNameDeclaration
+                && getDeclarations().keySet().contains(declaration)) {
             throw new RuntimeException(declaration + " is already in the symbol table");
         }
         super.addDeclaration(declaration);

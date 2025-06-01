@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
@@ -15,7 +14,6 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
-
 
 /**
  * Visitor for the ClassFanOut metric.

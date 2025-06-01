@@ -2,27 +2,25 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests new java14 standard features.
  */
 class Java14TreeDumpTest extends BaseJavaTreeDumpTest {
 
-    private final JavaParsingHelper java14 =
-        JavaParsingHelper.DEFAULT.withDefaultVersion("14")
-                                 .withResourceContext(Java14TreeDumpTest.class, "jdkversiontests/java14/");
+    private final JavaParsingHelper java14 = JavaParsingHelper.DEFAULT
+            .withDefaultVersion("14")
+            .withResourceContext(Java14TreeDumpTest.class, "jdkversiontests/java14/");
 
     private final JavaParsingHelper java13 = java14.withDefaultVersion("13");
 
@@ -66,5 +64,4 @@ class Java14TreeDumpTest extends BaseJavaTreeDumpTest {
     void simpleSwitchExpressions() {
         doTest("SimpleSwitchExpressions");
     }
-
 }

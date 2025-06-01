@@ -1,26 +1,29 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+import org.junit.jupiter.api.Test;
 
 class DeleteStatementTest extends AbstractPLSQLParserTst {
 
     @Test
     void parseDeleteStatementExample() {
         ASTInput input = plsql.parseResource("DeleteStatementExample.pls");
-        List<ASTDeleteStatement> deleteStatements = input.descendants(ASTDeleteStatement.class).toList();
+        List<ASTDeleteStatement> deleteStatements =
+                input.descendants(ASTDeleteStatement.class).toList();
         assertEquals(3, deleteStatements.size());
 
-        assertEquals("product_descriptions", deleteStatements.get(0).getChild(0)
-                                                                    .firstChild(ASTTableName.class).getImage());
+        assertEquals(
+                "product_descriptions",
+                deleteStatements
+                        .get(0)
+                        .getChild(0)
+                        .firstChild(ASTTableName.class)
+                        .getImage());
     }
 }

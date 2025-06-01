@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.velocity.rule.bestpractices;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.velocity.ast.ASTDirective;
 import net.sourceforge.pmd.lang.velocity.ast.ASTReference;
 import net.sourceforge.pmd.lang.velocity.ast.ASTSetDirective;

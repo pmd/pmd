@@ -8,12 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.log.PmdReporter;
+import org.junit.jupiter.api.Test;
 
 class LanguageProcessorRegistryTest {
     @Test
@@ -21,14 +19,16 @@ class LanguageProcessorRegistryTest {
         Map<String, String> env = new HashMap<>();
         env.put("PMD_DUMMY_ROOT_DIRECTORY", "theValue");
 
-        Language dummyLanguage = DummyLanguageModule.getInstance().getDefaultVersion().getLanguage();
+        Language dummyLanguage =
+                DummyLanguageModule.getInstance().getDefaultVersion().getLanguage();
         LanguageRegistry languageRegistry = LanguageRegistry.singleton(dummyLanguage);
 
         Map<Language, LanguagePropertyBundle> languageProperties = new HashMap<>();
         DummyLanguagePropertyBundle bundle = new DummyLanguagePropertyBundle(dummyLanguage);
         languageProperties.put(dummyLanguage, bundle);
 
-        try (LanguageProcessorRegistry ignored = LanguageProcessorRegistry.create(languageRegistry, languageProperties, PmdReporter.quiet(), env)) {
+        try (LanguageProcessorRegistry ignored =
+                LanguageProcessorRegistry.create(languageRegistry, languageProperties, PmdReporter.quiet(), env)) {
             assertEquals("theValue", bundle.getRootDirectory());
         }
     }

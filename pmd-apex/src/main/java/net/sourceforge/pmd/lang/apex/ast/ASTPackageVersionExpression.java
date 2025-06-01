@@ -12,7 +12,6 @@ public final class ASTPackageVersionExpression extends AbstractApexNode.Single<N
         super(packageVersionExpression);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

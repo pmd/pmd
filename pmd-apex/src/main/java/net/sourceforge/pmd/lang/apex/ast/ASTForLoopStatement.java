@@ -12,7 +12,6 @@ public final class ASTForLoopStatement extends AbstractApexNode.Single<ForLoopSt
         super(forLoopStatement);
     }
 
-
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

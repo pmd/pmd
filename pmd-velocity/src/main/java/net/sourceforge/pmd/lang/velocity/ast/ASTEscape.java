@@ -1,4 +1,3 @@
-
 package net.sourceforge.pmd.lang.velocity.ast;
 
 /*
@@ -34,7 +33,6 @@ public final class ASTEscape extends AbstractVtlNode {
     /** Used by the parser. */
     private String val;
 
-
     ASTEscape(int id) {
         super(id);
     }
@@ -51,5 +49,4 @@ public final class ASTEscape extends AbstractVtlNode {
     protected <P, R> R acceptVtlVisitor(VtlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 }

@@ -1,15 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
@@ -17,24 +13,35 @@ import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
 
-    private static final PropertyDescriptor<Pattern> ENUM_CONSTANT_REGEX = prop("enumConstantPattern", "enum constant field",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(ALL_CAPS).build();
+    private static final PropertyDescriptor<Pattern> ENUM_CONSTANT_REGEX = prop(
+                    "enumConstantPattern", "enum constant field", DESCRIPTOR_TO_DISPLAY_NAME)
+            .defaultValue(ALL_CAPS)
+            .build();
 
-    private static final PropertyDescriptor<Pattern> CONSTANT_REGEX = prop("constantPattern", "constant field",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(ALL_CAPS).build();
+    private static final PropertyDescriptor<Pattern> CONSTANT_REGEX = prop(
+                    "constantPattern", "constant field", DESCRIPTOR_TO_DISPLAY_NAME)
+            .defaultValue(ALL_CAPS)
+            .build();
 
-    private static final PropertyDescriptor<Pattern> FINAL_REGEX = prop("finalPattern", "final field",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
+    private static final PropertyDescriptor<Pattern> FINAL_REGEX = prop(
+                    "finalPattern", "final field", DESCRIPTOR_TO_DISPLAY_NAME)
+            .defaultValue(CAMEL_CASE)
+            .build();
 
-    private static final PropertyDescriptor<Pattern> STATIC_REGEX = prop("staticPattern", "static field",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
+    private static final PropertyDescriptor<Pattern> STATIC_REGEX = prop(
+                    "staticPattern", "static field", DESCRIPTOR_TO_DISPLAY_NAME)
+            .defaultValue(CAMEL_CASE)
+            .build();
 
-    private static final PropertyDescriptor<Pattern> INSTANCE_REGEX = prop("instancePattern", "instance field",
-            DESCRIPTOR_TO_DISPLAY_NAME).defaultValue(CAMEL_CASE).build();
+    private static final PropertyDescriptor<Pattern> INSTANCE_REGEX = prop(
+                    "instancePattern", "instance field", DESCRIPTOR_TO_DISPLAY_NAME)
+            .defaultValue(CAMEL_CASE)
+            .build();
 
     public FieldNamingConventionsRule() {
         definePropertyDescriptor(ENUM_CONSTANT_REGEX);
@@ -43,7 +50,6 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
         definePropertyDescriptor(STATIC_REGEX);
         definePropertyDescriptor(INSTANCE_REGEX);
     }
-
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -78,7 +84,9 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionsRule {
     }
 
     private ASTFieldDeclaration getFieldDeclaration(ASTField field) {
-        return field.getParent().descendants(ASTFieldDeclaration.class).first(fieldDeclaration -> fieldDeclaration.getName().equals(field.getName()));
+        return field.getParent()
+                .descendants(ASTFieldDeclaration.class)
+                .first(fieldDeclaration -> fieldDeclaration.getName().equals(field.getName()));
     }
 
     @Override

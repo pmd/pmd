@@ -8,34 +8,28 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 
-/**
- */
-class JPrimitiveTypeTest : IntelliMarker, FunSpec({
-
-    val ts = testTypeSystem
-    with(TypeDslOf(ts)) {
-        test("Test isPrimitive") {
-            ts.allPrimitives.forEach { prim ->
-                prim.isPrimitive shouldBe true
-                PrimitiveTypeKind.values()
-                    .forEach { kind ->
+/**  */
+class JPrimitiveTypeTest :
+    IntelliMarker,
+    FunSpec({
+        val ts = testTypeSystem
+        with(TypeDslOf(ts)) {
+            test("Test isPrimitive") {
+                ts.allPrimitives.forEach { prim ->
+                    prim.isPrimitive shouldBe true
+                    PrimitiveTypeKind.values().forEach { kind ->
                         prim.isPrimitive(kind) shouldBe (prim.kind == kind)
                     }
+                }
+            }
+            test("Test annotated primitive") {
+                val annotated = `@A` on int
+                annotated.typeAnnotations shouldContain `@A`.annot
+                annotated.superTypeSet shouldBe setOf(int, double, float, long)
+                annotated.superTypeSet.forEach { it.typeAnnotations.shouldBeEmpty() }
             }
         }
-        test("Test annotated primitive") {
-            val annotated = `@A` on int
-            annotated.typeAnnotations shouldContain `@A`.annot
-            annotated.superTypeSet shouldBe setOf(int, double, float, long)
-            annotated.superTypeSet.forEach {
-                it.typeAnnotations.shouldBeEmpty()
-            }
-        }
-    }
-
-})
-
-
+    })

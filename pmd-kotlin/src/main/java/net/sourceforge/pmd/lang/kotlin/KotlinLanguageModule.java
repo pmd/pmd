@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.kotlin;
 
 import net.sourceforge.pmd.cpd.CpdLexer;
@@ -17,13 +16,14 @@ public class KotlinLanguageModule extends SimpleLanguageModuleBase {
     private static final String ID = "kotlin";
 
     public KotlinLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("Kotlin")
-                              .extensions("kt", "ktm")
-                              .addVersion("1.6")
-                              .addVersion("1.7")
-                              .addDefaultVersion("1.8"),
-              new KotlinHandler());
-
+        super(
+                LanguageMetadata.withId(ID)
+                        .name("Kotlin")
+                        .extensions("kt", "ktm")
+                        .addVersion("1.6")
+                        .addVersion("1.7")
+                        .addDefaultVersion("1.8"),
+                new KotlinHandler());
     }
 
     public static KotlinLanguageModule getInstance() {

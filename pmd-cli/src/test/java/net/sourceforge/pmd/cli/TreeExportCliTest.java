@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cli;
 
 import static org.hamcrest.Matchers.equalTo;
 
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class TreeExportCliTest extends BaseCliTest {
 
@@ -31,24 +29,25 @@ class TreeExportCliTest extends BaseCliTest {
             final CliExecutionResult output = runCliSuccessfully("-i", "-f", "xml", "-PlineSeparator=LF");
 
             output.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                           + "<dummyRootNode Image='' Lines='[, , ]'>\n"
-                                           + "    <dummyNode Image='a' Lines='[a, a, a]'>\n"
-                                           + "        <dummyNode Image='b' Lines='[b, b, b]' />\n"
-                                           + "    </dummyNode>\n"
-                                           + "</dummyRootNode>\n"));
+                    + "<dummyRootNode Image='' Lines='[, , ]'>\n"
+                    + "    <dummyNode Image='a' Lines='[a, a, a]'>\n"
+                    + "        <dummyNode Image='b' Lines='[b, b, b]' />\n"
+                    + "    </dummyNode>\n"
+                    + "</dummyRootNode>\n"));
         });
     }
 
     @Test
     void testReadFile() throws Exception {
         File file = newFileWithContents("(a(b))");
-        final CliExecutionResult result = runCliSuccessfully("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
+        final CliExecutionResult result =
+                runCliSuccessfully("--file", file.getAbsolutePath(), "-f", "xml", "-PlineSeparator=LF");
         result.checkStdOut(equalTo("<?xml version='1.0' encoding='UTF-8' ?>\n"
-                                       + "<dummyRootNode Image='' Lines='[, , ]'>\n"
-                                       + "    <dummyNode Image='a' Lines='[a, a, a]'>\n"
-                                       + "        <dummyNode Image='b' Lines='[b, b, b]' />\n"
-                                       + "    </dummyNode>\n"
-                                       + "</dummyRootNode>\n"));
+                + "<dummyRootNode Image='' Lines='[, , ]'>\n"
+                + "    <dummyNode Image='a' Lines='[a, a, a]'>\n"
+                + "        <dummyNode Image='b' Lines='[b, b, b]' />\n"
+                + "    </dummyNode>\n"
+                + "</dummyRootNode>\n"));
     }
 
     private File newFileWithContents(String data) throws IOException {
@@ -62,12 +61,12 @@ class TreeExportCliTest extends BaseCliTest {
     @Override
     protected List<String> cliStandardArgs() {
         final List<String> argList = new ArrayList<>();
-        
+
         // Set program name and set dummy language
         argList.add("ast-dump");
         argList.add("-l");
         argList.add("dummy");
-        
+
         return argList;
     }
 }

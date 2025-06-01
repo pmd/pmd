@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.reporting;
 
 import java.util.Comparator;
 import java.util.Map;
-
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.Rule;
@@ -27,15 +25,13 @@ public interface RuleViolation {
      * of a violation, filename first. The remaining parameters are compared
      * in an unspecified order.
      */
-    Comparator<RuleViolation> DEFAULT_COMPARATOR =
-        Comparator.comparing(RuleViolation::getFileId)
-                  .thenComparingInt(RuleViolation::getBeginLine)
-                  .thenComparingInt(RuleViolation::getBeginColumn)
-                  .thenComparing(RuleViolation::getDescription, Comparator.nullsLast(Comparator.naturalOrder()))
-                  .thenComparingInt(RuleViolation::getEndLine)
-                  .thenComparingInt(RuleViolation::getEndColumn)
-                  .thenComparing(rv -> rv.getRule().getName());
-
+    Comparator<RuleViolation> DEFAULT_COMPARATOR = Comparator.comparing(RuleViolation::getFileId)
+            .thenComparingInt(RuleViolation::getBeginLine)
+            .thenComparingInt(RuleViolation::getBeginColumn)
+            .thenComparing(RuleViolation::getDescription, Comparator.nullsLast(Comparator.naturalOrder()))
+            .thenComparingInt(RuleViolation::getEndLine)
+            .thenComparingInt(RuleViolation::getEndColumn)
+            .thenComparing(rv -> rv.getRule().getName());
 
     /**
      * Key in {@link #getAdditionalInfo()} for the name of the class in
@@ -71,7 +67,6 @@ public interface RuleViolation {
      * @return The description.
      */
     String getDescription();
-
 
     /**
      * Returns the location where the violation should be reported.

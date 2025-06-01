@@ -39,6 +39,4 @@ public abstract class TokenDocument<T extends GenericToken<T>> {
      * @throws IllegalStateException If the document has not been parsed yet
      */
     public abstract T getFirstToken();
-
-
 }

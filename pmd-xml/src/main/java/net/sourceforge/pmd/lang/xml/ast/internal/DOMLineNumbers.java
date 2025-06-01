@@ -6,15 +6,13 @@ package net.sourceforge.pmd.lang.xml.ast.internal;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 import org.w3c.dom.DocumentType;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
-
-import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
 
 /**
  *
@@ -103,7 +101,10 @@ class DOMLineNumbers {
             nextIndex += "<![CDATA[".length() + n.getNodeValue().length() + "]]>".length();
         } else if (n.getNodeType() == Node.PROCESSING_INSTRUCTION_NODE) {
             ProcessingInstruction pi = (ProcessingInstruction) n;
-            nextIndex += "<?".length() + pi.getTarget().length() + "?>".length() + pi.getData().length();
+            nextIndex += "<?".length()
+                    + pi.getTarget().length()
+                    + "?>".length()
+                    + pi.getData().length();
         }
         setEndLocation(wrapper, nextIndex - 1);
         return nextIndex;
@@ -132,11 +133,11 @@ class DOMLineNumbers {
                 String entityName = item.getNodeName();
                 Node firstChild = item.getFirstChild();
                 if (firstChild != null) {
-                    result = result.replaceAll(Matcher.quoteReplacement(firstChild.getNodeValue()),
-                            "&" + entityName + ";");
+                    result = result.replaceAll(
+                            Matcher.quoteReplacement(firstChild.getNodeValue()), "&" + entityName + ";");
                 } else {
-                    Matcher m = Pattern
-                            .compile(Matcher.quoteReplacement("<!ENTITY " + entityName + " ") + "[']([^']*)[']>")
+                    Matcher m = Pattern.compile(
+                                    Matcher.quoteReplacement("<!ENTITY " + entityName + " ") + "[']([^']*)[']>")
                             .matcher(internalSubset);
                     if (m.find()) {
                         result = result.replaceAll(Matcher.quoteReplacement(m.group(1)), "&" + entityName + ";");

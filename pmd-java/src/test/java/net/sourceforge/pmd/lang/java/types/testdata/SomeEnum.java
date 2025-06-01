@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types.testdata;
 
-
 public enum SomeEnum {
     FOO,
     BAR

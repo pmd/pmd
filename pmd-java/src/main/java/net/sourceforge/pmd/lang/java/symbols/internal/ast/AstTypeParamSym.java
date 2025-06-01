@@ -4,18 +4,15 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-final class AstTypeParamSym
-    extends AbstractAstAnnotableSym<ASTTypeParameter>
-    implements JTypeParameterSymbol {
+final class AstTypeParamSym extends AbstractAstAnnotableSym<ASTTypeParameter> implements JTypeParameterSymbol {
 
     private final JTypeVar tvar;
     private final AbstractAstTParamOwner<?> owner;
@@ -34,8 +31,7 @@ final class AstTypeParamSym
     @Override
     public JTypeMirror computeUpperBound() {
         ASTType bound = node.getTypeBoundNode();
-        return bound == null ? node.getTypeSystem().OBJECT
-                             : bound.getTypeMirror();
+        return bound == null ? node.getTypeSystem().OBJECT : bound.getTypeMirror();
     }
 
     @Override
@@ -48,5 +44,4 @@ final class AstTypeParamSym
     public String getSimpleName() {
         return node.getName();
     }
-
 }

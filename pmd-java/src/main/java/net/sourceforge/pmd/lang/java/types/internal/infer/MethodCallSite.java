@@ -9,14 +9,12 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Poly site for an invocation expression. Includes info about an ongoing
@@ -30,7 +28,8 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
     private final MethodCallSite outerSite;
 
     private boolean logEnabled = true;
-    private final Map<MethodResolutionPhase, List<ResolutionFailure>> errors = new EnumMap<>(MethodResolutionPhase.class);
+    private final Map<MethodResolutionPhase, List<ResolutionFailure>> errors =
+            new EnumMap<>(MethodResolutionPhase.class);
 
     private boolean isInInvocation = false;
     private boolean canSkipInvocation = true;
@@ -38,11 +37,12 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
 
     private final boolean isSpecificityCheck;
 
-    MethodCallSite(InvocationMirror expr,
-                   @Nullable JTypeMirror expectedType,
-                   @Nullable MethodCallSite outerSite,
-                   @NonNull InferenceContext infCtx,
-                   boolean isSpecificityCheck) {
+    MethodCallSite(
+            InvocationMirror expr,
+            @Nullable JTypeMirror expectedType,
+            @Nullable MethodCallSite outerSite,
+            @NonNull InferenceContext infCtx,
+            boolean isSpecificityCheck) {
         super(expr, expectedType);
         this.outerSite = outerSite;
         this.localInferenceContext = infCtx;
@@ -54,13 +54,7 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
     }
 
     MethodCallSite cloneForSpecificityCheck(Infer infer) {
-        return new MethodCallSite(
-            getExpr(),
-            getExpectedType(),
-            null,
-            infer.emptyContext(),
-            true
-        );
+        return new MethodCallSite(getExpr(), getExpectedType(), null, infer.emptyContext(), true);
     }
 
     void acceptFailure(ResolutionFailure exception) {

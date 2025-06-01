@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.function.Function;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -24,7 +23,6 @@ public interface JTypeVisitable {
      */
     JTypeVisitable subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
 
-
     /**
      * Accept a type visitor, dispatching on this object's runtime type
      * to the correct method of the visitor.
@@ -33,5 +31,4 @@ public interface JTypeVisitable {
      * @param <T> Type of result of the visitor
      */
     <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p);
-
 }

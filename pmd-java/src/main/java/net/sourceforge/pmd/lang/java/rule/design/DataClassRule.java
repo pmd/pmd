@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NUMBER_OF_ACCESSORS;
@@ -41,7 +40,8 @@ public class DataClassRule extends AbstractJavaRulechainRule {
 
     private void visitTypeDecl(ASTTypeDeclaration node, RuleContext data) {
 
-        if (!MetricsUtil.supportsAll(node, NUMBER_OF_ACCESSORS, NUMBER_OF_PUBLIC_FIELDS, WEIGHED_METHOD_COUNT, WEIGHT_OF_CLASS)) {
+        if (!MetricsUtil.supportsAll(
+                node, NUMBER_OF_ACCESSORS, NUMBER_OF_PUBLIC_FIELDS, WEIGHED_METHOD_COUNT, WEIGHT_OF_CLASS)) {
             return;
         }
 
@@ -53,12 +53,9 @@ public class DataClassRule extends AbstractJavaRulechainRule {
             int noam = MetricsUtil.computeMetric(NUMBER_OF_ACCESSORS, node);
             int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
 
-            asCtx(data).addViolation(node, node.getSimpleName(),
-                                     StringUtil.percentageString(woc, 3),
-                                     nopa, noam, wmc);
+            asCtx(data).addViolation(node, node.getSimpleName(), StringUtil.percentageString(woc, 3), nopa, noam, wmc);
         }
     }
-
 
     private boolean interfaceRevealsData(ASTTypeDeclaration node) {
         double woc = MetricsUtil.computeMetric(WEIGHT_OF_CLASS, node);
@@ -72,7 +69,6 @@ public class DataClassRule extends AbstractJavaRulechainRule {
         int wmc = MetricsUtil.computeMetric(WEIGHED_METHOD_COUNT, node);
 
         return nopa + noam > ACCESSOR_OR_FIELD_FEW_LEVEL && wmc < WMC_HIGH_LEVEL
-            || nopa + noam > ACCESSOR_OR_FIELD_MANY_LEVEL && wmc < WMC_VERY_HIGH_LEVEL;
+                || nopa + noam > ACCESSOR_OR_FIELD_MANY_LEVEL && wmc < WMC_VERY_HIGH_LEVEL;
     }
-
 }

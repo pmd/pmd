@@ -5,10 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
-
 
 /**
  * Represents the type node of a multi-catch statement. This node is used
@@ -26,9 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfTyp
  * @see ASTCatchParameter#getAllExceptionTypes()
  */
 public final class ASTUnionType extends AbstractJavaTypeNode
-    implements ASTReferenceType,
-               AtLeastOneChildOfType<ASTClassType>,
-               Iterable<ASTClassType> {
+        implements ASTReferenceType, AtLeastOneChildOfType<ASTClassType>, Iterable<ASTClassType> {
 
     ASTUnionType(int id) {
         super(id);
@@ -48,5 +44,4 @@ public final class ASTUnionType extends AbstractJavaTypeNode
     public Iterator<ASTClassType> iterator() {
         return children(ASTClassType.class).iterator();
     }
-
 }

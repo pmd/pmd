@@ -1,15 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
 import java.util.Iterator;
-
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.cli.commands.typesupport.internal.CpdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cpd.CPDConfiguration;
@@ -18,46 +13,54 @@ import net.sourceforge.pmd.cpd.internal.CpdLanguagePropertiesDefaults;
 import net.sourceforge.pmd.internal.LogMessages;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.util.StringUtil;
-
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 
-@Command(name = "cpd", showDefaultValues = true,
-    description = "Copy/Paste Detector - find duplicate code")
+@Command(name = "cpd", showDefaultValues = true, description = "Copy/Paste Detector - find duplicate code")
 public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> {
-
 
     @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
     FileCollectionOptions<CPDConfiguration> files = new FileCollectionOptions<>();
 
-    @Option(names = { "--language", "-l" }, description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
-            defaultValue = CPDConfiguration.DEFAULT_LANGUAGE, converter = CpdLanguageTypeSupport.class, completionCandidates = CpdLanguageTypeSupport.class)
+    @Option(
+            names = {"--language", "-l"},
+            description = "The source code language.%nValid values: ${COMPLETION-CANDIDATES}",
+            defaultValue = CPDConfiguration.DEFAULT_LANGUAGE,
+            converter = CpdLanguageTypeSupport.class,
+            completionCandidates = CpdLanguageTypeSupport.class)
     private Language language;
 
-    @Option(names = "--minimum-tokens",
-            description = "The minimum token length which should be reported as a duplicate.", required = true)
+    @Option(
+            names = "--minimum-tokens",
+            description = "The minimum token length which should be reported as a duplicate.",
+            required = true)
     private int minimumTokens;
 
-    @Option(names = "--skip-duplicate-files",
+    @Option(
+            names = "--skip-duplicate-files",
             description = "Ignore multiple copies of files of the same name and length in comparison.")
     private boolean skipDuplicates;
 
-
-
-
-    @Option(names = { "--format", "-f" },
-            description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
-                        + "Alternatively, you can provide the fully qualified name of a custom CpdRenderer in the classpath.",
-            defaultValue = CPDConfiguration.DEFAULT_RENDERER, completionCandidates = CpdSupportedReportFormatsCandidates.class)
+    @Option(
+            names = {"--format", "-f"},
+            description =
+                    "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
+                            + "Alternatively, you can provide the fully qualified name of a custom CpdRenderer in the classpath.",
+            defaultValue = CPDConfiguration.DEFAULT_RENDERER,
+            completionCandidates = CpdSupportedReportFormatsCandidates.class)
     private String rendererName;
 
-    @Option(names = "--ignore-literals",
+    @Option(
+            names = "--ignore-literals",
             description = "Ignore literal values such as numbers and strings when comparing text.")
     private boolean ignoreLiterals;
 
-    @Option(names = "--ignore-identifiers",
+    @Option(
+            names = "--ignore-identifiers",
             description = "Ignore names of classes, methods, variables, constants, etc. when comparing text.")
     private boolean ignoreIdentifiers;
 
@@ -67,7 +70,9 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     @Option(names = "--ignore-usings", description = "Ignore using directives in C#")
     private boolean ignoreUsings;
 
-    @Option(names = "--ignore-literal-sequences", description = "Ignore sequences of literals such as list initializers.")
+    @Option(
+            names = "--ignore-literal-sequences",
+            description = "Ignore sequences of literals such as list initializers.")
     private boolean ignoreLiteralSequences;
 
     @Option(names = "--ignore-sequences", description = "Ignore sequences of identifiers and literals")
@@ -76,16 +81,20 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     /**
      * @deprecated Since 7.3.0. Use --[no-]fail-on-error instead.
      */
-    @Option(names = "--skip-lexical-errors",
-            description = "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error. Deprecated - use --[no-]fail-on-error instead.")
+    @Option(
+            names = "--skip-lexical-errors",
+            description =
+                    "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error. Deprecated - use --[no-]fail-on-error instead.")
     @Deprecated
     private boolean skipLexicalErrors;
 
-    @Option(names = "--no-skip-blocks",
+    @Option(
+            names = "--no-skip-blocks",
             description = "Do not skip code blocks marked with --skip-blocks-pattern (e.g. #if 0 until #endif).")
     private boolean noSkipBlocks;
 
-    @Option(names = "--skip-blocks-pattern",
+    @Option(
+            names = "--skip-blocks-pattern",
             description = "Pattern to find the blocks to skip. Start and End pattern separated by |.",
             defaultValue = CpdLanguagePropertiesDefaults.DEFAULT_SKIP_BLOCKS_PATTERN)
     private String skipBlocksPattern;
@@ -124,7 +133,6 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
             configuration.setFailOnError(false);
         }
 
-
         return configuration;
     }
 
@@ -133,7 +141,8 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
         try (CpdAnalysis cpd = CpdAnalysis.create(configuration)) {
 
             MutableBoolean hasViolations = new MutableBoolean();
-            cpd.performAnalysis(report -> hasViolations.setValue(!report.getMatches().isEmpty()));
+            cpd.performAnalysis(
+                    report -> hasViolations.setValue(!report.getMatches().isEmpty()));
 
             boolean hasErrors = configuration.getReporter().numErrors() > 0;
             if (hasErrors && configuration.isFailOnError()) {

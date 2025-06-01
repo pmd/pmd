@@ -17,11 +17,6 @@ import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.nio.file.Paths;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
-
 import net.sourceforge.pmd.lang.Dummy2LanguageModule;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.Language;
@@ -37,6 +32,9 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.log.PmdReporter;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
 
 /**
  * @author Clément Fournier
@@ -160,7 +158,9 @@ class PmdAnalysisTest {
 
         try (PmdAnalysis pmd = PmdAnalysis.create(config)) {
             pmd.addRuleSet(ruleset);
-            pmd.files().addFile(new SimpleTestTextFile("test content foo", FileId.fromPathLikeString("foo.txt"), language.getDefaultVersion()));
+            pmd.files()
+                    .addFile(new SimpleTestTextFile(
+                            "test content foo", FileId.fromPathLikeString("foo.txt"), language.getDefaultVersion()));
             Report report = pmd.performAnalysisAndCollectReport();
             for (Report.ProcessingError error : report.getProcessingErrors()) {
                 System.out.println("error = " + error.getMsg() + ": " + error.getDetail());

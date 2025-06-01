@@ -7,7 +7,6 @@ package net.sourceforge.pmd.reporting;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -75,7 +74,6 @@ public interface ListenerInitializer extends AutoCloseable {
         return NoopListenerInitializer.INSTANCE;
     }
 
-
     /**
      * Produce an analysis listener that forwards all events to the given
      * listeners.
@@ -141,5 +139,4 @@ public interface ListenerInitializer extends AutoCloseable {
 
         return new TeeListener();
     }
-
 }

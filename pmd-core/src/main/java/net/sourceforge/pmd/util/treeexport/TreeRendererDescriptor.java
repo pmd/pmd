@@ -21,7 +21,6 @@ public interface TreeRendererDescriptor {
      */
     PropertySource newPropertyBundle();
 
-
     /**
      * Returns the ID of this renderer, used to select it.
      * The ID of a descriptor should never change.
@@ -30,12 +29,10 @@ public interface TreeRendererDescriptor {
      */
     String id();
 
-
     /**
      * Returns a short description of the format of this renderer's output.
      */
     String description();
-
 
     /**
      * Builds a new renderer from the given properties.
@@ -44,6 +41,4 @@ public interface TreeRendererDescriptor {
      *                   {@link #newPropertyBundle()}.
      */
     TreeRenderer produceRenderer(PropertySource properties);
-
-
 }

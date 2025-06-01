@@ -6,11 +6,9 @@ package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import java.util.List;
 import java.util.function.BinaryOperator;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S, I> {
 
@@ -21,11 +19,12 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
     private final I scopeTag;
 
     @SuppressWarnings("unchecked") // NameResolver is covariant in S
-    ShadowChainNodeBase(@NonNull ShadowChainNode<S, I> parent,
-                        boolean shadowBarrier,
-                        I scopeTag,
-                        NameResolver<? extends S> resolver,
-                        BinaryOperator<List<S>> merger) {
+    ShadowChainNodeBase(
+            @NonNull ShadowChainNode<S, I> parent,
+            boolean shadowBarrier,
+            I scopeTag,
+            NameResolver<? extends S> resolver,
+            BinaryOperator<List<S>> merger) {
         this.parent = parent;
         this.scopeTag = scopeTag;
         this.shadowBarrier = shadowBarrier;
@@ -33,7 +32,8 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
         this.merger = merger;
     }
 
-    ShadowChainNodeBase(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
+    ShadowChainNodeBase(
+            ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
         this(parent, shadowBarrier, scopeTag, resolver, defaultMerger());
     }
 
@@ -77,7 +77,6 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
     public OptionalBool knowsSymbol(String simpleName) {
         return resolver.knows(simpleName);
     }
-
 
     @Override
     public @NonNull List<S> resolve(String name) {

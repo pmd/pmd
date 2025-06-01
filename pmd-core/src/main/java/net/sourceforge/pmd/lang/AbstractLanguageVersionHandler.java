@@ -9,7 +9,4 @@ package net.sourceforge.pmd.lang;
  *
  * @see LanguageVersionHandler
  */
-public abstract class AbstractLanguageVersionHandler implements LanguageVersionHandler {
-
-
-}
+public abstract class AbstractLanguageVersionHandler implements LanguageVersionHandler {}

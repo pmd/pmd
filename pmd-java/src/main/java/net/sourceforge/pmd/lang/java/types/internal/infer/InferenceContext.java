@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
-
 import static net.sourceforge.pmd.lang.java.types.TypeOps.asList;
 import static net.sourceforge.pmd.util.CollectionUtil.intersect;
 
@@ -20,10 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Supplier;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -41,6 +36,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.IncorporationAction.Su
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphWalk;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Context of a type inference process. This object maintains a set of
@@ -90,7 +87,8 @@ final class InferenceContext {
      *                            into ivars
      * @param logger              Logger for events related to ivar bounds
      */
-    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
+    InferenceContext(
+            TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
         this(ts, supertypeCheckCache, tvars, logger, true);
     }
 
@@ -112,7 +110,12 @@ final class InferenceContext {
      * @param addPrimaryBound     Whether to add the primary bound of the vars.
      */
     @SuppressWarnings("PMD.AssignmentToNonFinalStatic") // ctxId
-    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger, boolean addPrimaryBound) {
+    InferenceContext(
+            TypeSystem ts,
+            SupertypeCheckCache supertypeCheckCache,
+            List<JTypeVar> tvars,
+            TypeInferenceLogger logger,
+            boolean addPrimaryBound) {
         this.ts = ts;
         this.supertypeCheckCache = supertypeCheckCache;
         this.logger = logger;
@@ -301,7 +304,6 @@ final class InferenceContext {
         });
     }
 
-
     /**
      * Replace instantiated inference vars with their instantiation in the given type,
      * or else replace them with a wildcard.
@@ -321,20 +323,16 @@ final class InferenceContext {
      * Copy variable in this inference context to the given context
      */
     void duplicateInto(final InferenceContext that) {
-        boolean changedGraph = !that.freeVars.containsAll(this.freeVars)
-            || !this.instantiationConstraints.isEmpty();
+        boolean changedGraph = !that.freeVars.containsAll(this.freeVars) || !this.instantiationConstraints.isEmpty();
         that.graphWasChanged |= changedGraph;
         that.inferenceVars.addAll(this.inferenceVars);
         that.freeVars.addAll(this.freeVars);
         that.incorporationActions.addAll(this.incorporationActions);
         that.instantiationListeners.putAll(this.instantiationListeners);
-        CollectionUtil.mergeMaps(
-            that.instantiationConstraints,
-            this.instantiationConstraints,
-            (set1, set2) -> {
-                set1.addAll(set2);
-                return set1;
-            });
+        CollectionUtil.mergeMaps(that.instantiationConstraints, this.instantiationConstraints, (set1, set2) -> {
+            set1.addAll(set2);
+            return set1;
+        });
 
         this.parent = that;
 
@@ -343,7 +341,6 @@ final class InferenceContext {
             that.incorporationActions.add(new PropagateAllBounds(freeVar));
         }
     }
-
 
     // The `from` ivars depend on the `dependencies` ivars for resolution.
     void addInstantiationDependencies(Set<? extends InferenceVar> from, Set<? extends InferenceVar> dependencies) {
@@ -391,8 +388,8 @@ final class InferenceContext {
         Set<InferenceVar> solved = new LinkedHashSet<>(inferenceVars);
         solved.removeAll(freeVars);
 
-
-        for (Entry<InstantiationListener, Set<InferenceVar>> entry : new LinkedHashSet<>(instantiationListeners.entrySet())) {
+        for (Entry<InstantiationListener, Set<InferenceVar>> entry :
+                new LinkedHashSet<>(instantiationListeners.entrySet())) {
             if (solved.containsAll(entry.getValue())) {
                 try {
                     entry.getKey().onInstantiation(this);
@@ -434,7 +431,6 @@ final class InferenceContext {
             }
         });
     }
-
 
     void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isPrimary) {
         // guard against α <: Object
@@ -504,7 +500,6 @@ final class InferenceContext {
         solve(new GraphWalk(var));
     }
 
-
     private boolean solve(Supplier<VarWalkStrategy> newWalker) {
         VarWalkStrategy strategy = newWalker.get();
         while (strategy != null) {
@@ -515,7 +510,6 @@ final class InferenceContext {
         }
         return freeVars.isEmpty();
     }
-
 
     /**
      * This returns true if solving the VarWalkStrategy succeeded entirely.
@@ -533,7 +527,7 @@ final class InferenceContext {
             Set<InferenceVar> varsToSolve = walker.next();
 
             boolean progress = true;
-            //repeat until all variables are solved
+            // repeat until all variables are solved
             outer:
             while (!intersect(freeVars, varsToSolve).isEmpty() && progress) {
                 if (graphWasChanged) {
@@ -605,6 +599,5 @@ final class InferenceContext {
          * parameter, not the context on which the callback was registered.
          */
         void onInstantiation(InferenceContext solvedCtx);
-
     }
 }

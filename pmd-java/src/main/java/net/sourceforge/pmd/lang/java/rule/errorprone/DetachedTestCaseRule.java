@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -23,11 +22,16 @@ public class DetachedTestCaseRule extends AbstractJavaRulechainRule {
         if (methods.any(TestFrameworksUtil::isTestMethod)) {
             // looks like a test case
             methods.filter(m -> m.getArity() == 0
-                       && m.isVoid()
-                       && !m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE, JModifier.PROTECTED, JModifier.ABSTRACT))
-                   // the method itself has no annotation
-                   .filter(it -> it.getDeclaredAnnotations().isEmpty())
-                   .forEach(m -> asCtx(data).addViolation(m));
+                            && m.isVoid()
+                            && !m.getModifiers()
+                                    .hasAny(
+                                            JModifier.STATIC,
+                                            JModifier.PRIVATE,
+                                            JModifier.PROTECTED,
+                                            JModifier.ABSTRACT))
+                    // the method itself has no annotation
+                    .filter(it -> it.getDeclaredAnnotations().isEmpty())
+                    .forEach(m -> asCtx(data).addViolation(m));
         }
         return null;
     }

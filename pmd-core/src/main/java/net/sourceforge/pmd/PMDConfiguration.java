@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd;
 
 import java.io.File;
@@ -13,10 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
@@ -31,6 +26,8 @@ import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class contains the details for the runtime configuration of a
@@ -270,7 +267,6 @@ public class PMDConfiguration extends AbstractConfiguration {
         this.minimumPriority = minimumPriority;
     }
 
-
     /**
      * Create a Renderer instance based upon the configured reporting options.
      * No writer is created.
@@ -294,7 +290,8 @@ public class PMDConfiguration extends AbstractConfiguration {
         Renderer renderer = RendererFactory.createRenderer(reportFormat, reportProperties);
         renderer.setShowSuppressedViolations(showSuppressedViolations);
         if (withReportWriter) {
-            renderer.setReportFile(getReportFilePath() != null ? getReportFilePath().toString() : null);
+            renderer.setReportFile(
+                    getReportFilePath() != null ? getReportFilePath().toString() : null);
         }
         return renderer;
     }
@@ -404,11 +401,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      *                      to disable the cache.
      */
     public void setAnalysisCacheLocation(final String cacheLocation) {
-        setAnalysisCache(cacheLocation == null
-                         ? new NoopAnalysisCache()
-                         : new FileAnalysisCache(new File(cacheLocation)));
+        setAnalysisCache(
+                cacheLocation == null ? new NoopAnalysisCache() : new FileAnalysisCache(new File(cacheLocation)));
     }
-
 
     /**
      * Sets whether the user has explicitly disabled incremental analysis or not.
@@ -421,7 +416,6 @@ public class PMDConfiguration extends AbstractConfiguration {
         // see #getAnalysisCache for the implementation.
         this.ignoreIncrementalAnalysis = noCache;
     }
-
 
     /**
      * Returns whether incremental analysis was explicitly disabled by the user
@@ -436,8 +430,9 @@ public class PMDConfiguration extends AbstractConfiguration {
     @Override
     protected void checkLanguageIsAcceptable(Language lang) throws UnsupportedOperationException {
         if (!(lang instanceof PmdCapableLanguage)) {
-            throw new UnsupportedOperationException("Language " + lang.getId() + " does not support analysis with PMD and cannot be used in a PMDConfiguration. "
-                + "You may be able to use it with CPD though.");
+            throw new UnsupportedOperationException("Language " + lang.getId()
+                    + " does not support analysis with PMD and cannot be used in a PMDConfiguration. "
+                    + "You may be able to use it with CPD though.");
         }
     }
 }

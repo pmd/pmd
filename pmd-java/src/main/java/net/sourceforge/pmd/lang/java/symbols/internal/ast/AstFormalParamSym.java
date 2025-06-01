@@ -24,5 +24,4 @@ final class AstFormalParamSym extends AbstractAstVariableSym implements JFormalP
     public JExecutableSymbol getDeclaringSymbol() {
         return owner;
     }
-
 }

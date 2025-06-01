@@ -7,9 +7,6 @@ package net.sourceforge.pmd.lang.html;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
 import net.sourceforge.pmd.lang.html.ast.HtmlParsingHelper;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
@@ -18,6 +15,7 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import org.junit.jupiter.api.Test;
 
 class HtmlJavaRuleTest {
     // from https://developer.salesforce.com/docs/component-library/documentation/en/lwc/lwc.js_props_getter

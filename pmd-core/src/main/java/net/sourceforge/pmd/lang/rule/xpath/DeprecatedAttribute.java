@@ -10,7 +10,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
  * Node attribute getter methods might be annotated with {@code DeprecatedAttribute}
  * to mark the attribute as deprecated for XPath. Unlike {@link Deprecated}, this
@@ -28,7 +27,6 @@ public @interface DeprecatedAttribute {
 
     /** Sentinel expressing that the attribute is deprecated without replacement. */
     String NO_REPLACEMENT = "";
-
 
     /**
      * An XPath expression to suggest as a replacement for use of the

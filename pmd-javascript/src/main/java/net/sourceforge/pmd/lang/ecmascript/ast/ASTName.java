@@ -35,8 +35,7 @@ public final class ASTName extends AbstractEcmascriptNode<Name> {
      *         <code>false</code> otherwise.
      */
     public boolean isFunctionNodeName() {
-        return getParent() instanceof ASTFunctionNode
-                && ((ASTFunctionNode) getParent()).getFunctionName() == this;
+        return getParent() instanceof ASTFunctionNode && ((ASTFunctionNode) getParent()).getFunctionName() == this;
     }
 
     /**

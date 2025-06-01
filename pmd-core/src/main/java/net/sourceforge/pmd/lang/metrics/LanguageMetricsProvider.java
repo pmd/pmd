@@ -1,18 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.metrics;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Node;
-
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Language-specific provider for metrics. Knows about all the metrics
@@ -28,7 +24,6 @@ public interface LanguageMetricsProvider {
 
     /** Returns the set of all metrics supported by the language. */
     Set<Metric<?, ?>> getMetrics();
-
 
     /** Fetch a metric using its name. */
     default @Nullable Metric<?, ?> getMetricWithName(String nameIgnoringCase) {

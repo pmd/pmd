@@ -19,7 +19,8 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
  *
  * </pre>
  */
-public final class ASTPatternExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
+public final class ASTPatternExpression extends AbstractJavaTypeNode
+        implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
 
     ASTPatternExpression(int id) {
         super(id);
@@ -41,7 +42,6 @@ public final class ASTPatternExpression extends AbstractJavaTypeNode implements 
         return (ASTPattern) getChild(0);
     }
 
-
     /** Returns 0, patterns can never be parenthesized. */
     @Override
     public int getParenthesisDepth() {
@@ -53,5 +53,4 @@ public final class ASTPatternExpression extends AbstractJavaTypeNode implements 
     public boolean isParenthesized() {
         return false;
     }
-
 }

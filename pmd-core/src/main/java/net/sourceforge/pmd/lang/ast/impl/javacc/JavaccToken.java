@@ -38,7 +38,6 @@ public class JavaccToken implements GenericToken<JavaccToken> {
      */
     public static final int IMPLICIT_TOKEN = -1;
 
-
     /**
      * An integer that describes the kind of this token.  This numbering
      * system is determined by JavaCCParser, and a table of these numbers is
@@ -74,7 +73,6 @@ public class JavaccToken implements GenericToken<JavaccToken> {
      * is no such token, this field is null.
      */
     public JavaccToken specialToken;
-
 
     // common constructor, with a CharSequence parameter
     JavaccToken(int kind, CharSequence image, int startInclusive, int endExclusive, JavaccTokenDocument document) {
@@ -195,14 +193,8 @@ public class JavaccToken implements GenericToken<JavaccToken> {
      */
     public JavaccToken replaceImage(CharStream charStream) {
         return new JavaccToken(
-            this.kind,
-            charStream.getTokenImageCs(),
-            this.startOffset,
-            charStream.getEndOffset(),
-            this.document
-        );
+                this.kind, charStream.getTokenImageCs(), this.startOffset, charStream.getEndOffset(), this.document);
     }
-
 
     /**
      * Returns a new token with the given kind, and all other parameters
@@ -213,13 +205,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
      * @return A new token
      */
     public JavaccToken withKind(int newKind) {
-        JavaccToken tok = new JavaccToken(
-            newKind,
-            this.image,
-            this.startOffset,
-            this.endOffset,
-            this.document
-        );
+        JavaccToken tok = new JavaccToken(newKind, this.image, this.startOffset, this.endOffset, this.document);
         tok.specialToken = this.specialToken;
         tok.next = this.next;
         return tok;
@@ -263,4 +249,3 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return new JavaccToken(IMPLICIT_TOKEN, "", offset, offset, document);
     }
 }
-

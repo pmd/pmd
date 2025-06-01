@@ -2,13 +2,9 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.kotlin.rule.errorprone;
 
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.kotlin.AbstractKotlinRule;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassDeclaration;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtClassMemberDeclaration;
@@ -20,6 +16,7 @@ import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitor;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinVisitorBase;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
 
@@ -39,12 +36,14 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
         @Override
         public Void visitClassMemberDeclarations(KtClassMemberDeclarations node, RuleContext data) {
             List<KtFunctionDeclaration> functions = node.children(KtClassMemberDeclaration.class)
-                .children(KtDeclaration.class)
-                .children(KtFunctionDeclaration.class)
-                .toList();
+                    .children(KtDeclaration.class)
+                    .children(KtFunctionDeclaration.class)
+                    .toList();
 
-            boolean hasEqualMethod = functions.stream().filter(this::isEqualsMethod).count() == 1L;
-            boolean hasHashCodeMethod = functions.stream().filter(this::isHashCodeMethod).count() == 1L;
+            boolean hasEqualMethod =
+                    functions.stream().filter(this::isEqualsMethod).count() == 1L;
+            boolean hasHashCodeMethod =
+                    functions.stream().filter(this::isHashCodeMethod).count() == 1L;
 
             if (hasEqualMethod ^ hasHashCodeMethod) {
                 data.addViolation(node.ancestors(KtClassDeclaration.class).first());
@@ -66,12 +65,14 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractKotlinRule {
         }
 
         private String getFunctionName(KtFunctionDeclaration fun) {
-            return fun.simpleIdentifier().children(KotlinTerminalNode.class).first().getText();
+            return fun.simpleIdentifier()
+                    .children(KotlinTerminalNode.class)
+                    .first()
+                    .getText();
         }
 
         private boolean hasOverrideModifier(KtFunctionDeclaration fun) {
-            return fun.modifiers().descendants(KotlinTerminalNode.class)
-                    .any(t -> "override".equals(t.getText()));
+            return fun.modifiers().descendants(KotlinTerminalNode.class).any(t -> "override".equals(t.getText()));
         }
 
         private int getArity(KtFunctionDeclaration fun) {

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import java.util.Locale;
-
 import org.mozilla.javascript.Token;
 import org.mozilla.javascript.ast.KeywordLiteral;
 

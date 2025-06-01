@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,5 +21,4 @@ class ASTVariableDeclarationTest extends EcmascriptParserTestBase {
         ASTName name = (ASTName) varInit.getChild(0);
         assertEquals("x", name.getIdentifier());
     }
-
 }

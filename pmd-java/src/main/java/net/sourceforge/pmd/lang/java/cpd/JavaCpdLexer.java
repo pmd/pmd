@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.cpd;
 
 import java.util.Deque;
 import java.util.LinkedList;
-
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.TokenFactory;
@@ -57,10 +56,11 @@ public class JavaCpdLexer extends JavaccCpdLexer {
 
         constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
 
-        if (ignoreLiterals && (javaToken.kind == JavaTokenKinds.STRING_LITERAL
-                || javaToken.kind == JavaTokenKinds.CHARACTER_LITERAL
-                || javaToken.kind == JavaTokenKinds.INTEGER_LITERAL
-                || javaToken.kind == JavaTokenKinds.FLOATING_POINT_LITERAL)) {
+        if (ignoreLiterals
+                && (javaToken.kind == JavaTokenKinds.STRING_LITERAL
+                        || javaToken.kind == JavaTokenKinds.CHARACTER_LITERAL
+                        || javaToken.kind == JavaTokenKinds.INTEGER_LITERAL
+                        || javaToken.kind == JavaTokenKinds.FLOATING_POINT_LITERAL)) {
             image = JavaTokenKinds.describe(javaToken.kind);
         }
         if (ignoreIdentifiers && javaToken.kind == JavaTokenKinds.IDENTIFIER) {
@@ -127,10 +127,12 @@ public class JavaCpdLexer extends JavaccCpdLexer {
         private void skipAnnotationSuppression(final JavaccToken currentToken) {
             // if processing an annotation, look for a CPD-START or CPD-END
             if (isAnnotation) {
-                if (!discardingSuppressing && currentToken.kind == JavaTokenKinds.STRING_LITERAL
+                if (!discardingSuppressing
+                        && currentToken.kind == JavaTokenKinds.STRING_LITERAL
                         && CPD_START.equals(currentToken.getImage())) {
                     discardingSuppressing = true;
-                } else if (discardingSuppressing && currentToken.kind == JavaTokenKinds.STRING_LITERAL
+                } else if (discardingSuppressing
+                        && currentToken.kind == JavaTokenKinds.STRING_LITERAL
                         && CPD_END.equals(currentToken.getImage())) {
                     discardingSuppressing = false;
                 }
@@ -147,8 +149,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
 
         @Override
         protected boolean isLanguageSpecificDiscarding() {
-            return discardingSemicolon || discardingKeywords || discardingAnnotations
-                    || discardingSuppressing;
+            return discardingSemicolon || discardingKeywords || discardingAnnotations || discardingSuppressing;
         }
 
         private void detectAnnotations(JavaccToken currentToken) {
@@ -164,7 +165,8 @@ public class JavaCpdLexer extends JavaccCpdLexer {
                     if (annotationStack == 0) {
                         nextTokenEndsAnnotation = true;
                     }
-                } else if (annotationStack == 0 && currentToken.kind != JavaTokenKinds.IDENTIFIER
+                } else if (annotationStack == 0
+                        && currentToken.kind != JavaTokenKinds.IDENTIFIER
                         && currentToken.kind != JavaTokenKinds.LPAREN) {
                     isAnnotation = false;
                 }
@@ -202,51 +204,51 @@ public class JavaCpdLexer extends JavaccCpdLexer {
             }
 
             switch (currentToken.kind) {
-            case JavaTokenKinds.IDENTIFIER:
-                if ("enum".equals(currentToken.getImage())) {
-                    // If declaring an enum, add a new block nesting level at
-                    // which constructors may exist
+                case JavaTokenKinds.IDENTIFIER:
+                    if ("enum".equals(currentToken.getImage())) {
+                        // If declaring an enum, add a new block nesting level at
+                        // which constructors may exist
+                        pushTypeDeclaration();
+                    } else if (storeNextIdentifier) {
+                        classMembersIndentations.peek().name = currentToken.getImage();
+                        storeNextIdentifier = false;
+                    }
+
+                    // Store this token
+                    prevIdentifier = currentToken.getImage();
+                    break;
+
+                case JavaTokenKinds.CLASS:
+                    // If declaring a class, add a new block nesting level at which
+                    // constructors may exist
                     pushTypeDeclaration();
-                } else if (storeNextIdentifier) {
-                    classMembersIndentations.peek().name = currentToken.getImage();
-                    storeNextIdentifier = false;
-                }
+                    break;
 
-                // Store this token
-                prevIdentifier = currentToken.getImage();
-                break;
+                case JavaTokenKinds.LBRACE:
+                    currentNestingLevel++;
+                    break;
 
-            case JavaTokenKinds.CLASS:
-                // If declaring a class, add a new block nesting level at which
-                // constructors may exist
-                pushTypeDeclaration();
-                break;
+                case JavaTokenKinds.RBRACE:
+                    // Discard completed blocks
+                    if (!classMembersIndentations.isEmpty()
+                            && classMembersIndentations.peek().indentationLevel == currentNestingLevel) {
+                        classMembersIndentations.pop();
+                    }
+                    currentNestingLevel--;
+                    break;
 
-            case JavaTokenKinds.LBRACE:
-                currentNestingLevel++;
-                break;
-
-            case JavaTokenKinds.RBRACE:
-                // Discard completed blocks
-                if (!classMembersIndentations.isEmpty()
-                        && classMembersIndentations.peek().indentationLevel == currentNestingLevel) {
-                    classMembersIndentations.pop();
-                }
-                currentNestingLevel--;
-                break;
-
-            default:
-                /*
-                 * Did we find a "class" token not followed by an identifier? i.e:
-                 * expectThrows(IllegalStateException.class, () -> {
-                 *  newSearcher(r).search(parentQuery.build(), c);
-                 * });
-                 */
-                if (storeNextIdentifier) {
-                    classMembersIndentations.pop();
-                    storeNextIdentifier = false;
-                }
-                break;
+                default:
+                    /*
+                     * Did we find a "class" token not followed by an identifier? i.e:
+                     * expectThrows(IllegalStateException.class, () -> {
+                     *  newSearcher(r).search(parentQuery.build(), c);
+                     * });
+                     */
+                    if (storeNextIdentifier) {
+                        classMembersIndentations.pop();
+                        storeNextIdentifier = false;
+                    }
+                    break;
             }
         }
 

@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.html;
 
 import net.sourceforge.pmd.lang.AbstractPmdLanguageVersionHandler;
@@ -15,5 +14,4 @@ class HtmlHandler extends AbstractPmdLanguageVersionHandler {
     public Parser getParser() {
         return new HtmlParser();
     }
-
 }

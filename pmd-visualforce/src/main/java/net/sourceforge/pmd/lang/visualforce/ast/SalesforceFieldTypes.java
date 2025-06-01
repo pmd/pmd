@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.visualforce.DataType;
 
@@ -100,4 +99,3 @@ abstract class SalesforceFieldTypes {
      */
     protected abstract void findDataType(String expression, List<Path> metadataDirectories);
 }
-

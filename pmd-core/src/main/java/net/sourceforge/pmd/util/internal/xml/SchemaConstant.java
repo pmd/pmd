@@ -10,14 +10,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-
 
 /**
  * Wraps the name of eg an attribute or element, and provides convenience
@@ -27,11 +25,9 @@ public class SchemaConstant {
 
     private final String name;
 
-
     public SchemaConstant(String name) {
         this.name = name;
     }
-
 
     public boolean getAsBooleanAttr(Element e, boolean defaultValue) {
         String attr = e.getAttribute(name);
@@ -78,13 +74,12 @@ public class SchemaConstant {
     }
 
     public List<Element> getChildrenIn(Element elt) {
-        return XmlUtil.getElementChildrenNamed(elt, name)
-                      .collect(Collectors.toList());
+        return XmlUtil.getElementChildrenNamed(elt, name).collect(Collectors.toList());
     }
 
     public List<Element> getElementChildrenNamedReportOthers(Element elt, PmdXmlReporter err) {
         return XmlUtil.getElementChildrenNamedReportOthers(elt, setOf(this), err)
-                      .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     public @NonNull Element getSingleChildIn(Element elt, PmdXmlReporter err) {
@@ -108,12 +103,10 @@ public class SchemaConstant {
         return name;
     }
 
-
     @Override
     public String toString() {
         return xmlName();
     }
-
 
     public boolean matchesElt(Node node) {
         return node.getNodeType() == Node.ELEMENT_NODE && node.getNodeName().equals(name);

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
@@ -19,16 +18,14 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.util.StringUtil;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Philippe T'Seyen - original implementation
@@ -108,17 +105,20 @@ public final class XMLRenderer implements CPDReportRenderer {
         }
     }
 
-
     @Override
     public void render(final CPDReport report, final Writer writer) throws IOException {
         final Document doc = createDocument();
         final Element root = createElement(doc, "pmd-cpd");
 
         if (newFormat) {
-            root.setAttributeNS(XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI, "xsi:schemaLocation", NAMESPACE_URI + " " + NAMESPACE_LOCATION);
+            root.setAttributeNS(
+                    XMLConstants.W3C_XML_SCHEMA_INSTANCE_NS_URI,
+                    "xsi:schemaLocation",
+                    NAMESPACE_URI + " " + NAMESPACE_LOCATION);
             root.setAttributeNS(NAMESPACE_URI, "version", SCHEMA_VERSION);
             root.setAttributeNS(NAMESPACE_URI, "pmdVersion", PMDVersion.VERSION);
-            root.setAttributeNS(NAMESPACE_URI, "timestamp", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+            root.setAttributeNS(
+                    NAMESPACE_URI, "timestamp", OffsetDateTime.now().format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         }
 
         final Map<FileId, Integer> numberOfTokensPerFile = report.getNumberOfTokensPerFile();
@@ -178,7 +178,8 @@ public final class XMLRenderer implements CPDReportRenderer {
             // only remove invalid characters, escaping is not necessary in CDATA.
             // if the string contains the end marker of a CDATA section, then the DOM impl will
             // create two cdata sections automatically.
-            codefragment.appendChild(doc.createCDATASection(StringUtil.removedInvalidXml10Characters(platformSpecific)));
+            codefragment.appendChild(
+                    doc.createCDATASection(StringUtil.removedInvalidXml10Characters(platformSpecific)));
             duplication.appendChild(codefragment);
         }
     }

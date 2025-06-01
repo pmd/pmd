@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -37,7 +36,6 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
         return !isLowerBound;
     }
 
-
     /**
      * Returns true if this is a lower type bound, e.g.
      * in {@code <? super Node>}.
@@ -45,7 +43,6 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
     public boolean isLowerBound() {
         return isLowerBound;
     }
-
 
     /**
      * Returns the type node representing the bound, e.g.

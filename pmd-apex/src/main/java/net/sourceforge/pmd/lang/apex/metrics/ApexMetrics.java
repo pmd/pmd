@@ -6,9 +6,6 @@ package net.sourceforge.pmd.lang.apex.metrics;
 
 import java.util.function.Function;
 import java.util.function.Predicate;
-
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import net.sourceforge.pmd.internal.util.PredicateUtil;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
@@ -20,6 +17,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 /**
  * Built-in Apex metrics. See {@link Metric} and {@link MetricsUtil}
@@ -28,8 +26,7 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 public final class ApexMetrics {
     @SuppressWarnings({"unchecked", "rawtypes"})
     private static final Class<ApexNode<?>> GENERIC_APEX_NODE_CLASS =
-        (Class) ApexNode.class; // this is a Class<ApexNode>, the raw type
-
+            (Class) ApexNode.class; // this is a Class<ApexNode>, the raw type
 
     /**
      * Number of independent paths through a block of code.
@@ -80,8 +77,7 @@ public final class ApexMetrics {
      * }</pre>
      */
     public static final Metric<ApexNode<?>, Integer> CYCLO =
-        Metric.of(ApexMetrics::computeCyclo, isRegularApexNode(),
-                  "Cyclomatic Complexity", "Cyclo");
+            Metric.of(ApexMetrics::computeCyclo, isRegularApexNode(), "Cyclomatic Complexity", "Cyclo");
 
     /**
      * See the corresponding Cognitive Complexity in pmd-java ({@code net.sourceforge.pmd.lang.java.metrics.JavaMetrics#COGNITIVE_COMPLEXITY})
@@ -93,31 +89,29 @@ public final class ApexMetrics {
      * These reported methods should be broken down into less complex components.
      */
     public static final Metric<ApexNode<?>, Integer> COGNITIVE_COMPLEXITY =
-        Metric.of(ApexMetrics::computeCognitiveComp, isRegularApexNode(),
-                  "Cognitive Complexity");
-
+            Metric.of(ApexMetrics::computeCognitiveComp, isRegularApexNode(), "Cognitive Complexity");
 
     /**
      * Sum of the statistical complexity of the operations in the class.
      * We use CYCLO to quantify the complexity of an operation.
      *
      */
-    public static final Metric<ASTUserClassOrInterface<?>, Integer> WEIGHED_METHOD_COUNT =
-        Metric.of(ApexMetrics::computeWmc, filterMapNode(ASTUserClass.class, PredicateUtil.always()),
-                  "Weighed Method Count", "WMC");
+    public static final Metric<ASTUserClassOrInterface<?>, Integer> WEIGHED_METHOD_COUNT = Metric.of(
+            ApexMetrics::computeWmc,
+            filterMapNode(ASTUserClass.class, PredicateUtil.always()),
+            "Weighed Method Count",
+            "WMC");
 
     private ApexMetrics() {
         // utility class
     }
 
-
-
     private static Function<Node, ApexNode<?>> isRegularApexNode() {
         return filterMapNode(GENERIC_APEX_NODE_CLASS, PredicateUtil.always());
     }
 
-
-    private static <T extends Node> Function<Node, T> filterMapNode(Class<? extends T> klass, Predicate<? super T> pred) {
+    private static <T extends Node> Function<Node, T> filterMapNode(
+            Class<? extends T> klass, Predicate<? super T> pred) {
         return n -> n.asStream().filterIs(klass).filter(pred).first();
     }
 
@@ -133,11 +127,8 @@ public final class ApexMetrics {
         return state.getComplexity();
     }
 
-
-
     private static int computeWmc(ASTUserClassOrInterface<?> node, MetricOptions options) {
-        return (int) MetricsUtil.computeStatistics(CYCLO, node.getMethods(), options).getSum();
+        return (int)
+                MetricsUtil.computeStatistics(CYCLO, node.getMethods(), options).getSum();
     }
-
-
 }

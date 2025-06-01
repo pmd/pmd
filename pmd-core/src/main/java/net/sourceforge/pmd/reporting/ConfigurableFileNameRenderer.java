@@ -12,12 +12,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * @author Clément Fournier
@@ -81,8 +79,8 @@ public class ConfigurableFileNameRenderer implements FileNameRenderer {
         // with the empty string.
         int maxi = Math.min(base.getNameCount(), otherSegments.length - 1);
         while (prefixLength < maxi
-            // here we add 1 for the same reason                          vvvvvvvvvvvvvvvv
-            && base.getName(prefixLength).toString().equals(otherSegments[prefixLength + 1])) {
+                // here we add 1 for the same reason                          vvvvvvvvvvvvvvvv
+                && base.getName(prefixLength).toString().equals(otherSegments[prefixLength + 1])) {
             prefixLength++;
         }
 

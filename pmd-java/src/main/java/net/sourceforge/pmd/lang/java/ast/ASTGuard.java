@@ -16,7 +16,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a>
-*/
+ */
 public final class ASTGuard extends AbstractJavaNode {
 
     ASTGuard(int id) {

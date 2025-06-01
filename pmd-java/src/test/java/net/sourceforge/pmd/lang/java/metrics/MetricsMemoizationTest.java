@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.metrics;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,9 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -23,6 +19,7 @@ import net.sourceforge.pmd.lang.java.metrics.testdata.MetricsVisitorTestData;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
@@ -46,7 +43,6 @@ class MetricsMemoizationTest extends BaseParserTest {
         assertEquals(expected, real);
     }
 
-
     @Test
     void forceMemoizationTest() {
 
@@ -63,33 +59,33 @@ class MetricsMemoizationTest extends BaseParserTest {
         }
     }
 
-
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
         final List<Integer> result = new ArrayList<>();
 
-        acu.acceptVisitor(new JavaVisitorBase<Object, Object>() {
-            @Override
-            public Object visitMethodOrCtor(ASTExecutableDeclaration node, Object data) {
-                Integer value = MetricsUtil.computeMetric(randomMetric, node, MetricOptions.emptyOptions(), force);
-                if (value != null) {
-                    result.add(value);
-                }
-                return super.visitMethodOrCtor(node, data);
-            }
+        acu.acceptVisitor(
+                new JavaVisitorBase<Object, Object>() {
+                    @Override
+                    public Object visitMethodOrCtor(ASTExecutableDeclaration node, Object data) {
+                        Integer value =
+                                MetricsUtil.computeMetric(randomMetric, node, MetricOptions.emptyOptions(), force);
+                        if (value != null) {
+                            result.add(value);
+                        }
+                        return super.visitMethodOrCtor(node, data);
+                    }
 
-
-            @Override
-            public Object visitTypeDecl(ASTTypeDeclaration node, Object data) {
-                Integer value = MetricsUtil.computeMetric(randomMetric, node, MetricOptions.emptyOptions(), force);
-                if (value != null) {
-                    result.add(value);
-                }
-                return super.visitTypeDecl(node, data);
-            }
-        }, null);
+                    @Override
+                    public Object visitTypeDecl(ASTTypeDeclaration node, Object data) {
+                        Integer value =
+                                MetricsUtil.computeMetric(randomMetric, node, MetricOptions.emptyOptions(), force);
+                        if (value != null) {
+                            result.add(value);
+                        }
+                        return super.visitTypeDecl(node, data);
+                    }
+                },
+                null);
 
         return result;
     }
-
-
 }

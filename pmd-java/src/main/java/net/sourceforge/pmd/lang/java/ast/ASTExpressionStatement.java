@@ -27,7 +27,6 @@ public final class ASTExpressionStatement extends AbstractStatement {
         return visitor.visit(this, data);
     }
 
-
     /** Returns the contained expression. */
     @NonNull
     public ASTExpression getExpr() {

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
@@ -41,8 +40,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
         List<ASTNamedReferenceExpr> possibleViolations = new ArrayList<>();
 
         for (ASTNamedReferenceExpr usage : node.getLocalUsages()) {
-            if ((node.isField() || node.isFormalParameter())
-                && isNotWithinLoop(usage)) {
+            if ((node.isField() || node.isFormalParameter()) && isNotWithinLoop(usage)) {
                 // ignore if the field or formal parameter is *not* used within loops
                 continue;
             }
@@ -55,11 +53,10 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                     usageCounter++;
                 }
 
-                int usageOnRightHandSide =
-                    JavaAstUtils.flattenOperands(assignment.getRightOperand())
-                                .filterIs(ASTNamedReferenceExpr.class)
-                                .filterMatching(ASTNamedReferenceExpr::getReferencedSym, node.getSymbol())
-                                .count();
+                int usageOnRightHandSide = JavaAstUtils.flattenOperands(assignment.getRightOperand())
+                        .filterIs(ASTNamedReferenceExpr.class)
+                        .filterMatching(ASTNamedReferenceExpr::getReferencedSym, node.getSymbol())
+                        .count();
 
                 // or maybe a append in some way (a = a + x)
                 // or a combination (a += a + x)

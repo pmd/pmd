@@ -41,7 +41,6 @@ public interface JSymbolTable {
      */
     ShadowChain<JVariableSig, ScopeInfo> variables();
 
-
     /**
      * The chain of tables tracking type names that are in scope here
      * (classes, type params, but not eg primitive types).
@@ -60,12 +59,9 @@ public interface JSymbolTable {
      */
     ShadowChain<JTypeMirror, ScopeInfo> types();
 
-
     /**
      * The chain of tables tracking method names that are in scope here.
      * Constructors are not tracked by this.
      */
     ShadowChain<JMethodSig, ScopeInfo> methods();
-
-
 }

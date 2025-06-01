@@ -8,15 +8,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-
+import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
+import net.sourceforge.pmd.lang.rule.RulePriority;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
 import org.apache.tools.ant.types.Reference;
-
-import net.sourceforge.pmd.ant.internal.PMDTaskImpl;
-import net.sourceforge.pmd.lang.rule.RulePriority;
 
 /**
  * PMD Ant task. Setters of this class are interpreted by Ant as properties
@@ -108,7 +106,7 @@ public class PMDTask extends Task {
 
     private String getNestedRuleSetFiles() {
         final StringBuilder sb = new StringBuilder();
-        for (Iterator<RuleSetWrapper> it = nestedRules.iterator(); it.hasNext();) {
+        for (Iterator<RuleSetWrapper> it = nestedRules.iterator(); it.hasNext(); ) {
             RuleSetWrapper rs = it.next();
             sb.append(rs.getFile());
             if (it.hasNext()) {
@@ -270,7 +268,6 @@ public class PMDTask extends Task {
     public void setCacheLocation(String cacheLocation) {
         this.cacheLocation = cacheLocation;
     }
-
 
     public boolean isNoCache() {
         return noCache;

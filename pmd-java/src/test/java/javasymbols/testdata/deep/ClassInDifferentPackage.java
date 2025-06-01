@@ -11,5 +11,4 @@ package javasymbols.testdata.deep;
  *
  * @see <a href="https://github.com/pmd/pmd/issues/913">[java] Incorrect type resolution with classes having the same name #913</a>
  */
-public class ClassInDifferentPackage {
-}
+public class ClassInDifferentPackage {}

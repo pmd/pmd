@@ -15,5 +15,4 @@ class PmdThreadFactory implements ThreadFactory {
     public Thread newThread(Runnable r) {
         return new Thread(r, "PmdThread " + counter.incrementAndGet());
     }
-
 }

@@ -12,5 +12,4 @@
  *
  * @since 7.0.0
  */
-
 package net.sourceforge.pmd.lang.java.symbols;

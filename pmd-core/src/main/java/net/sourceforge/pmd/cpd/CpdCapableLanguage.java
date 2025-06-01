@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.LanguagePropertyBundle;
  */
 public interface CpdCapableLanguage extends Language {
 
-
     /**
      * Create a new {@link CpdLexer} for this language, given
      * a property bundle with configuration. The bundle was created by

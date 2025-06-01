@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.reporting;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A delegating listener wrapper that can override the closing behavior.

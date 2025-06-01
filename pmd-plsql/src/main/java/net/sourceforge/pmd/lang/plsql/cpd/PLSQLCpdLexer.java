@@ -38,12 +38,13 @@ public class PLSQLCpdLexer extends JavaccCpdLexer {
 
         if (ignoreIdentifiers && plsqlToken.kind == PLSQLTokenKinds.IDENTIFIER) {
             image = "<identifier>";
-        } else if (ignoreLiterals && (plsqlToken.kind == PLSQLTokenKinds.UNSIGNED_NUMERIC_LITERAL
-            || plsqlToken.kind == PLSQLTokenKinds.FLOAT_LITERAL
-            || plsqlToken.kind == PLSQLTokenKinds.INTEGER_LITERAL
-            || plsqlToken.kind == PLSQLTokenKinds.CHARACTER_LITERAL
-            || plsqlToken.kind == PLSQLTokenKinds.STRING_LITERAL
-            || plsqlToken.kind == PLSQLTokenKinds.QUOTED_LITERAL)) {
+        } else if (ignoreLiterals
+                && (plsqlToken.kind == PLSQLTokenKinds.UNSIGNED_NUMERIC_LITERAL
+                        || plsqlToken.kind == PLSQLTokenKinds.FLOAT_LITERAL
+                        || plsqlToken.kind == PLSQLTokenKinds.INTEGER_LITERAL
+                        || plsqlToken.kind == PLSQLTokenKinds.CHARACTER_LITERAL
+                        || plsqlToken.kind == PLSQLTokenKinds.STRING_LITERAL
+                        || plsqlToken.kind == PLSQLTokenKinds.QUOTED_LITERAL)) {
             // the token kind is preserved
             image = PLSQLTokenKinds.describe(plsqlToken.kind);
         } else {

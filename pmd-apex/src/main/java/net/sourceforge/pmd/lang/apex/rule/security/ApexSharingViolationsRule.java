@@ -1,15 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
@@ -26,6 +22,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Finds Apex class that do not define sharing
@@ -118,16 +115,20 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
 
     private void checkForViolation(ApexNode<?> node, Object data) {
         // The closest ASTUserClass class in the tree hierarchy is the node that requires the sharing declaration
-        ASTUserClass sharingDeclarationClass = node.ancestors(ASTUserClass.class).first();
+        ASTUserClass sharingDeclarationClass =
+                node.ancestors(ASTUserClass.class).first();
 
         // This is null in the case of triggers
         if (sharingDeclarationClass != null) {
             // Apex allows a single level of class nesting. Check to see if sharingDeclarationClass has an outer class
-            ASTUserClass outerClass = sharingDeclarationClass.ancestors(ASTUserClass.class).first();
+            ASTUserClass outerClass =
+                    sharingDeclarationClass.ancestors(ASTUserClass.class).first();
             // The test annotation needs to be on the outermost class
             ASTUserClass testAnnotationClass = Optional.ofNullable(outerClass).orElse(sharingDeclarationClass);
 
-            if (!Helper.isTestMethodOrClass(testAnnotationClass) && !Helper.isSystemLevelClass(sharingDeclarationClass) && !isSharingPresent(sharingDeclarationClass)) {
+            if (!Helper.isTestMethodOrClass(testAnnotationClass)
+                    && !Helper.isSystemLevelClass(sharingDeclarationClass)
+                    && !isSharingPresent(sharingDeclarationClass)) {
                 // The violation is reported on the class, not the node that performs data access
                 reportViolation(sharingDeclarationClass, data);
             }
@@ -154,8 +155,8 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
      * @return
      */
     private boolean isSharingPresent(ASTUserClass node) {
-        return node.getModifiers().isWithoutSharing() || node.getModifiers().isWithSharing()
+        return node.getModifiers().isWithoutSharing()
+                || node.getModifiers().isWithSharing()
                 || node.getModifiers().isInheritedSharing();
     }
-
 }

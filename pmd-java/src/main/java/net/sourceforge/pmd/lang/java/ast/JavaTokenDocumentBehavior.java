@@ -8,14 +8,13 @@ import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.GT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RSIGNEDSHIFT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RUNSIGNEDSHIFT;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * {@link JavaccTokenDocument} for Java.
@@ -28,30 +27,20 @@ final class JavaTokenDocumentBehavior extends JavaccTokenDocument.TokenDocumentB
         super(JavaTokenKinds.TOKEN_NAMES);
     }
 
-
-
     @Override
     public TextDocument translate(TextDocument text) throws MalformedSourceException {
         return new JavaEscapeTranslator(text).translateDocument();
     }
 
-
     @Override
     public JavaccToken createToken(JavaccTokenDocument self, int kind, CharStream jcs, @Nullable String image) {
         switch (kind) {
-        case RUNSIGNEDSHIFT:
-        case RSIGNEDSHIFT:
-        case GT:
-            return new GTToken(
-                GT,
-                kind,
-                ">",
-                jcs.getStartOffset(),
-                jcs.getEndOffset(),
-                jcs.getTokenDocument()
-            );
-        default:
-            return super.createToken(self, kind, jcs, image);
+            case RUNSIGNEDSHIFT:
+            case RSIGNEDSHIFT:
+            case GT:
+                return new GTToken(GT, kind, ">", jcs.getStartOffset(), jcs.getEndOffset(), jcs.getTokenDocument());
+            default:
+                return super.createToken(self, kind, jcs, image);
         }
     }
 
@@ -67,6 +56,5 @@ final class JavaTokenDocumentBehavior extends JavaccTokenDocument.TokenDocumentB
             super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
         }
-
     }
 }

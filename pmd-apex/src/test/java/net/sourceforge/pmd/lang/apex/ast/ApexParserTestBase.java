@@ -11,5 +11,4 @@ public class ApexParserTestBase {
     protected ASTUserClassOrInterface<?> parse(String code) {
         return apex.parse(code).getMainNode();
     }
-
 }

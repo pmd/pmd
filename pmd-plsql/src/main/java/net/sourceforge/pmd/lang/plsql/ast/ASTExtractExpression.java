@@ -13,7 +13,6 @@ public final class ASTExtractExpression extends AbstractPLSQLNode {
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptPlsqlVisitor(PlsqlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
@@ -10,11 +9,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 public class AvoidUsingOctalValuesRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> STRICT_METHODS_DESCRIPTOR =
-        booleanProperty("strict")
+    private static final PropertyDescriptor<Boolean> STRICT_METHODS_DESCRIPTOR = booleanProperty("strict")
             .desc("Detect violations between 00 and 07")
             .defaultValue(false)
             .build();

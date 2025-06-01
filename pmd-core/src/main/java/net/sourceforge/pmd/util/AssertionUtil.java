@@ -4,11 +4,9 @@
 
 package net.sourceforge.pmd.util;
 
-
 import java.util.Collection;
 import java.util.function.Function;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -92,14 +90,12 @@ public final class AssertionUtil {
         return "Invalid range [" + startInclusive + "," + endExclusive + "[ in [" + minIndex + "," + maxIndex + "[";
     }
 
-
     /** Throws {@link IllegalStateException} if the condition is false. */
     public static void validateState(boolean condition, String failed) {
         if (!condition) {
             throw new IllegalStateException(failed);
         }
     }
-
 
     /**
      * @throws IllegalArgumentException if [startInclusive,endExclusive[ is
@@ -117,7 +113,7 @@ public final class AssertionUtil {
      */
     public static void assertValidStringRange(CharSequence string, int startInclusive, int endExclusive) {
         assert isValidRange(startInclusive, endExclusive, 0, string.length())
-            : invalidRangeMessage(startInclusive, endExclusive, 0, string.length());
+                : invalidRangeMessage(startInclusive, endExclusive, 0, string.length());
     }
 
     /**
@@ -149,7 +145,6 @@ public final class AssertionUtil {
         return value;
     }
 
-
     /**
      * @throws IllegalArgumentException If {@code value < 0}
      */
@@ -159,7 +154,6 @@ public final class AssertionUtil {
         }
         return value;
     }
-
 
     /**
      * @throws IndexOutOfBoundsException If {@code value < 0}
@@ -214,7 +208,8 @@ public final class AssertionUtil {
         return mustBe(name, value, condition, IllegalArgumentException::new);
     }
 
-    public static <E extends RuntimeException> E mustBe(String name, Object value, String condition, Function<String, E> exceptionMaker) {
+    public static <E extends RuntimeException> E mustBe(
+            String name, Object value, String condition, Function<String, E> exceptionMaker) {
         return exceptionMaker.apply(String.format("%s must be %s, got %s", name, condition, value));
     }
 
@@ -233,8 +228,7 @@ public final class AssertionUtil {
 
     public static @NonNull AssertionError shouldNotReachHere(String message, Throwable cause) {
         String prefix = "This should be unreachable";
-        message = StringUtils.isBlank(message) ? prefix
-                                               : prefix + ": " + message;
+        message = StringUtils.isBlank(message) ? prefix : prefix + ": " + message;
         return new AssertionError(message, cause);
     }
 
@@ -247,8 +241,8 @@ public final class AssertionUtil {
     }
 
     public static @NonNull ContextedRuntimeException contexted(RuntimeException e) {
-        return e instanceof ContextedRuntimeException ? (ContextedRuntimeException) e
-                                                      : new ContextedRuntimeException(e);
+        return e instanceof ContextedRuntimeException
+                ? (ContextedRuntimeException) e
+                : new ContextedRuntimeException(e);
     }
-
 }

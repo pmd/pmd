@@ -7,13 +7,11 @@ package net.sourceforge.pmd.lang.java.types;
 import java.util.Collections;
 import java.util.Set;
 import java.util.function.Function;
-
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
-
-import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * A "type" that exists outside the main type hierarchy. This is only

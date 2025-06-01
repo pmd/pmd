@@ -2,16 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_AMBIGUOUS_NAME;
 
 import java.util.Iterator;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -26,6 +21,8 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * This implements name disambiguation following <a href="https://docs.oracle.com/javase/specs/jls/se8/html/jls-6.html#jls-6.5.2">JLS§6.5.2</a>.
@@ -58,9 +55,7 @@ final class AstDisambiguationPass {
         nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx));
     }
 
-
     // those ignore JTypeParameterSymbol, for error handling logic to be uniform
-
 
     private static void checkParentIsMember(ReferenceCtx ctx, ASTClassType resolvedType, ASTClassType parent) {
         JTypeDeclSymbol sym = resolvedType.getReferencedSym();
@@ -80,7 +75,6 @@ final class AstDisambiguationPass {
     private static final class DisambigVisitor extends JavaVisitorBase<ReferenceCtx, Void> {
 
         public static final DisambigVisitor INSTANCE = new DisambigVisitor();
-
 
         @Override
         protected Void visitChildren(Node node, ReferenceCtx data) {
@@ -124,10 +118,8 @@ final class AstDisambiguationPass {
             JavaNode resolved = startResolve(name, processor, isPackageOrTypeOnly);
 
             // finish
-            assert !isPackageOrTypeOnly
-                || resolved instanceof ASTTypeExpression
-                || resolved instanceof ASTAmbiguousName
-                : "Unexpected result " + resolved + " for PackageOrTypeName resolution";
+            assert !isPackageOrTypeOnly || resolved instanceof ASTTypeExpression || resolved instanceof ASTAmbiguousName
+                    : "Unexpected result " + resolved + " for PackageOrTypeName resolution";
 
             if (isPackageOrTypeOnly && resolved instanceof ASTTypeExpression) {
                 // unambiguous, we just have to check that the parent is a member of the enclosing type
@@ -172,7 +164,7 @@ final class AstDisambiguationPass {
                 checkParentIsMember(ctx, lhsType, type);
             } else {
                 if (type.getParent() instanceof ASTConstructorCall
-                    && ((ASTConstructorCall) type.getParent()).isQualifiedInstanceCreation()) {
+                        && ((ASTConstructorCall) type.getParent()).isQualifiedInstanceCreation()) {
                     // Leave the reference null, this is handled lazily,
                     // because the interaction it depends on the type of
                     // the qualifier
@@ -229,20 +221,20 @@ final class AstDisambiguationPass {
 
         /*
 
-           This is implemented as a set of mutually recursive methods
-           that act as a kind of automaton. State transitions:
+          This is implemented as a set of mutually recursive methods
+          that act as a kind of automaton. State transitions:
 
-                        +-----+       +--+        +--+
-                        |     |       |  |        |  |
-           +-----+      +     v       +  v        +  v
-           |START+----> PACKAGE +---> TYPE +----> EXPR
-           +-----+                     ^           ^
-             |                         |           |
-             +-------------------------------------+
+                       +-----+       +--+        +--+
+                       |     |       |  |        |  |
+          +-----+      +     v       +  v        +  v
+          |START+----> PACKAGE +---> TYPE +----> EXPR
+          +-----+                     ^           ^
+            |                         |           |
+            +-------------------------------------+
 
-           Not pictured are the error transitions.
-           Only Type & Expr are valid exit states.
-         */
+          Not pictured are the error transitions.
+          Only Type & Expr are valid exit states.
+        */
 
         /**
          * Resolve an ambiguous name occurring in an expression context.
@@ -251,7 +243,8 @@ final class AstDisambiguationPass {
          * it could be a {@link ASTFieldAccess} or {@link ASTVariableAccess},
          * and in the worst case, the original {@link ASTAmbiguousName}.
          */
-        private static ASTExpression startResolve(ASTAmbiguousName name, ReferenceCtx ctx, boolean isPackageOrTypeOnly) {
+        private static ASTExpression startResolve(
+                ASTAmbiguousName name, ReferenceCtx ctx, boolean isPackageOrTypeOnly) {
             Iterator<JavaccToken> tokens = name.tokens().iterator();
             JavaccToken firstIdent = tokens.next();
             TokenUtils.expectKind(firstIdent, JavaTokenKinds.IDENTIFIER);
@@ -275,13 +268,21 @@ final class AstDisambiguationPass {
 
             if (typeResult != null) {
                 JClassType enclosing = enclosingType(typeResult);
-                return resolveType(null, enclosing, typeResult.getSymbol(), false, firstIdent, tokens, name, isPackageOrTypeOnly, ctx);
+                return resolveType(
+                        null,
+                        enclosing,
+                        typeResult.getSymbol(),
+                        false,
+                        firstIdent,
+                        tokens,
+                        name,
+                        isPackageOrTypeOnly,
+                        ctx);
             }
 
             // otherwise, first is reclassified as package name.
             return resolvePackage(firstIdent, new StringBuilder(firstImage), tokens, name, isPackageOrTypeOnly, ctx);
         }
-
 
         /**
          * Classify the given [identifier] as an expression name. This
@@ -292,11 +293,12 @@ final class AstDisambiguationPass {
          * TODO Check the field accesses are legal
          *  Also must filter by visibility
          */
-        private static ASTExpression resolveExpr(@Nullable ASTExpression qualifier, // lhs
-                                                 @Nullable JVariableSig varSym,     // signature, only set if this is the leftmost access
-                                                 JavaccToken identifier,            // identifier for the field/var name
-                                                 Iterator<JavaccToken> remaining,   // rest of tokens, starting with following '.'
-                                                 ReferenceCtx ctx) {
+        private static ASTExpression resolveExpr(
+                @Nullable ASTExpression qualifier, // lhs
+                @Nullable JVariableSig varSym, // signature, only set if this is the leftmost access
+                JavaccToken identifier, // identifier for the field/var name
+                Iterator<JavaccToken> remaining, // rest of tokens, starting with following '.'
+                ReferenceCtx ctx) {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
@@ -310,7 +312,6 @@ final class AstDisambiguationPass {
                 fieldAccess.setTypedSym((FieldSig) varSym);
                 var = fieldAccess;
             }
-
 
             if (!remaining.hasNext()) { // done
                 return var;
@@ -341,15 +342,16 @@ final class AstDisambiguationPass {
          *
          * @param isPackageOrTypeOnly If true, expressions are disallowed by the context, so we don't check fields
          */
-        private static ASTExpression resolveType(final @Nullable ASTClassType qualifier, // lhs
-                                                 final @Nullable JClassType implicitEnclosing,      // enclosing type, if it is implicitly inherited
-                                                 final JTypeDeclSymbol sym,                         // symbol for the type
-                                                 final boolean isFqcn,                              // whether this is a fully-qualified name
-                                                 final JavaccToken identifier,                      // ident of the simple name of the symbol
-                                                 final Iterator<JavaccToken> remaining,             // rest of tokens, starting with following '.'
-                                                 final ASTAmbiguousName ambig,                      // original ambiguous name
-                                                 final boolean isPackageOrTypeOnly,
-                                                 final ReferenceCtx ctx) {
+        private static ASTExpression resolveType(
+                final @Nullable ASTClassType qualifier, // lhs
+                final @Nullable JClassType implicitEnclosing, // enclosing type, if it is implicitly inherited
+                final JTypeDeclSymbol sym, // symbol for the type
+                final boolean isFqcn, // whether this is a fully-qualified name
+                final JavaccToken identifier, // ident of the simple name of the symbol
+                final Iterator<JavaccToken> remaining, // rest of tokens, starting with following '.'
+                final ASTAmbiguousName ambig, // original ambiguous name
+                final boolean isPackageOrTypeOnly,
+                final ReferenceCtx ctx) {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
@@ -407,12 +409,13 @@ final class AstDisambiguationPass {
          * <p>If we consumed the entire name without finding a suitable
          * class, then we report it and return the original ambiguous name.
          */
-        private static ASTExpression resolvePackage(JavaccToken identifier,
-                                                    StringBuilder packageImage,
-                                                    Iterator<JavaccToken> remaining,
-                                                    ASTAmbiguousName ambig,
-                                                    boolean isPackageOrTypeOnly,
-                                                    ReferenceCtx ctx) {
+        private static ASTExpression resolvePackage(
+                JavaccToken identifier,
+                StringBuilder packageImage,
+                Iterator<JavaccToken> remaining,
+                ASTAmbiguousName ambig,
+                boolean isPackageOrTypeOnly,
+                ReferenceCtx ctx) {
 
             TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
 
@@ -426,13 +429,13 @@ final class AstDisambiguationPass {
 
                 // then this name is unresolved, leave the ambiguous name in the tree
                 // this only happens inside expressions
-                ctx.getLogger().warning(ambig, CANNOT_RESOLVE_AMBIGUOUS_NAME, packageImage, ReferenceCtx.Fallback.AMBIGUOUS);
+                ctx.getLogger()
+                        .warning(ambig, CANNOT_RESOLVE_AMBIGUOUS_NAME, packageImage, ReferenceCtx.Fallback.AMBIGUOUS);
                 ambig.setProcessed(); // signal that we don't want to retry resolving this
                 return ambig;
             }
 
             JavaccToken nextIdent = skipToNextIdent(remaining);
-
 
             packageImage.append('.').append(nextIdent.getImage());
             String canonical = packageImage.toString();
@@ -452,7 +455,8 @@ final class AstDisambiguationPass {
          * Force resolution of the ambiguous name as a package name.
          * The parent type's image is set to a package name + simple name.
          */
-        private static void forceResolveAsFullPackageNameOfParent(StringBuilder packageImage, ASTAmbiguousName ambig, ReferenceCtx ctx) {
+        private static void forceResolveAsFullPackageNameOfParent(
+                StringBuilder packageImage, ASTAmbiguousName ambig, ReferenceCtx ctx) {
             ASTClassType parent = (ASTClassType) ambig.getParent();
 
             packageImage.append('.').append(parent.getSimpleName());
@@ -474,5 +478,4 @@ final class AstDisambiguationPass {
             return remaining.next();
         }
     }
-
 }

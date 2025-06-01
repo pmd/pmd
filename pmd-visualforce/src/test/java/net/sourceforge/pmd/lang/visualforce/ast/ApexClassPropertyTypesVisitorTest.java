@@ -12,21 +12,20 @@ import java.nio.file.Path;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.visualforce.VFTestUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.junit.jupiter.api.Test;
 
 class ApexClassPropertyTypesVisitorTest {
 
     @Test
     @SuppressWarnings("PMD.CloseResource")
     void testApexClassIsProperlyParsed() {
-        Path apexPath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Apex)
-                                   .resolve("ApexController.cls")
-                                   .toAbsolutePath();
+        Path apexPath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Apex)
+                .resolve("ApexController.cls")
+                .toAbsolutePath();
 
         ApexClassPropertyTypesVisitor visitor = new ApexClassPropertyTypesVisitor();
         try (LanguageProcessorRegistry lpReg = VFTestUtils.fakeLpRegistry()) {
@@ -45,9 +44,13 @@ class ApexClassPropertyTypesVisitorTest {
         assertTrue("ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.AccountIdProp")));
         assertTrue("ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.AccountId")));
         assertTrue("String".equalsIgnoreCase(variableNameToVariableType.get("ApexController.AccountName")));
-        assertTrue("InnerController".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController")));
-        assertTrue("ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountIdProp")));
-        assertTrue("ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountId")));
-        assertTrue("String".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountName")));
+        assertTrue(
+                "InnerController".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController")));
+        assertTrue("ID"
+                .equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountIdProp")));
+        assertTrue(
+                "ID".equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountId")));
+        assertTrue("String"
+                .equalsIgnoreCase(variableNameToVariableType.get("ApexController.InnerController.InnerAccountName")));
     }
 }

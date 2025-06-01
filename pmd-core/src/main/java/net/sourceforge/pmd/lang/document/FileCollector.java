@@ -30,10 +30,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -41,6 +37,8 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Collects files to analyse before a PMD run. This API allows opening
@@ -108,7 +106,6 @@ public final class FileCollector implements AutoCloseable {
         return Collections.unmodifiableList(allFilesToProcess);
     }
 
-
     /**
      * Returns the reporter for the file collection phase.
      */
@@ -149,9 +146,9 @@ public final class FileCollector implements AutoCloseable {
         }
         LanguageVersion languageVersion = discoverLanguage(file.toString());
         return languageVersion != null
-            && addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
-                                   .setParentFsPath(outerFsPath)
-                                   .build());
+                && addFileImpl(TextFile.builderForPath(file, charset, languageVersion)
+                        .setParentFsPath(outerFsPath)
+                        .build());
     }
 
     /**
@@ -173,8 +170,8 @@ public final class FileCollector implements AutoCloseable {
         LanguageVersion lv = discoverer.getDefaultLanguageVersion(language);
         Objects.requireNonNull(lv);
         return addFileImpl(TextFile.builderForPath(file, charset, lv)
-                                   .setParentFsPath(outerFsPath)
-                                   .build());
+                .setParentFsPath(outerFsPath)
+                .build());
     }
 
     /**
@@ -201,13 +198,16 @@ public final class FileCollector implements AutoCloseable {
 
         LanguageVersion version = discoverLanguage(fileId.getFileName());
         return version != null
-            && addFileImpl(TextFile.builderForCharSeq(sourceContents, fileId, version)
-                                   .setParentFsPath(outerFsPath)
-                                   .build());
+                && addFileImpl(TextFile.builderForCharSeq(sourceContents, fileId, version)
+                        .setParentFsPath(outerFsPath)
+                        .build());
     }
 
     private boolean addFileImpl(TextFile textFile) {
-        LOG.trace("Adding file {} (lang: {}) ", textFile.getFileId().getAbsolutePath(), textFile.getLanguageVersion().getTerseName());
+        LOG.trace(
+                "Adding file {} (lang: {}) ",
+                textFile.getFileId().getAbsolutePath(),
+                textFile.getLanguageVersion().getTerseName());
 
         if (!fileFilter.test(textFile.getFileId())) {
             LOG.trace("File was skipped due to fileFilter...");
@@ -249,16 +249,12 @@ public final class FileCollector implements AutoCloseable {
         LanguageVersion contextVersion = discoverer.getDefaultLanguageVersion(language);
         if (!fileVersion.equals(contextVersion)) {
             reporter.error(
-                "Cannot add file {0}: version ''{1}'' does not match ''{2}''",
-                textFile.getFileId(),
-                fileVersion,
-                contextVersion
-            );
+                    "Cannot add file {0}: version ''{1}'' does not match ''{2}''",
+                    textFile.getFileId(), fileVersion, contextVersion);
             return false;
         }
         return true;
     }
-
 
     /**
      * Add a directory recursively using {@link #addFile(Path)} on
@@ -289,7 +285,6 @@ public final class FileCollector implements AutoCloseable {
         });
         return true;
     }
-
 
     /**
      * Add a file or directory recursively. Language is determined automatically
@@ -363,7 +358,6 @@ public final class FileCollector implements AutoCloseable {
         return true;
     }
 
-
     /** A collector that prefixes the display name of the files it will contain with the path of the zip. */
     private FileCollector newZipCollector(Path zipFilePath) {
         return new FileCollector(discoverer, reporter, FileId.fromPath(zipFilePath));
@@ -404,7 +398,7 @@ public final class FileCollector implements AutoCloseable {
      */
     public void exclude(FileCollector excludeCollector) {
         Set<TextFile> toExclude = new HashSet<>(excludeCollector.allFilesToProcess);
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
                 LOG.trace("Excluding file {}", file.getFileId().getAbsolutePath());
@@ -429,7 +423,7 @@ public final class FileCollector implements AutoCloseable {
      * collection.
      */
     public void filterLanguages(Set<Language> languages) {
-        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
+        for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext(); ) {
             TextFile file = iterator.next();
             Language lang = file.getLanguageVersion().getLanguage();
             if (!languages.contains(lang)) {
@@ -438,7 +432,6 @@ public final class FileCollector implements AutoCloseable {
             }
         }
     }
-
 
     @Override
     public String toString() {

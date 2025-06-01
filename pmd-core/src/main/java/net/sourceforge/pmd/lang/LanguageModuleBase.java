@@ -18,15 +18,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Base class for language modules.
@@ -42,7 +40,6 @@ public abstract class LanguageModuleBase implements Language {
     private final LanguageVersion defaultVersion;
     private final Set<String> dependencies;
     private final @Nullable String baseLanguageId;
-
 
     /**
      * Construct a module instance using the given metadata. The metadata must
@@ -98,8 +95,8 @@ public abstract class LanguageModuleBase implements Language {
 
             if (versionId.isDefault) {
                 if (defaultVersion != null) {
-                    throw new IllegalStateException(
-                        "Default version already set to " + defaultVersion + ", cannot set it to " + languageVersion);
+                    throw new IllegalStateException("Default version already set to " + defaultVersion
+                            + ", cannot set it to " + languageVersion);
                 }
                 defaultVersion = languageVersion;
             }
@@ -211,6 +208,7 @@ public abstract class LanguageModuleBase implements Language {
 
         /** Language IDs should be conventional Java package names. */
         private static final Pattern VALID_LANG_ID = Pattern.compile("[a-z][_a-z0-9]*");
+
         private static final Pattern SPACE_PAT = Pattern.compile("\\s");
 
         private final Set<String> dependencies = new HashSet<>();
@@ -228,7 +226,7 @@ public abstract class LanguageModuleBase implements Language {
         void validate() {
             AssertionUtil.validateState(name != null, "Language " + id + " should have a name");
             AssertionUtil.validateState(
-                extensions != null, "Language " + id + " has not registered any file extensions");
+                    extensions != null, "Language " + id + " has not registered any file extensions");
         }
 
         String getShortName() {
@@ -277,7 +275,6 @@ public abstract class LanguageModuleBase implements Language {
          * @throws NullPointerException     If the parameter is null
          * @throws IllegalArgumentException If the parameter is not a valid language name
          */
-
         public LanguageMetadata shortName(@NonNull String shortName) {
             AssertionUtil.requireParamNotNull("short name", shortName);
             if (StringUtils.isBlank(name)) {
@@ -331,7 +328,6 @@ public abstract class LanguageModuleBase implements Language {
          * @throws NullPointerException     If any parameter is null
          * @throws IllegalArgumentException If the name or aliases are empty or contain spaces
          */
-
         public LanguageMetadata addVersion(String name, String... aliases) {
             versionMetadata.add(new LangVersionMetadata(name, Arrays.asList(aliases), false));
             return this;
@@ -351,7 +347,6 @@ public abstract class LanguageModuleBase implements Language {
             return this;
         }
 
-
         /**
          * Add all the versions of the given language, including the
          * default version.
@@ -363,9 +358,8 @@ public abstract class LanguageModuleBase implements Language {
          */
         public LanguageMetadata addAllVersionsOf(Language language) {
             for (LanguageVersion version : language.getVersions()) {
-                versionMetadata.add(new LangVersionMetadata(version.getVersion(),
-                                                            version.getAliases(),
-                                                            version.equals(language.getDefaultVersion())));
+                versionMetadata.add(new LangVersionMetadata(
+                        version.getVersion(), version.getAliases(), version.equals(language.getDefaultVersion())));
             }
             return this;
         }
@@ -387,7 +381,7 @@ public abstract class LanguageModuleBase implements Language {
         private static void checkValidLangId(String id) {
             if (!VALID_LANG_ID.matcher(id).matches()) {
                 throw new IllegalArgumentException(
-                    "ID '" + id + "' is not a valid language ID (should match " + VALID_LANG_ID + ").");
+                        "ID '" + id + "' is not a valid language ID (should match " + VALID_LANG_ID + ").");
             }
         }
 
@@ -402,7 +396,6 @@ public abstract class LanguageModuleBase implements Language {
          * @throws NullPointerException     If any parameter is null
          * @throws IllegalArgumentException If the name is not a valid language Id
          */
-
         public LanguageMetadata dependsOnLanguage(String id) {
             checkValidLangId(id);
             dependencies.add(id);

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
@@ -18,12 +17,9 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
-import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
-
 
 /**
  * A sequence of AST nodes. Conceptually similar to a {@link Stream},
@@ -152,7 +148,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
 
     // lazy pipeline transformations
 
-
     /**
      * Returns a node stream consisting of the results of applying the given
      * mapping function to the node of this stream. If the mapping function
@@ -171,7 +166,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     <R extends Node> NodeStream<R> map(Function<? super T, ? extends @Nullable R> mapper);
 
-
     /**
      * Returns a node stream consisting of the nodes of this stream that match
      * the given predicate.
@@ -188,7 +182,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     NodeStream<T> filter(Predicate<? super @NonNull T> predicate);
 
-
     /**
      * Returns a stream consisting of the elements of this stream, additionally
      * performing the provided action on each element as elements are consumed
@@ -202,8 +195,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     NodeStream<T> peek(Consumer<? super @NonNull T> action);
 
-
-
     /**
      * Returns a new node stream that contains all the elements of this stream, then
      * all the elements of the given stream.
@@ -216,7 +207,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     NodeStream<T> append(NodeStream<? extends T> right);
 
-
     /**
      * Returns a new node stream that contains all the elements of the given stream,
      * then all the elements of this stream.
@@ -228,7 +218,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @see #union(NodeStream[])
      */
     NodeStream<T> prepend(NodeStream<? extends T> right);
-
 
     /**
      * Returns a node stream containing all the elements of this node stream,
@@ -257,7 +246,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     NodeStream<T> cached();
 
-
     /**
      * Returns a stream consisting of the elements of this stream,
      * truncated to be no longer than maxSize in length.
@@ -271,7 +259,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @see #drop(int)
      */
     NodeStream<T> take(int maxSize);
-
 
     /**
      * Returns a stream consisting of the remaining elements of this
@@ -305,7 +292,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     NodeStream<T> dropLast(int n);
 
-
     /**
      * Returns the longest prefix of elements that satisfy the given predicate.
      *
@@ -316,7 +302,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     NodeStream<T> takeWhile(Predicate<? super T> predicate);
 
-
     /**
      * Returns a stream consisting of the distinct elements (w.r.t
      * {@link Object#equals(Object)}) of this stream.
@@ -326,7 +311,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     NodeStream<T> distinct();
 
     // tree navigation
-
 
     /**
      * Returns a node stream containing all the ancestors of the nodes
@@ -345,7 +329,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return flatMap(Node::ancestors);
     }
 
-
     /**
      * Returns a node stream containing the nodes contained in this stream and their ancestors.
      * The nodes of the returned stream are yielded in a depth-first fashion.
@@ -359,7 +342,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default NodeStream<Node> ancestorsOrSelf() {
         return flatMap(Node::ancestorsOrSelf);
     }
-
 
     /**
      * Returns a node stream containing all the (first-degree) parents of the nodes
@@ -376,7 +358,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return map(Node::getParent);
     }
 
-
     /**
      * Returns a node stream containing all the children of the nodes
      * contained in this stream.
@@ -391,7 +372,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default NodeStream<Node> children() {
         return flatMap(Node::children);
     }
-
 
     /**
      * Returns a node stream containing all the strict descendants of the nodes
@@ -408,7 +388,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     DescendantNodeStream<Node> descendants();
 
-
     /**
      * Returns a node stream containing the nodes contained in this stream and their descendants.
      * See {@link DescendantNodeStream} for details.
@@ -423,7 +402,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     DescendantNodeStream<Node> descendantsOrSelf();
 
-
     /**
      * Returns a node stream containing all the following siblings of the nodes contained
      * in this stream.
@@ -434,7 +412,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return flatMap(StreamImpl::followingSiblings);
     }
 
-
     /**
      * Returns a node stream containing all the preceding siblings of the nodes contained
      * in this stream. The nodes are yielded from left to right, i.e. in document order.
@@ -444,7 +421,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default NodeStream<Node> precedingSiblings() {
         return flatMap(StreamImpl::precedingSiblings);
     }
-
 
     /**
      * Returns the {@linkplain #children() children stream} of each node
@@ -499,7 +475,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     <R extends Node> DescendantNodeStream<R> descendants(Class<? extends R> rClass);
 
-
     /**
      * Returns the {@linkplain #ancestors() ancestor stream} of each node
      * in this stream, filtered by the given node type.
@@ -517,7 +492,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default <R extends Node> NodeStream<R> ancestors(Class<? extends R> rClass) {
         return flatMap(it -> it.ancestors(rClass));
     }
-
 
     /**
      * Filters the node of this stream using the negation of the given predicate.
@@ -537,7 +511,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
 
     // these are shorthands defined relative to filter
 
-
     /**
      * Filters the nodes of this stream by comparing a value extracted from the nodes
      * with the given constant. This takes care of null value by calling
@@ -555,10 +528,10 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @see #filter(Predicate)
      * @see #filterNotMatching(Function, Object)
      */
-    default <U> NodeStream<T> filterMatching(Function<? super @NonNull T, ? extends @Nullable U> extractor, U comparand) {
+    default <U> NodeStream<T> filterMatching(
+            Function<? super @NonNull T, ? extends @Nullable U> extractor, U comparand) {
         return filter(t -> Objects.equals(extractor.apply(t), comparand));
     }
-
 
     /**
      * Filters the nodes of this stream that are a subtype of the given class.
@@ -578,7 +551,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return (NodeStream<R>) filter(rClass::isInstance);
     }
 
-
     /**
      * Inverse of {@link #filterMatching(Function, Object)}.
      *
@@ -591,17 +563,15 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @see #filter(Predicate)
      * @see #filterMatching(Function, Object)
      */
-    default <U> NodeStream<T> filterNotMatching(Function<? super @NonNull T, ? extends @Nullable U> extractor, U comparand) {
+    default <U> NodeStream<T> filterNotMatching(
+            Function<? super @NonNull T, ? extends @Nullable U> extractor, U comparand) {
         return filter(t -> !Objects.equals(extractor.apply(t), comparand));
     }
 
-
     // "terminal" operations
-
 
     @Override
     void forEach(Consumer<? super @NonNull T> action);
-
 
     /**
      * Reduce the elements of this stream sequentially.
@@ -638,7 +608,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return result;
     }
 
-
     /**
      * Returns the number of nodes in this stream.
      *
@@ -663,7 +632,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return sum;
     }
 
-
     /**
      * Returns 'true' if the stream has at least one element.
      *
@@ -672,7 +640,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @see #isEmpty()
      */
     boolean nonEmpty();
-
 
     /**
      * Returns 'true' if the stream has no elements.
@@ -684,7 +651,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default boolean isEmpty() {
         return !nonEmpty();
     }
-
 
     /**
      * Returns whether any elements of this stream match the provided predicate.
@@ -699,7 +665,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     boolean any(Predicate<? super T> predicate);
 
-
     /**
      * Returns whether no elements of this stream match the provided predicate.
      * If the stream is empty then true is returned and the predicate is not evaluated.
@@ -713,7 +678,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     boolean none(Predicate<? super T> predicate);
 
-
     /**
      * Returns whether all elements of this stream match the provided predicate.
      * If the stream is empty then true is returned and the predicate is not evaluated.
@@ -726,7 +690,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @see #none(Predicate)
      */
     boolean all(Predicate<? super T> predicate);
-
 
     /**
      * Returns the element at index n in this stream.
@@ -747,7 +710,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return drop(n).first();
     }
 
-
     /**
      * Returns the first element of this stream, or {@code null} if the
      * stream is empty.
@@ -763,8 +725,8 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @see #first(Class)
      * @see #firstOpt()
      */
-    @Nullable T first();
-
+    @Nullable
+    T first();
 
     /**
      * Returns the first element of this stream, or throws a {@link NoSuchElementException}
@@ -785,7 +747,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return first;
     }
 
-
     /**
      * Returns an optional containing the first element of this stream,
      * or an empty optional if the stream is empty.
@@ -801,7 +762,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default Optional<T> firstOpt() {
         return Optional.ofNullable(first());
     }
-
 
     /**
      * Returns the first element of this stream that matches the given
@@ -820,7 +780,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return filter(predicate).first();
     }
 
-
     /**
      * Returns the first element of this stream of the given type, or
      * {@code null} if there is none.
@@ -836,7 +795,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default <R extends Node> @Nullable R first(Class<? extends R> rClass) {
         return filterIs(rClass).first();
     }
-
 
     /**
      * Returns the first element of this stream for which the mapping function
@@ -857,7 +815,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return map(nullableFun).first();
     }
 
-
     /**
      * Returns the last element of this stream, or {@code null} if the
      * stream is empty. This may or may not require traversing all the
@@ -865,8 +822,8 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      *
      * @return the last element of this stream, or {@code null} if it doesn't exist
      */
-    @Nullable T last();
-
+    @Nullable
+    T last();
 
     /**
      * Returns the last element of this stream of the given type, or
@@ -882,7 +839,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default <R extends Node> @Nullable R last(Class<? extends R> rClass) {
         return filterIs(rClass).last();
     }
-
 
     /**
      * Collects the elements of this node stream using the specified {@link Collector}.
@@ -901,7 +857,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      */
     <R, A> R collect(Collector<? super T, A, R> collector);
 
-
     /**
      * Returns a new stream of Ts having the pipeline of operations
      * defined by this node stream. This can be called multiple times.
@@ -909,7 +864,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @return A stream containing the same elements as this node stream
      */
     Stream<@NonNull T> toStream();
-
 
     /**
      * Collects the elements of this node stream into a list. Just like
@@ -928,7 +882,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return collect(Collectors.toList());
     }
 
-
     /**
      * Maps the elements of this node stream using the given mapping
      * and collects the results into a list.
@@ -946,7 +899,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     default <R> List<R> toList(Function<? super T, ? extends R> mapper) {
         return collect(Collectors.mapping(mapper, Collectors.toList()));
     }
-
 
     /**
      * Returns a node stream containing zero or one node,
@@ -967,10 +919,8 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return node == null ? empty() : StreamImpl.singleton(node);
     }
 
-
     // construction
     // we ensure here that no node stream may contain null values
-
 
     /**
      * Returns a new node stream that contains the same elements as the given
@@ -989,7 +939,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return StreamImpl.fromIterable(iterable);
     }
 
-
     /**
      * Returns a node stream containing zero or one node,
      * depending on whether the optional is empty or not.
@@ -1004,7 +953,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     static <T extends Node> NodeStream<T> ofOptional(Optional<? extends T> optNode) {
         return optNode.map(StreamImpl::<T>singleton).orElseGet(StreamImpl::empty);
     }
-
 
     /**
      * Returns a node stream whose elements are the given nodes
@@ -1021,7 +969,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return fromIterable(Arrays.asList(nodes));
     }
 
-
     /**
      * Returns a node stream containing all the elements of the given streams,
      * one after the other.
@@ -1036,7 +983,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return union(Arrays.asList(streams));
     }
 
-
     /**
      * Returns a node stream containing all the elements of the given streams,
      * one after the other.
@@ -1050,7 +996,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         return StreamImpl.union(streams);
     }
 
-
     /**
      * Returns an empty node stream.
      *
@@ -1061,7 +1006,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
     static <T extends Node> NodeStream<T> empty() {
         return StreamImpl.empty();
     }
-
 
     /**
      * Applies the given mapping functions to the given upstream in order and merges the
@@ -1077,10 +1021,11 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @return A merged node stream
      */
     @SafeVarargs // this method is static because of the generic varargs
-    static <T extends Node, R extends Node> NodeStream<R> forkJoin(NodeStream<? extends T> upstream,
-                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
-                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
-                                                                   Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {
+    static <T extends Node, R extends Node> NodeStream<R> forkJoin(
+            NodeStream<? extends T> upstream,
+            Function<? super @NonNull T, ? extends NodeStream<? extends R>> fst,
+            Function<? super @NonNull T, ? extends NodeStream<? extends R>> snd,
+            Function<? super @NonNull T, ? extends NodeStream<? extends R>>... rest) {
         Objects.requireNonNull(fst);
         Objects.requireNonNull(snd);
 
@@ -1090,12 +1035,11 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         mappers.addAll(Arrays.asList(rest));
 
         Function<? super T, NodeStream<R>> aggregate =
-            t -> NodeStream.<R>union(mappers.stream().map(f -> f.apply(t)).collect(Collectors.toList()));
+                t -> NodeStream.<R>union(mappers.stream().map(f -> f.apply(t)).collect(Collectors.toList()));
 
         // with forkJoin we know that the stream will be iterated more than twice so we cache the values
         return upstream.cached().flatMap(aggregate);
     }
-
 
     /**
      * Returns a map function, that checks whether the parameter is an
@@ -1153,7 +1097,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         };
     }
 
-
     /**
      * A specialization of {@link NodeStream} that allows configuring
      * tree traversal behaviour when traversing the descendants of a node.
@@ -1181,7 +1124,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
 
         // TODO stop recursion on an arbitrary boundary
         // TODO breadth-first traversal
-
 
         /**
          * Returns a node stream that will not stop the tree traversal
@@ -1225,7 +1167,6 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
          */
         DescendantNodeStream<T> crossFindBoundaries(boolean cross);
 
-
         /**
          * An alias for {@link #crossFindBoundaries(boolean) crossFindBoundaries(true)}.
          *
@@ -1234,8 +1175,5 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
         default DescendantNodeStream<T> crossFindBoundaries() {
             return crossFindBoundaries(true);
         }
-
     }
-
-
 }

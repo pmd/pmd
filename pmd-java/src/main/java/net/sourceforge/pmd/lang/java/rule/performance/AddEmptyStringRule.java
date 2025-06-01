@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -14,7 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-
 
 public class AddEmptyStringRule extends AbstractJavaRulechainRule {
 
@@ -42,7 +40,7 @@ public class AddEmptyStringRule extends AbstractJavaRulechainRule {
 
     private void checkExpr(Object data, JavaNode parent) {
         if (JavaAstUtils.isInfixExprWithOperator(parent, BinaryOp.ADD)
-            && parent.ancestors(ASTAnnotation.class).isEmpty()) {
+                && parent.ancestors(ASTAnnotation.class).isEmpty()) {
             asCtx(data).addViolation(parent);
         }
     }

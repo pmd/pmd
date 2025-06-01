@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.util.database;
 
 import java.net.MalformedURLException;
@@ -19,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,8 +207,8 @@ public class DBMSMetadata {
 
     private String init(DBURI dbURI) throws ClassNotFoundException {
         this.dburi = dbURI;
-        this.returnSourceCodeObjectsStatement = dbURI.getDbType().getProperties()
-                .getProperty(GET_SOURCE_OBJECTS_STATEMENT);
+        this.returnSourceCodeObjectsStatement =
+                dbURI.getDbType().getProperties().getProperty(GET_SOURCE_OBJECTS_STATEMENT);
         this.returnSourceCodeStatement = dbURI.getDbType().getProperties().getProperty(GET_SOURCE_CODE_STATEMENT);
         this.returnType = dbURI.getSourceCodeType();
         LOG.debug("returnSourceCodeStatement={}, returnType={}", returnSourceCodeStatement, returnType);
@@ -232,7 +230,6 @@ public class DBMSMetadata {
      */
     public java.io.Reader getSourceCode(SourceObject sourceObject) throws SQLException {
         return getSourceCode(sourceObject.getType(), sourceObject.getName(), sourceObject.getSchema());
-
     }
 
     /**
@@ -271,7 +268,8 @@ public class DBMSMetadata {
         // retrieve OUT parameters
         result = callableStatement.getObject(1);
 
-        return (java.sql.Types.CLOB == returnType) ? ((Clob) result).getCharacterStream()
+        return (java.sql.Types.CLOB == returnType)
+                ? ((Clob) result).getCharacterStream()
                 : new java.io.StringReader(result.toString());
     }
 
@@ -286,10 +284,12 @@ public class DBMSMetadata {
             LOG.warn("No dbUri defined - no further action possible");
             return Collections.emptyList();
         } else {
-            return getSourceObjectList(dburi.getLanguagesList(), dburi.getSchemasList(), dburi.getSourceCodeTypesList(),
+            return getSourceObjectList(
+                    dburi.getLanguagesList(),
+                    dburi.getSchemasList(),
+                    dburi.getSourceCodeTypesList(),
                     dburi.getSourceCodeNamesList());
         }
-
     }
 
     /**
@@ -311,8 +311,8 @@ public class DBMSMetadata {
      * @param sourceCodeNames
      *            Optional list of source code names to search for
      */
-    public List<SourceObject> getSourceObjectList(List<String> languages, List<String> schemas,
-            List<String> sourceCodeTypes, List<String> sourceCodeNames) {
+    public List<SourceObject> getSourceObjectList(
+            List<String> languages, List<String> schemas, List<String> sourceCodeTypes, List<String> sourceCodeNames) {
 
         List<SourceObject> sourceObjectsList = new ArrayList<>();
 
@@ -367,16 +367,21 @@ public class DBMSMetadata {
         try {
 
             if (null != returnSourceCodeObjectsStatement) {
-                LOG.debug("Have bespoke returnSourceCodeObjectsStatement from DBURI: \"{}\"",
+                LOG.debug(
+                        "Have bespoke returnSourceCodeObjectsStatement from DBURI: \"{}\"",
                         returnSourceCodeObjectsStatement);
-                try (PreparedStatement sourceCodeObjectsStatement = getConnection()
-                        .prepareStatement(returnSourceCodeObjectsStatement)) {
+                try (PreparedStatement sourceCodeObjectsStatement =
+                        getConnection().prepareStatement(returnSourceCodeObjectsStatement)) {
                     for (String language : searchLanguages) {
                         for (String schema : searchSchemas) {
                             for (String sourceCodeType : searchSourceCodeTypes) {
                                 for (String sourceCodeName : searchSourceCodeNames) {
-                                    sourceObjectsList.addAll(findSourceObjects(sourceCodeObjectsStatement, language, schema,
-                                            sourceCodeType, sourceCodeName));
+                                    sourceObjectsList.addAll(findSourceObjects(
+                                            sourceCodeObjectsStatement,
+                                            language,
+                                            schema,
+                                            sourceCodeType,
+                                            sourceCodeName));
                                 }
                             }
                         }
@@ -404,8 +409,8 @@ public class DBMSMetadata {
         }
     }
 
-    private List<SourceObject> findSourceObjectFromMetaData(DatabaseMetaData metadata,
-            String schema, String sourceCodeName) throws SQLException {
+    private List<SourceObject> findSourceObjectFromMetaData(
+            DatabaseMetaData metadata, String schema, String sourceCodeName) throws SQLException {
         List<SourceObject> sourceObjectsList = new ArrayList<>();
         /*
          * public ResultSet getProcedures(String catalog ,
@@ -466,21 +471,29 @@ public class DBMSMetadata {
              * procedure or function,1 ... ]
              */
             while (sourceCodeObjects.next()) {
-                LOG.trace("Located schema={},object_type={},object_name={}",
+                LOG.trace(
+                        "Located schema={},object_type={},object_name={}",
                         sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
                         sourceCodeObjects.getString("PROCEDURE_NAME"));
 
-                sourceObjectsList.add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
+                sourceObjectsList.add(new SourceObject(
+                        sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
-                        sourceCodeObjects.getString("PROCEDURE_NAME"), null));
+                        sourceCodeObjects.getString("PROCEDURE_NAME"),
+                        null));
             }
         }
         return sourceObjectsList;
     }
 
-    private List<SourceObject> findSourceObjects(PreparedStatement sourceCodeObjectsStatement,
-            String language, String schema, String sourceCodeType, String sourceCodeName) throws SQLException {
+    private List<SourceObject> findSourceObjects(
+            PreparedStatement sourceCodeObjectsStatement,
+            String language,
+            String schema,
+            String sourceCodeType,
+            String sourceCodeName)
+            throws SQLException {
         List<SourceObject> sourceObjectsList = new ArrayList<>();
         sourceCodeObjectsStatement.setString(1, language);
         sourceCodeObjectsStatement.setString(2, schema);
@@ -488,7 +501,10 @@ public class DBMSMetadata {
         sourceCodeObjectsStatement.setString(4, sourceCodeName);
         LOG.debug(
                 "searching for language=\"{}\", schema=\"{}\", sourceCodeType=\"{}\", sourceCodeNames=\"{}\" ",
-                language, schema, sourceCodeType, sourceCodeName);
+                language,
+                schema,
+                sourceCodeType,
+                sourceCodeName);
 
         /*
          * public ResultSet getProcedures(String catalog
@@ -516,15 +532,17 @@ public class DBMSMetadata {
              * within its schema.
              */
             while (sourceCodeObjects.next()) {
-                LOG.trace("Found schema={},object_type={},object_name={}",
+                LOG.trace(
+                        "Found schema={},object_type={},object_name={}",
                         sourceCodeObjects.getString("PROCEDURE_SCHEM"),
                         sourceCodeObjects.getString("PROCEDURE_TYPE"),
                         sourceCodeObjects.getString("PROCEDURE_NAME"));
 
-                sourceObjectsList
-                        .add(new SourceObject(sourceCodeObjects.getString("PROCEDURE_SCHEM"),
-                                sourceCodeObjects.getString("PROCEDURE_TYPE"),
-                                sourceCodeObjects.getString("PROCEDURE_NAME"), null));
+                sourceObjectsList.add(new SourceObject(
+                        sourceCodeObjects.getString("PROCEDURE_SCHEM"),
+                        sourceCodeObjects.getString("PROCEDURE_TYPE"),
+                        sourceCodeObjects.getString("PROCEDURE_NAME"),
+                        null));
             }
         }
         return sourceObjectsList;

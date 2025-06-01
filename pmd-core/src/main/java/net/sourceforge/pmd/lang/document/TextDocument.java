@@ -7,10 +7,8 @@ package net.sourceforge.pmd.lang.document;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.LanguageVersion;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents a textual document, providing methods to edit it incrementally
@@ -69,10 +67,8 @@ public interface TextDocument extends Closeable {
     //  ideally, just slice the text, and share the positioner
     //  a problem with document slices becomes reference counting for the close routine
 
-
     // todo text edition (there are some reverted commits in the branch
     //  with part of this, including a lot of tests)
-
 
     /**
      * Returns the language version that should be used to parse this file.
@@ -83,7 +79,6 @@ public interface TextDocument extends Closeable {
      * Returns {@link TextFile#getFileId()} for the text file backing this document.
      */
     FileId getFileId();
-
 
     /**
      * Returns the current text of this document. Note that this doesn't take
@@ -124,14 +119,12 @@ public interface TextDocument extends Closeable {
         return getText().slice(region);
     }
 
-
     /**
      * Returns a checksum for the contents of the file.
      *
      * @see TextFileContent#getCheckSum()
      */
     long getCheckSum();
-
 
     /**
      * Returns a reader over the text of this document.
@@ -171,7 +164,6 @@ public interface TextDocument extends Closeable {
      */
     TextRegion createLineRange(int startLineInclusive, int endLineInclusive);
 
-
     /**
      * Turn a text region into a {@link FileLocation}. This computes
      * the line/column information for both start and end offset of
@@ -184,7 +176,6 @@ public interface TextDocument extends Closeable {
      * @throws IndexOutOfBoundsException If the argument is not a valid region in this document
      */
     FileLocation toLocation(TextRegion region);
-
 
     /**
      * Returns the line and column at the given offset (inclusive).
@@ -275,7 +266,8 @@ public interface TextDocument extends Closeable {
      * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
     @SuppressWarnings("PMD.CloseResource")
-    static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull FileId filename, @NonNull LanguageVersion lv) {
+    static TextDocument readOnlyString(
+            @NonNull CharSequence source, @NonNull FileId filename, @NonNull LanguageVersion lv) {
         TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {
             return create(textFile);

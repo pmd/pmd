@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.visualforce.rule.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,15 +8,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.visualforce.VFTestUtils;
 import net.sourceforge.pmd.lang.visualforce.ast.VfParsingHelper;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.test.PmdRuleTst;
+import org.junit.jupiter.api.Test;
 
 class VfUnescapeElTest extends PmdRuleTst {
     private static final String EXPECTED_RULE_MESSAGE = "Avoid unescaped user controlled content in EL";
@@ -27,7 +24,8 @@ class VfUnescapeElTest extends PmdRuleTst {
      */
     @Test
     void testSfdxCustomFields() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve("StandardAccount.page");
 
         Report report = runRule(vfPagePath);
@@ -52,7 +50,9 @@ class VfUnescapeElTest extends PmdRuleTst {
      */
     @Test
     void testMdapiCustomFields() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf).resolve("StandardAccount.page");
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.MDAPI, VFTestUtils.MetadataType.Vf)
+                .resolve("StandardAccount.page");
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
@@ -70,7 +70,9 @@ class VfUnescapeElTest extends PmdRuleTst {
      */
     @Test
     void testApexController() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf).resolve("ApexController.page");
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+                .resolve("ApexController.page");
 
         Report report = runRule(vfPagePath);
         List<RuleViolation> ruleViolations = report.getViolations();
@@ -89,7 +91,8 @@ class VfUnescapeElTest extends PmdRuleTst {
      */
     @Test
     void testExtensions() {
-        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+        Path vfPagePath = VFTestUtils.getMetadataPath(
+                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve(Paths.get("StandardAccountWithExtensions.page"));
 
         Report report = runRule(vfPagePath);

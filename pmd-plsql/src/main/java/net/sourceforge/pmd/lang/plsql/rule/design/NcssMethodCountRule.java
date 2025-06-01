@@ -30,7 +30,4 @@ public class NcssMethodCountRule extends AbstractNcssCountRule<ExecutableCode> {
         String name = node.getMethodName();
         return new Object[] {name == null ? "(unnamed)" : name, metric};
     }
-
-
-
 }
