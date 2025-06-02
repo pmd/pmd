@@ -90,8 +90,6 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.3</surefire.version>
-        <checkstyle.version>10.24.0</checkstyle.version>
-        <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.26.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
         <javadoc.plugin.version>3.11.2</javadoc.plugin.version>
@@ -1191,7 +1189,6 @@
             <properties>
                 <maven.javadoc.skip>true</maven.javadoc.skip>
                 <maven.source.skip>true</maven.source.skip>
-                <checkstyle.skip>true</checkstyle.skip>
                 <pmd.skip>true</pmd.skip>
                 <cpd.skip>true</cpd.skip>
                 <cyclonedx.skip>true</cyclonedx.skip>
