@@ -39,10 +39,11 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
     }
 
     /**
-     * Recursively resolves the argument again, if the variable initializer
-     * is itself a expression.
+     * Recursively resolves the argument again, if the variable initializer is
+     * itself a expression.
      *
-     * <p>Then checks the expression for being a string literal or array
+     * <p>
+     * Then checks the expression for being a string literal or array
      */
     private void validateProperKeyArgument(Object data, ASTExpression firstArgumentExpression) {
         if (firstArgumentExpression == null) {
@@ -75,8 +76,8 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             }
         } else {
             // string literal
-            ASTStringLiteral literal = firstArgumentExpression.descendantsOrSelf()
-                    .filterIs(ASTStringLiteral.class).first();
+            ASTStringLiteral literal = firstArgumentExpression.descendantsOrSelf().filterIs(ASTStringLiteral.class)
+                    .first();
             if (literal != null) {
                 asCtx(data).addViolation(literal);
             }
@@ -84,12 +85,10 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
     }
 
     private void validateVarUsages(Object data, ASTVariableId varDecl) {
-        varDecl.getLocalUsages().stream()
-            .filter(u -> u.getAccessType() == AccessType.WRITE)
-            .filter(u -> u.getParent() instanceof ASTAssignmentExpression)
-            .forEach(usage -> {
-                ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
-                validateProperKeyArgument(data, assignment.getRightOperand());
-            });
+        varDecl.getLocalUsages().stream().filter(u -> u.getAccessType() == AccessType.WRITE)
+                .filter(u -> u.getParent() instanceof ASTAssignmentExpression).forEach(usage -> {
+                    ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
+                    validateProperKeyArgument(data, assignment.getRightOperand());
+                });
     }
 }

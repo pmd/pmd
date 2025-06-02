@@ -20,8 +20,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- * Pretty-printing methods to display types. The current API is only
- * offered for debugging, not for displaying types to users.
+ * Pretty-printing methods to display types. The current API is only offered for
+ * debugging, not for displaying types to users.
  */
 public final class TypePrettyPrint {
 
@@ -72,8 +72,8 @@ public final class TypePrettyPrint {
         }
 
         /**
-         * Print the declaring type of the method and its type parameters.
-         * Default: true.
+         * Print the declaring type of the method and its type parameters. Default:
+         * true.
          */
         public TypePrettyPrinter printMethodHeader(boolean printMethodHeader) {
             this.printMethodHeader = printMethodHeader;
@@ -81,8 +81,7 @@ public final class TypePrettyPrint {
         }
 
         /**
-         * Print the return type of methods (as postfix).
-         * Default: true.
+         * Print the return type of methods (as postfix). Default: true.
          */
         public TypePrettyPrinter printMethodResult(boolean printMethodResult) {
             this.printMethodReturnType = printMethodResult;
@@ -90,17 +89,15 @@ public final class TypePrettyPrint {
         }
 
         /**
-         * Print the bounds of type variables.
-         * Default: false.
+         * Print the bounds of type variables. Default: false.
          */
         public void printTypeVarBounds(OptionalBool printTypeVarBounds) {
             this.printTypeVarBounds = printTypeVarBounds;
         }
 
         /**
-         * Qualify type variables with the name of the declaring symbol.
-         * Eg {@code Foo#T} for {@code class Foo<T>}}.
-         * Default: false.
+         * Qualify type variables with the name of the declaring symbol. Eg
+         * {@code Foo#T} for {@code class Foo<T>}}. Default: false.
          */
         public TypePrettyPrinter qualifyTvars(boolean qualifyTvars) {
             this.qualifyTvars = qualifyTvars;
@@ -108,9 +105,8 @@ public final class TypePrettyPrint {
         }
 
         /**
-         * Whether to print the binary name of a type annotation or
-         * just the simple name if false.
-         * Default: false.
+         * Whether to print the binary name of a type annotation or just the simple name
+         * if false. Default: false.
          */
         public TypePrettyPrinter qualifyAnnotations(boolean qualifyAnnotations) {
             this.qualifyAnnotations = qualifyAnnotations;
@@ -118,8 +114,7 @@ public final class TypePrettyPrint {
         }
 
         /**
-         * Whether to print the type annotations.
-         * Default: true.
+         * Whether to print the type annotations. Default: true.
          */
         public TypePrettyPrinter printAnnotations(boolean printAnnotations) {
             this.printTypeAnnotations = printAnnotations;
@@ -127,8 +122,7 @@ public final class TypePrettyPrint {
         }
 
         /**
-         * Use qualified names for class types instead of simple names.
-         * Default: true.
+         * Use qualified names for class types instead of simple names. Default: true.
          */
         public TypePrettyPrinter qualifyNames(boolean qualifyNames) {
             this.qualifyNames = qualifyNames;
@@ -146,8 +140,7 @@ public final class TypePrettyPrint {
         private void printTypeAnnotations(PSet<SymAnnot> annots) {
             if (this.printTypeAnnotations) {
                 for (SymAnnot annot : annots) {
-                    String name = this.qualifyAnnotations ? annot.getBinaryName()
-                                                          : annot.getSimpleName();
+                    String name = this.qualifyAnnotations ? annot.getBinaryName() : annot.getSimpleName();
                     append('@').append(name).append(' ');
                 }
             }
@@ -255,7 +248,8 @@ public final class TypePrettyPrint {
         }
 
         /**
-         * Formats {@link Arrays#asList(Object[])} as {@code <T> asList(T...) -> List<T>}
+         * Formats {@link Arrays#asList(Object[])} as
+         * {@code <T> asList(T...) -> List<T>}
          */
         @Override
         public Void visitMethodType(JMethodSig t, TypePrettyPrinter sb) {
@@ -321,11 +315,13 @@ public final class TypePrettyPrint {
             return null;
         }
 
-        private Void join(TypePrettyPrinter sb, List<? extends JTypeMirror> ts, String delim, String prefix, String suffix) {
+        private Void join(TypePrettyPrinter sb, List<? extends JTypeMirror> ts, String delim, String prefix,
+                String suffix) {
             return join(sb, ts, delim, prefix, suffix, false);
         }
 
-        private Void join(TypePrettyPrinter sb, List<? extends JTypeMirror> types, String delim, String prefix, String suffix, boolean isVarargs) {
+        private Void join(TypePrettyPrinter sb, List<? extends JTypeMirror> types, String delim, String prefix,
+                String suffix, boolean isVarargs) {
             sb.isVarargs = false;
             boolean empty = types.isEmpty();
             sb.append(prefix);
@@ -343,6 +339,5 @@ public final class TypePrettyPrint {
             return null;
         }
     }
-
 
 }

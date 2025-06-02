@@ -9,79 +9,75 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.java.ast.ParserTestCtx
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter
 
-/**
- * @author Clément Fournier
- */
-class TypePrettyPrintTest : FunSpec({
+/** @author Clément Fournier */
+class TypePrettyPrintTest :
+    FunSpec({
+        val ts = testTypeSystem
 
-    val ts = testTypeSystem
+        test("Test toString") { ts.arrayType(ts.INT).apply { toString() shouldBe "int[]" } }
 
-    test("Test toString") {
+        test("wildcards") {
+            ts.wildcard(true, ts.OBJECT).apply { toString() shouldBe "?" }
 
-        ts.arrayType(ts.INT).apply {
-            toString() shouldBe "int[]"
-        }
-    }
+            ts.wildcard(true, ts.CLONEABLE).apply {
+                toString() shouldBe "? extends java.lang.Cloneable"
+            }
 
-    test("wildcards") {
-
-        ts.wildcard(true, ts.OBJECT).apply {
-            toString() shouldBe "?"
-        }
-
-        ts.wildcard(true, ts.CLONEABLE).apply {
-            toString() shouldBe "? extends java.lang.Cloneable"
+            ts.wildcard(false, ts.CLONEABLE).apply {
+                toString() shouldBe "? super java.lang.Cloneable"
+            }
         }
 
-        ts.wildcard(false, ts.CLONEABLE).apply {
-            toString() shouldBe "? super java.lang.Cloneable"
+        test("pretty print with simple names") {
+            fun JTypeMirror.pp() = TypePrettyPrint.prettyPrintWithSimpleNames(this)
+
+            with(TypeDslOf(ts)) {
+                ts.OBJECT.pp() shouldBe "Object"
+                ts.OBJECT.toArray().pp() shouldBe "Object[]"
+                Map::class[List::class[`?`], ts.INT.box()].pp() shouldBe "Map<List<?>, Integer>"
+            }
         }
-    }
 
-    test("pretty print with simple names") {
-
-        fun JTypeMirror.pp() = TypePrettyPrint.prettyPrintWithSimpleNames(this)
-
-        with(TypeDslOf(ts)) {
-            ts.OBJECT.pp() shouldBe "Object"
-            ts.OBJECT.toArray().pp() shouldBe "Object[]"
-            Map::class[List::class[`?`], ts.INT.box()].pp() shouldBe "Map<List<?>, Integer>"
-        }
-    }
-
-    test("pretty print with tvar qualifiers") {
-
-        val acu = ParserTestCtx(this).parser.withProcessing(true).parse("""
+        test("pretty print with tvar qualifiers") {
+            val acu =
+                ParserTestCtx(this)
+                    .parser
+                    .withProcessing(true)
+                    .parse(
+                        """
             package p;
             class Foo<A,B> {
                 <T> T method(A a, B b) {}
             }
-        """.trimIndent()
-        )
+        """
+                            .trimIndent()
+                    )
 
+            fun JTypeVisitable.pp() =
+                TypePrettyPrint.prettyPrint(this, TypePrettyPrinter().qualifyTvars(true))
 
-        fun JTypeVisitable.pp() = TypePrettyPrint.prettyPrint(this, TypePrettyPrinter().qualifyTvars(true))
+            acu.declaredMethodSignatures()[0].pp() shouldBe
+                "p.Foo<Foo#A, Foo#B>.<method#T> method(Foo#A, Foo#B) -> method#T"
+        }
 
-        acu.declaredMethodSignatures()[0].pp() shouldBe "p.Foo<Foo#A, Foo#B>.<method#T> method(Foo#A, Foo#B) -> method#T"
-
-    }
-
-    test("pretty print with no method header") {
-
-        val acu = ParserTestCtx(this).parser.withProcessing(true).parse("""
+        test("pretty print with no method header") {
+            val acu =
+                ParserTestCtx(this)
+                    .parser
+                    .withProcessing(true)
+                    .parse(
+                        """
             package p;
             class Foo<A,B> {
                 <T> T method(A a, B b) {}
             }
-        """.trimIndent()
-        )
+        """
+                            .trimIndent()
+                    )
 
+            fun JMethodSig.pp() =
+                TypePrettyPrint.prettyPrint(this, TypePrettyPrinter().printMethodHeader(false))
 
-        fun JMethodSig.pp() = TypePrettyPrint.prettyPrint(this, TypePrettyPrinter().printMethodHeader(false))
-
-        acu.declaredMethodSignatures()[0].pp() shouldBe "method(A, B) -> T"
-
-    }
-})
-
-
+            acu.declaredMethodSignatures()[0].pp() shouldBe "method(A, B) -> T"
+        }
+    })

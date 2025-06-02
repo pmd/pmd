@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
-
 /**
  * Try statement node.
  *
@@ -28,30 +27,27 @@ public final class ASTTryStatement extends AbstractStatement {
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
-
     /**
-     * Returns true if this node is a try-with-resources, in which case it
-     * has a ResourceSpecification child node.
+     * Returns true if this node is a try-with-resources, in which case it has a
+     * ResourceSpecification child node.
      */
     public boolean isTryWithResources() {
         return getChild(0) instanceof ASTResourceList;
     }
 
     /**
-     * Returns the node for the resource list. This is null if this is
-     * not a try-with-resources.
+     * Returns the node for the resource list. This is null if this is not a
+     * try-with-resources.
      */
     @Nullable
     public ASTResourceList getResources() {
         return AstImplUtil.getChildAs(this, 0, ASTResourceList.class);
     }
-
 
     /**
      * Returns the body of this try statement.
@@ -61,13 +57,12 @@ public final class ASTTryStatement extends AbstractStatement {
     }
 
     /**
-     * Returns the catch statement nodes of this try statement.
-     * If there are none, returns an empty list.
+     * Returns the catch statement nodes of this try statement. If there are none,
+     * returns an empty list.
      */
     public NodeStream<ASTCatchClause> getCatchClauses() {
         return children(ASTCatchClause.class);
     }
-
 
     /**
      * Returns the {@code finally} clause of this try statement, if any.

@@ -13,9 +13,8 @@ import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class Java8TreeDumpTest extends BaseJavaTreeDumpTest {
 
-    private final JavaParsingHelper java8 = JavaParsingHelper.DEFAULT
-        .withDefaultVersion("8")
-        .withResourceContext(Java8TreeDumpTest.class, "jdkversiontests/java8");
+    private final JavaParsingHelper java8 = JavaParsingHelper.DEFAULT.withDefaultVersion("8")
+            .withResourceContext(Java8TreeDumpTest.class, "jdkversiontests/java8");
 
     @Test
     void unnamedVariablesAreAllowedWithJava8() {

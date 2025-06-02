@@ -21,8 +21,8 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
             return null;
         }
 
-        NodeStream<ASTReturnStatement> returnsExceptLast =
-            node.getBody().descendants(ASTReturnStatement.class).dropLast(1);
+        NodeStream<ASTReturnStatement> returnsExceptLast = node.getBody().descendants(ASTReturnStatement.class)
+                .dropLast(1);
 
         for (ASTReturnStatement returnStmt : returnsExceptLast) {
             asCtx(data).addViolation(returnStmt);

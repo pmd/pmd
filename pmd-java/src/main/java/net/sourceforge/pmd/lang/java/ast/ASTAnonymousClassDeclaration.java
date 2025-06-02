@@ -12,10 +12,10 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
- * An anonymous class declaration. This can occur in a {@linkplain ASTConstructorCall class instance creation
- * expression}
- * or in an {@linkplain ASTEnumConstant enum constant declaration}.
- * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
+ * An anonymous class declaration. This can occur in a
+ * {@linkplain ASTConstructorCall class instance creation expression} or in an
+ * {@linkplain ASTEnumConstant enum constant declaration}. This is a
+ * {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  *
  * <pre class="grammar">
@@ -26,11 +26,9 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  */
 public final class ASTAnonymousClassDeclaration extends AbstractTypeDeclaration {
 
-
     ASTAnonymousClassDeclaration(int id) {
         super(id);
     }
-
 
     @Override
     public @NonNull String getSimpleName() {
@@ -46,7 +44,8 @@ public final class ASTAnonymousClassDeclaration extends AbstractTypeDeclaration 
     public @NonNull NodeStream<ASTClassType> getSuperInterfaceTypeNodes() {
         if (getParent() instanceof ASTConstructorCall) {
             ASTConstructorCall ctor = (ASTConstructorCall) getParent();
-            @NonNull JTypeMirror type = ctor.getTypeMirror();
+            @NonNull
+            JTypeMirror type = ctor.getTypeMirror();
             if (type.isInterface()) {
                 return NodeStream.of(ctor.getTypeNode());
             }
@@ -58,7 +57,8 @@ public final class ASTAnonymousClassDeclaration extends AbstractTypeDeclaration 
     public @Nullable ASTClassType getSuperClassTypeNode() {
         if (getParent() instanceof ASTConstructorCall) {
             ASTConstructorCall ctor = (ASTConstructorCall) getParent();
-            @NonNull JTypeMirror type = ctor.getTypeMirror();
+            @NonNull
+            JTypeMirror type = ctor.getTypeMirror();
             if (!type.isInterface()) {
                 return ctor.getTypeNode();
             }

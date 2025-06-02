@@ -9,8 +9,9 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
- * Package declaration at the top of a {@linkplain ASTCompilationUnit source file}.
- * Since 7.0, there is no Name node anymore. Use {@link #getName()} instead.
+ * Package declaration at the top of a {@linkplain ASTCompilationUnit source
+ * file}. Since 7.0, there is no Name node anymore. Use {@link #getName()}
+ * instead.
  *
  *
  * <pre class="grammar">
@@ -20,14 +21,17 @@ import net.sourceforge.pmd.lang.document.TextRegion;
  * </pre>
  *
  */
-public final class ASTPackageDeclaration extends AbstractJavaNode implements Annotatable, ASTTopLevelDeclaration, JavadocCommentOwner {
+public final class ASTPackageDeclaration extends AbstractJavaNode
+        implements
+            Annotatable,
+            ASTTopLevelDeclaration,
+            JavadocCommentOwner {
 
     private TextRegion reportRegion;
 
     ASTPackageDeclaration(int id) {
         super(id);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

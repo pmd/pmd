@@ -17,8 +17,8 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
- * Finds <code>throw</code> statements containing <code>NullPointerException</code>
- * instances as thrown values
+ * Finds <code>throw</code> statements containing
+ * <code>NullPointerException</code> instances as thrown values
  *
  * @author <a href="mailto:michaeller.2012@gmail.com">Mykhailo Palahuta</a>
  */

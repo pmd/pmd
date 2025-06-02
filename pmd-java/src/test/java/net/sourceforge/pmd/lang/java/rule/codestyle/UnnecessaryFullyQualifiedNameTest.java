@@ -21,9 +21,12 @@ class UnnecessaryFullyQualifiedNameTest extends PmdRuleTst {
     }
 
     // Do not delete these classes - it is needed for a test case
-    // see: /pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/rule/codestyle/xml/UnnecessaryFullyQualifiedName.xml
-    // #1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution
-    // #1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution
+    // see:
+    // /pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/rule/codestyle/xml/UnnecessaryFullyQualifiedName.xml
+    // #1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration
+    // conflict resolution
+    // #1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration
+    // conflict resolution
     public static class PhonyMockito {
 
         public static final int TWO = 2;

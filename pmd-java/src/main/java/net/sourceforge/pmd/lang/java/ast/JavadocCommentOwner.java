@@ -13,8 +13,8 @@ public interface JavadocCommentOwner extends JavaNode {
     // TODO can record components be documented individually?
 
     /**
-     * Returns the javadoc comment that applies to this declaration. If
-     * there is none, returns null.
+     * Returns the javadoc comment that applies to this declaration. If there is
+     * none, returns null.
      */
     default @Nullable JavadocComment getJavadocComment() {
         return CommentAssignmentPass.getComment(this);

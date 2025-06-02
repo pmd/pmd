@@ -27,37 +27,36 @@ class JavaMetricsProviderTest {
     @Test
     void testComputeAllMetrics() {
 
-
         ASTCompilationUnit acu = java8.parse("class Foo { void bar() { System.out.println(1); } }");
 
         ASTTypeDeclaration type = acu.getTypeDeclarations().firstOrThrow();
 
-        LanguageMetricsProvider provider = acu.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
+        LanguageMetricsProvider provider = acu.getAstInfo().getLanguageProcessor().services()
+                .getLanguageMetricsProvider();
         Map<Metric<?, ?>, Number> results = provider.computeAllMetricsFor(type);
 
         assertEquals(9, results.size());
     }
 
-
     @Test
     void testThereIsNoMemoisation() {
 
-
         ASTTypeDeclaration tdecl1 = java8.parse("class Foo { void bar() { System.out.println(1); } }")
-                                            .getTypeDeclarations().firstOrThrow();
+                .getTypeDeclarations().firstOrThrow();
 
-        LanguageMetricsProvider provider = tdecl1.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
+        LanguageMetricsProvider provider = tdecl1.getAstInfo().getLanguageProcessor().services()
+                .getLanguageMetricsProvider();
         Map<Metric<?, ?>, Number> reference = provider.computeAllMetricsFor(tdecl1);
 
         // same name, different characteristics
-        ASTTypeDeclaration tdecl2 = java8.parse("class Foo { void bar(){} \npublic void hey() { System.out.println(1); } }")
-                                            .getTypeDeclarations().firstOrThrow();
+        ASTTypeDeclaration tdecl2 = java8
+                .parse("class Foo { void bar(){} \npublic void hey() { System.out.println(1); } }")
+                .getTypeDeclarations().firstOrThrow();
 
         Map<Metric<?, ?>, Number> secondTest = provider.computeAllMetricsFor(tdecl2);
 
         assertNotEquals(reference, secondTest);
 
     }
-
 
 }

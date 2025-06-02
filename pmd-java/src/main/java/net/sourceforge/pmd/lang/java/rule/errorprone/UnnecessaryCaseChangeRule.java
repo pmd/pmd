@@ -24,8 +24,7 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodCall node, Object data) {
         if (EQUALITY_METHODS.contains(node.getMethodName()) && node.getArguments().size() == 1) {
-            if (isCaseChangingMethodCall(node.getQualifier())
-                    || isCaseChangingMethodCall(node.getArguments().get(0))) {
+            if (isCaseChangingMethodCall(node.getQualifier()) || isCaseChangingMethodCall(node.getArguments().get(0))) {
                 asCtx(data).addViolation(node);
             }
         }
@@ -33,9 +32,9 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Checks for toLower/UpperCase method calls without arguments.
-     * These method take an optional Locale as an argument - in that case,
-     * these case conversions are considered deliberate.
+     * Checks for toLower/UpperCase method calls without arguments. These method
+     * take an optional Locale as an argument - in that case, these case conversions
+     * are considered deliberate.
      */
     private boolean isCaseChangingMethodCall(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {

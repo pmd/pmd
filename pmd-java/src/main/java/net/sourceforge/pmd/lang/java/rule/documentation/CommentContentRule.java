@@ -24,16 +24,13 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public class CommentContentRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Pattern> DISSALLOWED_TERMS_DESCRIPTOR =
-        regexProperty("forbiddenRegex")
-            .desc("Illegal terms or phrases")
-            .defaultValue("idiot|jerk").build();
+    private static final PropertyDescriptor<Pattern> DISSALLOWED_TERMS_DESCRIPTOR = regexProperty("forbiddenRegex")
+            .desc("Illegal terms or phrases").defaultValue("idiot|jerk").build();
 
     public CommentContentRule() {
         super(ASTCompilationUnit.class);
         definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
     }
-
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -54,13 +51,8 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
             if (violationRegex.matcher(line).find()) {
 
                 FileLocation location = FileLocation.caret(acu.getTextDocument().getFileId(), lineNumber, 1);
-                ctx.addViolationWithPosition(
-                    comment.getToken(),
-                    acu.getAstInfo(),
-                    location,
-                    "Line matches forbidden content regex ({0})",
-                    violationRegex.pattern()
-                );
+                ctx.addViolationWithPosition(comment.getToken(), acu.getAstInfo(), location,
+                        "Line matches forbidden content regex ({0})", violationRegex.pattern());
             }
             lineNumber++;
         }

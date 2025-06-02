@@ -36,7 +36,8 @@ import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
  * @author Clément Fournier
  */
 public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguageProperties>
-    implements LanguageVersionHandler {
+        implements
+            LanguageVersionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaLanguageProcessor.class);
 
@@ -84,7 +85,8 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     }
 
     TypeInferenceLogger newTypeInfLogger() {
-        InferenceLoggingVerbosity verbosity = getProperties().getProperty(JavaLanguageProperties.INTERNAL_INFERENCE_LOGGING_VERBOSITY);
+        InferenceLoggingVerbosity verbosity = getProperties()
+                .getProperty(JavaLanguageProperties.INTERNAL_INFERENCE_LOGGING_VERBOSITY);
         if (verbosity == InferenceLoggingVerbosity.VERBOSE) {
             return new VerboseLogger(System.err);
         } else if (verbosity == InferenceLoggingVerbosity.SIMPLE) {
@@ -119,18 +121,11 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         return myMetricsProvider;
     }
 
-    private static final XPathHandler XPATH_HANDLER =
-        XPathHandler.getHandlerForFunctionDefs(
-            BaseContextNodeTestFun.TYPE_IS_EXACTLY,
-            BaseContextNodeTestFun.TYPE_IS,
-            BaseContextNodeTestFun.HAS_ANNOTATION,
-            MatchesSignatureFunction.INSTANCE,
-            NodeIsFunction.INSTANCE,
-            GetModifiersFun.GET_EFFECTIVE,
-            GetModifiersFun.GET_EXPLICIT,
-            MetricFunction.INSTANCE,
-            GetCommentOnFunction.INSTANCE
-        );
+    private static final XPathHandler XPATH_HANDLER = XPathHandler.getHandlerForFunctionDefs(
+            BaseContextNodeTestFun.TYPE_IS_EXACTLY, BaseContextNodeTestFun.TYPE_IS,
+            BaseContextNodeTestFun.HAS_ANNOTATION, MatchesSignatureFunction.INSTANCE, NodeIsFunction.INSTANCE,
+            GetModifiersFun.GET_EFFECTIVE, GetModifiersFun.GET_EXPLICIT, MetricFunction.INSTANCE,
+            GetCommentOnFunction.INSTANCE);
 
     public void setTypeSystem(TypeSystem ts) {
         this.typeSystem = Objects.requireNonNull(ts);

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 /**
  * A directive of a {@linkplain ASTModuleDeclaration module declaration}.
  * Implementations provide more specific attributes.
@@ -20,7 +19,6 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  */
 public abstract class ASTModuleDirective extends AbstractJavaNode {
-
 
     ASTModuleDirective(int id) {
         super(id);

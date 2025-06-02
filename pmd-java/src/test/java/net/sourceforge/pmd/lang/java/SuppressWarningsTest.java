@@ -196,13 +196,9 @@ class SuppressWarningsTest {
     private static final String TEST13 = "@SuppressWarnings(\"PMD.NoBar\")\npublic class Bar {\n}";
 
     private static @NonNull String constExprTest(boolean withAnnot) {
-        return "public class NewClass {\n"
-            + "    private final static String SUPPRESS_PMD = \"PMD.\";\n"
-            + "\n"
-            + (withAnnot ? "    @SuppressWarnings(SUPPRESS_PMD + \"NoFoo\")\n" : "")
-            + "    public void someMethod1(Object Foo) {\n"
-            + "        System.out.println(\"someMethod1\");\n"
-            + "    }\n"
-            + "}";
+        return "public class NewClass {\n" + "    private final static String SUPPRESS_PMD = \"PMD.\";\n" + "\n"
+                + (withAnnot ? "    @SuppressWarnings(SUPPRESS_PMD + \"NoFoo\")\n" : "")
+                + "    public void someMethod1(Object Foo) {\n" + "        System.out.println(\"someMethod1\");\n"
+                + "    }\n" + "}";
     }
 }

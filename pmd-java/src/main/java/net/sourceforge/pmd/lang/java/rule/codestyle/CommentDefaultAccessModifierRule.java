@@ -27,63 +27,45 @@ import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Check for Methods, Fields and Nested Classes that have a default access
- * modifier
- * This rule ignores all nodes annotated with @VisibleForTesting by default.
- * Use the ignoredAnnotationsDescriptor property to customize the ignored rules.
+ * modifier This rule ignores all nodes annotated with @VisibleForTesting by
+ * default. Use the ignoredAnnotationsDescriptor property to customize the
+ * ignored rules.
  *
  * @author Damián Techeira
  */
 public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR =
-        PropertyFactory.regexProperty("regex")
-                       .desc("Regular expression")
-                       .defaultValue("\\/\\*\\s*(default|package)\\s*\\*\\/")
-                       .build();
+    private static final PropertyDescriptor<Pattern> REGEX_DESCRIPTOR = PropertyFactory.regexProperty("regex")
+            .desc("Regular expression").defaultValue("\\/\\*\\s*(default|package)\\s*\\*\\/").build();
 
-    private static final PropertyDescriptor<Boolean> TOP_LEVEL_TYPES =
-        PropertyFactory.booleanProperty("checkTopLevelTypes")
-                       .desc("Check for default access modifier in top-level classes, annotations, and enums")
-                       .defaultValue(false)
-                       .build();
+    private static final PropertyDescriptor<Boolean> TOP_LEVEL_TYPES = PropertyFactory
+            .booleanProperty("checkTopLevelTypes")
+            .desc("Check for default access modifier in top-level classes, annotations, and enums").defaultValue(false)
+            .build();
 
-    private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS =
-        JavaPropertyUtil.ignoredAnnotationsDescriptor(
-            "com.google.common.annotations.VisibleForTesting",
-            "android.support.annotation.VisibleForTesting",
-            "co.elastic.clients.util.VisibleForTesting",
-            "org.junit.jupiter.api.AfterAll",
-            "org.junit.jupiter.api.AfterEach",
-            "org.junit.jupiter.api.BeforeAll",
-            "org.junit.jupiter.api.BeforeEach",
-            "org.junit.jupiter.api.RepeatedTest",
-            "org.junit.jupiter.api.Test",
-            "org.junit.jupiter.api.TestFactory",
-            "org.junit.jupiter.api.TestTemplate",
-            "org.junit.jupiter.api.extension.RegisterExtension",
-            "org.junit.jupiter.params.ParameterizedTest",
-            "org.testng.annotations.Test",
-            "org.testng.annotations.AfterClass",
-            "org.testng.annotations.AfterGroups",
-            "org.testng.annotations.AfterMethod",
-            "org.testng.annotations.AfterSuite",
-            "org.testng.annotations.AfterTest",
-            "org.testng.annotations.BeforeClass",
-            "org.testng.annotations.BeforeGroups",
-            "org.testng.annotations.BeforeMethod",
-            "org.testng.annotations.BeforeSuite",
-            "org.testng.annotations.BeforeTest"
-        );
-
+    private static final PropertyDescriptor<List<String>> IGNORED_ANNOTS = JavaPropertyUtil
+            .ignoredAnnotationsDescriptor("com.google.common.annotations.VisibleForTesting",
+                    "android.support.annotation.VisibleForTesting", "co.elastic.clients.util.VisibleForTesting",
+                    "org.junit.jupiter.api.AfterAll", "org.junit.jupiter.api.AfterEach",
+                    "org.junit.jupiter.api.BeforeAll", "org.junit.jupiter.api.BeforeEach",
+                    "org.junit.jupiter.api.RepeatedTest", "org.junit.jupiter.api.Test",
+                    "org.junit.jupiter.api.TestFactory", "org.junit.jupiter.api.TestTemplate",
+                    "org.junit.jupiter.api.extension.RegisterExtension", "org.junit.jupiter.params.ParameterizedTest",
+                    "org.testng.annotations.Test", "org.testng.annotations.AfterClass",
+                    "org.testng.annotations.AfterGroups", "org.testng.annotations.AfterMethod",
+                    "org.testng.annotations.AfterSuite", "org.testng.annotations.AfterTest",
+                    "org.testng.annotations.BeforeClass", "org.testng.annotations.BeforeGroups",
+                    "org.testng.annotations.BeforeMethod", "org.testng.annotations.BeforeSuite",
+                    "org.testng.annotations.BeforeTest");
 
     public CommentDefaultAccessModifierRule() {
-        super(ASTMethodDeclaration.class, ASTTypeDeclaration.class,
-              ASTConstructorDeclaration.class, ASTFieldDeclaration.class);
+        super(ASTMethodDeclaration.class, ASTTypeDeclaration.class, ASTConstructorDeclaration.class,
+                ASTFieldDeclaration.class);
         definePropertyDescriptor(IGNORED_ANNOTS);
         definePropertyDescriptor(REGEX_DESCRIPTOR);
         definePropertyDescriptor(TOP_LEVEL_TYPES);
     }
-    
+
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
         if (shouldReportNonTopLevel(decl)) {
@@ -140,7 +122,6 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
         }
     }
 
-
     private void report(RuleContext ctx, ModifierOwner decl, String kind, String signature) {
         ctx.addViolation(decl, kind, signature);
     }
@@ -148,20 +129,17 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     private boolean shouldReportNonTopLevel(final ModifierOwner decl) {
         final ASTTypeDeclaration enclosing = decl.getEnclosingType();
 
-        return isMissingComment(decl)
-            && isNotIgnored(decl)
-            && !(decl instanceof ASTFieldDeclaration
-                && enclosing != null
-                && enclosing.isAnnotationPresent("lombok.Value"));
+        return isMissingComment(decl) && isNotIgnored(decl) && !(decl instanceof ASTFieldDeclaration
+                && enclosing != null && enclosing.isAnnotationPresent("lombok.Value"));
     }
 
     private boolean isMissingComment(ModifierOwner decl) {
         // check if the class/method/field has a default access
         // modifier
         return decl.getVisibility() == Visibility.V_PACKAGE
-            // if is a default access modifier check if there is a comment
-            // in this line
-            && !hasOkComment(decl);
+                // if is a default access modifier check if there is a comment
+                // in this line
+                && !hasOkComment(decl);
     }
 
     private boolean isNotIgnored(ModifierOwner decl) {
@@ -170,16 +148,13 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
 
     private boolean hasOkComment(ModifierOwner node) {
         Pattern regex = getProperty(REGEX_DESCRIPTOR);
-        return JavaComment.getLeadingComments(node)
-                          .anyMatch(it -> regex.matcher(it.getText()).matches());
+        return JavaComment.getLeadingComments(node).anyMatch(it -> regex.matcher(it.getText()).matches());
     }
 
     private boolean shouldReportTypeDeclaration(ASTTypeDeclaration decl) {
         // don't report on interfaces
-        return !(decl.isRegularInterface() && !decl.isAnnotation())
-            && isMissingComment(decl)
-            && isNotIgnored(decl)
-            // either nested or top level and we should check it
-            && (decl.isNested() || getProperty(TOP_LEVEL_TYPES));
+        return !(decl.isRegularInterface() && !decl.isAnnotation()) && isMissingComment(decl) && isNotIgnored(decl)
+        // either nested or top level and we should check it
+                && (decl.isNested() || getProperty(TOP_LEVEL_TYPES));
     }
 }

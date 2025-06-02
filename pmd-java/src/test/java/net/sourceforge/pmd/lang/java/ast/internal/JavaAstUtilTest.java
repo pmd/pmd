@@ -24,8 +24,7 @@ class JavaAstUtilTest extends BaseParserTest {
         ASTExpression e = parseExpr("s1+s2+s3");
 
         assertTrue(isStringConcatExpr(e));
-        assertEquals(e.descendants(ASTVariableAccess.class).toList(),
-                     flattenOperands(e).toList());
+        assertEquals(e.descendants(ASTVariableAccess.class).toList(), flattenOperands(e).toList());
     }
 
     @Test
@@ -35,10 +34,10 @@ class JavaAstUtilTest extends BaseParserTest {
         ASTInfixExpression left = (ASTInfixExpression) e.getLeftOperand();
         assertTrue(isStringConcatExpr(left));
 
-        //                      This is (i+j)
-        //                  vvvvvvvvvvvvvvvvvvvvv
+        // This is (i+j)
+        // vvvvvvvvvvvvvvvvvvvvv
         assertEquals(listOf(left.getLeftOperand(), left.getRightOperand(), e.getRightOperand()),
-                     flattenOperands(e).toList());
+                flattenOperands(e).toList());
     }
 
 }

@@ -28,10 +28,10 @@ class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
         assertFinds(rule, 0, "class O { { this.equals(\"\", 2); }  void equals(String i, int a) {}}");
     }
 
-
     @Test
     void testMatchSigWithReceiver() {
-        Rule rule = makeXpathRuleFromXPath("//MethodCall[pmd-java:matchesSig('java.lang.Enum#equals(java.lang.Object)')]");
+        Rule rule = makeXpathRuleFromXPath(
+                "//MethodCall[pmd-java:matchesSig('java.lang.Enum#equals(java.lang.Object)')]");
 
         assertFinds(rule, 1, "enum O {; { this.equals(\"\"); } }");
         assertFinds(rule, 0, "enum O {; { \"\".equals(\"\"); } }");
@@ -51,7 +51,6 @@ class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
         assertFinds(rule, 2, "enum O {; { \"\".substring(1, 2); this.foo(1, 'c');} void foo(int a, int b) {} }");
     }
 
-
     @Test
     void testMatchSigWrongTypeReturnsFalse() {
         Rule rule = makeXpathRuleFromXPath("//EnumDeclaration[pmd-java:matchesSig('_#_(int,int)')]");
@@ -69,6 +68,5 @@ class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
         }
 
     }
-
 
 }

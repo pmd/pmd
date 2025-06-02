@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -40,7 +39,6 @@ public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
         @NonNull
         JClassSymbol typeSymbol = enclosingType.getTypeMirror().getSymbol();
         return method.descendants(ASTConstructorCall.class)
-            .filter(ctor -> ctor.getTypeMirror().getSymbol().equals(typeSymbol))
-            .nonEmpty();
+                .filter(ctor -> ctor.getTypeMirror().getSymbol().equals(typeSymbol)).nonEmpty();
     }
 }

@@ -18,10 +18,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> CHECKALL_DESCRIPTOR = booleanProperty("checkAll").desc("Check all methods, including non-private ones").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> CHECKALL_DESCRIPTOR = booleanProperty("checkAll")
+            .desc("Check all methods, including non-private ones").defaultValue(false).build();
 
     public UnusedFormalParameterRule() {
         super(ASTConstructorDeclaration.class, ASTMethodDeclaration.class);
@@ -39,10 +39,8 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
         if (node.getVisibility() != Visibility.V_PRIVATE && !getProperty(CHECKALL_DESCRIPTOR)) {
             return data;
         }
-        if (node.getBody() != null
-            && !node.hasModifiers(JModifier.DEFAULT)
-            && !JavaRuleUtil.isSerializationReadObject(node)
-            && !node.isOverridden()) {
+        if (node.getBody() != null && !node.hasModifiers(JModifier.DEFAULT)
+                && !JavaRuleUtil.isSerializationReadObject(node) && !node.isOverridden()) {
             check(node, data);
         }
         return data;
@@ -52,7 +50,8 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
         for (ASTFormalParameter formal : node.getFormalParameters()) {
             ASTVariableId varId = formal.getVarId();
             if (JavaAstUtils.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
-                asCtx(data).addViolation(varId, node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName());
+                asCtx(data).addViolation(varId, node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                        varId.getName());
             }
         }
     }

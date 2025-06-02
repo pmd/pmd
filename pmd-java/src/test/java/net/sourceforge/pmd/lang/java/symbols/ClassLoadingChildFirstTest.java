@@ -25,22 +25,20 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  */
 class ClassLoadingChildFirstTest {
 
-
     /**
-     * In this test I packed a jar with a custom version of {@link Void}.
-     * The test asserts that when putting that jar on the auxclasspath,
-     * a {@link TypeSystem} prefers that custom class to the one on the
-     * bootstrap classpath. The functionality under test is actually in
-     * {@link ClasspathClassLoader}.
+     * In this test I packed a jar with a custom version of {@link Void}. The test
+     * asserts that when putting that jar on the auxclasspath, a {@link TypeSystem}
+     * prefers that custom class to the one on the bootstrap classpath. The
+     * functionality under test is actually in {@link ClasspathClassLoader}.
      *
-     * <p>The jar file "custom_java_lang.jar" also contains the sources
-     * for the custom class {@code java.lang.Void}.
+     * <p>
+     * The jar file "custom_java_lang.jar" also contains the sources for the custom
+     * class {@code java.lang.Void}.
      * </p>
      */
     @Test
     void testClassLoading() {
-        Path file = Paths.get("src/test/resources",
-                getClass().getPackage().getName().replace('.', '/'),
+        Path file = Paths.get("src/test/resources", getClass().getPackage().getName().replace('.', '/'),
                 "custom_java_lang.jar");
 
         PMDConfiguration config = new PMDConfiguration();

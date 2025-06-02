@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.types.ast.internal;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
@@ -108,9 +107,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     private final SemanticErrorReporter err;
     private final Infer infer;
 
-
-    public LazyTypeResolver(JavaAstProcessor processor,
-                            TypeInferenceLogger logger) {
+    public LazyTypeResolver(JavaAstProcessor processor, TypeInferenceLogger logger) {
         this.ts = processor.getTypeSystem();
         this.infer = new Infer(ts, processor.getJdkVersion(), logger);
         this.polyResolution = new PolyResolution(infer);
@@ -127,7 +124,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         ExprContext toplevel = polyResolution.getTopLevelConversionContext(e);
 
         while (toplevel.hasKind(ExprContextKind.INVOCATION)) {
-            ExprContext surrounding = polyResolution.getTopLevelConversionContext(toplevel.getInvocNodeIfInvocContext());
+            ExprContext surrounding = polyResolution
+                    .getTopLevelConversionContext(toplevel.getInvocNodeIfInvocContext());
             if (!surrounding.isMissing()) {
                 toplevel = surrounding;
             } else {
@@ -158,7 +156,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     public JTypeMirror visit(ASTFormalParameter node, TypingContext ctx) {
         return node.getVarId().getTypeMirror(ctx);
     }
-
 
     @Override
     public JTypeMirror visit(ASTTypeParameter node, TypingContext ctx) {
@@ -191,7 +188,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         return ts.NO_TYPE;
     }
 
-
     @Override
     public @NonNull JTypeMirror visit(ASTRecordPattern node, TypingContext data) {
         JTypeMirror type = node.getTypeNode().getTypeMirror();
@@ -200,8 +196,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             // is generic, the type arguments of the type are
             // found in the scrutinee expression
 
-            JTypeMirror scrutineeType = node.ancestors(ASTSwitchLike.class).firstOrThrow()
-                                         .getTestedExpression().getTypeMirror(data);
+            JTypeMirror scrutineeType = node.ancestors(ASTSwitchLike.class).firstOrThrow().getTestedExpression()
+                    .getTypeMirror(data);
             JTypeDeclSymbol symbol = type.getSymbol();
             if (symbol instanceof JClassSymbol) {
                 JTypeMirror inferred = infer.inferParameterizationForSubtype((JClassSymbol) symbol, scrutineeType);
@@ -211,12 +207,10 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         return type;
     }
 
-
     @Override
     public @NonNull JTypeMirror visit(ASTTypePattern node, TypingContext data) {
         return node.getVarId().getTypeMirror();
     }
-
 
     @Override
     public @NonNull JTypeMirror visit(ASTUnnamedPattern node, TypingContext data) {
@@ -226,7 +220,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         // not allowed in any other context for now
         return ts.ERROR;
     }
-
 
     @Override
     public JTypeMirror visit(ASTVariableId node, TypingContext ctx) {
@@ -286,14 +279,13 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
                 // we should be in a record pattern, it's illegal
                 // to use var as a type outside of there
                 if (parent.getParent() instanceof ASTPatternList
-                    && parent.getParent().getParent() instanceof ASTRecordPattern) {
+                        && parent.getParent().getParent() instanceof ASTRecordPattern) {
                     return getTypeOfRecordComponent((ASTRecordPattern) parent.getParent().getParent(),
-                                                    parent.getIndexInParent());
+                            parent.getIndexInParent());
                 } else if (parent.getParent() instanceof ASTTypeExpression
-                    && parent.getParent().getParent() instanceof ASTInfixExpression) {
+                        && parent.getParent().getParent() instanceof ASTInfixExpression) {
                     // in instanceof
-                    return ((ASTInfixExpression) parent.getParent().getParent())
-                        .getLeftOperand().getTypeMirror(ctx);
+                    return ((ASTInfixExpression) parent.getParent().getParent()).getLeftOperand().getTypeMirror(ctx);
                 }
             }
             return ts.ERROR;
@@ -308,15 +300,13 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         JTypeMirror baseType = typeNode.getTypeMirror(ctx);
         ASTArrayDimensions extras = node.getExtraDimensions();
 
-        return extras != null
-               ? ts.arrayType(baseType, extras.size())
-               : baseType;
+        return extras != null ? ts.arrayType(baseType, extras.size()) : baseType;
     }
-
 
     private JTypeMirror getTypeOfRecordComponent(ASTRecordPattern record, int compIndex) {
         JTypeMirror type = record.getTypeMirror();
-        @Nullable JTypeDeclSymbol recordType = type.getSymbol();
+        @Nullable
+        JTypeDeclSymbol recordType = type.getSymbol();
         if (recordType instanceof JClassSymbol && type instanceof JClassType) {
             if (recordType.isUnresolved()) {
                 return ts.UNKNOWN;
@@ -330,30 +320,30 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         return ts.ERROR;
     }
 
-
     @Override
     public @NonNull JTypeMirror visit(ASTRecordComponent node, TypingContext data) {
         return node.getVarId().getTypeMirror();
     }
 
     /*
-        EXPRESSIONS
+     * EXPRESSIONS
      */
 
     @Override
     public JTypeMirror visit(ASTAssignmentExpression node, TypingContext ctx) {
-        // The type of the assignment expression is the type of the variable after capture conversion
+        // The type of the assignment expression is the type of the variable after
+        // capture conversion
         return TypeConversion.capture(node.getLeftOperand().getTypeMirror(ctx));
     }
 
     /**
      * Poly expressions need context and are resolved by {@link PolyResolution}.
      *
-     * <p>Note that some poly expression are only poly part of the time.
-     * In particular, method calls with explicit type arguments, and non-diamond
-     * constructor calls, are standalone. To reduce the number of branches in the
-     * code they still go through Infer, so that their method type is set like all
-     * the others.
+     * <p>
+     * Note that some poly expression are only poly part of the time. In particular,
+     * method calls with explicit type arguments, and non-diamond constructor calls,
+     * are standalone. To reduce the number of branches in the code they still go
+     * through Infer, so that their method type is set like all the others.
      */
     private JTypeMirror handlePoly(TypeNode node) {
         return polyResolution.computePolyType(node);
@@ -403,58 +393,60 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     public JTypeMirror visit(ASTInfixExpression node, TypingContext ctx) {
         BinaryOp op = node.getOperator();
         switch (op) {
-        case CONDITIONAL_OR:
-        case CONDITIONAL_AND:
-        case EQ:
-        case NE:
-        case LE:
-        case GE:
-        case GT:
-        case INSTANCEOF:
-        case LT:
+            case CONDITIONAL_OR :
+            case CONDITIONAL_AND :
+            case EQ :
+            case NE :
+            case LE :
+            case GE :
+            case GT :
+            case INSTANCEOF :
+            case LT :
             // HMM so we don't even check?
             return ts.BOOLEAN;
-        case OR:
-        case XOR:
-        case AND: {
-            // those may be boolean or bitwise
-            final JTypeMirror lhs = node.getLeftOperand().getTypeMirror(ctx).unbox();
-            final JTypeMirror rhs = node.getRightOperand().getTypeMirror(ctx).unbox();
+            case OR :
+            case XOR :
+            case AND : {
+                // those may be boolean or bitwise
+                final JTypeMirror lhs = node.getLeftOperand().getTypeMirror(ctx).unbox();
+                final JTypeMirror rhs = node.getRightOperand().getTypeMirror(ctx).unbox();
 
-            if (lhs.isNumeric() && rhs.isNumeric()) {
-                // NUMERIC(N) & NUMERIC(M)  -> promote(N, M)
-                return binaryNumericPromotion(lhs, rhs);
-            } else if (lhs.equals(rhs)) {
-                // BOOL       & BOOL        -> BOOL
-                // UNRESOLVED & UNRESOLVED  -> UNKNOWN
-                return lhs;
-            } else if (isUnresolved(lhs) ^ isUnresolved(rhs)) {
-                // UNRESOLVED & NUMERIC(N)  -> promote(N)
-                // NUMERIC(N) & UNRESOLVED  -> promote(N)
+                if (lhs.isNumeric() && rhs.isNumeric()) {
+                    // NUMERIC(N) & NUMERIC(M) -> promote(N, M)
+                    return binaryNumericPromotion(lhs, rhs);
+                } else if (lhs.equals(rhs)) {
+                    // BOOL & BOOL -> BOOL
+                    // UNRESOLVED & UNRESOLVED -> UNKNOWN
+                    return lhs;
+                } else if (isUnresolved(lhs) ^ isUnresolved(rhs)) {
+                    // UNRESOLVED & NUMERIC(N) -> promote(N)
+                    // NUMERIC(N) & UNRESOLVED -> promote(N)
 
-                // BOOL       & UNRESOLVED  -> BOOL
-                // UNRESOLVED & BOOL        -> BOOL
+                    // BOOL & UNRESOLVED -> BOOL
+                    // UNRESOLVED & BOOL -> BOOL
 
-                // UNRESOLVED & anything    -> ERROR
+                    // UNRESOLVED & anything -> ERROR
 
-                JTypeMirror resolved = isUnresolved(lhs) ? rhs : lhs;
-                return resolved.isNumeric() ? unaryNumericPromotion(resolved)
-                                            : resolved == ts.BOOLEAN ? resolved  // NOPMD #3205
-                                                                     : ts.ERROR;
-            } else {
-                // anything else, including error types & such: ERROR
-                return ts.ERROR;
+                    JTypeMirror resolved = isUnresolved(lhs) ? rhs : lhs;
+                    return resolved.isNumeric()
+                            ? unaryNumericPromotion(resolved)
+                            : resolved == ts.BOOLEAN
+                                    ? resolved // NOPMD #3205
+                                    : ts.ERROR;
+                } else {
+                    // anything else, including error types & such: ERROR
+                    return ts.ERROR;
+                }
             }
-        }
-        case LEFT_SHIFT:
-        case RIGHT_SHIFT:
-        case UNSIGNED_RIGHT_SHIFT:
+            case LEFT_SHIFT :
+            case RIGHT_SHIFT :
+            case UNSIGNED_RIGHT_SHIFT :
             return unaryNumericPromotion(node.getLeftOperand().getTypeMirror(ctx));
-        case ADD:
-        case SUB:
-        case MUL:
-        case DIV:
-        case MOD:
+            case ADD :
+            case SUB :
+            case MUL :
+            case DIV :
+            case MOD :
             final JTypeMirror lhs = node.getLeftOperand().getTypeMirror(ctx);
             final JTypeMirror rhs = node.getRightOperand().getTypeMirror(ctx);
             if (op == ADD && (lhs.equals(stringType) || rhs.equals(stringType))) {
@@ -468,34 +460,34 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
                 return binaryNumericPromotion(lhs, rhs);
             }
 
-        default:
+            default :
             throw new AssertionError("Unknown operator for " + node);
         }
     }
 
     private boolean isUnresolved(JTypeMirror t) {
-        return t == ts.UNKNOWN;  // NOPMD CompareObjectsWithEquals
+        return t == ts.UNKNOWN; // NOPMD CompareObjectsWithEquals
     }
 
     private boolean isUnresolved(JMethodSig m) {
-        return m == null || m == ts.UNRESOLVED_METHOD;  // NOPMD CompareObjectsWithEquals
+        return m == null || m == ts.UNRESOLVED_METHOD; // NOPMD CompareObjectsWithEquals
     }
 
     @Override
     public JTypeMirror visit(ASTUnaryExpression node, TypingContext ctx) {
         switch (node.getOperator()) {
-        case UNARY_PLUS:
-        case UNARY_MINUS:
-        case COMPLEMENT:
+            case UNARY_PLUS :
+            case UNARY_MINUS :
+            case COMPLEMENT :
             return unaryNumericPromotion(node.getOperand().getTypeMirror(ctx));
-        case NEGATION:
+            case NEGATION :
             return ts.BOOLEAN;
-        case PRE_INCREMENT:
-        case PRE_DECREMENT:
-        case POST_INCREMENT:
-        case POST_DECREMENT:
+            case PRE_INCREMENT :
+            case PRE_DECREMENT :
+            case POST_INCREMENT :
+            case POST_DECREMENT :
             return node.getOperand().getTypeMirror(ctx);
-        default:
+            default :
             throw new AssertionError("Unknown operator for " + node);
         }
     }
@@ -551,7 +543,6 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         }
     }
 
-
     @Override
     public JTypeMirror visit(ASTArrayAllocation node, TypingContext ctx) {
         return node.getTypeNode().getTypeMirror(ctx);
@@ -567,17 +558,16 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             return id.isTypeInferred() ? ts.ERROR : id.getTypeMirror(ctx);
         } else if (parent instanceof ASTArrayInitializer) {
             JTypeMirror tm = ((ASTArrayInitializer) parent).getTypeMirror(ctx);
-            return tm instanceof JArrayType ? ((JArrayType) tm).getComponentType()
-                                            : ts.ERROR;
+            return tm instanceof JArrayType ? ((JArrayType) tm).getComponentType() : ts.ERROR;
         }
         return ts.ERROR;
     }
 
-
     @Override
     public JTypeMirror visit(ASTVariableAccess node, TypingContext ctx) {
         if (node.getParent() instanceof ASTSwitchLabel) {
-            // may be an enum constant, in which case symbol table doesn't help (this is documented on JSymbolTable#variables())
+            // may be an enum constant, in which case symbol table doesn't help (this is
+            // documented on JSymbolTable#variables())
             ASTSwitchLike switchParent = node.ancestors(ASTSwitchLike.class).firstOrThrow();
             JTypeMirror testedType = switchParent.getTestedExpression().getTypeMirror(ctx);
             JTypeDeclSymbol testedSym = testedType.getSymbol();
@@ -591,7 +581,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             } // fallthrough
         }
 
-        @Nullable JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getName());
+        @Nullable
+        JVariableSig result = node.getSymbolTable().variables().resolveFirst(node.getName());
         if (result == null) {
             // An out-of-scope field. Use context to resolve it.
             return polyResolution.getContextTypeForStandaloneFallback(node);
@@ -617,8 +608,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
         // https://docs.oracle.com/javase/specs/jls/se14/html/jls-6.html#jls-6.5.6
         // Only capture if the name is on the RHS
-        return node.getAccessType() == AccessType.READ ? TypeConversion.capture(resultMirror)
-                                                       : resultMirror;
+        return node.getAccessType() == AccessType.READ ? TypeConversion.capture(resultMirror) : resultMirror;
     }
 
     @Override
@@ -648,11 +638,12 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             return polyResolution.getContextTypeForStandaloneFallback(node);
         }
 
-        @Nullable ASTTypeDeclaration enclosingType = node.getEnclosingType();
-        @Nullable JClassSymbol enclosingSymbol =
-            enclosingType == null ? null : enclosingType.getSymbol();
-        NameResolver<FieldSig> fieldResolver =
-            TypeOps.getMemberFieldResolver(qualifierT, node.getRoot().getPackageName(), enclosingSymbol, node.getName());
+        @Nullable
+        ASTTypeDeclaration enclosingType = node.getEnclosingType();
+        @Nullable
+        JClassSymbol enclosingSymbol = enclosingType == null ? null : enclosingType.getSymbol();
+        NameResolver<FieldSig> fieldResolver = TypeOps.getMemberFieldResolver(qualifierT,
+                node.getRoot().getPackageName(), enclosingSymbol, node.getName());
 
         FieldSig sig = fieldResolver.resolveFirst(node.getName()); // could be an ambiguity error
         InternalApiBridge.setTypedSym(node, sig);
@@ -663,10 +654,10 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
         // https://docs.oracle.com/javase/specs/jls/se14/html/jls-6.html#jls-6.5.6
         // Only capture if the name is on the RHS
-        return node.getAccessType() == AccessType.READ ? TypeConversion.capture(sig.getTypeMirror())
-                                                       : sig.getTypeMirror();
+        return node.getAccessType() == AccessType.READ
+                ? TypeConversion.capture(sig.getTypeMirror())
+                : sig.getTypeMirror();
     }
-
 
     @Override
     public JTypeMirror visit(ASTArrayAccess node, TypingContext ctx) {
@@ -694,8 +685,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     @Override
     public JTypeMirror visit(ASTThisExpression node, TypingContext ctx) {
         return node.getQualifier() != null
-               ? node.getQualifier().getTypeMirror(ctx)
-               : node.getEnclosingType().getTypeMirror(ctx);
+                ? node.getQualifier().getTypeMirror(ctx)
+                : node.getEnclosingType().getTypeMirror(ctx);
     }
 
     @Override

@@ -83,7 +83,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         verify(log).boundAdded(ctx, v2, BoundKind.UPPER, listOfV1, false);
     }
 
-
     @Test
     void testNullTypeCannotBeLowerBound() {
         TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
@@ -92,7 +91,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         InferenceVar v1 = newIvar(ctx);
 
         addSubtypeConstraint(ctx, ts.NULL_TYPE, v1);
-
 
         assertThat(v1, hasBoundsExactly(upper(ts.OBJECT)));
 
@@ -126,7 +124,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertEquals(ts.OBJECT, v2.getInst());
         assertEquals(listType(ts.OBJECT), v1.getInst());
     }
-
 
     @Test
     void testEqBoundMergesIvar() {
@@ -201,18 +198,16 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(b, hasBoundsExactly(lower(a)));
     }
 
-    /* Remember:
-            let S, T != Object, S <: T
-
-            G<? super T> </: G<? extends T>
-            G<? extends T> </: G<? super T>
-
-            G<? super T> <: G<? super S>
-            G<? extends S> <: G<? extends T>
-
-            if T = Object, then G<? extends T> = G<?>, and
-
-            G<A> <: G<?> forall A (incl. wildcards)
+    /*
+     * Remember: let S, T != Object, S <: T
+     * 
+     * G<? super T> </: G<? extends T> G<? extends T> </: G<? super T>
+     * 
+     * G<? super T> <: G<? super S> G<? extends S> <: G<? extends T>
+     * 
+     * if T = Object, then G<? extends T> = G<?>, and
+     * 
+     * G<A> <: G<?> forall A (incl. wildcards)
      */
 
     @Test
@@ -243,11 +238,11 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         // Proof:
         // capture(List<? extends 'a>) <: List<? super 'b>
         // |- List<capture of ? extends 'a> <: List<? super 'b>
-        //   |- capture of ? extends 'a <= ? super 'b
-        //     |- lower(? super 'b) <: lower(capture of ? extends 'a)
-        //       |- 'b             <: capture of ? extends 'a
-        //     |- upper(capture of ? extends 'a) <: upper(? super 'b)
-        //       |- 'a                          <: Object
+        // |- capture of ? extends 'a <= ? super 'b
+        // |- lower(? super 'b) <: lower(capture of ? extends 'a)
+        // |- 'b <: capture of ? extends 'a
+        // |- upper(capture of ? extends 'a) <: upper(? super 'b)
+        // |- 'a <: Object
 
         // Note that lower(capture of ? extends 'a) does not reduce to
         // the null type, as that would be useless and disprove valid programs.
@@ -256,8 +251,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(b, hasBoundsExactly(upper(ts.OBJECT), upper(captureMatcher(extendsWild(a)))));
         assertThat(a, hasBoundsExactly(upper(ts.OBJECT)));
     }
-
-
 
     @Test
     void testIntersectionRight() {
@@ -271,14 +264,11 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         // ~> 'b >: Serializable
 
         JTypeMirror listOfB = listType(extendsWild(b));
-        addSubtypeConstraint(ctx,
-                             a,
-                             intersect(listOfB, ts.SERIALIZABLE));
+        addSubtypeConstraint(ctx, a, intersect(listOfB, ts.SERIALIZABLE));
 
         assertThat(a, hasBoundsExactly(upper(ts.SERIALIZABLE), upper(listOfB)));
         assertThat(b, hasBoundsExactly(upper(ts.OBJECT)));
     }
-
 
     @Test
     void testIntersectionLeft() {
@@ -290,7 +280,8 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         // List<? extends 'a> & Serializable <: 'b
         // ~> 'b >: List<? extends 'a> & Serializable
 
-        // Note that this does not split the intersection into several constraints, like eg
+        // Note that this does not split the intersection into several constraints, like
+        // eg
         // 'b >: List<? extends 'a>
         // 'b >: Serializable
 
@@ -302,9 +293,7 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         // in order to have more constraints to propagate
 
         JTypeMirror listOfA = listType(extendsWild(a));
-        addSubtypeConstraint(ctx,
-                             intersect(listOfA, ts.SERIALIZABLE),
-                             b);
+        addSubtypeConstraint(ctx, intersect(listOfA, ts.SERIALIZABLE), b);
 
         assertThat(a, hasBoundsExactly(upper(ts.OBJECT)));
         assertThat(b, hasBoundsExactly(lower(intersect(listOfA, ts.SERIALIZABLE))));
@@ -318,9 +307,7 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
         // Boolean[] <: 'a[]
         // ~> Boolean <: 'a
-        addSubtypeConstraint(ctx,
-                             ts.arrayType(ts.BOOLEAN.box()),
-                             ts.arrayType(a));
+        addSubtypeConstraint(ctx, ts.arrayType(ts.BOOLEAN.box()), ts.arrayType(a));
 
         assertThat(a, hasBoundsExactly(lower(ts.BOOLEAN.box())));
     }
@@ -333,13 +320,10 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
         // 'a[] <: Boolean[]
         // ~> 'a <: Boolean
-        addSubtypeConstraint(ctx,
-                             ts.arrayType(a),
-                             ts.arrayType(ts.BOOLEAN.box()));
+        addSubtypeConstraint(ctx, ts.arrayType(a), ts.arrayType(ts.BOOLEAN.box()));
 
         assertThat(a, hasBoundsExactly(upper(ts.BOOLEAN.box())));
     }
-
 
     private static @NotNull List<Set<InferenceVar>> createBatchSetsFromGraph(InferenceContext ctx) {
         GraphWalk graphWalk = new GraphWalk(ctx, false);
@@ -387,9 +371,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(batches, contains(setOf(b, a)));
     }
 
-
-
-
     @Test
     void testGraphBuildingWithExtraDependency() {
         InferenceContext ctx = emptyCtx();
@@ -417,7 +398,6 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         a.addBound(BoundKind.EQ, listType(c));
         b.addBound(BoundKind.LOWER, a);
         b.addBound(BoundKind.LOWER, listType(c));
-
 
         List<Set<InferenceVar>> batches = createBatchSetsFromGraph(ctx);
 

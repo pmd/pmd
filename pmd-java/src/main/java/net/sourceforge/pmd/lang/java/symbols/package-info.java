@@ -3,8 +3,8 @@
  */
 
 /**
- * The new symbol resolution framework
- * that inter-operates cleanly with type resolution.
+ * The new symbol resolution framework that inter-operates cleanly with type
+ * resolution.
  *
  * @see net.sourceforge.pmd.lang.java.symbols.JElementSymbol
  * @see net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable

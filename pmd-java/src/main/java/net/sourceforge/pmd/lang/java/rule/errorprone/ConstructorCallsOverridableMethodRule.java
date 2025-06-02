@@ -32,7 +32,6 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-
 /**
  * Searches through all methods and constructors called from constructors. It
  * marks as dangerous any call to overridable methods from non-private
@@ -50,7 +49,6 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
     private static final String MESSAGE = "Overridable method called during object construction: {0} ";
     private static final String MESSAGE_TRANSITIVE = "This method may call an overridable method during object construction: {0} (call stack: [{1}])";
 
-
     // Maps methods to the method call stack that makes them unsafe
     // Safe methods are mapped to an empty stack
     // The method call stack (value of the map) is used for better messages
@@ -58,10 +56,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     private static final Deque<JMethodSymbol> EMPTY_STACK = new LinkedList<>();
 
-    private static final Set<String> MAKE_FIELD_FINAL_CLASS_ANNOT =
-        setOf(
-            "lombok.Value"
-        );
+    private static final Set<String> MAKE_FIELD_FINAL_CLASS_ANNOT = setOf("lombok.Value");
 
     public ConstructorCallsOverridableMethodRule() {
         super(ASTConstructorDeclaration.class);
@@ -75,7 +70,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
-        if (node.getEnclosingType().isFinal() || JavaAstUtils.hasAnyAnnotation(node.getEnclosingType(), MAKE_FIELD_FINAL_CLASS_ANNOT)) {
+        if (node.getEnclosingType().isFinal()
+                || JavaAstUtils.hasAnyAnnotation(node.getEnclosingType(), MAKE_FIELD_FINAL_CLASS_ANNOT)) {
             return null; // then cannot be overridden
         }
         for (ASTMethodCall call : node.getBody().descendants(ASTMethodCall.class)) {
@@ -85,7 +81,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 JMethodSig unsafeMethod = call.getTypeSystem().sigOf(unsafetyReason.getLast());
                 String message = unsafeMethod.equals(overload) ? MESSAGE : MESSAGE_TRANSITIVE;
                 String lastMethod = PrettyPrintingUtil.prettyPrintOverload(unsafetyReason.getLast());
-                String stack = unsafetyReason.stream().map(PrettyPrintingUtil::prettyPrintOverload).collect(Collectors.joining(", "));
+                String stack = unsafetyReason.stream().map(PrettyPrintingUtil::prettyPrintOverload)
+                        .collect(Collectors.joining(", "));
                 asCtx(data).addViolationWithMessage(call, message, lastMethod, stack);
             }
         }
@@ -135,9 +132,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
         PVector<ASTMethodDeclaration> deeperRecursion = recursionGuard.plus(declaration);
 
-        for (ASTMethodCall call : NodeStream.of(declaration.getBody())
-                                            .descendants(ASTMethodCall.class)
-                                            .filter(ConstructorCallsOverridableMethodRule::isCallOnThisInstance)) {
+        for (ASTMethodCall call : NodeStream.of(declaration.getBody()).descendants(ASTMethodCall.class)
+                .filter(ConstructorCallsOverridableMethodRule::isCallOnThisInstance)) {
             Deque<JMethodSymbol> unsafetyReason = getUnsafetyReason(call, deeperRecursion);
             if (!unsafetyReason.isEmpty()) {
                 // this method call is unsafe for some reason,

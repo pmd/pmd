@@ -2,12 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Contains a potentially empty list of nested Patterns for {@linkplain ASTRecordPattern RecordPattern}
- * (Java 21).
+ * Contains a potentially empty list of nested Patterns for
+ * {@linkplain ASTRecordPattern RecordPattern} (Java 21).
  *
  * <pre class="grammar">
  *

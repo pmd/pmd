@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-
 /**
  * Cyclomatic complexity rule using metrics.
  *
@@ -33,15 +32,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Integer> CLASS_LEVEL_DESCRIPTOR
-        = PropertyFactory.intProperty("classReportLevel")
-                         .desc("Total class complexity reporting threshold")
-                         .require(positive()).defaultValue(80).build();
+    private static final PropertyDescriptor<Integer> CLASS_LEVEL_DESCRIPTOR = PropertyFactory
+            .intProperty("classReportLevel").desc("Total class complexity reporting threshold").require(positive())
+            .defaultValue(80).build();
 
-    private static final PropertyDescriptor<Integer> METHOD_LEVEL_DESCRIPTOR
-        = PropertyFactory.intProperty("methodReportLevel")
-                         .desc("Cyclomatic complexity reporting threshold")
-                         .require(positive()).defaultValue(10).build();
+    private static final PropertyDescriptor<Integer> METHOD_LEVEL_DESCRIPTOR = PropertyFactory
+            .intProperty("methodReportLevel").desc("Cyclomatic complexity reporting threshold").require(positive())
+            .defaultValue(10).build();
 
     private static final Map<String, CycloOption> OPTION_MAP;
 
@@ -51,12 +48,9 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
         OPTION_MAP.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
     }
 
-    private static final PropertyDescriptor<List<CycloOption>> CYCLO_OPTIONS_DESCRIPTOR
-            = PropertyFactory.enumListProperty("cycloOptions", OPTION_MAP)
-                             .desc("Choose options for the computation of Cyclo")
-                             .emptyDefaultValue()
-                             .build();
-
+    private static final PropertyDescriptor<List<CycloOption>> CYCLO_OPTIONS_DESCRIPTOR = PropertyFactory
+            .enumListProperty("cycloOptions", OPTION_MAP).desc("Choose options for the computation of Cyclo")
+            .emptyDefaultValue().build();
 
     public CyclomaticComplexityRule() {
         super(ASTExecutableDeclaration.class, ASTTypeDeclaration.class);
@@ -64,7 +58,6 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
         definePropertyDescriptor(METHOD_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(CYCLO_OPTIONS_DESCRIPTOR);
     }
-
 
     @Override
     public Object visitJavaNode(JavaNode node, Object param) {
@@ -82,19 +75,17 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
             int classWmc = MetricsUtil.computeMetric(JavaMetrics.WEIGHED_METHOD_COUNT, node, cycloOptions);
 
             if (classWmc >= getProperty(CLASS_LEVEL_DESCRIPTOR)) {
-                int classHighest = (int) MetricsUtil.computeStatistics(JavaMetrics.CYCLO, node.getOperations(), cycloOptions).getMax();
+                int classHighest = (int) MetricsUtil
+                        .computeStatistics(JavaMetrics.CYCLO, node.getOperations(), cycloOptions).getMax();
 
-                String[] messageParams = {PrettyPrintingUtil.getPrintableNodeKind(node),
-                                          node.getSimpleName(),
-                                          " total",
-                                          classWmc + " (highest " + classHighest + ")", };
+                String[] messageParams = {PrettyPrintingUtil.getPrintableNodeKind(node), node.getSimpleName(), " total",
+                        classWmc + " (highest " + classHighest + ")",};
 
                 asCtx(data).addViolation(node, (Object[]) messageParams);
             }
         }
         return data;
     }
-
 
     @Override
     public final Object visit(ASTMethodDeclaration node, Object data) {
@@ -114,7 +105,6 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
         if (JavaMetrics.CYCLO.supports(node)) {
             int cyclo = MetricsUtil.computeMetric(JavaMetrics.CYCLO, node, cycloOptions);
             if (cyclo >= getProperty(METHOD_LEVEL_DESCRIPTOR)) {
-
 
                 String opname = PrettyPrintingUtil.displaySignature(node);
 

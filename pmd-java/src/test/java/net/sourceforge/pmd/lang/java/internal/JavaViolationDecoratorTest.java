@@ -77,8 +77,8 @@ class JavaViolationDecoratorTest {
     }
 
     /**
-     * Tests that the class name is taken correctly, even if the node is outside
-     * of a class scope, e.g. a import declaration.
+     * Tests that the class name is taken correctly, even if the node is outside of
+     * a class scope, e.g. a import declaration.
      *
      * @see <a href="https://sourceforge.net/p/pmd/bugs/1529/">#1529</a>
      */
@@ -148,8 +148,7 @@ class JavaViolationDecoratorTest {
     }
 
     /**
-     * Test that the name of the inner class is taken correctly.
-     * Also check fields.
+     * Test that the name of the inner class is taken correctly. Also check fields.
      */
     @Test
     void testInnerClass() {

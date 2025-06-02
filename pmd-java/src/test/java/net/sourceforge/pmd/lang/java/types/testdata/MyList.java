@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.types.testdata;
 
 /**
- * @see <a href="https://github.com/pmd/pmd/issues/3101">[java] NullPointerException when running PMD under JRE 11 #3101</a>
+ * @see <a href="https://github.com/pmd/pmd/issues/3101">[java]
+ *      NullPointerException when running PMD under JRE 11 #3101</a>
  */
 public interface MyList<E> {
 

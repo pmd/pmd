@@ -39,12 +39,10 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRulechainRule {
                 if (!"getChars".equals(node.getMethodName())) {
                     asCtx(data).addViolation(node);
                 }
-            } else if (TypeTestUtil.isA(BigDecimal.class, qualifier)
-                || TypeTestUtil.isA(BigInteger.class, qualifier)) {
+            } else if (TypeTestUtil.isA(BigDecimal.class, qualifier) || TypeTestUtil.isA(BigInteger.class, qualifier)) {
                 asCtx(data).addViolation(node);
-            } else if (TypeTestUtil.isA(Temporal.class, qualifier)
-                || TypeTestUtil.isA(Duration.class, qualifier)
-                || TypeTestUtil.isA(Period.class, qualifier)) {
+            } else if (TypeTestUtil.isA(Temporal.class, qualifier) || TypeTestUtil.isA(Duration.class, qualifier)
+                    || TypeTestUtil.isA(Period.class, qualifier)) {
                 asCtx(data).addViolation(node);
             }
         }

@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a reference type, i.e. a {@linkplain ASTClassType class or interface type},
- * or an {@linkplain ASTArrayType array type}.
+ * Represents a reference type, i.e. a {@linkplain ASTClassType class or
+ * interface type}, or an {@linkplain ASTArrayType array type}.
  *
  * <pre class="grammar">
  *

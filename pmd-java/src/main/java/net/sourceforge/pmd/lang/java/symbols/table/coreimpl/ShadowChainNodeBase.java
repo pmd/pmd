@@ -21,11 +21,8 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
     private final I scopeTag;
 
     @SuppressWarnings("unchecked") // NameResolver is covariant in S
-    ShadowChainNodeBase(@NonNull ShadowChainNode<S, I> parent,
-                        boolean shadowBarrier,
-                        I scopeTag,
-                        NameResolver<? extends S> resolver,
-                        BinaryOperator<List<S>> merger) {
+    ShadowChainNodeBase(@NonNull ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag,
+            NameResolver<? extends S> resolver, BinaryOperator<List<S>> merger) {
         this.parent = parent;
         this.scopeTag = scopeTag;
         this.shadowBarrier = shadowBarrier;
@@ -33,7 +30,8 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
         this.merger = merger;
     }
 
-    ShadowChainNodeBase(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
+    ShadowChainNodeBase(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag,
+            NameResolver<? extends S> resolver) {
         this(parent, shadowBarrier, scopeTag, resolver, defaultMerger());
     }
 
@@ -63,10 +61,10 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
     }
 
     /**
-     * This is package protected, because it would be impossible to find
-     * a value for this on the root node. Instead, the scope tag
-     * is only accessible from a {@link ShadowChainIterator}, if we found
-     * results (which naturally excludes the root group, being empty)
+     * This is package protected, because it would be impossible to find a value for
+     * this on the root node. Instead, the scope tag is only accessible from a
+     * {@link ShadowChainIterator}, if we found results (which naturally excludes
+     * the root group, being empty)
      */
     I getScopeTag() {
         return scopeTag;
@@ -77,7 +75,6 @@ class ShadowChainNodeBase<S, I> implements ShadowChain<S, I>, ShadowChainNode<S,
     public OptionalBool knowsSymbol(String simpleName) {
         return resolver.knows(simpleName);
     }
-
 
     @Override
     public @NonNull List<S> resolve(String name) {

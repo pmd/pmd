@@ -7,10 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Marker interface for those nodes that can be the target of a return statement.
- * These delimit scopes for the control flow. For instance the control flow
- * in a lambda expression is distinct from that of the block it appears in: returns
- * and throws in the lambda and in the parent block do not jump to the same place.
+ * Marker interface for those nodes that can be the target of a return
+ * statement. These delimit scopes for the control flow. For instance the
+ * control flow in a lambda expression is distinct from that of the block it
+ * appears in: returns and throws in the lambda and in the parent block do not
+ * jump to the same place.
  *
  *
  * <pre class="grammar">

@@ -7,9 +7,8 @@ package net.sourceforge.pmd.lang.java.symbols.table;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 
 /**
- * A {@linkplain ShadowChainIterator#getScopeTag() scope tag} for java
- * shadow chains. This gives information about why a declaration is in
- * scope.
+ * A {@linkplain ShadowChainIterator#getScopeTag() scope tag} for java shadow
+ * chains. This gives information about why a declaration is in scope.
  */
 public enum ScopeInfo {
 
@@ -28,11 +27,8 @@ public enum ScopeInfo {
 
     // import-likes
     MODULE_IMPORT, // since 7.5.0; Java 23 preview
-    IMPORT_ON_DEMAND,
-    SAME_PACKAGE,
-    JAVA_LANG, // default imports for any compilation unit
-    SINGLE_IMPORT,
-    SIMPLE_COMPILATION_UNIT, // since 7.5.0; default imports for java.io.IO.* and module java.base
+    IMPORT_ON_DEMAND, SAME_PACKAGE, JAVA_LANG, // default imports for any compilation unit
+    SINGLE_IMPORT, SIMPLE_COMPILATION_UNIT, // since 7.5.0; default imports for java.io.IO.* and module java.base
 
     /** Sibling types in the same file, that are not nested into one another. */
     SAME_FILE,

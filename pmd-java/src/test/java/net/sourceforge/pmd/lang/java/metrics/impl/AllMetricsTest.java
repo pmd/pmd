@@ -18,7 +18,6 @@ import net.sourceforge.pmd.test.SimpleAggregatorTst;
  */
 class AllMetricsTest extends SimpleAggregatorTst {
 
-
     private static final String RULESET = "rulesets/java/metrics_test.xml";
 
     @Override
@@ -36,7 +35,6 @@ class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "AtfdTest");
         addRule(RULESET, "CfoTest");
     }
-
 
     static String formatJavaMessage(Node node, Object result) {
         String qname;

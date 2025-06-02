@@ -9,13 +9,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
- * Represents a local variable declaration. This is a {@linkplain ASTStatement statement},
- * but the node is also used in {@linkplain ASTForInit for-loop initialisers} and
- * {@linkplain ASTForStatement foreach statements}.
+ * Represents a local variable declaration. This is a {@linkplain ASTStatement
+ * statement}, but the node is also used in {@linkplain ASTForInit for-loop
+ * initialisers} and {@linkplain ASTForStatement foreach statements}.
  *
- * <p>This statement may define several variables, possibly of different types
- * (see {@link ASTVariableId#getTypeNode()}). The nodes corresponding to
- * the declared variables are accessible through {@link #getVarIds()}.
+ * <p>
+ * This statement may define several variables, possibly of different types (see
+ * {@link ASTVariableId#getTypeNode()}). The nodes corresponding to the declared
+ * variables are accessible through {@link #getVarIds()}.
  *
  * <pre class="grammar">
  *
@@ -25,9 +26,10 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  */
 // TODO extend AbstractStatement
 public final class ASTLocalVariableDeclaration extends AbstractJavaNode
-    implements ASTStatement,
-               LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
-               InternalInterfaces.MultiVariableIdOwner {
+        implements
+            ASTStatement,
+            LeftRecursiveNode, // ModifierList is parsed separately in BlockStatement
+            InternalInterfaces.MultiVariableIdOwner {
 
     ASTLocalVariableDeclaration(int id) {
         super(id);
@@ -50,9 +52,10 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     }
 
     /**
-     * If true, this local variable declaration represents a declaration,
-     * which makes use of local variable type inference, e.g. java10 "var".
-     * You can receive the inferred type via {@link #getTypeNode()}.{@link TypeNode#getTypeMirror() getTypeMirror()}.
+     * If true, this local variable declaration represents a declaration, which
+     * makes use of local variable type inference, e.g. java10 "var". You can
+     * receive the inferred type via
+     * {@link #getTypeNode()}.{@link TypeNode#getTypeMirror() getTypeMirror()}.
      *
      * @see ASTVariableId#isTypeInferred()
      */
@@ -61,9 +64,8 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     }
 
     /**
-     * Gets the type node for this variable declaration statement.
-     * With Java10 and local variable type inference, there might be
-     * no type node at all.
+     * Gets the type node for this variable declaration statement. With Java10 and
+     * local variable type inference, there might be no type node at all.
      *
      * @return The type node or <code>null</code>
      *
@@ -75,8 +77,8 @@ public final class ASTLocalVariableDeclaration extends AbstractJavaNode
     }
 
     /**
-     * Return whether this declaration is final (including implicitly).
-     * If lombok support is enabled, then return true if the type is lombok.val.
+     * Return whether this declaration is final (including implicitly). If lombok
+     * support is enabled, then return true if the type is lombok.val.
      */
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL) || ASTVariableId.isLombokVal(getTypeNode());

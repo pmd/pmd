@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An array creation expression. The dimensions of the array type may
- * be initialized with a length expression (in which case they're
+ * An array creation expression. The dimensions of the array type may be
+ * initialized with a length expression (in which case they're
  * {@link ASTArrayDimExpr ArrayDimExpr} nodes).
  *
  * <pre class="grammar">
@@ -19,17 +19,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class ASTArrayAllocation extends AbstractJavaExpr implements ASTPrimaryExpression {
 
-
     ASTArrayAllocation(int id) {
         super(id);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     /**
      * Returns the node representing the array type being instantiated.

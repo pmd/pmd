@@ -46,7 +46,6 @@ class TParamStub implements JTypeParameterSymbol {
         this.typeVar = ts.newTypeVar(this);
     }
 
-
     @Override
     public @NonNull String getSimpleName() {
         return name;
@@ -56,23 +55,22 @@ class TParamStub implements JTypeParameterSymbol {
     public JTypeMirror computeUpperBound() {
         if (!canComputeBound) {
             throw new IllegalStateException(
-                "Can't compute upper bound of " + name + " in " + owner.getEnclosingTypeParameterOwner());
+                    "Can't compute upper bound of " + name + " in " + owner.getEnclosingTypeParameterOwner());
         }
         JTypeMirror bound = sigParser.parseTypeVarBound(owner.getLexicalScope(), boundSignature);
         if (typeAnnotationsOnBound == null) {
             return bound;
         }
         // apply all type annotations.
-        return typeAnnotationsOnBound.reduce(
-            bound,
-            (tyRef, path, annot, acc) -> {
-                int boundIdx = tyRef.getTypeParameterBoundIndex();
+        return typeAnnotationsOnBound.reduce(bound, (tyRef, path, annot, acc) -> {
+            int boundIdx = tyRef.getTypeParameterBoundIndex();
 
-                return applyTypeAnnotationToBound(path, annot, boundIdx, acc);
-            });
+            return applyTypeAnnotationToBound(path, annot, boundIdx, acc);
+        });
     }
 
-    private static JTypeMirror applyTypeAnnotationToBound(@Nullable TypePath path, SymAnnot annot, int boundIdx, JTypeMirror ub) {
+    private static JTypeMirror applyTypeAnnotationToBound(@Nullable TypePath path, SymAnnot annot, int boundIdx,
+            JTypeMirror ub) {
         if (ub instanceof JIntersectionType) {
             JIntersectionType intersection = (JIntersectionType) ub;
 
@@ -90,9 +88,9 @@ class TParamStub implements JTypeParameterSymbol {
     }
 
     /**
-     * The bound cannot be computed before we have collected type annotations
-     * for the bound. These may come from the parsing of the type annotations
-     * for the enclosing declaration (method or class) so come relatively late.
+     * The bound cannot be computed before we have collected type annotations for
+     * the bound. These may come from the parsing of the type annotations for the
+     * enclosing declaration (method or class) so come relatively late.
      */
     void setCanComputeBound() {
         this.canComputeBound = true;
@@ -139,7 +137,7 @@ class TParamStub implements JTypeParameterSymbol {
 
     void addAnnotationOnBound(TypeReference tyRef, @Nullable TypePath path, SymAnnot annot) {
         assert tyRef.getSort() == TypeReference.CLASS_TYPE_PARAMETER_BOUND
-            || tyRef.getSort() == TypeReference.METHOD_TYPE_PARAMETER_BOUND;
+                || tyRef.getSort() == TypeReference.METHOD_TYPE_PARAMETER_BOUND;
 
         if (typeAnnotationsOnBound == null) {
             typeAnnotationsOnBound = new TypeAnnotationSetWithReferences();

@@ -20,11 +20,10 @@ public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssigna
         super(id);
     }
 
-
     /**
-     * Returns the expression to the left of the "[".
-     * This can never be a {@linkplain ASTTypeExpression type},
-     * and is never {@linkplain ASTAmbiguousName ambiguous}.
+     * Returns the expression to the left of the "[". This can never be a
+     * {@linkplain ASTTypeExpression type}, and is never
+     * {@linkplain ASTAmbiguousName ambiguous}.
      */
     @NonNull
     @Override
@@ -36,7 +35,6 @@ public final class ASTArrayAccess extends AbstractJavaExpr implements ASTAssigna
     public ASTExpression getIndexExpression() {
         return (ASTExpression) getChild(1);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
  */
 class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
 
-
     @Test
     void testEffectiveModifiers() {
         Rule rule = makeXpathRuleFromXPath("//ClassDeclaration[pmd-java:modifiers() = ('public', 'abstract')]");
@@ -36,7 +35,6 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
         assertFinds(rule, 0, code);
     }
 
-
     @Test
     void testNotModifierOwnerReturnsEmptySequence() {
         Rule rule = makeXpathRuleFromXPath("//ClassBody[pmd-java:modifiers()]");
@@ -45,17 +43,13 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
         assertFinds(rule, 0, code);
     }
 
-
     @Test
     void testStaticTypeError() {
-        testWithExpectedStaticException(
-            "//MethodDeclaration[(., .) is pmd-java:modifiers()]",
-            e -> {
-                assertThat(e.getMessage(), containsString("Type error"));
-                assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
-            });
+        testWithExpectedStaticException("//MethodDeclaration[(., .) is pmd-java:modifiers()]", e -> {
+            assertThat(e.getMessage(), containsString("Type error"));
+            assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
+        });
 
     }
-
 
 }

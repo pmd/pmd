@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 public class UselessStringValueOfRule extends AbstractJavaRule {
 
-
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
         return RuleTargetSelector.forTypes(ASTMethodCall.class);
@@ -27,18 +26,17 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
         if (JavaAstUtils.isStringConcatExpr(node.getParent())) {
             ASTExpression valueOfArg = getValueOfArg(node);
             if (valueOfArg == null) {
-                return data; //not a valueOf call
+                return data; // not a valueOf call
             } else if (TypeTestUtil.isExactlyA(String.class, valueOfArg)) {
                 asCtx(data).addViolation(node); // valueOf call on a string
                 return data;
             }
 
             ASTExpression sibling = JavaAstUtils.getOtherOperandIfInInfixExpr(node);
-            if (TypeTestUtil.isExactlyA(String.class, sibling)
-                && !valueOfArg.getTypeMirror().isArray()
-                // In `String.valueOf(a) + String.valueOf(b)`,
-                // only report the second call
-                && (getValueOfArg(sibling) == null || node.getIndexInParent() == 1)) {
+            if (TypeTestUtil.isExactlyA(String.class, sibling) && !valueOfArg.getTypeMirror().isArray()
+            // In `String.valueOf(a) + String.valueOf(b)`,
+            // only report the second call
+                    && (getValueOfArg(sibling) == null || node.getIndexInParent() == 1)) {
                 asCtx(data).addViolation(node);
             }
         }
@@ -48,9 +46,8 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
     private static @Nullable ASTExpression getValueOfArg(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expr;
-            if (call.getArguments().size() == 1
-                && "valueOf".equals(call.getMethodName())
-                && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
+            if (call.getArguments().size() == 1 && "valueOf".equals(call.getMethodName())
+                    && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
                 return call.getArguments().get(0);
             }
         }

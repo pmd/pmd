@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
-
 /**
  * Groups method and constructor declarations under a common type.
  *
@@ -22,31 +21,30 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
  *
  * </pre>
  *
- * <p>Note: This interface was called ASTMethodOrConstructorDeclaration in PMD 6.
+ * <p>
+ * Note: This interface was called ASTMethodOrConstructorDeclaration in PMD 6.
  *
  * @author Clément Fournier
  * @since 5.8.1
  */
 public interface ASTExecutableDeclaration
-    extends ModifierOwner,
+        extends
+            ModifierOwner,
             ASTBodyDeclaration,
             TypeParamOwnerNode,
             JavadocCommentOwner,
             ReturnScopeNode {
 
-
     @Override
     JExecutableSymbol getSymbol();
 
-
     /**
      * Returns the generic signature for the method. This is a {@link JMethodSig}
-     * declared in the {@linkplain JClassType#getGenericTypeDeclaration() generic type declaration}
-     * of the enclosing type. The signature may mention type parameters
-     * of the enclosing types, and its own type parameters.
+     * declared in the {@linkplain JClassType#getGenericTypeDeclaration() generic
+     * type declaration} of the enclosing type. The signature may mention type
+     * parameters of the enclosing types, and its own type parameters.
      */
     JMethodSig getGenericSignature();
-
 
     /**
      * Returns the name of the method, or the simple name of the declaring class for
@@ -54,14 +52,11 @@ public interface ASTExecutableDeclaration
      */
     String getName();
 
-
     /**
-     * Returns true if this method is abstract, so doesn't
-     * declare a body. Interface members are
-     * implicitly abstract, whether they declare the
-     * {@code abstract} modifier or not. Default interface
-     * methods are not abstract though, consistently with the
-     * standard reflection API.
+     * Returns true if this method is abstract, so doesn't declare a body. Interface
+     * members are implicitly abstract, whether they declare the {@code abstract}
+     * modifier or not. Default interface methods are not abstract though,
+     * consistently with the standard reflection API.
      */
     // TODO is this relevant?
     default boolean isAbstract() {
@@ -77,17 +72,16 @@ public interface ASTExecutableDeclaration
     }
 
     /**
-     * Returns the number of formal parameters expected by this declaration.
-     * This excludes any receiver parameter, which is irrelevant to arity.
+     * Returns the number of formal parameters expected by this declaration. This
+     * excludes any receiver parameter, which is irrelevant to arity.
      */
     default int getArity() {
         return getFormalParameters().size();
     }
 
-
     /**
-     * Returns the body of this method or constructor. Returns null if
-     * this is the declaration of an abstract method.
+     * Returns the body of this method or constructor. Returns null if this is the
+     * declaration of an abstract method.
      */
     @Override
     default @Nullable ASTBlock getBody() {
@@ -96,8 +90,8 @@ public interface ASTExecutableDeclaration
     }
 
     /**
-     * Returns the {@code throws} clause of this declaration, or null
-     * if there is none.
+     * Returns the {@code throws} clause of this declaration, or null if there is
+     * none.
      */
     @Nullable
     default ASTThrowsList getThrowsList() {
@@ -112,10 +106,9 @@ public interface ASTExecutableDeclaration
         return lastFormal instanceof ASTFormalParameter && ((ASTFormalParameter) lastFormal).isVarargs();
     }
 
-
     /**
-     * Returns true if this is a static method.
-     * If this is a constructor, return false.
+     * Returns true if this is a static method. If this is a constructor, return
+     * false.
      *
      * @since 7.1.0
      */
@@ -123,10 +116,9 @@ public interface ASTExecutableDeclaration
         return hasModifiers(JModifier.STATIC);
     }
 
-
     /**
-     * Returns true if this is a final method.
-     * If this is a constructor, return false.
+     * Returns true if this is a final method. If this is a constructor, return
+     * false.
      *
      * @since 7.1.0
      */

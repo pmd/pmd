@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 /**
  * Configurable naming conventions for type declarations.
  */
@@ -32,12 +31,9 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
             .desc("Regex which applies to test class names. Since PMD 6.52.0.")
             .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$").build();
 
-
     public ClassNamingConventionsRule() {
-        super(ASTClassDeclaration.class,
-              ASTEnumDeclaration.class,
-              ASTAnnotationTypeDeclaration.class,
-              ASTRecordDeclaration.class);
+        super(ASTClassDeclaration.class, ASTEnumDeclaration.class, ASTAnnotationTypeDeclaration.class,
+                ASTRecordDeclaration.class);
         definePropertyDescriptor(classRegex);
         definePropertyDescriptor(abstractClassRegex);
         definePropertyDescriptor(interfaceRegex);
@@ -46,7 +42,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(utilityClassRegex);
         definePropertyDescriptor(testClassRegex);
     }
-
 
     private boolean isTestClass(ASTClassDeclaration node) {
         return !node.isNested() && TestFrameworksUtil.isTestClass(node);
@@ -73,7 +68,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return data;
     }
 
-
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
         checkMatches(node, enumerationRegex, data);
@@ -92,7 +86,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return data;
     }
 
-
     @Override
     String defaultConvention() {
         return PASCAL_CASE;
@@ -102,7 +95,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     String nameExtractor(ASTTypeDeclaration node) {
         return node.getSimpleName();
     }
-
 
     @Override
     String kindDisplayName(ASTTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {

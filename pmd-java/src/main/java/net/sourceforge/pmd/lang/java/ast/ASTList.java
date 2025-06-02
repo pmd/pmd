@@ -16,13 +16,15 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
 
 /**
- * Common supertype for nodes that act as a kind of list of other nodes.
- * This is mainly provided as a way to share API and not a structural
- * distinction in the AST.
+ * Common supertype for nodes that act as a kind of list of other nodes. This is
+ * mainly provided as a way to share API and not a structural distinction in the
+ * AST.
  *
- * <p>This node can be converted to a list with {@link #toList()}. Often these
+ * <p>
+ * This node can be converted to a list with {@link #toList()}. Often these
  * nodes are optional in their parent, and so might be null. The method
  * {@link ASTList#orEmpty(ASTList) orEmpty} helps in such cases. For example
+ * 
  * <pre>{@code
  * // This will throw NullPointerException if the class is not generic.
  * for (ASTTypeParameter tparam : classDecl.getTypeParameters()) {
@@ -30,8 +32,8 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfTyp
  * }
  * }</pre>
  *
- * Instead of explicitly checking for null, which is annoying, use the
- * following idiom:
+ * Instead of explicitly checking for null, which is annoying, use the following
+ * idiom:
  *
  * <pre>{@code
  * for (ASTTypeParameter tparam : ASTList.orEmpty(classDecl.getTypeParameters())) {
@@ -40,11 +42,13 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfTyp
  * }</pre>
  *
  *
- * <p>Note that though it is usually the case that the node lists all
- * its children, there is no guarantee about that. For instance,
- * {@link ASTFormalParameters} excludes the {@linkplain ASTReceiverParameter receiver parameter}.
+ * <p>
+ * Note that though it is usually the case that the node lists all its children,
+ * there is no guarantee about that. For instance, {@link ASTFormalParameters}
+ * excludes the {@linkplain ASTReceiverParameter receiver parameter}.
  *
- * @param <N> Type of node contained within this list node
+ * @param <N>
+ *            Type of node contained within this list node
  */
 public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode implements Iterable<N> {
 
@@ -56,8 +60,8 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
     }
 
     /**
-     * Returns the number of nodes in this list. This must be the number
-     * of nodes yielded by the {@link #iterator()}.
+     * Returns the number of nodes in this list. This must be the number of nodes
+     * yielded by the {@link #iterator()}.
      */
     public int size() {
         return toStream().count();
@@ -87,7 +91,8 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
     }
 
     /**
-     * @throws IndexOutOfBoundsException if not in range
+     * @throws IndexOutOfBoundsException
+     *             if not in range
      */
     public N get(int i) {
         N n = toStream().get(i);
@@ -98,11 +103,13 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
     }
 
     /**
-     * Returns an empty list if the parameter is null, otherwise returns
-     * its {@link #toList()}.
+     * Returns an empty list if the parameter is null, otherwise returns its
+     * {@link #toList()}.
      *
-     * @param list List node
-     * @param <N>  Type of elements
+     * @param list
+     *            List node
+     * @param <N>
+     *            Type of elements
      *
      * @return A non-null list
      */
@@ -118,12 +125,13 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
         return list == null ? 0 : list.size();
     }
 
-
     /**
      * Returns the element if there is exactly one, otherwise returns null.
      *
-     * @param list List node
-     * @param <N>  Type of elements
+     * @param list
+     *            List node
+     * @param <N>
+     *            Type of elements
      *
      * @return An element, or null.
      */
@@ -132,12 +140,12 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
     }
 
     /**
-     * Super type for *nonempty* lists that *only* have nodes of type {@code <T>}
-     * as a child.
+     * Super type for *nonempty* lists that *only* have nodes of type {@code <T>} as
+     * a child.
      */
-    abstract static class ASTNonEmptyList<T extends JavaNode>
-        extends ASTMaybeEmptyListOf<T>
-        implements AtLeastOneChildOfType<T> {
+    abstract static class ASTNonEmptyList<T extends JavaNode> extends ASTMaybeEmptyListOf<T>
+            implements
+                AtLeastOneChildOfType<T> {
 
         ASTNonEmptyList(int id, Class<T> kind) {
             super(id, kind);
@@ -145,12 +153,11 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
     }
 
     /**
-     * Super type for lists that *only* have nodes of type {@code <T>}
-     * as a child.
+     * Super type for lists that *only* have nodes of type {@code <T>} as a child.
      */
-    abstract static class ASTMaybeEmptyListOf<T extends JavaNode>
-        extends ASTList<T>
-        implements AllChildrenAreOfType<T> {
+    abstract static class ASTMaybeEmptyListOf<T extends JavaNode> extends ASTList<T>
+            implements
+                AllChildrenAreOfType<T> {
 
         ASTMaybeEmptyListOf(int id, Class<T> kind) {
             super(id, kind);

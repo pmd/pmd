@@ -25,9 +25,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class CognitiveComplexityRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR
-        = PropertyFactory.intProperty("reportLevel").desc("Cognitive Complexity reporting threshold")
-                         .require(positive()).defaultValue(15).build();
+    private static final PropertyDescriptor<Integer> REPORT_LEVEL_DESCRIPTOR = PropertyFactory
+            .intProperty("reportLevel").desc("Cognitive Complexity reporting threshold").require(positive())
+            .defaultValue(15).build();
 
     public CognitiveComplexityRule() {
         super(ASTExecutableDeclaration.class);
@@ -57,9 +57,7 @@ public class CognitiveComplexityRule extends AbstractJavaRulechainRule {
         final int reportLevel = getReportLevel();
         if (cognitive >= reportLevel) {
             asCtx(data).addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                     PrettyPrintingUtil.displaySignature(node),
-                                     String.valueOf(cognitive),
-                                     String.valueOf(reportLevel));
+                    PrettyPrintingUtil.displaySignature(node), String.valueOf(cognitive), String.valueOf(reportLevel));
         }
 
         return data;

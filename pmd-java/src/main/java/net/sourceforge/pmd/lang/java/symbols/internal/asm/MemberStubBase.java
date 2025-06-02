@@ -20,7 +20,6 @@ abstract class MemberStubBase implements JAccessibleElementSymbol, AsmStub, Anno
 
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
-
     protected MemberStubBase(ClassStub classStub, String simpleName, int accessFlags) {
         this.classStub = classStub;
         this.simpleName = simpleName;

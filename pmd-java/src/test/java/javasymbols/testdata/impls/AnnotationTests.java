@@ -4,7 +4,6 @@
 
 package javasymbols.testdata.impls;
 
-
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotWithDefaults;
 
 public class AnnotationTests {

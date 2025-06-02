@@ -19,7 +19,8 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Pattern> TEST_CLASS_PATTERN = PropertyFactory.regexProperty("testClassPattern")
+    private static final PropertyDescriptor<Pattern> TEST_CLASS_PATTERN = PropertyFactory
+            .regexProperty("testClassPattern")
             .defaultValue("^(?:.*\\.)?Test[^\\.]*$|^(?:.*\\.)?.*Tests?$|^(?:.*\\.)?.*TestCase$")
             .desc("Test class name pattern to identify test classes by their fully qualified name. "
                     + "An empty pattern disables test class detection by name. Since PMD 6.51.0.")
@@ -33,9 +34,7 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
         if (isJUnit3Class(node) || isJUnit5NestedClass(node) || isTestClassByPattern(node)) {
-            boolean hasTests =
-                node.getDeclarations(ASTMethodDeclaration.class)
-                    .any(TestFrameworksUtil::isTestMethod);
+            boolean hasTests = node.getDeclarations(ASTMethodDeclaration.class).any(TestFrameworksUtil::isTestMethod);
             boolean hasNestedTestClasses = node.getDeclarations(ASTTypeDeclaration.class)
                     .any(TestFrameworksUtil::isJUnit5NestedClass);
 

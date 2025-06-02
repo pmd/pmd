@@ -25,8 +25,8 @@ import net.sourceforge.pmd.util.OptionalBool;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Matches a method or constructor call against a particular overload.
- * Use {@link #parse(String)} to create one. For example,
+ * Matches a method or constructor call against a particular overload. Use
+ * {@link #parse(String)} to create one. For example,
  *
  * <pre>
  *     java.lang.String#toString()   // match calls to toString on String instances
@@ -38,24 +38,27 @@ import net.sourceforge.pmd.util.StringUtil;
  *     java.util.ArrayList#new(int)  // match constructor calls of this overload of the ArrayList constructor
  * </pre>
  *
- * <p>The receiver matcher (first half) is matched against the
- * static type of the <i>receiver</i> of the call, and not the
- * declaration site of the method, unless the called method is
- * static, or a constructor.
+ * <p>
+ * The receiver matcher (first half) is matched against the static type of the
+ * <i>receiver</i> of the call, and not the declaration site of the method,
+ * unless the called method is static, or a constructor.
  *
- * <p>The parameters are matched against the declared parameters
- * types of the called overload, and not the actual argument types.
- * In particular, for vararg methods, the signature should mention
- * a single parameter, with an array type.
+ * <p>
+ * The parameters are matched against the declared parameters types of the
+ * called overload, and not the actual argument types. In particular, for vararg
+ * methods, the signature should mention a single parameter, with an array type.
  *
- * <p>For example {@code Integer.valueOf('0')} will be matched by
- * {@code _#valueOf(int)} but not {@code _#valueOf(char)}, which is
- * an overload that does not exist (the char is widened to an int,
- * so the int overload is selected).
+ * <p>
+ * For example {@code Integer.valueOf('0')} will be matched by
+ * {@code _#valueOf(int)} but not {@code _#valueOf(char)}, which is an overload
+ * that does not exist (the char is widened to an int, so the int overload is
+ * selected).
  *
  * <h2 id='ebnf'>Full EBNF grammar</h2>
  *
- * <p>(no whitespace is tolerated anywhere):
+ * <p>
+ * (no whitespace is tolerated anywhere):
+ * 
  * <pre>{@code
  * sig         ::= type '#' method_name param_list
  * type        ::= qname ( '[]' )* | '_'
@@ -84,22 +87,20 @@ public final class InvocationMatcher {
     }
 
     /**
-     * Returns true if the call matches this matcher. This means,
-     * the called overload is the one identified by the argument
-     * matchers, and the actual qualifier type is a subtype of the
-     * one mentioned by the qualifier matcher.
+     * Returns true if the call matches this matcher. This means, the called
+     * overload is the one identified by the argument matchers, and the actual
+     * qualifier type is a subtype of the one mentioned by the qualifier matcher.
      */
     public boolean matchesCall(@Nullable InvocationNode node) {
         if (node == null) {
             return false;
         }
         if (expectedName != null && !node.getMethodName().equals(expectedName)
-            || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
+                || argMatchers != null && ASTList.sizeOrZero(node.getArguments()) != argMatchers.size()) {
             return false;
         }
         OverloadSelectionResult info = node.getOverloadSelectionInfo();
-        return !info.isFailed() && matchQualifier(node)
-                && argsMatchOverload(info.getMethodType());
+        return !info.isFailed() && matchQualifier(node) && argsMatchOverload(info.getMethodType());
     }
 
     private boolean matchQualifier(InvocationNode node) {
@@ -144,18 +145,21 @@ public final class InvocationMatcher {
         return true;
     }
 
-
     /**
-     * Parses a {@link CompoundInvocationMatcher} which matches any of
-     * the provided matchers.
+     * Parses a {@link CompoundInvocationMatcher} which matches any of the provided
+     * matchers.
      *
-     * @param first First signature, in the format described on this class
-     * @param rest  Other signatures, in the format described on this class
+     * @param first
+     *            First signature, in the format described on this class
+     * @param rest
+     *            Other signatures, in the format described on this class
      *
      * @return A sig matcher
      *
-     * @throws IllegalArgumentException If any signature is malformed (see <a href='#ebnf'>EBNF</a>)
-     * @throws NullPointerException     If any signature is null
+     * @throws IllegalArgumentException
+     *             If any signature is malformed (see <a href='#ebnf'>EBNF</a>)
+     * @throws NullPointerException
+     *             If any signature is null
      * @see #parse(String)
      */
     public static CompoundInvocationMatcher parseAll(String first, String... rest) {
@@ -166,12 +170,15 @@ public final class InvocationMatcher {
     /**
      * Parses an {@link InvocationMatcher}.
      *
-     * @param sig A signature in the format described on this class
+     * @param sig
+     *            A signature in the format described on this class
      *
      * @return A sig matcher
      *
-     * @throws IllegalArgumentException If the signature is malformed (see <a href='#ebnf'>EBNF</a>)
-     * @throws NullPointerException     If the signature is null
+     * @throws IllegalArgumentException
+     *             If the signature is malformed (see <a href='#ebnf'>EBNF</a>)
+     * @throws NullPointerException
+     *             If the signature is null
      * @see #parseAll(String, String...)
      */
     public static InvocationMatcher parse(String sig) {
@@ -187,9 +194,7 @@ public final class InvocationMatcher {
         }
         // (_*) matches any argument list
         List<TypeMatcher> argMatchers;
-        if (isChar(sig, i, '_')
-            && isChar(sig, i + 1, '*')
-            && isChar(sig, i + 2, ')')) {
+        if (isChar(sig, i, '_') && isChar(sig, i + 1, '*') && isChar(sig, i + 2, ')')) {
             argMatchers = null;
             i = i + 3;
         } else {
@@ -252,8 +257,7 @@ public final class InvocationMatcher {
 
     private static int parseType(String source, int i) {
         final int start = i;
-        while (i < source.length() && (Character.isJavaIdentifierPart(source.charAt(i))
-            || source.charAt(i) == '.')) {
+        while (i < source.length() && (Character.isJavaIdentifierPart(source.charAt(i)) || source.charAt(i) == '.')) {
             i++;
         }
         if (i == start) {
@@ -284,9 +288,9 @@ public final class InvocationMatcher {
         }
 
         boolean matches(JTypeMirror type, boolean exact) {
-            return name == null
-                   || (exact ? TypeTestUtil.isExactlyAOrAnon(name, type) == OptionalBool.YES
-                         : TypeTestUtil.isA(name, type));
+            return name == null || (exact
+                    ? TypeTestUtil.isExactlyAOrAnon(name, type) == OptionalBool.YES
+                    : TypeTestUtil.isA(name, type));
         }
     }
 
@@ -303,8 +307,8 @@ public final class InvocationMatcher {
         }
 
         // todo make this smarter. Like collecting all possible names
-        //  into a set to do a quick pre-screening before we test
-        //  everything linearly
+        // into a set to do a quick pre-screening before we test
+        // everything linearly
 
         /**
          * Returns true if any of the matchers match the node.

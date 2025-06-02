@@ -24,7 +24,6 @@ public final class ASTModuleUsesDirective extends ASTModuleDirective {
         return visitor.visit(this, data);
     }
 
-
     /**
      * Returns the node representing the consumed service.
      */

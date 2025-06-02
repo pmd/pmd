@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * A non-fallthrough switch rule, introduced with switch expressions.
- * See {@link ASTSwitchLike}.
+ * A non-fallthrough switch rule, introduced with switch expressions. See
+ * {@link ASTSwitchLike}.
  *
  * <pre class="grammar">
  *

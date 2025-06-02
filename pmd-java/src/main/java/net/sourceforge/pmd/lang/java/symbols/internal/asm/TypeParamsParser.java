@@ -41,10 +41,9 @@ final class TypeParamsParser {
         return cur;
     }
 
-
     /**
-     * This just skips the bound entirely, they will be parsed lazily
-     * later (because they may be self-referential).
+     * This just skips the bound entirely, they will be parsed lazily later (because
+     * they may be self-referential).
      */
     private static int scanTypeBound(final int start, SignatureScanner b) {
         int cur = b.consumeChar(start, ':', "class bound");
@@ -52,7 +51,8 @@ final class TypeParamsParser {
         char next = b.charAt(cur);
         if (next == '[' || next == 'L' || next == 'T') {
             // If the character after the ':' class bound marker is not the start of a
-            // ReferenceTypeSignature, it means the class bound is empty (which is a valid case).
+            // ReferenceTypeSignature, it means the class bound is empty (which is a valid
+            // case).
             cur = skipReferenceType(cur, b);
         }
 
@@ -71,35 +71,35 @@ final class TypeParamsParser {
         while (cur < b.end) {
             c = b.charAt(cur);
             switch (c) {
-            case 'T':
+                case 'T' :
                 cur = b.nextIndexOf(cur, ';');
                 continue;
-            case '.':
-            case 'L':
+                case '.' :
+                case 'L' :
                 cur = b.nextIndexOfAny(cur, ';', '<');
                 continue;
-            case '<':
+                case '<' :
                 targDepth++;
                 cur++;
-                break;
-            case '>':
+                    break;
+                case '>' :
                 targDepth--;
                 cur++;
-                break;
-            case ';':
+                    break;
+                case ';' :
                 if (targDepth == 0) {
                     return cur + 1;
                 }
                 cur++;
-                break;
-            case '[':
-            case '+':
-            case '-':
-            case '*':
+                    break;
+                case '[' :
+                case '+' :
+                case '-' :
+                case '*' :
                 // pass
                 cur++;
-                break;
-            default:
+                    break;
+                default :
                 throw b.expected("reference type part TL<;>[+-*.", cur);
             }
         }

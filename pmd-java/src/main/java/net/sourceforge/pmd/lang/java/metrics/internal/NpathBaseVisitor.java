@@ -29,7 +29,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 
-
 /**
  * Visitor for the default n-path complexity version.
  *
@@ -43,7 +42,6 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     /** Instance. */
     public static final NpathBaseVisitor INSTANCE = new NpathBaseVisitor();
 
-
     /* Multiplies the complexity of the children of this node. */
     private BigInteger multiplyChildrenComplexities(JavaNode node) {
         return multiplyComplexities(node.children());
@@ -52,7 +50,6 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     private BigInteger multiplyComplexities(NodeStream<? extends JavaNode> nodes) {
         return nodes.reduce(BigInteger.ONE, (acc, n) -> acc.multiply(n.acceptVisitor(this, null)));
     }
-
 
     /* Sums the complexity of the children of the node. */
     private BigInteger sumChildrenComplexities(JavaNode node, Void data) {
@@ -66,18 +63,15 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
         return sum;
     }
 
-
     @Override
     public BigInteger visitMethodOrCtor(ASTExecutableDeclaration node, Void data) {
         return multiplyChildrenComplexities(node);
     }
 
-
     @Override
     public BigInteger visitJavaNode(JavaNode node, Void data) {
         return multiplyChildrenComplexities(node);
     }
-
 
     @Override
     public BigInteger visit(ASTIfStatement node, Void data) {
@@ -92,7 +86,6 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
         return thenResult.add(BigInteger.valueOf(boolCompIf)).add(elseResult);
     }
 
-
     @Override
     public BigInteger visit(ASTWhileStatement node, Void data) {
         // (npath of while + bool_comp of while + 1) * npath of next
@@ -102,7 +95,6 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
         return nPathBody.add(BigInteger.valueOf(boolComp + 1));
     }
 
-
     @Override
     public BigInteger visit(ASTDoStatement node, Void data) {
         // (npath of do + bool_comp of do + 1) * npath of next
@@ -111,7 +103,6 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
         BigInteger nPathBody = node.getBody().acceptVisitor(this, data);
         return nPathBody.add(BigInteger.valueOf(boolComp + 1));
     }
-
 
     @Override
     public BigInteger visit(ASTForStatement node, Void data) {
@@ -130,7 +121,6 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
         return nPathBody.add(BigInteger.ONE);
     }
 
-
     @Override
     public BigInteger visit(ASTReturnStatement node, Void data) {
         // return statements are valued at 1, or the value of the boolean expression
@@ -146,7 +136,6 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
         return conditionalExpressionComplexity.add(BigInteger.valueOf(boolCompReturn));
     }
-
 
     @Override
     public BigInteger visit(ASTSwitchExpression node, Void data) {
@@ -203,7 +192,6 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
 
         return sumChildrenComplexities(node, data).add(BigInteger.valueOf(boolCompTernary - 1));
     }
-
 
     @Override
     public BigInteger visit(ASTTryStatement node, Void data) {

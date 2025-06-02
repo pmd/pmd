@@ -20,8 +20,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
- * An unmodifiable multimap type, efficient if the single-value case is the
- * most common.
+ * An unmodifiable multimap type, efficient if the single-value case is the most
+ * common.
  */
 final class MostlySingularMultimap<K, V> {
 
@@ -98,7 +98,6 @@ final class MostlySingularMultimap<K, V> {
         return new Builder<>(mapMaker);
     }
 
-
     // In case the value type V is an array list
     private static class VList<V> extends ArrayList<V> {
 
@@ -131,7 +130,6 @@ final class MostlySingularMultimap<K, V> {
             return map;
         }
 
-
         public void replaceValue(K key, V v) {
             checkKeyValue(key, v);
             getMapInternal().put(key, v);
@@ -160,16 +158,13 @@ final class MostlySingularMultimap<K, V> {
             AssertionUtil.requireParamNotNull("key", key);
         }
 
-        public Builder<K, V> groupBy(Iterable<? extends V> values,
-                                     Function<? super V, ? extends K> keyExtractor) {
+        public Builder<K, V> groupBy(Iterable<? extends V> values, Function<? super V, ? extends K> keyExtractor) {
             ensureOpen();
             return groupBy(values, keyExtractor, Function.identity());
         }
 
-
-        public <I> Builder<K, V> groupBy(Iterable<? extends I> values,
-                                         Function<? super I, ? extends K> keyExtractor,
-                                         Function<? super I, ? extends V> valueExtractor) {
+        public <I> Builder<K, V> groupBy(Iterable<? extends I> values, Function<? super I, ? extends K> keyExtractor,
+                Function<? super I, ? extends V> valueExtractor) {
             ensureOpen();
             for (I i : values) {
                 appendValue(keyExtractor.apply(i), valueExtractor.apply(i));
@@ -245,7 +240,6 @@ final class MostlySingularMultimap<K, V> {
             }
             return (Map<K, V>) map;
         }
-
 
         private void consume() {
             ensureOpen();

@@ -31,22 +31,21 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
 
     /**
-     * Finds placeholder for ParameterizedMessages and format specifiers
-     * for StringFormattedMessages.
+     * Finds placeholder for ParameterizedMessages and format specifiers for
+     * StringFormattedMessages.
      */
-    private static final Pattern PLACEHOLDER_AND_FORMAT_SPECIFIER =
-        Pattern.compile("(\\{})|(%(?:\\d\\$)?(?:\\w+)?(?:\\d+)?(?:\\.\\d+)?\\w)");
+    private static final Pattern PLACEHOLDER_AND_FORMAT_SPECIFIER = Pattern
+            .compile("(\\{})|(%(?:\\d\\$)?(?:\\w+)?(?:\\d+)?(?:\\.\\d+)?\\w)");
 
     private static final Set<String> SLF4J = immutableSetOf("trace", "debug", "info", "warn", "error");
-    private static final Set<String> APACHE_SLF4J = immutableSetOf("trace", "debug", "info", "warn", "error", "fatal", "all");
+    private static final Set<String> APACHE_SLF4J = immutableSetOf("trace", "debug", "info", "warn", "error", "fatal",
+            "all");
 
     /**
      * Whitelisted methods of net.logstash.logback.argument.StructuredArguments
      */
-    private static final Set<String> STRUCTURED_ARGUMENTS_METHODS = immutableSetOf(
-                    "a", "array", "defer", "e",
-                    "entries", "f", "fields", "keyValue",
-                    "kv", "r", "raw", "v", "value");
+    private static final Set<String> STRUCTURED_ARGUMENTS_METHODS = immutableSetOf("a", "array", "defer", "e",
+            "entries", "f", "fields", "keyValue", "kv", "r", "raw", "v", "value");
 
     public InvalidLogMessageFormatRule() {
         super(ASTMethodCall.class);
@@ -55,7 +54,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodCall call, Object data) {
         if (isLoggerCall(call, "org.slf4j.Logger", SLF4J)
-            || isLoggerCall(call, "org.apache.logging.log4j.Logger", APACHE_SLF4J)) {
+                || isLoggerCall(call, "org.apache.logging.log4j.Logger", APACHE_SLF4J)) {
 
             ASTArgumentList args = call.getArguments();
             ASTExpression messageParam = args.toStream().first(it -> TypeTestUtil.isA(String.class, it));
@@ -75,7 +74,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             if (providedArguments == 1 && JavaAstUtils.isArrayInitializer(args.getLastChild())) {
                 providedArguments = ((ASTArrayAllocation) args.getLastChild()).getArrayInitializer().length();
             } else if (TypeTestUtil.isA(Throwable.class, args.getLastChild())
-                && providedArguments > expectedArguments) {
+                    && providedArguments > expectedArguments) {
                 // Remove throwable param, since it is shown separately.
                 // But only, if it is not used as a placeholder argument
                 providedArguments--;
@@ -88,13 +87,11 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             }
 
             if (providedArguments < expectedArguments) {
-                asCtx(data).addViolationWithMessage(
-                    call,
-                    "Missing arguments," + getExpectedMessage(providedArguments, expectedArguments));
+                asCtx(data).addViolationWithMessage(call,
+                        "Missing arguments," + getExpectedMessage(providedArguments, expectedArguments));
             } else if (providedArguments > expectedArguments) {
-                asCtx(data).addViolationWithMessage(
-                    call,
-                    "Too many arguments," + getExpectedMessage(providedArguments, expectedArguments));
+                asCtx(data).addViolationWithMessage(call,
+                        "Too many arguments," + getExpectedMessage(providedArguments, expectedArguments));
             }
 
         }
@@ -142,14 +139,14 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     }
 
     private String getExpectedMessage(final int providedArguments, final int expectedArguments) {
-        return " expected " + expectedArguments
-            + (expectedArguments > 1 ? " arguments " : " argument ")
-            + "but found " + providedArguments;
+        return " expected " + expectedArguments + (expectedArguments > 1 ? " arguments " : " argument ") + "but found "
+                + providedArguments;
     }
 
     /**
-     * Removes up to {@code maxArgumentsToRemove} arguments from the end of the {@code argumentList},
-     * if the argument is a method call to one of the whitelisted StructuredArguments methods.
+     * Removes up to {@code maxArgumentsToRemove} arguments from the end of the
+     * {@code argumentList}, if the argument is a method call to one of the
+     * whitelisted StructuredArguments methods.
      *
      * @param maxArgumentsToRemove
      * @param argumentList

@@ -18,16 +18,12 @@ enum MethodResolutionPhase {
     LOOSE,
 
     /**
-     * Boxing required, arity is extended for varargs.
-     * If a non-varargs method failed the LOOSE phase,
-     * it has no chance of succeeding in VARARGS phase.
+     * Boxing required, arity is extended for varargs. If a non-varargs method
+     * failed the LOOSE phase, it has no chance of succeeding in VARARGS phase.
      */
     VARARGS,
 
-
-    INVOC_STRICT,
-    INVOC_LOOSE,
-    INVOC_VARARGS;
+    INVOC_STRICT, INVOC_LOOSE, INVOC_VARARGS;
 
     /**
      * Phases used to determine applicability.
@@ -36,13 +32,13 @@ enum MethodResolutionPhase {
 
     MethodResolutionPhase asInvoc() {
         switch (this) {
-        case STRICT:
+            case STRICT :
             return INVOC_STRICT;
-        case LOOSE:
+            case LOOSE :
             return INVOC_LOOSE;
-        case VARARGS:
+            case VARARGS :
             return INVOC_VARARGS;
-        default:
+            default :
             return this;
         }
     }
@@ -56,9 +52,9 @@ enum MethodResolutionPhase {
     }
 
     /**
-     * Last step, performed on the most specific applicable method.
-     * This adds constraints on the arguments that are not
-     * pertinent to applicability to infer all the tvars.
+     * Last step, performed on the most specific applicable method. This adds
+     * constraints on the arguments that are not pertinent to applicability to infer
+     * all the tvars.
      */
     boolean isInvocation() {
         return this == INVOC_STRICT || this == INVOC_LOOSE || this == INVOC_VARARGS;

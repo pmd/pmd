@@ -11,27 +11,23 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- * A {@link ShadowChain} viewed as individual nodes. This offers a lower
- * level API as {@link ShadowChain}.
+ * A {@link ShadowChain} viewed as individual nodes. This offers a lower level
+ * API as {@link ShadowChain}.
  */
 public interface ShadowChainNode<S, I> {
 
-
     /**
-     * Returns true if this group shadows the next groups in the chain.
-     * This means, that if this group knows about a name, it won't delegate
-     * resolve to the next group in the chain. If it doesn't know about it
-     * then resolve proceeds anyway.
+     * Returns true if this group shadows the next groups in the chain. This means,
+     * that if this group knows about a name, it won't delegate resolve to the next
+     * group in the chain. If it doesn't know about it then resolve proceeds anyway.
      */
     boolean isShadowBarrier();
 
-
     /**
-     * Returns the next node in the chain. Returns null if this is the
-     * root.
+     * Returns the next node in the chain. Returns null if this is the root.
      */
-    @Nullable ShadowChainNode<S, I> getParent();
-
+    @Nullable
+    ShadowChainNode<S, I> getParent();
 
     /**
      * Returns the resolver for this node.
@@ -39,19 +35,18 @@ public interface ShadowChainNode<S, I> {
     NameResolver<S> getResolver();
 
     /**
-     * Wraps {@link #getResolver()}{@code .resolveHere()}, may do
-     * additional stuff like caching.
+     * Wraps {@link #getResolver()}{@code .resolveHere()}, may do additional stuff
+     * like caching.
      */
     default List<S> resolveHere(String simpleName) {
         return getResolver().resolveHere(simpleName);
     }
 
     /**
-     * Returns whether this node knows the given symbol (without asking
-     * the parents).
+     * Returns whether this node knows the given symbol (without asking the
+     * parents).
      */
     OptionalBool knowsSymbol(String name);
-
 
     ShadowChain<S, I> asChain();
 

@@ -20,12 +20,11 @@ import net.sourceforge.pmd.util.IteratorUtil;
 interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
 
     /**
-     * Picks the next batch of inference vars to resolve.
-     * Interdependent variables must be solved together.
+     * Picks the next batch of inference vars to resolve. Interdependent variables
+     * must be solved together.
      */
     @Override
     Set<InferenceVar> next();
-
 
     /**
      * Returns true if there is no more batch to process.
@@ -33,10 +32,9 @@ interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
     @Override
     boolean hasNext();
 
-
     /**
-     * Walk a DAG of the dependencies. Building the model is
-     * is linear instead of exponential like for the other strategy.
+     * Walk a DAG of the dependencies. Building the model is is linear instead of
+     * exponential like for the other strategy.
      */
     class GraphWalk implements VarWalkStrategy {
 

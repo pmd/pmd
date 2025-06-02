@@ -4,14 +4,11 @@
 
 package javasymbols.testdata.impls;
 
-
 public class GenericClass<T, F extends T> {
-
 
     public <U, O> void anOverload(int bb) {
 
     }
-
 
     public <U, O> void anOverload(int bb, String bachir) {
 

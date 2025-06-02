@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
- * An "opens" directive of a {@linkplain ASTModuleDeclaration module declaration}.
+ * An "opens" directive of a {@linkplain ASTModuleDeclaration module
+ * declaration}.
  *
  * <pre class="grammar">
  *

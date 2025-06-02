@@ -25,7 +25,6 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
 
     private FieldSig typedSym;
 
-
     ASTFieldAccess(int id) {
         super(id);
     }
@@ -49,12 +48,10 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         this.setLastToken(identifier);
     }
 
-
     @Override
     public @NonNull ASTExpression getQualifier() {
         return (ASTExpression) getChild(0);
     }
-
 
     @Override
     public String getName() {

@@ -8,7 +8,8 @@ import java.util.function.Supplier;
 
 public final class GenericMethodReference {
     {
-        // the constructor is not generic, so <Integer> is unused, but that should just be ignored
+        // the constructor is not generic, so <Integer> is unused, but that should just
+        // be ignored
         Supplier<GenericMethodReference> supplier1 = GenericMethodReference::<Integer>new;
         Supplier<GenericMethodReference> supplier2 = GenericMethodReference::<Integer, String>new;
 
@@ -20,7 +21,8 @@ public final class GenericMethodReference {
         Supplier<GenericMethodReference> supplier5 = GenericMethodReference::<Integer>create2;
 
         // providing too many parameter here is a compile error
-        //Supplier<GenericMethodReference> supplier6 = GenericMethodReference::<Integer, String>create2;
+        // Supplier<GenericMethodReference> supplier6 =
+        // GenericMethodReference::<Integer, String>create2;
     }
 
     public static GenericMethodReference create1() {

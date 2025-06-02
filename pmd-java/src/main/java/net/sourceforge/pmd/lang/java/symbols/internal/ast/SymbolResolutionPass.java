@@ -22,7 +22,6 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-
 /**
  * Populates symbols on declaration nodes.
  */
@@ -36,11 +35,13 @@ public final class SymbolResolutionPass {
      * Traverse the given compilation unit, creating symbols on all
      * {@link SymbolDeclaratorNode}s.
      *
-     * @param processor Processor
-     * @param root      Root node
+     * @param processor
+     *            Processor
+     * @param root
+     *            Root node
      *
-     * @return A symbol resolver for all encountered type declarations.
-     *     This is used to avoid hitting the classloader for local declarations.
+     * @return A symbol resolver for all encountered type declarations. This is used
+     *         to avoid hitting the classloader for local declarations.
      */
     public static SymbolResolver traverse(JavaAstProcessor processor, ASTCompilationUnit root) {
         AstSymbolMakerVisitor visitor = new AstSymbolMakerVisitor(root);
@@ -60,14 +61,12 @@ public final class SymbolResolutionPass {
     }
 
     /**
-     * Converts between nodes to {@link SymAnnot}. Annotations that could not be converted,
-     * eg because they are written with invalid code, are discarded.
+     * Converts between nodes to {@link SymAnnot}. Annotations that could not be
+     * converted, eg because they are written with invalid code, are discarded.
      */
     public static PSet<SymAnnot> buildSymbolicAnnotations(NodeStream<ASTAnnotation> annotations) {
-        return annotations.toStream()
-                          .map(SymbolResolutionPass::toValidAnnotation)
-                          .filter(Objects::nonNull)
-                          .collect(CollectionUtil.toPersistentSet());
+        return annotations.toStream().map(SymbolResolutionPass::toValidAnnotation).filter(Objects::nonNull)
+                .collect(CollectionUtil.toPersistentSet());
     }
 
     private static @Nullable SymAnnot toValidAnnotation(ASTAnnotation node) {

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -12,11 +11,13 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
 /**
- * Represents a type parameter declaration of a method, constructor, class or interface declaration.
+ * Represents a type parameter declaration of a method, constructor, class or
+ * interface declaration.
  *
- * <p>The bound of a type parameter may only be an upper bound ("extends").
- * The bound is represented by the type node directly. The type node may
- * be an {@link ASTIntersectionType intersection type}.
+ * <p>
+ * The bound of a type parameter may only be an upper bound ("extends"). The
+ * bound is represented by the type node directly. The type node may be an
+ * {@link ASTIntersectionType intersection type}.
  *
  * <pre class="grammar">
  *
@@ -24,7 +25,8 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
  *
  * </pre>
  *
- * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.4">JLS</a>
+ * @see <a href=
+ *      "https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.4">JLS</a>
  */
 public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeParameterSymbol> implements Annotatable {
 
@@ -39,20 +41,16 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
         return getImage();
     }
 
-
     /**
-     * Returns true if this type parameter is bounded,
-     * in which case {@link #getTypeBoundNode()} doesn't
-     * return {@code null}.
+     * Returns true if this type parameter is bounded, in which case
+     * {@link #getTypeBoundNode()} doesn't return {@code null}.
      */
     public boolean hasTypeBound() {
         return getTypeBoundNode() != null;
     }
 
-
     /**
-     * Returns the type bound node of this parameter,
-     * or null if it is not bounded.
+     * Returns the type bound node of this parameter, or null if it is not bounded.
      */
     @Nullable
     public ASTType getTypeBoundNode() {

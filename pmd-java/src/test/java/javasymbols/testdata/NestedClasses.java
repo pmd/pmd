@@ -6,7 +6,6 @@ package javasymbols.testdata;
 
 public class NestedClasses {
 
-
     void foo() {
         class InMethod {
             class IInMethod {

@@ -28,7 +28,6 @@ public final class ASTEnumBody extends ASTTypeBody {
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -43,11 +42,15 @@ public final class ASTEnumBody extends ASTTypeBody {
     }
 
     /**
-     * Returns true if the last enum constant has a trailing comma.
-     * For example:
+     * Returns true if the last enum constant has a trailing comma. For example:
+     * 
      * <pre>{@code
-     * enum Foo { A, B, C, }
-     * enum Bar { , }
+     * enum Foo {
+     *     A, B, C,
+     * }
+     * enum Bar {
+     *     ,
+     * }
      * }</pre>
      */
     public boolean hasTrailingComma() {
@@ -55,9 +58,9 @@ public final class ASTEnumBody extends ASTTypeBody {
     }
 
     /**
-     * Returns true if the last enum constant has a trailing semi-colon.
-     * This semi is not optional when the enum has other members.
-     * For example:
+     * Returns true if the last enum constant has a trailing semi-colon. This semi
+     * is not optional when the enum has other members. For example:
+     * 
      * <pre>{@code
      * enum Foo {
      *   A(2);

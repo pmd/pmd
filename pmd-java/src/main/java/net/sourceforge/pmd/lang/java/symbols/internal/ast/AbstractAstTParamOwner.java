@@ -21,8 +21,9 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 /**
  * @author Clément Fournier
  */
-abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & ModifierOwner>
-    extends AbstractAstAnnotableSym<T> implements JTypeParameterOwnerSymbol {
+abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & ModifierOwner> extends AbstractAstAnnotableSym<T>
+        implements
+            JTypeParameterOwnerSymbol {
 
     private final List<JTypeVar> tparams;
     private final int modifiers;
@@ -30,10 +31,8 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & ModifierOwn
     AbstractAstTParamOwner(T node, AstSymFactory factory) {
         super(node, factory);
         this.modifiers = JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
-        this.tparams = Collections.unmodifiableList(map(
-            ASTList.orEmpty(node.getTypeParameters()),
-            it -> new AstTypeParamSym(it, factory, this).getTypeMirror()
-        ));
+        this.tparams = Collections.unmodifiableList(map(ASTList.orEmpty(node.getTypeParameters()),
+                it -> new AstTypeParamSym(it, factory, this).getTypeMirror()));
     }
 
     @Override

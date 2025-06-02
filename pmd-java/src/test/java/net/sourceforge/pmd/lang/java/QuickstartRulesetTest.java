@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import com.github.stefanbirkner.systemlambda.SystemLambda;
+
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class QuickstartRulesetTest {
     private static final String QUICKSTART_RULESET = "rulesets/java/quickstart.xml";

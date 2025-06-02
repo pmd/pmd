@@ -7,8 +7,6 @@ package javasymbols.testdata.deep;
 import javasymbols.testdata.SomeClassA;
 import javasymbols.testdata.Thread;
 
-
-
 public class SomewhereElse {
     SomeClassA a;
     Thread b;

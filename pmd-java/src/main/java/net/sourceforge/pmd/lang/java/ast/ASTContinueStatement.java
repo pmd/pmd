@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -22,19 +21,17 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  */
 public final class ASTContinueStatement extends AbstractStatement {
 
-    private static final Function<Object, ASTLoopStatement> CONTINUE_TARGET_MAPPER =
-        NodeStream.asInstanceOf(ASTLoopStatement.class);
+    private static final Function<Object, ASTLoopStatement> CONTINUE_TARGET_MAPPER = NodeStream
+            .asInstanceOf(ASTLoopStatement.class);
 
     ASTContinueStatement(int id) {
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     /**
      * Returns the label, or null if there is none.
@@ -44,17 +41,15 @@ public final class ASTContinueStatement extends AbstractStatement {
     }
 
     /**
-     * Returns the statement that is the target of this break. This can
-     * be a loop, or an {@link ASTLabeledStatement}.
+     * Returns the statement that is the target of this break. This can be a loop,
+     * or an {@link ASTLabeledStatement}.
      */
     public ASTStatement getTarget() {
         String myLabel = this.getLabel();
         if (myLabel == null) {
             return ancestors().map(CONTINUE_TARGET_MAPPER).first();
         }
-        return ancestors(ASTLabeledStatement.class)
-            .filter(it -> it.getLabel().equals(myLabel))
-            .first();
+        return ancestors(ASTLabeledStatement.class).filter(it -> it.getLabel().equals(myLabel)).first();
     }
 
 }

@@ -34,8 +34,9 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  *
  * @author Allan Caplan
  * @author Andreas Dangel
- * @see <a href="https://sourceforge.net/p/pmd/discussion/188194/thread/aba9dae7/">Check StringBuffer sizes against
- *      usage </a>
+ * @see <a href=
+ *      "https://sourceforge.net/p/pmd/discussion/188194/thread/aba9dae7/">Check
+ *      StringBuffer sizes against usage </a>
  */
 public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulechainRule {
 
@@ -60,27 +61,22 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             this.anticipatedLength = anticipatedLength;
         }
 
-
         public void addAnticipatedLength(int length) {
             this.anticipatedLength += length;
         }
-
 
         public boolean isInsufficient() {
             processBranches();
             return capacity >= 0 && anticipatedLength > capacity;
         }
 
-
         public Object[] getParamsForViolation() {
-            return new String[] { getTypeName(variable), String.valueOf(capacity), String.valueOf(anticipatedLength) };
+            return new String[]{getTypeName(variable), String.valueOf(capacity), String.valueOf(anticipatedLength)};
         }
-
 
         private String getTypeName(TypeNode node) {
             return node.getTypeMirror().getSymbol().getSimpleName();
         }
-
 
         public void addBranch(Node node, int counter) {
             Node parent = node.ancestors(ASTIfStatement.class).last();
@@ -98,7 +94,6 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                 blocks.put(node, blocks.get(node) + counter);
             }
         }
-
 
         private void processBranches() {
             for (Map<Node, Integer> blocks : branches.values()) {
@@ -158,8 +153,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         if ("append".equals(methodCall.getMethodName())) {
             int counter = 0;
             Set<ASTLiteral> literals = new HashSet<>();
-            literals.addAll(methodCall.getArguments()
-                    .descendants(ASTLiteral.class)
+            literals.addAll(methodCall.getArguments().descendants(ASTLiteral.class)
                     // exclude literals, that belong to different method calls
                     .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall).toList());
             for (ASTLiteral literal : literals) {
@@ -167,7 +161,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                     counter += ((ASTStringLiteral) literal).length();
                 } else if (literal instanceof ASTNumericLiteral) {
                     if (literal.getParent() instanceof ASTCastExpression
-                        && TypeTestUtil.isA(char.class, (ASTCastExpression) literal.getParent())) {
+                            && TypeTestUtil.isA(char.class, (ASTCastExpression) literal.getParent())) {
                         counter += 1;
                     } else {
                         counter += String.valueOf(((ASTNumericLiteral) literal).getConstValue()).length();
@@ -176,7 +170,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                     counter += 1;
                 }
             }
-    
+
             ASTIfStatement ifStatement = methodCall.ancestors(ASTIfStatement.class).first();
             ASTSwitchStatement switchStatement = methodCall.ancestors(ASTSwitchStatement.class).first();
             if (ifStatement != null) {
@@ -230,7 +224,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                     return state;
                 }
                 int stringLength = ((String) argument.getConstValue()).length();
-                return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE + stringLength, stringLength + state.anticipatedLength);
+                return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE + stringLength,
+                        stringLength + state.anticipatedLength);
             } else {
                 return new State(variable, constructorCall, calculateExpression(argument), state.anticipatedLength);
             }

@@ -9,10 +9,9 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-
 /**
- * Base class for Java rules. Any rule written in Java to analyse Java source should extend from
- * this base class.
+ * Base class for Java rules. Any rule written in Java to analyse Java source
+ * should extend from this base class.
  *
  * TODO add documentation
  *

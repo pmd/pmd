@@ -37,12 +37,8 @@ class AnnotationBuilderVisitor extends SymbolicValueBuilder {
         private final @Nullable TypePath path;
         private final SymbolicAnnotationImpl annot;
 
-        TypeAnnotBuilderImpl(AsmSymbolResolver resolver,
-                             TypeAnnotationReceiver owner,
-                             int typeRef,
-                             @Nullable TypePath path,
-                             boolean visible,
-                             String descriptor) {
+        TypeAnnotBuilderImpl(AsmSymbolResolver resolver, TypeAnnotationReceiver owner, int typeRef,
+                @Nullable TypePath path, boolean visible, String descriptor) {
             super(resolver);
             this.owner = owner;
             this.typeRef = typeRef;

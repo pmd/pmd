@@ -2,12 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Defines the body of a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 16 feature).
- * This can contain additional methods and or constructors.
+ * Defines the body of a {@linkplain ASTRecordDeclaration RecordDeclaration}
+ * (JDK 16 feature). This can contain additional methods and or constructors.
  *
  * <pre class="grammar">
  *

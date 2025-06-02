@@ -51,45 +51,28 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public final class JavaRuleUtil {
 
     // this is a hacky way to do it, but let's see where this goes
-    private static final CompoundInvocationMatcher KNOWN_PURE_METHODS = InvocationMatcher.parseAll(
-        "_#toString()",
-        "_#hashCode()",
-        "_#equals(java.lang.Object)",
-        "java.lang.String#_(_*)",
-        // actually not all of them, probs only stream of some type
-        // arg which doesn't implement Closeable...
-        "java.util.stream.Stream#_(_*)",
-        "java.util.Collection#size()",
-        "java.util.List#get(int)",
-        "java.util.Map#get(_)",
-        "java.lang.Iterable#iterator()",
-        "java.lang.Comparable#compareTo(_)"
-    );
+    private static final CompoundInvocationMatcher KNOWN_PURE_METHODS = InvocationMatcher.parseAll("_#toString()",
+            "_#hashCode()", "_#equals(java.lang.Object)", "java.lang.String#_(_*)",
+            // actually not all of them, probs only stream of some type
+            // arg which doesn't implement Closeable...
+            "java.util.stream.Stream#_(_*)", "java.util.Collection#size()", "java.util.List#get(int)",
+            "java.util.Map#get(_)", "java.lang.Iterable#iterator()", "java.lang.Comparable#compareTo(_)");
 
-    public static final Set<String> LOMBOK_ANNOTATIONS = immutableSetOf(
-        "lombok.Data",
-        "lombok.Getter",
-        "lombok.Setter",
-        "lombok.Value",
-        "lombok.RequiredArgsConstructor",
-        "lombok.AllArgsConstructor",
-        "lombok.NoArgsConstructor",
-        "lombok.Builder",
-        "lombok.EqualsAndHashCode",
-        "lombok.experimental.Delegate"
-    );
+    public static final Set<String> LOMBOK_ANNOTATIONS = immutableSetOf("lombok.Data", "lombok.Getter", "lombok.Setter",
+            "lombok.Value", "lombok.RequiredArgsConstructor", "lombok.AllArgsConstructor", "lombok.NoArgsConstructor",
+            "lombok.Builder", "lombok.EqualsAndHashCode", "lombok.experimental.Delegate");
 
     private JavaRuleUtil() {
         // utility class
     }
 
-
     /**
-     * Return true if the given expression is enclosed in a zero check.
-     * The expression must evaluate to a natural number (ie >= 0), so that
-     * {@code e < 1} actually means {@code e == 0}.
+     * Return true if the given expression is enclosed in a zero check. The
+     * expression must evaluate to a natural number (ie >= 0), so that {@code e < 1}
+     * actually means {@code e == 0}.
      *
-     * @param e Expression
+     * @param e
+     *            Expression
      */
     public static boolean isZeroChecked(ASTExpression e) {
         JavaNode parent = e.getParent();
@@ -104,19 +87,19 @@ public final class JavaRuleUtil {
             } else if (op == BinaryOp.LT || op == BinaryOp.GE) {
                 // e < 1
                 // 0 < e
-                // e >= 1     (e != 0)
-                // 1 >= e     (e == 0 || e == 1)
-                // 0 >= e     (e == 0)
-                // e >= 0     (true)
+                // e >= 1 (e != 0)
+                // 1 >= e (e == 0 || e == 1)
+                // 0 >= e (e == 0)
+                // e >= 0 (true)
                 expectedValue = checkLiteralAtIdx;
             } else if (op == BinaryOp.GT || op == BinaryOp.LE) {
                 // 1 > e
                 // e > 0
 
-                // 1 <= e     (e != 0)
-                // e <= 1     (e == 0 || e == 1)
-                // e <= 0     (e == 0)
-                // 0 <= e     (true)
+                // 1 <= e (e != 0)
+                // e <= 1 (e == 0 || e == 1)
+                // e <= 0 (e == 0)
+                // 0 <= e (true)
                 expectedValue = 1 - checkLiteralAtIdx;
             } else {
                 return false;
@@ -127,13 +110,13 @@ public final class JavaRuleUtil {
         return false;
     }
 
-
     /**
-     * Returns true if the expression is a stringbuilder (or stringbuffer)
-     * append call, or a constructor call for one of these classes.
+     * Returns true if the expression is a stringbuilder (or stringbuffer) append
+     * call, or a constructor call for one of these classes.
      *
-     * <p>If it is a constructor call, returns false if this is a call to
-     * the constructor with a capacity parameter.
+     * <p>
+     * If it is a constructor call, returns false if this is a call to the
+     * constructor with a capacity parameter.
      */
     public static boolean isStringBuilderCtorOrAppend(@Nullable ASTExpression e) {
         if (e instanceof ASTMethodCall) {
@@ -149,13 +132,12 @@ public final class JavaRuleUtil {
     }
 
     private static boolean isStringBufferOrBuilder(TypeNode node) {
-        return TypeTestUtil.isExactlyA(StringBuilder.class, node)
-            || TypeTestUtil.isExactlyA(StringBuffer.class, node);
+        return TypeTestUtil.isExactlyA(StringBuilder.class, node) || TypeTestUtil.isExactlyA(StringBuffer.class, node);
     }
 
     /**
-     * Returns true if the node is a utility class, according to this
-     * custom definition.
+     * Returns true if the node is a utility class, according to this custom
+     * definition.
      */
     public static boolean isUtilityClass(ASTTypeDeclaration node) {
         if (!node.isRegularClass()) {
@@ -165,8 +147,7 @@ public final class JavaRuleUtil {
         ASTClassDeclaration classNode = (ASTClassDeclaration) node;
 
         // A class with a superclass or interfaces should not be considered
-        if (classNode.getSuperClassTypeNode() != null
-            || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
+        if (classNode.getSuperClassTypeNode() != null || !classNode.getSuperInterfaceTypeNodes().isEmpty()) {
             return false;
         }
 
@@ -174,8 +155,7 @@ public final class JavaRuleUtil {
         boolean hasAny = false;
 
         for (ASTBodyDeclaration declNode : classNode.getDeclarations()) {
-            if (declNode instanceof ASTFieldDeclaration
-                || declNode instanceof ASTMethodDeclaration) {
+            if (declNode instanceof ASTFieldDeclaration || declNode instanceof ASTMethodDeclaration) {
 
                 hasAny = isNonPrivate(declNode) && !JavaAstUtils.isMainMethod(declNode);
                 if (!((ModifierOwner) declNode).hasModifiers(JModifier.STATIC)) {
@@ -200,16 +180,15 @@ public final class JavaRuleUtil {
      * Whether the name may be ignored by unused rules like UnusedAssignment.
      */
     public static boolean isExplicitUnusedVarName(String name) {
-        return name.startsWith("ignored")
-            || name.startsWith("unused")
-            // before java 9 it's ok, after that, "_" is a reserved keyword
-            // with Java 21 Preview (JEP 443), "_" means explicitly unused
-            || "_".equals(name);
+        return name.startsWith("ignored") || name.startsWith("unused")
+        // before java 9 it's ok, after that, "_" is a reserved keyword
+        // with Java 21 Preview (JEP 443), "_" means explicitly unused
+                || "_".equals(name);
     }
 
     /**
-     * Returns true if the string has the given word as a strict prefix.
-     * There needs to be a camelcase word boundary after the prefix.
+     * Returns true if the string has the given word as a strict prefix. There needs
+     * to be a camelcase word boundary after the prefix.
      *
      * <code>
      * startsWithCamelCaseWord("getter", "get") == false
@@ -217,15 +196,15 @@ public final class JavaRuleUtil {
      * startsWithCamelCaseWord("getX", "get")   == true
      * </code>
      *
-     * @param camelCaseString A string
-     * @param prefixWord      A prefix
+     * @param camelCaseString
+     *            A string
+     * @param prefixWord
+     *            A prefix
      */
     public static boolean startsWithCamelCaseWord(String camelCaseString, String prefixWord) {
-        return camelCaseString.startsWith(prefixWord)
-            && camelCaseString.length() > prefixWord.length()
-            && Character.isUpperCase(camelCaseString.charAt(prefixWord.length()));
+        return camelCaseString.startsWith(prefixWord) && camelCaseString.length() > prefixWord.length()
+                && Character.isUpperCase(camelCaseString.charAt(prefixWord.length()));
     }
-
 
     /**
      * Returns true if the string has the given word as a word, not at the start.
@@ -237,14 +216,17 @@ public final class JavaRuleUtil {
      * containsCamelCaseWord("isABoolean", "is")   == error (not capitalized)
      * </code>
      *
-     * @param camelCaseString A string
-     * @param capitalizedWord A word, non-empty, capitalized
+     * @param camelCaseString
+     *            A string
+     * @param capitalizedWord
+     *            A word, non-empty, capitalized
      *
-     * @throws AssertionError If the word is empty or not capitalized
+     * @throws AssertionError
+     *             If the word is empty or not capitalized
      */
     public static boolean containsCamelCaseWord(String camelCaseString, String capitalizedWord) {
         assert capitalizedWord.length() > 0 && Character.isUpperCase(capitalizedWord.charAt(0))
-            : "Not a capitalized string \"" + capitalizedWord + "\"";
+                : "Not a capitalized string \"" + capitalizedWord + "\"";
 
         int index = camelCaseString.indexOf(capitalizedWord);
         if (index >= 0 && camelCaseString.length() > index + capitalizedWord.length()) {
@@ -262,11 +244,9 @@ public final class JavaRuleUtil {
     }
 
     public static boolean isGetterCall(ASTMethodCall call) {
-        return call.getArguments().size() == 0
-            && (startsWithCamelCaseWord(call.getMethodName(), "get")
-            || startsWithCamelCaseWord(call.getMethodName(), "is"));
+        return call.getArguments().size() == 0 && (startsWithCamelCaseWord(call.getMethodName(), "get")
+                || startsWithCamelCaseWord(call.getMethodName(), "is"));
     }
-
 
     public static boolean isGetterOrSetter(ASTMethodDeclaration node) {
         return isGetter(node) || isSetter(node);
@@ -313,8 +293,8 @@ public final class JavaRuleUtil {
      * (serialization-specific field).
      */
     public static boolean isSerialPersistentFields(final ASTFieldDeclaration field) {
-        return field.hasModifiers(JModifier.FINAL, JModifier.STATIC, JModifier.PRIVATE)
-            && field.getVarIds().any(it -> "serialPersistentFields".equals(it.getName()) && TypeTestUtil.isA(ObjectStreamField[].class, it));
+        return field.hasModifiers(JModifier.FINAL, JModifier.STATIC, JModifier.PRIVATE) && field.getVarIds().any(
+                it -> "serialPersistentFields".equals(it.getName()) && TypeTestUtil.isA(ObjectStreamField[].class, it));
     }
 
     /**
@@ -322,42 +302,42 @@ public final class JavaRuleUtil {
      * (serialization-specific field).
      */
     public static boolean isSerialVersionUID(ASTFieldDeclaration field) {
-        return field.hasModifiers(JModifier.FINAL, JModifier.STATIC)
-            && field.getVarIds().any(it -> "serialVersionUID".equals(it.getName()) && it.getTypeMirror().isPrimitive(LONG));
+        return field.hasModifiers(JModifier.FINAL, JModifier.STATIC) && field.getVarIds()
+                .any(it -> "serialVersionUID".equals(it.getName()) && it.getTypeMirror().isPrimitive(LONG));
     }
 
     /**
      * True if the method is a {@code readObject} method defined for serialization.
      */
     public static boolean isSerializationReadObject(ASTMethodDeclaration node) {
-        return node.getVisibility() == Visibility.V_PRIVATE
-            && "readObject".equals(node.getName())
-            && JavaAstUtils.hasExceptionList(node, InvalidObjectException.class)
-            && JavaAstUtils.hasParameters(node, ObjectInputStream.class);
+        return node.getVisibility() == Visibility.V_PRIVATE && "readObject".equals(node.getName())
+                && JavaAstUtils.hasExceptionList(node, InvalidObjectException.class)
+                && JavaAstUtils.hasParameters(node, ObjectInputStream.class);
     }
 
-
     /**
-     * Whether the node or one of its descendants is an expression with
-     * side effects. Conservatively, any method call is a potential side-effect,
-     * as well as assignments to fields or array elements. We could relax
-     * this assumption with (much) more data-flow logic, including a memory model.
+     * Whether the node or one of its descendants is an expression with side
+     * effects. Conservatively, any method call is a potential side-effect, as well
+     * as assignments to fields or array elements. We could relax this assumption
+     * with (much) more data-flow logic, including a memory model.
      *
-     * <p>By default assignments to locals are not counted as side-effects,
-     * unless the lhs is in the given set of symbols.
+     * <p>
+     * By default assignments to locals are not counted as side-effects, unless the
+     * lhs is in the given set of symbols.
      *
-     * @param node             A node
-     * @param localVarsToTrack Local variables to track
+     * @param node
+     *            A node
+     * @param localVarsToTrack
+     *            Local variables to track
      */
     public static boolean hasSideEffect(@Nullable JavaNode node, Set<? extends JVariableSymbol> localVarsToTrack) {
-        return node != null && node.descendantsOrSelf()
-                                   .filterIs(ASTExpression.class)
-                                   .any(e -> hasSideEffectNonRecursive(e, localVarsToTrack));
+        return node != null && node.descendantsOrSelf().filterIs(ASTExpression.class)
+                .any(e -> hasSideEffectNonRecursive(e, localVarsToTrack));
     }
 
     /**
-     * Returns true if the expression has side effects we don't track.
-     * Does not recurse into sub-expressions.
+     * Returns true if the expression has side effects we don't track. Does not
+     * recurse into sub-expressions.
      */
     private static boolean hasSideEffectNonRecursive(ASTExpression e, Set<? extends JVariableSymbol> localVarsToTrack) {
         if (e instanceof ASTAssignmentExpression) {
@@ -367,15 +347,14 @@ public final class JavaRuleUtil {
             ASTUnaryExpression unary = (ASTUnaryExpression) e;
             ASTExpression lhs = unary.getOperand();
             return !unary.getOperator().isPure()
-                && (isNonLocalLhs(lhs) || JavaAstUtils.isReferenceToVar(lhs, localVarsToTrack));
+                    && (isNonLocalLhs(lhs) || JavaAstUtils.isReferenceToVar(lhs, localVarsToTrack));
         }
 
         // when there are throw statements,
         // then this side effect can never be observed in containing code,
         // because control flow jumps out of the method
         return e.ancestors(ASTThrowStatement.class).isEmpty()
-                && (e instanceof ASTMethodCall && !isPure((ASTMethodCall) e)
-                        || e instanceof ASTConstructorCall);
+                && (e instanceof ASTMethodCall && !isPure((ASTMethodCall) e) || e instanceof ASTConstructorCall);
     }
 
     private static boolean isNonLocalLhs(ASTExpression lhs) {
@@ -395,8 +374,8 @@ public final class JavaRuleUtil {
     }
 
     /**
-     * Checks whether the given node is annotated with any lombok annotation.
-     * The node should be annotateable.
+     * Checks whether the given node is annotated with any lombok annotation. The
+     * node should be annotateable.
      *
      * @param node
      *            the Annotatable node to check
@@ -438,6 +417,5 @@ public final class JavaRuleUtil {
         }
         return false;
     }
-
 
 }

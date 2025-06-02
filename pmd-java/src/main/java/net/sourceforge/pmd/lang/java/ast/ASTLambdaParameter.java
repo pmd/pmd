@@ -7,9 +7,9 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-
 /**
- * Formal parameter of a lambda expression. Child of {@link ASTLambdaParameterList}.
+ * Formal parameter of a lambda expression. Child of
+ * {@link ASTLambdaParameterList}.
  *
  * <pre class="grammar">
  *
@@ -19,15 +19,17 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTLambdaParameter extends AbstractJavaTypeNode
-    implements InternalInterfaces.VariableIdOwner, ModifierOwner {
+        implements
+            InternalInterfaces.VariableIdOwner,
+            ModifierOwner {
 
     ASTLambdaParameter(int id) {
         super(id);
     }
 
     /**
-     * If true, this formal parameter represents one without explicit types.
-     * This can appear as part of a lambda expression with java11 using "var".
+     * If true, this formal parameter represents one without explicit types. This
+     * can appear as part of a lambda expression with java11 using "var".
      *
      * @see ASTVariableId#isTypeInferred()
      */

@@ -17,8 +17,8 @@ import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * This is just a toy rule that counts the proportion of resolved types
- * in a codebase, not meant as a real rule.
+ * This is just a toy rule that counts the proportion of resolved types in a
+ * codebase, not meant as a real rule.
  */
 @SuppressWarnings("PMD")
 public class TypeResTestRule extends AbstractJavaRule {
@@ -56,11 +56,10 @@ public class TypeResTestRule extends AbstractJavaRule {
 
     private static final boolean PRINT_ALL_UNRESOLVED;
 
-
     static {
-        PRINT_ALL_UNRESOLVED = Boolean.parseBoolean(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "true").toString());
+        PRINT_ALL_UNRESOLVED = Boolean
+                .parseBoolean(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "true").toString());
     }
-
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
@@ -80,7 +79,7 @@ public class TypeResTestRule extends AbstractJavaRule {
                 if (t == ts.ERROR || t == ts.UNKNOWN) {
                     if (PRINT_ALL_UNRESOLVED) {
                         System.err.println("Unresolved at " + position(node) + "\t"
-                                               + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
+                                + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
                     }
                     state.numUnresolved++;
                 } else {
@@ -98,7 +97,6 @@ public class TypeResTestRule extends AbstractJavaRule {
 
         return data;
     }
-
 
     public @NonNull String position(JavaNode node) {
         return "In: " + node.getReportLocation().startPosToStringWithFile();

@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
- * A "provides" directive of a {@linkplain ASTModuleDeclaration module declaration}.
+ * A "provides" directive of a {@linkplain ASTModuleDeclaration module
+ * declaration}.
  *
  * <pre class="grammar">
  *
@@ -37,8 +38,8 @@ public final class ASTModuleProvidesDirective extends ASTModuleDirective {
     }
 
     /**
-     * Returns the nodes representing the service providers, that is,
-     * the service implementations.
+     * Returns the nodes representing the service providers, that is, the service
+     * implementations.
      */
     public NodeStream<ASTClassType> getServiceProviders() {
         return children(ASTClassType.class).drop(1);

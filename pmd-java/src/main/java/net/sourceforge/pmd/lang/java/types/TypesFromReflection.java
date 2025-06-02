@@ -28,7 +28,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
 /**
  * Builds type mirrors from {@link Type} instances.
  *
- * <p>This is intended as a public API to help rules build types.
+ * <p>
+ * This is intended as a public API to help rules build types.
  */
 public final class TypesFromReflection {
 
@@ -37,29 +38,35 @@ public final class TypesFromReflection {
     }
 
     /**
-     * Builds a type from reflection. This overload expects a ground type,
-     * ie it will fail if the given type mentions type variables. This can
-     * be used to get a type quickly, eg:
+     * Builds a type from reflection. This overload expects a ground type, ie it
+     * will fail if the given type mentions type variables. This can be used to get
+     * a type quickly, eg:
+     * 
      * <pre>{@code
      *
      * // note the anonymous class body
-     * JTypeMirror streamOfInt = fromReflect(new TypeLiteral<Stream<Integer>>() {}, node.getTypeSystem());
+     * JTypeMirror streamOfInt = fromReflect(new TypeLiteral<Stream<Integer>>() {
+     * }, node.getTypeSystem());
      *
      * if (node.getTypeMirror().equals(streamOfInt))
-     *   ruleContext.addViolation(node, "Use IntStream instead of Stream<Integer>");
+     *     ruleContext.addViolation(node, "Use IntStream instead of Stream<Integer>");
      *
      * // going the long way:
      * TypeSystem ts = node.getTypeSystem();
      * JTypeMirror streamOfInt = ts.typeOf(ts.getClassSymbol(Stream.class), false)
-     *                             .withTypeParameters(listOf(ts.INT.box()));
+     *         .withTypeParameters(listOf(ts.INT.box()));
      *
      * }</pre>
      *
-     * @param ts        Type system that will build the type
-     * @param reflected A {@link Typed} instance, eg a {@link TypeLiteral}.
+     * @param ts
+     *            Type system that will build the type
+     * @param reflected
+     *            A {@link Typed} instance, eg a {@link TypeLiteral}.
      *
-     * @throws IllegalArgumentException If the given type mentions type variables
-     * @throws NullPointerException If the type, or the type system, are null
+     * @throws IllegalArgumentException
+     *             If the given type mentions type variables
+     * @throws NullPointerException
+     *             If the type, or the type system, are null
      */
     public static JTypeMirror fromReflect(Typed<?> reflected, TypeSystem ts) {
         return fromReflect(ts, reflected.getType(), LexicalScope.EMPTY, Substitution.EMPTY);
@@ -70,25 +77,30 @@ public final class TypesFromReflection {
     }
 
     /**
-     * Builds a type from reflection. This takes care of preserving the
-     * identity of type variables.
+     * Builds a type from reflection. This takes care of preserving the identity of
+     * type variables.
      *
-     * @param ts           Type system
-     * @param reflected    A type instance obtained from reflection
-     * @param lexicalScope An index for the in-scope type variables. All
-     *                     type variables occurring in the type must be
-     *                     referenced.
-     * @param subst        Substitution to apply to tvars
+     * @param ts
+     *            Type system
+     * @param reflected
+     *            A type instance obtained from reflection
+     * @param lexicalScope
+     *            An index for the in-scope type variables. All type variables
+     *            occurring in the type must be referenced.
+     * @param subst
+     *            Substitution to apply to tvars
      *
-     * @return A type, or null if the type system's symbol resolver cannot map
-     *     the types to its own representation
+     * @return A type, or null if the type system's symbol resolver cannot map the
+     *         types to its own representation
      *
-     * @throws IllegalArgumentException If there are free type variables in the type.
-     *                                  Any type variable should be accessible in the
-     *                                  lexical scope parameter.
-     * @throws NullPointerException     If any parameter is null
+     * @throws IllegalArgumentException
+     *             If there are free type variables in the type. Any type variable
+     *             should be accessible in the lexical scope parameter.
+     * @throws NullPointerException
+     *             If any parameter is null
      */
-    public static @Nullable JTypeMirror fromReflect(TypeSystem ts, @NonNull Type reflected, LexicalScope lexicalScope, Substitution subst) {
+    public static @Nullable JTypeMirror fromReflect(TypeSystem ts, @NonNull Type reflected, LexicalScope lexicalScope,
+            Substitution subst) {
         Objects.requireNonNull(reflected, "Null type");
         Objects.requireNonNull(ts, "Null type system");
         Objects.requireNonNull(lexicalScope, "Null lexical scope, use the empty scope");
@@ -100,7 +112,6 @@ public final class TypesFromReflection {
 
         } else if (reflected instanceof ParameterizedType) {
 
-
             ParameterizedType parameterized = (ParameterizedType) reflected;
             Class<?> raw = (Class<?>) parameterized.getRawType();
             JClassSymbol sym = ts.getClassSymbol(raw);
@@ -110,10 +121,7 @@ public final class TypesFromReflection {
             }
 
             Type[] typeArguments = parameterized.getActualTypeArguments();
-            List<JTypeMirror> mapped = CollectionUtil.map(
-                typeArguments,
-                a -> fromReflect(ts, a, lexicalScope, subst)
-            );
+            List<JTypeMirror> mapped = CollectionUtil.map(typeArguments, a -> fromReflect(ts, a, lexicalScope, subst));
 
             if (CollectionUtil.any(mapped, Objects::isNull)) {
                 return null;
@@ -133,12 +141,12 @@ public final class TypesFromReflection {
 
             TypeVariable<?> typeVariable = (TypeVariable<?>) reflected;
 
-            @Nullable SubstVar mapped = lexicalScope.apply(typeVariable.getName());
+            @Nullable
+            SubstVar mapped = lexicalScope.apply(typeVariable.getName());
             if (mapped == null) {
-                throw new IllegalArgumentException(
-                    "The lexical scope " + lexicalScope + " does not contain an entry for type variable "
-                        + typeVariable.getName() + " (declared on " + typeVariable.getGenericDeclaration() + ")"
-                );
+                throw new IllegalArgumentException("The lexical scope " + lexicalScope
+                        + " does not contain an entry for type variable " + typeVariable.getName() + " (declared on "
+                        + typeVariable.getGenericDeclaration() + ")");
             }
 
             return subst.apply(mapped);
@@ -155,7 +163,8 @@ public final class TypesFromReflection {
 
         } else if (reflected instanceof GenericArrayType) {
 
-            JTypeMirror comp = fromReflect(ts, ((GenericArrayType) reflected).getGenericComponentType(), lexicalScope, subst);
+            JTypeMirror comp = fromReflect(ts, ((GenericArrayType) reflected).getGenericComponentType(), lexicalScope,
+                    subst);
 
             if (comp == null) {
                 return null;
@@ -167,11 +176,8 @@ public final class TypesFromReflection {
         throw new IllegalStateException("Illegal type " + reflected.getClass() + " " + reflected.getTypeName());
     }
 
-    private static JTypeMirror makeWildcard(TypeSystem ts,
-                                            boolean isUpper,
-                                            Type[] bounds,
-                                            LexicalScope lexicalScope,
-                                            Substitution subst) {
+    private static JTypeMirror makeWildcard(TypeSystem ts, boolean isUpper, Type[] bounds, LexicalScope lexicalScope,
+            Substitution subst) {
 
         List<JTypeMirror> boundsMapped = new ArrayList<>(bounds.length);
         for (Type a : bounds) {
@@ -187,8 +193,8 @@ public final class TypesFromReflection {
 
     /**
      * Load a class. Supports loading array types like 'java.lang.String[]' and
-     * converting a canonical name to a binary name (e.g. 'java.util.Map.Entry' -&gt;
-     * 'java.util.Map$Entry').
+     * converting a canonical name to a binary name (e.g. 'java.util.Map.Entry'
+     * -&gt; 'java.util.Map$Entry').
      */
     public static @Nullable JTypeMirror loadType(TypeSystem ctr, String className) {
         return loadType(ctr, className, null);
@@ -196,12 +202,13 @@ public final class TypesFromReflection {
 
     /**
      * Load a class. Supports loading array types like 'java.lang.String[]' and
-     * converting a canonical name to a binary name (e.g. 'java.util.Map.Entry' -&gt;
-     * 'java.util.Map$Entry'). Types that are not on the classpath may
-     * be replaced by placeholder types if the {@link UnresolvedClassStore}
-     * parameter is non-null.
+     * converting a canonical name to a binary name (e.g. 'java.util.Map.Entry'
+     * -&gt; 'java.util.Map$Entry'). Types that are not on the classpath may be
+     * replaced by placeholder types if the {@link UnresolvedClassStore} parameter
+     * is non-null.
      */
-    public static @Nullable JTypeMirror loadType(TypeSystem ctr, String className, UnresolvedClassStore unresolvedStore) {
+    public static @Nullable JTypeMirror loadType(TypeSystem ctr, String className,
+            UnresolvedClassStore unresolvedStore) {
         return loadClassMaybeArray(ctr, StringUtils.deleteWhitespace(className), unresolvedStore);
     }
 
@@ -210,10 +217,8 @@ public final class TypesFromReflection {
         return type == null ? null : (JClassSymbol) type.getSymbol();
     }
 
-
-    private static @Nullable JTypeMirror loadClassMaybeArray(TypeSystem ts,
-                                                             String className,
-                                                             @Nullable UnresolvedClassStore unresolvedClassStore) {
+    private static @Nullable JTypeMirror loadClassMaybeArray(TypeSystem ts, String className,
+            @Nullable UnresolvedClassStore unresolvedClassStore) {
         Validate.notNull(className, "className must not be null.");
         if (className.endsWith("[]")) {
             int dimension = 0;
@@ -238,7 +243,8 @@ public final class TypesFromReflection {
         }
     }
 
-    private static JClassSymbol getClassOrDefault(TypeSystem ts, @Nullable UnresolvedClassStore unresolvedClassStore, String canonicalName) {
+    private static JClassSymbol getClassOrDefault(TypeSystem ts, @Nullable UnresolvedClassStore unresolvedClassStore,
+            String canonicalName) {
         JClassSymbol loaded = ts.getClassSymbolFromCanonicalName(canonicalName);
         if (loaded == null && unresolvedClassStore != null) {
             loaded = unresolvedClassStore.makeUnresolvedReference(canonicalName, 0);

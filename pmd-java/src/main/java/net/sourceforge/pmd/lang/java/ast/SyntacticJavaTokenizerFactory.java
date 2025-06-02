@@ -16,10 +16,11 @@ import net.sourceforge.pmd.lang.java.JavaLanguageModule;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
- * Creates a tokenizer, that uses the syntactic grammar to provide context
- * for the tokenizer when reducing the input characters to tokens.
+ * Creates a tokenizer, that uses the syntactic grammar to provide context for
+ * the tokenizer when reducing the input characters to tokens.
  *
- * @deprecated This implementation has been superseded. It is not necessary to parse Java code in order to tokenize it.
+ * @deprecated This implementation has been superseded. It is not necessary to
+ *             parse Java code in order to tokenize it.
  */
 @Deprecated
 public final class SyntacticJavaTokenizerFactory {

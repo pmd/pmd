@@ -42,7 +42,6 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-
 final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     static final int UNKNOWN_ARITY = 0;
@@ -73,7 +72,10 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     private final ParseLock parseLock;
 
-    /** Note that '.' is forbidden because in internal names they're replaced by slashes '/'. */
+    /**
+     * Note that '.' is forbidden because in internal names they're replaced by
+     * slashes '/'.
+     */
     private static final Pattern INTERNAL_NAME_FORBIDDEN_CHARS = Pattern.compile("[;<>\\[.]");
 
     private static boolean isValidInternalName(String internalName) {
@@ -93,7 +95,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                     if (instream != null) {
                         ClassReader classReader = new ClassReader(instream);
                         ClassStubBuilder builder = new ClassStubBuilder(ClassStub.this, resolver);
-                        classReader.accept(builder, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+                        classReader.accept(builder,
+                                ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
                         return true;
                     } else {
                         return false;
@@ -145,18 +148,16 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return resolver;
     }
 
-    // <editor-fold  defaultstate="collapsed" desc="Setters used during loading">
+    // <editor-fold defaultstate="collapsed" desc="Setters used during loading">
 
-    void setHeader(@Nullable String signature,
-                   @Nullable String superName,
-                   String[] interfaces) {
+    void setHeader(@Nullable String signature, @Nullable String superName, String[] interfaces) {
         this.signature = new LazyClassSignature(this, signature, superName, interfaces);
     }
 
     /**
-     * Called if this is an inner class (their simple name cannot be
-     * derived from splitting the internal/binary name on dollars, as
-     * the simple name may itself contain dollars).
+     * Called if this is an inner class (their simple name cannot be derived from
+     * splitting the internal/binary name on dollars, as the simple name may itself
+     * contain dollars).
      */
     void setSimpleName(String simpleName) {
         this.names.simpleName = simpleName;
@@ -164,37 +165,35 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     void setModifiers(int accessFlags, boolean fromClassInfo) {
         /*
-            A different set of modifiers is contained in the ClassInfo
-            structure and the InnerClasses structure. See
-            https://docs.oracle.com/javase/specs/jvms/se13/html/jvms-4.html#jvms-4.1-200-E.1
-            https://docs.oracle.com/javase/specs/jvms/se13/html/jvms-4.html#jvms-4.7.6-300-D.1-D.1
-
-            Here is the diff (+ lines (resp. - lines) are only available
-            in InnerClasses (resp. ClassInfo), the rest are available in both)
-
-            ACC_PUBLIC      0x0001  Declared public; may be accessed from outside its package.
-         +  ACC_PRIVATE     0x0002  Marked private in source.
-         +  ACC_PROTECTED   0x0004  Marked protected in source.
-         +  ACC_STATIC      0x0008  Marked or implicitly static in source.
-            ACC_FINAL       0x0010  Declared final; no subclasses allowed.
-         -  ACC_SUPER       0x0020  Treat superclass methods specially when invoked by the invokespecial instruction.
-            ACC_INTERFACE   0x0200  Is an interface, not a class.
-            ACC_ABSTRACT    0x0400  Declared abstract; must not be instantiated.
-            ACC_SYNTHETIC   0x1000  Declared synthetic; not present in the source code.
-            ACC_ANNOTATION  0x2000  Declared as an annotation type.
-            ACC_ENUM        0x4000  Declared as an enum type.
-         -  ACC_MODULE      0x8000  Is a module, not a class or interface.
-
-            If this stub is a nested class, then we don't have all its
-            modifiers just with the ClassInfo, the actual source-declared
-            visibility (if not public) is only in the InnerClasses, as
-            well as its ACC_STATIC.
-
-            Also ACC_SUPER conflicts with ACC_SYNCHRONIZED, which
-            Modifier.toString would reflect.
-
-            Since the differences are disjoint we can just OR the two
-            sets of flags.
+         * A different set of modifiers is contained in the ClassInfo structure and the
+         * InnerClasses structure. See
+         * https://docs.oracle.com/javase/specs/jvms/se13/html/jvms-4.html#jvms-4.1-200-
+         * E.1
+         * https://docs.oracle.com/javase/specs/jvms/se13/html/jvms-4.html#jvms-4.7.6-
+         * 300-D.1-D.1
+         * 
+         * Here is the diff (+ lines (resp. - lines) are only available in InnerClasses
+         * (resp. ClassInfo), the rest are available in both)
+         * 
+         * ACC_PUBLIC 0x0001 Declared public; may be accessed from outside its package.
+         * + ACC_PRIVATE 0x0002 Marked private in source. + ACC_PROTECTED 0x0004 Marked
+         * protected in source. + ACC_STATIC 0x0008 Marked or implicitly static in
+         * source. ACC_FINAL 0x0010 Declared final; no subclasses allowed. - ACC_SUPER
+         * 0x0020 Treat superclass methods specially when invoked by the invokespecial
+         * instruction. ACC_INTERFACE 0x0200 Is an interface, not a class. ACC_ABSTRACT
+         * 0x0400 Declared abstract; must not be instantiated. ACC_SYNTHETIC 0x1000
+         * Declared synthetic; not present in the source code. ACC_ANNOTATION 0x2000
+         * Declared as an annotation type. ACC_ENUM 0x4000 Declared as an enum type. -
+         * ACC_MODULE 0x8000 Is a module, not a class or interface.
+         * 
+         * If this stub is a nested class, then we don't have all its modifiers just
+         * with the ClassInfo, the actual source-declared visibility (if not public) is
+         * only in the InnerClasses, as well as its ACC_STATIC.
+         * 
+         * Also ACC_SUPER conflicts with ACC_SYNCHRONIZED, which Modifier.toString would
+         * reflect.
+         * 
+         * Since the differences are disjoint we can just OR the two sets of flags.
          */
         final int visibilityMask = Opcodes.ACC_PUBLIC | Opcodes.ACC_PROTECTED | Opcodes.ACC_PRIVATE;
         int myAccess = this.accessFlags;
@@ -202,16 +201,17 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
             // we don't care about ACC_SUPER and it conflicts
             // with ACC_SYNCHRONIZED
             accessFlags = accessFlags & ~Opcodes.ACC_SUPER;
-        } else if ((myAccess & Opcodes.ACC_PUBLIC) != 0
-            && (accessFlags & visibilityMask) != Opcodes.ACC_PUBLIC) {
+        } else if ((myAccess & Opcodes.ACC_PUBLIC) != 0 && (accessFlags & visibilityMask) != Opcodes.ACC_PUBLIC) {
             // ClassInfo mentions ACC_PUBLIC even if the real
             // visibility is protected or private
-            // We remove the public to avoid a "public protected" or "public private" combination
+            // We remove the public to avoid a "public protected" or "public private"
+            // combination
             myAccess = myAccess & ~Opcodes.ACC_PUBLIC;
         }
         this.accessFlags = myAccess | accessFlags;
 
-        // setModifiers is called multiple times: once from ClassFile structure (fromClassInfo==true)
+        // setModifiers is called multiple times: once from ClassFile structure
+        // (fromClassInfo==true)
         // and additionally from InnerClasses attribute (fromClassInfo==false)
         // The enum constants and record components should only be initialized once
         // to avoid losing the constants.
@@ -225,11 +225,11 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         }
     }
 
-    void setEnclosingInfo(ClassStub outer, boolean localOrAnon, @Nullable String methodName, @Nullable String methodDescriptor) {
+    void setEnclosingInfo(ClassStub outer, boolean localOrAnon, @Nullable String methodName,
+            @Nullable String methodDescriptor) {
         if (enclosingInfo == null) {
             if (outer == null) {
-                assert methodName == null && methodDescriptor == null
-                    : "Enclosing method requires enclosing class";
+                assert methodName == null && methodDescriptor == null : "Enclosing method requires enclosing class";
                 this.enclosingInfo = EnclosingInfo.NO_ENCLOSING;
             } else {
                 this.enclosingInfo = new EnclosingInfo(outer, localOrAnon, methodName, methodDescriptor);
@@ -277,9 +277,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         annotations = annotations.plus(annot);
     }
 
-
     // </editor-fold>
-
 
     @Override
     public @Nullable JClassSymbol getSuperclass() {
@@ -360,10 +358,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         if (annotAttributes == null) {
             parseLock.ensureParsed();
             annotAttributes = isAnnotation()
-                              ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute)
-                                                    .map(JElementSymbol::getSimpleName)
-                                                    .collect(CollectionUtil.toPersistentSet())
-                              : HashTreePSet.empty();
+                    ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute)
+                            .map(JElementSymbol::getSimpleName).collect(CollectionUtil.toPersistentSet())
+                    : HashTreePSet.empty();
         }
         return annotAttributes;
     }
@@ -396,13 +393,11 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return enumConstants;
     }
 
-
     @Override
     public @NonNull List<JRecordComponentSymbol> getRecordComponents() {
         parseLock.ensureParsed();
         return recordComponents;
     }
-
 
     @Override
     public List<JClassSymbol> getPermittedSubtypes() {
@@ -433,7 +428,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return SymbolEquality.CLASS.equals(this, obj);
     }
 
-    // <editor-fold  defaultstate="collapsed" desc="Names">
+    // <editor-fold defaultstate="collapsed" desc="Names">
 
     public String getInternalName() {
         return getNames().internalName;
@@ -457,7 +452,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     @Override
     public @Nullable String getCanonicalName() {
-        @Nullable String canoName = names.canonicalName;
+        @Nullable
+        String canoName = names.canonicalName;
         if (canoName == null) {
             canoName = computeCanonicalName();
             names.canonicalName = canoName;
@@ -511,8 +507,7 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
 
     // </editor-fold>
 
-    // <editor-fold  defaultstate="collapsed" desc="Modifier info">
-
+    // <editor-fold defaultstate="collapsed" desc="Modifier info">
 
     @Override
     public boolean isUnresolved() {
@@ -590,25 +585,26 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         return this.parseLock.isNotParsed();
     }
 
-
     // </editor-fold>
-
 
     static class Names {
         /**
-         * Placeholder to represent that the class has no canonical name.
-         * This is not a valid canonical names so cannot class with an
-         * actual canoname.
+         * Placeholder to represent that the class has no canonical name. This is not a
+         * valid canonical names so cannot class with an actual canoname.
          */
         private static final String NO_CANONAME = "--NO-CANONICAL-NAME";
 
         final String binaryName;
         final String internalName;
         final String packageName;
-        /** If null, the class requires parsing to find out the actual canonical name. */
-        @Nullable String canonicalName;
+        /**
+         * If null, the class requires parsing to find out the actual canonical name.
+         */
+        @Nullable
+        String canonicalName;
         /** If null, the class requires parsing to find out the actual simple name. */
-        @Nullable String simpleName;
+        @Nullable
+        String simpleName;
 
         Names(String internalName) {
             assert isValidInternalName(internalName) : internalName;
@@ -656,7 +652,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
         private final @Nullable String methodDescriptor;
         private final boolean isLocalOrAnon;
 
-        EnclosingInfo(@Nullable JClassSymbol stub, boolean isLocalOrAnon, @Nullable String methodName, @Nullable String methodDescriptor) {
+        EnclosingInfo(@Nullable JClassSymbol stub, boolean isLocalOrAnon, @Nullable String methodName,
+                @Nullable String methodDescriptor) {
             this.stub = stub;
             this.isLocalOrAnon = isLocalOrAnon;
             this.methodName = methodName;
@@ -685,7 +682,6 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
             return null;
         }
 
-
         JTypeParameterOwnerSymbol getEnclosing() {
             if (methodName != null) {
                 return getEnclosingMethod();
@@ -703,10 +699,9 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                 return false;
             }
             EnclosingInfo that = (EnclosingInfo) o;
-            return Objects.equals(stub, that.stub)
-                && isLocalOrAnon == that.isLocalOrAnon
-                && Objects.equals(methodName, that.methodName)
-                && Objects.equals(methodDescriptor, that.methodDescriptor);
+            return Objects.equals(stub, that.stub) && isLocalOrAnon == that.isLocalOrAnon
+                    && Objects.equals(methodName, that.methodName)
+                    && Objects.equals(methodDescriptor, that.methodDescriptor);
         }
 
         @Override

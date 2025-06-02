@@ -55,7 +55,8 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                     if (escapeSequence.length() > 3) {
                                         char fourth = escapeSequence.charAt(3);
                                         if (isDecimal(fourth)) {
-                                            asCtx(data).addViolation(node, "\\" + first + second + third + " + " + fourth);
+                                            asCtx(data).addViolation(node,
+                                                    "\\" + first + second + third + " + " + fourth);
                                         }
                                     }
                                 }

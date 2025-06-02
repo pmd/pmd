@@ -4,16 +4,13 @@
 
 package javasymbols.testdata;
 
-
 public class StaticNameCollision {
 
     public static final int Ola = 0;
 
-
     public static int Ola() {
         return 0;
     }
-
 
     public static String publicMethod() {
         return "";

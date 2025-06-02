@@ -43,10 +43,12 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.AbruptCompletionAnal
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
- * Implementation of {@link #canCompleteNormally(ASTStatement)}, which
- * is used to implement scoping of pattern variables.
+ * Implementation of {@link #canCompleteNormally(ASTStatement)}, which is used
+ * to implement scoping of pattern variables.
  *
- * @see <a href="https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html#jls-14.22">Java Language Specification</a>
+ * @see <a href=
+ *      "https://docs.oracle.com/javase/specs/jls/se17/html/jls-14.html#jls-14.22">Java
+ *      Language Specification</a>
  */
 final class AbruptCompletionAnalysis {
 
@@ -55,30 +57,28 @@ final class AbruptCompletionAnalysis {
     }
 
     /**
-     * Returns whether the statement can complete normally, assuming
-     * it is reachable. For instance, an expression statement may
-     * complete normally, while a return or throw always complete abruptly.
+     * Returns whether the statement can complete normally, assuming it is
+     * reachable. For instance, an expression statement may complete normally, while
+     * a return or throw always complete abruptly.
      */
     static boolean canCompleteNormally(ASTStatement stmt) {
         return stmt.acceptVisitor(new ReachabilityVisitor(), new SubtreeState(f -> VisitResult.Continue));
     }
 
     /**
-     * This visitor implements a reachability analysis: it only visits
-     * reachable statements in a given subtree (assuming the first
-     * statement visited is reachable). Statements are not visited in
-     * a particular order, the only guarantee is that reachable statements
-     * are visited. Note that the right-hand side of switch arrow branches
-     * is not visited unless it is a statement.
+     * This visitor implements a reachability analysis: it only visits reachable
+     * statements in a given subtree (assuming the first statement visited is
+     * reachable). Statements are not visited in a particular order, the only
+     * guarantee is that reachable statements are visited. Note that the right-hand
+     * side of switch arrow branches is not visited unless it is a statement.
      *
-     * The return value of the visitor is whether the visited statement
-     * can complete normally.
+     * The return value of the visitor is whether the visited statement can complete
+     * normally.
      */
     static final class ReachabilityVisitor extends JavaVisitorBase<SubtreeState, Boolean> {
 
         enum VisitResult {
-            Continue,
-            Abort
+            Continue, Abort
         }
 
         static class VisitAbortedException extends RuntimeException {
@@ -154,7 +154,7 @@ final class AbruptCompletionAnalysis {
 
             boolean thenCanCompleteNormally = node.getThenBranch().acceptVisitor(this, data);
             boolean elseCanCompleteNormally = node.getElseBranch() == null
-                || node.getElseBranch().acceptVisitor(this, data);
+                    || node.getElseBranch().acceptVisitor(this, data);
 
             return thenCanCompleteNormally || elseCanCompleteNormally;
         }
@@ -187,7 +187,7 @@ final class AbruptCompletionAnalysis {
             boolean isNotDoWhileTrue = !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
 
             return isNotDoWhileTrue && (bodyCompletesNormally || data.containsContinue(node))
-                || data.containsBreak(node);
+                    || data.containsBreak(node);
         }
 
         @Override
@@ -212,7 +212,7 @@ final class AbruptCompletionAnalysis {
                     NodeStream<ASTStatement> statements = ((ASTSwitchFallthroughBranch) branch).getStatements();
                     SubtreeState branchState = new SubtreeState(data);
                     branchCompletesNormally = blockCanCompleteNormally(statements, branchState)
-                        || branchState.containsBreak(node);
+                            || branchState.containsBreak(node);
                 } else {
                     throw AssertionUtil.shouldNotReachHere("Not a branch type: " + branch);
                 }
@@ -229,7 +229,8 @@ final class AbruptCompletionAnalysis {
 
         }
 
-        private boolean switchArrowBranchCompletesNormally(SubtreeState state, ASTSwitchStatement switchStmt, ASTSwitchArrowRHS rhs) {
+        private boolean switchArrowBranchCompletesNormally(SubtreeState state, ASTSwitchStatement switchStmt,
+                ASTSwitchArrowRHS rhs) {
             if (rhs instanceof ASTExpression) {
                 return true;
             } else if (rhs instanceof ASTThrowStatement) {
@@ -251,18 +252,16 @@ final class AbruptCompletionAnalysis {
             return isNotWhileTrue || data.containsBreak(node);
         }
 
-
         @Override
         public Boolean visit(ASTForStatement node, SubtreeState data) {
             recordReachableNode(node, data);
 
             node.getBody().acceptVisitor(this, data);
             boolean isNotForTrue = node.getCondition() != null
-                && !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
+                    && !JavaAstUtils.isBooleanLiteral(node.getCondition(), true);
 
             return isNotForTrue || data.containsBreak(node);
         }
-
 
         @Override
         public Boolean visit(ASTTryStatement node, SubtreeState data) {
@@ -278,17 +277,15 @@ final class AbruptCompletionAnalysis {
             boolean bodyCompletesNormally = node.getBody().acceptVisitor(this, bodyState);
 
             /*
-            Todo catch clauses are not automatically reachable.
-            A catch block C is reachable iff both of the following are true:
-               - Either the type of C's parameter is an unchecked exception type
-                 or Exception or a superclass of Exception, or some expression
-                 or throw statement in the try block is reachable and can throw
-                 a checked exception whose type is assignment compatible (§5.2)
-                 with the type of C's parameter. (An expression is reachable iff
-                 the innermost statement containing it is reachable.)
-               - There is no earlier catch block A in the try statement such that
-                 the type of C's parameter is the same as, or a subclass of,
-                 the type of A's parameter.
+             * Todo catch clauses are not automatically reachable. A catch block C is
+             * reachable iff both of the following are true: - Either the type of C's
+             * parameter is an unchecked exception type or Exception or a superclass of
+             * Exception, or some expression or throw statement in the try block is
+             * reachable and can throw a checked exception whose type is assignment
+             * compatible (§5.2) with the type of C's parameter. (An expression is reachable
+             * iff the innermost statement containing it is reachable.) - There is no
+             * earlier catch block A in the try statement such that the type of C's
+             * parameter is the same as, or a subclass of, the type of A's parameter.
              */
             boolean anyCatchClauseCompletesNormally = false;
             for (ASTCatchClause catchClause : node.getCatchClauses()) {
@@ -296,8 +293,7 @@ final class AbruptCompletionAnalysis {
                 anyCatchClauseCompletesNormally |= catchClause.getBody().acceptVisitor(this, subtree);
             }
 
-            return finallyCompletesNormally
-                && (bodyCompletesNormally || anyCatchClauseCompletesNormally);
+            return finallyCompletesNormally && (bodyCompletesNormally || anyCatchClauseCompletesNormally);
         }
 
         private SubtreeState tryClauseState(SubtreeState data, boolean finallyCompletesNormally) {
@@ -320,10 +316,10 @@ final class AbruptCompletionAnalysis {
     }
 
     /**
-     * Tracks exploration state of a subtree. A new one is created for
-     * independent subtrees (eg in the handling for blocks). Children
-     * state instances forward events to their parent (as these events
-     * are part of the subtree of their parents).
+     * Tracks exploration state of a subtree. A new one is created for independent
+     * subtrees (eg in the handling for blocks). Children state instances forward
+     * events to their parent (as these events are part of the subtree of their
+     * parents).
      */
     private static class SubtreeState {
 

@@ -4,7 +4,6 @@
 
 package javasymbols.testdata.impls;
 
-
 public class SomeInnerClasses<O> {
 
     public static class StaticInner<O> {

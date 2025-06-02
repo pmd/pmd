@@ -8,13 +8,14 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
-
 /**
- * Represents an <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.9">intersection type</a>.
- * Can only occur in the following contexts:
+ * Represents an <a href=
+ * "https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.9">intersection
+ * type</a>. Can only occur in the following contexts:
  * <ul>
- *     <li>As the bound of a {@linkplain ASTTypeParameter TypeParameter}</li>
- *     <li>As the target type of a {@linkplain ASTCastExpression CastExpression}, on Java 8 and above</li>
+ * <li>As the bound of a {@linkplain ASTTypeParameter TypeParameter}</li>
+ * <li>As the target type of a {@linkplain ASTCastExpression CastExpression}, on
+ * Java 8 and above</li>
  * </ul>
  *
  * The first type can be a class or interface type, while the additional bounds
@@ -27,9 +28,10 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * </pre>
  */
 public final class ASTIntersectionType extends AbstractJavaTypeNode
-    implements ASTReferenceType,
-               InternalInterfaces.AtLeastOneChildOfType<ASTType>,
-               Iterable<ASTType> {
+        implements
+            ASTReferenceType,
+            InternalInterfaces.AtLeastOneChildOfType<ASTType>,
+            Iterable<ASTType> {
 
     ASTIntersectionType(int id) {
         super(id);

@@ -13,10 +13,11 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
 /**
- * An expression that may be assigned by an {@linkplain ASTAssignmentExpression assignment expression},
- * or incremented or decremented. In the JLS, the result of such expressions
- * is a <i>variable</i>, while other expressions evaluate to a <i>value</i>.
- * The distinction is equivalent to C-world <i>lvalue</i>, <i>rvalue</i>.
+ * An expression that may be assigned by an {@linkplain ASTAssignmentExpression
+ * assignment expression}, or incremented or decremented. In the JLS, the result
+ * of such expressions is a <i>variable</i>, while other expressions evaluate to
+ * a <i>value</i>. The distinction is equivalent to C-world <i>lvalue</i>,
+ * <i>rvalue</i>.
  *
  *
  * <pre class="grammar">
@@ -32,10 +33,12 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
 public interface ASTAssignableExpr extends ASTPrimaryExpression {
 
     /**
-     * Returns how this expression is accessed in the enclosing expression.
-     * If this expression occurs as the left-hand-side of an {@linkplain ASTAssignmentExpression assignment},
-     * or as the target of an {@linkplain ASTUnaryExpression increment or decrement expression},
-     * this method returns {@link AccessType#WRITE}. Otherwise the value is just {@linkplain AccessType#READ read}.
+     * Returns how this expression is accessed in the enclosing expression. If this
+     * expression occurs as the left-hand-side of an
+     * {@linkplain ASTAssignmentExpression assignment}, or as the target of an
+     * {@linkplain ASTUnaryExpression increment or decrement expression}, this
+     * method returns {@link AccessType#WRITE}. Otherwise the value is just
+     * {@linkplain AccessType#READ read}.
      *
      * @see JavaAstUtils#isVarAccessReadAndWrite(ASTNamedReferenceExpr)
      * @see JavaAstUtils#isVarAccessStrictlyWrite(ASTNamedReferenceExpr)
@@ -45,7 +48,7 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
         Node parent = this.getParent();
 
         if (parent instanceof ASTUnaryExpression && !((ASTUnaryExpression) parent).getOperator().isPure()
-            || getIndexInParent() == 0 && parent instanceof ASTAssignmentExpression) {
+                || getIndexInParent() == 0 && parent instanceof ASTAssignmentExpression) {
             return AccessType.WRITE;
         }
 
@@ -53,8 +56,8 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
     }
 
     /**
-     * An {@linkplain ASTAssignableExpr assignable expression} that has
-     * a name, and refers to a symbol.
+     * An {@linkplain ASTAssignableExpr assignable expression} that has a name, and
+     * refers to a symbol.
      *
      * <pre class="grammar">
      *
@@ -71,14 +74,15 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
         String getName();
 
         // TODO, also figure out if it makes sense to have unresolved symbols for those
-        //  using null would be simpler...
+        // using null would be simpler...
 
         /**
-         * Returns the signature of the referenced variable. This is
-         * relevant for fields, as they may be inherited from some
-         * parameterized supertype.
+         * Returns the signature of the referenced variable. This is relevant for
+         * fields, as they may be inherited from some parameterized supertype.
          */
-        @Nullable JVariableSig getSignature(); // TODO this is probably multiplying the api points for nothing. You have symbol + type with getTypeMirror and getReferencedSym
+        @Nullable
+        JVariableSig getSignature(); // TODO this is probably multiplying the api points for nothing. You have symbol
+                                     // + type with getTypeMirror and getReferencedSym
 
         /**
          * Returns the symbol referenced by this variable.
@@ -90,9 +94,9 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
 
     }
 
-
     /**
-     * Represents the type of access of an {@linkplain ASTAssignableExpr assignable expression}.
+     * Represents the type of access of an {@linkplain ASTAssignableExpr assignable
+     * expression}.
      */
     enum AccessType {
 
@@ -100,8 +104,8 @@ public interface ASTAssignableExpr extends ASTPrimaryExpression {
         READ,
 
         /**
-         * The value is written to, possibly being read before or after.
-         * Also see {@link JavaAstUtils#isVarAccessReadAndWrite(ASTNamedReferenceExpr)}.
+         * The value is written to, possibly being read before or after. Also see
+         * {@link JavaAstUtils#isVarAccessReadAndWrite(ASTNamedReferenceExpr)}.
          */
         WRITE
     }

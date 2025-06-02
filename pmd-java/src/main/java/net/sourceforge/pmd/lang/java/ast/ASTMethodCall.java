@@ -8,8 +8,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A method invocation expression. This node represents both qualified (with a left-hand side)
- * and unqualified invocation expressions.
+ * A method invocation expression. This node represents both qualified (with a
+ * left-hand side) and unqualified invocation expressions.
  *
  * <pre class="grammar">
  *
@@ -25,7 +25,6 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
         super(id);
     }
 
-
     @Override
     public void jjtClose() {
         super.jjtClose();
@@ -36,7 +35,8 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
             return;
         }
 
-        // Otherwise, the method call was parsed as an ambiguous name followed by arguments
+        // Otherwise, the method call was parsed as an ambiguous name followed by
+        // arguments
         // The LHS stays ambiguous
 
         // the cast serves as an assert
@@ -58,7 +58,6 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
     public ASTArgumentList getArguments() {
         return (ASTArgumentList) getChild(getNumChildren() - 1);
     }
-
 
     @Override
     @Nullable

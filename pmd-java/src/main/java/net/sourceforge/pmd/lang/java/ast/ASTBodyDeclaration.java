@@ -5,9 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Marker interface for declarations that can occur in a {@linkplain ASTTypeBody type body},
- * such as field or method declarations. Some of those can also appear on the
- * {@linkplain ASTTopLevelDeclaration top-level} of a file.
+ * Marker interface for declarations that can occur in a {@linkplain ASTTypeBody
+ * type body}, such as field or method declarations. Some of those can also
+ * appear on the {@linkplain ASTTopLevelDeclaration top-level} of a file.
  *
  * <pre class="grammar">
  *
@@ -24,6 +24,5 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  */
 public interface ASTBodyDeclaration extends JavaNode {
-
 
 }

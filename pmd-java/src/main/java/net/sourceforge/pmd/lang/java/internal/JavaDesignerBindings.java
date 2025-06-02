@@ -72,8 +72,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
             return TreeIconId.CLASS;
         } else if (node instanceof ASTMethodDeclaration) {
             return TreeIconId.METHOD;
-        } else if (node instanceof ASTConstructorDeclaration
-            || node instanceof ASTCompactConstructorDeclaration) {
+        } else if (node instanceof ASTConstructorDeclaration || node instanceof ASTCompactConstructorDeclaration) {
             return TreeIconId.CONSTRUCTOR;
         } else if (node instanceof ASTVariableId) {
             return TreeIconId.VARIABLE;
@@ -186,7 +185,6 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         public Attribute visit(ASTVariableAccess node, Void data) {
             return new Attribute(node, "Name", node.getName());
         }
-
 
         @Override
         public Attribute visit(ASTMethodDeclaration node, Void data) {

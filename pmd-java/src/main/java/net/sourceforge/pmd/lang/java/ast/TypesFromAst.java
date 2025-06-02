@@ -42,8 +42,10 @@ final class TypesFromAst {
     /**
      * Builds a type from an AST node.
      *
-     * @param lexicalSubst A substitution to apply to type variables
-     * @param node         An ast node
+     * @param lexicalSubst
+     *            A substitution to apply to type variables
+     * @param node
+     *            An ast node
      */
     public static JTypeMirror fromAst(TypeSystem ts, Substitution lexicalSubst, ASTType node) {
         if (node == null) {
@@ -61,14 +63,13 @@ final class TypesFromAst {
 
         } else if (node instanceof ASTWildcardType) {
 
-
             ASTWildcardType wild = (ASTWildcardType) node;
-            @Nullable JTypeMirror bound = fromAst(ts, lexicalSubst, wild.getTypeBoundNode());
+            @Nullable
+            JTypeMirror bound = fromAst(ts, lexicalSubst, wild.getTypeBoundNode());
             if (bound == null) {
                 bound = ts.OBJECT;
             }
             return ts.wildcard(wild.isUpperBound(), bound).withAnnotations(getTypeAnnotations(node));
-
 
         } else if (node instanceof ASTIntersectionType) {
 
@@ -116,17 +117,14 @@ final class TypesFromAst {
         throw new IllegalStateException("Illegal type " + node.getClass() + " " + node);
     }
 
-
     private static PSet<SymAnnot> getSymbolicAnnotations(Annotatable dim) {
         return SymbolResolutionPass.buildSymbolicAnnotations(dim.getDeclaredAnnotations());
     }
-
 
     private static JTypeMirror makeFromClassType(TypeSystem ts, ASTClassType node, Substitution subst) {
         if (node == null) {
             return null;
         }
-
 
         PSet<SymAnnot> typeAnnots = getTypeAnnotations(node);
         JTypeDeclSymbol reference = getReferenceEnsureResolved(node);
@@ -147,7 +145,8 @@ final class TypesFromAst {
                     boundGenerics.add(fromAst(ts, subst, t));
                 }
             }
-            // fallthrough, this will be set to the raw type (with the correct enclosing type)
+            // fallthrough, this will be set to the raw type (with the correct enclosing
+            // type)
             // until the constructor call is fully type resolved
         }
 
@@ -169,8 +168,10 @@ final class TypesFromAst {
         }
     }
 
-    private static @Nullable JClassType getEnclosing(TypeSystem ts, ASTClassType node, Substitution subst, @Nullable ASTClassType lhsType, JTypeDeclSymbol reference) {
-        @Nullable JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
+    private static @Nullable JClassType getEnclosing(TypeSystem ts, ASTClassType node, Substitution subst,
+            @Nullable ASTClassType lhsType, JTypeDeclSymbol reference) {
+        @Nullable
+        JTypeMirror enclosing = makeFromClassType(ts, lhsType, subst);
 
         if (enclosing != null && !shouldEnclose(reference)) {
             // It's possible to write Map.Entry<A,B> but Entry is a static type,
@@ -178,17 +179,18 @@ final class TypesFromAst {
             enclosing = null;
         } else if (enclosing == null && needsEnclosing(reference)) {
             // class Foo<T> {
-            //      class Inner {}
-            //      void bar(Inner k) {}
-            //               ^^^^^
-            //               This is shorthand for Foo<T>.Inner (because of regular scoping rules)
+            // class Inner {}
+            // void bar(Inner k) {}
+            // ^^^^^
+            // This is shorthand for Foo<T>.Inner (because of regular scoping rules)
             // }
             enclosing = node.getImplicitEnclosing();
             assert enclosing != null : "Implicit enclosing type should have been set by disambiguation, for " + node;
         }
 
         if (enclosing != null) {
-            // the actual enclosing type may be a supertype of the one that was explicitly written
+            // the actual enclosing type may be a supertype of the one that was explicitly
+            // written
             // (Sub <: Sup) => (Sub.Inner = Sup.Inner)
             // We normalize them to the actual declaring class
             JClassSymbol enclosingClassAccordingToReference = reference.getEnclosingClass();
@@ -202,11 +204,11 @@ final class TypesFromAst {
         return null;
     }
 
-    // Whether the reference needs an enclosing type if it is unqualified (non-static inner type)
+    // Whether the reference needs an enclosing type if it is unqualified
+    // (non-static inner type)
     private static boolean needsEnclosing(JTypeDeclSymbol reference) {
-        return reference instanceof JClassSymbol
-            && reference.getEnclosingClass() != null
-            && !Modifier.isStatic(reference.getModifiers());
+        return reference instanceof JClassSymbol && reference.getEnclosingClass() != null
+                && !Modifier.isStatic(reference.getModifiers());
     }
 
     private static @NonNull JTypeDeclSymbol getReferenceEnsureResolved(ASTClassType node) {
@@ -215,15 +217,16 @@ final class TypesFromAst {
         } else if (node.getParent() instanceof ASTConstructorCall) {
             ASTExpression qualifier = ((ASTConstructorCall) node.getParent()).getQualifier();
             if (qualifier != null) {
-                assert node.getImplicitEnclosing() == null
-                    : "Qualified ctor calls should be handled lazily";
+                assert node.getImplicitEnclosing() == null : "Qualified ctor calls should be handled lazily";
                 // note: this triggers recursive type resolution of the qualifier
                 JTypeMirror qualifierType = qualifier.getTypeMirror();
                 JClassSymbol symbol;
                 if (qualifierType instanceof JClassType) {
                     JClassType enclosing = (JClassType) qualifierType;
-                    JClassType resolved = JavaResolvers.getMemberClassResolver(enclosing, node.getRoot().getPackageName(), node.getEnclosingType().getSymbol(), node.getSimpleName())
-                                                       .resolveFirst(node.getSimpleName());
+                    JClassType resolved = JavaResolvers
+                            .getMemberClassResolver(enclosing, node.getRoot().getPackageName(),
+                                    node.getEnclosingType().getSymbol(), node.getSimpleName())
+                            .resolveFirst(node.getSimpleName());
                     if (resolved == null) {
                         // compile-time error
                         symbol = (JClassSymbol) node.getTypeSystem().UNKNOWN.getSymbol();
@@ -245,14 +248,15 @@ final class TypesFromAst {
     }
 
     // Whether the reference is a non-static inner type of the enclosing type
-    // Note most checks have already been done in the disambiguation pass (including reporting)
+    // Note most checks have already been done in the disambiguation pass (including
+    // reporting)
     private static boolean shouldEnclose(JTypeDeclSymbol reference) {
         return !Modifier.isStatic(reference.getModifiers());
     }
 
     /**
-     * Returns the variable declaration or field or formal, etc, that
-     * may give additional type annotations to the given type.
+     * Returns the variable declaration or field or formal, etc, that may give
+     * additional type annotations to the given type.
      */
     private static @Nullable Annotatable getEnclosingAnnotationGiver(JavaNode node) {
         JavaNode parent = node.getParent();

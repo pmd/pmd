@@ -10,8 +10,8 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Classpath abstraction. PMD's symbol resolver uses the classpath to
- * find class files.
+ * Classpath abstraction. PMD's symbol resolver uses the classpath to find class
+ * files.
  */
 @FunctionalInterface
 public interface Classpath {
@@ -21,20 +21,25 @@ public interface Classpath {
      * Otherwise returns null. This will typically be used to find Java class files.
      * A typical input would be {@code java/lang/String.class}.
      *
-     * @param resourcePath Resource path, as described in {@link ClassLoader#getResource(String)}
+     * @param resourcePath
+     *            Resource path, as described in
+     *            {@link ClassLoader#getResource(String)}
      *
      * @return A InputStream if the resource exists, otherwise null
      */
-    @Nullable InputStream findResource(String resourcePath);
+    @Nullable
+    InputStream findResource(String resourcePath);
 
-    // <editor-fold  defaultstate="collapsed" desc="Transformation methods (defaults)">
+    // <editor-fold defaultstate="collapsed" desc="Transformation methods
+    // (defaults)">
 
     /**
-     * Return a classpath that will ignore the given classpath entries,
-     * even if they are present in this classpath. Every call to {@link #findResource(String)}
-     * is otherwise delegated to this one.
+     * Return a classpath that will ignore the given classpath entries, even if they
+     * are present in this classpath. Every call to {@link #findResource(String)} is
+     * otherwise delegated to this one.
      *
-     * @param deletedEntries Set of resource paths to exclude
+     * @param deletedEntries
+     *            Set of resource paths to exclude
      */
     default Classpath exclude(Set<String> deletedEntries) {
         return resourcePath -> deletedEntries.contains(resourcePath) ? null : findResource(resourcePath);
@@ -52,12 +57,11 @@ public interface Classpath {
 
     // </editor-fold>
 
-    // <editor-fold  defaultstate="collapsed" desc="Creator methods">
-
+    // <editor-fold defaultstate="collapsed" desc="Creator methods">
 
     /**
-     * Returns a classpath instance that uses {@link ClassLoader#getResourceAsStream(String)}
-     * to find resources.
+     * Returns a classpath instance that uses
+     * {@link ClassLoader#getResourceAsStream(String)} to find resources.
      */
     static Classpath forClassLoader(ClassLoader classLoader) {
         return classLoader::getResourceAsStream;

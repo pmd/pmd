@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * A guard for refining a switch case in {@link ASTSwitchLabel}s.
- * This is a Java 21 language feature.
+ * A guard for refining a switch case in {@link ASTSwitchLabel}s. This is a Java
+ * 21 language feature.
  *
  * <pre class="grammar">
  *
@@ -15,8 +15,9 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  *
- * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a>
-*/
+ * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for
+ *      switch</a>
+ */
 public final class ASTGuard extends AbstractJavaNode {
 
     ASTGuard(int id) {

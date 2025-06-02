@@ -35,10 +35,9 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        if (node.hasModifiers(JModifier.FINAL)
-            && !node.isStatic()
-            && !node.getEnclosingType().isAnnotationPresent("lombok.experimental.UtilityClass")
-            && !node.isAnnotationPresent("lombok.Builder.Default")) {
+        if (node.hasModifiers(JModifier.FINAL) && !node.isStatic()
+                && !node.getEnclosingType().isAnnotationPresent("lombok.experimental.UtilityClass")
+                && !node.isAnnotationPresent("lombok.Builder.Default")) {
 
             for (ASTVariableId field : node) {
                 ASTExpression init = field.getInitializer();
@@ -52,18 +51,19 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAllowedExpression(ASTExpression e) {
-        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression || e.isCompileTimeConstant()) {
+        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression
+                || e.isCompileTimeConstant()) {
             return true;
-        } else if (e instanceof ASTFieldAccess
-                && "length".equals(((ASTFieldAccess) e).getName())
+        } else if (e instanceof ASTFieldAccess && "length".equals(((ASTFieldAccess) e).getName())
                 && ((ASTFieldAccess) e).getQualifier().getTypeMirror().isArray()) {
-            JVariableSymbol arrayDeclarationSymbol = ((ASTVariableAccess) ((ASTFieldAccess) e).getQualifier()).getReferencedSym();
-            if (arrayDeclarationSymbol != null
-                    && arrayDeclarationSymbol.isField()
+            JVariableSymbol arrayDeclarationSymbol = ((ASTVariableAccess) ((ASTFieldAccess) e).getQualifier())
+                    .getReferencedSym();
+            if (arrayDeclarationSymbol != null && arrayDeclarationSymbol.isField()
                     && ((JFieldSymbol) arrayDeclarationSymbol).isStatic()
                     && arrayDeclarationSymbol.tryGetNode() != null) {
                 ASTVariableId arrayVarId = arrayDeclarationSymbol.tryGetNode();
-                return arrayVarId != null && arrayVarId.getInitializer() != null && arrayVarId.getInitializer().isCompileTimeConstant();
+                return arrayVarId != null && arrayVarId.getInitializer() != null
+                        && arrayVarId.getInitializer().isCompileTimeConstant();
             }
         } else if (e instanceof ASTNamedReferenceExpr) {
             JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
@@ -73,20 +73,18 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
             if (init != null) {
                 return init.length() == 0;
             }
-            return ((ASTArrayAllocation) e).getTypeNode().getDimensions().toStream()
-                                           .filterIs(ASTArrayDimExpr.class)
-                                           .all(it -> JavaAstUtils.isLiteralInt(it.getLengthExpression(), 0));
+            return ((ASTArrayAllocation) e).getTypeNode().getDimensions().toStream().filterIs(ASTArrayDimExpr.class)
+                    .all(it -> JavaAstUtils.isLiteralInt(it.getLengthExpression(), 0));
         } else if (e instanceof ASTInfixExpression) {
             return isAllowedExpression(((ASTInfixExpression) e).getLeftOperand())
-                && isAllowedExpression(((ASTInfixExpression) e).getRightOperand());
+                    && isAllowedExpression(((ASTInfixExpression) e).getRightOperand());
         }
 
         return false;
     }
 
     private boolean isUsedForSynchronization(ASTVariableId field) {
-        return field.getLocalUsages().stream().anyMatch(
-            it -> it.getParent() instanceof ASTSynchronizedStatement
+        return field.getLocalUsages().stream().anyMatch(it -> it.getParent() instanceof ASTSynchronizedStatement
                 && it.ancestors(ASTBodyDeclaration.class).take(1).any(d -> !isStatic(d)));
     }
 

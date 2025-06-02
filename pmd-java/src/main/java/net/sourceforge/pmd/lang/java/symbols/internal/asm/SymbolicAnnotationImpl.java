@@ -24,13 +24,17 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 final class SymbolicAnnotationImpl implements SymAnnot {
 
     private final JClassSymbol typeStub;
-    /** Many annotations have no attributes so this remains the singleton emptyMap in this case. */
+    /**
+     * Many annotations have no attributes so this remains the singleton emptyMap in
+     * this case.
+     */
     private @NonNull Map<String, SymbolicValue> explicitAttrs = Collections.emptyMap();
     private final boolean runtimeVisible;
 
     SymbolicAnnotationImpl(AsmSymbolResolver resolver, boolean runtimeVisible, String descriptor) {
         this.runtimeVisible = runtimeVisible;
-        this.typeStub = resolver.resolveFromInternalNameCannotFail(ClassNamesUtil.classDescriptorToInternalName(descriptor));
+        this.typeStub = resolver
+                .resolveFromInternalNameCannotFail(ClassNamesUtil.classDescriptorToInternalName(descriptor));
     }
 
     void addAttribute(String name, SymbolicValue value) {
@@ -51,8 +55,7 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     @Override
     public RetentionPolicy getRetention() {
-        return runtimeVisible ? RetentionPolicy.RUNTIME
-                              : RetentionPolicy.CLASS;
+        return runtimeVisible ? RetentionPolicy.RUNTIME : RetentionPolicy.CLASS;
     }
 
     @Override

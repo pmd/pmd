@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
@@ -14,11 +13,13 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
- * This defines a compact constructor for a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 16 feature).
- * Compact constructors implicitly declares formal parameters corresponding to the record component list. These can be
+ * This defines a compact constructor for a {@linkplain ASTRecordDeclaration
+ * RecordDeclaration} (JDK 16 feature). Compact constructors implicitly declares
+ * formal parameters corresponding to the record component list. These can be
  * fetched from {@link #getSymbol()}.
  *
- * <p>Compact record constructors must be declared "public".
+ * <p>
+ * Compact record constructors must be declared "public".
  *
  * <pre class="grammar">
  *
@@ -28,16 +29,23 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  *
  * </pre>
  */
-// TODO make implicit formal parameter node and implement ASTExecutableDeclaration.
-// This might help UnusedAssignmentRule / DataflowPass.ReachingDefsVisitor, see also #4603
-public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner, JavadocCommentOwner, ReturnScopeNode {
+// TODO make implicit formal parameter node and implement
+// ASTExecutableDeclaration.
+// This might help UnusedAssignmentRule / DataflowPass.ReachingDefsVisitor, see
+// also #4603
+public final class ASTCompactConstructorDeclaration extends AbstractJavaNode
+        implements
+            ASTBodyDeclaration,
+            SymbolDeclaratorNode,
+            ModifierOwner,
+            JavadocCommentOwner,
+            ReturnScopeNode {
 
     private JavaccToken identToken;
 
     ASTCompactConstructorDeclaration(int id) {
         super(id);
     }
-
 
     @Override
     public FileLocation getReportLocation() {

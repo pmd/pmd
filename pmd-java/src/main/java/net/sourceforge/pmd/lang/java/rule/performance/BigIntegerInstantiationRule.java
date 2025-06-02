@@ -18,14 +18,14 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Rule that marks instantiations of new {@link BigInteger} or {@link BigDecimal} objects, when there is a well-known
- * constant available, such as {@link BigInteger#ZERO}.
+ * Rule that marks instantiations of new {@link BigInteger} or
+ * {@link BigDecimal} objects, when there is a well-known constant available,
+ * such as {@link BigInteger#ZERO}.
  */
 public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
 
     // BigDecimal.ZERO, ONE, TEN: since 1.5
     private static final Set<String> BIGDECIMAL_CONSTANTS = CollectionUtil.setOf("0", "0.", "1", "10");
-
 
     public BigIntegerInstantiationRule() {
         super(ASTConstructorCall.class);

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-
 import static net.sourceforge.pmd.util.CollectionUtil.associateByTo;
 
 import java.util.Collections;
@@ -36,8 +35,8 @@ public final class LexicalScope extends MapFunction<String, @Nullable JTypeVar> 
     }
 
     /**
-     * Return a new scope which contains the given tvars. They shadow
-     * tvars that were in this scope.
+     * Return a new scope which contains the given tvars. They shadow tvars that
+     * were in this scope.
      */
     public LexicalScope andThen(List<? extends JTypeVar> vars) {
         if (this == EMPTY && vars.isEmpty()) { // NOPMD CompareObjectsWithEquals

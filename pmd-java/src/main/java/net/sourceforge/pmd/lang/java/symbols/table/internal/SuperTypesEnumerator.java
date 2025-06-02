@@ -34,8 +34,8 @@ public enum SuperTypesEnumerator {
     },
 
     /**
-     * Superclasses of t, including t, in innermost to outermost. If t
-     * is an interface, contains t, and Object.
+     * Superclasses of t, including t, in innermost to outermost. If t is an
+     * interface, contains t, and Object.
      */
     SUPERCLASSES_AND_SELF {
         @Override
@@ -45,8 +45,8 @@ public enum SuperTypesEnumerator {
     },
 
     /**
-     * All direct strict supertypes, starting with the superclass if
-     * it exists. This includes Object if the search starts on an interface.
+     * All direct strict supertypes, starting with the superclass if it exists. This
+     * includes Object if the search starts on an interface.
      */
     DIRECT_STRICT_SUPERTYPES {
         @Override
@@ -56,7 +56,8 @@ public enum SuperTypesEnumerator {
 
         @Override
         public Iterable<JClassType> iterable(JClassType t) {
-            @Nullable JClassType sup = t.getSuperClass();
+            @Nullable
+            JClassType sup = t.getSuperClass();
             List<JClassType> superItfs = t.getSuperInterfaces();
 
             @SuppressWarnings("PMD.LooseCoupling") // the set should keep insertion order
@@ -78,9 +79,8 @@ public enum SuperTypesEnumerator {
     },
 
     /**
-     * Restriction of {@link #ALL_SUPERTYPES_INCLUDING_SELF} to just the
-     * strict supertypes. This includes Object if the search starts
-     * on an interface.
+     * Restriction of {@link #ALL_SUPERTYPES_INCLUDING_SELF} to just the strict
+     * supertypes. This includes Object if the search starts on an interface.
      */
     ALL_STRICT_SUPERTYPES {
         @Override
@@ -91,19 +91,23 @@ public enum SuperTypesEnumerator {
         }
     },
 
-
     /**
-     * Walks supertypes depth-first, without duplicates. This includes
-     * Object if the search starts on an interface. For example for the following:
+     * Walks supertypes depth-first, without duplicates. This includes Object if the
+     * search starts on an interface. For example for the following:
+     * 
      * <pre>{@code
      *
-     * interface I1 { } // yields I1, Object
+     * interface I1 {
+     * } // yields I1, Object
      *
-     * interface I2 extends I1 { }  // yields I2, Object, I1
+     * interface I2 extends I1 {
+     * } // yields I2, Object, I1
      *
-     * class Sup implements I2 { }  // yields Sup, Object, I2, I1
+     * class Sup implements I2 {
+     * } // yields Sup, Object, I2, I1
      *
-     * class Sub extends Sup implements I1 { } // yields Sub, Sup, Object, I2, I1
+     * class Sub extends Sup implements I1 {
+     * } // yields Sub, Sup, Object, I2, I1
      *
      * }</pre>
      */
@@ -113,7 +117,6 @@ public enum SuperTypesEnumerator {
             return new SuperTypeWalker(t);
         }
     };
-
 
     public abstract Iterator<JClassType> iterator(JClassType t);
 

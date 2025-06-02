@@ -9,10 +9,9 @@ import java.util.List;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
-
 /**
- * Represents class and interface declarations.
- * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
+ * Represents class and interface declarations. This is a
+ * {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  * <pre class="grammar">
  *
@@ -58,9 +57,9 @@ public final class ASTClassDeclaration extends AbstractTypeDeclaration {
         this.isInterface = true;
     }
 
-
     /**
-     * @deprecated Use {@link #getPermitsClause()} or {@link JClassSymbol#getPermittedSubtypes()}
+     * @deprecated Use {@link #getPermitsClause()} or
+     *             {@link JClassSymbol#getPermittedSubtypes()}
      */
     @Deprecated
     public List<ASTClassType> getPermittedSubclasses() {

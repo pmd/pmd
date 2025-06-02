@@ -25,7 +25,6 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
 
-
 /**
  * Simple rule for Ncss. Maybe to be enriched with type specific thresholds.
  *
@@ -33,20 +32,13 @@ import net.sourceforge.pmd.util.AssertionUtil;
  */
 public final class NcssCountRule extends AbstractJavaRulechainRule {
 
+    private static final PropertyDescriptor<Integer> METHOD_REPORT_LEVEL_DESCRIPTOR = PropertyFactory
+            .intProperty("methodReportLevel").desc("NCSS reporting threshold for methods").require(positive())
+            .defaultValue(60).build();
 
-    private static final PropertyDescriptor<Integer> METHOD_REPORT_LEVEL_DESCRIPTOR =
-        PropertyFactory.intProperty("methodReportLevel")
-                       .desc("NCSS reporting threshold for methods")
-                       .require(positive())
-                       .defaultValue(60)
-                       .build();
-
-    private static final PropertyDescriptor<Integer> CLASS_REPORT_LEVEL_DESCRIPTOR =
-        PropertyFactory.intProperty("classReportLevel")
-                       .desc("NCSS reporting threshold for classes")
-                       .require(positive())
-                       .defaultValue(1500)
-                       .build();
+    private static final PropertyDescriptor<Integer> CLASS_REPORT_LEVEL_DESCRIPTOR = PropertyFactory
+            .intProperty("classReportLevel").desc("NCSS reporting threshold for classes").require(positive())
+            .defaultValue(1500).build();
 
     private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR;
 
@@ -55,12 +47,9 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         options.put(NcssOption.COUNT_IMPORTS.valueName(), NcssOption.COUNT_IMPORTS);
 
         NCSS_OPTIONS_DESCRIPTOR = PropertyFactory.enumListProperty("ncssOptions", options)
-                                                 .desc("Choose options for the computation of Ncss")
-                                                 .emptyDefaultValue()
-                                                 .build();
+                .desc("Choose options for the computation of Ncss").emptyDefaultValue().build();
 
     }
-
 
     public NcssCountRule() {
         super(ASTExecutableDeclaration.class, ASTTypeDeclaration.class);
@@ -68,7 +57,6 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         definePropertyDescriptor(CLASS_REPORT_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(NCSS_OPTIONS_DESCRIPTOR);
     }
-
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
@@ -86,37 +74,29 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-
-    private void visitTypeDecl(ASTTypeDeclaration node,
-                               int level,
-                               MetricOptions ncssOptions,
-                               RuleContext data) {
+    private void visitTypeDecl(ASTTypeDeclaration node, int level, MetricOptions ncssOptions, RuleContext data) {
 
         if (JavaMetrics.NCSS.supports(node)) {
             int classSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
-            int classHighest = (int) MetricsUtil.computeStatistics(JavaMetrics.NCSS, node.getOperations(), ncssOptions).getMax();
+            int classHighest = (int) MetricsUtil.computeStatistics(JavaMetrics.NCSS, node.getOperations(), ncssOptions)
+                    .getMax();
 
             if (classSize >= level) {
-                String[] messageParams = {PrettyPrintingUtil.getPrintableNodeKind(node),
-                                          node.getSimpleName(),
-                                          classSize + " (Highest = " + classHighest + ")", };
+                String[] messageParams = {PrettyPrintingUtil.getPrintableNodeKind(node), node.getSimpleName(),
+                        classSize + " (Highest = " + classHighest + ")",};
 
                 asCtx(data).addViolation(node, (Object[]) messageParams);
             }
         }
     }
 
-
-    private void visitMethod(ASTExecutableDeclaration node,
-                             int level,
-                             MetricOptions ncssOptions,
-                             RuleContext data) {
+    private void visitMethod(ASTExecutableDeclaration node, int level, MetricOptions ncssOptions, RuleContext data) {
 
         if (JavaMetrics.NCSS.supports(node)) {
             int methodSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
             if (methodSize >= level) {
                 asCtx(data).addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                         PrettyPrintingUtil.displaySignature(node), "" + methodSize);
+                        PrettyPrintingUtil.displaySignature(node), "" + methodSize);
             }
         }
     }

@@ -32,8 +32,8 @@ final class SupertypeCheckCache {
     };
 
     /**
-     * Returns true if t is certainly a subtype of s. Otherwise it
-     * needs to be recomputed.
+     * Returns true if t is certainly a subtype of s. Otherwise it needs to be
+     * recomputed.
      */
     boolean isCertainlyASubtype(JTypeMirror t, JTypeMirror s) {
         Set<JTypeMirror> superTypesOfT = cache.get(t);
@@ -45,7 +45,6 @@ final class SupertypeCheckCache {
             cache.computeIfAbsent(t, k -> new HashSet<>()).add(s);
         }
     }
-
 
     private boolean shouldCache(JTypeMirror t) {
         // some types are never cached

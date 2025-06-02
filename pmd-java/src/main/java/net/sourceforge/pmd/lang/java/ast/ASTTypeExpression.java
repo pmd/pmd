@@ -11,14 +11,16 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
 
 /**
- * Wraps a type node but presents the interface of {@link ASTExpression}.
- * This is only used in the following contexts:
+ * Wraps a type node but presents the interface of {@link ASTExpression}. This
+ * is only used in the following contexts:
  * <ul>
- * <li>As the right-hand side of {@link BinaryOp#INSTANCEOF instanceof expressions}.
+ * <li>As the right-hand side of {@link BinaryOp#INSTANCEOF instanceof
+ * expressions}.
  * <li>As the qualifier of {@linkplain ASTMethodCall method calls},
- * {@link ASTFieldAccess field accesses}, when they access a static method or field
- * <li>As the qualifier of {@linkplain ASTMethodReference method references},
- * if it references a static method, or is a constructor reference
+ * {@link ASTFieldAccess field accesses}, when they access a static method or
+ * field
+ * <li>As the qualifier of {@linkplain ASTMethodReference method references}, if
+ * it references a static method, or is a constructor reference
  * </ul>
  *
  * <pre class="grammar">
@@ -27,7 +29,11 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
  *
  * </pre>
  */
-public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
+public final class ASTTypeExpression extends AbstractJavaNode
+        implements
+            ASTPrimaryExpression,
+            AtLeastOneChild,
+            LeftRecursiveNode {
 
     ASTTypeExpression(int id) {
         super(id);
@@ -39,7 +45,6 @@ public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrim
         copyTextCoordinates((AbstractJavaNode) wrapped);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -49,7 +54,6 @@ public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrim
     public ASTType getTypeNode() {
         return (ASTType) getChild(0);
     }
-
 
     /** Returns 0, type expressions can never be parenthesized. */
     @Override

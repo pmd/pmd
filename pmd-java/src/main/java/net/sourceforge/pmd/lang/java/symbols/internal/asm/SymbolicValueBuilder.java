@@ -30,7 +30,6 @@ abstract class SymbolicValueBuilder extends AnnotationVisitor {
 
     protected abstract void acceptValue(String name, SymbolicValue v);
 
-
     @Override
     public void visitEnum(String name, String descriptor, String value) {
         acceptValue(name, SymEnum.fromTypeDescriptor(resolver.getTypeSystem(), descriptor, value));
@@ -39,7 +38,8 @@ abstract class SymbolicValueBuilder extends AnnotationVisitor {
     @Override
     public void visit(String name, Object value) {
         if (value instanceof Type) {
-            acceptValue(name, SymbolicValue.SymClass.ofBinaryName(resolver.getTypeSystem(), ((Type) value).getClassName()));
+            acceptValue(name,
+                    SymbolicValue.SymClass.ofBinaryName(resolver.getTypeSystem(), ((Type) value).getClassName()));
         } else {
             acceptValue(name, SymbolicValue.of(resolver.getTypeSystem(), value));
         }
@@ -55,7 +55,8 @@ abstract class SymbolicValueBuilder extends AnnotationVisitor {
         private final List<SymbolicValue> arrayElements;
         private final Consumer<SymbolicValue> finisher;
 
-        ArrayValueBuilder(AsmSymbolResolver resolver, List<SymbolicValue> arrayElements, Consumer<SymbolicValue> finisher) {
+        ArrayValueBuilder(AsmSymbolResolver resolver, List<SymbolicValue> arrayElements,
+                Consumer<SymbolicValue> finisher) {
             super(resolver);
             this.arrayElements = arrayElements;
             this.finisher = finisher;

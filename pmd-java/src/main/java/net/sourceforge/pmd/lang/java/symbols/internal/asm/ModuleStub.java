@@ -44,7 +44,8 @@ class ModuleStub implements JModuleSymbol, AsmStub, AnnotationOwner {
                         ClassVisitor classVisitor = new ClassVisitor(AsmSymbolResolver.ASM_API_V) {
                             @Override
                             public ModuleVisitor visitModule(String name, int access, String version) {
-                                assert name.equals(moduleName) : "Expected module-info.class for " + moduleName + ", but got " + name;
+                                assert name.equals(moduleName)
+                                        : "Expected module-info.class for " + moduleName + ", but got " + name;
 
                                 return new ModuleVisitor(AsmSymbolResolver.ASM_API_V) {
                                     @Override
@@ -59,7 +60,8 @@ class ModuleStub implements JModuleSymbol, AsmStub, AnnotationOwner {
                                 return new AnnotationBuilderVisitor(ModuleStub.this, resolver, visible, descriptor);
                             }
                         };
-                        classReader.accept(classVisitor, ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
+                        classReader.accept(classVisitor,
+                                ClassReader.SKIP_CODE | ClassReader.SKIP_DEBUG | ClassReader.SKIP_FRAMES);
                         return true;
                     } else {
                         return false;

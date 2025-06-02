@@ -19,27 +19,23 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 /**
  * Detects fields that are declared after methods, constructors, etc. It was a
  * XPath rule, but the Java version is much faster.
  */
 public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> IGNORE_ANONYMOUS_CLASS_DECLARATIONS =
-        booleanProperty("ignoreAnonymousClassDeclarations")
-            .defaultValue(true)
-            .desc("Ignore field declarations, that are initialized with an anonymous class creation expression").build();
+    private static final PropertyDescriptor<Boolean> IGNORE_ANONYMOUS_CLASS_DECLARATIONS = booleanProperty(
+            "ignoreAnonymousClassDeclarations").defaultValue(true)
+            .desc("Ignore field declarations, that are initialized with an anonymous class creation expression")
+            .build();
 
-    private static final PropertyDescriptor<Boolean> IGNORE_ENUM_DECLARATIONS =
-        booleanProperty("ignoreEnumDeclarations")
-            .defaultValue(true)
-            .desc("Ignore enum declarations that precede fields").build();
+    private static final PropertyDescriptor<Boolean> IGNORE_ENUM_DECLARATIONS = booleanProperty(
+            "ignoreEnumDeclarations").defaultValue(true).desc("Ignore enum declarations that precede fields").build();
 
-    private static final PropertyDescriptor<Boolean> IGNORE_INTERFACE_DECLARATIONS =
-        booleanProperty("ignoreInterfaceDeclarations")
-            .defaultValue(false)
-            .desc("Ignore interface declarations that precede fields").build();
+    private static final PropertyDescriptor<Boolean> IGNORE_INTERFACE_DECLARATIONS = booleanProperty(
+            "ignoreInterfaceDeclarations").defaultValue(false).desc("Ignore interface declarations that precede fields")
+            .build();
 
     public FieldDeclarationsShouldBeAtStartOfClassRule() {
         super(ASTTypeDeclaration.class);
@@ -71,17 +67,14 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     }
 
     private boolean isAllowedAtStartOfClass(ASTBodyDeclaration declaration) {
-        return declaration instanceof ASTFieldDeclaration
-            || declaration instanceof ASTInitializer
-            || declaration instanceof ASTEnumConstant
-            || declaration instanceof ASTEmptyDeclaration
-            || declaration instanceof ASTEnumDeclaration && getProperty(IGNORE_ENUM_DECLARATIONS)
-            || isInterface(declaration) && getProperty(IGNORE_INTERFACE_DECLARATIONS);
+        return declaration instanceof ASTFieldDeclaration || declaration instanceof ASTInitializer
+                || declaration instanceof ASTEnumConstant || declaration instanceof ASTEmptyDeclaration
+                || declaration instanceof ASTEnumDeclaration && getProperty(IGNORE_ENUM_DECLARATIONS)
+                || isInterface(declaration) && getProperty(IGNORE_INTERFACE_DECLARATIONS);
     }
 
     private boolean isInterface(ASTBodyDeclaration declaration) {
-        return declaration instanceof ASTTypeDeclaration
-            && ((ASTTypeDeclaration) declaration).isRegularInterface();
+        return declaration instanceof ASTTypeDeclaration && ((ASTTypeDeclaration) declaration).isRegularInterface();
     }
 
     private boolean isInitializerOk(ASTFieldDeclaration fieldDeclaration) {

@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
- * A "type" that exists outside the main type hierarchy. This is only
- * used to have some sentinel values, to e.g. represent failure or errors.
+ * A "type" that exists outside the main type hierarchy. This is only used to
+ * have some sentinel values, to e.g. represent failure or errors.
  */
 final class SentinelType implements JTypeMirror {
 

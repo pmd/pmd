@@ -24,7 +24,6 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 
-
 /**
  * Populates symbols on declaration nodes. Cannot be reused.
  */
@@ -32,15 +31,19 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
 
     private static final String NO_CANONICAL_NAME = "<impossible/name>";
 
-    // these map simple name to count of local classes with that name in the given class
+    // these map simple name to count of local classes with that name in the given
+    // class
     private final Deque<Map<String, Integer>> currentLocalIndices = new ArrayDeque<>();
     // these are counts of anon classes in the enclosing class
     private final Deque<MutableInt> anonymousCounters = new ArrayDeque<>();
-    // these are binary names, eg may contain pack.Foo, pack.Foo$Nested, pack.Foo$Nested$1Local
+    // these are binary names, eg may contain pack.Foo, pack.Foo$Nested,
+    // pack.Foo$Nested$1Local
     private final Deque<String> enclosingBinaryNames = new ArrayDeque<>();
-    // these are canonical names. Contains NO_CANONICAL_NAME if the enclosing decl has no canonical name
+    // these are canonical names. Contains NO_CANONICAL_NAME if the enclosing decl
+    // has no canonical name
     private final Deque<String> enclosingCanonicalNames = new ArrayDeque<>();
-    // these are symbols, NOT 1-to-1 with the type name stack because may contain method/ctor symbols
+    // these are symbols, NOT 1-to-1 with the type name stack because may contain
+    // method/ctor symbols
     private final Deque<JTypeParameterOwnerSymbol> enclosingSymbols = new ArrayDeque<>();
 
     /** Package name of the current file. */
@@ -64,7 +67,8 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         if (isTrueLocalVar(node)) {
             data.setLocalVarSymbol(node);
         } else {
-            // in the other cases, building the method/ctor/class symbols already set the symbols
+            // in the other cases, building the method/ctor/class symbols already set the
+            // symbols
             assert node.getSymbol() != null : "Symbol was null for " + node;
         }
 
@@ -72,16 +76,15 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     }
 
     private boolean isTrueLocalVar(ASTVariableId node) {
-        return !(node.isField()
-            || node.isEnumConstant()
-            || node.isRecordComponent()
-            || node.getParent() instanceof ASTFormalParameter);
+        return !(node.isField() || node.isEnumConstant() || node.isRecordComponent()
+                || node.getParent() instanceof ASTFormalParameter);
     }
 
     @Override
     public Void visitTypeDecl(ASTTypeDeclaration node, AstSymFactory data) {
         String binaryName = makeBinaryName(node);
-        @Nullable String canonicalName = makeCanonicalName(node, binaryName);
+        @Nullable
+        String canonicalName = makeCanonicalName(node, binaryName);
         InternalApiBridge.setQname(node, binaryName, canonicalName);
         JClassSymbol sym = data.setClassSymbol(enclosingSymbols.peek(), node);
 
@@ -112,7 +115,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         String simpleName = node.getSimpleName();
         if (node.isLocal()) {
             simpleName = getNextIndexFromHistogram(currentLocalIndices.getFirst(), node.getSimpleName(), 1)
-                + simpleName;
+                    + simpleName;
         } else if (node.isAnonymous()) {
             simpleName = "" + anonymousCounters.getFirst().incrementAndGet();
         } else if (node.isUnnamedToplevelClass()) {
@@ -120,9 +123,9 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         }
 
         String enclosing = enclosingBinaryNames.peek();
-        return enclosing != null ? enclosing + "$" + simpleName
-                                 : packageName.isEmpty() ? simpleName
-                                                         : packageName + "." + simpleName;
+        return enclosing != null
+                ? enclosing + "$" + simpleName
+                : packageName.isEmpty() ? simpleName : packageName + "." + simpleName;
     }
 
     @Nullable
@@ -138,8 +141,8 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
 
         String enclCanon = enclosingCanonicalNames.getFirst();
         return NO_CANONICAL_NAME.equals(enclCanon)
-               ? null  // enclosing has no canonical name, so this one doesn't either
-               : enclCanon + '.' + node.getSimpleName();
+                ? null // enclosing has no canonical name, so this one doesn't either
+                : enclCanon + '.' + node.getSimpleName();
 
     }
 
@@ -151,16 +154,20 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         return null;
     }
 
-
     /**
-     * Gets the next available index based on a key and a histogram (map of keys to int counters).
-     * If the key doesn't exist, we add a new entry with the startIndex.
+     * Gets the next available index based on a key and a histogram (map of keys to
+     * int counters). If the key doesn't exist, we add a new entry with the
+     * startIndex.
      *
-     * <p>Used for lambda and anonymous class counters
+     * <p>
+     * Used for lambda and anonymous class counters
      *
-     * @param histogram  The histogram map
-     * @param key        The key to access
-     * @param startIndex First index given out when the key doesn't exist
+     * @param histogram
+     *            The histogram map
+     * @param key
+     *            The key to access
+     * @param startIndex
+     *            First index given out when the key doesn't exist
      *
      * @return The next free index
      */

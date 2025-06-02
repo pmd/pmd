@@ -16,15 +16,15 @@ import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
- * Wraps a comment token to provide some utilities.
- * This is not a node, it's not part of the tree anywhere,
- * just convenient.
+ * Wraps a comment token to provide some utilities. This is not a node, it's not
+ * part of the tree anywhere, just convenient.
  *
- * <p>This class represents any kind of comment. A specialized subclass
- * provides more API for Javadoc comments, see {@link JavadocComment}.
+ * <p>
+ * This class represents any kind of comment. A specialized subclass provides
+ * more API for Javadoc comments, see {@link JavadocComment}.
  */
 public class JavaComment implements Reportable {
-    //TODO maybe move part of this into pmd core
+    // TODO maybe move part of this into pmd core
 
     private final JavaccToken token;
 
@@ -56,19 +56,20 @@ public class JavaComment implements Reportable {
     }
 
     /**
-     * Returns true if the given token has the kind
-     * of a comment token (there are three such kinds).
+     * Returns true if the given token has the kind of a comment token (there are
+     * three such kinds).
      */
     public static boolean isComment(JavaccToken token) {
         return JavaAstUtils.isComment(token);
     }
 
     /**
-     * Removes the leading comment marker (like {@code *}) of each line
-     * of the comment as well as the start marker ({@code //}, {@code /*}, {@code /**} or {@code ///}
-     * and the end markers (<code>&#x2a;/</code>).
+     * Removes the leading comment marker (like {@code *}) of each line of the
+     * comment as well as the start marker ({@code //}, {@code /*}, {@code /**} or
+     * {@code ///} and the end markers (<code>&#x2a;/</code>).
      *
-     * <p>Empty lines are removed.
+     * <p>
+     * Empty lines are removed.
      *
      * @return List of lines of the comments
      */
@@ -80,44 +81,34 @@ public class JavaComment implements Reportable {
         if (preserveEmptyLines) {
             return () -> IteratorUtil.map(getText().lines().iterator(), JavaComment::removeCommentMarkup);
         } else {
-            return () -> IteratorUtil.mapNotNull(
-                getText().lines().iterator(),
-                line -> {
-                    line = removeCommentMarkup(line);
-                    return line.isEmpty() ? null : line;
-                }
-            );
+            return () -> IteratorUtil.mapNotNull(getText().lines().iterator(), line -> {
+                line = removeCommentMarkup(line);
+                return line.isEmpty() ? null : line;
+            });
         }
     }
 
     /**
-     * True if this is a comment delimiter or an asterisk. This
-     * tests the whole parameter and not a prefix/suffix.
+     * True if this is a comment delimiter or an asterisk. This tests the whole
+     * parameter and not a prefix/suffix.
      */
     @SuppressWarnings("PMD.LiteralsFirstInComparisons") // a fp
     public static boolean isMarkupWord(Chars word) {
-        return word.length() <= 3
-            && (word.contentEquals("*")
-            || word.contentEquals("//")
-            || word.contentEquals("///")
-            || word.contentEquals("/*")
-            || word.contentEquals("*/")
-            || word.contentEquals("/**"));
+        return word.length() <= 3 && (word.contentEquals("*") || word.contentEquals("//") || word.contentEquals("///")
+                || word.contentEquals("/*") || word.contentEquals("*/") || word.contentEquals("/**"));
     }
 
     /**
-     * Trim the start of the provided line to remove a comment
-     * markup opener ({@code //, ///, /*, /**, *}) or closer <code>&#x2a;/</code>.
+     * Trim the start of the provided line to remove a comment markup opener
+     * ({@code //, ///, /*, /**, *}) or closer <code>&#x2a;/</code>.
      */
     public static Chars removeCommentMarkup(Chars line) {
         line = line.trim().removeSuffix("*/");
         int subseqFrom = 0;
         if (line.startsWith('/', 0)) {
-            if (line.startsWith("**", 1)
-                || line.startsWith("//", 1)) {
+            if (line.startsWith("**", 1) || line.startsWith("//", 1)) {
                 subseqFrom = 3;
-            } else if (line.startsWith('/', 1)
-                || line.startsWith('*', 1)) {
+            } else if (line.startsWith('/', 1) || line.startsWith('*', 1)) {
                 subseqFrom = 2;
             }
         } else if (line.startsWith('*', 0)) {
@@ -128,34 +119,34 @@ public class JavaComment implements Reportable {
 
     private static Stream<JavaccToken> getSpecialTokensIn(JjtreeNode<?> node) {
         return GenericToken.streamRange(node.getFirstToken(), node.getLastToken())
-                           .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
+                .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
     }
 
     public static Stream<JavaComment> getLeadingComments(JavaNode node) {
         Stream<JavaccToken> specialTokens = getSpecialTokensIn(node);
-        
+
         if (node instanceof ModifierOwner && !(node instanceof ASTConstructorDeclaration)) {
             node = ((ModifierOwner) node).getModifiers();
             specialTokens = getSpecialTokensIn(node);
-            
-            // if this was a non-implicit empty modifier node, we should also consider comments immediately after
+
+            // if this was a non-implicit empty modifier node, we should also consider
+            // comments immediately after
             if (!node.getFirstToken().isImplicit()) {
                 specialTokens = Stream.concat(specialTokens, getSpecialTokensIn(node.getNextSibling()));
             }
         }
-        
-        return specialTokens.filter(JavaComment::isComment)
-                                         .map(JavaComment::toComment);
+
+        return specialTokens.filter(JavaComment::isComment).map(JavaComment::toComment);
     }
 
     private static JavaComment toComment(JavaccToken tok) {
         switch (tok.kind) {
-        case JavaTokenKinds.FORMAL_COMMENT:
+            case JavaTokenKinds.FORMAL_COMMENT :
             return new JavadocComment(tok);
-        case JavaTokenKinds.MULTI_LINE_COMMENT:
-        case JavaTokenKinds.SINGLE_LINE_COMMENT:
+            case JavaTokenKinds.MULTI_LINE_COMMENT :
+            case JavaTokenKinds.SINGLE_LINE_COMMENT :
             return new JavaComment(tok);
-        default:
+            default :
             throw new IllegalArgumentException("Token is not a comment: " + tok);
         }
     }

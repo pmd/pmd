@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 import java.util.Iterator;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -26,10 +25,9 @@ final class InternalInterfaces {
 
     interface OperatorLike {
 
-
         /**
-         * Returns the token used to represent the type in source
-         * code, e.g. {@code "+"} or {@code "*"}.
+         * Returns the token used to represent the type in source code, e.g. {@code "+"}
+         * or {@code "*"}.
          */
         String getToken();
 
@@ -44,13 +42,11 @@ final class InternalInterfaces {
             return (ASTExpression) getChild(0);
         }
 
-
         /** Returns the right-hand side operand. */
         @NonNull
         default ASTExpression getRightOperand() {
             return (ASTExpression) getChild(1);
         }
-
 
         /** Returns the operator. */
         @NonNull
@@ -58,11 +54,9 @@ final class InternalInterfaces {
     }
 
     /**
-     * Tags a node that has at least one child, then some methods never
-     * return null.
+     * Tags a node that has at least one child, then some methods never return null.
      */
     interface AtLeastOneChild extends JavaNode {
-
 
         /** Returns the first child of this node, never null. */
         @Override
@@ -71,7 +65,6 @@ final class InternalInterfaces {
             assert getNumChildren() > 0;
             return getChild(0);
         }
-
 
         /** Returns the last child of this node, never null. */
         @Override
@@ -93,7 +86,6 @@ final class InternalInterfaces {
             return (T) getChild(0);
         }
 
-
         @Override
         @Nullable
         default T getLastChild() {
@@ -105,8 +97,7 @@ final class InternalInterfaces {
     }
 
     /**
-     * Tags a node that has at least one child, then some methods never
-     * return null.
+     * Tags a node that has at least one child, then some methods never return null.
      */
     interface AtLeastOneChildOfType<T extends JavaNode> extends AllChildrenAreOfType<T> {
 
@@ -117,7 +108,6 @@ final class InternalInterfaces {
             assert getNumChildren() > 0 : "No children for node implementing AtLeastOneChild " + this;
             return (T) getChild(0);
         }
-
 
         /** Returns the last child of this node, never null. */
         @Override
@@ -137,13 +127,11 @@ final class InternalInterfaces {
     interface MultiVariableIdOwner extends Iterable<ASTVariableId>, ModifierOwner {
 
         /**
-         * Returns a stream of the variable ids declared
-         * by this node.
+         * Returns a stream of the variable ids declared by this node.
          */
         default NodeStream<ASTVariableId> getVarIds() {
             return children(ASTVariableDeclarator.class).children(ASTVariableId.class);
         }
-
 
         @Override
         default Iterator<ASTVariableId> iterator() {

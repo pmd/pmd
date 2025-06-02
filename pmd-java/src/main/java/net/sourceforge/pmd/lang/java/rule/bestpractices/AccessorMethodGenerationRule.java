@@ -64,14 +64,15 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
         checkMemberAccess(data, node, symbol, reportedNodes);
     }
 
-    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
+    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym,
+            Set<JavaNode> reportedNodes) {
         if (Modifier.isPrivate(sym.getModifiers())
-            && !Objects.equals(sym.getEnclosingClass(),
-                               refExpr.getEnclosingType().getSymbol())) {
+                && !Objects.equals(sym.getEnclosingClass(), refExpr.getEnclosingType().getSymbol())) {
 
             JavaNode node = sym.tryGetNode();
             if (node == null && JConstructorSymbol.CTOR_NAME.equals(sym.getSimpleName())) {
-                // might be a default constructor, implicitly defined and not explicitly in the compilation unit
+                // might be a default constructor, implicitly defined and not explicitly in the
+                // compilation unit
                 node = sym.getEnclosingClass().tryGetNode();
             }
             assert node != null : "Node should be in the same compilation unit";
@@ -82,8 +83,8 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Returns the canonical name without the package name. Eg for a
-     * canonical name {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
+     * Returns the canonical name without the package name. Eg for a canonical name
+     * {@code com.github.Outer.Inner}, returns {@code Outer.Inner}.
      */
     private static String stripPackageName(JClassSymbol symbol) {
         String canoName = symbol.getCanonicalName();
@@ -94,6 +95,6 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
         if (p.isEmpty()) {
             return canoName;
         }
-        return canoName.substring(p.length() + 1); //+1 for the dot
+        return canoName.substring(p.length() + 1); // +1 for the dot
     }
 }

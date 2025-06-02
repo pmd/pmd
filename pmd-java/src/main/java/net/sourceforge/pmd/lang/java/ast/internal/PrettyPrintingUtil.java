@@ -76,7 +76,8 @@ public final class PrettyPrintingUtil {
     }
 
     /**
-     * Returns a normalized method name. This just looks at the image of the types of the parameters.
+     * Returns a normalized method name. This just looks at the image of the types
+     * of the parameters.
      */
     public static String displaySignature(String methodName, ASTFormalParameters params) {
 
@@ -132,11 +133,11 @@ public final class PrettyPrintingUtil {
                 prettyPrintTypeNode(sb, bound);
             }
         } else if (t instanceof ASTUnionType) {
-            CollectionUtil.joinOn(sb, ((ASTUnionType) t).getComponents(),
-                PrettyPrintingUtil::prettyPrintTypeNode, " | ");
+            CollectionUtil.joinOn(sb, ((ASTUnionType) t).getComponents(), PrettyPrintingUtil::prettyPrintTypeNode,
+                    " | ");
         } else if (t instanceof ASTIntersectionType) {
             CollectionUtil.joinOn(sb, ((ASTIntersectionType) t).getComponents(),
-                PrettyPrintingUtil::prettyPrintTypeNode, " & ");
+                    PrettyPrintingUtil::prettyPrintTypeNode, " & ");
         } else if (t instanceof ASTAmbiguousName) {
             sb.append(((ASTAmbiguousName) t).getName());
         } else {
@@ -151,7 +152,8 @@ public final class PrettyPrintingUtil {
     }
 
     /**
-     * Returns a normalized method name. This just looks at the image of the types of the parameters.
+     * Returns a normalized method name. This just looks at the image of the types
+     * of the parameters.
      */
     public static String displaySignature(ASTExecutableDeclaration node) {
         return displaySignature(node.getName(), node.getFormalParameters());
@@ -174,15 +176,17 @@ public final class PrettyPrintingUtil {
     }
 
     /**
-     * Returns the "name" of a node. For methods and constructors, this
-     * may return a signature with parameters.
+     * Returns the "name" of a node. For methods and constructors, this may return a
+     * signature with parameters.
      */
     public static String getNodeName(JavaNode node) {
-        // constructors are differentiated by their parameters, while we only use method name for methods
+        // constructors are differentiated by their parameters, while we only use method
+        // name for methods
         if (node instanceof ASTMethodDeclaration) {
             return ((ASTMethodDeclaration) node).getName();
         } else if (node instanceof ASTExecutableDeclaration) {
-            // constructors are differentiated by their parameters, while we only use method name for methods
+            // constructors are differentiated by their parameters, while we only use method
+            // name for methods
             return displaySignature((ASTConstructorDeclaration) node);
         } else if (node instanceof ASTFieldDeclaration) {
             return ((ASTFieldDeclaration) node).getVarIds().firstOrThrow().getName();
@@ -202,12 +206,12 @@ public final class PrettyPrintingUtil {
         }
     }
 
-
     /**
-     * Returns the 'kind' of node this is. For instance for a {@link ASTFieldDeclaration},
-     * returns "field".
+     * Returns the 'kind' of node this is. For instance for a
+     * {@link ASTFieldDeclaration}, returns "field".
      *
-     * @throws UnsupportedOperationException If unimplemented for a node kind
+     * @throws UnsupportedOperationException
+     *             If unimplemented for a node kind
      * @see #getPrintableNodeKind(ASTTypeDeclaration)
      */
     public static String getPrintableNodeKind(JavaNode node) {
@@ -251,7 +255,6 @@ public final class PrettyPrintingUtil {
     private static TypePrettyPrinter overloadPrinter() {
         return new TypePrettyPrinter().qualifyNames(false).printMethodResult(false);
     }
-
 
     /** Pretty print an expression or any other kind of node. */
     public static CharSequence prettyPrint(JavaNode node) {
@@ -359,7 +362,6 @@ public final class PrettyPrintingUtil {
             printWithParensIfNecessary(node.getRightOperand(), sb, node);
             return null;
         }
-
 
         @Override
         public Void visit(ASTUnaryExpression node, StringBuilder sb) {
@@ -484,7 +486,6 @@ public final class PrettyPrintingUtil {
             return data.append(')');
         }
 
-
         private void ppTypeArgs(StringBuilder data, @Nullable ASTTypeArguments targs) {
             if (targs == null) {
                 return;
@@ -499,6 +500,5 @@ public final class PrettyPrintingUtil {
         }
 
     }
-
 
 }

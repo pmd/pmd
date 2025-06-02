@@ -7,10 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
 
 /**
- * Wraps a {@link ASTPattern} node but presents the interface of {@link ASTExpression}.
- * This is only used in the following contexts:
+ * Wraps a {@link ASTPattern} node but presents the interface of
+ * {@link ASTExpression}. This is only used in the following contexts:
  * <ul>
- * <li>As the right-hand side of {@link BinaryOp#INSTANCEOF instanceof expressions}.
+ * <li>As the right-hand side of {@link BinaryOp#INSTANCEOF instanceof
+ * expressions}.
  * </ul>
  *
  * <pre class="grammar">
@@ -19,7 +20,11 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
  *
  * </pre>
  */
-public final class ASTPatternExpression extends AbstractJavaTypeNode implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
+public final class ASTPatternExpression extends AbstractJavaTypeNode
+        implements
+            ASTPrimaryExpression,
+            AtLeastOneChild,
+            LeftRecursiveNode {
 
     ASTPatternExpression(int id) {
         super(id);
@@ -40,7 +45,6 @@ public final class ASTPatternExpression extends AbstractJavaTypeNode implements 
     public ASTPattern getPattern() {
         return (ASTPattern) getChild(0);
     }
-
 
     /** Returns 0, patterns can never be parenthesized. */
     @Override

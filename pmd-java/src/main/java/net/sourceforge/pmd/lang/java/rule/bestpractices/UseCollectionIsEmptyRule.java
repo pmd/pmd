@@ -27,16 +27,14 @@ public class UseCollectionIsEmptyRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTMethodCall call, Object data) {
         if ((TypeTestUtil.isA(Collection.class, call.getQualifier())
-            || TypeTestUtil.isA(Map.class, call.getQualifier()))
-            && isSizeZeroCheck(call)) {
+                || TypeTestUtil.isA(Map.class, call.getQualifier())) && isSizeZeroCheck(call)) {
             asCtx(data).addViolation(call);
         }
         return null;
     }
 
     private static boolean isSizeZeroCheck(ASTMethodCall call) {
-        return "size".equals(call.getMethodName())
-            && call.getArguments().size() == 0
-            && JavaRuleUtil.isZeroChecked(call);
+        return "size".equals(call.getMethodName()) && call.getArguments().size() == 0
+                && JavaRuleUtil.isZeroChecked(call);
     }
 }

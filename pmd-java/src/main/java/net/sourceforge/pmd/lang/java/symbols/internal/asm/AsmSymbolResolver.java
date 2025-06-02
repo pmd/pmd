@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -57,7 +56,8 @@ public class AsmSymbolResolver implements SymbolResolver {
         String internalName = getInternalName(binaryName);
 
         ClassStub found = knownStubs.computeIfAbsent(internalName, iname -> {
-            @Nullable InputStream inputStream = getStreamOfInternalName(iname);
+            @Nullable
+            InputStream inputStream = getStreamOfInternalName(iname);
             if (inputStream == null) {
                 return failed;
             }
@@ -67,7 +67,7 @@ public class AsmSymbolResolver implements SymbolResolver {
 
         if (!found.hasCanonicalName()) {
             // note: this check needs to be done outside of computeIfAbsent
-            //  to prevent recursive updates of the knownStubs map.
+            // to prevent recursive updates of the knownStubs map.
             knownStubs.put(internalName, failed);
             found = failed;
         }
@@ -77,8 +77,10 @@ public class AsmSymbolResolver implements SymbolResolver {
 
     @Override
     public @Nullable JModuleSymbol resolveModule(@NonNull String moduleName) {
-        // by convention try to load module-info via "moduleName/module-info.class". The used
-        // classloader will need to handle this case to return the correct module-info.class for the
+        // by convention try to load module-info via "moduleName/module-info.class". The
+        // used
+        // classloader will need to handle this case to return the correct
+        // module-info.class for the
         // requested module. See impl of ClasspathClassLoader in pmd-core.
         InputStream inputStream = classLoader.findResource(moduleName + "/module-info.class");
         if (inputStream != null) {
@@ -105,10 +107,11 @@ public class AsmSymbolResolver implements SymbolResolver {
     }
 
     /*
-       These methods return an unresolved symbol if the url is not found.
+     * These methods return an unresolved symbol if the url is not found.
      */
 
-    @Nullable ClassStub resolveFromInternalNameCannotFail(@Nullable String internalName) {
+    @Nullable
+    ClassStub resolveFromInternalNameCannotFail(@Nullable String internalName) {
         if (internalName == null) {
             return null;
         }
@@ -116,12 +119,14 @@ public class AsmSymbolResolver implements SymbolResolver {
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals") // ClassStub
-    @NonNull ClassStub resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
+    @NonNull
+    ClassStub resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
         return knownStubs.compute(internalName, (iname, prev) -> {
             if (prev != failed && prev != null) {
                 return prev;
             }
-            @Nullable InputStream inputStream = getStreamOfInternalName(iname);
+            @Nullable
+            InputStream inputStream = getStreamOfInternalName(iname);
             Loader loader = inputStream == null ? FailedLoader.INSTANCE : new StreamLoader(internalName, inputStream);
             return new ClassStub(this, iname, loader, observedArity);
         });
@@ -149,9 +154,9 @@ public class AsmSymbolResolver implements SymbolResolver {
             }
         }
 
-        LOG.trace("Of {} distinct queries to the classloader, {} queries failed, "
-                        + "{} classes were found and parsed successfully, "
-                        + "{} were found but failed parsing (!), "
+        LOG.trace(
+                "Of {} distinct queries to the classloader, {} queries failed, "
+                        + "{} classes were found and parsed successfully, " + "{} were found but failed parsing (!), "
                         + "{} were found but never parsed.",
                 knownStubs.size(), numFailedQueries, numParsed, numFailed, numNotParsed);
     }

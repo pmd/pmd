@@ -24,8 +24,7 @@ final class MapSymResolver implements SymbolResolver {
     private final Map<String, JClassSymbol> byCanonicalName;
     private final Map<String, JClassSymbol> byBinaryName;
 
-    MapSymResolver(Map<String, JClassSymbol> byCanonicalName,
-                   Map<String, JClassSymbol> byBinaryName) {
+    MapSymResolver(Map<String, JClassSymbol> byCanonicalName, Map<String, JClassSymbol> byBinaryName) {
         this.byCanonicalName = byCanonicalName;
         this.byBinaryName = byBinaryName;
     }
@@ -47,7 +46,7 @@ final class MapSymResolver implements SymbolResolver {
 
     @Override
     public void logStats() {
-        LOG.trace("Used {} classes by canonical name and {} classes by binary name",
-                byCanonicalName.size(), byBinaryName.size());
+        LOG.trace("Used {} classes by canonical name and {} classes by binary name", byCanonicalName.size(),
+                byBinaryName.size());
     }
 }

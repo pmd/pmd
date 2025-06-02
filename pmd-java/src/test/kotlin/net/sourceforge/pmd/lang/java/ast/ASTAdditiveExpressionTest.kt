@@ -6,101 +6,89 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.BinaryOp.*
 
-
-class ASTAdditiveExpressionTest : ParserTestSpec({
-
-    parserTestContainer("Simple additive expression should be flat") {
-        inContext(ExpressionParsingCtx) {
-            "1 + 2 + 3" should parseAs {
-                infixExpr(ADD) {
-                    infixExpr(ADD) {
-                        int(1)
-                        int(2)
-                    }
-                    int(3)
-                }
-            }
-
-            "1 + 2 + 3 + 4 * 5" should parseAs {
-                infixExpr(ADD) {
-                    infixExpr(ADD) {
+class ASTAdditiveExpressionTest :
+    ParserTestSpec({
+        parserTestContainer("Simple additive expression should be flat") {
+            inContext(ExpressionParsingCtx) {
+                "1 + 2 + 3" should
+                    parseAs {
                         infixExpr(ADD) {
-                            int(1)
-                            int(2)
+                            infixExpr(ADD) {
+                                int(1)
+                                int(2)
+                            }
+                            int(3)
                         }
-                        int(3)
                     }
-                    infixExpr(MUL) {
-                        int(4)
-                        int(5)
-                    }
-                }
-            }
 
-            "1 + 2 + 3 * 4 + 5" should parseAs {
-                infixExpr(ADD) {
-                    infixExpr(ADD) {
+                "1 + 2 + 3 + 4 * 5" should
+                    parseAs {
                         infixExpr(ADD) {
-                            int(1)
-                            int(2)
-                        }
-                        infixExpr(MUL) {
-                            int(3)
-                            int(4)
+                            infixExpr(ADD) {
+                                infixExpr(ADD) {
+                                    int(1)
+                                    int(2)
+                                }
+                                int(3)
+                            }
+                            infixExpr(MUL) {
+                                int(4)
+                                int(5)
+                            }
                         }
                     }
-                    int(5)
-                }
-            }
 
-            "1 * 2 + 3 * 4 + 5" should parseAs {
-                infixExpr(ADD) {
-                    infixExpr(ADD) {
-                        infixExpr(MUL) {
-                            int(1)
-                            int(2)
-                        }
-                        infixExpr(MUL) {
-                            int(3)
-                            int(4)
+                "1 + 2 + 3 * 4 + 5" should
+                    parseAs {
+                        infixExpr(ADD) {
+                            infixExpr(ADD) {
+                                infixExpr(ADD) {
+                                    int(1)
+                                    int(2)
+                                }
+                                infixExpr(MUL) {
+                                    int(3)
+                                    int(4)
+                                }
+                            }
+                            int(5)
                         }
                     }
-                    int(5)
-                }
+
+                "1 * 2 + 3 * 4 + 5" should
+                    parseAs {
+                        infixExpr(ADD) {
+                            infixExpr(ADD) {
+                                infixExpr(MUL) {
+                                    int(1)
+                                    int(2)
+                                }
+                                infixExpr(MUL) {
+                                    int(3)
+                                    int(4)
+                                }
+                            }
+                            int(5)
+                        }
+                    }
             }
         }
-    }
 
-    parserTestContainer("Changing operators should push a new node") {
-        inContext(ExpressionParsingCtx) {
-            "1 + 2 - 3" should parseAs {
-                infixExpr(SUB) {
-                    infixExpr(ADD) {
-                        int(1)
-                        int(2)
-                    }
-                    int(3)
-                }
-            }
-
-            "1 + 4 + 2 - 3" should parseAs {
-                infixExpr(SUB) {
-                    infixExpr(ADD) {
-                        infixExpr(ADD) {
-                            int(1)
-                            int(4)
+        parserTestContainer("Changing operators should push a new node") {
+            inContext(ExpressionParsingCtx) {
+                "1 + 2 - 3" should
+                    parseAs {
+                        infixExpr(SUB) {
+                            infixExpr(ADD) {
+                                int(1)
+                                int(2)
+                            }
+                            int(3)
                         }
-                        int(2)
                     }
-                    int(3)
-                }
-            }
 
-            // ((((1 + 4 + 2) - 3) + 4) - 1)
-            "1 + 4 + 2 - 3 + 4 - 1" should parseAs {
-
-                infixExpr(SUB) {
-                    infixExpr(ADD) {
+                "1 + 4 + 2 - 3" should
+                    parseAs {
                         infixExpr(SUB) {
                             infixExpr(ADD) {
                                 infixExpr(ADD) {
@@ -111,12 +99,28 @@ class ASTAdditiveExpressionTest : ParserTestSpec({
                             }
                             int(3)
                         }
-                        int(4)
                     }
-                    int(1)
-                }
+
+                // ((((1 + 4 + 2) - 3) + 4) - 1)
+                "1 + 4 + 2 - 3 + 4 - 1" should
+                    parseAs {
+                        infixExpr(SUB) {
+                            infixExpr(ADD) {
+                                infixExpr(SUB) {
+                                    infixExpr(ADD) {
+                                        infixExpr(ADD) {
+                                            int(1)
+                                            int(4)
+                                        }
+                                        int(2)
+                                    }
+                                    int(3)
+                                }
+                                int(4)
+                            }
+                            int(1)
+                        }
+                    }
             }
         }
-    }
-
-})
+    })

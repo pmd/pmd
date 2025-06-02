@@ -19,7 +19,6 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
-
 /**
  * The root node of all Java ASTs.
  *
@@ -102,7 +101,6 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         this.comments = result;
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -115,10 +113,9 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         return AstImplUtil.getChildAs(this, 0, ASTPackageDeclaration.class);
     }
 
-
     /**
-     * Returns the package name of this compilation unit. If there is no
-     * package declaration, then returns the empty string.
+     * Returns the package name of this compilation unit. If there is no package
+     * declaration, then returns the empty string.
      */
     public @NonNull String getPackageName() {
         ASTPackageDeclaration pack = getPackageDeclaration();
@@ -126,9 +123,9 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
     }
 
     /**
-     * Returns the top-level type declarations declared in this compilation
-     * unit. This may be empty, eg if this a package-info.java, or a modular
-     * compilation unit (but ordinary compilation units may also be empty).
+     * Returns the top-level type declarations declared in this compilation unit.
+     * This may be empty, eg if this a package-info.java, or a modular compilation
+     * unit (but ordinary compilation units may also be empty).
      */
     public NodeStream<ASTTypeDeclaration> getTypeDeclarations() {
         return children(ASTTypeDeclaration.class);
@@ -151,7 +148,8 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         this.lazyTypeResolver = typeResolver;
     }
 
-    @NonNull LazyTypeResolver getLazyTypeResolver() {
+    @NonNull
+    LazyTypeResolver getLazyTypeResolver() {
         assert lazyTypeResolver != null : "Type resolution not initialized";
         return lazyTypeResolver;
     }

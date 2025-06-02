@@ -9,7 +9,5 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.switchstmtsshouldhavede
  * @since 6.5.0
  */
 public enum SimpleEnum {
-    FOO,
-    BAR,
-    BZAZ
+    FOO, BAR, BZAZ
 }

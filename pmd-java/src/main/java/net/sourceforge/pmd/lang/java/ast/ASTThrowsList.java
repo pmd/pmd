@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
 /**
- * Throws clause of an {@link ASTConstructorDeclaration} or {@link ASTMethodDeclaration}.
+ * Throws clause of an {@link ASTConstructorDeclaration} or
+ * {@link ASTMethodDeclaration}.
  *
  * <pre class="grammar">
  *

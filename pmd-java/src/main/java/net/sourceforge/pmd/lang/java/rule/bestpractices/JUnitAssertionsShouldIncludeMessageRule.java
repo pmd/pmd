@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 /**
- * @deprecated The rule was renamed {@link UnitTestAssertionsShouldIncludeMessageRule}
+ * @deprecated The rule was renamed
+ *             {@link UnitTestAssertionsShouldIncludeMessageRule}
  */
 @Deprecated
 public class JUnitAssertionsShouldIncludeMessageRule extends UnitTestAssertionsShouldIncludeMessageRule {

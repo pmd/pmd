@@ -12,14 +12,13 @@ package net.sourceforge.pmd.lang.java.ast;
  * SynchronizedStatement ::= "synchronized" "(" {@link ASTExpression Expression} ")" {@link ASTBlock Block}
  *
  * </pre>
-
+ * 
  */
 public final class ASTSynchronizedStatement extends AbstractStatement {
 
     ASTSynchronizedStatement(int id) {
         super(id);
     }
-
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

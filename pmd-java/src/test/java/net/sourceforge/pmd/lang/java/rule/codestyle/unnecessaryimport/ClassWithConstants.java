@@ -13,6 +13,6 @@ public class ClassWithConstants {
         // Utility class
     }
 
-    /*package*/ static final List<String> LIST1 = Arrays.asList("A");
-    /*package*/ static final List<String> LIST2 = Arrays.asList("B");
+    /* package */ static final List<String> LIST1 = Arrays.asList("A");
+    /* package */ static final List<String> LIST2 = Arrays.asList("B");
 }

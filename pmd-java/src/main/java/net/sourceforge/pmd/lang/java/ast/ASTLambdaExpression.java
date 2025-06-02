@@ -10,14 +10,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
-
 /**
  * A lambda expression.
  *
  *
  * <pre class="grammar">
  *
- * LambdaExpression ::= {@link ASTLambdaParameterList LambdaParameterList} {@code  "->"} ( {@link ASTExpression Expression} | {@link ASTBlock Block} )
+ * LambdaExpression ::= {@link ASTLambdaParameterList LambdaParameterList} {@code
+ * "->"
+ * } ( {@link ASTExpression Expression} | {@link ASTBlock Block} )
  *
  * </pre>
  */
@@ -30,8 +31,8 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
     /**
-     * Returns the type of the functional interface.
-     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
+     * Returns the type of the functional interface. E.g. in
+     * {@code stringStream.map(s -> s.isEmpty())}, this is
      * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}.
      *
      * @see #getFunctionalMethod()
@@ -42,8 +43,8 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
     /**
-     * Returns the method that is overridden in the functional interface.
-     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
+     * Returns the method that is overridden in the functional interface. E.g. in
+     * {@code stringStream.map(s -> s.isEmpty())}, this is
      * {@code java.util.function.Function#apply(java.lang.String) ->
      * java.lang.Boolean}
      *
@@ -63,11 +64,10 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return (ASTLambdaParameterList) getChild(0);
     }
 
-
     /**
-     * Return true if this lambda is explicitly typed, meaning
-     * all parameters have an explicit type. Note that lambdas
-     * with zero parameters are explicitly typed.
+     * Return true if this lambda is explicitly typed, meaning all parameters have
+     * an explicit type. Note that lambdas with zero parameters are explicitly
+     * typed.
      */
     public boolean isExplicitlyTyped() {
         return getParameters().toStream().none(ASTLambdaParameter::isTypeInferred);
@@ -103,7 +103,6 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return getExpressionBody();
     }
 
-
     /**
      * Returns the body of this lambda if it is a block.
      */
@@ -119,7 +118,6 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return getBlockBody();
     }
 
-
     /**
      * Returns the body of this lambda if it is an expression.
      */
@@ -131,7 +129,6 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     public boolean isFindBoundary() {
         return true;
     }
-
 
     /**
      * Returns the number of formal parameters of this lambda.

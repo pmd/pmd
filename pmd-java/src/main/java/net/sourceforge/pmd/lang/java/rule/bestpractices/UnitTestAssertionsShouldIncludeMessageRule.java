@@ -12,21 +12,10 @@ import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationM
 
 public class UnitTestAssertionsShouldIncludeMessageRule extends AbstractJavaRulechainRule {
 
-    private final CompoundInvocationMatcher checks =
-        InvocationMatcher.parseAll(
-            "_#assertEquals(_,_)",
-            "_#assertTrue(_)",
-            "_#assertFalse(_)",
-            "_#assertSame(_,_)",
-            "_#assertNotSame(_,_)",
-            "_#assertNull(_)",
-            "_#assertNotNull(_)",
-            "_#assertArrayEquals(_,_)",
-            "_#assertThat(_,_)",
-            "_#fail()",
-            "_#assertEquals(float,float,float)",
-            "_#assertEquals(double,double,double)"
-        );
+    private final CompoundInvocationMatcher checks = InvocationMatcher.parseAll("_#assertEquals(_,_)",
+            "_#assertTrue(_)", "_#assertFalse(_)", "_#assertSame(_,_)", "_#assertNotSame(_,_)", "_#assertNull(_)",
+            "_#assertNotNull(_)", "_#assertArrayEquals(_,_)", "_#assertThat(_,_)", "_#fail()",
+            "_#assertEquals(float,float,float)", "_#assertEquals(double,double,double)");
 
     public UnitTestAssertionsShouldIncludeMessageRule() {
         super(ASTMethodCall.class);

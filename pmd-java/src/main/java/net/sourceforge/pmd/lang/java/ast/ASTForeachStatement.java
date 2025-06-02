@@ -15,22 +15,27 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  *
- * <p>Note: Using a {@linkplain ASTRecordPattern RecordPattern} in an enhanced for statement is a Java 20 Preview feature</p>
+ * <p>
+ * Note: Using a {@linkplain ASTRecordPattern RecordPattern} in an enhanced for
+ * statement is a Java 20 Preview feature
+ * </p>
  *
- * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
+ * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second
+ *      Preview)</a>
  */
-public final class ASTForeachStatement extends AbstractStatement implements InternalInterfaces.VariableIdOwner, ASTLoopStatement {
+public final class ASTForeachStatement extends AbstractStatement
+        implements
+            InternalInterfaces.VariableIdOwner,
+            ASTLoopStatement {
 
     ASTForeachStatement(int id) {
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     @Override
     @NonNull
@@ -40,13 +45,12 @@ public final class ASTForeachStatement extends AbstractStatement implements Inte
     }
 
     /**
-     * Returns the expression that evaluates to the {@link Iterable}
-     * being looped upon.
+     * Returns the expression that evaluates to the {@link Iterable} being looped
+     * upon.
      */
     @NonNull
     public ASTExpression getIterableExpr() {
         return firstChild(ASTExpression.class);
     }
-
 
 }

@@ -2,121 +2,128 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import java.util.*
+import kotlin.system.measureTimeMillis
+import kotlin.test.assertFalse
 import net.sourceforge.pmd.lang.ast.Node
-import net.sourceforge.pmd.lang.test.ast.NodeSpec
-import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.testdata.BoolLogic
 import net.sourceforge.pmd.lang.java.types.testdata.TypeInferenceTestCases
 import net.sourceforge.pmd.lang.java.types.typeDsl
-import java.util.*
-import kotlin.system.measureTimeMillis
-import kotlin.test.assertFalse
+import net.sourceforge.pmd.lang.test.ast.NodeSpec
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 
 /**
  * Expensive test cases for the overload resolution phase.
  *
- * Edit: So those used to be very expensive (think minutes of execution),
- * but optimisations made them very fast.
+ * Edit: So those used to be very expensive (think minutes of execution), but optimisations made
+ * them very fast.
  */
-class StressTest : ProcessorTestSpec({
-
-    fun myLog(string: String) {
-        println("[type inf stress test] $string")
-    }
-
-    parserTestContainer("Test hard overload resolution - no generics involved") {
-        asIfIn(BoolLogic::class.java)
-
-        fun TreeNodeWrapper<Node, out TypeNode>.typeIs(value: Boolean) {
-            it.typeMirror.shouldBeA<JClassType> {
-                it.symbol.binaryName  shouldBe "net.sourceforge.pmd.lang.java.types.testdata.BoolLogic\$${value.toString()
-                    .replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString() }}"
-            }
+class StressTest :
+    ProcessorTestSpec({
+        fun myLog(string: String) {
+            println("[type inf stress test] $string")
         }
 
-        fun TreeNodeWrapper<Node, *>.FALSE(): ASTMethodCall =
+        parserTestContainer("Test hard overload resolution - no generics involved") {
+            asIfIn(BoolLogic::class.java)
+
+            fun TreeNodeWrapper<Node, out TypeNode>.typeIs(value: Boolean) {
+                it.typeMirror.shouldBeA<JClassType> {
+                    it.symbol.binaryName shouldBe
+                        "net.sourceforge.pmd.lang.java.types.testdata.BoolLogic\$${value.toString()
+                    .replaceFirstChar { char -> if (char.isLowerCase()) char.titlecase(Locale.getDefault()) else char.toString() }}"
+                }
+            }
+
+            fun TreeNodeWrapper<Node, *>.FALSE(): ASTMethodCall =
                 methodCall("FALSE") {
                     typeIs(false)
-                    argList { }
+                    argList {}
                 }
 
-        fun TreeNodeWrapper<Node, *>.TRUE(): ASTMethodCall =
+            fun TreeNodeWrapper<Node, *>.TRUE(): ASTMethodCall =
                 methodCall("TRUE") {
                     typeIs(true)
-                    argList { }
+                    argList {}
                 }
 
-        fun TreeNodeWrapper<Node, *>.and(value: Boolean, spec: NodeSpec<ASTArgumentList>): ASTMethodCall =
+            fun TreeNodeWrapper<Node, *>.and(
+                value: Boolean,
+                spec: NodeSpec<ASTArgumentList>,
+            ): ASTMethodCall =
                 methodCall("and") {
                     typeIs(value)
                     argList { spec() }
                 }
 
-        fun TreeNodeWrapper<Node, *>.or(value: Boolean, spec: NodeSpec<ASTArgumentList>): ASTMethodCall =
+            fun TreeNodeWrapper<Node, *>.or(
+                value: Boolean,
+                spec: NodeSpec<ASTArgumentList>,
+            ): ASTMethodCall =
                 methodCall("or") {
                     typeIs(value)
                     argList { spec() }
                 }
 
-        inContext(ExpressionParsingCtx) {
+            inContext(ExpressionParsingCtx) {
 
-            // If we weren't caching the compile-time declaration of method calls,
-            // nesting 1 level here would multiply by 4 the total number of checks
-            //  -> and luckily, these are not varargs or generic methods
-            // If this test executes under 2s (startup included) everything's fine
+                // If we weren't caching the compile-time declaration of method calls,
+                // nesting 1 level here would multiply by 4 the total number of checks
+                //  -> and luckily, these are not varargs or generic methods
+                // If this test executes under 2s (startup included) everything's fine
 
-            """
+                """
 
                 and(or(TRUE(), and(and(or(FALSE(), and(and(or(FALSE(), and(TRUE(), TRUE())), TRUE()), FALSE())), TRUE()), TRUE())), TRUE())
 
-            """ should parseAs {
-
-                and(true) {
-                    or(true) {
-                        TRUE()
-                        and(false) {
-                            and(false) {
-                                or(false) {
-                                    FALSE()
+            """ should
+                    parseAs {
+                        and(true) {
+                            or(true) {
+                                TRUE()
+                                and(false) {
                                     and(false) {
-                                        and(true) {
-                                            or(true) {
-                                                FALSE()
+                                        or(false) {
+                                            FALSE()
+                                            and(false) {
                                                 and(true) {
-                                                    TRUE()
+                                                    or(true) {
+                                                        FALSE()
+                                                        and(true) {
+                                                            TRUE()
+                                                            TRUE()
+                                                        }
+                                                    }
                                                     TRUE()
                                                 }
+                                                FALSE()
                                             }
-                                            TRUE()
                                         }
-                                        FALSE()
+                                        TRUE()
                                     }
+                                    TRUE()
                                 }
-                                TRUE()
                             }
                             TRUE()
                         }
                     }
-                    TRUE()
-                }
             }
         }
-    }
 
-    parserTest("OpenJDK bug 8055984: type inference exponential compilation performance") {
-        // https://bugs.openjdk.java.net/browse/JDK-8055984
+        parserTest("OpenJDK bug 8055984: type inference exponential compilation performance") {
+            // https://bugs.openjdk.java.net/browse/JDK-8055984
 
-        val acu = parser.parse(
-        """
+            val acu =
+                parser.parse(
+                    """
         class C<U> {
             U fu;
             C() {}
@@ -139,23 +146,24 @@ class StressTest : ProcessorTestSpec({
             }
         }
         """
-        )
+                )
 
-        acu.descendants(ASTLocalVariableDeclaration::class.java)
-            .map { it.varIds[0]!!.initializer!! }
-            .forEachIndexed { i, expr ->
-                val t = measureTimeMillis {
-                    expr.typeMirror shouldNotBe expr.typeSystem.UNKNOWN
+            acu.descendants(ASTLocalVariableDeclaration::class.java)
+                .map { it.varIds[0]!!.initializer!! }
+                .forEachIndexed { i, expr ->
+                    val t = measureTimeMillis {
+                        expr.typeMirror shouldNotBe expr.typeSystem.UNKNOWN
+                    }
+                    myLog("c${i + 2}: $t ms")
                 }
-                myLog("c${i + 2}: $t ms")
-            }
-    }
+        }
 
-    parserTest("OpenJDK bug 8225508: Compiler OOM Error with Type Inference Hierarchy") {
-        // https://bugs.openjdk.java.net/browse/JDK-8225508
+        parserTest("OpenJDK bug 8225508: Compiler OOM Error with Type Inference Hierarchy") {
+            // https://bugs.openjdk.java.net/browse/JDK-8225508
 
-        val acu = parser.parse(
-        """
+            val acu =
+                parser.parse(
+                    """
         import java.util.Arrays;
         import java.util.List;
 
@@ -232,45 +240,44 @@ class StressTest : ProcessorTestSpec({
                         Arrays.asList(baz1, baz2, baz3);
             }
         }
-        """.trimIndent()
-        )
+        """
+                        .trimIndent()
+                )
 
-        acu.descendants(ASTLocalVariableDeclaration::class.java)
-            .map { it.varIds[0]!! }
-            .filter { it.name.startsWith("asList") }
-            .map { it.initializer!! }
-            .forEachIndexed { i, expr ->
-                val t =
-                    measureTimeMillis { // todo these measurements are not accurate because typeres is done strictly now
-                        assertFalse {
-                            expr.typeMirror == expr.typeSystem.UNKNOWN
-                        }
+            acu.descendants(ASTLocalVariableDeclaration::class.java)
+                .map { it.varIds[0]!! }
+                .filter { it.name.startsWith("asList") }
+                .map { it.initializer!! }
+                .forEachIndexed { i, expr ->
+                    val t = measureTimeMillis { // todo these measurements are not accurate because
+                        // typeres is done strictly now
+                        assertFalse { expr.typeMirror == expr.typeSystem.UNKNOWN }
                     }
-                myLog("asList$i: $t ms")
-            }
-    }
+                    myLog("asList$i: $t ms")
+                }
+        }
 
+        /*
+           This takes around a second on my machine. Three optimisations make it tractable:
+           - the graph walk. I terminated powerset walk after 5 mins
+           - caching of the ctdecl
+           ->> mostly, merging of equal ivars
 
-    /*
-        This takes around a second on my machine. Three optimisations make it tractable:
-        - the graph walk. I terminated powerset walk after 5 mins
-        - caching of the ctdecl
-        ->> mostly, merging of equal ivars
+           Javac does this in 30 seconds. Without merging ivars, this takes 60 seconds
 
-        Javac does this in 30 seconds. Without merging ivars, this takes 60 seconds
+           Update: this used to very fast. I reverted some optimisations for clarity,
+           which makes this take about 20 secs. So I'm removing some nesting to not
+           slow down the build too much.
 
-        Update: this used to very fast. I reverted some optimisations for clarity,
-        which makes this take about 20 secs. So I'm removing some nesting to not
-        slow down the build too much.
+        */
+        parserTestContainer("Test context passing in huge call chain") {
+            asIfIn(TypeInferenceTestCases::class.java)
 
-     */
-    parserTestContainer("Test context passing in huge call chain") {
-        asIfIn(TypeInferenceTestCases::class.java)
+            //     public static <U> List<U> m(List<U> src)
 
-        //     public static <U> List<U> m(List<U> src)
-
-        inContext(StatementParsingCtx) {
-            val code = """
+            inContext(StatementParsingCtx) {
+                val code =
+                    """
             List<Integer> c =
               // 8 lparens per line
               m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(m(new java.util.ArrayList<>(
@@ -300,27 +307,28 @@ class StressTest : ProcessorTestSpec({
 
         """
 
-            val t = measureTimeMillis {
-                code should parseAs {
-                    localVarDecl {
-                        modifiers { }
-                        classType("List") {
-                            //                it shouldHaveType RefTypeGen.`t_List{Integer}`
-                            typeArgList()
-                        }
+                val t = measureTimeMillis {
+                    code should
+                        parseAs {
+                            localVarDecl {
+                                modifiers {}
+                                classType("List") {
+                                    //                it shouldHaveType RefTypeGen.`t_List{Integer}`
+                                    typeArgList()
+                                }
 
-                        child<ASTVariableDeclarator> {
-                            variableId("c") {
-                                it shouldHaveType it.typeDsl.gen.`t_List{Integer}`
-                            }
-                            child<ASTMethodCall>(ignoreChildren = true) {
-                                it shouldHaveType it.typeDsl.gen.`t_List{Integer}`
+                                child<ASTVariableDeclarator> {
+                                    variableId("c") {
+                                        it shouldHaveType it.typeDsl.gen.`t_List{Integer}`
+                                    }
+                                    child<ASTMethodCall>(ignoreChildren = true) {
+                                        it shouldHaveType it.typeDsl.gen.`t_List{Integer}`
+                                    }
+                                }
                             }
                         }
-                    }
                 }
+                myLog("huge call chain: $t ms")
             }
-            myLog("huge call chain: $t ms")
         }
-    }
-})
+    })

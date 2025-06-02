@@ -2,39 +2,35 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind.INT
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
-class ASTLocalVariableDeclarationTest : ParserTestSpec({
-    parserTestContainer("Extra dimensions") {
-        inContext(StatementParsingCtx) {
-            // int x[][] = null;
-            // int[] x[][] = null;
+class ASTLocalVariableDeclarationTest :
+    ParserTestSpec({
+        parserTestContainer("Extra dimensions") {
+            inContext(StatementParsingCtx) {
+                // int x[][] = null;
+                // int[] x[][] = null;
 
-            "int x@A[];" should parseAs {
-                localVarDecl {
+                "int x@A[];" should
+                    parseAs {
+                        localVarDecl {
+                            it::getModifiers shouldBe modifiers {}
 
-                    it::getModifiers shouldBe modifiers { }
+                            primitiveType(INT)
 
-                    primitiveType(INT)
+                            varDeclarator {
+                                variableId("x") {
+                                    it::isField shouldBe false
 
-                    varDeclarator {
-                        variableId("x") {
-
-                            it::isField shouldBe false
-
-                            it::getExtraDimensions shouldBe child {
-                                arrayDim {
-                                    annotation("A")
+                                    it::getExtraDimensions shouldBe
+                                        child { arrayDim { annotation("A") } }
                                 }
                             }
                         }
                     }
-                }
             }
         }
-    }
-})
+    })

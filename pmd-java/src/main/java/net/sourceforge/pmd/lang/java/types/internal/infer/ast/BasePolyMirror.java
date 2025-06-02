@@ -49,5 +49,4 @@ abstract class BasePolyMirror<T extends JavaNode> extends BaseExprMirror<T> impl
         return myNode.getEnclosingType().getTypeMirror();
     }
 
-
 }

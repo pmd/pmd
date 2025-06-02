@@ -25,7 +25,6 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         assertFinds(rule, 1, code);
     }
 
-
     @Test
     void testWellFormedOperationMetricRule() {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('CYCLO') > 1]");
@@ -33,7 +32,6 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
         assertFinds(rule, 1, code);
     }
-
 
     @Test
     void testBadCase() {
@@ -43,15 +41,12 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         assertFinds(rule, 1, code);
     }
 
-
     @Test
     void testNonexistentMetric() {
-        testWithExpectedException(
-            "//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
-            "class Joo { Joo() {if(true){}} }",
-            e -> assertThat(e.getMessage(), containsString(MetricFunction.badMetricKeyMessage("FOOBAR"))));
+        testWithExpectedException("//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
+                "class Joo { Joo() {if(true){}} }",
+                e -> assertThat(e.getMessage(), containsString(MetricFunction.badMetricKeyMessage("FOOBAR"))));
     }
-
 
     @Test
     void testIfStmt() {
@@ -60,7 +55,6 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
         assertFinds(rule, 1, code);
     }
-
 
     @Test
     void testWrongNodeTypeMeansEmptySequence() {

@@ -29,25 +29,13 @@ class ASTPackageDeclarationTest extends BaseParserTest {
 
     @Test
     void testReportLocation() {
-        ASTCompilationUnit nodes = java.parse(
-            "/** a javadoc comment */\n"
-                + "package \n"
-                + "     foo.\n"
-                + "     bar\n"
-                + ";"
-        );
+        ASTCompilationUnit nodes = java
+                .parse("/** a javadoc comment */\n" + "package \n" + "     foo.\n" + "     bar\n" + ";");
         ASTPackageDeclaration packageDecl = nodes.getPackageDeclaration();
         // this is the range of the Name.
         FileLocation loc = packageDecl.getReportLocation();
-        assertEquals(
-            TextPos2d.pos2d(3, 6),
-            loc.getStartPos()
-        );
-        assertEquals(
-            TextPos2d.pos2d(4, 9),
-            loc.getEndPos()
-        );
-        assertEquals(packageDecl.getTextRegion(),
-                     nodes.getTextDocument().getEntireRegion());
+        assertEquals(TextPos2d.pos2d(3, 6), loc.getStartPos());
+        assertEquals(TextPos2d.pos2d(4, 9), loc.getEndPos());
+        assertEquals(packageDecl.getTextRegion(), nodes.getTextDocument().getEntireRegion());
     }
 }

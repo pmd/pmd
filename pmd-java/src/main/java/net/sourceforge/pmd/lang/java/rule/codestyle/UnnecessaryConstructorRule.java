@@ -22,9 +22,8 @@ import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
 /**
- * This rule detects when a constructor is not necessary;
- * i.e., when there is only one constructor, it’s public, has an empty body,
- * and takes no arguments.
+ * This rule detects when a constructor is not necessary; i.e., when there is
+ * only one constructor, it’s public, has an empty body, and takes no arguments.
  */
 public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
@@ -35,8 +34,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        return Arrays.asList("javax.inject.Inject",
-                "com.google.inject.Inject",
+        return Arrays.asList("javax.inject.Inject", "com.google.inject.Inject",
                 "org.springframework.beans.factory.annotation.Autowired");
     }
 
@@ -61,13 +59,9 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
         }
     }
 
-
     private boolean isExplicitDefaultConstructor(ASTTypeDeclaration declarator, ASTConstructorDeclaration ctor) {
-        return ctor.getArity() == 0
-            && !hasIgnoredAnnotation(ctor)
-            && hasDefaultCtorVisibility(declarator, ctor)
-            && isEmptyBlock(ctor.getBody())
-            && ctor.getThrowsList() == null;
+        return ctor.getArity() == 0 && !hasIgnoredAnnotation(ctor) && hasDefaultCtorVisibility(declarator, ctor)
+                && isEmptyBlock(ctor.getBody()) && ctor.getThrowsList() == null;
     }
 
     private boolean isEmptyBlock(ASTBlock body) {

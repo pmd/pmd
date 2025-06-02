@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 
 class ASTVariableIdTest extends BaseParserTest {
 
-
     @Test
     void testIsExceptionBlockParameter() {
         ASTCompilationUnit acu = java.parse(EXCEPTION_PARAMETER);
@@ -60,9 +59,7 @@ class ASTVariableIdTest extends BaseParserTest {
     private static final String TYPE_NAME_NODE = "public class Test {\n  private String bar;\n}";
     private static final String EXCEPTION_PARAMETER = "public class Test { { try {} catch(Exception ie) {} } }";
     private static final String TEST_ANNOTATIONS = "public class Foo {\n    public void bar(@A1 @A2 String s) {}\n}";
-    private static final String TEST_LAMBDA_WITH_TYPE =
-        "public class Foo {\n    public void bar() {\n        FileFilter java = (File f) -> f.getName().endsWith(\".java\");\n    }\n}\n";
-    private static final String TEST_LAMBDA_WITHOUT_TYPE =
-        "public class Foo {\n    public void bar() {\n        FileFilter java2 = f -> f.getName().endsWith(\".java\");\n    }\n}\n";
+    private static final String TEST_LAMBDA_WITH_TYPE = "public class Foo {\n    public void bar() {\n        FileFilter java = (File f) -> f.getName().endsWith(\".java\");\n    }\n}\n";
+    private static final String TEST_LAMBDA_WITHOUT_TYPE = "public class Foo {\n    public void bar() {\n        FileFilter java2 = f -> f.getName().endsWith(\".java\");\n    }\n}\n";
 
 }

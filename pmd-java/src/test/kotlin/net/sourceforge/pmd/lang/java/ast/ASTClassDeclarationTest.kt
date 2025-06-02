@@ -2,85 +2,78 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
-class ASTClassDeclarationTest : ParserTestSpec({
-    parserTestContainer("Local classes") {
-        inContext(StatementParsingCtx) {
-            """
+class ASTClassDeclarationTest :
+    ParserTestSpec({
+        parserTestContainer("Local classes") {
+            inContext(StatementParsingCtx) {
+                """
                @F class Local {
 
                }
-            """ should parseAs {
-                localClassDecl(simpleName = "Local") {
+            """ should
+                    parseAs {
+                        localClassDecl(simpleName = "Local") {
+                            it::isAbstract shouldBe false
+                            it::isFinal shouldBe false
+                            it::isLocal shouldBe true
+                            it::isNested shouldBe false
 
-                    it::isAbstract shouldBe false
-                    it::isFinal shouldBe false
-                    it::isLocal shouldBe true
-                    it::isNested shouldBe false
+                            it::getModifiers shouldBe modifiers { annotation("F") }
 
-                    it::getModifiers shouldBe modifiers {
-                        annotation("F")
+                            typeBody()
+                        }
                     }
 
-                    typeBody()
-                }
-            }
-
-            """
+                """
                @F abstract @C class Local {
 
                }
-            """ should parseAs {
+            """ should
+                    parseAs {
+                        localClassDecl(simpleName = "Local") {
+                            it::getModifiers shouldBe
+                                modifiers {
+                                    annotation("F")
+                                    annotation("C")
+                                }
 
-                localClassDecl(simpleName = "Local") {
+                            it::isAbstract shouldBe true
+                            it::isFinal shouldBe false
+                            it::isLocal shouldBe true
+                            it::isNested shouldBe false
 
-                    it::getModifiers shouldBe modifiers {
-                        annotation("F")
-                        annotation("C")
+                            typeBody()
+                        }
                     }
 
-                    it::isAbstract shouldBe true
-                    it::isFinal shouldBe false
-                    it::isLocal shouldBe true
-                    it::isNested shouldBe false
-
-                    typeBody()
-                }
-            }
-
-            """
+                """
                 class Local { class Nested {} void bar() {class Local2 {}}}
-            """ should parseAs {
+            """ should
+                    parseAs {
+                        localClassDecl(simpleName = "Local") {
+                            it::getModifiers shouldBe modifiers {}
 
-                localClassDecl(simpleName = "Local") {
+                            it::isLocal shouldBe true
+                            it::isNested shouldBe false
 
-                    it::getModifiers shouldBe modifiers {}
-
-                    it::isLocal shouldBe true
-                    it::isNested shouldBe false
-
-
-                    it.descendants(ASTClassDeclaration::class.java)
-                            .first()
-                            .shouldMatchNode<ASTClassDeclaration> {
-
+                            it.descendants(ASTClassDeclaration::class.java).first().shouldMatchNode<
+                                ASTClassDeclaration
+                            > {
                                 it::getModifiers shouldBe modifiers {}
-
 
                                 it::isLocal shouldBe false
                                 it::isNested shouldBe true
 
                                 typeBody()
-
                             }
 
-                    typeBody()
-                }
+                            typeBody()
+                        }
+                    }
             }
         }
-    }
-})
+    })

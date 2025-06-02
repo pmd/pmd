@@ -9,8 +9,9 @@ import java.util.Set;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A unary operator, either prefix or postfix. This is used by {@link ASTUnaryExpression UnaryExpression}
- * to abstract over the syntactic form of the operator.
+ * A unary operator, either prefix or postfix. This is used by
+ * {@link ASTUnaryExpression UnaryExpression} to abstract over the syntactic
+ * form of the operator.
  *
  * <pre class="grammar">
  *
@@ -20,7 +21,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  *
  * PostfixOp ::= "++" | "--"
  *
- *  </pre>
+ * </pre>
  *
  * @see BinaryOp
  * @see AssignmentOp
@@ -45,7 +46,6 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
     /** Postfix decrement operator {@code "--"}. */
     POST_DECREMENT("--");
 
-
     private final String code;
 
     UnaryOp(String code) {
@@ -53,31 +53,37 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
     }
 
     /**
-     * Returns true if this operator is pure, ie the evaluation of
-     * the unary expression doesn't produce side-effects. Only increment
-     * and decrement operators are impure.
+     * Returns true if this operator is pure, ie the evaluation of the unary
+     * expression doesn't produce side-effects. Only increment and decrement
+     * operators are impure.
      *
-     * <p>This can be used to fetch all increment or decrement operations,
-     * regardless of whether they're postfix or prefix. E.g.
+     * <p>
+     * This can be used to fetch all increment or decrement operations, regardless
+     * of whether they're postfix or prefix. E.g.
+     * 
      * <pre>{@code
-     *  node.descendants(ASTUnaryExpression.class)
-     *      .filterNot(it -> it.getOperator().isPure())
+     * node.descendants(ASTUnaryExpression.class).filterNot(it -> it.getOperator().isPure())
      * }</pre>
      */
     public boolean isPure() {
         return this.ordinal() < PRE_INCREMENT.ordinal();
     }
 
-    /** Returns true if this is one of {@link #PRE_INCREMENT} or {@link #POST_INCREMENT}. */
+    /**
+     * Returns true if this is one of {@link #PRE_INCREMENT} or
+     * {@link #POST_INCREMENT}.
+     */
     public boolean isIncrement() {
         return this == PRE_INCREMENT || this == POST_INCREMENT;
     }
 
-    /** Returns true if this is one of {@link #PRE_DECREMENT} or {@link #POST_DECREMENT}. */
+    /**
+     * Returns true if this is one of {@link #PRE_DECREMENT} or
+     * {@link #POST_DECREMENT}.
+     */
     public boolean isDecrement() {
         return this == PRE_DECREMENT || this == POST_DECREMENT;
     }
-
 
     /** Returns true if this is a prefix operator. */
     public boolean isPrefix() {
@@ -88,7 +94,6 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
     public boolean isPostfix() {
         return !isPrefix();
     }
-
 
     @Override
     public String getToken() {
@@ -101,7 +106,8 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
     }
 
     /**
-     * Tests if the node is an {@link ASTUnaryExpression} with one of the given operators.
+     * Tests if the node is an {@link ASTUnaryExpression} with one of the given
+     * operators.
      */
     public static boolean isUnaryExprWithOperator(@Nullable JavaNode e, Set<UnaryOp> operators) {
         if (e instanceof ASTUnaryExpression) {
