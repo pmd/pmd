@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import net.sourceforge.pmd.lang.apex.ast.ApexQualifiableNode;
@@ -13,6 +14,7 @@ import net.sourceforge.pmd.test.SimpleAggregatorTst;
  * @author Clément Fournier
  */
 class AllMetricsTest extends SimpleAggregatorTst {
+
 
     private static final String RULESET = "rulesets/apex/metrics_test.xml";
 

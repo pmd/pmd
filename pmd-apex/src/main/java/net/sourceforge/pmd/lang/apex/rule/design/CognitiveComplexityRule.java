@@ -1,12 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
@@ -18,15 +20,15 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class CognitiveComplexityRule extends AbstractApexRule {
 
-    private static final PropertyDescriptor<Integer> CLASS_LEVEL_DESCRIPTOR = PropertyFactory.intProperty(
-                    "classReportLevel")
+    private static final PropertyDescriptor<Integer> CLASS_LEVEL_DESCRIPTOR
+            = PropertyFactory.intProperty("classReportLevel")
             .desc("Total class cognitive complexity reporting threshold")
             .require(positive())
             .defaultValue(50)
             .build();
 
-    private static final PropertyDescriptor<Integer> METHOD_LEVEL_DESCRIPTOR = PropertyFactory.intProperty(
-                    "methodReportLevel")
+    private static final PropertyDescriptor<Integer> METHOD_LEVEL_DESCRIPTOR
+            = PropertyFactory.intProperty("methodReportLevel")
             .desc("Cognitive complexity reporting threshold")
             .require(positive())
             .defaultValue(15)
@@ -35,10 +37,12 @@ public class CognitiveComplexityRule extends AbstractApexRule {
     private Deque<String> classNames = new ArrayDeque<>();
     private boolean inTrigger;
 
+
     public CognitiveComplexityRule() {
         definePropertyDescriptor(CLASS_LEVEL_DESCRIPTOR);
         definePropertyDescriptor(METHOD_LEVEL_DESCRIPTOR);
     }
+
 
     @Override
     public Object visit(ASTUserTrigger node, Object data) {
@@ -47,6 +51,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
         inTrigger = false;
         return data;
     }
+
 
     @Override
     public Object visit(ASTUserClass node, Object data) {
@@ -60,9 +65,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
 
             Integer classLevelThreshold = getProperty(CLASS_LEVEL_DESCRIPTOR);
             if (classCognitive >= classLevelThreshold) {
-                int classHighest =
-                        (int) MetricsUtil.computeStatistics(ApexMetrics.COGNITIVE_COMPLEXITY, node.getMethods())
-                                .getMax();
+                int classHighest = (int) MetricsUtil.computeStatistics(ApexMetrics.COGNITIVE_COMPLEXITY, node.getMethods()).getMax();
 
                 String[] messageParams = {
                     "class",
@@ -78,6 +81,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
         return data;
     }
 
+
     @Override
     public final Object visit(ASTMethod node, Object data) {
 
@@ -85,20 +89,19 @@ public class CognitiveComplexityRule extends AbstractApexRule {
             int cognitive = MetricsUtil.computeMetric(ApexMetrics.COGNITIVE_COMPLEXITY, node);
             Integer methodLevelThreshold = getProperty(METHOD_LEVEL_DESCRIPTOR);
             if (cognitive >= methodLevelThreshold) {
-                String opType =
-                        inTrigger ? "trigger" : node.getImage().equals(classNames.peek()) ? "constructor" : "method";
+                String opType = inTrigger ? "trigger"
+                        : node.getImage().equals(classNames.peek()) ? "constructor"
+                        : "method";
 
-                asCtx(data)
-                        .addViolation(
-                                node,
-                                opType,
-                                node.getQualifiedName().getOperation(),
-                                "",
-                                "" + cognitive,
-                                String.valueOf(methodLevelThreshold));
+                asCtx(data).addViolation(node, opType,
+                        node.getQualifiedName().getOperation(),
+                        "",
+                        "" + cognitive,
+                        String.valueOf(methodLevelThreshold));
             }
         }
 
         return data;
     }
+
 }

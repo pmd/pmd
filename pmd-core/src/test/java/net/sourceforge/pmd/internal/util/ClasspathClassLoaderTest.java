@@ -29,6 +29,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Semaphore;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -191,9 +192,7 @@ class ClasspathClassLoaderTest {
         assumeTrue(Files.isDirectory(javaHome), "Couldn't find java" + javaVersion + " installation at " + javaHome);
 
         Path jrtfsPath = javaHome.resolve("lib/jrt-fs.jar");
-        assertTrue(
-                Files.isRegularFile(jrtfsPath),
-                "java" + javaVersion + " installation is incomplete. " + jrtfsPath + " not found!");
+        assertTrue(Files.isRegularFile(jrtfsPath), "java" + javaVersion + " installation is incomplete. " + jrtfsPath + " not found!");
         String classPath = jrtfsPath.toString();
 
         try (ClasspathClassLoader loader = new ClasspathClassLoader(classPath, null)) {

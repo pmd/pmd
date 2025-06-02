@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
@@ -99,6 +101,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
 
     // Package-private construction methods:
 
+
     /**
      * Called by the parser if this ambiguous name was a full expression.
      * Then, since the node was in an expression syntactic context, we
@@ -119,6 +122,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         return shrinkOneSegment(ASTVariableAccess::new, ASTFieldAccess::new);
     }
 
+
     /**
      * Called by the parser if this ambiguous name was expected to be
      * a type name. Then we simply promote it to an {@link ASTClassType}
@@ -130,6 +134,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         // same, there's no parent here
         return shrinkOneSegment(ASTClassType::new, ASTClassType::new);
     }
+
 
     /**
      * Low level method to reclassify this ambiguous name. Basically
@@ -150,9 +155,8 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
      *
      * @return The node that will replace this one.
      */
-    private <T extends AbstractJavaNode> T shrinkOneSegment(
-            Function<ASTAmbiguousName, T> simpleNameHandler,
-            BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
+    private <T extends AbstractJavaNode> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
+                                                            BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
 
         JavaccToken lastToken = getLastToken();
         JavaccToken firstToken = getFirstToken();
@@ -197,25 +201,26 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         // but if we use them instead of this, we avoid capturing the
         // this reference and the lambdas can be optimised to a singleton
         shrinkOneSegment(
-                simpleName -> {
-                    String simpleNameImage = simpleName.getFirstToken().getImage();
-                    AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
-                    if (parent instanceof ASTClassType) {
-                        ((ASTClassType) parent).setSimpleName(simpleNameImage);
-                    } else {
-                        parent.setImage(simpleNameImage);
-                    }
-                    parent.removeChildAtIndex(simpleName.getIndexInParent());
-                    return null;
-                },
-                (ambig, simpleName) -> {
-                    AbstractJavaNode parent = (AbstractJavaNode) ambig.getParent();
-                    if (parent instanceof ASTClassType) {
-                        ((ASTClassType) parent).setSimpleName(simpleName);
-                    } else {
-                        parent.setImage(simpleName);
-                    }
-                    return null;
-                });
+            simpleName -> {
+                String simpleNameImage = simpleName.getFirstToken().getImage();
+                AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
+                if (parent instanceof ASTClassType) {
+                    ((ASTClassType) parent).setSimpleName(simpleNameImage);
+                } else {
+                    parent.setImage(simpleNameImage);
+                }
+                parent.removeChildAtIndex(simpleName.getIndexInParent());
+                return null;
+            },
+            (ambig, simpleName) -> {
+                AbstractJavaNode parent = (AbstractJavaNode) ambig.getParent();
+                if (parent instanceof ASTClassType) {
+                    ((ASTClassType) parent).setSimpleName(simpleName);
+                } else {
+                    parent.setImage(simpleName);
+                }
+                return null;
+            }
+        );
     }
 }

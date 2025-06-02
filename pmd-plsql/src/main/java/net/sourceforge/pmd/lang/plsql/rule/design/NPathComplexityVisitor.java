@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseStatement;
 import net.sourceforge.pmd.lang.plsql.ast.ASTCaseWhenClause;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalOrExpression;
@@ -31,6 +32,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
  * @author Clément Fournier
  */
 class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
+
 
     public int compute(ExecutableCode root) {
         return (int) root.acceptVisitor(this, null);
@@ -91,8 +93,8 @@ class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
         List<PLSQLNode> statementChildren = new ArrayList<>();
         for (int i = 0; i < node.getNumChildren(); i++) {
             if (node.getChild(i).getClass() == ASTStatement.class
-                    || node.getChild(i).getClass() == ASTElsifClause.class
-                    || node.getChild(i).getClass() == ASTElseClause.class) {
+                || node.getChild(i).getClass() == ASTElsifClause.class
+                || node.getChild(i).getClass() == ASTElseClause.class) {
                 statementChildren.add(node.getChild(i));
             }
         }
@@ -202,8 +204,7 @@ class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
     public Object visit(ASTForStatement node, Object data) {
         // (npath of for + bool_comp of for + 1) * npath of next
 
-        int boolCompFor = NPathComplexityRule.sumExpressionComplexity(
-                node.descendants(ASTExpression.class).first());
+        int boolCompFor = NPathComplexityRule.sumExpressionComplexity(node.descendants(ASTExpression.class).first());
 
         Integer nPathFor = (Integer) node.firstChild(ASTStatement.class).acceptVisitor(this, data);
 
@@ -278,4 +279,5 @@ class NPathComplexityVisitor extends PlsqlVisitorBase<Object, Object> {
     public Object visit(ASTConditionalOrExpression node, Object data) {
         return 1;
     }
+
 }

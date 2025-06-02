@@ -21,4 +21,5 @@ public abstract class ASTTypeBody extends ASTList<ASTBodyDeclaration> {
     ASTTypeBody(int id) {
         super(id, ASTBodyDeclaration.class);
     }
+
 }

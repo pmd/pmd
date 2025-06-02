@@ -9,4 +9,6 @@ import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 /**
  * Base implementation of {@link ModelicaVisitor}.
  */
-public abstract class ModelicaVisitorBase<P, R> extends AstVisitorBase<P, R> implements ModelicaVisitor<P, R> {}
+public abstract class ModelicaVisitorBase<P, R> extends AstVisitorBase<P, R> implements ModelicaVisitor<P, R> {
+
+}

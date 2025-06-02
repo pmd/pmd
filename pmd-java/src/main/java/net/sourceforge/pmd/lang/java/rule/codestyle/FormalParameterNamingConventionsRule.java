@@ -1,11 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+
 import java.util.regex.Pattern;
+
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * Enforces a naming convention for lambda and method parameters.
@@ -17,16 +21,13 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
     // These are not exhaustive, but are chosen to be the most useful, for a start
 
-    private final PropertyDescriptor<Pattern> formalParamRegex =
-            defaultProp("methodParameter", "formal parameter").build();
-    private final PropertyDescriptor<Pattern> finalFormalParamRegex =
-            defaultProp("finalMethodParameter", "final formal parameter").build();
 
-    private final PropertyDescriptor<Pattern> lambdaParamRegex =
-            defaultProp("lambdaParameter", "inferred-type lambda parameter").build();
-    private final PropertyDescriptor<Pattern> explicitLambdaParamRegex = defaultProp(
-                    "explicitLambdaParameter", "explicitly-typed lambda parameter")
-            .build();
+    private final PropertyDescriptor<Pattern> formalParamRegex = defaultProp("methodParameter", "formal parameter").build();
+    private final PropertyDescriptor<Pattern> finalFormalParamRegex = defaultProp("finalMethodParameter", "final formal parameter").build();
+
+    private final PropertyDescriptor<Pattern> lambdaParamRegex = defaultProp("lambdaParameter", "inferred-type lambda parameter").build();
+    private final PropertyDescriptor<Pattern> explicitLambdaParamRegex = defaultProp("explicitLambdaParameter", "explicitly-typed lambda parameter").build();
+
 
     public FormalParameterNamingConventionsRule() {
         super(ASTVariableId.class);
@@ -51,6 +52,7 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
         return data;
     }
+
 
     @Override
     String defaultConvention() {

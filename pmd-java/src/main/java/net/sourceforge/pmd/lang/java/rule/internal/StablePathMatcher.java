@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -16,7 +19,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A matcher for an expression like {@code a}, {@code a.b}, {@code a.getFoo()}.
@@ -70,6 +72,7 @@ public final class StablePathMatcher {
                 e = call.getQualifier();
             }
         }
+
 
         if (e instanceof ASTVariableAccess) {
             return Objects.equals(((ASTVariableAccess) e).getReferencedSym(), owner);
@@ -145,7 +148,8 @@ public final class StablePathMatcher {
 
         @Override
         public String toString() {
-            return isField ? "." + name : "." + name + "()";
+            return isField ? "." + name
+                           : "." + name + "()";
         }
     }
 }

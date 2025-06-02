@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
@@ -23,8 +27,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * The output of {@link Parser#parse(ParserTask)}.
@@ -39,20 +41,21 @@ public final class AstInfo<T extends RootNode> {
     private final Map<Integer, SuppressionCommentWrapper> suppressionComments;
     private final DataMap<DataKey<?, ?>> userMap = DataMap.newDataMap();
 
+
     public AstInfo(ParserTask task, T rootNode) {
         this(task.getTextDocument(), rootNode, task.getLpRegistry(), Collections.emptyMap());
     }
 
-    private AstInfo(
-            TextDocument textDocument,
-            T rootNode,
-            LanguageProcessorRegistry lpReg,
-            Map<Integer, SuppressionCommentWrapper> suppressionComments) {
+    private AstInfo(TextDocument textDocument,
+                    T rootNode,
+                    LanguageProcessorRegistry lpReg,
+                    Map<Integer, SuppressionCommentWrapper> suppressionComments) {
         this.textDocument = AssertionUtil.requireParamNotNull("text document", textDocument);
         this.rootNode = AssertionUtil.requireParamNotNull("root node", rootNode);
         this.lpReg = lpReg;
         this.suppressionComments = AssertionUtil.requireParamNotNull("suppress map", suppressionComments);
     }
+
 
     public T getRootNode() {
         return rootNode;
@@ -87,9 +90,9 @@ public final class AstInfo<T extends RootNode> {
      */
     @Deprecated
     public Map<Integer, String> getSuppressionComments() {
-        return CollectionUtil.mapView(
-                suppressionComments, ViolationSuppressor.SuppressionCommentWrapper::getUserMessage);
+        return CollectionUtil.mapView(suppressionComments, ViolationSuppressor.SuppressionCommentWrapper::getUserMessage);
     }
+
 
     /**
      * Return the suppresson comment at the given line, or null if there is none.
@@ -123,6 +126,7 @@ public final class AstInfo<T extends RootNode> {
         return userMap;
     }
 
+
     /**
      * @deprecated Since 7.14.0. Use {@link #withSuppressionComments(Collection)}
      */
@@ -147,6 +151,7 @@ public final class AstInfo<T extends RootNode> {
         return withSuppressionComments(comments);
     }
 
+
     /**
      * @since 7.14.0
      */
@@ -155,6 +160,12 @@ public final class AstInfo<T extends RootNode> {
         for (SuppressionCommentWrapper comment : suppressionComments) {
             suppressMap.put(comment.getLocation().getReportLocation().getStartLine(), comment);
         }
-        return new AstInfo<>(textDocument, rootNode, lpReg, Collections.unmodifiableMap(suppressMap));
+        return new AstInfo<>(
+            textDocument,
+            rootNode,
+            lpReg,
+            Collections.unmodifiableMap(suppressMap)
+        );
     }
+
 }

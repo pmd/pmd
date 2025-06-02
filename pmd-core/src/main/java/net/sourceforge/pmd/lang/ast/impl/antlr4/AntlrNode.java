@@ -9,4 +9,6 @@ import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 /**
  * Base interface for all Antlr-based implementation of the Node interface.
  */
-public interface AntlrNode<N extends AntlrNode<N>> extends GenericNode<N> {}
+public interface AntlrNode<N extends AntlrNode<N>> extends GenericNode<N> {
+
+}

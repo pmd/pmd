@@ -13,7 +13,9 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public class DummyJavaRule extends AbstractJavaRule {
 
-    public void apply(Node node, RuleContext ctx) {}
+    public void apply(Node node, RuleContext ctx) {
+
+    }
 
     public static class DummyRuleOneViolationPerFile extends DummyJavaRule {
 

@@ -6,6 +6,10 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import java.util.Collections;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -17,17 +21,13 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
 
-    MethodInvocMirror(
-            JavaExprMirrors mirrors,
-            ASTMethodCall call,
-            boolean isStandalone,
-            @Nullable ExprMirror parent,
-            MirrorMaker subexprMaker) {
+
+    MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call,
+                      boolean isStandalone,
+                      @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
         super(mirrors, call, isStandalone, parent, subexprMaker);
     }
 
@@ -61,19 +61,18 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
                 ASTConstructorCall ctor = (ASTConstructorCall) lhs;
                 ASTAnonymousClassDeclaration anon = ctor.getAnonymousClassDeclaration();
                 // put methods declared in the anonymous class in scope
-                lhsType = anon != null
-                        ? anon.getTypeMirror(getTypingContext())
-                        : ctor.getTypeMirror(getTypingContext()); // may resolve diamonds
+                lhsType = anon != null ? anon.getTypeMirror(getTypingContext())
+                                       : ctor.getTypeMirror(getTypingContext()); // may resolve diamonds
             } else {
                 lhsType = lhs.getTypeMirror(getTypingContext());
             }
             lhsType = TypeOps.getMemberSource(lhsType);
             boolean staticOnly = lhs instanceof ASTTypeExpression;
 
-            return TypeOps.getMethodsOf(
-                    lhsType, getName(), staticOnly, myNode.getEnclosingType().getSymbol());
+            return TypeOps.getMethodsOf(lhsType, getName(), staticOnly, myNode.getEnclosingType().getSymbol());
         }
     }
+
 
     @Override
     public JTypeMirror getErasedReceiverType() {
@@ -94,4 +93,6 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
     public String getName() {
         return myNode.getMethodName();
     }
+
+
 }

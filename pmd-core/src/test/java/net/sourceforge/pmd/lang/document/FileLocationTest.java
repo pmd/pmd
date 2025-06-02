@@ -38,9 +38,16 @@ class FileLocationTest {
     void testToString() {
         FileLocation loc = FileLocation.range(FNAME, TextRange2d.range2d(1, 1, 1, 2));
 
-        assertEquals("line 1, column 1", loc.startPosToString());
-        assertEquals("fname:1:1", loc.startPosToStringWithFile());
+        assertEquals(
+            "line 1, column 1",
+            loc.startPosToString()
+        );
+        assertEquals(
+            "fname:1:1",
+            loc.startPosToStringWithFile()
+        );
 
         assertThat(loc.toString(), containsString("!debug only!"));
     }
+
 }

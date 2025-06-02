@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.util.log.internal;
 
-import net.sourceforge.pmd.util.log.PmdReporter;
 import org.slf4j.event.Level;
+
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * A logger that ignores all messages.

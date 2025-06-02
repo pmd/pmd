@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.scala.ast;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.scala.internal.ScalaDialect;
+
 import scala.meta.Dialect;
 import scala.meta.Source;
 import scala.meta.inputs.Input;
@@ -28,4 +29,5 @@ public final class ScalaParser implements Parser {
         root.addTaskInfo(task);
         return root;
     }
+
 }

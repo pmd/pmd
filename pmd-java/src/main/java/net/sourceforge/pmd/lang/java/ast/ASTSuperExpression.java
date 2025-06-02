@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+
 
 /**
  * The "super" keyword. Technically not an expression but it's easier to analyse that way.
@@ -19,6 +21,7 @@ public final class ASTSuperExpression extends AbstractJavaExpr implements ASTPri
     ASTSuperExpression(int id) {
         super(id);
     }
+
 
     @Nullable
     public ASTClassType getQualifier() {

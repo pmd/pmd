@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.internal;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
@@ -21,7 +22,9 @@ public abstract class TargetSelectorInternal {
 
     protected abstract void prepare(ApplicatorBuilder builder);
 
+
     protected abstract Iterator<? extends Node> getVisitedNodes(TreeIndex index);
+
 
     protected static final class ApplicatorBuilder {
 

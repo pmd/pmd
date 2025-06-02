@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,6 +14,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Map;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -22,9 +28,6 @@ import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 class YAHTMLRendererTest extends AbstractRendererTest {
 
@@ -39,17 +42,10 @@ class YAHTMLRendererTest extends AbstractRendererTest {
         assertTrue(outputDir.mkdir());
     }
 
-    private RuleViolation newRuleViolation(
-            int beginLine,
-            int beginColumn,
-            int endLine,
-            int endColumn,
-            final String packageNameArg,
-            final String classNameArg) {
+    private RuleViolation newRuleViolation(int beginLine, int beginColumn, int endLine, int endColumn, final String packageNameArg, final String classNameArg) {
         FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
-        Map<String, String> additionalInfo = CollectionUtil.mapOf(
-                RuleViolation.PACKAGE_NAME, packageNameArg,
-                RuleViolation.CLASS_NAME, classNameArg);
+        Map<String, String> additionalInfo = CollectionUtil.mapOf(RuleViolation.PACKAGE_NAME, packageNameArg,
+                                                                  RuleViolation.CLASS_NAME, classNameArg);
         return InternalApiBridge.createRuleViolation(new FooRule(), loc, "blah", additionalInfo);
     }
 

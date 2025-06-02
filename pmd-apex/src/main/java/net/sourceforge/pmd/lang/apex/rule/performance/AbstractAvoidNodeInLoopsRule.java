@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
@@ -49,8 +50,7 @@ abstract class AbstractAvoidNodeInLoopsRule extends AbstractApexRule {
                 // only consider the block of the for-each statement, not the iterator
                 return true;
             }
-            if (n instanceof ASTDoLoopStatement
-                    || n instanceof ASTWhileLoopStatement
+            if (n instanceof ASTDoLoopStatement || n instanceof ASTWhileLoopStatement
                     || n instanceof ASTForLoopStatement) {
                 return true;
             }

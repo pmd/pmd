@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.ResourceBundle;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,7 +46,7 @@ class DBTypeTest {
 
         absoluteFile = folder.resolve("dbtypetest.properties").toFile();
         try (FileOutputStream fileOutputStream = new FileOutputStream(absoluteFile);
-                PrintStream printStream = new PrintStream(fileOutputStream)) {
+             PrintStream printStream = new PrintStream(fileOutputStream)) {
             for (Entry<?, ?> entry : testProperties.entrySet()) {
                 printStream.printf("%s=%s\n", entry.getKey(), entry.getValue());
             }
@@ -111,8 +113,7 @@ class DBTypeTest {
     @Test
     void testAsProperties() {
         System.out.println("asProperties");
-        ResourceBundle bundle =
-                ResourceBundle.getBundle(DBType.class.getPackage().getName() + ".test");
+        ResourceBundle bundle = ResourceBundle.getBundle(DBType.class.getPackage().getName() + ".test");
         Properties expResult = testProperties;
         Properties result = DBType.getResourceBundleAsProperties(bundle);
         assertEquals(expResult, result);

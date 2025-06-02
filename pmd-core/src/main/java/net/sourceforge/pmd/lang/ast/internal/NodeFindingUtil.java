@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.lang.ast.internal;
 
 import java.util.Optional;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Utilities to find a node at specific text coordinates in a tree.
@@ -18,6 +20,7 @@ public final class NodeFindingUtil {
         // utility class
     }
 
+
     /**
      * Locates the innermost node in the subtree rooted in the given node
      * that contains the given offset.
@@ -25,6 +28,7 @@ public final class NodeFindingUtil {
     public static Optional<Node> findNodeAt(Node root, int offset) {
         return Optional.ofNullable(findNodeImpl(root, offset));
     }
+
 
     /**
      * Simple recursive search algo. Assumes that the regions of siblings
@@ -76,7 +80,7 @@ public final class NodeFindingUtil {
                 return child; // key found
             }
         }
-        return null; // key not found
+        return null;  // key not found
     }
 
     /**
@@ -104,4 +108,6 @@ public final class NodeFindingUtil {
             return null;
         });
     }
+
+
 }

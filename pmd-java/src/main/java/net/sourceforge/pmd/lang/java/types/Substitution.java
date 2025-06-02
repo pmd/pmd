@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+
 import static net.sourceforge.pmd.util.CollectionUtil.associateWith;
 import static net.sourceforge.pmd.util.CollectionUtil.zip;
 
@@ -13,9 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A function from {@link SubstVar}s to types. Applying it to a type
@@ -23,6 +26,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * can be done with {@link TypeOps#subst(JTypeMirror, Function)}.
  */
 public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull JTypeMirror> {
+
 
     /** The empty substitution maps every type variable to itself. */
     public static final Substitution EMPTY = new Substitution(Collections.emptyMap());
@@ -40,6 +44,7 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
     public @NonNull JTypeMirror apply(@NonNull SubstVar var) {
         return getMap().getOrDefault(var, var);
     }
+
 
     /**
      * Returns a composed substitution that first applies this substitution
@@ -83,6 +88,7 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
         return new Substitution(newSubst);
     }
 
+
     /**
      * Maps the given variable to the given type. This does not apply
      * this substitution to the type mirror.
@@ -112,6 +118,7 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
         return new Substitution(zip(from, to));
     }
 
+
     /**
      * Returns a substitution that replaces the given type variables
      * with their erasure.
@@ -124,4 +131,6 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
         }
         return new Substitution(associateWith(tparams, JTypeMirror::getErasure));
     }
+
+
 }

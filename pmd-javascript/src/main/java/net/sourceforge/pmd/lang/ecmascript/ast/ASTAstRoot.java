@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
+import org.mozilla.javascript.ast.AstRoot;
+
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import org.mozilla.javascript.ast.AstRoot;
 
 public final class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements RootNode {
 
@@ -29,6 +30,7 @@ public final class ASTAstRoot extends AbstractEcmascriptNode<AstRoot> implements
     public int getNumComments() {
         return node.getComments() != null ? node.getComments().size() : 0;
     }
+
 
     public ASTComment getComment(int index) {
         return (ASTComment) getChild(getNumChildren() - 1 - getNumComments() + index);

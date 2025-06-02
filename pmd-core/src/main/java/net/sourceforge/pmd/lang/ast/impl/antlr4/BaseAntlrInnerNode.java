@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
 import java.util.List;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode.PmdAsAntlrInnerNode;
+
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.RuleContext;
@@ -15,6 +15,8 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrInnerNode.PmdAsAntlrInnerNode;
 
 /**
  * Base class for the inner nodes (corresponds to {@link ParserRuleContext}).
@@ -58,6 +60,7 @@ public abstract class BaseAntlrInnerNode<N extends AntlrNode<N>> extends BaseAnt
 
     protected abstract int getRuleIndex();
 
+
     @Override
     public Token getFirstAntlrToken() {
         return asAntlrNode().start;
@@ -78,7 +81,8 @@ public abstract class BaseAntlrInnerNode<N extends AntlrNode<N>> extends BaseAnt
 
     protected TerminalNode getToken(int kind, int idx) {
         @SuppressWarnings("rawtypes")
-        BaseAntlrTerminalNode pmdWrapper = children(BaseAntlrTerminalNode.class)
+        BaseAntlrTerminalNode pmdWrapper =
+            children(BaseAntlrTerminalNode.class)
                 .filter(it -> it.getTokenKind() == kind)
                 .get(idx);
         return pmdWrapper != null ? pmdWrapper.asAntlrNode() : null;
@@ -86,24 +90,25 @@ public abstract class BaseAntlrInnerNode<N extends AntlrNode<N>> extends BaseAnt
 
     protected List<TerminalNode> getTokens(int kind) {
         return children(BaseAntlrTerminalNode.class)
-                .filter(it -> it.getTokenKind() == kind)
-                .toList(BaseAntlrTerminalNode::asAntlrNode);
+            .filter(it -> it.getTokenKind() == kind)
+            .toList(BaseAntlrTerminalNode::asAntlrNode);
     }
 
     protected void copyFrom(BaseAntlrInnerNode<N> other) {
         asAntlrNode().copyFrom(other.asAntlrNode());
     }
 
+
     public void enterRule(ParseTreeListener listener) {
         // default does nothing
     }
+
 
     public void exitRule(ParseTreeListener listener) {
         // default does nothing
     }
 
-    protected static class PmdAsAntlrInnerNode<N extends AntlrNode<N>> extends ParserRuleContext
-            implements RuleNode, BaseAntlrNode.AntlrToPmdParseTreeAdapter<N> {
+    protected static class PmdAsAntlrInnerNode<N extends AntlrNode<N>> extends ParserRuleContext implements RuleNode, BaseAntlrNode.AntlrToPmdParseTreeAdapter<N> {
 
         private final BaseAntlrInnerNode<N> pmdNode;
 

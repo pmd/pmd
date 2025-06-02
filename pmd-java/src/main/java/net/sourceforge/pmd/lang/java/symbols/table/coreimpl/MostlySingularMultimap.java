@@ -12,10 +12,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import net.sourceforge.pmd.util.AssertionUtil;
+
 import org.apache.commons.lang3.Validate;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * An unmodifiable multimap type, efficient if the single-value case is the
@@ -96,12 +98,14 @@ final class MostlySingularMultimap<K, V> {
         return new Builder<>(mapMaker);
     }
 
+
     // In case the value type V is an array list
     private static class VList<V> extends ArrayList<V> {
 
         VList(int size) {
             super(size);
         }
+
     }
 
     /**
@@ -126,6 +130,7 @@ final class MostlySingularMultimap<K, V> {
             }
             return map;
         }
+
 
         public void replaceValue(K key, V v) {
             checkKeyValue(key, v);
@@ -155,15 +160,16 @@ final class MostlySingularMultimap<K, V> {
             AssertionUtil.requireParamNotNull("key", key);
         }
 
-        public Builder<K, V> groupBy(Iterable<? extends V> values, Function<? super V, ? extends K> keyExtractor) {
+        public Builder<K, V> groupBy(Iterable<? extends V> values,
+                                     Function<? super V, ? extends K> keyExtractor) {
             ensureOpen();
             return groupBy(values, keyExtractor, Function.identity());
         }
 
-        public <I> Builder<K, V> groupBy(
-                Iterable<? extends I> values,
-                Function<? super I, ? extends K> keyExtractor,
-                Function<? super I, ? extends V> valueExtractor) {
+
+        public <I> Builder<K, V> groupBy(Iterable<? extends I> values,
+                                         Function<? super I, ? extends K> keyExtractor,
+                                         Function<? super I, ? extends V> valueExtractor) {
             ensureOpen();
             for (I i : values) {
                 appendValue(keyExtractor.apply(i), valueExtractor.apply(i));
@@ -240,6 +246,7 @@ final class MostlySingularMultimap<K, V> {
             return (Map<K, V>) map;
         }
 
+
         private void consume() {
             ensureOpen();
             consumed = true;
@@ -264,5 +271,7 @@ final class MostlySingularMultimap<K, V> {
         public boolean isEmpty() {
             return map == null || map.isEmpty();
         }
+
     }
+
 }

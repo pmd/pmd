@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -17,7 +18,7 @@ public class IdempotentOperationsRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTAssignmentExpression node, Object data) {
         if (node.getOperator() == AssignmentOp.ASSIGN
-                && JavaAstUtils.isReferenceToSameVar(node.getLeftOperand(), node.getRightOperand())) {
+            && JavaAstUtils.isReferenceToSameVar(node.getLeftOperand(), node.getRightOperand())) {
             asCtx(data).addViolation(node);
         }
         return null;

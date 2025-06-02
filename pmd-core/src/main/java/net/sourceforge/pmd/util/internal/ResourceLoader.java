@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.internal;
 
 import java.io.File;
@@ -12,11 +13,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.InternalApiBridge;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * @apiNote  Internal API
@@ -86,8 +89,7 @@ public class ResourceLoader {
             return loadClassPathResourceAsStreamOrThrow(name);
         }
 
-        throw new IOException("Can't find resource " + name
-                + ". Make sure the resource is a valid file or URL or is on the classpath");
+        throw new IOException("Can't find resource " + name + ". Make sure the resource is a valid file or URL or is on the classpath");
     }
 
     public @Nullable InputStream loadClassPathResourceAsStream(final String name) throws IOException {
@@ -118,8 +120,8 @@ public class ResourceLoader {
         }
 
         if (is == null) {
-            throw new FileNotFoundException(
-                    "Can't find resource " + name + ". Make sure the resource is on the classpath");
+            throw new FileNotFoundException("Can't find resource " + name
+                    + ". Make sure the resource is on the classpath");
         }
 
         return is;
@@ -128,8 +130,7 @@ public class ResourceLoader {
     /**
      * Load the rule from the classloader from resource loader, consistent with the ruleset
      */
-    public Rule loadRuleFromClassPath(final String clazz)
-            throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    public Rule loadRuleFromClassPath(final String clazz) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         if (XPathRule.class.getName().equals(clazz)) {
             return InternalApiBridge.newXPathRule();
         }

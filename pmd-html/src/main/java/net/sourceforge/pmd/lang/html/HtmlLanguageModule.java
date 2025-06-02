@@ -15,13 +15,11 @@ public final class HtmlLanguageModule extends SimpleLanguageModuleBase {
     static final String NAME = "HTML";
 
     public HtmlLanguageModule() {
-        super(
-                LanguageMetadata.withId(ID)
-                        .name(NAME)
-                        .extensions("html", "htm", "xhtml", "xht", "shtml")
-                        .addVersion("4")
-                        .addDefaultVersion("5"),
-                new HtmlHandler());
+        super(LanguageMetadata.withId(ID).name(NAME)
+                              .extensions("html", "htm", "xhtml", "xht", "shtml")
+                              .addVersion("4")
+                              .addDefaultVersion("5"),
+              new HtmlHandler());
     }
 
     public static HtmlLanguageModule getInstance() {

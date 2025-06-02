@@ -11,11 +11,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.util.log.PmdReporter;
-import org.slf4j.event.Level;
+
 
 /**
  * @author Romain Pelisse &lt;belaran@gmail.com&gt;
@@ -69,10 +72,8 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
                     task.get();
                 }
             } catch (ExecutionException e) {
-                task.getMessageReporter()
-                        .error(
-                                "Unknown error occurred while executing a PmdRunnable: {0}",
-                                e.getCause().toString(), e.getCause());
+                task.getMessageReporter().error("Unknown error occurred while executing a PmdRunnable: {0}",
+                        e.getCause().toString(), e.getCause());
                 if (e.getCause() instanceof Error) {
                     throw (Error) e.getCause();
                 }

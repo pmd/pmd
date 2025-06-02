@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -9,6 +10,10 @@ import java.io.Writer;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -16,8 +21,6 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Renderer to basic HTML format.
@@ -29,22 +32,22 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "html";
 
-    public static final PropertyDescriptor<Optional<String>> LINE_PREFIX = PropertyFactory.stringProperty("linePrefix")
-            .desc("Prefix for line number anchor in the source file.")
-            .toOptional("<none>")
-            .defaultValue(Optional.empty())
-            .build();
+    public static final PropertyDescriptor<Optional<String>> LINE_PREFIX =
+        PropertyFactory.stringProperty("linePrefix")
+                       .desc("Prefix for line number anchor in the source file.")
+                       .toOptional("<none>")
+                       .defaultValue(Optional.empty())
+                       .build();
 
-    public static final PropertyDescriptor<String> LINK_PREFIX = PropertyFactory.stringProperty("linkPrefix")
-            .desc("Path to HTML source.")
-            .defaultValue("")
-            .build();
+    public static final PropertyDescriptor<String> LINK_PREFIX =
+        PropertyFactory.stringProperty("linkPrefix").desc("Path to HTML source.").defaultValue("").build();
 
-    public static final PropertyDescriptor<Boolean> HTML_EXTENSION = PropertyFactory.booleanProperty("htmlExtension")
-            .desc("Replace file extension with .html for the links.")
-            // default value is false - to have the old (pre 6.23.0) behavior, this needs to be set to true.
-            .defaultValue(false)
-            .build();
+    public static final PropertyDescriptor<Boolean> HTML_EXTENSION =
+        PropertyFactory.booleanProperty("htmlExtension")
+                       .desc("Replace file extension with .html for the links.")
+                       // default value is false - to have the old (pre 6.23.0) behavior, this needs to be set to true.
+                       .defaultValue(false)
+                       .build();
 
     private String linkPrefix;
     private String linePrefix;
@@ -130,18 +133,12 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> ").append(System.lineSeparator());
-            buf.append("<td align=\"center\">")
-                    .append(violationCount)
-                    .append("</td>")
-                    .append(System.lineSeparator());
+            buf.append("<td align=\"center\">").append(violationCount).append("</td>").append(System.lineSeparator());
             buf.append("<td width=\"*%\">")
-                    .append(renderFileName(rv.getFileId(), rv.getBeginLine()))
-                    .append("</td>")
-                    .append(System.lineSeparator());
-            buf.append("<td align=\"center\" width=\"5%\">")
-                    .append(rv.getBeginLine())
-                    .append("</td>")
-                    .append(System.lineSeparator());
+               .append(renderFileName(rv.getFileId(), rv.getBeginLine()))
+               .append("</td>")
+                .append(System.lineSeparator());
+            buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
 
             String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
 
@@ -150,19 +147,18 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
                 d = "<a href=\"" + infoUrl + "\">" + d + "</a>";
             }
             buf.append("<td width=\"*\">")
-                    .append(d)
-                    .append("</td>")
-                    .append(System.lineSeparator())
-                    .append("</tr>")
-                    .append(System.lineSeparator());
+               .append(d)
+               .append("</td>")
+               .append(System.lineSeparator())
+               .append("</tr>")
+                .append(System.lineSeparator());
             writer.write(buf.toString());
             violationCount++;
         }
     }
 
     private String renderFileName(FileId fileId, int beginLine) {
-        return maybeWrap(
-                StringEscapeUtils.escapeHtml4(determineFileName(fileId)),
+        return maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(fileId)),
                 linePrefix == null || beginLine < 0 ? "" : linePrefix + beginLine);
     }
 
@@ -196,10 +192,7 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> ").append(System.lineSeparator());
-            buf.append("<td>")
-                    .append(renderFileName(pe.getFileId(), -1))
-                    .append("</td>")
-                    .append(System.lineSeparator());
+            buf.append("<td>").append(renderFileName(pe.getFileId(), -1)).append("</td>").append(System.lineSeparator());
             buf.append("<td><pre>").append(pe.getDetail()).append("</pre></td>").append(System.lineSeparator());
             buf.append("</tr>").append(System.lineSeparator());
             writer.write(buf.toString());
@@ -228,34 +221,18 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             colorize = !colorize;
             buf.append("> ").append(System.lineSeparator());
             RuleViolation rv = sv.getRuleViolation();
-            buf.append("<td align=\"left\">")
-                    .append(renderFileName(rv.getFileId(), rv.getBeginLine()))
-                    .append("</td>")
-                    .append(System.lineSeparator());
-            buf.append("<td align=\"center\">")
-                    .append(rv.getBeginLine())
-                    .append("</td>")
-                    .append(System.lineSeparator());
-            buf.append("<td align=\"center\">")
-                    .append(renderRuleName(rv.getRule()))
-                    .append("</td>")
-                    .append(System.lineSeparator());
-            buf.append("<td align=\"center\">")
-                    .append(sv.getSuppressor().getId())
-                    .append("</td>")
-                    .append(System.lineSeparator());
-            buf.append("<td align=\"center\">")
-                    .append(sv.getUserMessage() == null ? "" : sv.getUserMessage())
-                    .append("</td>")
-                    .append(System.lineSeparator());
+            buf.append("<td align=\"left\">").append(renderFileName(rv.getFileId(), rv.getBeginLine())).append("</td>").append(System.lineSeparator());
+            buf.append("<td align=\"center\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
+            buf.append("<td align=\"center\">").append(renderRuleName(rv.getRule())).append("</td>").append(System.lineSeparator());
+            buf.append("<td align=\"center\">").append(sv.getSuppressor().getId()).append("</td>").append(System.lineSeparator());
+            buf.append("<td align=\"center\">").append(sv.getUserMessage() == null ? "" : sv.getUserMessage()).append("</td>").append(System.lineSeparator());
             buf.append("</tr>").append(System.lineSeparator());
             writer.write(buf.toString());
         }
         writer.write("</table>");
     }
 
-    private void glomConfigurationErrors(final PrintWriter writer, final List<ConfigurationError> configErrors)
-            throws IOException {
+    private void glomConfigurationErrors(final PrintWriter writer, final List<ConfigurationError> configErrors) throws IOException {
         if (configErrors.isEmpty()) {
             return;
         }
@@ -297,6 +274,6 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         }
 
         return "<a href=\"" + linkPrefix + newFileName + (replaceHtmlExtension ? ".html#" : "#") + line + "\">"
-                + newFileName + "</a>";
+            + newFileName + "</a>";
     }
 }

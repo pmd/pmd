@@ -7,10 +7,12 @@ package net.sourceforge.pmd.lang.java.types;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.pcollections.PSet;
+
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
  * Represents a wildcard type. Such types are converted to {@link JTypeVar}
@@ -22,32 +24,40 @@ import org.pcollections.PSet;
  */
 public interface JWildcardType extends JTypeMirror {
 
+
     /** Returns the bound. Interpretation is given by {@link #isUpperBound()}. */
     @NonNull
     JTypeMirror getBound();
+
+
 
     /** Returns true if this is an "extends" wildcard, with no bound ("?"). */
     default boolean isUnbounded() {
         return isUpperBound() && getBound().isTop();
     }
 
+
     /** Returns true if this is an "extends" wildcard, the bound is then an upper bound. */
     boolean isUpperBound();
+
 
     /** Returns true if this is a "super" wildcard, the bound is then a lower bound. */
     default boolean isLowerBound() {
         return !isUpperBound();
     }
 
+
     /** Returns the lower bound, or the bottom type if this is an "extends" wildcard. */
     default @NonNull JTypeMirror asLowerBound() {
         return isUpperBound() ? getTypeSystem().NULL_TYPE : getBound();
     }
 
+
     /** Returns the upper bound, or Object if this is a "super" wildcard. */
     default @NonNull JTypeMirror asUpperBound() {
         return isUpperBound() ? getBound() : getTypeSystem().OBJECT;
     }
+
 
     /**
      * This is implemented for convenience. However, the erasure of a
@@ -74,4 +84,5 @@ public interface JWildcardType extends JTypeMirror {
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
         return visitor.visitWildcard(this, p);
     }
+
 }

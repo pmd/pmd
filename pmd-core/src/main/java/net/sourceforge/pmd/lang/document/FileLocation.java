@@ -6,12 +6,14 @@ package net.sourceforge.pmd.lang.document;
 
 import java.util.Comparator;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents the coordinates of a text region, used for reporting. This provides access
@@ -24,10 +26,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class FileLocation {
 
     public static final Comparator<FileLocation> COORDS_COMPARATOR =
-            Comparator.comparing(FileLocation::getStartPos).thenComparing(FileLocation::getEndPos);
+        Comparator.comparing(FileLocation::getStartPos)
+                  .thenComparing(FileLocation::getEndPos);
+
 
     public static final Comparator<FileLocation> COMPARATOR =
-            Comparator.comparing(FileLocation::getFileId).thenComparing(COORDS_COMPARATOR);
+        Comparator.comparing(FileLocation::getFileId).thenComparing(COORDS_COMPARATOR);
 
     private final int beginLine;
     private final int endLine;
@@ -40,8 +44,7 @@ public final class FileLocation {
         this(fileName, beginLine, beginColumn, endLine, endColumn, null);
     }
 
-    FileLocation(
-            FileId fileName, int beginLine, int beginColumn, int endLine, int endColumn, @Nullable TextRegion region) {
+    FileLocation(FileId fileName, int beginLine, int beginColumn, int endLine, int endColumn, @Nullable TextRegion region) {
         this.fileName = Objects.requireNonNull(fileName);
         this.beginLine = AssertionUtil.requireOver1("Begin line", beginLine);
         this.endLine = AssertionUtil.requireOver1("End line", endLine);
@@ -94,6 +97,7 @@ public final class FileLocation {
         return TextPos2d.pos2d(beginLine, beginColumn);
     }
 
+
     /**
      * Returns the end position.
      */
@@ -120,6 +124,7 @@ public final class FileLocation {
         return getStartPos().toDisplayStringInEnglish();
     }
 
+
     /**
      * Formats the start position as e.g. {@code "/path/to/file:1:2"}.
      */
@@ -142,7 +147,11 @@ public final class FileLocation {
     public static FileLocation range(FileId fileName, TextRange2d range2d) {
         TextPos2d start = range2d.getStartPos();
         TextPos2d end = range2d.getEndPos();
-        return new FileLocation(fileName, start.getLine(), start.getColumn(), end.getLine(), end.getColumn());
+        return new FileLocation(fileName,
+                                start.getLine(),
+                                start.getColumn(),
+                                end.getLine(),
+                                end.getColumn());
     }
 
     /**
@@ -159,6 +168,7 @@ public final class FileLocation {
     public static FileLocation caret(FileId fileName, int line, int column) {
         return new FileLocation(fileName, line, column, line, column);
     }
+
 
     @Override
     public String toString() {

@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.rule;
 
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.util.log.PmdReporter;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Internal API.

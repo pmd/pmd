@@ -1,10 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.Arrays;
 import java.util.Collection;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -14,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * This rule detects non-static classes with no constructors;
@@ -31,8 +34,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        return Arrays.asList(
-                "lombok.Data",
+        return Arrays.asList("lombok.Data",
                 "lombok.Value",
                 "lombok.Builder",
                 "lombok.NoArgsConstructor",
@@ -44,14 +46,15 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
     public Object visit(final ASTClassDeclaration node, final Object data) {
         // Ignore interfaces / static classes / classes that have a constructor / classes ignored through annotations
         if (!node.isRegularClass()
-                || node.isStatic()
-                || node.getDeclarations().any(it -> it instanceof ASTConstructorDeclaration)
-                || hasIgnoredAnnotation(node)) {
+            || node.isStatic()
+            || node.getDeclarations().any(it -> it instanceof ASTConstructorDeclaration)
+            || hasIgnoredAnnotation(node)) {
             return data;
         }
 
-        NodeStream<ModifierOwner> members =
-                node.getDeclarations().filterIs(ModifierOwner.class).filterNot(it -> it instanceof ASTTypeDeclaration);
+        NodeStream<ModifierOwner> members = node.getDeclarations()
+                                             .filterIs(ModifierOwner.class)
+                                             .filterNot(it -> it instanceof ASTTypeDeclaration);
         if (members.isEmpty() || members.any(it -> !it.hasModifiers(JModifier.STATIC))) {
             // Do we have any non-static members?
             asCtx(data).addViolation(node);

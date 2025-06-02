@@ -13,7 +13,8 @@ public class PmdTestCase {
     }
 
     // OK
-    private void checkChild(Child child) {}
+    private void checkChild(Child child) {
+    }
 
     // This method results in "UnusedPrivateMethod: Avoid unused private methods such as 'checkParent(Parent)'"
     private void checkParent(Parent parent) { // false positive

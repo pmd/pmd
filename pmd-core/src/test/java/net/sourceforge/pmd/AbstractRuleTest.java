@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
@@ -15,6 +16,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.regex.Pattern;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
@@ -27,26 +32,18 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
+
 
 class AbstractRuleTest {
 
     private static class MyRule extends AbstractRule {
-        private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo")
-                .desc("foo property")
-                .defaultValue("x")
-                .build();
-        private static final PropertyDescriptor<String> FOO_DEFAULT_PROPERTY = PropertyFactory.stringProperty(
-                        "fooDefault")
+        private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo").desc("foo property").defaultValue("x").build();
+        private static final PropertyDescriptor<String> FOO_DEFAULT_PROPERTY = PropertyFactory.stringProperty("fooDefault")
                 .defaultValue("bar")
                 .desc("Property without value uses default value")
                 .build();
 
-        private static final PropertyDescriptor<String> XPATH_PROPERTY = PropertyFactory.stringProperty("xpath")
-                .desc("xpath property")
-                .defaultValue("")
-                .build();
+        private static final PropertyDescriptor<String> XPATH_PROPERTY = PropertyFactory.stringProperty("xpath").desc("xpath property").defaultValue("").build();
 
         MyRule() {
             definePropertyDescriptor(FOO_PROPERTY);
@@ -59,14 +56,12 @@ class AbstractRuleTest {
         }
 
         @Override
-        public void apply(Node target, RuleContext ctx) {}
+        public void apply(Node target, RuleContext ctx) {
+        }
     }
 
     private static class MyOtherRule extends AbstractRule {
-        private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo")
-                .desc("foo property")
-                .defaultValue("x")
-                .build();
+        private static final PropertyDescriptor<String> FOO_PROPERTY = PropertyFactory.stringProperty("foo").desc("foo property").defaultValue("x").build();
 
         MyOtherRule() {
             definePropertyDescriptor(FOO_PROPERTY);
@@ -77,7 +72,8 @@ class AbstractRuleTest {
         }
 
         @Override
-        public void apply(Node target, RuleContext ctx) {}
+        public void apply(Node target, RuleContext ctx) {
+        }
     }
 
     @RegisterExtension
@@ -89,16 +85,13 @@ class AbstractRuleTest {
         r.setRuleSetName("foo");
         DummyRootNode s = helper.parse("abc()", FileId.fromPathLikeString("abc"));
 
-        InternalApiBridge.createRuleContext(
-                        (rv) -> {
-                            assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
-                            assertEquals("abc", rv.getFileId().getOriginalPath(), "Filename mismatch!");
-                            assertEquals(r, rv.getRule(), "Rule object mismatch!");
-                            assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
-                            assertEquals("foo", rv.getRule().getRuleSetName(), "RuleSet name mismatch!");
-                        },
-                        r)
-                .addViolation(s);
+        InternalApiBridge.createRuleContext((rv) -> {
+            assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
+            assertEquals("abc", rv.getFileId().getOriginalPath(), "Filename mismatch!");
+            assertEquals(r, rv.getRule(), "Rule object mismatch!");
+            assertEquals("my rule msg", rv.getDescription(), "Rule msg mismatch!");
+            assertEquals("foo", rv.getRule().getRuleSetName(), "RuleSet name mismatch!");
+        }, r).addViolation(s);
     }
 
     @Test
@@ -106,15 +99,12 @@ class AbstractRuleTest {
         MyRule r = new MyRule();
         DummyRootNode s = helper.parse("abc()", FileId.fromPathLikeString("filename"));
 
-        InternalApiBridge.createRuleContext(
-                        (rv) -> {
-                            assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
-                            assertEquals("filename", rv.getFileId().getOriginalPath(), "Filename mismatch!");
-                            assertEquals(r, rv.getRule(), "Rule object mismatch!");
-                            assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
-                        },
-                        r)
-                .addViolationWithMessage(s, "specificdescription");
+        InternalApiBridge.createRuleContext((rv) -> {
+            assertEquals(1, rv.getBeginLine(), "Line number mismatch!");
+            assertEquals("filename", rv.getFileId().getOriginalPath(), "Filename mismatch!");
+            assertEquals(r, rv.getRule(), "Rule object mismatch!");
+            assertEquals("specificdescription", rv.getDescription(), "Rule description mismatch!");
+        }, r).addViolationWithMessage(s, "specificdescription");
     }
 
     @Test
@@ -125,18 +115,13 @@ class AbstractRuleTest {
                 ctx.addViolation(target);
             }
         };
-        r.definePropertyDescriptor(PropertyFactory.intProperty("testInt")
-                .desc("description")
-                .require(inRange(0, 100))
-                .defaultValue(10)
-                .build());
+        r.definePropertyDescriptor(PropertyFactory.intProperty("testInt").desc("description").require(inRange(0, 100)).defaultValue(10).build());
         r.setMessage("Message ${packageName} ${className} ${methodName} ${variableName} ${testInt} ${noSuchProperty}");
 
         DummyRootNode s = helper.parse("abc()", FileId.UNKNOWN);
 
         RuleViolation rv = getReportForRuleApply(r, s).getViolations().get(0);
-        assertEquals(
-                "Message foo ${className} ${methodName} ${variableName} 10 ${noSuchProperty}", rv.getDescription());
+        assertEquals("Message foo ${className} ${methodName} ${variableName} 10 ${noSuchProperty}", rv.getDescription());
     }
 
     @Test
@@ -243,12 +228,10 @@ class AbstractRuleTest {
         assertNotEquals(new MockRuleWithPatternProperty("abc"), new MockRuleWithPatternProperty("def"));
 
         MockRuleWithPatternProperty rule1 = new MockRuleWithPatternProperty("abc");
-        PropertyDescriptor<Pattern> myRegexProperty1 =
-                (PropertyDescriptor<Pattern>) rule1.getPropertyDescriptor("myRegexProperty");
+        PropertyDescriptor<Pattern> myRegexProperty1 = (PropertyDescriptor<Pattern>) rule1.getPropertyDescriptor("myRegexProperty");
         rule1.setProperty(myRegexProperty1, Pattern.compile("ghi"));
         MockRuleWithPatternProperty rule2 = new MockRuleWithPatternProperty("abc");
-        PropertyDescriptor<Pattern> myRegexProperty2 =
-                (PropertyDescriptor<Pattern>) rule1.getPropertyDescriptor("myRegexProperty");
+        PropertyDescriptor<Pattern> myRegexProperty2 = (PropertyDescriptor<Pattern>) rule1.getPropertyDescriptor("myRegexProperty");
         rule2.setProperty(myRegexProperty2, Pattern.compile("ghi"));
         assertEquals(rule1, rule2);
 
@@ -278,8 +261,7 @@ class AbstractRuleTest {
         assertEquals(r1.getRuleSetName(), r2.getRuleSetName());
         assertEquals(r1.getSince(), r2.getSince());
 
-        assertEquals(
-                r1.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY),
+        assertEquals(r1.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY),
                 r2.isPropertyOverridden(MyRule.FOO_DEFAULT_PROPERTY));
     }
 }

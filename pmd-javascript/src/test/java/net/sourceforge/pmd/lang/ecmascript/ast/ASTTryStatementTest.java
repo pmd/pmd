@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.mozilla.javascript.ast.AstRoot;
 
@@ -59,8 +61,8 @@ class ASTTryStatementTest extends EcmascriptParserTestBase {
 
     @Test
     void testMultipleCatchAndFinallyBlock() {
-        ASTTryStatement tryStmt =
-                getTryStmt("function() { " + "try { } " + "catch (error if error instanceof BadError) { } "
+        ASTTryStatement tryStmt = getTryStmt(
+                "function() { " + "try { } " + "catch (error if error instanceof BadError) { } "
                         + "catch (error2 if error2 instanceof OtherError) { } " + "finally { } }");
         assertNotNull(tryStmt.getCatchClause(0));
         assertNotNull(tryStmt.getCatchClause(1));

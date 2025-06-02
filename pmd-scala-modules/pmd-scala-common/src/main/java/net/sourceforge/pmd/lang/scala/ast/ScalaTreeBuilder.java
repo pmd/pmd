@@ -10,6 +10,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+
 import scala.meta.Case;
 import scala.meta.Ctor;
 import scala.meta.Decl;
@@ -39,8 +40,7 @@ import scala.meta.Type;
  */
 class ScalaTreeBuilder {
 
-    private static final Map<Class<? extends Tree>, Constructor<? extends ScalaNode<?>>>
-            NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
+    private static final Map<Class<? extends Tree>, Constructor<? extends ScalaNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
     static {
         register(Case.class, ASTCase.class);
@@ -185,7 +185,8 @@ class ScalaTreeBuilder {
     // The nodes having children built.
     private final Deque<AbstractScalaNode<?>> nodes = new ArrayDeque<>();
 
-    private static <T extends Tree> void register(Class<T> nodeType, Class<? extends ScalaNode<T>> nodeAdapterType) {
+    private static <T extends Tree> void register(Class<T> nodeType,
+            Class<? extends ScalaNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {
@@ -206,8 +207,7 @@ class ScalaTreeBuilder {
             // translation between Scala Traits and Java Classes
             for (Class<?> treeClass : NODE_TYPE_TO_NODE_ADAPTER_TYPE.keySet()) {
                 if (treeClass.isInstance(node)) {
-                    constructor =
-                            (Constructor<? extends AbstractScalaNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(treeClass);
+                    constructor = (Constructor<? extends AbstractScalaNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(treeClass);
                 }
             }
 

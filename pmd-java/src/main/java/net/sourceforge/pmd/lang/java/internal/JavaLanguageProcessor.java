@@ -6,6 +6,11 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import java.util.List;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
@@ -26,15 +31,12 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Clément Fournier
  */
 public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguageProperties>
-        implements LanguageVersionHandler {
+    implements LanguageVersionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaLanguageProcessor.class);
 
@@ -82,8 +84,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     }
 
     TypeInferenceLogger newTypeInfLogger() {
-        InferenceLoggingVerbosity verbosity =
-                getProperties().getProperty(JavaLanguageProperties.INTERNAL_INFERENCE_LOGGING_VERBOSITY);
+        InferenceLoggingVerbosity verbosity = getProperties().getProperty(JavaLanguageProperties.INTERNAL_INFERENCE_LOGGING_VERBOSITY);
         if (verbosity == InferenceLoggingVerbosity.VERBOSE) {
             return new VerboseLogger(System.err);
         } else if (verbosity == InferenceLoggingVerbosity.SIMPLE) {
@@ -118,7 +119,8 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         return myMetricsProvider;
     }
 
-    private static final XPathHandler XPATH_HANDLER = XPathHandler.getHandlerForFunctionDefs(
+    private static final XPathHandler XPATH_HANDLER =
+        XPathHandler.getHandlerForFunctionDefs(
             BaseContextNodeTestFun.TYPE_IS_EXACTLY,
             BaseContextNodeTestFun.TYPE_IS,
             BaseContextNodeTestFun.HAS_ANNOTATION,
@@ -127,7 +129,8 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
             GetModifiersFun.GET_EFFECTIVE,
             GetModifiersFun.GET_EXPLICIT,
             MetricFunction.INSTANCE,
-            GetCommentOnFunction.INSTANCE);
+            GetCommentOnFunction.INSTANCE
+        );
 
     public void setTypeSystem(TypeSystem ts) {
         this.typeSystem = Objects.requireNonNull(ts);

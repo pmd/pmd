@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.doc.internal;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.commons.text.StringEscapeUtils;
 
 public final class EscapeUtils {
@@ -19,8 +21,7 @@ public final class EscapeUtils {
     }
 
     public static String escapeMarkdown(String unescaped) {
-        return unescaped
-                .replace("\\", "\\\\")
+        return unescaped.replace("\\", "\\\\")
                 .replace("*", "\\*")
                 .replace("_", "\\_")
                 .replace("~", "\\~")

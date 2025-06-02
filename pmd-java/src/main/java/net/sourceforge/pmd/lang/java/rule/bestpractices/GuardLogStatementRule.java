@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
@@ -10,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -28,7 +32,6 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Check that log.debug, log.trace, log.error, etc... statements are guarded by
@@ -60,23 +63,18 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
      * warning -> isLoggable
      * severe  -> isLoggable
      */
-    private static final PropertyDescriptor<List<String>> LOG_LEVELS = stringListProperty("logLevels")
-            .desc("LogLevels to guard")
-            .defaultValues(
-                    "trace", "debug", "info", "warn", "error", "log", "finest", "finer", "fine", "info", "warning",
-                    "severe")
-            .build();
+    private static final PropertyDescriptor<List<String>> LOG_LEVELS =
+            stringListProperty("logLevels")
+                    .desc("LogLevels to guard")
+                    .defaultValues("trace", "debug", "info", "warn", "error",
+                                   "log", "finest", "finer", "fine", "info", "warning", "severe")
+                    .build();
 
-    private static final PropertyDescriptor<List<String>> GUARD_METHODS = stringListProperty("guardsMethods")
-            .desc("Method use to guard the log statement")
-            .defaultValues(
-                    "isTraceEnabled",
-                    "isDebugEnabled",
-                    "isInfoEnabled",
-                    "isWarnEnabled",
-                    "isErrorEnabled",
-                    "isLoggable")
-            .build();
+    private static final PropertyDescriptor<List<String>> GUARD_METHODS =
+            stringListProperty("guardsMethods")
+                    .desc("Method use to guard the log statement")
+                    .defaultValues("isTraceEnabled", "isDebugEnabled", "isInfoEnabled", "isWarnEnabled", "isErrorEnabled", "isLoggable")
+                    .build();
 
     private final Map<String, String> guardStmtByLogLevel = new HashMap<>(12);
 
@@ -140,8 +138,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
             return false;
         }
 
-        for (ASTMethodCall maybeAGuardCall :
-                ifStatement.getCondition().descendantsOrSelf().filterIs(ASTMethodCall.class)) {
+        for (ASTMethodCall maybeAGuardCall : ifStatement.getCondition().descendantsOrSelf().filterIs(ASTMethodCall.class)) {
             String guardMethodName = maybeAGuardCall.getMethodName();
             // the guard is adapted to the actual log statement
 
@@ -157,6 +154,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
             } else {
                 return true;
             }
+
         }
         return false;
     }
@@ -200,19 +198,15 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
     private boolean areAdditionalParamsDirectAccess(ASTMethodCall call, int messageArgIndex) {
         // return true if the statement has limited overhead even if unguarded,
         // so that we can ignore it
-        return call.getArguments()
-                .toStream()
-                .drop(messageArgIndex) // remove the level argument if needed
-                .all(GuardLogStatementRule::isDirectAccess);
+        return call.getArguments().toStream()
+                   .drop(messageArgIndex) // remove the level argument if needed
+                   .all(GuardLogStatementRule::isDirectAccess);
     }
 
     private static boolean isDirectAccess(ASTExpression it) {
-        final boolean isPermittedType = it instanceof ASTLiteral
-                || it instanceof ASTLambdaExpression
-                || it instanceof ASTVariableAccess
-                || it instanceof ASTThisExpression
-                || it instanceof ASTMethodReference
-                || it instanceof ASTFieldAccess
+        final boolean isPermittedType = it instanceof ASTLiteral || it instanceof ASTLambdaExpression
+                || it instanceof ASTVariableAccess || it instanceof ASTThisExpression
+                || it instanceof ASTMethodReference || it instanceof ASTFieldAccess
                 || it instanceof ASTArrayAccess;
 
         if (!isPermittedType) {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.symboltable;
 
 import java.util.ArrayList;
@@ -18,8 +19,7 @@ public abstract class AbstractScope implements Scope {
 
     private Scope parent;
     /** Stores the name declaration already sorted by class. */
-    private Map<Class<? extends NameDeclaration>, Map<NameDeclaration, List<NameOccurrence>>> nameDeclarations =
-            new LinkedHashMap<>();
+    private Map<Class<? extends NameDeclaration>, Map<NameDeclaration, List<NameOccurrence>>> nameDeclarations = new LinkedHashMap<>();
 
     @Override
     public Scope getParent() {
@@ -86,8 +86,7 @@ public abstract class AbstractScope implements Scope {
     @Override
     public Set<NameDeclaration> addNameOccurrence(NameOccurrence occurrence) {
         Set<NameDeclaration> result = new HashSet<>();
-        for (Map.Entry<NameDeclaration, List<NameOccurrence>> e :
-                getDeclarations().entrySet()) {
+        for (Map.Entry<NameDeclaration, List<NameOccurrence>> e : getDeclarations().entrySet()) {
             if (e.getKey().getImage().equals(occurrence.getImage())) {
                 result.add(e.getKey());
                 e.getValue().add(occurrence);

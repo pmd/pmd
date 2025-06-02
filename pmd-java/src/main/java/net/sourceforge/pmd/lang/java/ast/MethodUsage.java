@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A node that uses another method or constructor. Those are
@@ -32,4 +33,5 @@ public interface MethodUsage extends JavaNode {
      * @since 7.14.0
      */
     OverloadSelectionResult getOverloadSelectionInfo();
+
 }

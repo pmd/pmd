@@ -1,7 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.rule.codestyle;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
@@ -10,7 +13,6 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.NumericConstraints;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class LineLengthRule extends AbstractPLSQLRule {
 
@@ -42,12 +44,8 @@ public class LineLengthRule extends AbstractPLSQLRule {
         int lineNumber = 1;
         for (Chars line : node.getText().lines()) {
             if (line.length() > maxLineLength) {
-                asCtx(data)
-                        .addViolationWithPosition(
-                                node,
-                                lineNumber,
-                                lineNumber,
-                                "The line is too long. Only " + maxLineLength + " characters are allowed.");
+                asCtx(data).addViolationWithPosition(node, lineNumber, lineNumber,
+                        "The line is too long. Only " + maxLineLength + " characters are allowed.");
 
                 if (!eachLine) {
                     break;

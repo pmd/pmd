@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.util.log;
 
 import java.text.MessageFormat;
-import net.sourceforge.pmd.util.log.internal.QuietReporter;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
+
+import net.sourceforge.pmd.util.log.internal.QuietReporter;
 
 /**
  * Façade to report user-facing messages (info, warning and error).
@@ -35,8 +37,7 @@ public interface PmdReporter {
      * Logs and returns a new exception.
      * Message and cause may not be null a the same time.
      */
-    default RuntimeException newException(
-            Level level, @Nullable Throwable cause, @Nullable String message, Object... formatArgs) {
+    default RuntimeException newException(Level level, @Nullable Throwable cause, @Nullable String message, Object... formatArgs) {
         logEx(level, message, formatArgs, cause);
         if (message == null) {
             return new RuntimeException(cause);
@@ -91,6 +92,7 @@ public interface PmdReporter {
      */
     int numErrors();
 
+
     /**
      * Returns a reporter instance that does not output anything, but
      * still counts errors.
@@ -98,4 +100,5 @@ public interface PmdReporter {
     static PmdReporter quiet() {
         return new QuietReporter();
     }
+
 }

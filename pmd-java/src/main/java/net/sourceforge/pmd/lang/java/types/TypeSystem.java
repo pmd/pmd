@@ -17,6 +17,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -36,10 +42,6 @@ import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.VoidSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
 
 /**
  * Root context object for type analysis. Type systems own a global
@@ -82,6 +84,7 @@ public final class TypeSystem {
      */
     public final JTypeMirror NULL_TYPE = new NullType(this);
 
+
     /** Primitive type {@code boolean}. */
     public final JPrimitiveType BOOLEAN;
     /** Primitive type {@code char}. */
@@ -103,7 +106,6 @@ public final class TypeSystem {
      * The set of all primitive types. See {@link #getPrimitive(PrimitiveTypeKind)}.
      */
     public final Set<JPrimitiveType> allPrimitives;
-
     private final Map<PrimitiveTypeKind, JPrimitiveType> primitivesByKind;
 
     /**
@@ -167,6 +169,7 @@ public final class TypeSystem {
      * <p>Note that {@code BOXED_VOID.unbox() != NO_TYPE}, {@code NO_TYPE.box() != BOXED_VOID}.
      */
     public final JClassType BOXED_VOID;
+
 
     /** Contains special types, that must be shared to be comparable by reference. */
     private final Map<JTypeDeclSymbol, JTypeMirror> sharedTypes;
@@ -314,9 +317,9 @@ public final class TypeSystem {
     }
 
     private @NonNull JPrimitiveType createPrimitive(PrimitiveTypeKind kind, Class<?> box) {
-        return new JPrimitiveType(
-                this, kind, new RealPrimitiveSymbol(this, kind), getBootStrapSymbol(box), HashTreePSet.empty());
+        return new JPrimitiveType(this, kind, new RealPrimitiveSymbol(this, kind), getBootStrapSymbol(box), HashTreePSet.empty());
     }
+
 
     // type creation routines
 
@@ -391,7 +394,8 @@ public final class TypeSystem {
 
         AssertionUtil.assertValidJavaBinaryNameNoArray(name);
 
-        return isCanonical ? resolver.resolveClassFromCanonicalName(name) : resolver.resolveClassFromBinaryName(name);
+        return isCanonical ? resolver.resolveClassFromCanonicalName(name)
+                           : resolver.resolveClassFromBinaryName(name);
     }
 
     /**
@@ -518,15 +522,14 @@ public final class TypeSystem {
      * @throws IllegalArgumentException see {@link JClassType#withTypeArguments(List)}
      */
     // todo how does this behave with nested generic types
-    public @NonNull JTypeMirror parameterise(
-            @NonNull JClassSymbol klass, @NonNull List<? extends JTypeMirror> typeArgs) {
+    public @NonNull JTypeMirror parameterise(@NonNull JClassSymbol klass, @NonNull List<? extends JTypeMirror> typeArgs) {
         if (typeArgs.isEmpty()) {
             return rawType(klass); // note this ensures that OBJECT and such is preserved
         }
         // if the type arguments are mismatched, the constructor will throw
-        return new ClassTypeImpl(
-                this, klass, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), true, HashTreePSet.empty());
+        return new ClassTypeImpl(this, klass, CollectionUtil.defensiveUnmodifiableCopy(typeArgs), true, HashTreePSet.empty());
     }
+
 
     /**
      * Creates a new array type from an arbitrary element type.
@@ -584,10 +587,13 @@ public final class TypeSystem {
         return new JArrayType(this, component, symbol, HashTreePSet.empty());
     }
 
+
     private void checkArrayElement(@NonNull JTypeMirror element) {
         AssertionUtil.requireParamNotNull("elementType", element);
 
-        if (element instanceof JWildcardType || element == NULL_TYPE || element == NO_TYPE) {
+        if (element instanceof JWildcardType
+            || element == NULL_TYPE
+            || element == NO_TYPE) {
             throw new IllegalArgumentException("The type < " + element + " > is not a valid array element type");
         }
     }
@@ -612,6 +618,7 @@ public final class TypeSystem {
     public JVariableSig sigOf(JClassType decl, JFormalParamSymbol fieldSym) {
         return JVariableSig.forLocal(decl, fieldSym);
     }
+
 
     /**
      * Builds a wildcard type with a single bound.
@@ -640,9 +647,8 @@ public final class TypeSystem {
         if (bound.isPrimitive() || bound instanceof JWildcardType) {
             throw new IllegalArgumentException("<" + bound + "> cannot be a wildcard bound");
         }
-        return isUpperBound && bound == OBJECT
-                ? UNBOUNDED_WILD
-                : new WildcardTypeImpl(this, isUpperBound, bound, HashTreePSet.empty());
+        return isUpperBound && bound == OBJECT ? UNBOUNDED_WILD
+                                               : new WildcardTypeImpl(this, isUpperBound, bound, HashTreePSet.empty());
     }
 
     /**
@@ -653,6 +659,7 @@ public final class TypeSystem {
     private @Nullable JTypeMirror specialCache(JTypeDeclSymbol raw) {
         return sharedTypes.get(raw);
     }
+
 
     /**
      * Gets the primitive type identified by the given kind.
@@ -733,6 +740,7 @@ public final class TypeSystem {
             return new ErasedClassType(this, symbol, HashTreePSet.empty());
         }
     }
+
 
     /**
      * Returns a new type variable for the given symbol. This is only

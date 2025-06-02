@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.kotlin.cpd;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class KotlinCpdLexerTest extends CpdTextComparisonTest {
 

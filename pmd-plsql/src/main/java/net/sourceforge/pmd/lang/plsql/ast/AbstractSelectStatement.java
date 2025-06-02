@@ -37,4 +37,5 @@ abstract class AbstractSelectStatement extends AbstractPLSQLNode {
     public boolean isAll() {
         return all;
     }
+
 }

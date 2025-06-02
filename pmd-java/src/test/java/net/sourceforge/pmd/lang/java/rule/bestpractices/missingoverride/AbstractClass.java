@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 /**
@@ -13,9 +14,13 @@ public abstract class AbstractClass {
         return new Object();
     }
 
-    public void arrayParams(String dflt, int[] keys, StringBuilder[] labels) {}
+
+    public void arrayParams(String dflt, int[] keys, StringBuilder[] labels) {
+    }
+
 
     public <T, R> R generic(T t, R r) {
         return r;
     }
+
 }

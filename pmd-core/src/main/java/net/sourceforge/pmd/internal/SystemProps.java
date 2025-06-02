@@ -8,7 +8,8 @@ public final class SystemProps {
 
     public static final String PMD_ERROR_RECOVERY = "pmd.error_recovery";
 
-    private SystemProps() {}
+    private SystemProps() {
+    }
 
     /**
      * In error recovery mode errors like StackOverflowError or AssertionErrors are logged

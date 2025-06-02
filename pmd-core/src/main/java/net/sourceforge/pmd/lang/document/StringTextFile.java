@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.document;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Read-only view on a string.
@@ -52,4 +53,5 @@ class StringTextFile implements TextFile {
     public String toString() {
         return "ReadOnlyString[" + StringUtil.elide(content.getNormalizedText().toString(), 40, "...") + "]";
     }
+
 }

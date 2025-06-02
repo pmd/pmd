@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.Collections;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
@@ -41,7 +42,8 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
         return (contextNode, arguments) -> {
             if (contextNode instanceof ModifierOwner) {
                 ASTModifierList modList = ((ModifierOwner) contextNode).getModifiers();
-                Set<JModifier> mods = explicit ? modList.getExplicitModifiers() : modList.getEffectiveModifiers();
+                Set<JModifier> mods = explicit ? modList.getExplicitModifiers()
+                                               : modList.getEffectiveModifiers();
                 return CollectionUtil.map(mods, JModifier::getToken);
             }
             return Collections.<String>emptyList();

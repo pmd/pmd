@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sf.saxon.om.AtomicArray;
 import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.EmptyAtomicSequence;
@@ -21,30 +24,33 @@ import net.sf.saxon.value.FloatValue;
 import net.sf.saxon.value.Int64Value;
 import net.sf.saxon.value.SequenceType;
 import net.sf.saxon.value.StringValue;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  * Converts Java values into XPath values.
  */
 public final class DomainConversion {
 
-    private DomainConversion() {}
+    private DomainConversion() {
+
+    }
+
 
     public static SchemaType buildType(java.lang.reflect.Type type) {
         switch (type.getTypeName()) {
-            case "java.lang.Integer":
-            case "java.lang.Long":
-                return BuiltInAtomicType.INTEGER;
-            case "java.lang.Double":
-            case "java.lang.Float":
-                return BuiltInAtomicType.DOUBLE;
-            case "java.lang.String":
-            case "java.lang.Character":
-            case "java.lang.Class":
-            case "java.util.regex.Pattern":
-                return BuiltInAtomicType.STRING;
-            default:
-                return BuiltInAtomicType.UNTYPED_ATOMIC;
+        case "java.lang.Integer":
+        case "java.lang.Long":
+            return BuiltInAtomicType.INTEGER;
+        case "java.lang.Double":
+        case "java.lang.Float":
+            return BuiltInAtomicType.DOUBLE;
+        case "java.lang.String":
+        case "java.lang.Character":
+        case "java.lang.Class":
+        case "java.util.regex.Pattern":
+            return BuiltInAtomicType.STRING;
+        default:
+            return BuiltInAtomicType.UNTYPED_ATOMIC;
         }
     }
 
@@ -106,6 +112,7 @@ public final class DomainConversion {
             }
         }
     }
+
 
     /**
      * Gets the Saxon representation of the parameter, if its type corresponds

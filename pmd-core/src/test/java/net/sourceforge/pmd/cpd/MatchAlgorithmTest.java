@@ -12,11 +12,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
-import org.junit.jupiter.api.Test;
 
 class MatchAlgorithmTest {
 
@@ -30,8 +32,8 @@ class MatchAlgorithmTest {
     private static final String LINE_8 = "}";
 
     private static String getSampleCode() {
-        return LINE_1 + "\n" + LINE_2 + "\n" + LINE_3 + "\n" + LINE_4 + "\n" + LINE_5 + "\n" + LINE_6 + "\n" + LINE_7
-                + "\n" + LINE_8;
+        return LINE_1 + "\n" + LINE_2 + "\n" + LINE_3 + "\n" + LINE_4 + "\n" + LINE_5 + "\n" + LINE_6
+                + "\n" + LINE_7 + "\n" + LINE_8;
     }
 
     private static String getMultipleRepetitionsCode() {

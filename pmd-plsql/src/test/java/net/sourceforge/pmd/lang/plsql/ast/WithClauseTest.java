@@ -1,14 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
-import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
 class WithClauseTest extends AbstractPLSQLParserTst {
 
@@ -16,8 +19,7 @@ class WithClauseTest extends AbstractPLSQLParserTst {
     void testSelect() {
         ASTInput input = plsql.parseResource("WithClause.pls");
 
-        List<ASTSelectStatement> selectStatements =
-                input.descendants(ASTSelectStatement.class).toList();
+        List<ASTSelectStatement> selectStatements = input.descendants(ASTSelectStatement.class).toList();
         assertEquals(1, selectStatements.size());
 
         assertNotNull(selectStatements.get(0).descendants(ASTWithClause.class).first());
@@ -28,8 +30,7 @@ class WithClauseTest extends AbstractPLSQLParserTst {
     void testSelectInto() {
         ASTInput input = plsql.parseResource("WithClause.pls");
 
-        List<ASTSelectIntoStatement> selectStatements =
-                input.descendants(ASTSelectIntoStatement.class).toList();
+        List<ASTSelectIntoStatement> selectStatements = input.descendants(ASTSelectIntoStatement.class).toList();
         assertEquals(1, selectStatements.size());
 
         assertNotNull(selectStatements.get(0).descendants(ASTWithClause.class).first());

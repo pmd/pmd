@@ -6,6 +6,11 @@ package net.sourceforge.pmd.lang.java.types;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -14,9 +19,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Public utilities to test the type of nodes.
@@ -28,6 +30,7 @@ public final class TypeTestUtil {
     private TypeTestUtil() {
         // utility class
     }
+
 
     /**
      * Checks whether the static type of the node is a subtype of the
@@ -58,7 +61,8 @@ public final class TypeTestUtil {
      */
     public static boolean isA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
-        return node != null && (hasNoSubtypes(clazz) ? isExactlyA(clazz, node) : isA(clazz, node.getTypeMirror()));
+        return node != null && (hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
+                                    : isA(clazz, node.getTypeMirror()));
     }
 
     /**
@@ -91,6 +95,7 @@ public final class TypeTestUtil {
         return isA(otherType, type);
     }
 
+
     /**
      * Checks whether the static type of the node is a subtype of the
      * class identified by the given name. See {@link #isA(Class, TypeNode)}
@@ -113,8 +118,7 @@ public final class TypeTestUtil {
             return false;
         }
 
-        UnresolvedClassStore unresolvedStore =
-                InternalApiBridge.getProcessor(node).getUnresolvedStore();
+        UnresolvedClassStore unresolvedStore = InternalApiBridge.getProcessor(node).getUnresolvedStore();
         return isA(canonicalName, node.getTypeMirror(), unresolvedStore);
     }
 
@@ -161,10 +165,7 @@ public final class TypeTestUtil {
         return t2.isSubtypeOf(t1);
     }
 
-    private static boolean isA(
-            @NonNull String canonicalName,
-            @NonNull JTypeMirror thisType,
-            @Nullable UnresolvedClassStore unresolvedStore) {
+    private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType, @Nullable UnresolvedClassStore unresolvedStore) {
         OptionalBool exactMatch = isExactlyAOrAnon(canonicalName, thisType);
         if (exactMatch != OptionalBool.NO) {
             return exactMatch == OptionalBool.YES; // otherwise anon, and we return false
@@ -246,6 +247,7 @@ public final class TypeTestUtil {
         return isExactlyA(klass, sig.getDeclaringType().getSymbol());
     }
 
+
     /**
      * Checks whether the static type of the node is exactly the type
      * given by the name. See {@link #isExactlyA(Class, TypeNode)} for
@@ -283,6 +285,7 @@ public final class TypeTestUtil {
         }
         return OptionalBool.definitely(canonical.equals(canonicalName));
     }
+
 
     private static boolean hasNoSubtypes(Class<?> clazz) {
         // Neither final nor an annotation. Enums & records have ACC_FINAL

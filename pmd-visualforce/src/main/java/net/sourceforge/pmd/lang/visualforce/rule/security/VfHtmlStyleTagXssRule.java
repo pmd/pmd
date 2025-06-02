@@ -7,6 +7,9 @@ package net.sourceforge.pmd.lang.visualforce.rule.security;
 import java.util.EnumSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTContent;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTElExpression;
@@ -15,13 +18,12 @@ import net.sourceforge.pmd.lang.visualforce.ast.ASTText;
 import net.sourceforge.pmd.lang.visualforce.ast.VfNode;
 import net.sourceforge.pmd.lang.visualforce.rule.AbstractVfRule;
 import net.sourceforge.pmd.lang.visualforce.rule.security.internal.ElEscapeDetector;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private static final String STYLE_TAG = "style";
     private static final String APEX_PREFIX = "apex";
-    private static final Set<ElEscapeDetector.Escaping> URLENCODE_JSINHTMLENCODE =
-            EnumSet.of(ElEscapeDetector.Escaping.URLENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
+    private static final Set<ElEscapeDetector.Escaping> URLENCODE_JSINHTMLENCODE = EnumSet.of(ElEscapeDetector.Escaping.URLENCODE, ElEscapeDetector.Escaping.JSINHTMLENCODE);
     private static final Set<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
     private static final Pattern URL_METHOD_PATTERN = Pattern.compile("url\\s*\\([^)]*$", Pattern.CASE_INSENSITIVE);
 
@@ -77,7 +79,11 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
      * Examining encoding of ElExpression - we apply different rules
      * for plain HTML tags and <style></style> content.
      */
-    private void verifyEncoding(ASTElExpression node, ASTContent contentNode, ASTElement elementNode, Object data) {
+    private void verifyEncoding(
+            ASTElExpression node,
+            ASTContent contentNode,
+            ASTElement elementNode,
+            Object data) {
         final String previousText = getPreviousText(contentNode, node);
         final boolean isWithinSafeResource = ElEscapeDetector.startsWithSafeResource(node);
 
@@ -102,30 +108,35 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
     private void verifyEncodingWithinUrl(ASTElExpression elExpressionNode, Object data) {
 
         // only allow URLENCODING or JSINHTMLENCODING
-        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(elExpressionNode, URLENCODE_JSINHTMLENCODE)) {
-            asCtx(data)
-                    .addViolationWithMessage(
-                            elExpressionNode,
-                            "Dynamic EL content within URL in style tag should be URLENCODED or JSINHTMLENCODED as appropriate");
+        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
+                elExpressionNode,
+                URLENCODE_JSINHTMLENCODE)) {
+            asCtx(data).addViolationWithMessage(
+                    elExpressionNode,
+                    "Dynamic EL content within URL in style tag should be URLENCODED or JSINHTMLENCODED as appropriate");
         }
+
     }
 
     private void verifyEncodingWithoutUrl(ASTElExpression elExpressionNode, Object data) {
-        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(elExpressionNode, ANY_ENCODE)) {
-            asCtx(data)
-                    .addViolationWithMessage(
-                            elExpressionNode, "Dynamic EL content in style tag should be appropriately encoded");
+        if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
+                elExpressionNode,
+                ANY_ENCODE)) {
+            asCtx(data).addViolationWithMessage(
+                    elExpressionNode,
+                    "Dynamic EL content in style tag should be appropriately encoded");
         }
     }
 
     private boolean isApexPrefixed(ASTElement node) {
-        return node.isHasNamespacePrefix() && APEX_PREFIX.equalsIgnoreCase(node.getNamespacePrefix());
+        return node.isHasNamespacePrefix()
+                && APEX_PREFIX.equalsIgnoreCase(node.getNamespacePrefix());
     }
 
     /**
      * Get text content within style tag that leads up to the ElExpression.
      * For example, in this snippet:
-     *
+     * 
      * <pre>
      * &lt;style>
      *  div {
@@ -156,4 +167,5 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
 
         return URL_METHOD_PATTERN.matcher(previousText).find();
     }
+
 }

@@ -9,6 +9,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTName;
 import net.sourceforge.pmd.lang.plsql.ast.InternalApiBridge;
@@ -18,8 +22,6 @@ import net.sourceforge.pmd.lang.symboltable.Applier;
 import net.sourceforge.pmd.lang.symboltable.ImageFinderFunction;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ClassScope extends AbstractScope {
     private static final Logger LOG = LoggerFactory.getLogger(ClassScope.class);
@@ -56,8 +58,7 @@ public class ClassScope extends AbstractScope {
 
     @Override
     public void addDeclaration(NameDeclaration declaration) {
-        if (declaration instanceof VariableNameDeclaration
-                && getDeclarations().keySet().contains(declaration)) {
+        if (declaration instanceof VariableNameDeclaration && getDeclarations().keySet().contains(declaration)) {
             throw new RuntimeException(declaration + " is already in the symbol table");
         }
         super.addDeclaration(declaration);
@@ -170,8 +171,7 @@ public class ClassScope extends AbstractScope {
         images.add(occurrence.getImage());
 
         if (null == occurrence.getImage()) {
-            LOG.trace(
-                    "occurrence=={} with Argument Count == {} for className={}",
+            LOG.trace("occurrence=={} with Argument Count == {} for className={}",
                     occurrence.toString(),
                     occurrence.getArgumentCount(),
                     className);
@@ -201,11 +201,7 @@ public class ClassScope extends AbstractScope {
             for (MethodNameDeclaration mnd : methodNames.keySet()) {
                 res.append(mnd.toString());
                 int usages = methodNames.get(mnd).size();
-                res.append("(begins at line ")
-                        .append(mnd.getNode().getBeginLine())
-                        .append(", ")
-                        .append(usages)
-                        .append(" usages)");
+                res.append("(begins at line ").append(mnd.getNode().getBeginLine()).append(", ").append(usages).append(" usages)");
                 res.append(',');
             }
         }

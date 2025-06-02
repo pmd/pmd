@@ -5,6 +5,12 @@
 package net.sourceforge.pmd;
 
 import java.util.Collections;
+
+import org.junit.jupiter.api.extension.AfterEachCallback;
+import org.junit.jupiter.api.extension.BeforeEachCallback;
+import org.junit.jupiter.api.extension.Extension;
+import org.junit.jupiter.api.extension.ExtensionContext;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
@@ -16,10 +22,6 @@ import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.util.log.PmdReporter;
-import org.junit.jupiter.api.extension.AfterEachCallback;
-import org.junit.jupiter.api.extension.BeforeEachCallback;
-import org.junit.jupiter.api.extension.Extension;
-import org.junit.jupiter.api.extension.ExtensionContext;
 
 /**
  * @author Clément Fournier
@@ -28,7 +30,9 @@ public class DummyParsingHelper implements Extension, BeforeEachCallback, AfterE
 
     private LanguageProcessor dummyProcessor;
 
-    public DummyParsingHelper() {}
+    public DummyParsingHelper() {
+
+    }
 
     public DummyRootNode parse(String code) {
         return parse(code, FileId.UNKNOWN);
@@ -41,9 +45,9 @@ public class DummyParsingHelper implements Extension, BeforeEachCallback, AfterE
     public DummyRootNode parse(String code, FileId filename) {
         LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
         ParserTask task = new ParserTask(
-                TextDocument.readOnlyString(code, filename, version),
-                SemanticErrorReporter.noop(),
-                LanguageProcessorRegistry.singleton(dummyProcessor));
+            TextDocument.readOnlyString(code, filename, version),
+            SemanticErrorReporter.noop(),
+            LanguageProcessorRegistry.singleton(dummyProcessor));
         return (DummyRootNode) dummyProcessor.services().getParser().parse(task);
     }
 
@@ -54,8 +58,11 @@ public class DummyParsingHelper implements Extension, BeforeEachCallback, AfterE
 
     @Override
     public void beforeEach(ExtensionContext context) throws Exception {
-        LanguageProcessorRegistry registry =
-                LanguageProcessorRegistry.create(LanguageRegistry.PMD, Collections.emptyMap(), PmdReporter.quiet());
+        LanguageProcessorRegistry registry = LanguageProcessorRegistry.create(
+            LanguageRegistry.PMD,
+            Collections.emptyMap(),
+            PmdReporter.quiet()
+        );
         dummyProcessor = registry.getProcessor(DummyLanguageModule.getInstance());
     }
 }

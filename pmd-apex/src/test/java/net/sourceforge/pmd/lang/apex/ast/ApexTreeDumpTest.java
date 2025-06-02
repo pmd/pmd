@@ -2,12 +2,14 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.apex.ast;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.RelevantAttributePrinter;
-import org.junit.jupiter.api.Test;
 
 class ApexTreeDumpTest extends BaseTreeDumpTest {
 

@@ -1,13 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Collection;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  * Formal parameter of a {@linkplain ASTCatchClause catch clause}
@@ -20,11 +24,13 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * </pre>
  */
 public final class ASTCatchParameter extends AbstractJavaNode
-        implements InternalInterfaces.VariableIdOwner, ModifierOwner {
+    implements InternalInterfaces.VariableIdOwner,
+        ModifierOwner {
 
     ASTCatchParameter(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -53,6 +59,7 @@ public final class ASTCatchParameter extends AbstractJavaNode
         return getVarId().getName();
     }
 
+
     /**
      * Returns the type node of this catch parameter. May be a
      * {@link ASTUnionType UnionType}.
@@ -60,6 +67,7 @@ public final class ASTCatchParameter extends AbstractJavaNode
     public ASTType getTypeNode() {
         return (ASTType) getChild(1);
     }
+
 
     /**
      * Returns a stream of all declared exception types (expanding a union

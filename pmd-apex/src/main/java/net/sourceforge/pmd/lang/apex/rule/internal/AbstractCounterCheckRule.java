@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.apex.rule.internal;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTApexFile;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
@@ -15,7 +17,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  * Abstract class for rules counting some integer metric on some node.
@@ -25,12 +27,14 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends AbstractApexRule {
 
-    private final PropertyDescriptor<Integer> reportLevel = CommonPropertyDescriptors.reportLevelProperty()
-            .desc("Threshold above which a node is reported")
-            .require(positive())
-            .defaultValue(defaultReportLevel())
-            .build();
+
+    private final PropertyDescriptor<Integer> reportLevel =
+        CommonPropertyDescriptors.reportLevelProperty()
+                                 .desc("Threshold above which a node is reported")
+                                 .require(positive())
+                                 .defaultValue(defaultReportLevel()).build();
     private final Class<T> nodeType;
+
 
     public AbstractCounterCheckRule(Class<T> nodeType) {
         this.nodeType = nodeType;
@@ -42,11 +46,13 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
         return RuleTargetSelector.forTypes(nodeType);
     }
 
+
     protected abstract int defaultReportLevel();
 
     protected Object[] getViolationParameters(T node, int metric, int limit) {
         return new Object[] {metric, limit};
     }
+
 
     protected abstract int getMetric(T node);
 
@@ -69,21 +75,14 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
             int metric = getMetric(t);
             int limit = getProperty(reportLevel);
             if (metric >= limit) {
-                asCtx(data)
-                        .addViolationWithPosition(
-                                t,
-                                t.getAstInfo(),
-                                getReportLocation(t),
-                                getMessage(),
-                                getViolationParameters(t, metric, limit));
+                asCtx(data).addViolationWithPosition(t, t.getAstInfo(), getReportLocation(t), getMessage(), getViolationParameters(t, metric, limit));
             }
         }
 
         return data;
     }
 
-    public abstract static class AbstractLineLengthCheckRule<T extends ApexNode<?>>
-            extends AbstractCounterCheckRule<T> {
+    public abstract static class AbstractLineLengthCheckRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
         public AbstractLineLengthCheckRule(Class<T> nodeType) {
             super(nodeType);
@@ -98,5 +97,8 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
 
             return measured.getEndLine() - measured.getBeginLine();
         }
+
     }
+
+
 }

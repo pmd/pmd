@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
 import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 import net.sourceforge.pmd.lang.modelica.resolver.internal.Watchdog;
@@ -58,8 +60,7 @@ abstract class AbstractModelicaScope implements ModelicaScope {
     abstract void resolveLexically(ResolutionContext result, CompositeName name) throws Watchdog.CountdownException;
 
     @Override
-    public <T extends ResolvableEntity> ResolutionResult<T> safeResolveLexically(
-            Class<T> clazz, ResolutionState state, CompositeName name) {
+    public <T extends ResolvableEntity> ResolutionResult<T> safeResolveLexically(Class<T> clazz, ResolutionState state, CompositeName name) {
         ResolutionContext result = state.createContext();
         try {
             resolveLexically(result, name);

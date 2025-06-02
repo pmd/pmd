@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant.internal;
 
 import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
@@ -11,6 +12,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.tools.ant.AntClassLoader;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.Resource;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.ant.Formatter;
@@ -30,17 +44,6 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
-import org.apache.tools.ant.AntClassLoader;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.Path;
-import org.apache.tools.ant.types.Resource;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.slf4j.event.Level;
 
 public class PMDTaskImpl {
 
@@ -108,6 +111,7 @@ public class PMDTaskImpl {
         return paths;
     }
 
+
     private void doTask() {
         setupClassLoader();
 
@@ -121,7 +125,8 @@ public class PMDTaskImpl {
 
         ReportStats stats;
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
-            RuleSetLoader rulesetLoader = pmd.newRuleSetLoader().loadResourcesWith(setupResourceLoader());
+            RuleSetLoader rulesetLoader =
+                pmd.newRuleSetLoader().loadResourcesWith(setupResourceLoader());
             pmd.addRuleSets(loadRuleSetsWithoutException(rulesetLoader, ruleSetPaths));
 
             for (FileSet fileset : filesets) {
@@ -130,6 +135,7 @@ public class PMDTaskImpl {
                     pmd.files().addFile(ds.getBasedir().toPath().resolve(srcFile));
                 }
             }
+
 
             @SuppressWarnings("PMD.CloseResource")
             ReportStatsListener reportStatsListener = new ReportStatsListener();
@@ -217,7 +223,8 @@ public class PMDTaskImpl {
         // are loaded twice
         // and exist in multiple class loaders
         final boolean parentFirst = true;
-        return new AntClassLoader(Thread.currentThread().getContextClassLoader(), project, classpath, parentFirst);
+        return new AntClassLoader(Thread.currentThread().getContextClassLoader(),
+                                  project, classpath, parentFirst);
     }
 
     private void setupClassLoader() {
@@ -247,4 +254,5 @@ public class PMDTaskImpl {
             }
         }
     }
+
 }

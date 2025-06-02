@@ -9,6 +9,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 
@@ -29,6 +30,7 @@ public @interface NoAttribute {
      * the attribute in any case.
      */
     NoAttrScope scope() default NoAttrScope.ALL;
+
 
     enum NoAttrScope {
         /**

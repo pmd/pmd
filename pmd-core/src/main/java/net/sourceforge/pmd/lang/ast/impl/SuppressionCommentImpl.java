@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.impl;
 
 import java.util.function.Function;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -27,7 +28,9 @@ public final class ASTArrayDimExpr extends ASTArrayTypeDim {
         return visitor.visit(this, data);
     }
 
+
     public ASTExpression getLengthExpression() {
         return (ASTExpression) getChild(getNumChildren() - 1);
     }
+
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.expression.BinaryExpression;
@@ -38,30 +39,30 @@ public enum BooleanOperator {
      */
     public static BooleanOperator valueOf(BinaryExpression.Operator op) {
         switch (op) {
-            case EQUAL:
-                return EQUAL;
-            case NOT_EQUAL:
-                return NOT_EQUAL;
-            case ALTERNATIVE_NOT_EQUAL:
-                return ALT_NOT_EQUAL;
-            case EXACTLY_EQUAL:
-                return EXACTLY_EQUAL;
-            case EXACTLY_NOT_EQUAL:
-                return EXACTLY_NOT_EQUAL;
-            case LESS_THAN:
-                return LESS_THAN;
-            case GREATER_THAN:
-                return GREATER_THAN;
-            case LESS_THAN_OR_EQUAL:
-                return LESS_THAN_OR_EQUAL;
-            case GREATER_THAN_OR_EQUAL:
-                return GREATER_THAN_OR_EQUAL;
-            case LOGICAL_AND:
-                return LOGICAL_AND;
-            case LOGICAL_OR:
-                return LOGICAL_OR;
-            default:
-                throw new IllegalArgumentException("Invalid boolean operator " + op);
+        case EQUAL:
+            return EQUAL;
+        case NOT_EQUAL:
+            return NOT_EQUAL;
+        case ALTERNATIVE_NOT_EQUAL:
+            return ALT_NOT_EQUAL;
+        case EXACTLY_EQUAL:
+            return EXACTLY_EQUAL;
+        case EXACTLY_NOT_EQUAL:
+            return EXACTLY_NOT_EQUAL;
+        case LESS_THAN:
+            return LESS_THAN;
+        case GREATER_THAN:
+            return GREATER_THAN;
+        case LESS_THAN_OR_EQUAL:
+            return LESS_THAN_OR_EQUAL;
+        case GREATER_THAN_OR_EQUAL:
+            return GREATER_THAN_OR_EQUAL;
+        case LOGICAL_AND:
+            return LOGICAL_AND;
+        case LOGICAL_OR:
+            return LOGICAL_OR;
+        default:
+            throw new IllegalArgumentException("Invalid boolean operator " + op);
         }
     }
 }

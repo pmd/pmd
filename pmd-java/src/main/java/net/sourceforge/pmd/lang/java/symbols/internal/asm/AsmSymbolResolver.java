@@ -4,9 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -14,11 +22,6 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.FailedLoader;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.StreamLoader;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.Opcodes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A {@link SymbolResolver} that reads class files to produce symbols.
@@ -102,11 +105,10 @@ public class AsmSymbolResolver implements SymbolResolver {
     }
 
     /*
-      These methods return an unresolved symbol if the url is not found.
-    */
+       These methods return an unresolved symbol if the url is not found.
+     */
 
-    @Nullable
-    ClassStub resolveFromInternalNameCannotFail(@Nullable String internalName) {
+    @Nullable ClassStub resolveFromInternalNameCannotFail(@Nullable String internalName) {
         if (internalName == null) {
             return null;
         }
@@ -114,8 +116,7 @@ public class AsmSymbolResolver implements SymbolResolver {
     }
 
     @SuppressWarnings("PMD.CompareObjectsWithEquals") // ClassStub
-    @NonNull
-    ClassStub resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
+    @NonNull ClassStub resolveFromInternalNameCannotFail(@NonNull String internalName, int observedArity) {
         return knownStubs.compute(internalName, (iname, prev) -> {
             if (prev != failed && prev != null) {
                 return prev;
@@ -148,15 +149,10 @@ public class AsmSymbolResolver implements SymbolResolver {
             }
         }
 
-        LOG.trace(
-                "Of {} distinct queries to the classloader, {} queries failed, "
+        LOG.trace("Of {} distinct queries to the classloader, {} queries failed, "
                         + "{} classes were found and parsed successfully, "
                         + "{} were found but failed parsing (!), "
                         + "{} were found but never parsed.",
-                knownStubs.size(),
-                numFailedQueries,
-                numParsed,
-                numFailed,
-                numNotParsed);
+                knownStubs.size(), numFailedQueries, numParsed, numFailed, numNotParsed);
     }
 }

@@ -11,10 +11,10 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumen
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeParserAdapter;
 import net.sourceforge.pmd.lang.modelica.resolver.InternalApiBridge;
 
+
 public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
 
-    private static final TokenDocumentBehavior TOKEN_BEHAVIOR =
-            new TokenDocumentBehavior(ModelicaTokenKinds.TOKEN_NAMES);
+    private static final TokenDocumentBehavior TOKEN_BEHAVIOR = new TokenDocumentBehavior(ModelicaTokenKinds.TOKEN_NAMES);
 
     @Override
     protected TokenDocumentBehavior tokenBehavior() {
@@ -27,4 +27,5 @@ public class ModelicaParser extends JjtreeParserAdapter<ASTStoredDefinition> {
         TimeTracker.bench("Modelica symbols", () -> InternalApiBridge.ModelicaSymbolFacade.process(root));
         return root;
     }
+
 }

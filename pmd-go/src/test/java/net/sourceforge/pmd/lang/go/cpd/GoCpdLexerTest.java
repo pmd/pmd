@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.go.cpd;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class GoCpdLexerTest extends CpdTextComparisonTest {
 
@@ -33,4 +34,5 @@ class GoCpdLexerTest extends CpdTextComparisonTest {
         // https://github.com/pmd/pmd/issues/2752
         doTest("sample_unicode");
     }
+
 }

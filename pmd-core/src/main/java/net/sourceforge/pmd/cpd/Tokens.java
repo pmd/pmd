@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -8,11 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Global token collector for CPD. This is populated by lexing all files,
@@ -53,11 +56,7 @@ public class Tokens {
     }
 
     String imageFromId(int i) {
-        return images.entrySet().stream()
-                .filter(it -> it.getValue() == i)
-                .findFirst()
-                .map(Entry::getKey)
-                .orElse(null);
+        return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Entry::getKey).orElse(null);
     }
 
     private TokenEntry peekLastToken() {
@@ -81,8 +80,7 @@ public class Tokens {
     }
 
     TokenEntry addToken(String image, FileId fileName, int startLine, int startCol, int endLine, int endCol) {
-        TokenEntry newToken =
-                new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size());
+        TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size());
         add(newToken);
         return newToken;
     }
@@ -163,4 +161,5 @@ public class Tokens {
             entries.subList(tokenCount, entries.size()).clear();
         }
     }
+
 }

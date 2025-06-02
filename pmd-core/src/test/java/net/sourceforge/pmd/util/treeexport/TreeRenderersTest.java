@@ -9,11 +9,13 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+
 import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.lang.ast.DummyNode;
 import net.sourceforge.pmd.properties.PropertySource;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
 
 /**
  *
@@ -27,20 +29,21 @@ class TreeRenderersTest {
     void testStandardRenderersAreRegistered() {
 
         assertEquals(TreeRenderers.XML, TreeRenderers.findById(TreeRenderers.XML.id()));
+
     }
 
     @Test
     void testXmlPropertiesAvailable() {
 
+
         PropertySource properties = TreeRenderers.XML.newPropertyBundle();
 
-        assertThat(
-                properties.getPropertyDescriptors(),
-                containsInAnyOrder(
-                        TreeRenderers.XML_LINE_SEPARATOR,
-                        TreeRenderers.XML_RENDER_COMMON_ATTRIBUTES,
-                        TreeRenderers.XML_RENDER_PROLOG,
-                        TreeRenderers.XML_USE_SINGLE_QUOTES));
+        assertThat(properties.getPropertyDescriptors(),
+                          containsInAnyOrder(TreeRenderers.XML_LINE_SEPARATOR,
+                                                                             TreeRenderers.XML_RENDER_COMMON_ATTRIBUTES,
+                                                                             TreeRenderers.XML_RENDER_PROLOG,
+                                                                             TreeRenderers.XML_USE_SINGLE_QUOTES));
+
     }
 
     @Test
@@ -57,13 +60,13 @@ class TreeRenderersTest {
         StringBuilder out = new StringBuilder();
 
         renderer.renderSubtree(dummyTree1(helper), out);
-        assertEquals(
-                "<dummyNode foo=\"bar\" ohio=\"4\">\n"
-                        + "    <dummyNode o=\"ha\" />\n"
-                        + "    <dummyNode />\n"
-                        + "</dummyNode>\n",
-                out.toString());
+        assertEquals("<dummyNode foo=\"bar\" ohio=\"4\">\n"
+                                + "    <dummyNode o=\"ha\" />\n"
+                                + "    <dummyNode />\n"
+                                + "</dummyNode>\n", out.toString());
+
     }
+
 
     static DummyNode dummyTree1(DummyParsingHelper helper) {
         DummyNode dummy = helper.parse("(parent(child1)(child2))").getChild(0);
@@ -78,4 +81,6 @@ class TreeRenderersTest {
         dummy.getChild(1).clearXPathAttributes();
         return dummy;
     }
+
+
 }

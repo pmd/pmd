@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import static net.sourceforge.pmd.lang.java.symbols.table.internal.JavaSemanticErrors.CANNOT_RESOLVE_SYMBOL;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
@@ -21,8 +24,6 @@ import net.sourceforge.pmd.lang.java.symbols.table.internal.ReferenceCtx;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SymbolTableResolver;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Processes the output of the parser before rules get access to the AST.
@@ -45,11 +46,11 @@ public final class JavaAstProcessor {
     private final UnresolvedClassStore unresolvedTypes;
     private final ASTCompilationUnit acu;
 
-    private JavaAstProcessor(
-            JavaLanguageProcessor globalProc,
-            SemanticErrorReporter logger,
-            TypeInferenceLogger typeInfLogger,
-            ASTCompilationUnit acu) {
+
+    private JavaAstProcessor(JavaLanguageProcessor globalProc,
+                             SemanticErrorReporter logger,
+                             TypeInferenceLogger typeInfLogger,
+                             ASTCompilationUnit acu) {
 
         this.symResolver = globalProc.getTypeSystem().bootstrapResolver();
         this.globalProc = globalProc;
@@ -66,6 +67,7 @@ public final class JavaAstProcessor {
     public UnresolvedClassStore getUnresolvedStore() {
         return unresolvedTypes;
     }
+
 
     /**
      * Find a symbol from the auxclasspath. If not found, will create
@@ -122,8 +124,7 @@ public final class JavaAstProcessor {
      */
     public void process() {
 
-        SymbolResolver knownSyms =
-                TimeTracker.bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
+        SymbolResolver knownSyms = TimeTracker.bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
@@ -134,9 +135,7 @@ public final class JavaAstProcessor {
 
         TimeTracker.bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
 
-        TimeTracker.bench(
-                "AST disambiguation",
-                () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
+        TimeTracker.bench("AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
         if (globalProc.getProperties().getProperty(JavaLanguageProperties.INTERNAL_DO_STRICT_TYPERES)) {
             TimeTracker.bench("Force type resolution", () -> InternalApiBridge.forceTypeResolutionPhase(this, acu));
         }
@@ -149,20 +148,25 @@ public final class JavaAstProcessor {
         return globalProc.getTypeSystem();
     }
 
-    public static void process(
-            JavaLanguageProcessor globalProcessor,
-            SemanticErrorReporter semanticErrorReporter,
-            ASTCompilationUnit ast) {
+
+    public static void process(JavaLanguageProcessor globalProcessor,
+                                          SemanticErrorReporter semanticErrorReporter,
+                                           ASTCompilationUnit ast) {
         process(globalProcessor, semanticErrorReporter, globalProcessor.newTypeInfLogger(), ast);
     }
 
-    public static void process(
-            JavaLanguageProcessor globalProcessor,
-            SemanticErrorReporter semanticErrorReporter,
-            TypeInferenceLogger typeInfLogger,
-            ASTCompilationUnit ast) {
+    public static void process(JavaLanguageProcessor globalProcessor,
+                                          SemanticErrorReporter semanticErrorReporter,
+                                          TypeInferenceLogger typeInfLogger,
+                                           ASTCompilationUnit ast) {
 
-        JavaAstProcessor astProc = new JavaAstProcessor(globalProcessor, semanticErrorReporter, typeInfLogger, ast);
+
+        JavaAstProcessor astProc = new JavaAstProcessor(
+            globalProcessor,
+            semanticErrorReporter,
+            typeInfLogger,
+            ast
+        );
 
         astProc.process();
     }

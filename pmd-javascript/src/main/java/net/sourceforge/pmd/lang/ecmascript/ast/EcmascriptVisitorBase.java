@@ -12,4 +12,6 @@ import net.sourceforge.pmd.lang.ast.AstVisitorBase;
  * @param <P> Parameter of the visit
  * @param <R> Return type of the visit
  */
-public abstract class EcmascriptVisitorBase<P, R> extends AstVisitorBase<P, R> implements EcmascriptVisitor<P, R> {}
+public abstract class EcmascriptVisitorBase<P, R> extends AstVisitorBase<P, R> implements EcmascriptVisitor<P, R> {
+
+}

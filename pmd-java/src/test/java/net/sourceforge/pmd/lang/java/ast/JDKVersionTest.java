@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -10,18 +11,20 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
 
 class JDKVersionTest extends BaseJavaTreeDumpTest {
 
     private final JavaParsingHelper java3 = JavaParsingHelper.DEFAULT
-            .withDefaultVersion("1.3")
-            .withResourceContext(JDKVersionTest.class, "jdkversiontests/");
+        .withDefaultVersion("1.3")
+        .withResourceContext(JDKVersionTest.class, "jdkversiontests/");
 
     private final JavaParsingHelper java4 = java3.withDefaultVersion("1.4");
     private final JavaParsingHelper java5 = java3.withDefaultVersion("1.5");
@@ -297,9 +300,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
     @Test
     void jdk7PrivateMethodInnerClassInterface1() {
         ASTCompilationUnit acu = java7.parseResource("private_method_in_inner_class_interface1.java");
-        List<ASTMethodDeclaration> methods = acu.descendants(ASTMethodDeclaration.class)
-                .crossFindBoundaries()
-                .toList();
+        List<ASTMethodDeclaration> methods = acu.descendants(ASTMethodDeclaration.class).crossFindBoundaries().toList();
         assertEquals(3, methods.size());
         for (ASTMethodDeclaration method : methods) {
             assertFalse(method.getEnclosingType().isInterface());
@@ -308,8 +309,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
 
     @Test
     void jdk7PrivateMethodInnerClassInterface2() {
-        ParseException thrown = assertThrows(
-                ParseException.class, () -> java7.parseResource("private_method_in_inner_class_interface2.java"));
+        ParseException thrown = assertThrows(ParseException.class, () -> java7.parseResource("private_method_in_inner_class_interface2.java"));
         assertThat(thrown.getMessage(), containsString("line 19"));
     }
 

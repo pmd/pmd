@@ -13,6 +13,7 @@ public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralE
         super(literalExpression);
     }
 
+
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -94,8 +95,7 @@ public final class ASTLiteralExpression extends AbstractApexNode.Single<LiteralE
      * "{@code b}".
      */
     public String getName() {
-        if (getParent() instanceof ASTAssignmentExpression
-                && getParent().getParent() instanceof ASTNewKeyValueObjectExpression) {
+        if (getParent() instanceof ASTAssignmentExpression && getParent().getParent() instanceof ASTNewKeyValueObjectExpression) {
             ASTAssignmentExpression parent = (ASTAssignmentExpression) getParent();
             VariableExpression target = (VariableExpression) parent.node.getTarget();
             return target.getId().getString();

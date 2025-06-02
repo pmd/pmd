@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
@@ -15,7 +16,9 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule {
 
     public OverrideBothEqualsAndHashcodeRule() {
-        super(ASTClassDeclaration.class, ASTRecordDeclaration.class, ASTAnonymousClassDeclaration.class);
+        super(ASTClassDeclaration.class,
+              ASTRecordDeclaration.class,
+              ASTAnonymousClassDeclaration.class);
     }
 
     private void visitTypeDecl(ASTTypeDeclaration node, Object data) {
@@ -39,7 +42,8 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
         }
 
         if (hashCodeMethod != null ^ equalsMethod != null) {
-            ASTMethodDeclaration nonNullNode = equalsMethod == null ? hashCodeMethod : equalsMethod;
+            ASTMethodDeclaration nonNullNode =
+                equalsMethod == null ? hashCodeMethod : equalsMethod;
             asCtx(data).addViolation(nonNullNode);
         }
     }

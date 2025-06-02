@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import java.util.List;
+
 import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
 
 /**
@@ -23,8 +25,7 @@ public interface ModelicaScope {
     /**
      * Resolves a name as if it is written inside this lexical scope in a file.
      */
-    <T extends ResolvableEntity> ResolutionResult<T> safeResolveLexically(
-            Class<T> clazz, ResolutionState state, CompositeName name);
+    <T extends ResolvableEntity> ResolutionResult<T> safeResolveLexically(Class<T> clazz, ResolutionState state, CompositeName name);
 
     /**
      * Returns the parent (i.e., containing) scope.

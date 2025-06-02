@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.velocity.cpd;
 
 import java.io.IOException;
+
 import net.sourceforge.pmd.cpd.impl.JavaccCpdLexer;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;

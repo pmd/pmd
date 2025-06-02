@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.html.ast;
 
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.CoordinatesPrinter;
-import org.junit.jupiter.api.Test;
 
 class PositionTest extends BaseTreeDumpTest {
     PositionTest() {

@@ -1,13 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.visualforce.ast;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.visualforce.VFTestUtils;
 import net.sourceforge.pmd.lang.visualforce.VfLanguageModule;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public final class VfParsingHelper extends BaseParsingHelper<VfParsingHelper, ASTCompilationUnit> {
 

@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
+import org.antlr.v4.runtime.Token;
+
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import org.antlr.v4.runtime.Token;
 
 public final class ASTFormalComment extends AbstractApexNode.Empty {
 
@@ -16,6 +17,7 @@ public final class ASTFormalComment extends AbstractApexNode.Empty {
         this.token = token;
     }
 
+    
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

@@ -1,15 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 /**
  * Renderer to a summarized HTML format.
@@ -83,4 +86,5 @@ public class SummaryHTMLRenderer extends AbstractAccumulatingRenderer {
         }
         return summary;
     }
+
 }

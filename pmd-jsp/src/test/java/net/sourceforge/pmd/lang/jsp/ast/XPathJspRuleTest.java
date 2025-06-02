@@ -1,14 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.junit.jupiter.api.Test;
 
 class XPathJspRuleTest extends AbstractJspNodesTst {
 
@@ -25,4 +27,5 @@ class XPathJspRuleTest extends AbstractJspNodesTst {
         RuleViolation rv = report.getViolations().get(0);
         assertEquals(1, rv.getBeginLine());
     }
+
 }

@@ -7,8 +7,10 @@ package net.sourceforge.pmd.lang.rule.xpath.impl;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.rule.xpath.internal.DefaultXPathFunctions;
 import net.sourceforge.pmd.util.CollectionUtil;
+
 
 /**
  * Interface for performing Language specific XPath handling, such as
@@ -21,6 +23,7 @@ public interface XPathHandler {
      * These are the additional functions available in XPath queries.
      */
     Set<XPathFunctionDefinition> getRegisteredExtensionFunctions();
+
 
     static XPathHandler noFunctionDefinitions() {
         return DefaultXPathFunctions::getDefaultFunctions;

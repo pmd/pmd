@@ -1,11 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.function.Function;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * A break statement, that jumps to a named label (or exits the current loop).
@@ -19,11 +22,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class ASTBreakStatement extends AbstractStatement {
 
     private static final Function<Object, ASTStatement> BREAK_TARGET_MAPPER =
-            NodeStream.asInstanceOf(ASTLoopStatement.class, ASTSwitchStatement.class);
+        NodeStream.asInstanceOf(ASTLoopStatement.class, ASTSwitchStatement.class);
 
     ASTBreakStatement(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -48,7 +52,8 @@ public final class ASTBreakStatement extends AbstractStatement {
             return ancestors().map(BREAK_TARGET_MAPPER).first();
         }
         return ancestors(ASTLabeledStatement.class)
-                .filter(it -> it.getLabel().equals(myLabel))
-                .first();
+            .filter(it -> it.getLabel().equals(myLabel))
+            .first();
     }
+
 }

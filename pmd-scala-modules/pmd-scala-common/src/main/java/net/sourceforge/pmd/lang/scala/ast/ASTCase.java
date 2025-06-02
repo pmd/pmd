@@ -19,4 +19,5 @@ public final class ASTCase extends AbstractScalaNode<Case> {
     protected <P, R> R acceptVisitor(ScalaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 }

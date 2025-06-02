@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.visualforce.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 class VfPageStyleTest extends AbstractVfTest {
@@ -50,9 +52,7 @@ class VfPageStyleTest extends AbstractVfTest {
         assertEquals("\"'vf'\"", literal.getImage(), "Correct expression content expected!");
     }
 
-    private static final String VF_EL_EXPRESSION =
-            "<html><title>Hello {!myBean.get(\"{! World }\") } .vf</title></html>";
+    private static final String VF_EL_EXPRESSION = "<html><title>Hello {!myBean.get(\"{! World }\") } .vf</title></html>";
 
-    private static final String VF_EL_EXPRESSION_IN_ATTRIBUTE =
-            "<html> <f:validator type=\"get('type').{!myValidator.find(\"'vf'\")}\" /> </html>";
+    private static final String VF_EL_EXPRESSION_IN_ATTRIBUTE = "<html> <f:validator type=\"get('type').{!myValidator.find(\"'vf'\")}\" /> </html>";
 }

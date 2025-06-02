@@ -15,16 +15,6 @@ import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.REF;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.RULE;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.RULESET;
 
-import com.github.oowekyala.ooxml.DomUtils;
-import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
-import com.github.oowekyala.ooxml.messages.OoxmlFacade;
-import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
-import com.github.oowekyala.ooxml.messages.XmlException;
-import com.github.oowekyala.ooxml.messages.XmlMessageHandler;
-import com.github.oowekyala.ooxml.messages.XmlMessageReporterBase;
-import com.github.oowekyala.ooxml.messages.XmlPosition;
-import com.github.oowekyala.ooxml.messages.XmlPositioner;
-import com.github.oowekyala.ooxml.messages.XmlSeverity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
@@ -42,17 +32,7 @@ import java.util.zip.CheckedInputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import net.sourceforge.pmd.PMDVersion;
-import net.sourceforge.pmd.lang.LanguageRegistry;
-import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
-import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
-import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.internal.ResourceLoader;
-import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
-import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
-import net.sourceforge.pmd.util.internal.xml.XmlUtil;
-import net.sourceforge.pmd.util.log.PmdReporter;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -64,6 +44,29 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+import net.sourceforge.pmd.PMDVersion;
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.lang.rule.internal.RuleSetReference;
+import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
+import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
+import net.sourceforge.pmd.util.internal.xml.PmdXmlReporter;
+import net.sourceforge.pmd.util.internal.xml.XmlErrorMessages;
+import net.sourceforge.pmd.util.internal.xml.XmlUtil;
+import net.sourceforge.pmd.util.log.PmdReporter;
+
+import com.github.oowekyala.ooxml.DomUtils;
+import com.github.oowekyala.ooxml.messages.NiceXmlMessageSpec;
+import com.github.oowekyala.ooxml.messages.OoxmlFacade;
+import com.github.oowekyala.ooxml.messages.PositionedXmlDoc;
+import com.github.oowekyala.ooxml.messages.XmlException;
+import com.github.oowekyala.ooxml.messages.XmlMessageHandler;
+import com.github.oowekyala.ooxml.messages.XmlMessageReporterBase;
+import com.github.oowekyala.ooxml.messages.XmlPosition;
+import com.github.oowekyala.ooxml.messages.XmlPositioner;
+import com.github.oowekyala.ooxml.messages.XmlSeverity;
 
 /**
  * RuleSetFactory is responsible for creating RuleSet instances from XML
@@ -83,13 +86,12 @@ final class RuleSetFactory {
 
     private final Map<RuleSetReferenceId, RuleSet> parsedRulesets = new HashMap<>();
 
-    RuleSetFactory(
-            ResourceLoader resourceLoader,
-            LanguageRegistry languageRegistry,
-            RulePriority minimumPriority,
-            boolean warnDeprecated,
-            boolean includeDeprecatedRuleReferences,
-            PmdReporter reporter) {
+    RuleSetFactory(ResourceLoader resourceLoader,
+                   LanguageRegistry languageRegistry,
+                   RulePriority minimumPriority,
+                   boolean warnDeprecated,
+                   boolean includeDeprecatedRuleReferences,
+                   PmdReporter reporter) {
         this.resourceLoader = resourceLoader;
         this.languageRegistry = Objects.requireNonNull(languageRegistry);
         this.minimumPriority = minimumPriority;
@@ -99,6 +101,7 @@ final class RuleSetFactory {
         this.reporter = reporter;
     }
 
+
     /**
      * Create a RuleSet from a RuleSetReferenceId. Priority filtering is ignored
      * when loading a single Rule. The currently configured ResourceLoader is used.
@@ -107,13 +110,12 @@ final class RuleSetFactory {
      *
      * @return A new RuleSet.
      */
-    @NonNull
-    RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) {
+    @NonNull RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId) {
         return createRuleSet(ruleSetReferenceId, includeDeprecatedRuleReferences);
     }
 
     private @NonNull RuleSet createRuleSet(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences)
-            throws RuleSetLoadException {
+        throws RuleSetLoadException {
         return readDocument(ruleSetReferenceId, withDeprecatedRuleReferences);
     }
 
@@ -136,7 +138,7 @@ final class RuleSetFactory {
         RuleSetReferenceId parentRuleset = ruleSetReferenceId.getParentRulesetIfThisIsARule();
         if (parentRuleset == null) {
             throw new IllegalArgumentException(
-                    "Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
+                "Cannot parse a single Rule from an all Rule RuleSet reference: <" + ruleSetReferenceId + ">.");
         }
         // can't use computeIfAbsent as creating a ruleset may add more entries to the map.
         RuleSet ruleSet = parsedRulesets.get(parentRuleset);
@@ -160,11 +162,10 @@ final class RuleSetFactory {
      */
     private @NonNull RuleSet readDocument(RuleSetReferenceId ruleSetReferenceId, boolean withDeprecatedRuleReferences) {
 
-        try (CheckedInputStream inputStream =
-                new CheckedInputStream(ruleSetReferenceId.getInputStream(resourceLoader), new Adler32())) {
+        try (CheckedInputStream inputStream = new CheckedInputStream(ruleSetReferenceId.getInputStream(resourceLoader), new Adler32())) {
             if (!ruleSetReferenceId.isAbsolute()) {
                 throw new IllegalArgumentException(
-                        "Cannot parse a RuleSet from a non-absolute reference: <" + ruleSetReferenceId + ">.");
+                    "Cannot parse a RuleSet from a non-absolute reference: <" + ruleSetReferenceId + ">.");
             }
 
             XmlMessageHandler printer = getXmlMessagePrinter();
@@ -172,18 +173,17 @@ final class RuleSetFactory {
             InputSource inputSource = new InputSource(inputStream);
             inputSource.setSystemId(ruleSetReferenceId.getRuleSetFileName());
 
-            OoxmlFacade ooxml = new OoxmlFacade().withPrinter(printer).withAnsiColors(false);
+            OoxmlFacade ooxml = new OoxmlFacade()
+                .withPrinter(printer)
+                .withAnsiColors(false);
             PositionedXmlDoc parsed = ooxml.parse(builder, inputSource);
 
             @SuppressWarnings("PMD.CloseResource")
             PmdXmlReporterImpl err = new PmdXmlReporterImpl(reporter, ooxml, parsed.getPositioner());
             try {
-                RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(
-                                inputStream.getChecksum().getValue())
-                        .withFileName(ruleSetReferenceId.getRuleSetFileName());
+                RuleSetBuilder ruleSetBuilder = new RuleSetBuilder(inputStream.getChecksum().getValue()).withFileName(ruleSetReferenceId.getRuleSetFileName());
 
-                RuleSet ruleSet =
-                        parseRulesetNode(ruleSetReferenceId, withDeprecatedRuleReferences, parsed, ruleSetBuilder, err);
+                RuleSet ruleSet = parseRulesetNode(ruleSetReferenceId, withDeprecatedRuleReferences, parsed, ruleSetBuilder, err);
                 if (err.errCount > 0) {
                     // note this makes us jump to the catch branch
                     // these might have been non-fatal errors
@@ -204,12 +204,12 @@ final class RuleSetFactory {
         }
     }
 
-    private RuleSet parseRulesetNode(
-            RuleSetReferenceId ruleSetReferenceId,
-            boolean withDeprecatedRuleReferences,
-            PositionedXmlDoc parsed,
-            RuleSetBuilder builder,
-            PmdXmlReporter err) {
+
+    private RuleSet parseRulesetNode(RuleSetReferenceId ruleSetReferenceId,
+                                     boolean withDeprecatedRuleReferences,
+                                     PositionedXmlDoc parsed,
+                                     RuleSetBuilder builder,
+                                     PmdXmlReporter err) {
         Element ruleSetElement = parsed.getDocument().getDocumentElement();
 
         if (ruleSetElement.hasAttribute("name")) {
@@ -239,14 +239,15 @@ final class RuleSetFactory {
                 builder.withFileExclusions(pattern);
             } else if (RULE.matchesElt(node)) {
                 try {
-                    parseRuleNode(
-                            ruleSetReferenceId, builder, node, withDeprecatedRuleReferences, rulesetReferences, err);
+                    parseRuleNode(ruleSetReferenceId, builder, node, withDeprecatedRuleReferences, rulesetReferences, err);
                 } catch (XmlException ignored) {
                     // already reported (it's an XmlException), error count
                     // was incremented so parent method will throw RuleSetLoadException.
                 }
             } else {
-                err.at(node).error(XmlErrorMessages.ERR__UNEXPECTED_ELEMENT_IN, node.getTagName(), RULESET);
+                err.at(node).error(XmlErrorMessages.ERR__UNEXPECTED_ELEMENT_IN,
+                                   node.getTagName(),
+                                   RULESET);
             }
         }
 
@@ -271,6 +272,7 @@ final class RuleSetFactory {
         return pattern;
     }
 
+
     private DocumentBuilder createDocumentBuilder() throws ParserConfigurationException {
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -279,8 +281,7 @@ final class RuleSetFactory {
              * parser hardening
              * https://www.owasp.org/index.php/XML_External_Entity_(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
              */
-            // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are
-            // prevented
+            // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are prevented
             // Xerces 2 only - http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl
             dbf.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
 
@@ -320,13 +321,12 @@ final class RuleSetFactory {
      * @param rulesetReferences            keeps track of already processed complete ruleset references in order to log
      *                                     a warning
      */
-    private void parseRuleNode(
-            RuleSetReferenceId ruleSetReferenceId,
-            RuleSetBuilder ruleSetBuilder,
-            Element ruleNode,
-            boolean withDeprecatedRuleReferences,
-            Set<String> rulesetReferences,
-            PmdXmlReporter err) {
+    private void parseRuleNode(RuleSetReferenceId ruleSetReferenceId,
+                               RuleSetBuilder ruleSetBuilder,
+                               Element ruleNode,
+                               boolean withDeprecatedRuleReferences,
+                               Set<String> rulesetReferences,
+                               PmdXmlReporter err) {
         if (REF.hasAttribute(ruleNode)) {
             String ref = REF.getAttributeOrThrow(ruleNode, err);
             RuleSetReferenceId refId = parseReferenceAndWarn(ref, REF.getAttributeNode(ruleNode), err);
@@ -334,14 +334,7 @@ final class RuleSetFactory {
                 if (refId.isAllRules()) {
                     parseRuleSetReferenceNode(ruleSetBuilder, ruleNode, ref, refId, rulesetReferences, err);
                 } else {
-                    parseRuleReferenceNode(
-                            ruleSetReferenceId,
-                            ruleSetBuilder,
-                            ruleNode,
-                            ref,
-                            refId,
-                            withDeprecatedRuleReferences,
-                            err);
+                    parseRuleReferenceNode(ruleSetReferenceId, ruleSetBuilder, ruleNode, ref, refId, withDeprecatedRuleReferences, err);
                 }
                 return;
             }
@@ -363,13 +356,11 @@ final class RuleSetFactory {
      *            The RuleSet reference.
      * @param rulesetReferences keeps track of already processed complete ruleset references in order to log a warning
      */
-    private void parseRuleSetReferenceNode(
-            RuleSetBuilder ruleSetBuilder,
-            Element ruleElement,
-            String ref,
-            RuleSetReferenceId ruleSetReferenceId,
-            Set<String> rulesetReferences,
-            PmdXmlReporter err) {
+    private void parseRuleSetReferenceNode(RuleSetBuilder ruleSetBuilder,
+                                           Element ruleElement,
+                                           String ref,
+                                          RuleSetReferenceId ruleSetReferenceId, Set<String> rulesetReferences,
+                                           PmdXmlReporter err) {
         RulePriority priority = null;
         Map<String, Element> excludedRulesCheck = new HashMap<>();
         for (Element child : XmlUtil.getElementChildrenList(ruleElement)) {
@@ -394,10 +385,7 @@ final class RuleSetFactory {
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = toLoader()
-                .filterAbovePriority(RulePriority.LOW)
-                .warnDeprecated(false)
-                .toFactory();
+        RuleSetFactory ruleSetFactory = toLoader().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
         RuleSet otherRuleSet = ruleSetFactory.createRuleSet(ruleSetReferenceId);
         List<RuleReference> potentialRules = new ArrayList<>();
         int countDeprecated = 0;
@@ -422,9 +410,8 @@ final class RuleSetFactory {
             // all rules in the ruleset have been deprecated - the ruleset itself is considered to be deprecated
             rulesetDeprecated = true;
             err.at(REF.getAttributeNode(ruleElement))
-                    .warn(
-                            "The RuleSet {0} has been deprecated and will be removed in PMD {1}",
-                            ref, PMDVersion.getNextMajorRelease());
+                .warn("The RuleSet {0} has been deprecated and will be removed in PMD {1}",
+                      ref, PMDVersion.getNextMajorRelease());
         }
 
         for (RuleReference r : potentialRules) {
@@ -437,20 +424,20 @@ final class RuleSetFactory {
         }
 
         if (!excludedRulesCheck.isEmpty()) {
-            excludedRulesCheck.forEach((name, elt) ->
+            excludedRulesCheck.forEach(
+                (name, elt) ->
                     err.at(elt).warn("Exclude pattern ''{0}'' did not match any rule in ruleset ''{1}''", name, ref));
         }
 
         if (rulesetReferences.contains(ref)) {
-            err.at(ruleElement)
-                    .warn(
-                            "The ruleset {0} is referenced multiple times in ruleset ''{1}''",
-                            ref, ruleSetBuilder.getName());
+            err.at(ruleElement).warn("The ruleset {0} is referenced multiple times in ruleset ''{1}''", ref, ruleSetBuilder.getName());
         }
         rulesetReferences.add(ref);
     }
 
-    private RuleSetReferenceId parseReferenceAndWarn(String ref, Node xmlPlace, PmdXmlReporter err) {
+    private RuleSetReferenceId parseReferenceAndWarn(String ref,
+                                                     Node xmlPlace,
+                                                     PmdXmlReporter err) {
         if (ref == null) {
             err.at(xmlPlace).warn("Rule reference references a deleted rule, ignoring");
             return null; // deleted rule
@@ -458,9 +445,8 @@ final class RuleSetFactory {
         // only emit a warning if we check for deprecated syntax
         List<RuleSetReferenceId> references = RuleSetReferenceId.parse(ref);
         if (references.size() > 1 && warnDeprecated) {
-            err.at(xmlPlace)
-                    .warn("Using a comma separated list as a ref attribute is deprecated. "
-                            + "All references but the first are ignored.");
+            err.at(xmlPlace).warn("Using a comma separated list as a ref attribute is deprecated. "
+                                      + "All references but the first are ignored.");
         } else if (references.isEmpty()) {
             err.at(xmlPlace).warn("Empty ref attribute");
             return null;
@@ -477,33 +463,31 @@ final class RuleSetFactory {
      * @param ruleNode           Must be a rule element node.
      * @param err                Error reporter
      */
-    private void parseSingleRuleNode(
-            RuleSetReferenceId ruleSetReferenceId,
-            RuleSetBuilder ruleSetBuilder,
-            Element ruleNode,
-            PmdXmlReporter err) {
+    private void parseSingleRuleNode(RuleSetReferenceId ruleSetReferenceId,
+                                     RuleSetBuilder ruleSetBuilder,
+                                     Element ruleNode,
+                                     PmdXmlReporter err) {
 
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                && !isRuleName(ruleNode, ruleSetReferenceId.getRuleName())) {
+            && !isRuleName(ruleNode, ruleSetReferenceId.getRuleName())) {
             return;
         }
         Rule rule = new RuleFactory(resourceLoader, languageRegistry).buildRule(ruleNode, err);
         rule.setRuleSetName(ruleSetBuilder.getName());
 
         if (warnDeprecated && StringUtils.isBlank(ruleNode.getAttribute("language"))) {
-            err.at(ruleNode)
-                    .warn(
-                            "Rule {0}/{1} does not mention attribute language='{2}',"
-                                    + " please mention it explicitly to be compatible with PMD 7",
-                            ruleSetReferenceId.getRuleSetFileName(),
-                            rule.getName(),
-                            rule.getLanguage().getId());
+            err.at(ruleNode).warn(
+                "Rule {0}/{1} does not mention attribute language='{2}',"
+                    + " please mention it explicitly to be compatible with PMD 7",
+                ruleSetReferenceId.getRuleSetFileName(), rule.getName(),
+                rule.getLanguage().getId());
         }
 
         ruleSetBuilder.addRule(rule);
     }
+
 
     /**
      * Parse a rule node as a RuleReference. A RuleReference is a single Rule
@@ -517,36 +501,32 @@ final class RuleSetFactory {
      * @param withDeprecatedRuleReferences whether rule references that are deprecated should be ignored
      * @param err                          Error reporter
      */
-    private void parseRuleReferenceNode(
-            RuleSetReferenceId ruleSetReferenceId,
-            RuleSetBuilder ruleSetBuilder,
-            Element ruleNode,
-            String ref,
-            RuleSetReferenceId otherRuleSetReferenceId,
-            boolean withDeprecatedRuleReferences,
-            PmdXmlReporter err) {
+    private void parseRuleReferenceNode(RuleSetReferenceId ruleSetReferenceId,
+                                        RuleSetBuilder ruleSetBuilder,
+                                        Element ruleNode,
+                                        String ref,
+                                       RuleSetReferenceId otherRuleSetReferenceId,
+                                        boolean withDeprecatedRuleReferences,
+                                        PmdXmlReporter err) {
 
         // Stop if we're looking for a particular Rule, and this element is not
         // it.
         if (StringUtils.isNotBlank(ruleSetReferenceId.getRuleName())
-                && !isRuleName(ruleNode, ruleSetReferenceId.getRuleName())) {
+            && !isRuleName(ruleNode, ruleSetReferenceId.getRuleName())) {
             return;
         }
 
         // load the ruleset with minimum priority low, so that we get all rules, to be able to exclude any rule
         // minimum priority will be applied again, before constructing the final ruleset
-        RuleSetFactory ruleSetFactory = toLoader()
-                .filterAbovePriority(RulePriority.LOW)
-                .warnDeprecated(false)
-                .toFactory();
+        RuleSetFactory ruleSetFactory = toLoader().filterAbovePriority(RulePriority.LOW).warnDeprecated(false).toFactory();
 
         boolean isSameRuleSet = false;
         if (!otherRuleSetReferenceId.isAbsolute()
-                && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
+            && containsRule(ruleSetReferenceId, otherRuleSetReferenceId.getRuleName())) {
             otherRuleSetReferenceId = new RuleSetReferenceId(ref, ruleSetReferenceId);
             isSameRuleSet = true;
         } else if (otherRuleSetReferenceId.isAbsolute()
-                && otherRuleSetReferenceId.getRuleSetFileName().equals(ruleSetReferenceId.getRuleSetFileName())) {
+            && otherRuleSetReferenceId.getRuleSetFileName().equals(ruleSetReferenceId.getRuleSetFileName())) {
             otherRuleSetReferenceId = new RuleSetReferenceId(otherRuleSetReferenceId.getRuleName(), ruleSetReferenceId);
             isSameRuleSet = true;
         }
@@ -554,29 +534,26 @@ final class RuleSetFactory {
         Rule referencedRule = ruleSetFactory.createRule(otherRuleSetReferenceId, true);
 
         if (referencedRule == null) {
-            throw err.at(ruleNode)
-                    .error(
-                            "Unable to find referenced rule {0}" + "; perhaps the rule name is misspelled?",
-                            otherRuleSetReferenceId.getRuleName());
+            throw err.at(ruleNode).error(
+                "Unable to find referenced rule {0}"
+                    + "; perhaps the rule name is misspelled?",
+                otherRuleSetReferenceId.getRuleName());
         }
 
         if (warnDeprecated && referencedRule.isDeprecated()) {
             if (referencedRule instanceof RuleReference) {
                 RuleReference ruleReference = (RuleReference) referencedRule;
-                err.at(ruleNode)
-                        .warn(
-                                "Use Rule name {0}/{1} instead of the deprecated Rule name {2}. PMD {3}"
-                                        + " will remove support for this deprecated Rule name usage.",
-                                ruleReference.getRuleSetReference().getRuleSetFileName(),
-                                ruleReference.getOriginalName(),
-                                otherRuleSetReferenceId,
-                                PMDVersion.getNextMajorRelease());
+                err.at(ruleNode).warn(
+                    "Use Rule name {0}/{1} instead of the deprecated Rule name {2}. PMD {3}"
+                        + " will remove support for this deprecated Rule name usage.",
+                    ruleReference.getRuleSetReference().getRuleSetFileName(),
+                    ruleReference.getOriginalName(), otherRuleSetReferenceId,
+                    PMDVersion.getNextMajorRelease());
             } else {
-                err.at(ruleNode)
-                        .warn(
-                                "Discontinue using Rule name {0} as it is scheduled for removal from PMD."
-                                        + " PMD {1} will remove support for this Rule.",
-                                otherRuleSetReferenceId, PMDVersion.getNextMajorRelease());
+                err.at(ruleNode).warn(
+                    "Discontinue using Rule name {0} as it is scheduled for removal from PMD."
+                        + " PMD {1} will remove support for this Rule.",
+                    otherRuleSetReferenceId, PMDVersion.getNextMajorRelease());
             }
         }
 
@@ -584,22 +561,20 @@ final class RuleSetFactory {
 
         RuleReference ruleReference;
         try {
-            ruleReference = new RuleFactory(resourceLoader, languageRegistry)
-                    .decorateRule(referencedRule, ruleSetReference, ruleNode, err);
+            ruleReference = new RuleFactory(resourceLoader, languageRegistry).decorateRule(referencedRule, ruleSetReference, ruleNode, err);
         } catch (XmlException e) {
             throw err.at(ruleNode).error(e, "Error while parsing rule reference");
         }
 
         if (warnDeprecated && ruleReference.isDeprecated() && !isSameRuleSet) {
-            err.at(ruleNode)
-                    .warn(
-                            "Use Rule name {0}/{1} instead of the deprecated Rule name {2}/{3}. PMD {4}"
-                                    + " will remove support for this deprecated Rule name usage.",
-                            ruleReference.getRuleSetReference().getRuleSetFileName(),
-                            ruleReference.getOriginalName(),
-                            ruleSetReferenceId.getRuleSetFileName(),
-                            ruleReference.getName(),
-                            PMDVersion.getNextMajorRelease());
+            err.at(ruleNode).warn(
+                "Use Rule name {0}/{1} instead of the deprecated Rule name {2}/{3}. PMD {4}"
+                    + " will remove support for this deprecated Rule name usage.",
+                ruleReference.getRuleSetReference().getRuleSetFileName(),
+                ruleReference.getOriginalName(),
+                ruleSetReferenceId.getRuleSetFileName(),
+                ruleReference.getName(),
+                PMDVersion.getNextMajorRelease());
         }
 
         if (withDeprecatedRuleReferences || !isSameRuleSet || !ruleReference.isDeprecated()) {
@@ -610,17 +585,18 @@ final class RuleSetFactory {
                 // which means, it is a plain reference. And the new reference overrides.
                 // for all other cases, we should log a warning
                 if (existingRuleReference.hasOverriddenAttributes() || !ruleReference.hasOverriddenAttributes()) {
-                    err.at(ruleNode)
-                            .warn(
-                                    "The rule {0} is referenced multiple times in ruleset ''{1}''. "
-                                            + "Only the last rule configuration is used.",
-                                    ruleReference.getName(), ruleSetBuilder.getName());
+                    err.at(ruleNode).warn(
+                        "The rule {0} is referenced multiple times in ruleset ''{1}''. "
+                            + "Only the last rule configuration is used.",
+                        ruleReference.getName(),
+                        ruleSetBuilder.getName());
                 }
             }
 
             ruleSetBuilder.addRuleReplaceIfExists(ruleReference);
         }
     }
+
 
     /**
      * Check whether the given ruleName is contained in the given ruleset.
@@ -666,27 +642,25 @@ final class RuleSetFactory {
         if (ruleElement.hasAttribute("name")) {
             return ruleElement.getAttribute("name").equals(ruleName);
         } else if (ruleElement.hasAttribute("ref")) {
-            RuleSetReferenceId ruleSetReferenceId =
-                    RuleSetReferenceId.parse(ruleElement.getAttribute("ref")).get(0);
-            return ruleSetReferenceId.getRuleName() != null
-                    && ruleSetReferenceId.getRuleName().equals(ruleName);
+            RuleSetReferenceId ruleSetReferenceId = RuleSetReferenceId.parse(ruleElement.getAttribute("ref")).get(0);
+            return ruleSetReferenceId.getRuleName() != null && ruleSetReferenceId.getRuleName().equals(ruleName);
         } else {
             return false;
         }
     }
+
 
     /**
      * Create a new {@link RuleSetLoader} with the same config as this
      * factory. This is a transitional API.
      */
     public RuleSetLoader toLoader() {
-        return new RuleSetLoader()
-                .loadResourcesWith(resourceLoader)
-                .filterAbovePriority(minimumPriority)
-                .warnDeprecated(warnDeprecated)
-                .includeDeprecatedRuleReferences(includeDeprecatedRuleReferences)
-                .withReporter(reporter)
-                .withLanguages(languageRegistry);
+        return new RuleSetLoader().loadResourcesWith(resourceLoader)
+                                  .filterAbovePriority(minimumPriority)
+                                  .warnDeprecated(warnDeprecated)
+                                  .includeDeprecatedRuleReferences(includeDeprecatedRuleReferences)
+                                  .withReporter(reporter)
+                                  .withLanguages(languageRegistry);
     }
 
     private @NonNull XmlMessageHandler getXmlMessagePrinter() {
@@ -697,8 +671,9 @@ final class RuleSetFactory {
         };
     }
 
-    private static final class PmdXmlReporterImpl extends XmlMessageReporterBase<PmdReporter>
-            implements PmdXmlReporter {
+    private static final class PmdXmlReporterImpl
+        extends XmlMessageReporterBase<PmdReporter>
+        implements PmdXmlReporter {
 
         private final PmdReporter pmdReporter;
         private int errCount;
@@ -716,6 +691,7 @@ final class RuleSetFactory {
                     return pmdReporter.isLoggable(level);
                 }
 
+
                 @Override
                 public void log(Level level, String message, Object... formatArgs) {
                     logEx(level, message, formatArgs, null);
@@ -727,8 +703,7 @@ final class RuleSetFactory {
                 }
 
                 @Override
-                public XmlException error(
-                        @Nullable Throwable cause, @Nullable String contextMessage, Object... formatArgs) {
+                public XmlException error(@Nullable Throwable cause, @Nullable String contextMessage, Object... formatArgs) {
                     return newException(Level.ERROR, cause, contextMessage, formatArgs);
                 }
 
@@ -736,24 +711,25 @@ final class RuleSetFactory {
                 public XmlException newException(Level level, Throwable cause, String message, Object... formatArgs) {
                     XmlSeverity severity;
                     switch (level) {
-                        case WARN:
-                            severity = XmlSeverity.WARNING;
-                            break;
-                        case ERROR:
-                            errCount++;
-                            severity = XmlSeverity.ERROR;
-                            break;
-                        default:
-                            throw new IllegalArgumentException("unexpected level " + level);
+                    case WARN:
+                        severity = XmlSeverity.WARNING;
+                        break;
+                    case ERROR:
+                        errCount++;
+                        severity = XmlSeverity.ERROR;
+                        break;
+                    default:
+                        throw new IllegalArgumentException("unexpected level " + level);
                     }
 
                     if (message == null && formatArgs.length != 0) {
                         throw new IllegalArgumentException("Cannot pass format arguments for null message");
                     }
 
-                    String actualMessage =
-                            message == null ? cause.getMessage() : MessageFormat.format(message, formatArgs);
-                    NiceXmlMessageSpec spec = new NiceXmlMessageSpec(position, actualMessage)
+                    String actualMessage = message == null ? cause.getMessage()
+                                                           : MessageFormat.format(message, formatArgs);
+                    NiceXmlMessageSpec spec =
+                        new NiceXmlMessageSpec(position, actualMessage)
                             .withSeverity(severity)
                             .withCause(cause);
                     String fullMessage = ooxml.getFormatter().formatSpec(ooxml, spec, positioner);
@@ -769,4 +745,5 @@ final class RuleSetFactory {
             };
         }
     }
+
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -25,7 +26,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
  */
 public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaVisitor<P, R> {
 
+
     // <editor-fold defaultstate="collapsed" desc="Methods/constructors">
+
 
     public R visitMethodOrCtor(ASTExecutableDeclaration node, P data) {
         return visitJavaNode(node, data);
@@ -84,6 +87,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     // <editor-fold defaultstate="collapsed" desc="Type & ReferenceType">
 
+
     /** Note that VoidType does not delegate to here. */
     public R visitType(ASTType node, P data) {
         return visitJavaNode(node, data);
@@ -98,15 +102,18 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
         return visitType(node, data);
     }
 
+
     @Override
     public R visit(ASTArrayType node, P data) {
         return visitReferenceType(node, data);
     }
 
+
     @Override
     public R visit(ASTIntersectionType node, P data) {
         return visitReferenceType(node, data);
     }
+
 
     @Override
     public R visit(ASTWildcardType node, P data) {
@@ -127,6 +134,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     // <editor-fold defaultstate="collapsed" desc="Expressions">
 
+
     public R visitExpression(ASTExpression node, P data) {
         return visitJavaNode(node, data);
     }
@@ -146,10 +154,12 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
         return visitExpression(node, data);
     }
 
+
     @Override
     public R visit(ASTInfixExpression node, P data) {
         return visitExpression(node, data);
     }
+
 
     @Override
     public R visit(ASTUnaryExpression node, P data) {
@@ -161,18 +171,22 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
         return visitExpression(node, data);
     }
 
+
     @Override
     public R visit(ASTSwitchExpression node, P data) {
         return visitExpression(node, data);
     }
 
+
     /*
-       Primaries
-    */
+        Primaries
+     */
+
 
     public R visitPrimaryExpr(ASTPrimaryExpression node, P data) {
         return visitExpression(node, data);
     }
+
 
     @Override
     public R visit(ASTMethodCall node, P data) {
@@ -184,10 +198,12 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
         return visitPrimaryExpr(node, data);
     }
 
+
     @Override
     public R visit(ASTArrayAllocation node, P data) {
         return visitPrimaryExpr(node, data);
     }
+
 
     @Override
     public R visit(ASTArrayAccess node, P data) {
@@ -208,10 +224,12 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
         return visitNamedExpr(node, data);
     }
 
+
     @Override
     public R visit(ASTMethodReference node, P data) {
         return visitPrimaryExpr(node, data);
     }
+
 
     @Override
     public R visit(ASTThisExpression node, P data) {
@@ -229,8 +247,8 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
     /*
-       Literals
-    */
+        Literals
+     */
 
     public R visitLiteral(ASTLiteral node, P data) {
         return visitPrimaryExpr(node, data);
@@ -264,6 +282,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Statements">
+
 
     public R visitStatement(ASTStatement node, P data) {
         return visitJavaNode(node, data);
@@ -379,6 +398,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
         return visitStatement(node, data);
     }
 
+
     /**
      * @since 7.14.0
      */
@@ -387,5 +407,6 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
     // </editor-fold>
+
 
 }

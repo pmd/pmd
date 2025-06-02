@@ -1,12 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  * Formal parameter node for a {@linkplain ASTFormalParameters formal parameter list}.
@@ -21,7 +24,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTFormalParameter extends AbstractJavaNode implements ModifierOwner, TypeNode, VariableIdOwner {
+public final class ASTFormalParameter extends AbstractJavaNode
+    implements ModifierOwner, TypeNode, VariableIdOwner {
 
     ASTFormalParameter(int id) {
         super(id);
@@ -31,6 +35,7 @@ public final class ASTFormalParameter extends AbstractJavaNode implements Modifi
     public Visibility getVisibility() {
         return Visibility.V_LOCAL;
     }
+
 
     /**
      * Returns the list of formal parameters containing this param.
@@ -47,13 +52,15 @@ public final class ASTFormalParameter extends AbstractJavaNode implements Modifi
     public boolean isVarargs() {
         ASTType tn = getTypeNode();
         return tn instanceof ASTArrayType
-                && ((ASTArrayType) tn).getDimensions().getLastChild().isVarargs();
+            && ((ASTArrayType) tn).getDimensions().getLastChild().isVarargs();
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     /**
      * Returns the declarator ID of this formal parameter.
@@ -62,6 +69,7 @@ public final class ASTFormalParameter extends AbstractJavaNode implements Modifi
     public @NonNull ASTVariableId getVarId() {
         return firstChild(ASTVariableId.class);
     }
+
 
     /**
      * Returns the type node of this formal parameter.

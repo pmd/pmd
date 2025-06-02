@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.resolver.internal;
 
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaComponentDeclaration;
@@ -27,8 +28,7 @@ public final class ResolutionState {
     }
 
     public boolean needRecurseInto(ModelicaComponentDeclaration component) {
-        return !constantsOnly
-                || component.getVariability() == ModelicaComponentDeclaration.ComponentVariability.CONSTANT;
+        return !constantsOnly || component.getVariability() == ModelicaComponentDeclaration.ComponentVariability.CONSTANT;
     }
 
     public ResolutionContext createContext() {

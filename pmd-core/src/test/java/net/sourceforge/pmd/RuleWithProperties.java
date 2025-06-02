@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.util.List;
+
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
@@ -14,17 +16,17 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class RuleWithProperties extends FooRule {
 
-    public static final PropertyDescriptor<String> STRING_PROPERTY_DESCRIPTOR = PropertyFactory.stringProperty(
-                    "stringProperty")
-            .desc("simple string property")
-            .defaultValue("")
-            .build();
+    public static final PropertyDescriptor<String> STRING_PROPERTY_DESCRIPTOR =
+        PropertyFactory.stringProperty("stringProperty")
+                       .desc("simple string property")
+                       .defaultValue("")
+                       .build();
 
     public static final PropertyDescriptor<List<String>> MULTI_STRING_PROPERTY_DESCRIPTOR =
-            PropertyFactory.stringListProperty("multiString")
-                    .desc("multi string property")
-                    .defaultValues("default1", "default2")
-                    .build();
+        PropertyFactory.stringListProperty("multiString")
+                       .desc("multi string property")
+                       .defaultValues("default1", "default2")
+                       .build();
 
     public RuleWithProperties() {
         definePropertyDescriptor(STRING_PROPERTY_DESCRIPTOR);

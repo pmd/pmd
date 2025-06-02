@@ -7,6 +7,7 @@ package net.sourceforge.pmd.internal;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
+
 import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,7 @@ public final class Slf4jSimpleConfiguration {
     private static final String SIMPLE_LOGGER_CONFIGURATION = "org.slf4j.impl.SimpleLoggerConfiguration";
     private static final String PMD_ROOT_LOGGER = "net.sourceforge.pmd";
 
-    private Slf4jSimpleConfiguration() {}
+    private Slf4jSimpleConfiguration() { }
 
     public static void reconfigureDefaultLogLevel(Level level) {
         if (!isSimpleLogger()) {
@@ -54,8 +55,8 @@ public final class Slf4jSimpleConfiguration {
             Method levelStringMethod = simpleLoggerClass.getDeclaredMethod("recursivelyComputeLevelString");
             levelStringMethod.setAccessible(true);
 
-            Method stringToLevelMethod =
-                    classLoader.loadClass(SIMPLE_LOGGER_CONFIGURATION).getDeclaredMethod("stringToLevel", String.class);
+            Method stringToLevelMethod = classLoader.loadClass(SIMPLE_LOGGER_CONFIGURATION)
+                    .getDeclaredMethod("stringToLevel", String.class);
             stringToLevelMethod.setAccessible(true);
 
             // Change the logging level of loggers that were already created.
@@ -72,7 +73,7 @@ public final class Slf4jSimpleConfiguration {
             Map<String, Logger> loggerMap = (Map<String, Logger>) loggerMapField.get(loggerFactory);
             for (Logger logger : loggerMap.values()) {
                 if (logger.getName().startsWith(PMD_ROOT_LOGGER)
-                        && simpleLoggerClass.isAssignableFrom(logger.getClass())) {
+                    && simpleLoggerClass.isAssignableFrom(logger.getClass())) {
                     String newConfiguredLevel = (String) levelStringMethod.invoke(logger);
                     int newLogLevel = newDefaultLogLevel;
                     if (newConfiguredLevel != null) {
@@ -130,8 +131,7 @@ public final class Slf4jSimpleConfiguration {
     public static boolean isSimpleLogger() {
         try {
             ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
-            Class<?> loggerFactoryClass =
-                    loggerFactory.getClass().getClassLoader().loadClass(SIMPLE_LOGGER_FACTORY_CLASS);
+            Class<?> loggerFactoryClass = loggerFactory.getClass().getClassLoader().loadClass(SIMPLE_LOGGER_FACTORY_CLASS);
             return loggerFactoryClass.isAssignableFrom(loggerFactory.getClass());
         } catch (ClassNotFoundException e) {
             // not slf4j simple logger

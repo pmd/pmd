@@ -14,6 +14,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -21,10 +27,6 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.internal.ResourceLoader;
 import net.sourceforge.pmd.util.log.PmdReporter;
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Configurable object to load rulesets from XML resources.
@@ -116,12 +118,13 @@ public final class RuleSetLoader {
      */
     RuleSetFactory toFactory() {
         return new RuleSetFactory(
-                this.resourceLoader,
-                this.languageRegistry,
-                this.minimumPriority,
-                this.warnDeprecated,
-                this.includeDeprecatedRuleReferences,
-                this.reporter);
+            this.resourceLoader,
+            this.languageRegistry,
+            this.minimumPriority,
+            this.warnDeprecated,
+            this.includeDeprecatedRuleReferences,
+            this.reporter
+        );
     }
 
     /**
@@ -206,8 +209,8 @@ public final class RuleSetLoader {
             }
         }
         if (!anyRules && !error) {
-            reporter.warn(
-                    "No rules found. Maybe you misspelled a rule name? ({0})", StringUtils.join(rulesetPaths, ','));
+            reporter.warn("No rules found. Maybe you misspelled a rule name? ({0})",
+                          StringUtils.join(rulesetPaths, ','));
         }
         return ruleSets;
     }
@@ -222,6 +225,7 @@ public final class RuleSetLoader {
         if (ruleset.getRules().isEmpty()) {
             reporter.warn("No rules found in ruleset {0}", path);
         }
+
     }
 
     /**
@@ -249,16 +253,17 @@ public final class RuleSetLoader {
         }
     }
 
+
     /**
      * Configure a new ruleset factory builder according to the parameters
      * of the given PMD configuration.
      */
     public static RuleSetLoader fromPmdConfig(PMDConfiguration configuration) {
-        return new RuleSetLoader()
-                .filterAbovePriority(configuration.getMinimumPriority())
-                .withLanguages(configuration.getLanguageRegistry())
-                .withReporter(configuration.getReporter());
+        return new RuleSetLoader().filterAbovePriority(configuration.getMinimumPriority())
+                                  .withLanguages(configuration.getLanguageRegistry())
+                                  .withReporter(configuration.getReporter());
     }
+
 
     /**
      * Returns an Iterator of RuleSet objects loaded from descriptions from the

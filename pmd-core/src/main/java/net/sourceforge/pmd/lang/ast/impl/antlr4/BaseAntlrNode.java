@@ -4,16 +4,17 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrNode.AntlrToPmdParseTreeAdapter;
-import net.sourceforge.pmd.lang.document.TextRegion;
-import net.sourceforge.pmd.util.DataMap;
-import net.sourceforge.pmd.util.DataMap.DataKey;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrNode.AntlrToPmdParseTreeAdapter;
+import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.DataKey;
 
 /**
  * Base class for an antlr node. This implements the PMD interfaces only,
@@ -33,8 +34,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  * @param <A> Type of the underlying antlr node
  * @param <N> Public interface (eg SwiftNode)
  */
-public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N extends AntlrNode<N>>
-        implements AntlrNode<N> {
+public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N extends AntlrNode<N>> implements AntlrNode<N> {
 
     private DataMap<DataKey<?, ?>> userMap;
 
@@ -58,8 +58,8 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
 
     @Override
     public TextRegion getTextRegion() {
-        return TextRegion.fromBothOffsets(
-                getFirstAntlrToken().getStartIndex(), getLastAntlrToken().getStopIndex() + 1);
+        return TextRegion.fromBothOffsets(getFirstAntlrToken().getStartIndex(),
+                                          getLastAntlrToken().getStopIndex() + 1);
     }
 
     void setIndexInParent(int indexInParent) {
@@ -110,9 +110,11 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
 
     protected abstract A asAntlrNode();
 
+
     protected interface AntlrToPmdParseTreeAdapter<N extends AntlrNode<N>> extends ParseTree {
 
         BaseAntlrNode<?, N> getPmdNode();
+
 
         @Override
         AntlrToPmdParseTreeAdapter<N> getParent();

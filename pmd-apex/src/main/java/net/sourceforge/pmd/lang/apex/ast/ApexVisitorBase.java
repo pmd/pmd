@@ -21,4 +21,5 @@ public abstract class ApexVisitorBase<P, R> extends AstVisitorBase<P, R> impleme
     public R visitTypeDecl(ASTUserClassOrInterface<?> node, P data) {
         return visitApexNode(node, data);
     }
+
 }

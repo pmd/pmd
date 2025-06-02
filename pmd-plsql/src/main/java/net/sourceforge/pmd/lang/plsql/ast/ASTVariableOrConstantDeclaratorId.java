@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.plsql.ast;
 
 import java.util.List;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.NameOccurrence;
@@ -74,4 +75,5 @@ public final class ASTVariableOrConstantDeclaratorId extends AbstractPLSQLNode {
         ASTDatatype typeNode = (ASTDatatype) node.getChild(0);
         return typeNode.getChild(0);
     }
+
 }

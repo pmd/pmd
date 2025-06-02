@@ -17,6 +17,7 @@ public interface ShadowChainIterator<S, I> extends Iterator<ShadowChainNode<S, I
     @Override
     boolean hasNext();
 
+
     /**
      * Returns the next node in the chain that contains a declaration for
      * the name this iterator searches. If that group exists ({@link #hasNext()})
@@ -27,12 +28,14 @@ public interface ShadowChainIterator<S, I> extends Iterator<ShadowChainNode<S, I
     @Override
     ShadowChainNode<S, I> next();
 
+
     /**
      * Returns the scope tag of the shadow group that was last yielded.
      *
      * @throws IllegalStateException If {@link #next()} has not been called
      */
     I getScopeTag();
+
 
     /**
      * Returns the results of the search at the point the iterator is stopped.
@@ -42,4 +45,5 @@ public interface ShadowChainIterator<S, I> extends Iterator<ShadowChainNode<S, I
      * @throws IllegalStateException If {@link #next()} has not been called
      */
     List<S> getResults();
+
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -13,9 +14,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.DummyLanguageNoCapabilities;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import org.junit.jupiter.api.Test;
 
 class CPDConfigurationTest {
 
@@ -60,14 +63,16 @@ class CPDConfigurationTest {
         assertEquals(StandardCharsets.UTF_16.name(), ((XMLRenderer) renderer).getEncoding());
     }
 
+
     @Test
     void testCpdNotSupported() {
         DummyLanguageNoCapabilities lang = DummyLanguageNoCapabilities.getInstance();
         final CPDConfiguration configuration = new CPDConfiguration(LanguageRegistry.singleton(lang));
 
-        assertThrows(UnsupportedOperationException.class, () -> configuration.setOnlyRecognizeLanguage(lang));
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> configuration.setDefaultLanguageVersion(lang.getDefaultVersion()));
+        assertThrows(UnsupportedOperationException.class,
+            () -> configuration.setOnlyRecognizeLanguage(lang));
+        assertThrows(UnsupportedOperationException.class,
+            () -> configuration.setDefaultLanguageVersion(lang.getDefaultVersion()));
     }
+
 }

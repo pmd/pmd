@@ -1,12 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
+
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  * Root interface for all Nodes of the Java AST.
@@ -29,9 +33,9 @@ public interface JavaNode extends JjtreeNode<JavaNode> {
         return ancestors(ASTTypeDeclaration.class).first();
     }
 
+
     @Override
-    @NonNull
-    ASTCompilationUnit getRoot();
+    @NonNull ASTCompilationUnit getRoot();
 
     /**
      * Returns the symbol table for the program point represented by
@@ -46,4 +50,5 @@ public interface JavaNode extends JjtreeNode<JavaNode> {
      * unit.
      */
     TypeSystem getTypeSystem();
+
 }

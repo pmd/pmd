@@ -41,9 +41,5 @@ public final class ASTOuterJoinType extends AbstractPLSQLNode {
         return visitor.visit(this, data);
     }
 
-    public enum Type {
-        FULL,
-        LEFT,
-        RIGHT
-    }
+    public enum Type { FULL, LEFT, RIGHT }
 }

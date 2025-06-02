@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import java.io.File;
@@ -11,6 +12,7 @@ import java.nio.file.NoSuchFileException;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,10 +124,11 @@ public class DBType {
             } else if (subProtocol != null && properties != null) {
                 LOG.debug("DBType found using subProtocol={}", subProtocol);
             } else {
-                throw new RuntimeException(String.format(
-                        "Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s",
-                        subProtocol, subnamePrefix));
+                throw new RuntimeException(
+                        String.format("Could not locate DBType properties using subProtocol=%s and subnamePrefix=%s",
+                                subProtocol, subnamePrefix));
             }
+
         }
     }
 
@@ -184,15 +187,14 @@ public class DBType {
                 } catch (Exception notInJarWithoutPath) {
                     LOG.trace("Attempting JARWithClass prefix: {}.{}", DBType.class.getCanonicalName(), matchString);
                     try {
-                        resourceBundle = ResourceBundle.getBundle(
-                                DBType.class.getPackage().getName() + "." + matchString);
+                        resourceBundle = ResourceBundle.getBundle(DBType.class.getPackage().getName() + "." + matchString);
                         propertiesSource = "[" + INTERNAL_SETTINGS + "]" + File.separator + matchString + ".properties";
                         LOG.trace("found InJarWithPath");
                     } catch (Exception notInJarWithPath) {
                         notInJarWithPath.printStackTrace();
                         notFoundOnFilesystemWithExtensionTackedOn.printStackTrace();
-                        throw new RuntimeException(
-                                " Could not locate DBTYpe settings : " + matchString, notInJarWithPath);
+                        throw new RuntimeException(" Could not locate DBTYpe settings : " + matchString,
+                                notInJarWithPath);
                     }
                 }
             }
@@ -400,6 +402,7 @@ public class DBType {
             LOG.trace("returnType={}", this.properties.getProperty("returnType"));
             this.sourceCodeReturnType = Integer.parseInt(this.properties.getProperty("returnType"));
         }
+
     }
 
     @Override

@@ -10,12 +10,14 @@ import static net.sourceforge.pmd.util.OptionalBool.YES;
 
 import java.util.Arrays;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.OptionalBool;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.pcollections.PSet;
 
 /**
  * Pretty-printing methods to display types. The current API is only
@@ -23,7 +25,9 @@ import org.pcollections.PSet;
  */
 public final class TypePrettyPrint {
 
-    private TypePrettyPrint() {}
+    private TypePrettyPrint() {
+
+    }
 
     public static @NonNull String prettyPrint(@NonNull JTypeVisitable t) {
         return prettyPrint(t, new TypePrettyPrinter());
@@ -142,7 +146,8 @@ public final class TypePrettyPrint {
         private void printTypeAnnotations(PSet<SymAnnot> annots) {
             if (this.printTypeAnnotations) {
                 for (SymAnnot annot : annots) {
-                    String name = this.qualifyAnnotations ? annot.getBinaryName() : annot.getSimpleName();
+                    String name = this.qualifyAnnotations ? annot.getBinaryName()
+                                                          : annot.getSimpleName();
                     append('@').append(name).append(' ');
                 }
             }
@@ -316,18 +321,11 @@ public final class TypePrettyPrint {
             return null;
         }
 
-        private Void join(
-                TypePrettyPrinter sb, List<? extends JTypeMirror> ts, String delim, String prefix, String suffix) {
+        private Void join(TypePrettyPrinter sb, List<? extends JTypeMirror> ts, String delim, String prefix, String suffix) {
             return join(sb, ts, delim, prefix, suffix, false);
         }
 
-        private Void join(
-                TypePrettyPrinter sb,
-                List<? extends JTypeMirror> types,
-                String delim,
-                String prefix,
-                String suffix,
-                boolean isVarargs) {
+        private Void join(TypePrettyPrinter sb, List<? extends JTypeMirror> types, String delim, String prefix, String suffix, boolean isVarargs) {
             sb.isVarargs = false;
             boolean empty = types.isEmpty();
             sb.append(prefix);
@@ -345,4 +343,6 @@ public final class TypePrettyPrint {
             return null;
         }
     }
+
+
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.File;
@@ -20,6 +21,7 @@ import java.util.Set;
 import java.util.zip.Checksum;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

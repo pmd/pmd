@@ -12,6 +12,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -20,10 +26,6 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
 
 class ClassTypeImpl implements JClassType {
     private final @Nullable JClassType enclosingType;
@@ -58,22 +60,11 @@ class ClassTypeImpl implements JClassType {
      *                                  as the type's type parameters
      * @throws IllegalArgumentException if any type argument is of a primitive type.
      */
-    ClassTypeImpl(
-            TypeSystem ts,
-            JClassSymbol symbol,
-            List<JTypeMirror> typeArgs,
-            boolean isRaw,
-            PSet<SymAnnot> typeAnnotations) {
+    ClassTypeImpl(TypeSystem ts, JClassSymbol symbol, List<JTypeMirror> typeArgs, boolean isRaw, PSet<SymAnnot> typeAnnotations) {
         this(ts, null, symbol, typeArgs, typeAnnotations, isRaw);
     }
 
-    private ClassTypeImpl(
-            TypeSystem ts,
-            JClassType enclosing,
-            JClassSymbol symbol,
-            List<JTypeMirror> typeArgs,
-            PSet<SymAnnot> typeAnnotations,
-            boolean isRaw) {
+    private ClassTypeImpl(TypeSystem ts, JClassType enclosing, JClassSymbol symbol, List<JTypeMirror> typeArgs, PSet<SymAnnot> typeAnnotations, boolean isRaw) {
         this.typeAnnotations = typeAnnotations;
         validateParams(enclosing, symbol, typeArgs);
 
@@ -81,9 +72,12 @@ class ClassTypeImpl implements JClassType {
         this.symbol = symbol;
         this.typeArgs = typeArgs;
 
-        this.enclosingType = enclosing != null ? enclosing : makeEnclosingOf(symbol);
+        this.enclosingType = enclosing != null
+                             ? enclosing
+                             : makeEnclosingOf(symbol);
 
         this.genericity = computeGenericity(isRaw);
+
     }
 
     // Special ctor for boxed primitives and other specials that are built
@@ -158,8 +152,8 @@ class ClassTypeImpl implements JClassType {
     public Substitution getTypeParamSubst() {
         if (subst == null) {
             Substitution enclSubst = getEnclosingType() == null
-                    ? Substitution.EMPTY
-                    : getEnclosingType().getTypeParamSubst();
+                                     ? Substitution.EMPTY
+                                     : getEnclosingType().getTypeParamSubst();
             subst = enclSubst.andThen(localSubst());
         }
         return subst;
@@ -194,8 +188,7 @@ class ClassTypeImpl implements JClassType {
      * to erase.
      */
     static JTypeMirror maybeEraseMemberType(JClassType owner, JTypeMirror t) {
-        if (owner.isRaw()
-                && TypeOps.mentionsAny(t, owner.getTypeParamSubst().getMap().keySet())) {
+        if (owner.isRaw() && TypeOps.mentionsAny(t, owner.getTypeParamSubst().getMap().keySet())) {
             return t.getErasure();
         } else {
             // This type does not depend on any of the type variables to erase.
@@ -213,10 +206,13 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    public final JClassType selectInner(
-            JClassSymbol symbol, List<? extends JTypeMirror> targs, PSet<SymAnnot> typeAnnotations) {
-        return new ClassTypeImpl(
-                ts, this, symbol, CollectionUtil.defensiveUnmodifiableCopy(targs), typeAnnotations, isRaw());
+    public final JClassType selectInner(JClassSymbol symbol, List<? extends JTypeMirror> targs, PSet<SymAnnot> typeAnnotations) {
+        return new ClassTypeImpl(ts,
+                                 this,
+                                 symbol,
+                                 CollectionUtil.defensiveUnmodifiableCopy(targs),
+                                 typeAnnotations,
+                                 isRaw());
     }
 
     @Override
@@ -248,7 +244,7 @@ class ClassTypeImpl implements JClassType {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<JTypeMirror> getTypeArgs() {
         return isGenericTypeDeclaration() ? (List) getFormalTypeParams() : typeArgs;
     }
@@ -351,18 +347,23 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public List<JMethodSig> getConstructors() {
-        return map(symbol.getConstructors(), it -> new ClassMethodSigImpl(this, it));
+        return map(
+            symbol.getConstructors(),
+            it -> new ClassMethodSigImpl(this, it)
+        );
     }
 
     @Override
     public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
         return SuperTypesEnumerator.ALL_SUPERTYPES_INCLUDING_SELF.stream(this)
-                .flatMap(sup -> sup.streamDeclaredMethods(prefilter));
+                                                                 .flatMap(sup -> sup.streamDeclaredMethods(prefilter));
     }
 
     @Override
     public Stream<JMethodSig> streamDeclaredMethods(Predicate<? super JMethodSymbol> prefilter) {
-        return getSymbol().getDeclaredMethods().stream().filter(prefilter).map(m -> new ClassMethodSigImpl(this, m));
+        return getSymbol().getDeclaredMethods().stream()
+                          .filter(prefilter)
+                          .map(m -> new ClassMethodSigImpl(this, m));
     }
 
     @Override
@@ -372,6 +373,7 @@ class ClassTypeImpl implements JClassType {
         }
         return null;
     }
+
 
     @Override
     public final @NonNull JClassSymbol getSymbol() {
@@ -424,11 +426,10 @@ class ClassTypeImpl implements JClassType {
         }
     }
 
-    protected static @NonNull IllegalArgumentException invalidTypeArgs(
-            JClassSymbol symbol, List<? extends JTypeMirror> typeArgs) {
+    protected static @NonNull IllegalArgumentException invalidTypeArgs(JClassSymbol symbol, List<? extends JTypeMirror> typeArgs) {
         return new IllegalArgumentException("Cannot parameterize " + symbol + " with " + typeArgs
-                + ", expecting  " + symbol.getTypeParameterCount()
-                + " type arguments");
+                                                + ", expecting  " + symbol.getTypeParameterCount()
+                                                + " type arguments");
     }
 
     private static void checkTypeArg(JClassSymbol symbol, List<JTypeMirror> typeArgs, JTypeMirror arg) {
@@ -441,8 +442,8 @@ class ClassTypeImpl implements JClassType {
 
     private static boolean typeArgsAreOk(JClassSymbol symbol, List<? extends JTypeMirror> typeArgs) {
         return typeArgs.isEmpty() // always ok (raw/ decl/ non-generic)
-                || symbol.isUnresolved()
-                || symbol.getTypeParameterCount() == typeArgs.size();
+            || symbol.isUnresolved()
+            || symbol.getTypeParameterCount() == typeArgs.size();
     }
 
     private static void checkUserEnclosingTypeIsOk(@Nullable JClassType enclosing, JClassSymbol symbol) {

@@ -7,8 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import net.sourceforge.pmd.lang.rule.Rule;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
  * @author Clément Fournier
@@ -24,6 +25,7 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         assertFinds(rule, 1, code);
     }
 
+
     @Test
     void testWellFormedOperationMetricRule() {
         Rule rule = makeXpathRuleFromXPath("//ConstructorDeclaration[pmd-java:metric('CYCLO') > 1]");
@@ -31,6 +33,7 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
         assertFinds(rule, 1, code);
     }
+
 
     @Test
     void testBadCase() {
@@ -40,13 +43,15 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         assertFinds(rule, 1, code);
     }
 
+
     @Test
     void testNonexistentMetric() {
         testWithExpectedException(
-                "//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
-                "class Joo { Joo() {if(true){}} }",
-                e -> assertThat(e.getMessage(), containsString(MetricFunction.badMetricKeyMessage("FOOBAR"))));
+            "//ConstructorDeclaration[pmd-java:metric('FOOBAR') > 1]",
+            "class Joo { Joo() {if(true){}} }",
+            e -> assertThat(e.getMessage(), containsString(MetricFunction.badMetricKeyMessage("FOOBAR"))));
     }
+
 
     @Test
     void testIfStmt() {
@@ -56,6 +61,7 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
         assertFinds(rule, 1, code);
     }
 
+
     @Test
     void testWrongNodeTypeMeansEmptySequence() {
         Rule rule = makeXpathRuleFromXPath("//EnumDeclaration[not(pmd-java:metric('NPATH'))]");
@@ -63,4 +69,5 @@ class XPathMetricFunctionTest extends BaseXPathFunctionTest {
 
         assertFinds(rule, 1, code);
     }
+
 }

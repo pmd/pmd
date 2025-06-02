@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp.rule.security;
 
 import net.sourceforge.pmd.lang.jsp.ast.ASTElExpression;
@@ -26,13 +27,12 @@ public class NoUnsanitizedJSPExpressionRule extends AbstractJspRule {
     private boolean elOutsideTaglib(ASTElExpression node) {
         ASTElement parentASTElement = node.ancestors(ASTElement.class).first();
 
-        boolean elInTaglib = parentASTElement != null
-                && parentASTElement.getName() != null
+        boolean elInTaglib = parentASTElement != null && parentASTElement.getName() != null
                 && parentASTElement.getName().contains(":");
 
-        boolean elWithFnEscapeXml =
-                node.getContent() != null && node.getContent().matches("^fn:escapeXml\\(.+\\)$");
+        boolean elWithFnEscapeXml = node.getContent() != null && node.getContent().matches("^fn:escapeXml\\(.+\\)$");
 
         return !elInTaglib && !elWithFnEscapeXml;
     }
+
 }

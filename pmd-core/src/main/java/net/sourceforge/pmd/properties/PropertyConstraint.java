@@ -8,7 +8,9 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+
 import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * Validates the value of a property.
@@ -31,6 +33,7 @@ public interface PropertyConstraint<T> {
      * @throws ConstraintViolatedException If this constraint is violated
      */
     void validate(T value);
+
 
     /**
      * Returns a description of the constraint
@@ -78,6 +81,7 @@ public interface PropertyConstraint<T> {
         };
     }
 
+
     /**
      * Returns a constraint that validates a collection of Ts
      * by checking each component conforms to this validator.
@@ -100,6 +104,7 @@ public interface PropertyConstraint<T> {
         };
     }
 
+
     /**
      * Builds a new validator from a predicate, and description.
      *
@@ -113,8 +118,7 @@ public interface PropertyConstraint<T> {
      *
      * @return A new validator
      */
-    static <U> PropertyConstraint<U> fromPredicate(
-            final Predicate<? super U> pred, final String constraintDescription) {
+    static <U> PropertyConstraint<U> fromPredicate(final Predicate<? super U> pred, final String constraintDescription) {
         return fromPredicate(pred, constraintDescription, Collections.emptyMap());
     }
 
@@ -124,10 +128,8 @@ public interface PropertyConstraint<T> {
      *
      * @see #fromPredicate(Predicate, String)
      */
-    static <U> PropertyConstraint<U> fromPredicate(
-            final Predicate<? super U> pred,
-            final String constraintDescription,
-            final Map<String, String> xmlConstraint) {
+    static <U> PropertyConstraint<U> fromPredicate(final Predicate<? super U> pred, final String constraintDescription,
+                                                   final Map<String, String> xmlConstraint) {
         return new PropertyConstraint<U>() {
 
             @Override
@@ -153,4 +155,5 @@ public interface PropertyConstraint<T> {
             }
         };
     }
+
 }

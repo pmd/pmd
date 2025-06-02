@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Locale;
+
 import org.junit.jupiter.api.Test;
 
 class TrailingCommaTest extends EcmascriptParserTestBase {

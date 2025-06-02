@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
 import net.sourceforge.pmd.lang.document.TextDocument;
+
+import com.google.summit.ast.Node;
 
 public final class ASTBlockStatement extends AbstractApexNode.Single<Node> {
     private boolean curlyBrace;
@@ -13,6 +14,7 @@ public final class ASTBlockStatement extends AbstractApexNode.Single<Node> {
     ASTBlockStatement(Node blockStatement) {
         super(blockStatement);
     }
+
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {

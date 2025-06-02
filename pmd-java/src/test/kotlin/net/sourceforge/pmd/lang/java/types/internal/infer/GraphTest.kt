@@ -11,74 +11,89 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 
-/** @author Clément Fournier */
-class GraphTest :
-    FunSpec({
-        test("Test unique graph") {
-            val graph = Graph.UniqueGraph<String>()
+/**
+ * @author Clément Fournier
+ */
+class GraphTest : FunSpec({
 
-            val v1 = graph.addLeaf("V1")
-            val v2 = graph.addLeaf("V1")
+    test("Test unique graph") {
 
-            v1.shouldBeSameInstanceAs(v2)
-        }
 
-        test("Test tarjan ") {
-            val graph = Graph.UniqueGraph<String>()
+        val graph = Graph.UniqueGraph<String>()
 
-            val v1 = graph.addLeaf("a")
-            val v2 = graph.addLeaf("b")
-            val v3 = graph.addLeaf("c")
-            val v4 = graph.addLeaf("d")
+        val v1 = graph.addLeaf("V1")
+        val v2 = graph.addLeaf("V1")
 
-            graph.vertices shouldBe setOf(v1, v2, v3, v4)
+        v1.shouldBeSameInstanceAs(v2)
+    }
 
-            graph.addEdge(v1, v2)
-            graph.addEdge(v2, v3)
-            graph.addEdge(v3, v1)
+    test("Test tarjan ") {
 
-            graph.addEdge(v2, v4)
 
-            graph.mergeCycles()
+        val graph = Graph.UniqueGraph<String>()
 
-            graph.vertices should haveSize(2)
+        val v1 = graph.addLeaf("a")
+        val v2 = graph.addLeaf("b")
+        val v3 = graph.addLeaf("c")
+        val v4 = graph.addLeaf("d")
 
-            graph.vertices.shouldContain(v4)
 
-            graph.vertices.toList()[0].data shouldBe setOf("a", "b", "c")
-            graph.vertices.toList()[1].data shouldBe setOf("d")
-        }
+        graph.vertices shouldBe setOf(v1, v2, v3, v4)
 
-        test("Test self loop ") {
-            val graph = Graph.UniqueGraph<String>()
+        graph.addEdge(v1, v2)
+        graph.addEdge(v2, v3)
+        graph.addEdge(v3, v1)
 
-            val v1 = graph.addLeaf("a")
+        graph.addEdge(v2, v4)
 
-            graph.vertices shouldBe setOf(v1)
+        graph.mergeCycles()
 
-            graph.addEdge(v1, v1)
-        }
+        graph.vertices should haveSize(2)
 
-        test("Test toposort") {
-            val graph = Graph.UniqueGraph<String>()
+        graph.vertices.shouldContain(v4)
 
-            val v1 = graph.addLeaf("a")
-            val v2 = graph.addLeaf("b")
-            val v3 = graph.addLeaf("c")
-            val v4 = graph.addLeaf("d")
+        graph.vertices.toList()[0].data shouldBe setOf("a", "b", "c")
+        graph.vertices.toList()[1].data shouldBe setOf("d")
 
-            graph.vertices shouldBe setOf(v1, v2, v3, v4)
+    }
 
-            graph.addEdge(v1, v2)
-            graph.addEdge(v2, v3)
-            graph.addEdge(v3, v1)
+    test("Test self loop ") {
 
-            graph.addEdge(v4, v1)
 
-            graph.mergeCycles()
+        val graph = Graph.UniqueGraph<String>()
 
-            graph.vertices should haveSize(2)
+        val v1 = graph.addLeaf("a")
 
-            graph.topologicalSort() shouldBe listOf(setOf("a", "b", "c"), setOf("d"))
-        }
-    })
+        graph.vertices shouldBe setOf(v1)
+
+        graph.addEdge(v1, v1)
+
+    }
+
+    test("Test toposort") {
+
+
+        val graph = Graph.UniqueGraph<String>()
+
+        val v1 = graph.addLeaf("a")
+        val v2 = graph.addLeaf("b")
+        val v3 = graph.addLeaf("c")
+        val v4 = graph.addLeaf("d")
+
+
+        graph.vertices shouldBe setOf(v1, v2, v3, v4)
+
+        graph.addEdge(v1, v2)
+        graph.addEdge(v2, v3)
+        graph.addEdge(v3, v1)
+
+        graph.addEdge(v4, v1)
+
+        graph.mergeCycles()
+
+        graph.vertices should haveSize(2)
+
+        graph.topologicalSort() shouldBe listOf(setOf("a", "b", "c"), setOf("d"))
+
+    }
+})

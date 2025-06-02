@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
+
 class DebugsShouldUseLoggingLevelTest extends PmdRuleTst {
     // no additional unit tests
 }

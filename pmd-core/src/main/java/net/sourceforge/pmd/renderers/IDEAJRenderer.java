@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.StringTokenizer;
+
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleViolation;
@@ -23,19 +25,12 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "ideaj";
 
-    public static final PropertyDescriptor<String> FILE_NAME = PropertyFactory.stringProperty("fileName")
-            .desc("File name.")
-            .defaultValue("")
-            .build();
-    public static final PropertyDescriptor<String> SOURCE_PATH = PropertyFactory.stringProperty("sourcePath")
-            .desc("Source path.")
-            .defaultValue("")
-            .build();
-    public static final PropertyDescriptor<String> CLASS_AND_METHOD_NAME = PropertyFactory.stringProperty(
-                    "classAndMethodName")
-            .desc("Class and Method name, pass '.method' when processing a directory.")
-            .defaultValue("")
-            .build();
+    public static final PropertyDescriptor<String> FILE_NAME =
+        PropertyFactory.stringProperty("fileName").desc("File name.").defaultValue("").build();
+    public static final PropertyDescriptor<String> SOURCE_PATH =
+        PropertyFactory.stringProperty("sourcePath").desc("Source path.").defaultValue("").build();
+    public static final PropertyDescriptor<String> CLASS_AND_METHOD_NAME =
+        PropertyFactory.stringProperty("classAndMethodName").desc("Class and Method name, pass '.method' when processing a directory.").defaultValue("").build();
 
     private static final String FILE_SEPARATOR = System.getProperty("file.separator");
     private static final String PATH_SEPARATOR = System.getProperty("path.separator");
@@ -74,13 +69,8 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
             RuleViolation rv = violations.next();
             buf.append(rv.getDescription()).append(System.lineSeparator());
             // todo is this the right thing?                                    vvvvvvvvvvvvvvvv
-            buf.append(" at ")
-                    .append(getFullyQualifiedClassName(rv.getFileId().getAbsolutePath(), sourcePath))
-                    .append(".method(");
-            buf.append(rv.getFileId().getFileName())
-                    .append(':')
-                    .append(rv.getBeginLine())
-                    .append(')');
+            buf.append(" at ").append(getFullyQualifiedClassName(rv.getFileId().getAbsolutePath(), sourcePath)).append(".method(");
+            buf.append(rv.getFileId().getFileName()).append(':').append(rv.getBeginLine()).append(')');
             writer.println(buf);
         }
     }
@@ -91,13 +81,8 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
             buf.setLength(0);
             RuleViolation rv = violations.next();
             buf.append(rv.getDescription()).append(System.lineSeparator());
-            buf.append(" at ")
-                    .append(classAndMethodName)
-                    .append('(')
-                    .append(fileName)
-                    .append(':')
-                    .append(rv.getBeginLine())
-                    .append(')');
+            buf.append(" at ").append(classAndMethodName).append('(').append(fileName).append(':')
+                    .append(rv.getBeginLine()).append(')');
             writer.println(buf);
         }
     }
@@ -113,7 +98,7 @@ public class IDEAJRenderer extends AbstractIncrementingRenderer {
         private Set<String> paths = new HashSet<>();
 
         SourcePath(String sourcePathString) {
-            for (StringTokenizer st = new StringTokenizer(sourcePathString, PATH_SEPARATOR); st.hasMoreTokens(); ) {
+            for (StringTokenizer st = new StringTokenizer(sourcePathString, PATH_SEPARATOR); st.hasMoreTokens();) {
                 paths.add(st.nextToken());
             }
         }

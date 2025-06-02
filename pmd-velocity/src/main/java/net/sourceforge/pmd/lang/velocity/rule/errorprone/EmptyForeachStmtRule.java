@@ -17,4 +17,5 @@ public class EmptyForeachStmtRule extends AbstractVtlRule {
         }
         return super.visit(node, data);
     }
+
 }

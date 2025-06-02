@@ -1,10 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.io.Writer;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -20,7 +24,6 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.reporting.Report.ReportBuilderListener;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * This is an interface for rendering a Report. When a Renderer is being
@@ -181,6 +184,8 @@ public interface Renderer extends PropertySource {
      */
     void setReportFile(String reportFilename);
 
+
+
     /**
      * Returns a new analysis listener, that handles violations by rendering
      * them in an implementation-defined way.
@@ -224,13 +229,11 @@ public interface Renderer extends PropertySource {
                 return new CloseHookFileListener<ReportBuilderListener>(new ReportBuilderListener()) {
 
                     @Override
-                    protected void doClose(ReportBuilderListener reportBuilder, @Nullable Exception ignoredEx)
-                            throws Exception {
+                    protected void doClose(ReportBuilderListener reportBuilder, @Nullable Exception ignoredEx) throws Exception {
                         reportBuilder.close();
                         synchronized (reportMergeLock) {
                             // TODO renderFileReport should be thread-safe instead
-                            try (TimedOperation ignored =
-                                    TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
+                            try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.REPORTING)) {
                                 renderer.renderFileReport(reportBuilder.getResult());
                             }
                         }

@@ -9,9 +9,11 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An identifier for a {@link TextFile}. This is not a path, but provides
@@ -98,6 +100,7 @@ public interface FileId extends Comparable<FileId> {
         }
     };
 
+
     /**
      * Return the simple file name, like {@link Path#getFileName()}.
      * This includes the extension.
@@ -127,8 +130,8 @@ public interface FileId extends Comparable<FileId> {
      * the file ID of the container in the outer file system. Return
      * null if this is in the root file system.
      */
-    @Nullable
-    FileId getParentFsPath();
+    @Nullable FileId getParentFsPath();
+
 
     /**
      * Two file IDs are equal if they have the same {@link #getUriString()}.
@@ -137,6 +140,7 @@ public interface FileId extends Comparable<FileId> {
      */
     @Override
     boolean equals(Object o);
+
 
     @Override
     default int compareTo(FileId o) {
@@ -170,10 +174,12 @@ public interface FileId extends Comparable<FileId> {
             final String fileName = fileNamePath == null ? "" : fileNamePath.toString();
             final String absPathStr = absPath.toString();
 
+
             @Override
             public String getAbsolutePath() {
                 return absPathStr;
             }
+
 
             @Override
             public String getUriString() {
@@ -193,7 +199,8 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof FileId && ((FileId) obj).getUriString().equals(this.getUriString());
+                return obj instanceof FileId
+                    && ((FileId) obj).getUriString().equals(this.getUriString());
             }
 
             @Override
@@ -259,7 +266,8 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof FileId && ((FileId) obj).getUriString().equals(this.getUriString());
+                return obj instanceof FileId
+                    && ((FileId) obj).getUriString().equals(this.getUriString());
             }
 
             @Override
@@ -289,6 +297,7 @@ public interface FileId extends Comparable<FileId> {
      * @param self         A file id
      * @param parentFsPath Another file id for the parent.
      */
+
     static FileId asChildOf(FileId self, FileId parentFsPath) {
         if (Objects.equals(self.getParentFsPath(), parentFsPath)) {
             return self;
@@ -321,7 +330,8 @@ public interface FileId extends Comparable<FileId> {
 
             @Override
             public boolean equals(Object obj) {
-                return obj instanceof FileId && getUriString().equals(((FileId) obj).getUriString());
+                return obj instanceof FileId
+                    && getUriString().equals(((FileId) obj).getUriString());
             }
 
             @Override
@@ -352,7 +362,8 @@ public interface FileId extends Comparable<FileId> {
         String platformAbsPath = absPath.replace('/', File.separatorChar);
         // we know this one uses / (for URIs)
         String uriAbsPath = platformAbsPath.replace(File.separatorChar, '/');
-        String uriStr = outer != null ? "jar:" + outer.getUriString() + "!" + uriAbsPath : "file://" + uriAbsPath;
+        String uriStr = outer != null ? "jar:" + outer.getUriString() + "!" + uriAbsPath
+                                      : "file://" + uriAbsPath;
         // zip file
         return new FileId() {
             @Override

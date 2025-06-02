@@ -13,4 +13,5 @@ public class ReadOnlyFileException extends UnsupportedOperationException {
     public ReadOnlyFileException(TextFile textFile) {
         super("Read only: " + textFile.getFileId().getAbsolutePath());
     }
+
 }

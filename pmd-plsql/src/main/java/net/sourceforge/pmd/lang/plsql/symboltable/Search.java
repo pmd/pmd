@@ -1,14 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.HashSet;
 import java.util.Set;
-import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
-import net.sourceforge.pmd.lang.symboltable.Scope;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
+import net.sourceforge.pmd.lang.symboltable.Scope;
 
 public class Search {
     private static final Logger LOG = LoggerFactory.getLogger(Search.class);
@@ -17,7 +20,10 @@ public class Search {
     private Set<NameDeclaration> declarations = new HashSet<>();
 
     public Search(PLSQLNameOccurrence occ) {
-        LOG.trace("new search for {} {}", occ.isMethodOrConstructorInvocation() ? "method" : "variable", occ);
+        LOG.trace(
+                "new search for {} {}",
+                occ.isMethodOrConstructorInvocation() ? "method" : "variable",
+                occ);
         this.occ = occ;
     }
 

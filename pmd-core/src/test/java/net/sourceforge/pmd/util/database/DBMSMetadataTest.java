@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -15,6 +16,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -28,17 +30,13 @@ import org.slf4j.LoggerFactory;
 class DBMSMetadataTest {
     private static final Logger LOG = LoggerFactory.getLogger(DBMSMetadataTest.class);
 
-    static final String C_ORACLE_THIN_1 =
-            "jdbc:oracle:thin:scott/tiger@//192.168.100.21:5521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
+    static final String C_ORACLE_THIN_1 = "jdbc:oracle:thin:scott/tiger@//192.168.100.21:5521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
 
-    static final String C_ORACLE_THIN_3 =
-            "jdbc:oracle:thin:scott/oracle@//192.168.100.21:1521/orcl?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
+    static final String C_ORACLE_THIN_3 = "jdbc:oracle:thin:scott/oracle@//192.168.100.21:1521/orcl?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
 
-    static final String C_ORACLE_THIN_4 =
-            "jdbc:oracle:thin:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
+    static final String C_ORACLE_THIN_4 = "jdbc:oracle:thin:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25";
 
-    static final String C_ORACLE_THIN_5 =
-            "jdbc:oracle:thin:@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25&amp;user=system&amp;password=oracle";
+    static final String C_ORACLE_THIN_5 = "jdbc:oracle:thin:@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&objectTypes=procedures,functions,triggers,package,types&languages=plsql,java&name=PKG_%25%7C%7CPRC_%25&amp;user=system&amp;password=oracle";
 
     /**
      * URI with minimum information, relying on defaults in
@@ -73,6 +71,7 @@ class DBMSMetadataTest {
         reader.close();
 
         return stringBuilder.toString();
+
     }
 
     /**
@@ -105,6 +104,7 @@ class DBMSMetadataTest {
                     System.out.format("%s%s", ((columnNumber > 0) ? "," : ""), resultSet.getString(columnNumber));
                 }
                 System.out.format("\n");
+
             }
 
         } catch (SQLException ex) {
@@ -174,10 +174,8 @@ class DBMSMetadataTest {
         String schema = "SCOTT";
         System.out.println("dbURI.driverClass==" + dbURI.getDriverClass());
         System.out.println("dbURI.URL==" + dbURI.getURL());
-        System.out.println(
-                "dbURI.getDBType.getProperties()==" + dbURI.getDbType().getProperties());
-        System.out.println("dbURI.getDBType.getSourceCodeReturnType()=="
-                + dbURI.getDbType().getSourceCodeReturnType());
+        System.out.println("dbURI.getDBType.getProperties()==" + dbURI.getDbType().getProperties());
+        System.out.println("dbURI.getDBType.getSourceCodeReturnType()==" + dbURI.getDbType().getSourceCodeReturnType());
         System.out.println("dbURI.getDBType.getProperties()=="
                 + dbURI.getDbType().getProperties().getProperty("getSourceCodeStatement"));
         DBMSMetadata instance = new DBMSMetadata(dbURI);
@@ -250,6 +248,7 @@ class DBMSMetadataTest {
         System.out.format(
                 "testURI=%s,\ngetSchemasList()=%s\n,getSourceCodeTypesList()=%s\n,getSourceCodeNmesList()=%s\n",
                 testURI, testURI.getSchemasList(), testURI.getSourceCodeTypesList(), testURI.getSourceCodeNamesList());
+
     }
 
     /**
@@ -288,4 +287,5 @@ class DBMSMetadataTest {
             System.out.printf("sourceCode=[%s]\n", getStringFromReader(instance.getSourceCode(sourceObject)));
         }
     }
+
 }

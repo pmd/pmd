@@ -18,7 +18,10 @@ public class CsLanguageModule extends CpdOnlyLanguageModuleBase {
     private static final String ID = "cs";
 
     public CsLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("C#").addDefaultVersion("any").extensions("cs"));
+        super(LanguageMetadata.withId(ID)
+                              .name("C#")
+                              .addDefaultVersion("any")
+                              .extensions("cs"));
     }
 
     public static CsLanguageModule getInstance() {

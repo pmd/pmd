@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.apex.metrics.internal;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTCatchBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDoLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTForEachStatement;
@@ -14,7 +16,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTTernaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexVisitorBase;
-import org.apache.commons.lang3.mutable.MutableInt;
 
 /**
  * @author Clément Fournier
@@ -23,11 +24,10 @@ public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
 
     @Override
     public Void visit(ASTIfBlockStatement node, MutableInt data) {
-        data.add(1
-                + ApexMetricsHelper.booleanExpressionComplexity(
-                        node.descendants(ASTStandardCondition.class).first()));
+        data.add(1 + ApexMetricsHelper.booleanExpressionComplexity(node.descendants(ASTStandardCondition.class).first()));
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTCatchBlockStatement node, MutableInt data) {
@@ -35,13 +35,14 @@ public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTForLoopStatement node, MutableInt data) {
-        data.add(1
-                + ApexMetricsHelper.booleanExpressionComplexity(
-                        node.descendants(ASTStandardCondition.class).first()));
+        data.add(
+                1 + ApexMetricsHelper.booleanExpressionComplexity(node.descendants(ASTStandardCondition.class).first()));
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTForEachStatement node, MutableInt data) {
@@ -55,27 +56,29 @@ public class StandardCycloVisitor extends ApexVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTWhileLoopStatement node, MutableInt data) {
-        data.add(1
-                + ApexMetricsHelper.booleanExpressionComplexity(
-                        node.descendants(ASTStandardCondition.class).first()));
+        data.add(
+                1 + ApexMetricsHelper.booleanExpressionComplexity(node.descendants(ASTStandardCondition.class).first()));
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTDoLoopStatement node, MutableInt data) {
-        data.add(1
-                + ApexMetricsHelper.booleanExpressionComplexity(
-                        node.descendants(ASTStandardCondition.class).first()));
+        data.add(
+                1 + ApexMetricsHelper.booleanExpressionComplexity(node.descendants(ASTStandardCondition.class).first()));
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTTernaryExpression node, MutableInt data) {
-        data.add(1
-                + ApexMetricsHelper.booleanExpressionComplexity(
-                        node.descendants(ASTStandardCondition.class).first()));
+        data.add(
+                1 + ApexMetricsHelper.booleanExpressionComplexity(node.descendants(ASTStandardCondition.class).first()));
         return super.visit(node, data);
     }
+
+
 }

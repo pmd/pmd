@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,11 +10,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * <p>Sharing settings are not inherited by inner classes. Sharing settings need to be declared on the class that
@@ -53,21 +56,16 @@ class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
      */
     @ParameterizedTest
     @MethodSource("data")
-    void testSharingPermutation(
-            boolean outerSharingDeclared,
-            Operation outerOperation,
-            boolean innerSharingDeclared,
-            Operation innerOperation,
-            int expectedViolations,
-            List<Integer> expectedLineNumbers) {
+    void testSharingPermutation(boolean outerSharingDeclared, Operation outerOperation,
+                                boolean innerSharingDeclared, Operation innerOperation,
+                                int expectedViolations, List<Integer> expectedLineNumbers) {
         String apexClass = generateClass(outerSharingDeclared, outerOperation, innerSharingDeclared, innerOperation);
         ApexSharingViolationsRule rule = new ApexSharingViolationsRule();
         rule.setMessage("a message");
         Report rpt = apex.executeRule(rule, apexClass);
         List<RuleViolation> violations = rpt.getViolations();
         assertEquals(expectedViolations, violations.size(), "Unexpected Violation Size\n" + apexClass);
-        List<Integer> lineNumbers =
-                violations.stream().map(v -> v.getBeginLine()).collect(Collectors.toList());
+        List<Integer> lineNumbers = violations.stream().map(v -> v.getBeginLine()).collect(Collectors.toList());
         assertEquals(expectedLineNumbers, lineNumbers, "Unexpected Line Numbers\n" + apexClass);
     }
 
@@ -97,14 +95,8 @@ class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
                             // The location of the inner class declaration depends upon the content of the outer class
                             expectedLineNumbers.add(outerOperation.requiresSharingDeclaration ? 3 : 2);
                         }
-                        data.add(new Object[] {
-                            outerSharingDeclared,
-                            outerOperation,
-                            innerSharingDeclared,
-                            innerOperation,
-                            expectedViolations,
-                            expectedLineNumbers
-                        });
+                        data.add(new Object[]{outerSharingDeclared, outerOperation, innerSharingDeclared, innerOperation,
+                                              expectedViolations, expectedLineNumbers});
                     }
                 }
             }
@@ -132,8 +124,8 @@ class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
      * @param innerOperation Add a method to Inner class that performs the given operation
      * @return String that represents Apex code
      */
-    private static String generateClass(
-            boolean outerSharing, Operation outerOperation, boolean innerSharing, Operation innerOperation) {
+    private static String generateClass(boolean outerSharing, Operation outerOperation, boolean innerSharing,
+                                        Operation innerOperation) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("public ");
@@ -142,13 +134,12 @@ class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
         }
         sb.append("class Outer {\n");
         switch (outerOperation) {
-            case NONE:
-                // Do nothing
-                break;
-            default:
-                sb.append(String.format(
-                        "\t\tpublic void outer%s(){ %s }\n", outerOperation.name(), outerOperation.codeSnippet));
-                break;
+        case NONE:
+            // Do nothing
+            break;
+        default:
+            sb.append(String.format("\t\tpublic void outer%s(){ %s }\n", outerOperation.name(), outerOperation.codeSnippet));
+            break;
         }
         sb.append("\tpublic ");
         if (innerSharing) {
@@ -156,13 +147,12 @@ class ApexSharingViolationsNestedClassTest extends ApexParserTestBase {
         }
         sb.append("class Inner {\n");
         switch (innerOperation) {
-            case NONE:
-                // DO Nothing
-                break;
-            default:
-                sb.append(String.format(
-                        "\t\tpublic void inner%s(){ %s }\n", innerOperation.name(), innerOperation.codeSnippet));
-                break;
+        case NONE:
+            // DO Nothing
+            break;
+        default:
+            sb.append(String.format("\t\tpublic void inner%s(){ %s }\n", innerOperation.name(), innerOperation.codeSnippet));
+            break;
         }
         sb.append("\t}\n"); // Closes class Inner
         sb.append("}\n"); // Closes class Outer

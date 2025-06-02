@@ -1,9 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import java.util.Objects;
+
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.cpd.AnyCpdLexer;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
@@ -27,8 +32,6 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Dummy language used for testing PMD.
@@ -44,21 +47,17 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
     public static final String CPD_THROW_OTHER_EXCEPTION = ":throw_other_exception:";
 
     public DummyLanguageModule() {
-        super(
-                LanguageMetadata.withId(TERSE_NAME)
-                        .name(NAME)
-                        .extensions("dummy", "txt")
-                        .addVersion("1.0")
-                        .addVersion("1.1")
-                        .addVersion("1.2")
-                        .addVersion("1.3")
-                        .addVersion("1.4")
-                        .addVersion("1.5", "5")
-                        .addVersion("1.6", "6")
-                        .addDefaultVersion("1.7", "7")
-                        .addVersion(PARSER_THROWS)
-                        .addVersion("1.8", "8"),
-                new Handler());
+        super(LanguageMetadata.withId(TERSE_NAME).name(NAME).extensions("dummy", "txt")
+                              .addVersion("1.0")
+                              .addVersion("1.1")
+                              .addVersion("1.2")
+                              .addVersion("1.3")
+                              .addVersion("1.4")
+                              .addVersion("1.5", "5")
+                              .addVersion("1.6", "6")
+                              .addDefaultVersion("1.7", "7")
+                              .addVersion(PARSER_THROWS)
+                              .addVersion("1.8", "8"), new Handler());
     }
 
     public static DummyLanguageModule getInstance() {
@@ -125,7 +124,8 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
         @Override
         public LanguageMetricsProvider getLanguageMetricsProvider() {
             return () -> CollectionUtil.setOf(
-                    Metric.of((node, options) -> 1, (node) -> node, "Constant value metric", "const1"));
+                    Metric.of((node, options) -> 1, (node) -> node,
+                    "Constant value metric", "const1"));
         }
     }
 

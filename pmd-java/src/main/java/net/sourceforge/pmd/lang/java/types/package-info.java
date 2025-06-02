@@ -39,6 +39,9 @@ class Scratch {
 }
  */
 
+
+
+
 /* TODO possibly, the type node for a diamond should have the parameterized
     type, for now it's the generic type declaration, which has out-of-scope
     type params
@@ -59,12 +62,16 @@ class O {
  */
 
 /* TODO test bridge method execution filtering
-   In AsmLoaderTest
+    In AsmLoaderTest
 
 
-*/
+ */
+
 
 /* TODO finish NamedReferenceExpr by patching LazyTypeResolver
-    this needs tests, will be done in fwd branch
+     this needs tests, will be done in fwd branch
 
-*/
+ */
+
+
+

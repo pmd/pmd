@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
+
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
@@ -26,7 +27,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * Listens to an analysis. This object produces new {@link FileAnalysisListener}
  * for each analyzed file, which themselves handle events like violations,
  * in their file. Thread-safety is required.
- *
+ * 
  * <p>The listener may provide a {@link ListenerInitializer} to get context
  * information on the analysis before events start occurring.
  *
@@ -43,13 +44,13 @@ public interface GlobalAnalysisListener extends AutoCloseable {
     /**
      * Provides an initializer to gather analysis context before events
      * start occurring.
-     *
+     * 
      * @return A listener initializer.
      */
     default ListenerInitializer initializer() {
         return ListenerInitializer.noop();
     }
-
+    
     /**
      * Returns a file listener that will handle events occurring during
      * the analysis of the given file. The new listener may receive events
@@ -82,6 +83,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
      */
     @Override
     void close() throws Exception;
+
 
     /**
      * Record a configuration error. This happens before the start of
@@ -120,7 +122,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
             TeeListener(List<GlobalAnalysisListener> myList) {
                 this.myList = myList;
             }
-
+            
             @Override
             public ListenerInitializer initializer() {
                 return ListenerInitializer.tee(CollectionUtil.map(myList, GlobalAnalysisListener::initializer));
@@ -149,14 +151,15 @@ public interface GlobalAnalysisListener extends AutoCloseable {
                 myList.forEach(l -> l.onConfigError(error));
             }
         }
-
+        
         // Flatten other tee listeners in the list
         // This prevents suppressed exceptions from being chained too deep if they occur in close()
-        List<GlobalAnalysisListener> myList = listeners.stream()
-                .flatMap(l -> l instanceof TeeListener ? ((TeeListener) l).myList.stream() : Stream.of(l))
-                .filter(l -> !(l instanceof NoopAnalysisListener))
-                .collect(CollectionUtil.toUnmodifiableList());
-
+        List<GlobalAnalysisListener> myList =
+            listeners.stream()
+                     .flatMap(l -> l instanceof TeeListener ? ((TeeListener) l).myList.stream() : Stream.of(l))
+                     .filter(l -> !(l instanceof NoopAnalysisListener))
+                     .collect(CollectionUtil.toUnmodifiableList());
+        
         if (myList.isEmpty()) {
             return noop();
         } else if (myList.size() == 1) {
@@ -166,12 +169,12 @@ public interface GlobalAnalysisListener extends AutoCloseable {
         return new TeeListener(myList);
     }
 
+
     /**
      * A listener that just counts recorded violations. The result is
      * available after the listener is closed ({@link #getResult()}).
      */
-    final class ViolationCounterListener extends BaseResultProducingCloseable<Integer>
-            implements GlobalAnalysisListener {
+    final class ViolationCounterListener extends BaseResultProducingCloseable<Integer> implements GlobalAnalysisListener {
 
         private final AtomicInteger count = new AtomicInteger();
 
@@ -185,6 +188,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
             return violation -> count.incrementAndGet();
         }
     }
+
 
     /**
      * A listener that throws processing errors when they occur. They
@@ -208,8 +212,7 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
                     @Override
                     public void onError(ProcessingError error) throws FileAnalysisException {
-                        throw FileAnalysisException.wrap(
-                                filename, error.getError().getMessage(), error.getError());
+                        throw FileAnalysisException.wrap(filename, error.getError().getMessage(), error.getError());
                     }
 
                     @Override
@@ -227,4 +230,5 @@ public interface GlobalAnalysisListener extends AutoCloseable {
 
         return new ExceptionThrowingListener();
     }
+
 }

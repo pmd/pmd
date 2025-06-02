@@ -22,10 +22,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collector;
-import net.sourceforge.pmd.util.AssertionUtil;
-import net.sourceforge.pmd.util.GraphUtil;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.GraphUtil;
 
 /**
  * Indexes data of type {@code <V>} with keys of type {@code <K>}, where
@@ -68,14 +70,13 @@ class LatticeRelation<K, @NonNull V, C> {
      *                         through {@link #get(Object)}
      * @param keyToString      Strategy to render keys when dumping the lattice to a graph
      * @param collector        Collector used to accumulate values
-     *
+     *                         
      * @param <A>              Internal accumulator type of the collector
      */
-    <A> LatticeRelation(
-            TopoOrder<K> keyOrder,
-            Predicate<? super K> queryKeySelector,
-            Function<? super K, String> keyToString,
-            Collector<? super V, A, ? extends C> collector) {
+    <A> LatticeRelation(TopoOrder<K> keyOrder,
+                        Predicate<? super K> queryKeySelector,
+                        Function<? super K, String> keyToString,
+                        Collector<? super V, A, ? extends C> collector) {
         this.keyOrder = keyOrder;
         this.queryKeySelector = queryKeySelector;
         this.keyToString = keyToString;
@@ -91,11 +92,10 @@ class LatticeRelation<K, @NonNull V, C> {
      * @throws IllegalArgumentException If the query set contains a null key
      * @throws IllegalStateException    If the topo order generates a cycle
      */
-    <A> LatticeRelation(
-            TopoOrder<K> keyOrder,
-            Set<? extends K> querySet,
-            Function<? super K, String> keyToString,
-            Collector<? super V, A, ? extends C> collector) {
+    <A> LatticeRelation(TopoOrder<K> keyOrder,
+                        Set<? extends K> querySet,
+                        Function<? super K, String> keyToString,
+                        Collector<? super V, A, ? extends C> collector) {
         this.keyOrder = keyOrder;
         this.queryKeySelector = querySet::contains;
         this.keyToString = keyToString;
@@ -219,10 +219,11 @@ class LatticeRelation<K, @NonNull V, C> {
         // generates a DOT representation of the lattice
         // Visualize eg at http://webgraphviz.com/
         return GraphUtil.toDot(
-                nodes.values(),
-                n -> n.transitiveSuccs,
-                n -> n.getClass() == QueryNode.class ? DotColor.GREEN : DotColor.BLACK,
-                n -> keyToString.apply(n.key));
+            nodes.values(),
+            n -> n.transitiveSuccs,
+            n -> n.getClass() == QueryNode.class ? DotColor.GREEN : DotColor.BLACK,
+            n -> keyToString.apply(n.key)
+        );
     }
 
     /**
@@ -265,8 +266,7 @@ class LatticeRelation<K, @NonNull V, C> {
             // they just forward to their transitive QNode successors
         }
 
-        @NonNull
-        C computeValue() {
+        @NonNull C computeValue() {
             return emptyValue;
         }
 
@@ -278,6 +278,7 @@ class LatticeRelation<K, @NonNull V, C> {
         public String toString() {
             return "node(" + key + ')';
         }
+
     }
 
     /**
@@ -313,8 +314,7 @@ class LatticeRelation<K, @NonNull V, C> {
         }
 
         @Override
-        @NonNull
-        C computeValue() {
+        @NonNull C computeValue() {
             if (finished == null) {
                 this.finished = finish(collector(), accumulator);
             }

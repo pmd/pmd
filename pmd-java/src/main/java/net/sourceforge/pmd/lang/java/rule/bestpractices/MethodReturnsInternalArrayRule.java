@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.lang.reflect.Modifier;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimExpr;
@@ -32,7 +34,8 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodDeclaration method, Object data) {
-        if (!method.getResultTypeNode().getTypeMirror().isArray() || method.getVisibility() == Visibility.V_PRIVATE) {
+        if (!method.getResultTypeNode().getTypeMirror().isArray()
+            || method.getVisibility() == Visibility.V_PRIVATE) {
             return data;
         }
 
@@ -60,15 +63,15 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
 
     private static boolean isInternal(JFieldSymbol field) {
         return !Modifier.isPublic(field.getModifiers()) // not public
-                && !field.isUnresolved(); // must be resolved to avoid FPs
+            && !field.isUnresolved(); // must be resolved to avoid FPs
     }
 
     private static boolean isZeroLengthArrayConstant(JFieldSymbol sym) {
         return sym.isFinal()
                 && NodeStream.of(sym.tryGetNode())
-                        .map(ASTVariableId::getInitializer)
-                        .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr)
-                        .nonEmpty();
+                         .map(ASTVariableId::getInitializer)
+                         .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr)
+                         .nonEmpty();
     }
 
     private static boolean isZeroLengthArrayExpr(ASTExpression expr) {
@@ -82,10 +85,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
                 return init.length() == 0;
             } else {
                 // new int[0]
-                ASTArrayTypeDim lastChild = ((ASTArrayAllocation) expr)
-                        .getTypeNode()
-                        .getDimensions()
-                        .getLastChild();
+                ASTArrayTypeDim lastChild = ((ASTArrayAllocation) expr).getTypeNode().getDimensions().getLastChild();
                 if (lastChild instanceof ASTArrayDimExpr) {
                     return JavaAstUtils.isLiteralInt(((ASTArrayDimExpr) lastChild).getLengthExpression(), 0);
                 }

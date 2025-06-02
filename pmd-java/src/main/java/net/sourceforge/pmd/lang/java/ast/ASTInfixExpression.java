@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.BinaryExpressionLike;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents a binary infix expression. {@linkplain ASTAssignmentExpression Assignment expressions}
@@ -37,10 +39,13 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements Binary
         super(i);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
+
 
     void setOp(BinaryOp op) {
         this.operator = Objects.requireNonNull(op);
@@ -74,4 +79,5 @@ public final class ASTInfixExpression extends AbstractJavaExpr implements Binary
     public String getImage() {
         return null;
     }
+
 }

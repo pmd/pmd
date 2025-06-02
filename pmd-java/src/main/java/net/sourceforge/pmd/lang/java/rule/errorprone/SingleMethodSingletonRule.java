@@ -1,7 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.errorprone;
+
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -25,8 +27,8 @@ public class SingleMethodSingletonRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
         int count = node.descendants(ASTMethodDeclaration.class)
-                .filter(m -> "getInstance".equals(m.getName()))
-                .count();
+            .filter(m -> "getInstance".equals(m.getName()))
+            .count();
         if (count > 1) {
             asCtx(data).addViolation(node);
         }

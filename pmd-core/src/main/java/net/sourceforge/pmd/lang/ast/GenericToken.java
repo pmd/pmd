@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.stream.Stream;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.IteratorUtil;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Represents a token, part of a token chain in a source file. Tokens
@@ -43,12 +45,14 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
         return getImageCs().toString();
     }
 
+
     /**
      * Returns the text of the token as a char sequence.
      * This should be preferred when you can use eg {@link StringUtils}
      * to do some processing, without having to create a string.
      */
     CharSequence getImageCs();
+
 
     /**
      * Returns true if the image of this token equals
@@ -65,6 +69,7 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
         return StringUtils.equals(imageCs, charSeq);
     }
 
+
     /** Returns a text region with the coordinates of this token. */
     TextRegion getRegion();
 
@@ -74,6 +79,7 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
      */
     boolean isEof();
 
+
     /**
      * Returns true if this token is implicit, ie was inserted artificially
      * and has a zero-length image.
@@ -81,6 +87,7 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
     default boolean isImplicit() {
         return false;
     }
+
 
     /**
      * This must return true if this token comes before the other token.
@@ -91,6 +98,7 @@ public interface GenericToken<T extends GenericToken<T>> extends Comparable<T>, 
     default int compareTo(T o) {
         return getRegion().compareTo(o.getRegion());
     }
+
 
     /**
      * Returns an iterator that enumerates all (non-special) tokens

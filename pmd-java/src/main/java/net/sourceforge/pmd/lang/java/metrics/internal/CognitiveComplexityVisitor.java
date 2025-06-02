@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -29,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
+
 /**
  * Visitor for the Cognitive Complexity metric.
  *
@@ -40,12 +43,10 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     /** Instance. */
     public static final CognitiveComplexityVisitor INSTANCE = new CognitiveComplexityVisitor();
 
-    public enum BooleanOp {
-        AND,
-        OR
-    }
+    public enum BooleanOp { AND, OR }
 
     public static class State {
+
 
         private int complexity = 0;
         private int nestingLevel = 0;
@@ -57,7 +58,10 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
             this.methodStack = new ArrayDeque<>();
             // push enclosing methods on the stack
             // so that the stack is independent of where we started the visitor;
-            topNode.ancestors().filterIs(ASTMethodDeclaration.class).forEach(methodStack::addLast);
+            topNode.ancestors()
+                   .filterIs(ASTMethodDeclaration.class)
+                   .forEach(methodStack::addLast);
+
         }
 
         public int getComplexity() {
@@ -137,8 +141,8 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
         @Override
         public String toString() {
             return "State{complexity=" + complexity
-                    + ", nestingLevel=" + nestingLevel
-                    + ", currentBooleanOperation=" + currentBooleanOperation + '}';
+                + ", nestingLevel=" + nestingLevel
+                + ", currentBooleanOperation=" + currentBooleanOperation + '}';
         }
     }
 
@@ -238,8 +242,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     @Override
     public Void visit(ASTMethodCall node, State state) {
 
-        JExecutableSymbol calledSymbol =
-                node.getOverloadSelectionInfo().getMethodType().getSymbol();
+        JExecutableSymbol calledSymbol = node.getOverloadSelectionInfo().getMethodType().getSymbol();
         if (calledSymbol instanceof JMethodSymbol) {
             state.callMethod((JMethodSymbol) calledSymbol);
         }
@@ -271,6 +274,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
         return nonStructural(node, state);
     }
 
+
     @Override
     public Void visit(ASTWhileStatement node, State state) {
         return structural(node, state);
@@ -290,6 +294,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     public Void visit(ASTConditionalExpression node, State state) {
         return structural(node, state);
     }
+
 
     private Void nonStructural(JavaNode node, State state) {
         state.increaseNestingLevel();

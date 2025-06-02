@@ -2,10 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.symbols;
 
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
  * A symbol that declares a type. These include
@@ -52,6 +54,7 @@ public interface JTypeDeclSymbol extends JAccessibleElementSymbol {
         return false;
     }
 
+
     /**
      * Returns the simple name of this class, as specified by
      * {@link Class#getSimpleName()}.
@@ -59,6 +62,7 @@ public interface JTypeDeclSymbol extends JAccessibleElementSymbol {
     @Override
     @NonNull
     String getSimpleName();
+
 
     /**
      * This returns true if this is an interface. Annotation types are

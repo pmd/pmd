@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -11,7 +12,8 @@ import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationM
 
 public class UnitTestAssertionsShouldIncludeMessageRule extends AbstractJavaRulechainRule {
 
-    private final CompoundInvocationMatcher checks = InvocationMatcher.parseAll(
+    private final CompoundInvocationMatcher checks =
+        InvocationMatcher.parseAll(
             "_#assertEquals(_,_)",
             "_#assertTrue(_)",
             "_#assertFalse(_)",
@@ -23,7 +25,8 @@ public class UnitTestAssertionsShouldIncludeMessageRule extends AbstractJavaRule
             "_#assertThat(_,_)",
             "_#fail()",
             "_#assertEquals(float,float,float)",
-            "_#assertEquals(double,double,double)");
+            "_#assertEquals(double,double,double)"
+        );
 
     public UnitTestAssertionsShouldIncludeMessageRule() {
         super(ASTMethodCall.class);

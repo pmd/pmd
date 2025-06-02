@@ -19,4 +19,5 @@ public final class ScalaParsingHelper extends BaseParsingHelper<ScalaParsingHelp
     protected ScalaParsingHelper clone(Params params) {
         return new ScalaParsingHelper(params);
     }
+
 }

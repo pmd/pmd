@@ -1,13 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import org.junit.jupiter.api.Test;
 
 class MarkTest {
 
@@ -36,10 +38,10 @@ class MarkTest {
         final int beginColumn = 2;
         final int endColumn = 2;
         final int lineCount = 10;
-        TokenEntry token =
-                tokens.addToken("public", filename, beginLine, beginColumn, beginLine, beginColumn + "public".length());
-        TokenEntry endToken =
-                tokens.addToken("}", filename, beginLine + lineCount, 1, beginLine + lineCount - 1, endColumn);
+        TokenEntry token = tokens.addToken("public", filename, beginLine, beginColumn, beginLine,
+                                           beginColumn + "public".length());
+        TokenEntry endToken = tokens.addToken("}", filename,
+                                              beginLine + lineCount, 1, beginLine + lineCount - 1, endColumn);
 
         final Mark mark = new Mark(token);
         mark.setEndToken(endToken);

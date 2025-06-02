@@ -26,6 +26,7 @@ public final class ASTTemplate extends AbstractVtlNode implements RootNode {
         return this;
     }
 
+
     @Override
     protected <P, R> R acceptVtlVisitor(VtlVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

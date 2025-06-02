@@ -8,6 +8,7 @@ import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -32,6 +33,7 @@ public final class MetricsUtil {
         return true;
     }
 
+
     /**
      * Computes statistics for the results of a metric over a sequence of nodes.
      *
@@ -40,8 +42,7 @@ public final class MetricsUtil {
      *
      * @return Statistics for the value of the metric over all the nodes
      */
-    public static <O extends Node> DoubleSummaryStatistics computeStatistics(
-            Metric<? super O, ?> key, Iterable<? extends O> ops) {
+    public static <O extends Node> DoubleSummaryStatistics computeStatistics(Metric<? super O, ?> key, Iterable<? extends O> ops) {
         return computeStatistics(key, ops, MetricOptions.emptyOptions());
     }
 
@@ -54,17 +55,18 @@ public final class MetricsUtil {
      *
      * @return Statistics for the value of the metric over all the nodes
      */
-    public static <O extends Node> DoubleSummaryStatistics computeStatistics(
-            Metric<? super O, ?> key, Iterable<? extends O> ops, MetricOptions options) {
+    public static <O extends Node> DoubleSummaryStatistics computeStatistics(Metric<? super O, ?> key,
+                                                                             Iterable<? extends O> ops,
+                                                                             MetricOptions options) {
+
 
         Objects.requireNonNull(key, NULL_KEY_MESSAGE);
         Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
         Objects.requireNonNull(ops, NULL_NODE_MESSAGE);
 
         return StreamSupport.stream(ops.spliterator(), false)
-                .filter(key::supports)
-                .collect(Collectors.summarizingDouble(
-                        op -> computeMetric(key, op, options).doubleValue()));
+                            .filter(key::supports)
+                            .collect(Collectors.summarizingDouble(op -> computeMetric(key, op, options).doubleValue()));
     }
 
     /**
@@ -96,8 +98,7 @@ public final class MetricsUtil {
      *
      * @throws IllegalArgumentException If the metric does not support the given node
      */
-    public static <N extends Node, R extends Number> R computeMetric(
-            Metric<? super N, R> key, N node, MetricOptions options) {
+    public static <N extends Node, R extends Number> R computeMetric(Metric<? super N, R> key, N node, MetricOptions options) {
         return computeMetric(key, node, options, false);
     }
 
@@ -117,11 +118,11 @@ public final class MetricsUtil {
      *
      * @throws IllegalArgumentException If the metric does not support the given node
      */
-    public static <N extends Node, R extends Number> R computeMetric(
-            Metric<? super N, R> key, N node, MetricOptions options, boolean forceRecompute) {
+    public static <N extends Node, R extends Number> R computeMetric(Metric<? super N, R> key, N node, MetricOptions options, boolean forceRecompute) {
         Objects.requireNonNull(key, NULL_KEY_MESSAGE);
         Objects.requireNonNull(options, NULL_OPTIONS_MESSAGE);
         Objects.requireNonNull(node, NULL_NODE_MESSAGE);
+
 
         if (!key.supports(node)) {
             throw new IllegalArgumentException(key + " cannot be computed on " + node);
@@ -137,4 +138,5 @@ public final class MetricsUtil {
         node.getUserMap().set(paramKey, val);
         return val;
     }
+
 }

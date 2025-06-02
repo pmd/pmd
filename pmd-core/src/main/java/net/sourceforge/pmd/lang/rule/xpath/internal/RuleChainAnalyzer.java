@@ -11,6 +11,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
+
+import net.sourceforge.pmd.lang.ast.Node;
+
 import net.sf.saxon.Configuration;
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
@@ -24,7 +27,6 @@ import net.sf.saxon.om.AxisInfo;
 import net.sf.saxon.pattern.CombinedNodeTest;
 import net.sf.saxon.pattern.NameTest;
 import net.sf.saxon.type.Type;
-import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * Analyzes the xpath expression to find the root path selector for a element. If found,
@@ -182,4 +184,5 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
     public static Comparator<Node> documentOrderComparator() {
         return PmdDocumentSorter.INSTANCE;
     }
+
 }

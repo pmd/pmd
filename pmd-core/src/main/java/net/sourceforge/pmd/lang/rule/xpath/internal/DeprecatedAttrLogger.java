@@ -6,12 +6,14 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.InternalApiBridge;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Records usages of deprecated attributes in XPath rules. This needs
@@ -20,6 +22,7 @@ import org.slf4j.LoggerFactory;
 public abstract class DeprecatedAttrLogger {
 
     private static final Logger LOG = LoggerFactory.getLogger(Attribute.class);
+
 
     public abstract void recordUsageOf(Attribute attribute);
 
@@ -89,9 +92,8 @@ public abstract class DeprecatedAttrLogger {
                 if (b == null) {
                     // this message needs to be kept in sync with PMDCoverageTest / BinaryDistributionIT
 
-                    String user = isSuppressionQuery
-                            ? "violationSuppressXPath for rule " + ruleToString()
-                            : "XPath rule " + ruleToString();
+                    String user = isSuppressionQuery ? "violationSuppressXPath for rule " + ruleToString()
+                                                     : "XPath rule " + ruleToString();
                     String msg = "Use of deprecated attribute '" + name + "' by " + user;
                     if (!replacement.isEmpty()) {
                         msg += ", please use " + replacement + " instead";

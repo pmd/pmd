@@ -12,6 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.function.Consumer;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -21,8 +25,6 @@ import net.sourceforge.pmd.lang.rule.MockRule;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.XMLRenderer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
 
 class ReportTest {
 
@@ -108,6 +110,7 @@ class ReportTest {
         return new ParametricRuleViolation(rule, loc1, rule1, Collections.emptyMap());
     }
 
+
     private static FileLocation getNode(int line, int column, String filename) {
         return FileLocation.caret(FileId.fromPathLikeString(filename), line, column);
     }
@@ -137,4 +140,5 @@ class ReportTest {
 
         return writer.toString();
     }
+
 }

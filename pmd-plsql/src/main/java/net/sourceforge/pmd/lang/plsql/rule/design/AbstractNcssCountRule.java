@@ -34,6 +34,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
  */
 abstract class AbstractNcssCountRule<T extends PLSQLNode> extends AbstractCounterCheckRule<T> {
 
+
     /**
      * Count the nodes of the given type using NCSS rules.
      *
@@ -42,6 +43,7 @@ abstract class AbstractNcssCountRule<T extends PLSQLNode> extends AbstractCounte
     AbstractNcssCountRule(Class<T> nodeClass) {
         super(nodeClass);
     }
+
 
     @Override
     protected int getMetric(T node) {
@@ -71,6 +73,7 @@ abstract class AbstractNcssCountRule<T extends PLSQLNode> extends AbstractCounte
             }
             return nodeCount;
         }
+
 
         @Override
         public Object visit(ASTForStatement node, Object data) {
@@ -157,5 +160,6 @@ abstract class AbstractNcssCountRule<T extends PLSQLNode> extends AbstractCounte
         public Object visit(ASTCaseWhenClause node, Object data) {
             return countNodeChildren(node, data) + 1;
         }
+
     }
 }

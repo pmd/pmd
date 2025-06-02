@@ -29,9 +29,11 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import net.sourceforge.pmd.internal.util.IOUtil;
+
 import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 class IOUtilTest {
 
@@ -221,7 +223,7 @@ class IOUtilTest {
             data[i] = 'A';
         }
         try (InputStream stream = new ByteArrayInputStream(data);
-                ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             IOUtil.copy(stream, out);
             byte[] bytes = out.toByteArray();
             assertEquals(size, bytes.length);
@@ -237,7 +239,7 @@ class IOUtilTest {
             data[i] = 'A';
         }
         try (Reader reader = new CharArrayReader(data);
-                StringWriter writer = new StringWriter()) {
+             StringWriter writer = new StringWriter()) {
             IOUtil.copy(reader, writer);
             char[] chars = writer.toString().toCharArray();
             assertEquals(size, chars.length);

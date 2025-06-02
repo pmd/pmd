@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
+
+import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrBaseParser;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**
  * Adapter for the KotlinParser.

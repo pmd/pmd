@@ -11,8 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.ast.Node;
 
 class ParameterizedMetricKeyTest {
 
@@ -29,6 +30,7 @@ class ParameterizedMetricKeyTest {
         assertSame(key1, key2);
     }
 
+
     @Test
     void testVersioning() {
 
@@ -38,6 +40,7 @@ class ParameterizedMetricKeyTest {
         assertNotSame(key1, key2);
     }
 
+
     @Test
     void testToString() {
 
@@ -45,6 +48,7 @@ class ParameterizedMetricKeyTest {
         assertTrue(key1.toString().contains(key1.metric.displayName()));
         assertTrue(key1.toString().contains(key1.options.toString()));
     }
+
 
     @Test
     void testAdHocMetricKey() {
@@ -58,15 +62,19 @@ class ParameterizedMetricKeyTest {
         assertEquals(key1, key2);
         assertTrue(key1.toString().contains(key1.metric.displayName()));
         assertTrue(key1.toString().contains(key1.options.toString()));
+
     }
 
     private enum Options implements MetricOption {
         DUMMY1,
         DUMMY2;
 
+
         @Override
         public String valueName() {
             return null;
         }
     }
+
+
 }

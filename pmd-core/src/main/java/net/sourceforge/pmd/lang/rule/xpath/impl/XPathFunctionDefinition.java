@@ -6,9 +6,11 @@ package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import java.util.Objects;
 import javax.xml.namespace.QName;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.ast.Node;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Base impl for an XPath function definition.

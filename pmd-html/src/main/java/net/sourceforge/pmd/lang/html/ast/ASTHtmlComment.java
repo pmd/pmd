@@ -2,10 +2,12 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.html.ast;
 
-import net.sourceforge.pmd.lang.rule.xpath.CommentNode;
 import org.jsoup.nodes.Comment;
+
+import net.sourceforge.pmd.lang.rule.xpath.CommentNode;
 
 public final class ASTHtmlComment extends AbstractHtmlNode<Comment> implements CommentNode {
 

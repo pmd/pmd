@@ -1,13 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Proxy to record tokens from within {@link CpdLexer#tokenize(TextDocument, TokenFactory)}.
@@ -38,12 +40,7 @@ public interface TokenFactory extends AutoCloseable {
      * @param location Location of the token.
      */
     default void recordToken(@NonNull String image, @NonNull FileLocation location) {
-        recordToken(
-                image,
-                location.getStartLine(),
-                location.getStartColumn(),
-                location.getEndLine(),
-                location.getEndColumn());
+        recordToken(image, location.getStartLine(), location.getStartColumn(), location.getEndLine(), location.getEndColumn());
     }
 
     LexException makeLexException(int line, int column, String message, @Nullable Throwable cause);
@@ -56,8 +53,7 @@ public interface TokenFactory extends AutoCloseable {
     /**
      * Returns the last token that has been recorded in this file.
      */
-    @Nullable
-    TokenEntry peekLastToken();
+    @Nullable TokenEntry peekLastToken();
 
     /**
      * This adds the EOF token, it must be called when
@@ -65,4 +61,5 @@ public interface TokenFactory extends AutoCloseable {
      */
     @Override
     void close();
+
 }

@@ -4,21 +4,21 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
-import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
+import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
+import net.sourceforge.pmd.lang.java.types.*
 
-/** @author Clément Fournier */
+/**
+ * @author Clément Fournier
+ */
 @Suppress("UNUSED_VARIABLE")
-class AnonCtorsTest :
-    ProcessorTestSpec({
-        parserTest("Diamond anonymous class constructor") {
-            val acu =
-                parser.parse(
-                    """
+class AnonCtorsTest : ProcessorTestSpec({
+    parserTest("Diamond anonymous class constructor") {
+        val acu = parser.parse(
+            """
         class Scratch {
 
             interface Gen<T> { T get(); }
@@ -32,56 +32,51 @@ class AnonCtorsTest :
             }
         }
         """
-                )
+        )
 
-            val (t_Scratch, t_Gen, t_Anon) =
-                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_Gen, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTMethodCall::class.java).get(1)!!
+        val call = acu.descendants(ASTMethodCall::class.java).get(1)!!
 
-            call.shouldMatchN {
-                methodCall("useGen") {
-                    it.methodType.formalParameters.shouldBe(
-                        listOf(
-                            with(it.typeDsl) {
-                                t_Gen[`?` extends int.box()] // Gen<? extends Integer>
+        call.shouldMatchN {
+            methodCall("useGen") {
+
+                it.methodType.formalParameters.shouldBe(listOf(with(it.typeDsl) {
+                    t_Gen[`?` extends int.box()] // Gen<? extends Integer>
+                }))
+
+                argList {
+                    constructorCall {
+                        classType("Gen") {
+                            it shouldHaveType t_Gen.erasure
+                            diamond()
+                        }
+
+                        argList(0)
+
+                        with(it.typeDsl) {
+                            it.methodType.shouldMatchMethod(
+                                named = JConstructorSymbol.CTOR_NAME,
+                                declaredIn = ts.OBJECT,
+                                withFormals = emptyList(),
+                                returning = t_Gen[int.box()] // Gen<Integer>
+                            ).also {
+                                it.symbol shouldBe ts.OBJECT.symbol.constructors[0]
                             }
-                        )
-                    )
+                        }
 
-                    argList {
-                        constructorCall {
-                            classType("Gen") {
-                                it shouldHaveType t_Gen.erasure
-                                diamond()
-                            }
-
-                            argList(0)
-
-                            with(it.typeDsl) {
-                                it.methodType
-                                    .shouldMatchMethod(
-                                        named = JConstructorSymbol.CTOR_NAME,
-                                        declaredIn = ts.OBJECT,
-                                        withFormals = emptyList(),
-                                        returning = t_Gen[int.box()], // Gen<Integer>
-                                    )
-                                    .also { it.symbol shouldBe ts.OBJECT.symbol.constructors[0] }
-                            }
-
-                            child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                                it shouldHaveType t_Anon
-                            }
+                        child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                            it shouldHaveType t_Anon
                         }
                     }
                 }
             }
         }
+    }
 
-        parserTest("Test anonymous interface constructor") {
-            val acu =
-                parser.parse(
-                    """
+    parserTest("Test anonymous interface constructor") {
+        val acu = parser.parse(
+            """
         class Scratch {
             public interface BitMetric {
                 public double getBitLength(int value);
@@ -94,40 +89,41 @@ class AnonCtorsTest :
             };
         }
         """
-                )
+        )
 
-            val (t_Scratch, t_BitMetric, t_Anon) =
-                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java)
+            .toList { it.typeMirror }
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            call.shouldMatchN {
-                constructorCall {
-                    classType("BitMetric") { it.typeMirror.symbol shouldBe t_BitMetric.symbol }
-
-                    with(it.typeDsl) {
-                        it.methodType
-                            .shouldMatchMethod(
-                                named = JConstructorSymbol.CTOR_NAME,
-                                declaredIn = ts.OBJECT,
-                                withFormals = emptyList(),
-                                returning = t_BitMetric,
-                            )
-                            .also { it.symbol shouldBe ts.OBJECT.symbol.constructors[0] }
-                    }
-                    it shouldHaveType t_BitMetric
-
-                    argList {}
-
-                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {}
+        call.shouldMatchN {
+            constructorCall {
+                classType("BitMetric") {
+                    it.typeMirror.symbol shouldBe t_BitMetric.symbol
                 }
+
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                        named = JConstructorSymbol.CTOR_NAME,
+                        declaredIn = ts.OBJECT,
+                        withFormals = emptyList(),
+                        returning = t_BitMetric
+                    ).also {
+                        it.symbol shouldBe ts.OBJECT.symbol.constructors[0]
+                    }
+                }
+                it shouldHaveType t_BitMetric
+
+                argList {}
+
+                child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {}
             }
         }
+    }
 
-        parserTest("Test anonymous class constructor") {
-            val acu =
-                parser.parse(
-                    """
+    parserTest("Test anonymous class constructor") {
+        val acu = parser.parse(
+            """
         class Scratch {
             public abstract class BitMetric {
                 public BitMetric(int i) {}
@@ -142,41 +138,45 @@ class AnonCtorsTest :
             };
         }
         """
-                )
+        )
 
-            val (t_Scratch, t_BitMetric, t_Anon) =
-                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java)
+            .toList { it.typeMirror }
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            call.shouldMatchN {
-                constructorCall {
-                    classType("BitMetric") { it.typeMirror.symbol shouldBe t_BitMetric.symbol }
+        call.shouldMatchN {
+            constructorCall {
+                classType("BitMetric") {
+                    it.typeMirror.symbol shouldBe t_BitMetric.symbol
+                }
 
-                    with(it.typeDsl) {
-                        it.methodType
-                            .shouldMatchMethod(
-                                named = JConstructorSymbol.CTOR_NAME,
-                                declaredIn = t_BitMetric,
-                                withFormals = listOf(int),
-                                returning = t_BitMetric,
-                            )
-                            .also { it.symbol shouldBe t_BitMetric.symbol.constructors[0] }
+                with(it.typeDsl) {
+                    it.methodType.shouldMatchMethod(
+                        named = JConstructorSymbol.CTOR_NAME,
+                        declaredIn = t_BitMetric,
+                        withFormals = listOf(int),
+                        returning = t_BitMetric
+                    ).also {
+                        it.symbol shouldBe t_BitMetric.symbol.constructors[0]
                     }
+                }
 
-                    argList { int(4) }
+                argList {
+                    int(4)
+                }
 
-                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                        it shouldHaveType t_Anon // though
-                    }
+                child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                    it shouldHaveType t_Anon // though
+
                 }
             }
         }
+    }
 
-        parserTest("Test qualified anonymous class constructor") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+    parserTest("Test qualified anonymous class constructor") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
         class Scratch {
 
@@ -189,45 +189,46 @@ class AnonCtorsTest :
             }
         }
         """
-                )
+        )
 
-            val (t_Scratch, t_Inner, t_Anon) =
-                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_Inner, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                call.shouldMatchN {
-                    constructorCall {
-                        unspecifiedChildren(2)
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                constructorCall {
+                    unspecifiedChildren(2)
 
-                        it shouldHaveType t_Inner
+                    it shouldHaveType t_Inner
 
-                        t_Inner.shouldBeA<JClassType> { it.enclosingType shouldBe t_Scratch }
+                    t_Inner.shouldBeA<JClassType> {
+                        it.enclosingType shouldBe t_Scratch
+                    }
 
-                        it.methodType
-                            .shouldMatchMethod(
-                                named = JConstructorSymbol.CTOR_NAME,
-                                declaredIn = t_Inner,
-                                withFormals = emptyList(),
-                                returning = t_Inner,
-                            )
-                            .also { it.symbol shouldBe t_Inner.symbol.constructors[0] }
+                    it.methodType.shouldMatchMethod(
+                        named = JConstructorSymbol.CTOR_NAME,
+                        declaredIn = t_Inner,
+                        withFormals = emptyList(),
+                        returning = t_Inner
+                    ).also {
+                        it.symbol shouldBe t_Inner.symbol.constructors[0]
+                    }
 
-                        argList(0)
 
-                        child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                            it shouldHaveType t_Anon // though
-                        }
+                    argList(0)
+
+                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                        it shouldHaveType t_Anon // though
                     }
                 }
             }
         }
+    }
 
-        parserTest("Test qualified diamond anonymous class constructor") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+    parserTest("Test qualified diamond anonymous class constructor") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
         class Scratch<S> {
 
@@ -244,47 +245,46 @@ class AnonCtorsTest :
             }
         }
         """
-                )
+        )
 
-            val (t_Scratch, t_Inner, t_Anon) =
-                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+        val (t_Scratch, t_Inner, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                call.shouldMatchN {
-                    constructorCall {
-                        unspecifiedChildren(2)
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                constructorCall {
+                    unspecifiedChildren(2)
 
-                        it shouldHaveType t_Inner[gen.t_String]
+                    it shouldHaveType t_Inner[gen.t_String]
 
-                        t_Inner.shouldBeA<JClassType> { it.enclosingType shouldBe t_Scratch }
+                    t_Inner.shouldBeA<JClassType> {
+                        it.enclosingType shouldBe t_Scratch
+                    }
 
-                        it.methodType
-                            .shouldMatchMethod(
-                                named = JConstructorSymbol.CTOR_NAME,
-                                declaredIn = t_Inner[gen.t_String],
-                                withFormals = emptyList(),
-                                returning = t_Inner[gen.t_String],
-                            )
-                            .also { it.symbol shouldBe t_Inner.symbol.constructors[0] }
+                    it.methodType.shouldMatchMethod(
+                        named = JConstructorSymbol.CTOR_NAME,
+                        declaredIn = t_Inner[gen.t_String],
+                        withFormals = emptyList(),
+                        returning = t_Inner[gen.t_String]
+                    ).also {
+                        it.symbol shouldBe t_Inner.symbol.constructors[0]
+                    }
 
-                        argList(0)
 
-                        child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                            it shouldHaveType t_Anon // though
-                        }
+                    argList(0)
+
+                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                        it shouldHaveType t_Anon // though
                     }
                 }
             }
         }
+    }
 
-        parserTest(
-            "Test qualified diamond anonymous class constructor, depending on disambig in sibling tree"
-        ) {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+    parserTest("Test qualified diamond anonymous class constructor, depending on disambig in sibling tree") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 
         package p.q;
 
@@ -315,52 +315,55 @@ class AnonCtorsTest :
             }
         }
         """
-                )
+        )
 
-            val (t_Scratch, t_Inner, t_Anon, t_Foo) = acu.declaredTypeSignatures()
+        val (t_Scratch, t_Inner, t_Anon, t_Foo) = acu.declaredTypeSignatures()
 
-            val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
-            val fieldAccess =
-                acu.descendants(ASTVariableAccess::class.java).crossFindBoundaries().firstOrThrow()
 
-            spy.shouldBeOk {
+        val call = acu.descendants(ASTConstructorCall::class.java).firstOrThrow()
+        val fieldAccess = acu.descendants(ASTVariableAccess::class.java).crossFindBoundaries().firstOrThrow()
 
-                // Scratch<Integer>.Inner<String>
-                val innerT = t_Scratch[int.box()] / t_Inner[gen.t_String]
+        spy.shouldBeOk {
 
-                call.shouldMatchN {
-                    constructorCall {
-                        unspecifiedChildren(2)
+            // Scratch<Integer>.Inner<String>
+            val innerT = t_Scratch[int.box()] / t_Inner[gen.t_String]
 
-                        it shouldHaveType innerT
+            call.shouldMatchN {
+                constructorCall {
+                    unspecifiedChildren(2)
 
-                        it.methodType
-                            .shouldMatchMethod(
-                                named = JConstructorSymbol.CTOR_NAME,
-                                declaredIn = innerT,
-                                withFormals = emptyList(),
-                                returning = innerT,
-                            )
-                            .also { it.symbol shouldBe t_Inner.symbol.constructors[0] }
 
-                        argList(0)
+                    it shouldHaveType innerT
 
-                        child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
-                            it shouldHaveType t_Anon // though
-                        }
+                    it.methodType.shouldMatchMethod(
+                        named = JConstructorSymbol.CTOR_NAME,
+                        declaredIn = innerT,
+                        withFormals = emptyList(),
+                        returning = innerT
+                    ).also {
+                        it.symbol shouldBe t_Inner.symbol.constructors[0]
+                    }
+
+
+                    argList(0)
+
+                    child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {
+                        it shouldHaveType t_Anon // though
                     }
                 }
+            }
 
-                fieldAccess.shouldMatchN {
-                    variableAccess("fooField") { it shouldHaveType int.box() }
+            fieldAccess.shouldMatchN {
+                variableAccess("fooField") {
+                    it shouldHaveType int.box()
                 }
             }
         }
+    }
 
-        parserTest("Test anonymous interface constructor in invocation ctx") {
-            val acu =
-                parser.parse(
-                    """
+    parserTest("Test anonymous interface constructor in invocation ctx") {
+        val acu = parser.parse(
+            """
         class Scratch {
             public interface BitMetric {
                 public double getBitLength(int value);
@@ -375,54 +378,54 @@ class AnonCtorsTest :
             });
         }
         """
+        )
+
+        val (t_Scratch, t_BitMetric, t_Anon) = acu.descendants(ASTTypeDeclaration::class.java)
+            .toList { it.typeMirror }
+
+
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+
+        call.shouldMatchN {
+            methodCall("generic") {
+
+                it.methodType.shouldMatchMethod(
+                    named = "generic",
+                    declaredIn = t_Scratch,
+                    withFormals = listOf(t_BitMetric),
+                    returning = t_BitMetric
                 )
 
-            val (t_Scratch, t_BitMetric, t_Anon) =
-                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+                argList {
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-
-            call.shouldMatchN {
-                methodCall("generic") {
-                    it.methodType.shouldMatchMethod(
-                        named = "generic",
-                        declaredIn = t_Scratch,
-                        withFormals = listOf(t_BitMetric),
-                        returning = t_BitMetric,
-                    )
-
-                    argList {
-                        constructorCall {
-                            classType("BitMetric") {
-                                it.typeMirror.symbol shouldBe t_BitMetric.symbol
-                            }
-
-                            it.methodType
-                                .shouldMatchMethod(
-                                    named = JConstructorSymbol.CTOR_NAME,
-                                    declaredIn = call.typeSystem.OBJECT,
-                                    withFormals = emptyList(),
-                                    returning = t_BitMetric,
-                                )
-                                .also {
-                                    it.symbol shouldBe call.typeSystem.OBJECT.symbol.constructors[0]
-                                }
-
-                            it shouldHaveType t_BitMetric
-
-                            argList {}
-
-                            child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {}
+                    constructorCall {
+                        classType("BitMetric") {
+                            it.typeMirror.symbol shouldBe t_BitMetric.symbol
                         }
+
+                        it.methodType.shouldMatchMethod(
+                            named = JConstructorSymbol.CTOR_NAME,
+                            declaredIn = call.typeSystem.OBJECT,
+                            withFormals = emptyList(),
+                            returning = t_BitMetric
+                        ).also {
+                            it.symbol shouldBe call.typeSystem.OBJECT.symbol.constructors[0]
+                        }
+
+                        it shouldHaveType t_BitMetric
+
+                        argList {}
+
+                        child<ASTAnonymousClassDeclaration>(ignoreChildren = true) {}
                     }
                 }
             }
         }
+    }
 
-        parserTest("Test new method in anonymous class") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+    parserTest("Test new method in anonymous class") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
         interface Scratch {
 
             int k = new Scratch() {
@@ -430,35 +433,35 @@ class AnonCtorsTest :
             }.someNewMethod();
         }
         """
-                )
+        )
 
-            val (t_Scratch, t_Anon) = acu.declaredTypeSignatures()
+        val (t_Scratch, t_Anon) = acu.declaredTypeSignatures()
 
-            val (methodDecl) = acu.declaredMethodSignatures()
-            val call = acu.firstMethodCall()
+        val (methodDecl) = acu.declaredMethodSignatures()
+        val call = acu.firstMethodCall()
 
-            methodDecl.modifiers shouldBe 0
+        methodDecl.modifiers shouldBe 0
 
-            spy.shouldBeOk {
-                call.shouldMatchN {
-                    methodCall("someNewMethod") {
-                        it.qualifier!! shouldHaveType t_Scratch
-                        it.methodType shouldBeSomeInstantiationOf methodDecl
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("someNewMethod") {
 
-                        it::getQualifier shouldBe unspecifiedChild()
+                    it.qualifier!! shouldHaveType t_Scratch
+                    it.methodType shouldBeSomeInstantiationOf methodDecl
 
-                        argList(0)
-                    }
+                    it::getQualifier shouldBe unspecifiedChild()
+
+                    argList(0)
                 }
             }
         }
+    }
 
-        parserTest("Anon in anon") {
-            // this used to be a stackoverflow
+    parserTest("Anon in anon") {
+        // this used to be a stackoverflow
 
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             public class InputMissingOverrideBadAnnotation {
 
                 Runnable r = new Runnable() {
@@ -472,17 +475,20 @@ class AnonCtorsTest :
                 };
             }
             """
-                )
+        )
 
-            val call = acu.firstCtorCall().firstCtorCall()
+        val call = acu.firstCtorCall()
+            .firstCtorCall()
 
-            spy.shouldBeOk { call shouldHaveType java.lang.Throwable::class.decl }
+        spy.shouldBeOk {
+            call shouldHaveType java.lang.Throwable::class.decl
         }
+    }
 
-        parserTest("Disambiguation of foreach when deferred") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+    parserTest("Disambiguation of foreach when deferred") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 package p;
 import java.util.function.Consumer;
 class Assert {
@@ -499,18 +505,18 @@ class Assert {
     static <T> void foo(T a, Consumer<T> i) {}
 }
     """
-                )
+        )
 
-            spy.shouldBeOk {
-                acu.descendants(ASTConstructorCall::class.java).firstOrThrow() shouldHaveType
-                    java.util.function.Consumer::class[gen.t_String]
-            }
+        spy.shouldBeOk {
+            acu.descendants(ASTConstructorCall::class.java)
+                .firstOrThrow() shouldHaveType java.util.function.Consumer::class[gen.t_String]
         }
+    }
 
-        parserTest("Disambiguation of when deferred, local var decl") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+    parserTest("Disambiguation of when deferred, local var decl") {
+
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
 package p;
 import java.util.function.Consumer;
 class Assert {
@@ -522,11 +528,11 @@ class Assert {
     static <T> void foo(T a, Consumer<T> i) {}
 }
     """
-                )
+        )
 
-            spy.shouldBeOk {
-                acu.descendants(ASTConstructorCall::class.java).firstOrThrow() shouldHaveType
-                    java.util.function.Consumer::class[gen.t_String]
-            }
+        spy.shouldBeOk {
+            acu.descendants(ASTConstructorCall::class.java)
+                .firstOrThrow() shouldHaveType java.util.function.Consumer::class[gen.t_String]
         }
-    })
+    }
+})

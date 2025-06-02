@@ -8,6 +8,9 @@ import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRul
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.needsParentheses;
 import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -62,8 +65,6 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint.TypePrettyPrinter;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * @author Clément Fournier
@@ -131,11 +132,11 @@ public final class PrettyPrintingUtil {
                 prettyPrintTypeNode(sb, bound);
             }
         } else if (t instanceof ASTUnionType) {
-            CollectionUtil.joinOn(
-                    sb, ((ASTUnionType) t).getComponents(), PrettyPrintingUtil::prettyPrintTypeNode, " | ");
+            CollectionUtil.joinOn(sb, ((ASTUnionType) t).getComponents(),
+                PrettyPrintingUtil::prettyPrintTypeNode, " | ");
         } else if (t instanceof ASTIntersectionType) {
-            CollectionUtil.joinOn(
-                    sb, ((ASTIntersectionType) t).getComponents(), PrettyPrintingUtil::prettyPrintTypeNode, " & ");
+            CollectionUtil.joinOn(sb, ((ASTIntersectionType) t).getComponents(),
+                PrettyPrintingUtil::prettyPrintTypeNode, " & ");
         } else if (t instanceof ASTAmbiguousName) {
             sb.append(((ASTAmbiguousName) t).getName());
         } else {
@@ -190,8 +191,7 @@ public final class PrettyPrintingUtil {
             if (var != null) {
                 return var.getVarIds().firstOrThrow().getName();
             } else {
-                return PrettyPrintingUtil.prettyPrint(((ASTResource) node).getInitializer())
-                        .toString();
+                return PrettyPrintingUtil.prettyPrint(((ASTResource) node).getInitializer()).toString();
             }
         } else if (node instanceof ASTTypeDeclaration) {
             return ((ASTTypeDeclaration) node).getSimpleName();
@@ -201,6 +201,7 @@ public final class PrettyPrintingUtil {
             throw new IllegalArgumentException("Node has no defined name: " + node);
         }
     }
+
 
     /**
      * Returns the 'kind' of node this is. For instance for a {@link ASTFieldDeclaration},
@@ -250,6 +251,7 @@ public final class PrettyPrintingUtil {
     private static TypePrettyPrinter overloadPrinter() {
         return new TypePrettyPrinter().qualifyNames(false).printMethodResult(false);
     }
+
 
     /** Pretty print an expression or any other kind of node. */
     public static CharSequence prettyPrint(JavaNode node) {
@@ -357,6 +359,7 @@ public final class PrettyPrintingUtil {
             printWithParensIfNecessary(node.getRightOperand(), sb, node);
             return null;
         }
+
 
         @Override
         public Void visit(ASTUnaryExpression node, StringBuilder sb) {
@@ -472,6 +475,7 @@ public final class PrettyPrintingUtil {
                 printWithParensIfNecessary(qualifier, data, node);
                 data.append('.');
             }
+
         }
 
         private StringBuilder ppInParens(StringBuilder data, JavaNode qualifier) {
@@ -479,6 +483,7 @@ public final class PrettyPrintingUtil {
             qualifier.acceptVisitor(this, data);
             return data.append(')');
         }
+
 
         private void ppTypeArgs(StringBuilder data, @Nullable ASTTypeArguments targs) {
             if (targs == null) {
@@ -492,5 +497,8 @@ public final class PrettyPrintingUtil {
             }
             data.append('>');
         }
+
     }
+
+
 }

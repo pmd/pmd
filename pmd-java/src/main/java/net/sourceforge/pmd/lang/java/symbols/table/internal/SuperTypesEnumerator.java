@@ -15,10 +15,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.util.IteratorUtil;
 import net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Strategies to enumerate a type hierarchy.
@@ -89,6 +91,7 @@ public enum SuperTypesEnumerator {
         }
     },
 
+
     /**
      * Walks supertypes depth-first, without duplicates. This includes
      * Object if the search starts on an interface. For example for the following:
@@ -110,6 +113,7 @@ public enum SuperTypesEnumerator {
             return new SuperTypeWalker(t);
         }
     };
+
 
     public abstract Iterator<JClassType> iterator(JClassType t);
 

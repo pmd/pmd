@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -40,9 +41,10 @@ public class SymbolToStrings {
         if (annot.getAttributeNames().isEmpty()) {
             attrs = "";
         } else {
-            attrs = annot.getAttributeNames().stream()
-                    .map(name -> name + "=" + annot.getAttribute(name))
-                    .collect(Collectors.joining(", ", "(", ")"));
+            attrs = annot.getAttributeNames()
+                         .stream()
+                         .map(name -> name + "=" + annot.getAttribute(name))
+                         .collect(Collectors.joining(", ", "(", ")"));
         }
         return "@" + annot.getBinaryName() + attrs;
     }
@@ -115,10 +117,12 @@ public class SymbolToStrings {
             return withImpl(param, "field", sym.getSimpleName(), sym.getEnclosingClass());
         }
 
+
         @Override
         public StringBuilder visitRecordComponent(JRecordComponentSymbol sym, StringBuilder param) {
             return withImpl(param, "record component", sym.getSimpleName(), sym.getEnclosingClass());
         }
+
 
         @Override
         public StringBuilder visitLocal(JLocalVariableSymbol sym, StringBuilder param) {
@@ -130,4 +134,5 @@ public class SymbolToStrings {
             return withImpl(param, "formal", sym.getSimpleName());
         }
     }
+
 }

@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
 class TreatFunctionTest extends AbstractPLSQLParserTst {
     @Test

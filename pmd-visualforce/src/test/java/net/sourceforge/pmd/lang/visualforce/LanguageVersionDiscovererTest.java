@@ -1,17 +1,20 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.visualforce;
 
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.lang.visualforce.ast.AbstractVfTest;
-import org.junit.jupiter.api.Test;
 
 /**
  * @author sergey.gorbaty
@@ -32,8 +35,7 @@ class LanguageVersionDiscovererTest extends AbstractVfTest {
 
     @Test
     void testComponentFile() {
-        LanguageVersionDiscoverer discoverer =
-                new LanguageVersionDiscoverer(new LanguageRegistry(singleton(vf.getLanguage())));
+        LanguageVersionDiscoverer discoverer = new LanguageVersionDiscoverer(new LanguageRegistry(singleton(vf.getLanguage())));
         File vfFile = new File("/path/to/MyPage.component");
         LanguageVersion languageVersion = discoverer.getDefaultLanguageVersionForFile(vfFile);
         assertEquals(vf.getLanguage().getDefaultVersion(), languageVersion, "LanguageVersion must be VF!");

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.treeexport;
 
 import java.io.IOException;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -48,15 +49,17 @@ public class TextTreeRenderer implements TreeRenderer {
 
     static final TreeRendererDescriptor DESCRIPTOR = new TreeRendererDescriptor() {
 
-        private final PropertyDescriptor<Boolean> onlyAscii = PropertyFactory.booleanProperty("onlyAsciiChars")
-                .defaultValue(false)
-                .desc("Use only ASCII characters in the structure")
-                .build();
+        private final PropertyDescriptor<Boolean> onlyAscii =
+            PropertyFactory.booleanProperty("onlyAsciiChars")
+                           .defaultValue(false)
+                           .desc("Use only ASCII characters in the structure")
+                           .build();
 
-        private final PropertyDescriptor<Integer> maxLevel = PropertyFactory.intProperty("maxLevel")
-                .defaultValue(-1)
-                .desc("Max level on which to recurse. Negative means unbounded")
-                .build();
+        private final PropertyDescriptor<Integer> maxLevel =
+            PropertyFactory.intProperty("maxLevel")
+                           .defaultValue(-1)
+                           .desc("Max level on which to recurse. Negative means unbounded")
+                           .build();
 
         @Override
         public PropertySource newPropertyBundle() {
@@ -123,6 +126,7 @@ public class TextTreeRenderer implements TreeRenderer {
         return prefix + (isTail ? str.gap : str.verticalEdge);
     }
 
+
     protected final void appendIndent(Appendable out, String prefix, boolean isTail) throws IOException {
         out.append(prefix).append(isTail ? str.tailFork : str.fork);
     }
@@ -136,8 +140,12 @@ public class TextTreeRenderer implements TreeRenderer {
         out.append(node.getXPathNodeName()).append("\n");
     }
 
-    private void printInnerNode(Node node, Appendable out, int level, String prefix, boolean isTail)
-            throws IOException {
+
+    private void printInnerNode(Node node,
+                                Appendable out,
+                                int level,
+                                String prefix,
+                                boolean isTail) throws IOException {
 
         appendIndent(out, prefix, isTail);
         appendNodeInfoLn(out, node);
@@ -170,13 +178,24 @@ public class TextTreeRenderer implements TreeRenderer {
 
     private static final class Strings {
 
-        private static final Strings ASCII = new Strings("+- ", "+- ", "|  ", "   ");
-        private static final Strings UNICODE = new Strings("└─ ", "├─ ", "│  ", "   ");
+        private static final Strings ASCII = new Strings(
+            "+- ",
+            "+- ",
+            "|  ",
+            "   "
+        );
+        private static final Strings UNICODE = new Strings(
+            "└─ ",
+            "├─ ",
+            "│  ",
+            "   "
+        );
 
         private final String tailFork;
         private final String fork;
         private final String verticalEdge;
         private final String gap;
+
 
         private Strings(String tailFork, String fork, String verticalEdge, String gap) {
             this.tailFork = tailFork;
@@ -185,4 +204,5 @@ public class TextTreeRenderer implements TreeRenderer {
             this.gap = gap;
         }
     }
+
 }

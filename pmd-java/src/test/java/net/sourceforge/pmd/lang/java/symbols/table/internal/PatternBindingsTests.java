@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
@@ -11,6 +12,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
+
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -18,8 +23,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.PatternBindingsUtil.BindSet;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 
 class PatternBindingsTests extends BaseParserTest {
 
@@ -29,8 +32,7 @@ class PatternBindingsTests extends BaseParserTest {
         return () -> {
             ASTCompilationUnit ast = java17.parse("class Foo {{ Object o = (" + expr + "); }}");
 
-            ASTExpression e =
-                    ast.descendants(ASTExpression.class).crossFindBoundaries().firstOrThrow();
+            ASTExpression e = ast.descendants(ASTExpression.class).crossFindBoundaries().firstOrThrow();
 
             BindSet bindSet = PatternBindingsUtil.bindersOfExpr(e);
             checkBindings(expr, trueVars, bindSet.getTrueBindings(), true);
@@ -51,10 +53,12 @@ class PatternBindingsTests extends BaseParserTest {
     void testUnaries() {
         String stringS = "a instanceof String s";
         assertAll(
-                declares(stringS, setOf("s"), emptySet()),
-                declares("!(" + stringS + ")", emptySet(), setOf("s")),
-                declaresNothing("foo(" + stringS + ")"),
-                declaresNothing("foo(" + stringS + ") || true"));
+            declares(stringS, setOf("s"), emptySet()),
+            declares("!(" + stringS + ")", emptySet(), setOf("s")),
+
+            declaresNothing("foo(" + stringS + ")"),
+            declaresNothing("foo(" + stringS + ") || true")
+        );
     }
 
     @Test
@@ -62,13 +66,17 @@ class PatternBindingsTests extends BaseParserTest {
         String stringS = "(a instanceof String s)";
         String stringP = "(a instanceof String p)";
         assertAll(
-                declares(stringS + " || " + stringP, emptySet(), emptySet()),
-                declares(stringS + " && " + stringP, setOf("s", "p"), emptySet()),
-                declares("!(" + stringS + " || " + stringP + ")", emptySet(), emptySet()),
-                declares("!(" + stringS + " && " + stringP + ")", emptySet(), setOf("s", "p")),
-                declares("!" + stringS + " || " + stringP, emptySet(), setOf("s")),
-                declares("!" + stringS + " || !" + stringP, emptySet(), setOf("s", "p")),
-                declares("!" + stringS + " && !" + stringP, emptySet(), emptySet()),
-                declares(stringS + " && !" + stringP, setOf("s"), emptySet()));
+            declares(stringS + " || " + stringP, emptySet(), emptySet()),
+            declares(stringS + " && " + stringP, setOf("s", "p"), emptySet()),
+            declares("!(" + stringS + " || " + stringP + ")", emptySet(), emptySet()),
+            declares("!(" + stringS + " && " + stringP + ")", emptySet(), setOf("s", "p")),
+
+            declares("!" + stringS + " || " + stringP, emptySet(), setOf("s")),
+            declares("!" + stringS + " || !" + stringP, emptySet(), setOf("s", "p")),
+            declares("!" + stringS + " && !" + stringP, emptySet(), emptySet()),
+            declares(stringS + " && !" + stringP, setOf("s"), emptySet())
+        );
     }
+
+
 }

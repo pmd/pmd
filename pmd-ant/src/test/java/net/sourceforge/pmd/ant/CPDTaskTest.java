@@ -14,10 +14,12 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import net.sourceforge.pmd.internal.util.IOUtil;
+
 import org.apache.tools.ant.BuildException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  *

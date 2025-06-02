@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util;
 
 import java.text.MessageFormat;
@@ -9,9 +10,11 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import net.sourceforge.pmd.lang.document.Chars;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.document.Chars;
 
 /**
  * String-related utility functions. See also {@link StringUtils}.
@@ -21,9 +24,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class StringUtil {
 
+
     private static final Pattern XML_10_INVALID_CHARS = Pattern.compile("[[\\x00-\\x1F]&&[^\\x09\\x0A\\x0D]]");
 
-    private StringUtil() {}
+    private StringUtil() {
+    }
 
     public static String inSingleQuotes(String s) {
         if (s == null) {
@@ -35,6 +40,7 @@ public final class StringUtil {
     public static @NonNull String inDoubleQuotes(String expected) {
         return "\"" + expected + "\"";
     }
+
 
     /**
      * Returns the (1-based) line number of the character at the given index.
@@ -190,6 +196,7 @@ public final class StringUtil {
         return String.format(Locale.ROOT, "%." + numDecimals + "f%%", 100 * val);
     }
 
+
     /**
      * Checks for the existence of any of the listed prefixes on the non-null
      * text and removes them.
@@ -238,6 +245,7 @@ public final class StringUtil {
         s = s.replace("\t", "\\t");
         return s;
     }
+
 
     /**
      * Determine the maximum number of common leading whitespace characters the
@@ -294,8 +302,9 @@ public final class StringUtil {
      */
     public static void trimIndentInPlace(List<Chars> lines) {
         int trimDepth = maxCommonLeadingWhitespaceForAll(lines);
-        lines.replaceAll(chars ->
-                chars.length() >= trimDepth ? chars.subSequence(trimDepth).trimEnd() : chars.trimEnd());
+        lines.replaceAll(chars -> chars.length() >= trimDepth
+                                  ? chars.subSequence(trimDepth).trimEnd()
+                                  : chars.trimEnd());
     }
 
     /**
@@ -309,6 +318,7 @@ public final class StringUtil {
         return CollectionUtil.joinCharsIntoStringBuilder(lines, "\n");
     }
 
+
     private static int countLeadingWhitespace(CharSequence s) {
         int count = 0;
         while (count < s.length() && Character.isWhitespace(s.charAt(count))) {
@@ -316,6 +326,7 @@ public final class StringUtil {
         }
         return count;
     }
+
 
     /**
      * Are the two String values the same. The Strings can be optionally trimmed
@@ -331,8 +342,8 @@ public final class StringUtil {
      *
      * @return <code>true</code> if the Strings are the same, <code>false</code> otherwise.
      */
-    public static boolean isSame(
-            String s1, String s2, boolean trim, boolean ignoreCase, boolean standardizeWhitespace) {
+    public static boolean isSame(String s1, String s2, boolean trim, boolean ignoreCase,
+                                 boolean standardizeWhitespace) {
         if (s1 == null && s2 == null) {
             return true;
         } else if (s1 == null || s2 == null) {
@@ -351,6 +362,7 @@ public final class StringUtil {
             return ignoreCase ? s1.equalsIgnoreCase(s2) : s1.equals(s2);
         }
     }
+
 
     /**
      * Formats all items onto a string with separators if more than one exists,
@@ -390,7 +402,9 @@ public final class StringUtil {
      * }</pre>
      */
     public static String removeSurrounding(String string, char delimiter) {
-        if (string.length() >= 2 && string.charAt(0) == delimiter && string.charAt(string.length() - 1) == delimiter) {
+        if (string.length() >= 2
+            && string.charAt(0) == delimiter
+            && string.charAt(string.length() - 1) == delimiter) {
             return string.substring(1, string.length() - 1);
         }
         return string;
@@ -413,8 +427,7 @@ public final class StringUtil {
     public static String elide(String string, int maxOutputLength, String ellipsis) {
         AssertionUtil.requireNonNegative("maxOutputLength", maxOutputLength);
         if (ellipsis.length() > maxOutputLength) {
-            throw new IllegalArgumentException(
-                    "Ellipsis too long '" + ellipsis + "', maxOutputLength=" + maxOutputLength);
+            throw new IllegalArgumentException("Ellipsis too long '" + ellipsis + "', maxOutputLength=" + maxOutputLength);
         }
         if (string.length() <= maxOutputLength) {
             return string;
@@ -422,6 +435,7 @@ public final class StringUtil {
         String truncated = string.substring(0, maxOutputLength - ellipsis.length());
         return truncated + ellipsis;
     }
+
 
     /**
      * Replaces unprintable characters by their escaped (or unicode escaped)
@@ -432,40 +446,40 @@ public final class StringUtil {
         for (int i = 0; i < str.length(); i++) {
             final char ch = str.charAt(i);
             switch (ch) {
-                case 0:
-                    break;
-                case '\b':
-                    retval.append("\\b");
-                    break;
-                case '\t':
-                    retval.append("\\t");
-                    break;
-                case '\n':
-                    retval.append("\\n");
-                    break;
-                case '\f':
-                    retval.append("\\f");
-                    break;
-                case '\r':
-                    retval.append("\\r");
-                    break;
-                case '\"':
-                    retval.append("\\\"");
-                    break;
-                case '\'':
-                    retval.append("\\'");
-                    break;
-                case '\\':
-                    retval.append("\\\\");
-                    break;
-                default:
-                    if (ch < 0x20 || ch > 0x7e) {
-                        String s = "0000" + Integer.toString(ch, 16);
-                        retval.append("\\u").append(s.substring(s.length() - 4));
-                    } else {
-                        retval.append(ch);
-                    }
-                    break;
+            case 0:
+                break;
+            case '\b':
+                retval.append("\\b");
+                break;
+            case '\t':
+                retval.append("\\t");
+                break;
+            case '\n':
+                retval.append("\\n");
+                break;
+            case '\f':
+                retval.append("\\f");
+                break;
+            case '\r':
+                retval.append("\\r");
+                break;
+            case '\"':
+                retval.append("\\\"");
+                break;
+            case '\'':
+                retval.append("\\'");
+                break;
+            case '\\':
+                retval.append("\\\\");
+                break;
+            default:
+                if (ch < 0x20 || ch > 0x7e) {
+                    String s = "0000" + Integer.toString(ch, 16);
+                    retval.append("\\u").append(s.substring(s.length() - 4));
+                } else {
+                    retval.append(ch);
+                }
+                break;
             }
         }
         return retval.toString();
@@ -479,10 +493,12 @@ public final class StringUtil {
         return str.replaceAll("'", "''");
     }
 
+
     /** Return the empty string if the parameter is null. */
     public static String nullToEmpty(final String value) {
         return value == null ? "" : value;
     }
+
 
     public enum CaseConvention {
         /** SCREAMING_SNAKE_CASE. */

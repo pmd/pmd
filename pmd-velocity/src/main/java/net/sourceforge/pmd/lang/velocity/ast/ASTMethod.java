@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.velocity.ast;
 
 /*
@@ -52,4 +53,5 @@ public final class ASTMethod extends AbstractVtlNode {
     public String getMethodName() {
         return "";
     }
+
 }

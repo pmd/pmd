@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
@@ -36,7 +37,7 @@ import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
  * </pre>
  */
 public final class ASTRecordComponent extends AbstractTypedSymbolDeclarator<JRecordComponentSymbol>
-        implements ModifierOwner, VariableIdOwner, SymbolDeclaratorNode {
+    implements ModifierOwner, VariableIdOwner, SymbolDeclaratorNode {
 
     ASTRecordComponent(int id) {
         super(id);
@@ -53,8 +54,7 @@ public final class ASTRecordComponent extends AbstractTypedSymbolDeclarator<JRec
      * node of this component is in this case an {@link ASTArrayType}.
      */
     public boolean isVarargs() {
-        return getTypeNode() instanceof ASTArrayType
-                && ((ASTArrayType) getTypeNode()).getDimensions().getLastChild().isVarargs();
+        return getTypeNode() instanceof ASTArrayType && ((ASTArrayType) getTypeNode()).getDimensions().getLastChild().isVarargs();
     }
 
     public ASTType getTypeNode() {

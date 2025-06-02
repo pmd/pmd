@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.doc.internal;
 
 import java.io.IOException;
@@ -37,9 +38,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import net.sourceforge.pmd.internal.util.IOUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 /**
  * Checks links to local pages for non-existing link-targets.
@@ -48,13 +51,11 @@ public class DeadLinksChecker {
     private static final Logger LOG = LoggerFactory.getLogger(DeadLinksChecker.class);
 
     private static final String CHECK_EXTERNAL_LINKS_PROPERTY = "pmd.doc.checkExternalLinks";
-    private static final boolean CHECK_EXTERNAL_LINKS =
-            Boolean.parseBoolean(System.getProperty(CHECK_EXTERNAL_LINKS_PROPERTY));
+    private static final boolean CHECK_EXTERNAL_LINKS = Boolean.parseBoolean(System.getProperty(CHECK_EXTERNAL_LINKS_PROPERTY));
 
     // Markdown-Link: something in []'s followed by something in ()'s
     // ignoring an optional prefix "{{ baseurl }}"
-    private static final Pattern LOCAL_LINK_PATTERN =
-            Pattern.compile("(!)?\\[.*?]\\((?:\\{\\{\\s*baseurl\\s*\\}\\})?(.*?)\\)");
+    private static final Pattern LOCAL_LINK_PATTERN = Pattern.compile("(!)?\\[.*?]\\((?:\\{\\{\\s*baseurl\\s*\\}\\})?(.*?)\\)");
 
     // Markdown permalink-header and captions
     private static final Pattern MD_HEADER_PERMALINK = Pattern.compile("permalink:\\s*(.*)");
@@ -62,25 +63,26 @@ public class DeadLinksChecker {
 
     // list of link targets, where the link detection doesn't work
     private static final Pattern EXCLUDED_LINK_TARGETS = Pattern.compile(
-            "^pmd_userdocs_cli_reference\\.html.*" // anchors in the CLI reference are a plain HTML include
-            );
+        "^pmd_userdocs_cli_reference\\.html.*" // anchors in the CLI reference are a plain HTML include
+    );
 
     // the link is actually pointing to a file in the pmd project
     private static final String LOCAL_FILE_PREFIX = "https://github.com/pmd/pmd/blob/main/";
 
     // don't check links to PMD bugs/issues/pull-requests and some other sites (performance optimization)
     private static final List<String> IGNORED_URL_PREFIXES = Collections.unmodifiableList(Arrays.asList(
-            "https://github.com/pmd/pmd/issues/",
-            "https://github.com/pmd/pmd/pull/",
-            "https://sourceforge.net/p/pmd/bugs/",
-            "https://pmd.github.io/",
-            "https://openjdk.org/jeps" // very slow...
-            ));
+        "https://github.com/pmd/pmd/issues/",
+        "https://github.com/pmd/pmd/pull/",
+        "https://sourceforge.net/p/pmd/bugs/",
+        "https://pmd.github.io/",
+        "https://openjdk.org/jeps" // very slow...
+    ));
 
     // prevent checking the same link multiple times
     private final Map<String, CompletableFuture<String>> urlResponseCache = new ConcurrentHashMap<>();
 
     private final ExecutorService executorService = Executors.newCachedThreadPool();
+
 
     public void checkDeadLinks(Path rootDirectory) throws InterruptedException {
         final Path pagesDirectory = rootDirectory.resolve("docs/pages");
@@ -157,10 +159,9 @@ public class DeadLinksChecker {
                         checkedExternalLinks++;
                         linkOk = true;
 
-                        Future<String> futureMessage = getCachedFutureResponse(linkTarget)
-                                .thenApply(errorMessage -> errorMessage != null
-                                        ? String.format("%8d: %s (%s)", lineNo, linkText, errorMessage)
-                                        : null);
+                        Future<String> futureMessage =
+                            getCachedFutureResponse(linkTarget)
+                                .thenApply(errorMessage -> errorMessage != null ? String.format("%8d: %s (%s)", lineNo, linkText, errorMessage) : null);
 
                         addDeadLink(fileToDeadLinks, mdFile, futureMessage);
 
@@ -190,8 +191,7 @@ public class DeadLinksChecker {
                     }
 
                     if (!linkOk) {
-                        RunnableFuture<String> futureTask =
-                                new FutureTask<>(() -> String.format("%8d: %s", lineNo, linkText));
+                        RunnableFuture<String> futureTask = new FutureTask<>(() -> String.format("%8d: %s", lineNo, linkText));
                         // execute this task immediately in this thread.
                         // External links are checked by another executor and don't end up here.
                         futureTask.run();
@@ -224,23 +224,24 @@ public class DeadLinksChecker {
         }
     }
 
+
     private Map<Path, List<String>> joinFutures(Map<Path, List<Future<String>>> map) {
         Map<Path, List<String>> joined = new HashMap<>();
 
         for (Path p : map.keySet()) {
 
             List<String> evaluatedResult = map.get(p).stream()
-                    .map(f -> {
-                        try {
-                            return f.get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            e.printStackTrace();
-                            return null;
-                        }
-                    })
-                    .filter(Objects::nonNull)
-                    .sorted(Comparator.naturalOrder())
-                    .collect(Collectors.toList());
+                                              .map(f -> {
+                                                  try {
+                                                      return f.get();
+                                                  } catch (InterruptedException | ExecutionException e) {
+                                                      e.printStackTrace();
+                                                      return null;
+                                                  }
+                                              })
+                                              .filter(Objects::nonNull)
+                                              .sorted(Comparator.naturalOrder())
+                                              .collect(Collectors.toList());
 
             if (!evaluatedResult.isEmpty()) {
                 joined.put(p, evaluatedResult);
@@ -249,9 +250,11 @@ public class DeadLinksChecker {
         return joined;
     }
 
+
     private void addDeadLink(Map<Path, List<Future<String>>> fileToDeadLinks, Path file, Future<String> line) {
         fileToDeadLinks.computeIfAbsent(file, k -> new ArrayList<>()).add(line);
     }
+
 
     private Set<String> extractLinkTargets(List<Path> mdFiles) {
         final Set<String> htmlPages = new HashSet<>();
@@ -264,7 +267,8 @@ public class DeadLinksChecker {
                 continue;
             }
 
-            final String pageUrl = permalinkMatcher.group(1).replaceAll("^/+", ""); // remove the leading "/"
+            final String pageUrl = permalinkMatcher.group(1)
+                                                   .replaceAll("^/+", ""); // remove the leading "/"
 
             // add the root page
             htmlPages.add(pageUrl);
@@ -272,11 +276,10 @@ public class DeadLinksChecker {
             // add all captions as anchors
             final Matcher captionMatcher = MD_CAPTION.matcher(pageContent);
             while (captionMatcher.find()) {
-                final String anchor = captionMatcher
-                        .group(1)
-                        .toLowerCase(Locale.ROOT)
-                        .replaceAll("'|\\.", "") // remove all apostrophes and dots
-                        .replaceAll("[^a-z0-9_]+", "-"); // replace all non-alphanumeric characters with dashes
+                final String anchor = captionMatcher.group(1)
+                                                    .toLowerCase(Locale.ROOT)
+                                                    .replaceAll("'|\\.", "") // remove all apostrophes and dots
+                                                    .replaceAll("[^a-z0-9_]+", "-"); // replace all non-alphanumeric characters with dashes
 
                 htmlPages.add(pageUrl + "#" + anchor);
             }
@@ -284,15 +287,18 @@ public class DeadLinksChecker {
         return htmlPages;
     }
 
+
     private List<Path> listMdFiles(Path pagesDirectory) {
         try (Stream<Path> stream = Files.walk(pagesDirectory)) {
-            return stream.filter(Files::isRegularFile)
-                    .filter(path -> path.toString().endsWith(".md"))
-                    .collect(Collectors.toList());
+            return stream
+                 .filter(Files::isRegularFile)
+                 .filter(path -> path.toString().endsWith(".md"))
+                 .collect(Collectors.toList());
         } catch (IOException ex) {
             throw new RuntimeException("error listing files in " + pagesDirectory, ex);
         }
     }
+
 
     private String fileToString(Path mdFile) {
         try (InputStream inputStream = Files.newInputStream(mdFile)) {
@@ -301,6 +307,7 @@ public class DeadLinksChecker {
             throw new RuntimeException("error reading " + mdFile, ex);
         }
     }
+
 
     private CompletableFuture<String> getCachedFutureResponse(String url) {
         if (urlResponseCache.containsKey(url)) {
@@ -320,8 +327,7 @@ public class DeadLinksChecker {
             return cachedFuture;
         } else {
             // process asynchronously
-            CompletableFuture<String> futureResponse =
-                    CompletableFuture.supplyAsync(() -> computeHttpResponse(url), executorService);
+            CompletableFuture<String> futureResponse = CompletableFuture.supplyAsync(() -> computeHttpResponse(url), executorService);
             urlResponseCache.put(url, futureResponse);
             return futureResponse;
         }
@@ -365,6 +371,7 @@ public class DeadLinksChecker {
         }
     }
 
+
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length != 1) {
             System.err.println("Wrong arguments!");
@@ -377,4 +384,7 @@ public class DeadLinksChecker {
         DeadLinksChecker deadLinksChecker = new DeadLinksChecker();
         deadLinksChecker.checkDeadLinks(rootDirectory);
     }
+
+
+
 }

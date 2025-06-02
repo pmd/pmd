@@ -1,7 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.errorprone;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
@@ -11,7 +14,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * @author Eric Olander
@@ -37,7 +39,8 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRulechainRule {
 
     private void checkAccess(ASTNamedReferenceExpr node, Object data) {
         if (isInsideConstructor(node) && node.getAccessType() == AccessType.WRITE) {
-            @Nullable JVariableSymbol symbol = node.getReferencedSym();
+            @Nullable
+            JVariableSymbol symbol = node.getReferencedSym();
             if (symbol != null && symbol.isField()) {
                 JFieldSymbol field = (JFieldSymbol) symbol;
                 if (field.isStatic() && !field.isFinal()) {

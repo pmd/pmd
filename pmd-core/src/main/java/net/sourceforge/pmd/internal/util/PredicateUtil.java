@@ -4,14 +4,17 @@
 
 package net.sourceforge.pmd.internal.util;
 
+
 import static net.sourceforge.pmd.util.AssertionUtil.requireOver1;
 import static net.sourceforge.pmd.util.AssertionUtil.requireParamNotNull;
 
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import net.sourceforge.pmd.util.AssertionUtil;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Utility class for working with {@link Predicate}.
@@ -75,8 +78,8 @@ public final class PredicateUtil {
      *
      * @return A predicate for strings.
      */
-    public static Predicate<String> buildRegexFilterIncludeOverExclude(
-            @NonNull Collection<Pattern> includeRegexes, @NonNull Collection<Pattern> excludeRegexes) {
+    public static Predicate<String> buildRegexFilterIncludeOverExclude(@NonNull Collection<Pattern> includeRegexes,
+                                                                       @NonNull Collection<Pattern> excludeRegexes) {
         AssertionUtil.requireParamNotNull("includeRegexes", includeRegexes);
         AssertionUtil.requireParamNotNull("excludeRegexes", includeRegexes);
 

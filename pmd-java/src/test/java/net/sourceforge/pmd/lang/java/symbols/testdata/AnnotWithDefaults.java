@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 public @interface AnnotWithDefaults {
 
+
     String valueNoDefault();
 
     String valueWithDefault() default "ddd";
@@ -28,8 +29,7 @@ public @interface AnnotWithDefaults {
     Class<?> classAttr() default String.class;
 
     enum MyEnum {
-        AA,
-        BB,
-        CC
+        AA, BB, CC
     }
+
 }

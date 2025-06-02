@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,12 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
-import net.sourceforge.pmd.reporting.Report;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.mozilla.javascript.ast.AstRoot;
+
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
+import net.sourceforge.pmd.reporting.Report;
 
 class EcmascriptParserTest extends EcmascriptParserTestBase {
 
@@ -49,7 +52,8 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testLineNumbersWithinEcmascriptRules() {
-        String source = "function f(x){\n"
+        String source =
+            "function f(x){\n"
                 + "   if (x) {\n"
                 + "       return 1;\n"
                 + "   } else {\n"
@@ -59,9 +63,7 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
         class MyEcmascriptRule extends AbstractEcmascriptRule {
 
             public Object visit(ASTScope node, Object data) {
-                asCtx(data)
-                        .addViolationWithMessage(
-                                node, "Scope from " + node.getBeginLine() + " to " + node.getEndLine());
+                asCtx(data).addViolationWithMessage(node, "Scope from " + node.getBeginLine() + " to " + node.getEndLine());
                 return super.visit(node, data);
             }
         }
@@ -94,12 +96,11 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testArrayMethod() {
-        EcmascriptNode<AstRoot> rootNode =
-                js.parse("function test(){\n" + "  a();      // OK\n" + "  b.c();    // OK\n" + "  d[0]();   // OK\n"
-                        + "  e[0].f(); // OK\n" + "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + "}");
+        EcmascriptNode<AstRoot> rootNode = js.parse(
+            "function test(){\n" + "  a();      // OK\n" + "  b.c();    // OK\n" + "  d[0]();   // OK\n"
+                + "  e[0].f(); // OK\n" + "  y.z[0](); // FAIL ==> java.lang.NullPointerException\n" + "}");
 
-        List<ASTFunctionCall> calls =
-                rootNode.descendants(ASTFunctionCall.class).toList();
+        List<ASTFunctionCall> calls = rootNode.descendants(ASTFunctionCall.class).toList();
         List<String> results = new ArrayList<>();
         for (ASTFunctionCall f : calls) {
             Node node = f.getTarget();
@@ -143,17 +144,15 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testSuppressionComment() {
-        ASTAstRoot root = js.parse("function(x) {\n" + "x = x; //NOPMD I know what I'm doing\n" + "}\n");
-        assertEquals(
-                " I know what I'm doing",
-                root.getAstInfo().getSuppressionComments().get(2));
+        ASTAstRoot root = js.parse("function(x) {\n"
+                                       + "x = x; //NOPMD I know what I'm doing\n"
+                                       + "}\n");
+        assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(2));
         assertEquals(1, root.getAstInfo().getSuppressionComments().size());
 
         root = js.withSuppressMarker("FOOOO")
-                .parse("function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
-        assertEquals(
-                " I know what I'm doing",
-                root.getAstInfo().getSuppressionComments().get(3));
+                 .parse("function(x) {\n" + "y = y; //NOPMD xyz\n" + "x = x; //FOOOO I know what I'm doing\n" + "}\n");
+        assertEquals(" I know what I'm doing", root.getAstInfo().getSuppressionComments().get(3));
         assertEquals(1, root.getAstInfo().getSuppressionComments().size());
     }
 
@@ -163,10 +162,9 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     @Test
     void testVoidKeyword() {
         ASTAstRoot rootNode = js.parse("function f(matchFn, fieldval, n){\n"
-                + "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n"
-                + "}\n");
-        ASTUnaryExpression unary =
-                rootNode.descendants(ASTUnaryExpression.class).first();
+                                           + "    return (matchFn)?(matcharray = eval(matchFn+\"('\"+fieldval+\"','\"+n.id+\"')\")):void(0);\n"
+                                           + "}\n");
+        ASTUnaryExpression unary = rootNode.descendants(ASTUnaryExpression.class).first();
         assertEquals("void", unary.getOperator());
     }
 
@@ -175,22 +173,23 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
      */
     @Test
     void testXorAssignment() {
-        ASTAstRoot rootNode = js.parse("function f() {\n"
-                + "  var x = 2;\n"
-                + "  x ^= 2;\n"
-                + "  x &= 2;\n"
-                + "  x |= 2;\n"
-                + "  x &&= true;\n"
-                + "  x ||= false;\n"
-                + "  x *= 2;\n"
-                + "  x /= 2;\n"
-                + "  x %= 2;\n"
-                + "  x += 2;\n"
-                + "  x -= 2;\n"
-                + "  x <<= 2;\n"
-                + "  x >>= 2;\n"
-                + "  x >>>= 2;\n"
-                + "}");
+        ASTAstRoot rootNode = js.parse(
+                "function f() {\n"
+                         + "  var x = 2;\n"
+                         + "  x ^= 2;\n"
+                         + "  x &= 2;\n"
+                         + "  x |= 2;\n"
+                         + "  x &&= true;\n"
+                         + "  x ||= false;\n"
+                         + "  x *= 2;\n"
+                         + "  x /= 2;\n"
+                         + "  x %= 2;\n"
+                         + "  x += 2;\n"
+                         + "  x -= 2;\n"
+                         + "  x <<= 2;\n"
+                         + "  x >>= 2;\n"
+                         + "  x >>>= 2;\n"
+                         + "}");
         ASTAssignment infix = rootNode.descendants(ASTAssignment.class).first();
         assertEquals("^=", infix.getOperator());
     }
@@ -202,10 +201,10 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
     void testUnicodeCjk() {
         // the first is u+4F60
         js.parse("import { Test } from 'test2'\n"
-                + "define('element', class extends Test {\n"
-                + "    <button onClick={this.clickHandler}>你好</button>\n"
-                + "  }\n"
-                + "})");
+                 + "define('element', class extends Test {\n"
+                 + "    <button onClick={this.clickHandler}>你好</button>\n"
+                 + "  }\n"
+                 + "})");
     }
 
     /**

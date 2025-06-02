@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule;
 
 import java.io.OutputStream;
@@ -19,6 +20,17 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.CDATASection;
+import org.w3c.dom.DOMException;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Text;
+
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -30,15 +42,6 @@ import net.sourceforge.pmd.properties.PropertySerializer;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 import net.sourceforge.pmd.util.internal.xml.SchemaConstants;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.CDATASection;
-import org.w3c.dom.DOMException;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Text;
 
 /**
  * This class represents a way to serialize a RuleSet to an XML configuration
@@ -94,9 +97,7 @@ public class RuleSetWriter {
     private Element createRuleSetElement(RuleSet ruleSet) {
         Element ruleSetElement = document.createElementNS(RULESET_2_0_0_NS_URI, "ruleset");
         ruleSetElement.setAttribute("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
-        ruleSetElement.setAttributeNS(
-                "http://www.w3.org/2001/XMLSchema-instance",
-                "xsi:schemaLocation",
+        ruleSetElement.setAttributeNS("http://www.w3.org/2001/XMLSchema-instance", "xsi:schemaLocation",
                 RULESET_2_0_0_NS_URI + " https://pmd.sourceforge.io/ruleset_2_0_0.xsd");
         ruleSetElement.setAttribute("name", ruleSet.getName());
 
@@ -175,8 +176,7 @@ public class RuleSetWriter {
                 LanguageVersion maximumLanguageVersion = ruleReference.getOverriddenMaximumLanguageVersion();
                 Boolean deprecated = ruleReference.isOverriddenDeprecated();
                 String name = ruleReference.getOverriddenName();
-                String ref = ruleReference.getRuleSetReference().getRuleSetFileName()
-                        + '/'
+                String ref = ruleReference.getRuleSetReference().getRuleSetFileName() + '/'
                         + ruleReference.getRule().getName();
                 String message = ruleReference.getOverriddenMessage();
                 String externalInfoUrl = ruleReference.getOverriddenExternalInfoUrl();
@@ -184,38 +184,18 @@ public class RuleSetWriter {
                 RulePriority priority = ruleReference.getOverriddenPriority();
                 List<String> examples = ruleReference.getOverriddenExamples();
 
-                return createSingleRuleElement(
-                        null,
-                        minimumLanguageVersion,
-                        maximumLanguageVersion,
-                        deprecated,
-                        name,
-                        null,
-                        ref,
-                        message,
-                        externalInfoUrl,
-                        null,
-                        description,
-                        priority,
-                        ruleReference,
-                        examples);
+                return createSingleRuleElement(null, minimumLanguageVersion, maximumLanguageVersion, deprecated,
+                                               name, null, ref, message, externalInfoUrl, null, description, priority,
+                                               ruleReference, examples);
             }
         } else {
-            return createSingleRuleElement(
-                    rule.getLanguage(),
-                    rule.getMinimumLanguageVersion(),
-                    rule.getMaximumLanguageVersion(),
-                    rule.isDeprecated(),
-                    rule.getName(),
-                    rule.getSince(),
-                    null,
-                    rule.getMessage(),
-                    rule.getExternalInfoUrl(),
-                    rule.getRuleClass(),
-                    rule.getDescription(),
-                    rule.getPriority(),
-                    rule,
-                    rule.getExamples());
+            return createSingleRuleElement(rule.getLanguage(),
+                                           rule.getMinimumLanguageVersion(), rule.getMaximumLanguageVersion(), rule.isDeprecated(),
+                                           rule.getName(), rule.getSince(), null, rule.getMessage(), rule.getExternalInfoUrl(),
+                                           rule.getRuleClass(),
+                                           rule.getDescription(),
+                                           rule.getPriority(), rule,
+                                           rule.getExamples());
         }
     }
 
@@ -225,21 +205,10 @@ public class RuleSetWriter {
         }
     }
 
-    private Element createSingleRuleElement(
-            Language language,
-            LanguageVersion minimumLanguageVersion,
-            LanguageVersion maximumLanguageVersion,
-            Boolean deprecated,
-            String name,
-            String since,
-            String ref,
-            String message,
-            String externalInfoUrl,
-            String clazz,
-            String description,
-            RulePriority priority,
-            PropertySource propertySource,
-            List<String> examples) {
+    private Element createSingleRuleElement(Language language, LanguageVersion minimumLanguageVersion,
+                                            LanguageVersion maximumLanguageVersion, Boolean deprecated, String name, String since, String ref,
+                                            String message, String externalInfoUrl, String clazz,
+                                            String description, RulePriority priority, PropertySource propertySource, List<String> examples) {
         Element ruleElement = createRuleElement();
         // language is now a required attribute, unless this is a rule reference
         if (clazz != null) {
@@ -325,8 +294,7 @@ public class RuleSetWriter {
     }
 
     @NonNull
-    private <T> Element propertyElementWithValueAttribute(
-            PropertySource propertySource, PropertyDescriptor<T> propertyDescriptor) {
+    private <T> Element propertyElementWithValueAttribute(PropertySource propertySource, PropertyDescriptor<T> propertyDescriptor) {
         Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
         SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
 
@@ -349,8 +317,7 @@ public class RuleSetWriter {
         return element;
     }
 
-    private <T> Element createPropertyDefinitionElementBR(
-            PropertyDescriptor<T> propertyDescriptor, @NonNull PropertyTypeId typeId) {
+    private <T> Element createPropertyDefinitionElementBR(PropertyDescriptor<T> propertyDescriptor, @NonNull PropertyTypeId typeId) {
 
         final Element element = createPropertyValueElement(propertyDescriptor, propertyDescriptor.defaultValue());
 
@@ -358,8 +325,7 @@ public class RuleSetWriter {
         SchemaConstants.PROPERTY_TYPE.setOn(element, typeId.getStringId());
         SchemaConstants.DESCRIPTION.setOn(element, propertyDescriptor.description());
 
-        for (PropertyConstraint<? super T> constraint :
-                propertyDescriptor.serializer().getConstraints()) {
+        for (PropertyConstraint<? super T> constraint : propertyDescriptor.serializer().getConstraints()) {
             Map<String, String> attributes = constraint.getXmlConstraint();
 
             if (attributes == null || attributes.isEmpty()) {
@@ -376,6 +342,7 @@ public class RuleSetWriter {
                             + ". There is no attribute " + attribute.getKey());
                 }
             }
+
         }
 
         return element;

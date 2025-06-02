@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -19,14 +20,14 @@ import net.sourceforge.pmd.lang.document.TextRegion;
  * </pre>
  *
  */
-public final class ASTPackageDeclaration extends AbstractJavaNode
-        implements Annotatable, ASTTopLevelDeclaration, JavadocCommentOwner {
+public final class ASTPackageDeclaration extends AbstractJavaNode implements Annotatable, ASTTopLevelDeclaration, JavadocCommentOwner {
 
     private TextRegion reportRegion;
 
     ASTPackageDeclaration(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

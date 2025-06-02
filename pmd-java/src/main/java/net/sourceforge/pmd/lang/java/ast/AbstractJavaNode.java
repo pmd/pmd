@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
 
@@ -19,6 +20,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     AbstractJavaNode(int id) {
         super(id);
     }
+
 
     @Override
     public void jjtClose() {
@@ -62,6 +64,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super.setImage(image);
     }
 
+
     @Override
     protected void setFirstToken(JavaccToken token) {
         super.setFirstToken(token);
@@ -103,6 +106,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         return getRoot().getTypeSystem();
     }
 
+
+
     @Override
     public final @NonNull ASTCompilationUnit getRoot() {
         // storing a reference on each node ensures that each path is roamed
@@ -112,6 +117,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         }
         return root;
     }
+
 
     /**
      * Shift the start and end tokens by the given offsets.
@@ -137,6 +143,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
             return TokenUtils.nthFollower(token, shift);
         }
     }
+
 
     void copyTextCoordinates(AbstractJavaNode copy) {
         setFirstToken(copy.getFirstToken());

@@ -12,8 +12,11 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
  *
  * @see net.sourceforge.pmd.lang.java.symbols.internal.asm.BrokenClasspathTest
  */
-public class BrokenGeneric<T0, T1> extends SuperKlass<T0, T0> implements SuperItf<T1, T1> {}
+public class BrokenGeneric<T0, T1>
+    extends SuperKlass<T0, T0>
+    implements SuperItf<T1, T1> {
+}
 
-class SuperKlass<A, B> {}
+class SuperKlass<A, B> { }
 
-interface SuperItf<A, B> {}
+interface SuperItf<A, B> { }

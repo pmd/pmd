@@ -1,12 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.inRange;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -35,6 +37,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+
 
 /**
  * This rule finds concurrent calls to StringBuffer/Builder.append where String
@@ -79,11 +82,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
         BLOCK_PARENTS.add(ASTSwitchFallthroughBranch.class);
     }
 
-    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR = PropertyFactory.intProperty("threshold")
-            .desc("Max consecutive appends")
-            .require(inRange(1, 10))
-            .defaultValue(1)
-            .build();
+    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
+            = PropertyFactory.intProperty("threshold")
+                             .desc("Max consecutive appends")
+                             .require(inRange(1, 10)).defaultValue(1).build();
 
     private ConsecutiveCounter counter = new ConsecutiveCounter();
 
@@ -113,6 +115,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
             while (current.getParent() instanceof ASTMethodCall) {
                 ASTMethodCall methodCall = (ASTMethodCall) current.getParent();
                 current = methodCall;
+
 
                 if (JavaRuleUtil.isStringBuilderCtorOrAppend(methodCall)) {
                     // append method call detected
@@ -155,10 +158,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
             return;
         }
 
-        ASTConstructorCall constructorCall = initializer
-                .descendantsOrSelf()
-                .filterIs(ASTConstructorCall.class)
-                .first();
+        ASTConstructorCall constructorCall = initializer.descendantsOrSelf().filterIs(ASTConstructorCall.class).first();
         if (constructorCall == null) {
             return;
         }
@@ -272,7 +272,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     }
 
     static boolean isStringBuilderOrBuffer(TypeNode node) {
-        return TypeTestUtil.isA(StringBuffer.class, node) || TypeTestUtil.isA(StringBuilder.class, node);
+        return TypeTestUtil.isA(StringBuffer.class, node)
+            || TypeTestUtil.isA(StringBuilder.class, node);
     }
 
     private static final class ConsecutiveCounter {

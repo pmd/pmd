@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.groovy.cpd;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class GroovyCpdLexerTest extends CpdTextComparisonTest {
 
@@ -17,7 +18,7 @@ class GroovyCpdLexerTest extends CpdTextComparisonTest {
     void testSample() {
         doTest("sample");
     }
-
+    
     @Test
     void testCpdOffAndOn() {
         doTest("cpdoff");

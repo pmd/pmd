@@ -13,7 +13,9 @@ final class NoopAnalysisListener implements GlobalAnalysisListener {
 
     static final NoopAnalysisListener INSTANCE = new NoopAnalysisListener();
 
-    private NoopAnalysisListener() {}
+    private NoopAnalysisListener() {
+
+    }
 
     @Override
     public FileAnalysisListener startFileAnalysis(TextFile file) {

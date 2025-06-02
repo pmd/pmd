@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 
 /**
  * A symbol declaration, whose symbol can declare type parameters.
@@ -24,4 +25,6 @@ public interface TypeParamOwnerNode extends SymbolDeclaratorNode {
     default @Nullable ASTTypeParameters getTypeParameters() {
         return firstChild(ASTTypeParameters.class);
     }
+
+
 }

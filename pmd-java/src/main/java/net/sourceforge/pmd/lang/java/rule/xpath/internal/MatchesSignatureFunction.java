@@ -29,4 +29,5 @@ public final class MatchesSignatureFunction extends BaseRewrittenFunction<Invoca
             throw new XPathFunctionException("Could not parse arg " + arg, e);
         }
     }
+
 }

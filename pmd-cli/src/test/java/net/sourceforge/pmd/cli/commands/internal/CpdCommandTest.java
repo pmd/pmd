@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli.commands.internal;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -8,33 +9,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.nio.file.Path;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.junit.jupiter.api.Test;
 
 class CpdCommandTest extends BaseCommandTest<CpdCommand> {
 
     @Test
     void testMultipleDirs() {
-        final CpdCommand cmd = setupAndParse("-d", "a", "b");
+        final CpdCommand cmd = setupAndParse(
+            "-d", "a", "b"
+        );
         assertMultipleDirs(cmd);
     }
 
     @Test
     void testMultipleDirsWithCommas() {
-        final CpdCommand cmd = setupAndParse("-d", "a,b");
+        final CpdCommand cmd = setupAndParse(
+            "-d", "a,b"
+        );
         assertMultipleDirs(cmd);
     }
 
     @Test
     void testMultipleDirsWithRepeatedOption() {
-        final CpdCommand cmd = setupAndParse("-d", "a", "-d", "b");
+        final CpdCommand cmd = setupAndParse(
+            "-d", "a", "-d", "b"
+        );
         assertMultipleDirs(cmd);
     }
 
     @Test
     void testNoPositionalParametersAllowed() {
-        final CpdCommand cmd = setupAndParse("-d", "a", "--", "b");
+        final CpdCommand cmd = setupAndParse(
+            "-d", "a", "--", "b"
+        );
         assertMultipleDirs(cmd);
     }
 

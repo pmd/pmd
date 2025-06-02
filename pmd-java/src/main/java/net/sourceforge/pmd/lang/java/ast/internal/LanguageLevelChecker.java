@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast.internal;
 
+
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
@@ -56,8 +61,6 @@ import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.util.IteratorUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Checks that an AST conforms to some language level. The reporting
@@ -88,12 +91,10 @@ public class LanguageLevelChecker<T> {
         return preview;
     }
 
+
     public void check(JavaNode node) {
         T accumulator = reportingStrategy.createAccumulator();
-        node.descendantsOrSelf()
-                .crossFindBoundaries()
-                .filterIs(JavaNode.class)
-                .forEach(n -> n.acceptVisitor(visitor, accumulator));
+        node.descendantsOrSelf().crossFindBoundaries().filterIs(JavaNode.class).forEach(n -> n.acceptVisitor(visitor, accumulator));
         reportingStrategy.done(accumulator);
     }
 
@@ -107,7 +108,9 @@ public class LanguageLevelChecker<T> {
     }
 
     private static String displayNameLower(String name) {
-        return name.replaceAll("__", "-").replace('_', ' ').toLowerCase(Locale.ROOT);
+        return name.replaceAll("__", "-")
+                   .replace('_', ' ')
+                   .toLowerCase(Locale.ROOT);
     }
 
     private static String versionDisplayName(int jdk) {
@@ -117,6 +120,7 @@ public class LanguageLevelChecker<T> {
             return "Java " + jdk;
         }
     }
+
 
     /**
      * Those are just for the preview features.
@@ -154,7 +158,9 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/488">JEP 488: Primitive Types in Patterns, instanceof, and switch (Second Preview)</a> (Java 24)
          */
         PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 24, false),
-        ; // SUPPRESS CHECKSTYLE enum trailing semi is awesome
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
+
 
         private final int minPreviewVersion;
         private final int maxPreviewVersion;
@@ -165,6 +171,7 @@ public class LanguageLevelChecker<T> {
             this.maxPreviewVersion = maxPreviewVersion;
             this.wasStandardized = wasStandardized;
         }
+
 
         @Override
         public String errorMessage(int jdk, boolean preview) {
@@ -232,7 +239,8 @@ public class LanguageLevelChecker<T> {
          * ContextualKeyword since Java 15 Preview.
          */
         PERMITS_AS_A_TYPE_NAME(15, "permits"),
-        ; // SUPPRESS CHECKSTYLE enum trailing semi is awesome
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int maxJdkVersion;
         private final String reserved;
@@ -250,12 +258,13 @@ public class LanguageLevelChecker<T> {
             String s = displayNameLower(name());
             String usageType = s.substring(s.indexOf(' ') + 1); // eg "as an identifier"
             return "Since " + LanguageLevelChecker.versionDisplayName(maxJdkVersion) + ", '" + reserved + "'"
-                    + " is reserved and cannot be used " + usageType;
+                + " is reserved and cannot be used " + usageType;
         }
     }
 
     /** Those use a min valid version. */
     private enum RegularLanguageFeature implements LanguageFeature {
+
         ASSERT_STATEMENTS(4),
 
         STATIC_IMPORT(5),
@@ -386,7 +395,8 @@ public class LanguageLevelChecker<T> {
          * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
          */
         UNNAMED_VARIABLES_AND_PATTERNS(22),
-        ; // SUPPRESS CHECKSTYLE enum trailing semi is awesome
+
+        ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
 
@@ -394,15 +404,17 @@ public class LanguageLevelChecker<T> {
             this.minJdkLevel = minJdkLevel;
         }
 
+
         @Override
         public String errorMessage(int jdk, boolean preview) {
             if (jdk >= this.minJdkLevel) {
                 return null;
             }
             return StringUtils.capitalize(displayNameLower(name()))
-                    + " are a feature of " + versionDisplayName(minJdkLevel)
-                    + ", you should select your language version accordingly";
+                + " are a feature of " + versionDisplayName(minJdkLevel)
+                + ", you should select your language version accordingly";
         }
+
     }
 
     interface LanguageFeature {
@@ -431,8 +443,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTStringLiteral node, T data) {
-            if (!node.isTextBlock()
-                    && SPACE_ESCAPE_PATTERN.matcher(node.getLiteralText()).find()) {
+            if (!node.isTextBlock() && SPACE_ESCAPE_PATTERN.matcher(node.getLiteralText()).find()) {
                 check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
             }
             if (node.isTextBlock()) {
@@ -500,6 +511,7 @@ public class LanguageLevelChecker<T> {
             return null;
         }
 
+
         @Override
         public Void visit(ASTReceiverParameter node, T data) {
             check(node, RegularLanguageFeature.RECEIVER_PARAMETERS, data);
@@ -560,9 +572,7 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.DEFAULT_METHODS, data);
             }
 
-            if (node.hasVisibility(ModifierOwner.Visibility.V_PRIVATE)
-                    && node.getEnclosingType() != null
-                    && node.getEnclosingType().isInterface()) {
+            if (node.hasVisibility(ModifierOwner.Visibility.V_PRIVATE) && node.getEnclosingType() != null && node.getEnclosingType().isInterface()) {
                 check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
             }
 
@@ -609,6 +619,7 @@ public class LanguageLevelChecker<T> {
             return null;
         }
 
+
         @Override
         public Void visit(ASTIntersectionType node, T data) {
             if (node.getParent() instanceof ASTCastExpression) {
@@ -616,6 +627,7 @@ public class LanguageLevelChecker<T> {
             }
             return null;
         }
+
 
         @Override
         public Void visit(ASTCatchClause node, T data) {
@@ -696,9 +708,7 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTConstructorDeclaration node, T data) {
             super.visit(node, data);
-            if (node.getBody()
-                    .descendants(ASTExplicitConstructorInvocation.class)
-                    .nonEmpty()) {
+            if (node.getBody().descendants(ASTExplicitConstructorInvocation.class).nonEmpty()) {
                 if (!(node.getBody().getFirstChild() instanceof ASTExplicitConstructorInvocation)) {
                     check(node, PreviewFeature.FLEXIBLE_CONSTRUCTOR_BODIES, data);
                 }
@@ -709,10 +719,8 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTInfixExpression node, T data) {
             if (node.getOperator() == BinaryOp.INSTANCEOF) {
-                if (node.getRightOperand() instanceof ASTPatternExpression
-                        && node.getRightOperand().getFirstChild() instanceof ASTTypePattern) {
-                    ASTTypePattern typePattern =
-                            (ASTTypePattern) node.getRightOperand().getFirstChild();
+                if (node.getRightOperand() instanceof ASTPatternExpression && node.getRightOperand().getFirstChild() instanceof ASTTypePattern) {
+                    ASTTypePattern typePattern = (ASTTypePattern) node.getRightOperand().getFirstChild();
                     if (typePattern.getTypeNode() instanceof ASTPrimitiveType) {
                         check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
                     }
@@ -747,5 +755,7 @@ public class LanguageLevelChecker<T> {
                 }
             }
         }
+
     }
+
 }

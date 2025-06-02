@@ -1,14 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.ast;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import io.github.apexdevtools.apexparser.ApexLexer;
-import io.github.apexdevtools.apexparser.ApexParser;
-import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
@@ -17,6 +16,10 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.junit.jupiter.api.Test;
+
+import io.github.apexdevtools.apexparser.ApexLexer;
+import io.github.apexdevtools.apexparser.ApexParser;
+import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 
 /**
  * This is an exploration test for {@link ApexLexer}.
@@ -73,13 +76,8 @@ class ApexLexerTest {
         private int errorCount = 0;
 
         @Override
-        public void syntaxError(
-                Recognizer<?, ?> recognizer,
-                Object offendingSymbol,
-                int line,
-                int charPositionInLine,
-                String msg,
-                RecognitionException e) {
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
+            int charPositionInLine, String msg, RecognitionException e) {
             ++errorCount;
         }
 

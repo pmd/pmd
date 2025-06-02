@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.File;
@@ -18,12 +19,12 @@ class RawFileFingerprinterTest extends AbstractClasspathEntryFingerprinterTest {
 
     @Override
     protected String[] getValidFileExtensions() {
-        return new String[] {"class"};
+        return new String[] { "class" };
     }
 
     @Override
     protected String[] getInvalidFileExtensions() {
-        return new String[] {"xml"};
+        return new String[] { "xml" };
     }
 
     @Override

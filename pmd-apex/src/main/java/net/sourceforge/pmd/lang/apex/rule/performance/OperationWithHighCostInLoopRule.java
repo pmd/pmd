@@ -1,15 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.performance;
 
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Warn users when code that could impact performance is executing within a
@@ -22,9 +25,7 @@ public class OperationWithHighCostInLoopRule extends AbstractAvoidNodeInLoopsRul
                     "Schema.getGlobalDescribe",
                     "System.Schema.describeSObjects",
                     "Schema.describeSObjects")
-            .stream()
-            .map(s -> s.toLowerCase(Locale.ROOT))
-            .collect(Collectors.toSet());
+            .stream().map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {

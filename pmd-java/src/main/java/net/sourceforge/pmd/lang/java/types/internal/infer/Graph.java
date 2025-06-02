@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
 import net.sourceforge.pmd.util.GraphUtil;
 import net.sourceforge.pmd.util.GraphUtil.DotColor;
 
@@ -156,13 +157,19 @@ class Graph<T> {
 
     @Override
     public String toString() {
-        return GraphUtil.toDot(vertices, this::successorsOf, v -> DotColor.BLACK, v -> v.data.toString());
+        return GraphUtil.toDot(
+            vertices,
+            this::successorsOf,
+            v -> DotColor.BLACK,
+            v -> v.data.toString()
+        );
     }
 
     private static final class TarjanState<T> {
 
         int index;
         Deque<Vertex<T>> stack = new ArrayDeque<>();
+
     }
 
     static final class Vertex<T> {
@@ -199,6 +206,7 @@ class Graph<T> {
             return data.toString();
         }
     }
+
 
     /** Maintains uniqueness of nodes wrt data. */
     static class UniqueGraph<T> extends Graph<T> {

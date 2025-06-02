@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.velocity.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -29,7 +30,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  * @version $Id: NodeUtils.java 687386 2008-08-20 16:57:07Z nbubna $
  */
 final class NodeUtils {
-    private NodeUtils() {}
+    private NodeUtils() { }
 
     /**
      * Collect all the &lt;SPECIAL_TOKEN&gt;s that are carried along with a token.
@@ -118,8 +119,7 @@ final class NodeUtils {
         // Look at kind of token and return "" when it's a multiline comment
         if (t.kind == VtlTokenKinds.MULTI_LINE_COMMENT) {
             return "";
-        } else if (t.getPreviousComment() == null
-                || t.getPreviousComment().getImage().startsWith("##")) {
+        } else if (t.getPreviousComment() == null || t.getPreviousComment().getImage().startsWith("##")) {
             return t.getImage();
         } else {
             final StringBuilder special = getSpecialText(t);
@@ -129,4 +129,5 @@ final class NodeUtils {
             return t.getImage();
         }
     }
+
 }

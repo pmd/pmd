@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.rust.cpd;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class RustCpdLexerTest extends CpdTextComparisonTest {
 
@@ -17,4 +18,5 @@ class RustCpdLexerTest extends CpdTextComparisonTest {
     void testHelloWorld() {
         doTest("helloworld");
     }
+
 }

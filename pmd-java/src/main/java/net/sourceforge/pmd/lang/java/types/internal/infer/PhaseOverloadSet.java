@@ -13,6 +13,9 @@ import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static net.sourceforge.pmd.util.OptionalBool.definitely;
 
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -26,7 +29,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.TypeSpecies;
 import net.sourceforge.pmd.util.OptionalBool;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * An {@link OverloadSet} that is specific to an invocation expression
@@ -46,6 +48,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
     private final Infer infer;
     private final MethodResolutionPhase phase;
     private final MethodCallSite site;
+
 
     PhaseOverloadSet(Infer infer, MethodResolutionPhase phase, MethodCallSite site) {
         this.infer = infer;
@@ -89,10 +92,10 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
     @Override
     protected OptionalBool shouldTakePrecedence(MethodCtDecl m1, MethodCtDecl m2) {
-        return isMoreSpecific(
-                cast(m1.getMethodType()).adaptedMethod(),
-                cast(m2.getMethodType()).adaptedMethod());
+        return isMoreSpecific(cast(m1.getMethodType()).adaptedMethod(),
+                              cast(m2.getMethodType()).adaptedMethod());
     }
+
 
     private OptionalBool isMoreSpecific(@NonNull JMethodSig m1, @NonNull JMethodSig m2) {
 
@@ -167,9 +170,9 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 if (phase.canBox()) {
                     JTypeMirror stdExprTy = ei.getStandaloneType();
                     if (stdExprTy != null
-                            // there is a boxing or unboxing conversion happening
-                            && stdExprTy.isPrimitive() != si.isPrimitive()
-                            && stdExprTy.isPrimitive() != ti.isPrimitive()) {
+                        // there is a boxing or unboxing conversion happening
+                        && stdExprTy.isPrimitive() != si.isPrimitive()
+                        && stdExprTy.isPrimitive() != ti.isPrimitive()) {
                         // si or ti is more specific if it only involves
                         // the boxing/unboxing conversion, without widening
                         // afterwards.
@@ -193,14 +196,11 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
         if (phase.requiresVarargs() && m2p.getArity() == k + 1) {
             // that is, the invocation has no arguments for the varargs, eg Stream.of()
-            infer.checkConvertibleOrDefer(
-                    ctx,
-                    m1.ithFormalParam(k, true),
-                    m2p.ithFormalParam(k, true),
-                    // m2Formals.get(k),
-                    site.getExpr(),
-                    phase,
-                    site);
+            infer.checkConvertibleOrDefer(ctx,
+                                          m1.ithFormalParam(k, true),
+                                          m2p.ithFormalParam(k, true),
+                                          // m2Formals.get(k),
+                                          site.getExpr(), phase, site);
         }
 
         ctx.solve();
@@ -208,6 +208,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
 
         return true;
     }
+
 
     private @NonNull OptionalBool unresolvedTypeFallback(JTypeMirror si, JTypeMirror ti, ExprMirror argExpr) {
         JTypeMirror standalone = argExpr.getStandaloneType();
@@ -221,15 +222,13 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         return UNKNOWN;
     }
 
-    private boolean isFunctionTypeMoreSpecific(
-            InferenceContext ctx,
-            JTypeMirror si,
-            JMethodSig sfun,
-            JMethodSig tfun,
-            ExprMirror ei,
-            MethodCallSite site) {
+    private boolean isFunctionTypeMoreSpecific(InferenceContext ctx,
+                                               JTypeMirror si,
+                                               JMethodSig sfun,
+                                               JMethodSig tfun,
+                                               ExprMirror ei, MethodCallSite site) {
         if (sfun.getArity() != tfun.getArity()
-                || sfun.getTypeParameters().size() != tfun.getTypeParameters().size()) {
+            || sfun.getTypeParameters().size() != tfun.getTypeParameters().size()) {
             return false;
         }
 
@@ -243,6 +242,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         if (!TypeOps.haveSameTypeParams(capturedSFun, sfun)) {
             return false;
         }
+
 
         List<JTypeVar> sparams = sfun.getTypeParameters();
         List<JTypeVar> tparams = tfun.getTypeParameters();
@@ -265,31 +265,20 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
         JTypeMirror rs = sfun.getReturnType();
         JTypeMirror rt = tfun.getReturnType();
         return (!TypeOps.mentionsAny(rs, sparams) || ctx.isGround(rt))
-                && addGenericExprConstraintsRecursive(ctx, ei, rs, rt, tToS, site);
+            && addGenericExprConstraintsRecursive(ctx, ei, rs, rt, tToS, site);
     }
 
-    private boolean addGenericExprConstraintsRecursive(
-            InferenceContext ctx,
-            ExprMirror ei,
-            JTypeMirror rs,
-            JTypeMirror rt,
-            Substitution tToS,
-            MethodCallSite site) {
+    private boolean addGenericExprConstraintsRecursive(InferenceContext ctx, ExprMirror ei, JTypeMirror rs, JTypeMirror rt, Substitution tToS, MethodCallSite site) {
         if (ei instanceof LambdaExprMirror) {
             // Otherwise, if ei is an explicitly typed lambda expression:
             //
             //    If RT is void, true.
             //
-            //    todo: Otherwise, if RS and RT are functional interface types, and ei has at least one result
-            // expression, then for each result expression in ei, this entire second step is repeated to infer
-            // constraints under which RS is more specific than RT θ' for the given result expression.
+            //    todo: Otherwise, if RS and RT are functional interface types, and ei has at least one result expression, then for each result expression in ei, this entire second step is repeated to infer constraints under which RS is more specific than RT θ' for the given result expression.
             //
-            //    Otherwise, if RS is a primitive type and RT is not, and ei has at least one result expression, and
-            // each result expression of ei is a standalone expression (§15.2) of a primitive type, true.
+            //    Otherwise, if RS is a primitive type and RT is not, and ei has at least one result expression, and each result expression of ei is a standalone expression (§15.2) of a primitive type, true.
             //
-            //    Otherwise, if RT is a primitive type and RS is not, and ei has at least one result expression, and
-            // each result expression of ei is either a standalone expression of a reference type or a poly expression,
-            // true.
+            //    Otherwise, if RT is a primitive type and RS is not, and ei has at least one result expression, and each result expression of ei is either a standalone expression of a reference type or a poly expression, true.
             //
             //    Otherwise, ‹RS <: RT θ'›.
 
@@ -319,11 +308,9 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             //
             //    If RT is void, true.
             //
-            //    Otherwise, if RS is a primitive type and RT is not, and the compile-time declaration for ei has a
-            // primitive return type, true.
+            //    Otherwise, if RS is a primitive type and RT is not, and the compile-time declaration for ei has a primitive return type, true.
             //
-            //    Otherwise if RT is a primitive type and RS is not, and the compile-time declaration for ei has a
-            // reference return type, true.
+            //    Otherwise if RT is a primitive type and RS is not, and the compile-time declaration for ei has a reference return type, true.
             //
             //    Otherwise, ‹RS <: RT θ'›.
 
@@ -332,15 +319,15 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                 return false;
             }
 
-            if (getSpecies(rs) != getSpecies(rt) && getSpecies(exact.getReturnType()) == getSpecies(rs)) {
+            if (getSpecies(rs) != getSpecies(rt)
+                && getSpecies(exact.getReturnType()) == getSpecies(rs)) {
                 return true;
             }
 
             infer.checkConvertibleOrDefer(ctx, rs, rt.subst(tToS), ei, phase, site);
             return true;
         } else if (ei instanceof BranchingMirror) {
-            return ((BranchingMirror) ei)
-                    .branchesMatch(e -> addGenericExprConstraintsRecursive(ctx, e, rs, rt, tToS, site));
+            return ((BranchingMirror) ei).branchesMatch(e -> addGenericExprConstraintsRecursive(ctx, e, rs, rt, tToS, site));
         }
 
         return false;

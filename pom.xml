@@ -719,8 +719,13 @@
                             </format>
                         </formats>
                         <java>
-                            <palantirJavaFormat/>
                             <removeUnusedImports/>
+                            <eclipse>
+                                <file>.config/pmd-eclipse-code-formatter.xml</file>
+                            </eclipse>
+                            <importOrder>
+                                <file>.config/pmd-eclipse-imports.importorder</file>
+                            </importOrder>
                         </java>
                         <kotlin>
                             <ktfmt>

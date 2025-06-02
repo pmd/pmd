@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.Objects;
+
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -32,6 +33,7 @@ public interface Parser {
      */
     RootNode parse(ParserTask task) throws FileAnalysisException;
 
+
     /**
      * Parameters passed to a parsing task.
      */
@@ -45,9 +47,9 @@ public interface Parser {
             this.textDoc = AssertionUtil.requireParamNotNull("Text document", textDoc);
             this.reporter = AssertionUtil.requireParamNotNull("reporter", reporter);
             this.lpRegistry = AssertionUtil.requireParamNotNull("lpRegistry", lpRegistry);
-            Objects.requireNonNull(
-                    lpRegistry.getProcessor(textDoc.getLanguageVersion().getLanguage()));
+            Objects.requireNonNull(lpRegistry.getProcessor(textDoc.getLanguageVersion().getLanguage()));
         }
+
 
         public LanguageVersion getLanguageVersion() {
             return textDoc.getLanguageVersion();
@@ -87,7 +89,13 @@ public interface Parser {
         }
 
         public ParserTask withTextDocument(TextDocument textDocument) {
-            return new ParserTask(textDocument, this.reporter, this.lpRegistry);
+            return new ParserTask(
+                textDocument,
+                this.reporter,
+                this.lpRegistry
+            );
         }
     }
+
+
 }

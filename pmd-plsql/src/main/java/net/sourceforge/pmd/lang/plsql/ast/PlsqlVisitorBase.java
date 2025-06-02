@@ -9,4 +9,6 @@ import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 /**
  * Base implementation of {@link PlsqlVisitor}.
  */
-public abstract class PlsqlVisitorBase<P, R> extends AstVisitorBase<P, R> implements PlsqlVisitor<P, R> {}
+public abstract class PlsqlVisitorBase<P, R> extends AstVisitorBase<P, R> implements PlsqlVisitor<P, R> {
+
+}

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.beans.IntrospectionException;
@@ -12,14 +13,16 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cpd.internal.CpdLanguagePropertiesDefaults;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Brian Remedios
@@ -32,6 +35,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private static final Map<String, Class<? extends CPDReportRenderer>> RENDERERS = new HashMap<>();
 
+
     static {
         RENDERERS.put(DEFAULT_RENDERER, SimpleRenderer.class);
         RENDERERS.put("xml", XMLRenderer.class);
@@ -40,6 +44,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
         RENDERERS.put("vs", VSRenderer.class);
     }
+
 
     private int minimumTileSize;
 
@@ -71,6 +76,7 @@ public class CPDConfiguration extends AbstractConfiguration {
 
     private boolean help;
 
+
     public CPDConfiguration() {
         this(LanguageRegistry.CPD);
     }
@@ -99,8 +105,7 @@ public class CPDConfiguration extends AbstractConfiguration {
                 if (CPDReportRenderer.class.isAssignableFrom(klass)) {
                     rendererClass = (Class) klass;
                 } else {
-                    throw new IllegalArgumentException(
-                            "Class " + name + " does not implement " + CPDReportRenderer.class);
+                    throw new IllegalArgumentException("Class " + name + " does not implement " + CPDReportRenderer.class);
                 }
             } catch (ClassNotFoundException e) {
                 throw new IllegalArgumentException("Cannot find class " + name);
@@ -166,6 +171,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         }
         this.cpdReportRenderer = createRendererByName(rendererName, getSourceEncoding());
     }
+
 
     public CPDReportRenderer getCPDReportRenderer() {
         return cpdReportRenderer;
@@ -268,9 +274,10 @@ public class CPDConfiguration extends AbstractConfiguration {
     @Override
     protected void checkLanguageIsAcceptable(Language lang) throws UnsupportedOperationException {
         if (!(lang instanceof CpdCapableLanguage)) {
-            throw new UnsupportedOperationException("Language " + lang.getId()
-                    + " does not support analysis with CPD and cannot be used in a CPDConfiguration. "
-                    + "You may be able to use it with PMD though.");
+            throw new UnsupportedOperationException("Language " + lang.getId() + " does not support analysis with CPD and cannot be used in a CPDConfiguration. "
+                + "You may be able to use it with PMD though.");
         }
     }
+
+
 }

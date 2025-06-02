@@ -10,6 +10,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.function.Consumer;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
@@ -21,7 +24,6 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.test.ast.TestUtilsKt;
 import net.sourceforge.pmd.reporting.Report;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * @author Clément Fournier
@@ -31,6 +33,7 @@ class BaseXPathFunctionTest extends BaseParserTest {
 
     private static final String VIOLATION_MESSAGE = "violation";
     private static final String RULE_NAME_PLACEHOLDER = "$rule_name";
+
 
     private @NonNull Report executeRule(Rule rule, String code) {
         return java.executeRule(rule, code);
@@ -44,13 +47,16 @@ class BaseXPathFunctionTest extends BaseParserTest {
         return rule;
     }
 
+
     protected void assertFinds(Rule rule, int numViolations, String code) {
         Report report = executeRule(rule, code);
         TestUtilsKt.assertSize(report, numViolations);
     }
 
-    protected void testWithExpectedException(
-            String xpath, String code, Consumer<? super PmdXPathException> exceptionSpec) {
+
+    protected void testWithExpectedException(String xpath,
+                                             String code,
+                                             Consumer<? super PmdXPathException> exceptionSpec) {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
         FileAnalysisException thrown = assertThrows(FileAnalysisException.class, () -> executeRule(rule, code));
@@ -62,7 +68,9 @@ class BaseXPathFunctionTest extends BaseParserTest {
         assertThat(cause.getRuleName(), equalTo(RULE_NAME_PLACEHOLDER));
     }
 
-    protected void testWithExpectedStaticException(String xpath, Consumer<? super PmdXPathException> exceptionSpec) {
+
+    protected void testWithExpectedStaticException(String xpath,
+                                                   Consumer<? super PmdXPathException> exceptionSpec) {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
         try (LanguageProcessor proc = java.newProcessor()) {
@@ -73,5 +81,8 @@ class BaseXPathFunctionTest extends BaseParserTest {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
+
+
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
@@ -24,6 +25,7 @@ public final class ASTStatementExpressionList extends ASTNonEmptyList<ASTExpress
     ASTStatementExpressionList(int id) {
         super(id, ASTExpression.class);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

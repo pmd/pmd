@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
+
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
@@ -19,7 +20,9 @@ final class TokenUtils {
 
     // mind: getBeginLine and getEndLine on JavaccToken are now very slow.
 
-    private TokenUtils() {}
+    private TokenUtils() {
+
+    }
 
     public static <T extends GenericToken<T>> T nthFollower(T token, int n) {
         if (n < 0) {
@@ -85,4 +88,5 @@ final class TokenUtils {
     public static void expectKind(JavaccToken token, int kind) {
         assert token.kind == kind : "Expected " + token.getDocument().describeKind(kind) + ", got " + token;
     }
+
 }

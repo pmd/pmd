@@ -1,16 +1,20 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
+
 
 /**
  * Abstract class for type declarations nodes.
  */
-abstract class AbstractTypedSymbolDeclarator<T extends JElementSymbol> extends AbstractJavaTypeNode
-        implements SymbolDeclaratorNode {
+abstract class AbstractTypedSymbolDeclarator<T extends JElementSymbol>
+    extends AbstractJavaTypeNode
+    implements SymbolDeclaratorNode {
 
     private T symbol;
 
@@ -37,4 +41,6 @@ abstract class AbstractTypedSymbolDeclarator<T extends JElementSymbol> extends A
         assertSymbolNull(this.symbol, this);
         this.symbol = symbol;
     }
+
 }
+

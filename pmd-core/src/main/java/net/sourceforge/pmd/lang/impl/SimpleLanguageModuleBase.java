@@ -5,13 +5,15 @@
 package net.sourceforge.pmd.lang.impl;
 
 import java.util.function.Function;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.PmdCapableLanguage;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * The simplest implementation of a language, where only a {@link LanguageVersionHandler}
@@ -29,8 +31,7 @@ public class SimpleLanguageModuleBase extends LanguageModuleBase implements PmdC
         this(metadata, p -> handler);
     }
 
-    public SimpleLanguageModuleBase(
-            LanguageMetadata metadata, Function<LanguagePropertyBundle, LanguageVersionHandler> makeHandler) {
+    public SimpleLanguageModuleBase(LanguageMetadata metadata, Function<LanguagePropertyBundle, LanguageVersionHandler> makeHandler) {
         super(metadata);
         this.handler = makeHandler;
     }
@@ -45,4 +46,5 @@ public class SimpleLanguageModuleBase extends LanguageModuleBase implements PmdC
             }
         };
     }
+
 }

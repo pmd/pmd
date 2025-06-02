@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
@@ -15,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+
 
 /**
  * <code>if (x != y) { diff(); } else { same(); }</code> and<br>
@@ -52,9 +54,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf")
-            .desc("Ignore conditions with an else-if case")
-            .defaultValue(false)
-            .build();
+            .desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
     public ConfusingTernaryRule() {
         super(ASTIfStatement.class, ASTConditionalExpression.class);
@@ -64,10 +64,11 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."
-        if (node.getNumChildren() == 3 && isMatch(node.getCondition())) {
+        if (node.getNumChildren() == 3
+            && isMatch(node.getCondition())) {
             if (!getProperty(IGNORE_ELSE_IF)
-                    || !(node.getElseBranch() instanceof ASTIfStatement)
-                            && !(node.getParent() instanceof ASTIfStatement)) {
+                || !(node.getElseBranch() instanceof ASTIfStatement)
+                && !(node.getParent() instanceof ASTIfStatement)) {
                 asCtx(data).addViolation(node);
             }
         }
@@ -91,7 +92,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     private static boolean isUnaryNot(ASTExpression node) {
         // look for "!x"
         return node instanceof ASTUnaryExpression
-                && ((ASTUnaryExpression) node).getOperator().equals(UnaryOp.NEGATION);
+            && ((ASTUnaryExpression) node).getOperator().equals(UnaryOp.NEGATION);
     }
 
     private static boolean isNotEquals(ASTExpression node) {
@@ -101,8 +102,8 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         ASTInfixExpression infix = (ASTInfixExpression) node;
         // look for "x != y"
         return infix.getOperator().equals(BinaryOp.NE)
-                && !(infix.getLeftOperand() instanceof ASTNullLiteral)
-                && !(infix.getRightOperand() instanceof ASTNullLiteral);
+            && !(infix.getLeftOperand() instanceof ASTNullLiteral)
+            && !(infix.getRightOperand() instanceof ASTNullLiteral);
     }
 
     private static boolean isConditionalWithAllMatches(ASTExpression node) {
@@ -110,8 +111,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         if (node instanceof ASTInfixExpression) {
             ASTInfixExpression infix = (ASTInfixExpression) node;
             return (infix.getOperator() == BinaryOp.CONDITIONAL_AND || infix.getOperator() == BinaryOp.CONDITIONAL_OR)
-                    && isMatch(infix.getLeftOperand())
-                    && isMatch(infix.getRightOperand());
+                    && isMatch(infix.getLeftOperand()) && isMatch(infix.getRightOperand());
         }
 
         return false;

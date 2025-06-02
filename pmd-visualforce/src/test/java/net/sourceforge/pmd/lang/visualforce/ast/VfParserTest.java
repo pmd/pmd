@@ -6,8 +6,9 @@ package net.sourceforge.pmd.lang.visualforce.ast;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import net.sourceforge.pmd.lang.ast.ParseException;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.ast.ParseException;
 
 /**
  * @author sergey.gorbaty
@@ -63,4 +64,5 @@ class VfParserTest extends AbstractVfTest {
     void testAttributeNameWithInvalidDotV3() {
         assertThrows(ParseException.class, () -> vf.parse("<table-row test.attribute.=\"always\" >"));
     }
+
 }

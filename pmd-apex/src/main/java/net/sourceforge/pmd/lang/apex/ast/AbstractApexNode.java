@@ -4,20 +4,23 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Node;
-import com.google.summit.ast.SourceLocation;
-import com.google.summit.ast.expression.LiteralExpression;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
+import com.google.summit.ast.Node;
+import com.google.summit.ast.SourceLocation;
+import com.google.summit.ast.expression.LiteralExpression;
 
 abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<?>> implements ApexNode<Void> {
 
@@ -42,8 +45,9 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
             }
             // Column+1 because Summit columns are 0-based and PMD are 1-based
             setRegion(TextRegion.fromBothOffsets(
-                    sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
-                    sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))));
+                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getStartLine(), loc.getStartColumn() + 1)),
+                sourceCode.offsetAtLineColumn(TextPos2d.pos2d(loc.getEndLine(), loc.getEndColumn() + 1))
+            ));
         }
 
         @Override
@@ -74,17 +78,13 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
                 if (!loc.isUnknown()) {
                     if (union.getStartLine() == null
                             || loc.getStartLine() < union.getStartLine()
-                            || loc.getStartLine().equals(union.getStartLine())
-                                    && loc.getStartColumn() < union.getStartColumn()) {
-                        union = new SourceLocation(
-                                loc.getStartLine(), loc.getStartColumn(), union.getEndLine(), union.getEndColumn());
+                            || loc.getStartLine().equals(union.getStartLine()) && loc.getStartColumn() < union.getStartColumn()) {
+                        union = new SourceLocation(loc.getStartLine(), loc.getStartColumn(), union.getEndLine(), union.getEndColumn());
                     }
                     if (union.getEndLine() == null
                             || loc.getEndLine() > union.getEndLine()
-                            || loc.getEndLine().equals(union.getEndLine())
-                                    && loc.getEndColumn() > union.getEndColumn()) {
-                        union = new SourceLocation(
-                                union.getStartLine(), union.getStartColumn(), loc.getEndLine(), loc.getEndColumn());
+                            || loc.getEndLine().equals(union.getEndLine()) && loc.getEndColumn() > union.getEndColumn()) {
+                        union = new SourceLocation(union.getStartLine(), union.getStartColumn(), loc.getEndLine(), loc.getEndColumn());
                     }
                 }
             }
@@ -92,16 +92,15 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
             if (!union.isUnknown()) {
                 // Column+1 because Summit columns are 0-based and PMD are 1-based
                 setRegion(TextRegion.fromBothOffsets(
-                        sourceCode.offsetAtLineColumn(
-                                TextPos2d.pos2d(union.getStartLine(), union.getStartColumn() + 1)),
-                        sourceCode.offsetAtLineColumn(TextPos2d.pos2d(union.getEndLine(), union.getEndColumn() + 1))));
+                    sourceCode.offsetAtLineColumn(TextPos2d.pos2d(union.getStartLine(), union.getStartColumn() + 1)),
+                    sourceCode.offsetAtLineColumn(TextPos2d.pos2d(union.getEndLine(), union.getEndColumn() + 1))
+                ));
             }
         }
 
         @Override
         public boolean hasRealLoc() {
-            return !nodes.isEmpty()
-                    && nodes.stream().noneMatch(n -> n.getSourceLocation().isUnknown());
+            return !nodes.isEmpty() && nodes.stream().noneMatch(n -> n.getSourceLocation().isUnknown());
         }
     }
 
@@ -179,15 +178,13 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
     protected void setRegion(TextRegion region) {
         this.region = region;
     }
-
+    
     @Override
     public abstract boolean hasRealLoc();
 
     @Override
     public String getDefiningType() {
-        BaseApexClass<?> baseNode = this instanceof BaseApexClass
-                ? (BaseApexClass<?>) this
-                : ancestors(BaseApexClass.class).first();
+        BaseApexClass<?> baseNode = this instanceof BaseApexClass ? (BaseApexClass<?>) this : ancestors(BaseApexClass.class).first();
         if (baseNode != null) {
             return baseNode.getQualifiedName().toString();
         }
@@ -205,33 +202,35 @@ abstract class AbstractApexNode extends AbstractNode<AbstractApexNode, ApexNode<
     }
 
     /**
-     * Normalizes case of primitive type names.
-     *
-     * All other strings are returned unchanged.
-     *
-     * See: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_primitives.htm
-     */
+      * Normalizes case of primitive type names.
+      *
+      * All other strings are returned unchanged.
+      *
+      * See: https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_primitives.htm
+      */
     static String caseNormalizedTypeIfPrimitive(String name) {
         String floor = caseNormalizedTypeNames.floor(name);
         return name.equalsIgnoreCase(floor) ? floor : name;
     }
 
-    private static NavigableSet<String> caseNormalizedTypeNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
+    private static NavigableSet<String> caseNormalizedTypeNames =
+        new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
 
     static {
         caseNormalizedTypeNames.addAll(Arrays.asList(
-                "Blob",
-                "Boolean",
-                "Currency",
-                "Date",
-                "Datetime",
-                "Decimal",
-                "Double",
-                "Id",
-                "Integer",
-                "Long",
-                "Object",
-                "String",
-                "Time"));
+            "Blob",
+            "Boolean",
+            "Currency",
+            "Date",
+            "Datetime",
+            "Decimal",
+            "Double",
+            "Id",
+            "Integer",
+            "Long",
+            "Object",
+            "String",
+            "Time"
+        ));
     }
 }

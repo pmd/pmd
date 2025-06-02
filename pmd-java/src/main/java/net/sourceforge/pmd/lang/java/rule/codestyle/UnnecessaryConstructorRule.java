@@ -1,11 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -16,7 +20,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * This rule detects when a constructor is not necessary;
@@ -32,8 +35,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
-        return Arrays.asList(
-                "javax.inject.Inject",
+        return Arrays.asList("javax.inject.Inject",
                 "com.google.inject.Inject",
                 "org.springframework.beans.factory.annotation.Autowired");
     }
@@ -53,19 +55,19 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     private void checkClassOrEnum(ASTTypeDeclaration node, Object data) {
-        List<ASTConstructorDeclaration> ctors =
-                node.getDeclarations(ASTConstructorDeclaration.class).take(2).toList();
+        List<ASTConstructorDeclaration> ctors = node.getDeclarations(ASTConstructorDeclaration.class).take(2).toList();
         if (ctors.size() == 1 && isExplicitDefaultConstructor(node, ctors.get(0))) {
             asCtx(data).addViolation(ctors.get(0));
         }
     }
 
+
     private boolean isExplicitDefaultConstructor(ASTTypeDeclaration declarator, ASTConstructorDeclaration ctor) {
         return ctor.getArity() == 0
-                && !hasIgnoredAnnotation(ctor)
-                && hasDefaultCtorVisibility(declarator, ctor)
-                && isEmptyBlock(ctor.getBody())
-                && ctor.getThrowsList() == null;
+            && !hasIgnoredAnnotation(ctor)
+            && hasDefaultCtorVisibility(declarator, ctor)
+            && isEmptyBlock(ctor.getBody())
+            && ctor.getThrowsList() == null;
     }
 
     private boolean isEmptyBlock(ASTBlock body) {

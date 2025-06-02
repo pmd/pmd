@@ -1,12 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An unqualified reference to a variable (either local, or a field that
@@ -44,6 +46,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
         setLastToken(identifier);
     }
 
+
     ASTVariableAccess(int id) {
         super(id);
     }
@@ -52,6 +55,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
     public String getName() {
         return getImage();
     }
+
 
     @Override
     public @Nullable JVariableSig getSignature() {
@@ -65,6 +69,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
         this.typedSym = sig;
         assert typedSym != null : "Null signature?";
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

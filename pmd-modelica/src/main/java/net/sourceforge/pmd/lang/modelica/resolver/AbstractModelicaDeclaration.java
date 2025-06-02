@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionContext;
@@ -17,6 +18,5 @@ abstract class AbstractModelicaDeclaration implements ModelicaDeclaration {
      * @param name   Further name parts to resolve
      * @throws Watchdog.CountdownException if too many resolution steps were performed
      */
-    abstract void resolveFurtherNameComponents(ResolutionContext result, CompositeName name)
-            throws Watchdog.CountdownException;
+    abstract void resolveFurtherNameComponents(ResolutionContext result, CompositeName name) throws Watchdog.CountdownException;
 }

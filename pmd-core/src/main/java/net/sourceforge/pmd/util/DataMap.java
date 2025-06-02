@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -24,7 +25,9 @@ public final class DataMap<K> {
 
     private Map<DataKey<? extends K, ?>, Object> map;
 
-    private DataMap() {}
+    private DataMap() {
+
+    }
 
     /**
      * Set the mapping to the given data.
@@ -90,9 +93,8 @@ public final class DataMap<K> {
     /**
      * @see Map#merge(Object, Object, BiFunction)
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public <T> T merge(
-            DataKey<? extends K, T> key, T value, BiFunction<? super @NonNull T, ? super T, ? extends T> function) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public <T> T merge(DataKey<? extends K, T> key, T value, BiFunction<? super @NonNull T, ? super T, ? extends T> function) {
         return (T) getMap().merge(key, value, (BiFunction) function);
     }
 
@@ -136,7 +138,9 @@ public final class DataMap<K> {
      * @param <K> Type of the family of keys this is a part of
      * @param <T> Type of the addressed data
      */
-    public interface DataKey<K extends DataKey<K, T>, T> {}
+    public interface DataKey<K extends DataKey<K, T>, T> {
+
+    }
 
     public static class SimpleDataKey<T> implements DataKey<SimpleDataKey<T>, T> {
 

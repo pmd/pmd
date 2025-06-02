@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.internal;
 
 import static net.sourceforge.pmd.reporting.RuleViolation.CLASS_NAME;
@@ -14,6 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -23,7 +27,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import org.junit.jupiter.api.Test;
 
 /**
  * @author Philip Graf
@@ -82,8 +85,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testPackageAndClassNameForImport() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; public class Foo { }");
-        ASTImportDeclaration importNode =
-                ast.descendants(ASTImportDeclaration.class).first();
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         Map<String, String> violation = decorate(importNode);
         assertThat(violation, hasEntry(PACKAGE_NAME, "pkg"));
@@ -93,8 +95,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testPackageAndClassNameForField() {
         ASTCompilationUnit ast = parse("package pkg; public class Foo { int a; }");
-        ASTClassDeclaration classDeclaration =
-                ast.descendants(ASTClassDeclaration.class).first();
+        ASTClassDeclaration classDeclaration = ast.descendants(ASTClassDeclaration.class).first();
         ASTFieldDeclaration field = ast.descendants(ASTFieldDeclaration.class).first();
 
         Map<String, String> violation = decorate(classDeclaration);
@@ -109,8 +110,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testPackageAndEnumName() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; public enum FooE { }");
-        ASTImportDeclaration importNode =
-                ast.descendants(ASTImportDeclaration.class).first();
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         Map<String, String> violation = decorate(importNode);
         assertThat(violation, hasEntry(PACKAGE_NAME, "pkg"));
@@ -120,8 +120,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testDefaultPackageAndClassName() {
         ASTCompilationUnit ast = parse("import java.util.List; public class Foo { }");
-        ASTImportDeclaration importNode =
-                ast.descendants(ASTImportDeclaration.class).first();
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         Map<String, String> violation = decorate(importNode);
         assertThat(violation, hasEntry(PACKAGE_NAME, ""));
@@ -131,8 +130,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testPackageAndMultipleClassesName() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { } public class Bar { }");
-        ASTImportDeclaration importNode =
-                ast.descendants(ASTImportDeclaration.class).first();
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         Map<String, String> violation = decorate(importNode);
         assertThat(violation, hasEntry(PACKAGE_NAME, "pkg"));
@@ -142,8 +140,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testPackageAndPackagePrivateClassesName() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { }");
-        ASTImportDeclaration importNode =
-                ast.descendants(ASTImportDeclaration.class).first();
+        ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
         Map<String, String> violation = decorate(importNode);
         assertThat(violation, hasEntry(PACKAGE_NAME, "pkg"));
@@ -157,15 +154,13 @@ class JavaViolationDecoratorTest {
     @Test
     void testInnerClass() {
         ASTCompilationUnit ast = parse("class Foo { int a; class Bar { int a; } }");
-        List<ASTClassDeclaration> classes =
-                ast.descendants(ASTClassDeclaration.class).toList();
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).toList();
         assertEquals(2, classes.size());
 
         assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
         assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Bar"));
 
-        List<ASTFieldDeclaration> fields =
-                ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
+        List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
         assertEquals(2, fields.size());
 
         assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
@@ -175,8 +170,7 @@ class JavaViolationDecoratorTest {
     @Test
     void testInitializers() {
         ASTCompilationUnit ast = parse("class Foo { int a = 1;  { int x = 2; } }");
-        List<ASTNumericLiteral> expressions =
-                ast.descendants(ASTNumericLiteral.class).toList();
+        List<ASTNumericLiteral> expressions = ast.descendants(ASTNumericLiteral.class).toList();
         assertEquals(2, expressions.size());
 
         assertThat(decorate(expressions.get(0)), hasEntry(CLASS_NAME, "Foo"));
@@ -185,4 +179,5 @@ class JavaViolationDecoratorTest {
         assertThat(decorate(expressions.get(1)), hasEntry(CLASS_NAME, "Foo"));
         assertThat(decorate(expressions.get(1)), hasEntry(VARIABLE_NAME, "x"));
     }
+
 }

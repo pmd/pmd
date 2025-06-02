@@ -62,9 +62,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             varAccess = (ASTVariableAccess) firstArgumentExpression;
         }
 
-        if (varAccess != null
-                && varAccess.getSignature() != null
-                && varAccess.getSignature().getSymbol() != null) {
+        if (varAccess != null && varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
             // named variable or method call on named variable found
             ASTVariableId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
             validateProperKeyArgument(data, varDecl.getInitializer());
@@ -77,10 +75,8 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             }
         } else {
             // string literal
-            ASTStringLiteral literal = firstArgumentExpression
-                    .descendantsOrSelf()
-                    .filterIs(ASTStringLiteral.class)
-                    .first();
+            ASTStringLiteral literal = firstArgumentExpression.descendantsOrSelf()
+                    .filterIs(ASTStringLiteral.class).first();
             if (literal != null) {
                 asCtx(data).addViolation(literal);
             }
@@ -89,11 +85,11 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
 
     private void validateVarUsages(Object data, ASTVariableId varDecl) {
         varDecl.getLocalUsages().stream()
-                .filter(u -> u.getAccessType() == AccessType.WRITE)
-                .filter(u -> u.getParent() instanceof ASTAssignmentExpression)
-                .forEach(usage -> {
-                    ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
-                    validateProperKeyArgument(data, assignment.getRightOperand());
-                });
+            .filter(u -> u.getAccessType() == AccessType.WRITE)
+            .filter(u -> u.getParent() instanceof ASTAssignmentExpression)
+            .forEach(usage -> {
+                ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
+                validateProperKeyArgument(data, assignment.getRightOperand());
+            });
     }
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -19,4 +20,6 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public interface ASTTopLevelDeclaration extends JavaNode {}
+public interface ASTTopLevelDeclaration extends JavaNode {
+
+}

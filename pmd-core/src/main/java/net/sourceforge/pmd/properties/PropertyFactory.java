@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.properties;
 
 import static java.util.Arrays.asList;
@@ -12,14 +13,16 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
-// @formatter:off
+//@formatter:off
 /**
  * Provides factory methods for common property types.
  * Note: from 7.0.0 on, this will be the only way to
@@ -77,8 +80,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * @author Clément Fournier
  * @since 6.10.0
  */
-// @formatter:on
+//@formatter:on
 public final class PropertyFactory {
+
 
     /**
      * Default delimiter for all properties. Note that in PMD 6 this was
@@ -88,7 +92,11 @@ public final class PropertyFactory {
      */
     public static final char DEFAULT_DELIMITER = ',';
 
-    private PropertyFactory() {}
+
+    private PropertyFactory() {
+
+    }
+
 
     /**
      * Returns a builder for an integer property. The property descriptor
@@ -111,6 +119,7 @@ public final class PropertyFactory {
         return new GenericPropertyBuilder<>(name, PropertyParsingUtil.INTEGER);
     }
 
+
     /**
      * Returns a builder for a property having as value a list of integers. The
      * format of the individual items is the same as for {@linkplain #intProperty(String) intProperty}.
@@ -122,6 +131,7 @@ public final class PropertyFactory {
     public static GenericCollectionPropertyBuilder<Integer, List<Integer>> intListProperty(String name) {
         return intProperty(name).toList();
     }
+
 
     /**
      * Returns a builder for a long integer property. The property descriptor
@@ -146,6 +156,7 @@ public final class PropertyFactory {
         return new GenericPropertyBuilder<>(name, PropertyParsingUtil.LONG);
     }
 
+
     /**
      * Returns a builder for a property having as value a list of long integers. The
      * format of the individual items is the same as for {@linkplain #longIntProperty(String)} longIntProperty}.
@@ -157,6 +168,7 @@ public final class PropertyFactory {
     public static GenericCollectionPropertyBuilder<Long, List<Long>> longIntListProperty(String name) {
         return longIntProperty(name).toList();
     }
+
 
     /**
      * Returns a builder for a double property. The property descriptor
@@ -176,6 +188,7 @@ public final class PropertyFactory {
         return new GenericPropertyBuilder<>(name, PropertyParsingUtil.DOUBLE);
     }
 
+
     /**
      * Returns a builder for a property having as value a list of decimal numbers. The
      * format of the individual items is the same as for {@linkplain #doubleProperty(String) doubleProperty}.
@@ -187,6 +200,7 @@ public final class PropertyFactory {
     public static GenericCollectionPropertyBuilder<Double, List<Double>> doubleListProperty(String name) {
         return doubleProperty(name).toList();
     }
+
 
     /**
      * Returns a builder for a regex property. The value type of such
@@ -202,6 +216,7 @@ public final class PropertyFactory {
     public static RegexPropertyBuilder regexProperty(String name) {
         return new RegexPropertyBuilder(name);
     }
+
 
     /**
      * Returns a builder for a string property. The property descriptor
@@ -231,6 +246,7 @@ public final class PropertyFactory {
         return stringProperty(name).toList();
     }
 
+
     /**
      * Returns a builder for a character property. The property descriptor
      * will accept any single character string. No unescaping is performed
@@ -248,6 +264,7 @@ public final class PropertyFactory {
         return new GenericPropertyBuilder<>(name, PropertyParsingUtil.CHARACTER);
     }
 
+
     /**
      * Returns a builder for a property having as value a list of characters. The
      * format of the individual items is the same as for {@linkplain #charProperty(String) charProperty}.
@@ -259,6 +276,7 @@ public final class PropertyFactory {
     public static GenericCollectionPropertyBuilder<Character, List<Character>> charListProperty(String name) {
         return charProperty(name).toList();
     }
+
 
     /**
      * Returns a builder for a boolean property. The boolean is parsed from
@@ -291,7 +309,9 @@ public final class PropertyFactory {
      */
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         PropertySerializer<T> parser = enumerationParser(
-                nameToValue, t -> Objects.requireNonNull(CollectionUtil.getKeyOfValue(nameToValue, t)));
+            nameToValue,
+            t -> Objects.requireNonNull(CollectionUtil.getKeyOfValue(nameToValue, t))
+        );
         return new GenericPropertyBuilder<>(name, parser);
     }
 
@@ -325,15 +345,17 @@ public final class PropertyFactory {
      * @throws IllegalArgumentException If the label maker returns null on some constant
      * @throws IllegalStateException    If the label maker maps two constants to the same label
      */
-    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(
-            String name, Class<T> enumClass, Function<? super T, @NonNull String> labelMaker) {
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name,
+                                                                             Class<T> enumClass,
+                                                                             Function<? super T, @NonNull String> labelMaker) {
         // don't use a merge function, so that it throws if multiple
         // values have the same key
-        Map<String, T> labelsToValues =
-                Arrays.stream(enumClass.getEnumConstants()).collect(Collectors.toMap(labelMaker, t -> t));
+        Map<String, T> labelsToValues = Arrays.stream(enumClass.getEnumConstants())
+                                              .collect(Collectors.toMap(labelMaker, t -> t));
 
         return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, labelMaker));
     }
+
 
     /**
      * Returns a builder for a property having as value a list of {@code <T>}. The
@@ -345,10 +367,10 @@ public final class PropertyFactory {
      *
      * @return A new builder
      */
-    public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(
-            String name, Map<String, T> nameToValue) {
+    public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
         return enumProperty(name, nameToValue).toList();
     }
+
 
     /**
      * Returns a builder for a property having as value a list of {@code <T>}. The
@@ -361,9 +383,10 @@ public final class PropertyFactory {
      *
      * @return A new builder
      */
-    public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(
-            String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
+    public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
         Map<String, T> enumMap = CollectionUtil.associateBy(asList(enumClass.getEnumConstants()), labelMaker);
         return enumListProperty(name, enumMap);
     }
+
+
 }

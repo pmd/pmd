@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Set;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * A node that owns a {@linkplain ASTModifierList modifier list}.
@@ -32,12 +34,14 @@ public interface ModifierOwner extends Annotatable {
         return getModifiers().children(ASTAnnotation.class);
     }
 
+
     /**
      * Returns the node representing the modifier list of this node.
      */
     default @NonNull ASTModifierList getModifiers() {
         return firstChild(ASTModifierList.class);
     }
+
 
     /**
      * Returns the visibility corresponding to the {@link ASTModifierList#getEffectiveModifiers() effective modifiers}.
@@ -93,6 +97,7 @@ public interface ModifierOwner extends Annotatable {
         return getModifiers().hasAll(mod1, mod);
     }
 
+
     /**
      * Returns true if this node has <i>all</i> the given modifiers
      * explicitly written in the source.
@@ -110,6 +115,7 @@ public interface ModifierOwner extends Annotatable {
     default boolean hasVisibility(Visibility visibility) {
         return getVisibility() == visibility;
     }
+
 
     /**
      * Represents the visibility of a declaration.

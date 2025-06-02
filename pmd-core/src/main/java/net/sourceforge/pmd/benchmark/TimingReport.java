@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.benchmark;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import net.sourceforge.pmd.benchmark.TimeTracker.TimedOperationKey;
 import net.sourceforge.pmd.benchmark.TimeTracker.TimedResult;
 
@@ -17,8 +19,7 @@ public class TimingReport {
     private final long wallClockMillis;
     private final Map<TimedOperationKey, TimedResult> results;
 
-    /* package */ TimingReport(
-            final long wallClockMillis, final Map<TimedOperationKey, TimedResult> accumulatedResults) {
+    /* package */ TimingReport(final long wallClockMillis, final Map<TimedOperationKey, TimedResult> accumulatedResults) {
         this.wallClockMillis = wallClockMillis;
         results = accumulatedResults;
     }

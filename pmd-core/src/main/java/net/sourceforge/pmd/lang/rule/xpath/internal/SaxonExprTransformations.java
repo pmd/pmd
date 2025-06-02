@@ -2,9 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.Collections;
+
 import net.sf.saxon.expr.AxisExpression;
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.FilterExpression;
@@ -47,15 +49,15 @@ final class SaxonExprTransformations {
             Expression right = super.visit(e.getRhsExpression());
 
             if (right instanceof AxisExpression
-                    && ((AxisExpression) right).getAxis() == AxisInfo.CHILD
-                    && left instanceof SlashExpression) {
+                && ((AxisExpression) right).getAxis() == AxisInfo.CHILD
+                && left instanceof SlashExpression) {
 
                 Expression leftLeft = ((SlashExpression) left).getLhsExpression();
                 Expression leftRight = ((SlashExpression) left).getRhsExpression();
 
                 if (leftLeft instanceof RootExpression && leftRight instanceof AxisExpression) {
                     if (((AxisExpression) leftRight).getAxis() == AxisInfo.DESCENDANT_OR_SELF
-                            && isAnyNode(((AxisExpression) leftRight).getNodeTest())) {
+                        && isAnyNode(((AxisExpression) leftRight).getNodeTest())) {
                         // ok!
                         left = leftLeft; // the root expression
                         right = new AxisExpression(AxisInfo.DESCENDANT, ((AxisExpression) right).getNodeTest());
@@ -92,7 +94,7 @@ final class SaxonExprTransformations {
      * Splits a venn expression with the union operator into single expressions.
      *
      * <p>E.g. "//A | //B | //C" will result in 3 expressions "//A", "//B", and "//C".
-     *
+     * 
      * This split will skip into any top-level lets. So, for "let $a := e1 in (e2 | e3)"
      * this will return the subexpression e2 and e3. To ensure the splits are actually equivalent
      * you will have to call {@link #copyTopLevelLets(Expression, Expression)} on each subexpression
@@ -110,7 +112,7 @@ final class SaxonExprTransformations {
     /**
      * Wraps a given subexpression in all top-level lets from the original.
      * If the subexpression matches the original, then nothing is done.
-     *
+     * 
      * @param subexpr The subexpression that has been manipulated.
      * @param original The original expression from which it was obtained by calling {@link #splitUnions(Expression)}.
      * @return The subexpression, wrapped in a copy of all top-level let expression from the original.
@@ -125,23 +127,20 @@ final class SaxonExprTransformations {
             final LetExpression letSubexpr = (LetExpression) subexpr;
             final LetExpression letOriginal = (LetExpression) original;
             if (letOriginal.getVariableQName().equals(letSubexpr.getVariableQName())
-                    && letSubexpr
-                            .getSequence()
-                            .toString()
-                            .equals(letOriginal.getSequence().toString())) {
+                    && letSubexpr.getSequence().toString().equals(letOriginal.getSequence().toString())) {
                 return subexpr;
             }
         }
-
+        
         final SaxonExprVisitor topLevelLetCopier = new SaxonExprVisitor() {
-
+            
             @Override
             public Expression visit(LetExpression e) {
                 // keep copying
                 if (e.getAction() instanceof LetExpression) {
                     return super.visit(e);
                 }
-
+                
                 // Manually craft the inner-most LetExpression
                 Expression sequence = visit(e.getSequence());
                 LetExpression result = new LetExpression();
@@ -153,11 +152,11 @@ final class SaxonExprTransformations {
                 return result;
             }
         };
-
+        
         if (original instanceof LetExpression) {
             return topLevelLetCopier.visit(original);
         }
-
+        
         return subexpr;
     }
 }

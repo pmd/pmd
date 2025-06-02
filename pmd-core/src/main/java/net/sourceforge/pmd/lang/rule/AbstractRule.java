@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule;
 
 import java.lang.reflect.Constructor;
@@ -11,6 +12,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.Node;
@@ -19,7 +23,6 @@ import net.sourceforge.pmd.properties.AbstractPropertySource;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.InternalApiBridge;
 import net.sourceforge.pmd.reporting.RuleContext;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Basic abstract implementation of all parser-independent methods of the Rule
@@ -64,8 +67,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     @Override
     public void setLanguage(Language language) {
         if (this.language != null && !this.language.equals(language)) {
-            throw new UnsupportedOperationException("The Language for Rule class "
-                    + this.getClass().getName() + " is immutable and cannot be changed.");
+            throw new UnsupportedOperationException("The Language for Rule class " + this.getClass().getName()
+                    + " is immutable and cannot be changed.");
         }
         this.language = language;
     }
@@ -77,10 +80,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMinimumLanguageVersion(LanguageVersion minimumLanguageVersion) {
-        if (minimumLanguageVersion != null
-                && !minimumLanguageVersion.getLanguage().equals(getLanguage())) {
-            throw new IllegalArgumentException(
-                    "Version " + minimumLanguageVersion + " does not belong to language " + getLanguage());
+        if (minimumLanguageVersion != null && !minimumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + minimumLanguageVersion + " does not belong to language " + getLanguage());
         }
         this.minimumLanguageVersion = minimumLanguageVersion;
     }
@@ -92,10 +93,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     @Override
     public void setMaximumLanguageVersion(LanguageVersion maximumLanguageVersion) {
-        if (maximumLanguageVersion != null
-                && !maximumLanguageVersion.getLanguage().equals(getLanguage())) {
-            throw new IllegalArgumentException(
-                    "Version " + maximumLanguageVersion + " does not belong to language " + getLanguage());
+        if (maximumLanguageVersion != null && !maximumLanguageVersion.getLanguage().equals(getLanguage())) {
+            throw new IllegalArgumentException("Version " + maximumLanguageVersion + " does not belong to language " + getLanguage());
         }
         this.maximumLanguageVersion = maximumLanguageVersion;
     }
@@ -201,6 +200,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
         this.priority = priority;
     }
 
+
     private Set<Class<? extends Node>> getClassRuleChainVisits() {
         if (classRuleChainVisits.isEmpty() && ruleChainVisits.isEmpty()) {
             return Collections.singleton(RootNode.class);
@@ -223,7 +223,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
     @NonNull
     protected RuleTargetSelector buildTargetSelector() {
         Set<Class<? extends Node>> crvs = getClassRuleChainVisits();
-        return crvs.isEmpty() ? RuleTargetSelector.forRootOnly() : RuleTargetSelector.forTypes(crvs);
+        return crvs.isEmpty() ? RuleTargetSelector.forRootOnly()
+                              : RuleTargetSelector.forTypes(crvs);
     }
 
     @Override
@@ -252,7 +253,8 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      */
     protected final RuleContext asCtx(Object ctx) {
         if (ctx instanceof RuleContext) {
-            assert isThisRule(InternalApiBridge.getRule((RuleContext) ctx)) : "not an appropriate rule context!";
+            assert isThisRule(InternalApiBridge.getRule((RuleContext) ctx))
+                : "not an appropriate rule context!";
             return (RuleContext) ctx;
         } else {
             throw new ClassCastException("Unexpected context object! " + ctx);
@@ -261,7 +263,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
     private boolean isThisRule(Rule rule) {
         return rule == this // NOPMD CompareObjectsWithEquals
-                || rule instanceof RuleReference && this.isThisRule(((RuleReference) rule).getRule());
+            || rule instanceof RuleReference && this.isThisRule(((RuleReference) rule).getRule());
     }
 
     /**
@@ -301,10 +303,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
             Constructor<? extends AbstractRule> declaredConstructor = getClass().getDeclaredConstructor();
             declaredConstructor.setAccessible(true);
             result = declaredConstructor.newInstance();
-        } catch (InstantiationException
-                | IllegalAccessException
-                | NoSuchMethodException
-                | InvocationTargetException ignored) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException ignored) {
             // Can't happen... we already have an instance
             throw new RuntimeException(ignored); // in case it happens anyway, something is really wrong...
         }

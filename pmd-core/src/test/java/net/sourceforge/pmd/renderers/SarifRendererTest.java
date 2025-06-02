@@ -6,16 +6,19 @@ package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.nio.charset.StandardCharsets;
+import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.reporting.FileAnalysisListener;
+import net.sourceforge.pmd.reporting.Report;
+
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.nio.charset.StandardCharsets;
-import java.util.function.Consumer;
-import net.sourceforge.pmd.lang.rule.Rule;
-import net.sourceforge.pmd.reporting.FileAnalysisListener;
-import net.sourceforge.pmd.reporting.Report;
-import org.junit.jupiter.api.Test;
 
 class SarifRendererTest extends AbstractRendererTest {
 
@@ -50,12 +53,10 @@ class SarifRendererTest extends AbstractRendererTest {
     @Override
     String getExpectedError(Report.ProcessingError error) {
         String expected = readFile("expected-error.sarif.json");
-        expected = expected.replace(
-                "###REPLACE_ME###",
-                error.getDetail()
-                        .replaceAll("\r", "\\\\r")
-                        .replaceAll("\n", "\\\\n")
-                        .replaceAll("\t", "\\\\t"));
+        expected = expected.replace("###REPLACE_ME###", error.getDetail()
+                .replaceAll("\r", "\\\\r")
+                .replaceAll("\n", "\\\\n")
+                .replaceAll("\t", "\\\\t"));
         return expected;
     }
 
@@ -67,12 +68,10 @@ class SarifRendererTest extends AbstractRendererTest {
     @Override
     String getExpectedErrorWithoutMessage(Report.ProcessingError error) {
         String expected = readFile("expected-error-nomessage.sarif.json");
-        expected = expected.replace(
-                "###REPLACE_ME###",
-                error.getDetail()
-                        .replaceAll("\r", "\\\\r")
-                        .replaceAll("\n", "\\\\n")
-                        .replaceAll("\t", "\\\\t"));
+        expected = expected.replace("###REPLACE_ME###", error.getDetail()
+                .replaceAll("\r", "\\\\r")
+                .replaceAll("\n", "\\\\n")
+                .replaceAll("\t", "\\\\t"));
         return expected;
     }
 
@@ -84,7 +83,7 @@ class SarifRendererTest extends AbstractRendererTest {
 
     /**
      * Multiple occurrences of the same rule should be reported as individual results.
-     *
+     * 
      * @see <a href="https://github.com/pmd/pmd/issues/3768"> [core] SARIF formatter reports multiple locations
      *      when it should report multiple results #3768</a>
      */

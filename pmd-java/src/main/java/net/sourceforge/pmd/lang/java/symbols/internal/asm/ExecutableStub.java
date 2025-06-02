@@ -7,6 +7,15 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
+import org.pcollections.HashTreePSet;
+import org.pcollections.IntTreePMap;
+import org.pcollections.PMap;
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
@@ -21,13 +30,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
-import org.pcollections.HashTreePSet;
-import org.pcollections.IntTreePMap;
-import org.pcollections.PMap;
-import org.pcollections.PSet;
 
 abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbol, TypeAnnotationReceiver {
 
@@ -36,14 +38,13 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     private List<JFormalParamSymbol> params;
     private PMap<Integer, PSet<SymAnnot>> parameterAnnotations = IntTreePMap.empty();
 
-    protected ExecutableStub(
-            ClassStub owner,
-            String simpleName,
-            int accessFlags,
-            String descriptor,
-            @Nullable String signature,
-            @Nullable String[] exceptions,
-            boolean skipFirstParam) {
+    protected ExecutableStub(ClassStub owner,
+                             String simpleName,
+                             int accessFlags,
+                             String descriptor,
+                             @Nullable String signature,
+                             @Nullable String[] exceptions,
+                             boolean skipFirstParam) {
         super(owner, simpleName, accessFlags);
         this.descriptor = descriptor;
         this.type = new LazyMethodType(this, descriptor, signature, exceptions, skipFirstParam);
@@ -52,6 +53,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     boolean matches(String name, String descriptor) {
         return this.nameEquals(name) && descriptor.equals(this.descriptor);
     }
+
 
     @Override
     public List<JTypeVar> getTypeParameters() {
@@ -119,9 +121,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     void addParameterAnnotation(int paramIndex, SymbolicValue.SymAnnot annot) {
-        PSet<SymAnnot> newAnnots = parameterAnnotations
-                .getOrDefault(paramIndex, HashTreePSet.empty())
-                .plus(annot);
+        PSet<SymAnnot> newAnnots = parameterAnnotations.getOrDefault(paramIndex, HashTreePSet.empty()).plus(annot);
         parameterAnnotations = parameterAnnotations.plus(paramIndex, newAnnots);
     }
 
@@ -185,13 +185,12 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
         private @Nullable SymbolicValue defaultAnnotValue;
 
-        protected MethodStub(
-                ClassStub owner,
-                String simpleName,
-                int accessFlags,
-                String descriptor,
-                @Nullable String signature,
-                @Nullable String[] exceptions) {
+        protected MethodStub(ClassStub owner,
+                             String simpleName,
+                             int accessFlags,
+                             String descriptor,
+                             @Nullable String signature,
+                             @Nullable String[] exceptions) {
             super(owner, simpleName, accessFlags, descriptor, signature, exceptions, false);
         }
 
@@ -228,21 +227,13 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
     static class CtorStub extends ExecutableStub implements JConstructorSymbol {
 
-        protected CtorStub(
-                ClassStub owner,
-                int accessFlags,
-                String descriptor,
-                @Nullable String signature,
-                @Nullable String[] exceptions,
-                boolean isInnerNonStaticClass) {
-            super(
-                    owner,
-                    JConstructorSymbol.CTOR_NAME,
-                    accessFlags,
-                    descriptor,
-                    signature,
-                    exceptions,
-                    isInnerNonStaticClass);
+        protected CtorStub(ClassStub owner,
+                           int accessFlags,
+                           String descriptor,
+                           @Nullable String signature,
+                           @Nullable String[] exceptions,
+                           boolean isInnerNonStaticClass) {
+            super(owner, JConstructorSymbol.CTOR_NAME, accessFlags, descriptor, signature, exceptions, isInnerNonStaticClass);
         }
 
         @Override
@@ -259,5 +250,6 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
         public boolean equals(Object obj) {
             return SymbolEquality.CONSTRUCTOR.equals(this, obj);
         }
+
     }
 }

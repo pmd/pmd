@@ -7,14 +7,16 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Unresolved <i>external reference</i> to a class.
@@ -29,7 +31,9 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
     private List<JTypeVar> tparams = Collections.emptyList();
     private List<UnresolvedClassImpl> childClasses = Collections.emptyList();
 
-    FlexibleUnresolvedClassImpl(TypeSystem ts, @Nullable JClassSymbol enclosing, String canonicalName) {
+    FlexibleUnresolvedClassImpl(TypeSystem ts,
+                                @Nullable JClassSymbol enclosing,
+                                String canonicalName) {
         super(ts, enclosing, canonicalName);
     }
 
@@ -64,7 +68,7 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
             }
         }
         FlexibleUnresolvedClassImpl newChild =
-                new FlexibleUnresolvedClassImpl(getTypeSystem(), this, getCanonicalName() + '.' + simpleName);
+            new FlexibleUnresolvedClassImpl(getTypeSystem(), this, getCanonicalName() + '.' + simpleName);
         childClasses.add(newChild);
         return newChild;
     }
@@ -115,5 +119,6 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
         public JTypeParameterOwnerSymbol getDeclaringSymbol() {
             return owner;
         }
+
     }
 }

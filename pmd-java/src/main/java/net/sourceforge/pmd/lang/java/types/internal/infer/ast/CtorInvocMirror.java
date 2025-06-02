@@ -2,12 +2,17 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.lazyFilterAccessible;
 
 import java.util.Collections;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
@@ -21,17 +26,11 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.CtorInvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 import net.sourceforge.pmd.util.IteratorUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements CtorInvocationMirror {
 
-    CtorInvocMirror(
-            JavaExprMirrors mirrors,
-            ASTConstructorCall call,
-            boolean mustBeStandalone,
-            ExprMirror parent,
-            MirrorMaker subexprMaker) {
+    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call,
+                    boolean mustBeStandalone, ExprMirror parent, MirrorMaker subexprMaker) {
         super(mirrors, call, mustBeStandalone, parent, subexprMaker);
     }
 
@@ -74,8 +73,7 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         if (myNode.usesDiamondTypeArgs()) {
             if (myNode.getParent() instanceof ASTVariableDeclarator) {
                 // Foo<String> s = new Foo<>();
-                ASTType explicitType =
-                        ((ASTVariableDeclarator) myNode.getParent()).getVarId().getTypeNode();
+                ASTType explicitType = ((ASTVariableDeclarator) myNode.getParent()).getVarId().getTypeNode();
                 if (explicitType != null) {
                     return explicitType.getTypeMirror();
                 }
@@ -83,17 +81,18 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
             if (newT instanceof JClassType) {
                 JClassType classt = (JClassType) newT;
                 // eg new Foo<>() -> Foo</*error*/>
-                List<JTypeMirror> fakeTypeArgs =
-                        Collections.nCopies(classt.getSymbol().getTypeParameterCount(), factory.ts.ERROR);
+                List<JTypeMirror> fakeTypeArgs = Collections.nCopies(classt.getSymbol().getTypeParameterCount(), factory.ts.ERROR);
                 newT = classt.withTypeArguments(fakeTypeArgs);
             }
         }
         return newT;
     }
 
+
     private List<JMethodSig> getVisibleCandidates(@NonNull JTypeMirror newType) {
         if (myNode.isAnonymousClass()) {
-            return newType.isInterface() ? myNode.getTypeSystem().OBJECT.getConstructors() : newType.getConstructors();
+            return newType.isInterface() ? myNode.getTypeSystem().OBJECT.getConstructors()
+                                         : newType.getConstructors();
         }
         return newType.getConstructors();
     }
@@ -132,8 +131,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
     static class EnumCtorInvocMirror extends BaseInvocMirror<ASTEnumConstant> implements CtorInvocationMirror {
 
-        EnumCtorInvocMirror(
-                JavaExprMirrors mirrors, ASTEnumConstant call, ExprMirror parent, MirrorMaker subexprMaker) {
+
+        EnumCtorInvocMirror(JavaExprMirrors mirrors, ASTEnumConstant call, ExprMirror parent, MirrorMaker subexprMaker) {
             super(mirrors, call, false, parent, subexprMaker);
         }
 
@@ -163,14 +162,10 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
     }
 
-    static class ExplicitCtorInvocMirror extends BaseInvocMirror<ASTExplicitConstructorInvocation>
-            implements CtorInvocationMirror {
+    static class ExplicitCtorInvocMirror extends BaseInvocMirror<ASTExplicitConstructorInvocation> implements CtorInvocationMirror {
 
-        ExplicitCtorInvocMirror(
-                JavaExprMirrors mirrors,
-                ASTExplicitConstructorInvocation call,
-                ExprMirror parent,
-                MirrorMaker subexprMaker) {
+
+        ExplicitCtorInvocMirror(JavaExprMirrors mirrors, ASTExplicitConstructorInvocation call, ExprMirror parent, MirrorMaker subexprMaker) {
             super(mirrors, call, false, parent, subexprMaker);
         }
 
@@ -180,11 +175,9 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
                 return getEnclosingType().getConstructors();
             }
             return IteratorUtil.mapIterator(
-                    newType.getConstructors(),
-                    iter -> IteratorUtil.filter(
-                            iter,
-                            ctor -> JavaResolvers.isAccessibleIn(
-                                    getEnclosingType().getSymbol().getNestRoot(), ctor.getSymbol(), true)));
+                newType.getConstructors(),
+                iter -> IteratorUtil.filter(iter, ctor -> JavaResolvers.isAccessibleIn(getEnclosingType().getSymbol().getNestRoot(), ctor.getSymbol(), true))
+            );
         }
 
         @Override
@@ -215,5 +208,6 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         public boolean isDiamond() {
             return false;
         }
+
     }
 }

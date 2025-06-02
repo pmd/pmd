@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Groups {@linkplain ASTMethodCall method} and {@linkplain ASTConstructorCall constructor call},
@@ -31,11 +32,13 @@ public interface InvocationNode extends TypeNode, MethodUsage {
     @Nullable
     ASTArgumentList getArguments();
 
+
     /**
      * Returns the explicit type arguments if they exist.
      */
     @Nullable
     ASTTypeArguments getExplicitTypeArguments();
+
 
     /**
      * Gets the type of the method or constructor that is called by
@@ -44,4 +47,6 @@ public interface InvocationNode extends TypeNode, MethodUsage {
     default JMethodSig getMethodType() {
         return getOverloadSelectionInfo().getMethodType();
     }
+
+
 }

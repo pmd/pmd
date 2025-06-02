@@ -29,6 +29,7 @@ abstract class ParseLock {
         getFinalStatus();
     }
 
+
     private void logParseLockTrace(String prefix) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("{} {}: {}", Thread.currentThread().getName(), String.format("%-15s", prefix), this);
@@ -36,8 +37,9 @@ abstract class ParseLock {
     }
 
     void checkWeAreNotParsingAnother() {
-        // by default do nothing, overridden by CheckedParseLock
+       // by default do nothing, overridden by CheckedParseLock
     }
+
 
     void releaseLock() {
         // by default do nothing, overridden by CheckedParseLock
@@ -148,13 +150,12 @@ abstract class ParseLock {
             }
         }
 
+
         @Override
         final void releaseLock() {
             if (isAssertEnabled()) {
                 ParseLock lock = CURRENT_LOCK.get();
-                assert lock == this
-                        : "Tried to release different parse lock " + lock + " from "
-                                + this; // NOPMD CompareObjectsWithEquals
+                assert lock == this : "Tried to release different parse lock " + lock + " from " + this; // NOPMD CompareObjectsWithEquals
                 CURRENT_LOCK.remove();
             }
         }

@@ -1,17 +1,20 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.lang.plsql.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
 import net.sourceforge.pmd.lang.symboltable.NameDeclaration;
 import net.sourceforge.pmd.lang.symboltable.Scope;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class OccurrenceFinder extends PlsqlVisitorBase<Object, Object> {
     private static final Logger LOG = LoggerFactory.getLogger(OccurrenceFinder.class);
@@ -45,10 +48,8 @@ public class OccurrenceFinder extends PlsqlVisitorBase<Object, Object> {
                     // there
                     Scope scope = decl.getScope();
                     if (null == scope) {
-                        LOG.trace(
-                                "NameOccurrence has no Scope:{}=>{}",
-                                decl.getClass().getCanonicalName(),
-                                decl.getImage());
+                        LOG.trace("NameOccurrence has no Scope:{}=>{}",
+                                decl.getClass().getCanonicalName(), decl.getImage());
                         break;
                     }
                     search.execute(scope);
@@ -76,4 +77,5 @@ public class OccurrenceFinder extends PlsqlVisitorBase<Object, Object> {
         }
         return super.visit(node, data);
     }
+
 }

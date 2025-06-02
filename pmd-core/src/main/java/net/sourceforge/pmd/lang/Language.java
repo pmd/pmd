@@ -1,16 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import java.util.List;
 import java.util.ServiceLoader;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a language module, and provides access to language-specific
@@ -31,6 +34,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see LanguageVersion
  */
 public interface Language extends Comparable<Language> {
+
 
     /**
      * Returns the full name of this Language. This is generally the name of this
@@ -173,8 +177,8 @@ public interface Language extends Comparable<Language> {
      *
      * @return The current default language version for this language.
      */
-    @NonNull
-    LanguageVersion getDefaultVersion();
+    @NonNull LanguageVersion getDefaultVersion();
+
 
     /**
      * Creates a new bundle of properties that will serve to configure
@@ -190,10 +194,12 @@ public interface Language extends Comparable<Language> {
         return new LanguagePropertyBundle(this);
     }
 
+
     /**
      * Returns a set of the IDs of languages that this language instance
      * depends on. Whenever this language is loaded into a {@link LanguageProcessorRegistry},
      * those dependencies need to be loaded as well.
      */
     Set<String> getDependencies();
+
 }

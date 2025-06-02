@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaClassSpecialization;
@@ -30,8 +31,7 @@ public class ASTClassDefinition extends AbstractModelicaNode {
         return specifier;
     }
 
-    private void checkSpecialization(
-            Class<? extends ModelicaNode> clauseClass, ModelicaClassSpecialization restriction) {
+    private void checkSpecialization(Class<? extends ModelicaNode> clauseClass, ModelicaClassSpecialization restriction) {
         if (prefixes.firstChild(clauseClass) != null) {
             assert specialization == null;
             specialization = restriction;

@@ -4,10 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+
 import java.util.Iterator;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * Those are some interfaces that are not published, but are used to keep
@@ -23,11 +26,13 @@ final class InternalInterfaces {
 
     interface OperatorLike {
 
+
         /**
          * Returns the token used to represent the type in source
          * code, e.g. {@code "+"} or {@code "*"}.
          */
         String getToken();
+
     }
 
     /** Just to share the method names. */
@@ -39,11 +44,13 @@ final class InternalInterfaces {
             return (ASTExpression) getChild(0);
         }
 
+
         /** Returns the right-hand side operand. */
         @NonNull
         default ASTExpression getRightOperand() {
             return (ASTExpression) getChild(1);
         }
+
 
         /** Returns the operator. */
         @NonNull
@@ -56,6 +63,7 @@ final class InternalInterfaces {
      */
     interface AtLeastOneChild extends JavaNode {
 
+
         /** Returns the first child of this node, never null. */
         @Override
         @NonNull
@@ -63,6 +71,7 @@ final class InternalInterfaces {
             assert getNumChildren() > 0;
             return getChild(0);
         }
+
 
         /** Returns the last child of this node, never null. */
         @Override
@@ -83,6 +92,7 @@ final class InternalInterfaces {
             }
             return (T) getChild(0);
         }
+
 
         @Override
         @Nullable
@@ -107,6 +117,7 @@ final class InternalInterfaces {
             assert getNumChildren() > 0 : "No children for node implementing AtLeastOneChild " + this;
             return (T) getChild(0);
         }
+
 
         /** Returns the last child of this node, never null. */
         @Override
@@ -133,6 +144,7 @@ final class InternalInterfaces {
             return children(ASTVariableDeclarator.class).children(ASTVariableId.class);
         }
 
+
         @Override
         default Iterator<ASTVariableId> iterator() {
             return getVarIds().iterator();
@@ -140,4 +152,5 @@ final class InternalInterfaces {
 
         ASTType getTypeNode();
     }
+
 }

@@ -8,6 +8,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
@@ -41,12 +47,11 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
 
-final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> implements JClassSymbol {
+
+final class AstClassSym
+    extends AbstractAstTParamOwner<ASTTypeDeclaration>
+    implements JClassSymbol {
 
     private final @Nullable JTypeParameterOwnerSymbol enclosing;
     private final List<JClassSymbol> declaredClasses;
@@ -59,7 +64,9 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
     private List<JClassSymbol> permittedSubclasses;
 
-    AstClassSym(ASTTypeDeclaration node, AstSymFactory factory, @Nullable JTypeParameterOwnerSymbol enclosing) {
+    AstClassSym(ASTTypeDeclaration node,
+                AstSymFactory factory,
+                @Nullable JTypeParameterOwnerSymbol enclosing) {
         super(node, factory);
         this.enclosing = enclosing;
 
@@ -74,12 +81,11 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         final List<JRecordComponentSymbol> recordComponents;
 
         if (isRecord()) {
-            ASTRecordComponentList components =
-                    Objects.requireNonNull(node.getRecordComponents(), "Null component list for " + node);
+            ASTRecordComponentList components = Objects.requireNonNull(node.getRecordComponents(),
+                                                                       "Null component list for " + node);
             recordComponents = mapComponentsToMutableList(factory, components, myFields);
 
-            JConstructorSymbol canonicalRecordCtor =
-                    ImplicitMemberSymbols.recordConstructor(this, recordComponents, components.isVarargs());
+            JConstructorSymbol canonicalRecordCtor = ImplicitMemberSymbols.recordConstructor(this, recordComponents, components.isVarargs());
             myCtors.add(canonicalRecordCtor);
             InternalApiBridge.setSymbol(components, canonicalRecordCtor);
 
@@ -89,11 +95,12 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
         if (isEnum()) {
             enumConstants = new ArrayList<>();
-            node.getEnumConstants().forEach(constant -> {
-                AstFieldSym fieldSym = new AstFieldSym(constant.getVarId(), factory, this);
-                enumConstants.add(fieldSym);
-                myFields.add(fieldSym);
-            });
+            node.getEnumConstants()
+                .forEach(constant -> {
+                    AstFieldSym fieldSym = new AstFieldSym(constant.getVarId(), factory, this);
+                    enumConstants.add(fieldSym);
+                    myFields.add(fieldSym);
+                });
         } else {
             enumConstants = null;
         }
@@ -116,6 +123,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
                 }
             }
         }
+        
 
         if (!recordComponents.isEmpty()) {
             // then the recordsComponents contains all record components
@@ -135,6 +143,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
             myMethods.add(ImplicitMemberSymbols.enumValueOf(this));
         }
 
+
         this.declaredClasses = myClasses;
         this.declaredMethods = myMethods;
         this.declaredCtors = myCtors;
@@ -142,11 +151,8 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
         this.recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
         this.annotAttributes = isAnnotation()
-                ? getDeclaredMethods().stream()
-                        .filter(JMethodSymbol::isAnnotationAttribute)
-                        .map(JElementSymbol::getSimpleName)
-                        .collect(CollectionUtil.toPersistentSet())
-                : HashTreePSet.empty();
+                               ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute).map(JElementSymbol::getSimpleName).collect(CollectionUtil.toPersistentSet())
+                               : HashTreePSet.empty();
     }
 
     public void processLombok(JavaAstProcessor processor) {
@@ -155,8 +161,10 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         }
     }
 
-    private List<JRecordComponentSymbol> mapComponentsToMutableList(
-            AstSymFactory factory, ASTRecordComponentList components, List<JFieldSymbol> fieldSyms) {
+
+    private List<JRecordComponentSymbol> mapComponentsToMutableList(AstSymFactory factory,
+                                                          ASTRecordComponentList components,
+                                                          List<JFieldSymbol> fieldSyms) {
         List<JRecordComponentSymbol> list = new ArrayList<>();
         for (ASTRecordComponent comp : components) {
             list.add(new AstRecordComponentSym(comp, factory, this));
@@ -169,6 +177,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
     public @NonNull String getSimpleName() {
         return node.getSimpleName();
     }
+
 
     @Override
     public @NonNull String getBinaryName() {
@@ -231,6 +240,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         return recordComponents;
     }
 
+
     @Override
     public List<JClassSymbol> getPermittedSubtypes() {
         // permitted subclasses are populated lazily because they require
@@ -238,17 +248,14 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         if (permittedSubclasses == null) {
             ASTPermitsList permits = node.getPermitsClause();
             if (permits != null) {
-                this.permittedSubclasses = permits.toList().stream()
-                        .map(it -> {
-                            JTypeDeclSymbol symbol = it.getTypeMirror().getSymbol();
-                            if (symbol instanceof JClassSymbol) {
-                                return (JClassSymbol) symbol;
-                            } else {
-                                return null;
-                            }
-                        })
-                        .filter(Objects::nonNull)
-                        .collect(CollectionUtil.toUnmodifiableList());
+                this.permittedSubclasses = permits.toList().stream().map(it -> {
+                    JTypeDeclSymbol symbol = it.getTypeMirror().getSymbol();
+                    if (symbol instanceof JClassSymbol) {
+                        return (JClassSymbol) symbol;
+                    } else {
+                        return null;
+                    }
+                }).filter(Objects::nonNull).collect(CollectionUtil.toUnmodifiableList());
             } else if (isSealed()) {
                 // sealed with no permits clause: infer permitted
                 this.permittedSubclasses = inferPermittedSubclasses();
@@ -281,19 +288,15 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
          */
         if (!isEnum()) {
             boolean isInterface = isInterface();
-            List<JClassSymbol> list = node.getRoot()
-                    .descendants(ASTTypeDeclaration.class)
-                    .crossFindBoundaries()
-                    .filter(it -> it.getCanonicalName() != null)
-                    .filter(it -> {
-                        if (isInterface) {
-                            return it.getSuperInterfaceTypeNodes()
-                                    .any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
-                        }
-                        return NodeStream.of(it.getSuperClassTypeNode())
-                                .any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
-                    })
-                    .toList(ASTTypeDeclaration::getSymbol);
+            List<JClassSymbol> list = node
+                .getRoot().descendants(ASTTypeDeclaration.class).crossFindBoundaries()
+                .filter(it -> it.getCanonicalName() != null)
+                .filter(it -> {
+                    if (isInterface) {
+                        return it.getSuperInterfaceTypeNodes().any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
+                    }
+                    return NodeStream.of(it.getSuperClassTypeNode()).any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
+                }).toList(ASTTypeDeclaration::getSymbol);
             return Collections.unmodifiableList(list);
         }
         return Collections.emptyList();
@@ -316,9 +319,9 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
             ASTClassType superClass = node.getSuperClassTypeNode();
             return superClass == null
-                    ? ts.OBJECT
-                    // this cast relies on the fact that the superclass is not a type variable
-                    : (JClassType) TypeOps.subst(superClass.getTypeMirror(), substitution);
+                   ? ts.OBJECT
+                   // this cast relies on the fact that the superclass is not a type variable
+                   : (JClassType) TypeOps.subst(superClass.getTypeMirror(), substitution);
 
         } else if (isAnonymousClass()) {
 
@@ -330,7 +333,9 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
                 @NonNull JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeMirror();
 
-                return sym instanceof JClassType && !sym.isInterface() ? (JClassType) sym : factory.types().OBJECT;
+                return sym instanceof JClassType && !sym.isInterface()
+                       ? (JClassType) sym
+                       : factory.types().OBJECT;
             }
 
         } else if (isRecord()) {
@@ -340,6 +345,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         } else if (isAnnotation()) {
 
             return ts.OBJECT;
+
         }
 
         return null;
@@ -354,13 +360,12 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         // We special case anonymous classes so as not to trigger overload resolution
         if (isAnonymousClass() && node.getParent() instanceof ASTConstructorCall) {
 
-            @NonNull
-            JTypeMirror sym =
-                    ((ASTConstructorCall) node.getParent()).getTypeNode().getTypeMirror();
+            @NonNull JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getTypeMirror();
 
             return sym instanceof JClassType && !sym.isInterface()
-                    ? ((JClassType) sym).getSymbol()
-                    : factory.types().OBJECT.getSymbol();
+                   ? ((JClassType) sym).getSymbol()
+                   : factory.types().OBJECT.getSymbol();
+
         }
 
         JClassType sup = getSuperclassType(Substitution.EMPTY);
@@ -369,13 +374,16 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
-        List<JClassSymbol> itfs = CollectionUtil.mapNotNull(node.getSuperInterfaceTypeNodes(), n -> {
-            // we play safe here, but the symbol is either a JClassSymbol
-            // or a JTypeParameterSymbol, with the latter case being a
-            // compile-time error
-            JTypeDeclSymbol sym = n.getTypeMirror().getSymbol();
-            return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
-        });
+        List<JClassSymbol> itfs = CollectionUtil.mapNotNull(
+            node.getSuperInterfaceTypeNodes(),
+            n -> {
+                // we play safe here, but the symbol is either a JClassSymbol
+                // or a JTypeParameterSymbol, with the latter case being a
+                // compile-time error
+                JTypeDeclSymbol sym = n.getTypeMirror().getSymbol();
+                return sym instanceof JClassSymbol ? (JClassSymbol) sym : null;
+            }
+        );
         if (isAnnotation()) {
             itfs = CollectionUtil.concatView(Collections.singletonList(factory.annotationSym()), itfs);
         }
@@ -384,8 +392,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
     @Override
     public List<JClassType> getSuperInterfaceTypes(Substitution subst) {
-        List<JClassType> itfs = CollectionUtil.map(
-                node.getSuperInterfaceTypeNodes(), n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
+        List<JClassType> itfs = CollectionUtil.map(node.getSuperInterfaceTypeNodes(), n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
         if (isAnnotation()) {
             itfs = CollectionUtil.concatView(Collections.singletonList(factory.annotationType()), itfs);
         }

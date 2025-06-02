@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
+
 
 /**
  * Represents array type dimensions. This node may occur in several contexts:
@@ -29,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
  * </pre>
  */
 public final class ASTArrayDimensions extends ASTNonEmptyList<ASTArrayTypeDim> {
+
 
     ASTArrayDimensions(int id) {
         super(id, ASTArrayTypeDim.class);

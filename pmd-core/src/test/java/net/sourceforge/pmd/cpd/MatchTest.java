@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -9,11 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Iterator;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
-import org.junit.jupiter.api.Test;
 
 class MatchTest {
 
@@ -21,8 +24,7 @@ class MatchTest {
     void testSimple() {
         String codeFragment1 = "1234567890";
         FileId fileName = CpdTestUtils.FOO_FILE_ID;
-        TextFile tf = TextFile.forCharSeq(
-                codeFragment1, fileName, DummyLanguageModule.getInstance().getDefaultVersion());
+        TextFile tf = TextFile.forCharSeq(codeFragment1, fileName, DummyLanguageModule.getInstance().getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(tf));
         Tokens tokens = new Tokens();
         Mark mark1 = new Mark(tokens.addToken("public", fileName, 1, 1, 1, 1 + "public".length()));
@@ -55,10 +57,11 @@ class MatchTest {
         Tokens tokens = new Tokens();
 
         FileId fileName = CpdTestUtils.FOO_FILE_ID;
-        Match m1 = new Match(
-                1, tokens.addToken("public", fileName, 1, 2, 3, 4), tokens.addToken("class", fileName, 1, 2, 3, 4));
-        Match m2 =
-                new Match(2, tokens.addToken("Foo", fileName, 1, 2, 3, 4), tokens.addToken("{", fileName, 1, 2, 3, 4));
+        Match m1 = new Match(1,
+                             tokens.addToken("public", fileName, 1, 2, 3, 4),
+                             tokens.addToken("class", fileName, 1, 2, 3, 4));
+        Match m2 = new Match(2, tokens.addToken("Foo", fileName, 1, 2, 3, 4),
+                             tokens.addToken("{", fileName, 1, 2, 3, 4));
         assertTrue(m2.compareTo(m1) < 0);
     }
 }

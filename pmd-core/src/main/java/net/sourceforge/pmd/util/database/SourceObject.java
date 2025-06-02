@@ -1,12 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import java.util.Locale;
-import net.sourceforge.pmd.lang.Language;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.lang.Language;
 
 /**
  * Instantiate the fields required to retrieve the source code.
@@ -21,12 +24,14 @@ public class SourceObject {
      * Database Schema/Owner - SYS,SYSTEM,SCOTT
      *
      */
+
     String schema;
 
     /**
      * Source Code Name - DBMS_METADATA
      *
      */
+
     String name;
 
     /**
@@ -34,12 +39,14 @@ public class SourceObject {
      * FUNCTION,PROCEDURE,TRIGGER,PACKAGE,PACKAGE_BODY,TYPE,TYPE_BODY,JAVA_SOURCE.
      *
      */
+
     String type;
 
     /**
      * Source Code Revision - Optional revision/version
      *
      */
+
     String revision;
 
     SourceObject(String schema, String type, String name, String revision) {
@@ -51,9 +58,8 @@ public class SourceObject {
 
     @Override
     public String toString() {
-        return String.format(
-                "schema=\"%s\",type=\"%s\",name=\"%s\",revision=\"%s\"",
-                this.getSchema(), this.getType(), this.getName(), this.getRevision());
+        return String.format("schema=\"%s\",type=\"%s\",name=\"%s\",revision=\"%s\"", this.getSchema(), this.getType(),
+                this.getName(), this.getRevision());
     }
 
     /**
@@ -152,6 +158,7 @@ public class SourceObject {
      * parser is used.
      */
     public String getPseudoFileName() {
-        return String.format("/Database/%s/%s/%s%s", getSchema(), getType(), getName(), getSuffixFromType());
+        return String.format("/Database/%s/%s/%s%s", getSchema(), getType(), getName(),
+                getSuffixFromType());
     }
 }

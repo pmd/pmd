@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
@@ -22,4 +23,5 @@ public interface ModelicaNode extends JjtreeNode<ModelicaNode> {
      * @return the scope defined by this node itself or the same as {@link #getContainingScope()} otherwise
      */
     ModelicaScope getMostSpecificScope();
+
 }

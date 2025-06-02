@@ -12,11 +12,16 @@ import java.util.List;
 
 public class Overloads {
 
-    private Overloads() {}
+    private Overloads() {
+    }
 
-    public static void ambig(String s1, String s2, CharSequence... args) {}
+    public static void ambig(String s1, String s2, CharSequence... args) {
 
-    public static void ambig(String s1, CharSequence... args) {}
+    }
+
+    public static void ambig(String s1, CharSequence... args) {
+
+    }
 
     @SafeVarargs
     public static <T> List<T> genericOf(T... args) {
@@ -26,6 +31,7 @@ public class Overloads {
     public static <T> List<T> genericOf(T arg) {
         return Collections.emptyList();
     }
+
 
     // these are disambiguated with phases
 

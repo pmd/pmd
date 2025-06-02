@@ -1,14 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A range of tokens in a source file, identified by a start and end
@@ -24,13 +27,11 @@ public final class Mark implements Comparable<Mark> {
         this.token = token;
     }
 
-    @NonNull
-    TokenEntry getToken() {
+    @NonNull TokenEntry getToken() {
         return this.token;
     }
 
-    @NonNull
-    TokenEntry getEndToken() {
+    @NonNull TokenEntry getEndToken() {
         return endToken == null ? token : endToken;
     }
 
@@ -40,10 +41,9 @@ public final class Mark implements Comparable<Mark> {
     public FileLocation getLocation() {
         TokenEntry endToken = getEndToken();
         return FileLocation.range(
-                getFileId(),
-                TextRange2d.range2d(
-                        token.getBeginLine(), token.getBeginColumn(),
-                        endToken.getEndLine(), endToken.getEndColumn()));
+            getFileId(),
+            TextRange2d.range2d(token.getBeginLine(), token.getBeginColumn(),
+                                endToken.getEndLine(), endToken.getEndColumn()));
     }
 
     FileId getFileId() {
@@ -59,9 +59,11 @@ public final class Mark implements Comparable<Mark> {
     }
 
     void setEndToken(@NonNull TokenEntry endToken) {
-        assert endToken.getFileId().equals(token.getFileId()) : "Tokens are not from the same file";
+        assert endToken.getFileId().equals(token.getFileId())
+            : "Tokens are not from the same file";
         this.endToken = endToken;
     }
+
 
     @Override
     public int hashCode() {
@@ -83,11 +85,13 @@ public final class Mark implements Comparable<Mark> {
             return false;
         }
         Mark other = (Mark) obj;
-        return Objects.equals(token, other.token) && Objects.equals(endToken, other.endToken);
+        return Objects.equals(token, other.token)
+            && Objects.equals(endToken, other.endToken);
     }
 
     @Override
     public int compareTo(Mark other) {
         return getToken().compareTo(other.getToken());
     }
+
 }

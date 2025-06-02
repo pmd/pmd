@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util;
 import java.util.AbstractList;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.commons.lang3.Validate;
 
 final class ConsList<T> extends AbstractList<T> {

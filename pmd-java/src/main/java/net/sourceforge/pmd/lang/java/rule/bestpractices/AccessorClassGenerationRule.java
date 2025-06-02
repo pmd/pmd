@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -43,8 +45,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         if (!node.isAnonymousClass()) {
-            AccessorMethodGenerationRule.checkMemberAccess(
-                    (RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
         return null;
     }
@@ -52,8 +53,7 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTExplicitConstructorInvocation node, Object data) {
         if (node.isSuper()) {
-            AccessorMethodGenerationRule.checkMemberAccess(
-                    (RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
         }
         return null;
     }

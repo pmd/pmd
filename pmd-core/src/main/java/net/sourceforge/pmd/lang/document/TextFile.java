@@ -10,11 +10,13 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForCharSeq;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForNio;
 import net.sourceforge.pmd.lang.document.TextFileBuilder.ForReader;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents some location containing character data. Despite the name,
@@ -27,6 +29,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  * about incremental edition (eg replacing a single region of text).
  */
 public interface TextFile extends Closeable {
+
 
     /**
      * Returns the language version which should be used to process this
@@ -41,6 +44,7 @@ public interface TextFile extends Closeable {
     @NonNull
     LanguageVersion getLanguageVersion();
 
+
     /**
      * Returns an identifier for this file. This should not
      * be interpreted as a {@link File}, it may not be a file on this
@@ -49,6 +53,7 @@ public interface TextFile extends Closeable {
      * files should be the same.
      */
     FileId getFileId();
+
 
     /**
      * Returns true if this file cannot be written to. In that case,
@@ -59,6 +64,7 @@ public interface TextFile extends Closeable {
     default boolean isReadOnly() {
         return true;
     }
+
 
     /**
      * Writes the given content to the underlying character store.
@@ -73,6 +79,7 @@ public interface TextFile extends Closeable {
         throw new ReadOnlyFileException(this);
     }
 
+
     /**
      * Reads the contents of the underlying character source.
      *
@@ -83,6 +90,7 @@ public interface TextFile extends Closeable {
      */
     TextFileContent readContents() throws IOException;
 
+
     /**
      * Release resources associated with this text file. Is a noop if
      * it is called several times.
@@ -91,6 +99,7 @@ public interface TextFile extends Closeable {
      */
     @Override
     void close() throws IOException;
+
 
     /**
      * Text file equality is implementation-defined. The only constraint
@@ -117,7 +126,8 @@ public interface TextFile extends Closeable {
      * @throws NullPointerException If any parameter is null
      */
     static TextFile forPath(Path path, Charset charset, LanguageVersion languageVersion) {
-        return builderForPath(path, charset, languageVersion).build();
+        return builderForPath(path, charset, languageVersion)
+                .build();
     }
 
     /**
@@ -151,7 +161,8 @@ public interface TextFile extends Closeable {
      * @throws NullPointerException If any parameter is null
      */
     static TextFile forCharSeq(CharSequence charseq, FileId fileId, LanguageVersion languageVersion) {
-        return builderForCharSeq(charseq, fileId, languageVersion).build();
+        return builderForCharSeq(charseq, fileId, languageVersion)
+                .build();
     }
 
     /**
@@ -183,7 +194,8 @@ public interface TextFile extends Closeable {
      * @throws NullPointerException If any parameter is null
      */
     static TextFile forReader(Reader reader, FileId fileId, LanguageVersion languageVersion) {
-        return builderForReader(reader, fileId, languageVersion).build();
+        return builderForReader(reader, fileId, languageVersion)
+                .build();
     }
 
     /**

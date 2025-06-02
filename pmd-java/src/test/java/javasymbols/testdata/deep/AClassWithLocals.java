@@ -16,18 +16,21 @@ public class AClassWithLocals {
 
     public AClassWithLocals() {
         class Local { // AClassWithLocals$0Local
+
         }
         new Object() {}; // // AClassWithLocals$2
     }
 
-    static {
+    static  {
         class Local { // AClassWithLocals$1Local
+
         }
         new Object() {}; // // AClassWithLocals$3
     }
 
     void method() {
         class Local { // AClassWithLocals$2Local
+
         }
         new Object() {}; // // AClassWithLocals$4
     }

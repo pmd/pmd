@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
@@ -12,6 +13,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
@@ -35,15 +41,14 @@ import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
 
-@Command(name = "check", showDefaultValues = true, description = "The PMD standard source code analyzer")
+@Command(name = "check", showDefaultValues = true,
+    description = "The PMD standard source code analyzer")
 public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> {
     private static final Logger LOG = LoggerFactory.getLogger(PmdCommand.class);
 
@@ -51,35 +56,30 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         final Properties emptyProps = new Properties();
         final StringBuilder reportPropertiesHelp = new StringBuilder();
         final String lineSeparator = System.lineSeparator();
-
+        
         for (final String rendererName : RendererFactory.supportedRenderers()) {
             final Renderer renderer = RendererFactory.createRenderer(rendererName, emptyProps);
-
+            
             if (!renderer.getPropertyDescriptors().isEmpty()) {
                 reportPropertiesHelp.append(rendererName + ":" + lineSeparator);
                 for (final PropertyDescriptor<?> property : renderer.getPropertyDescriptors()) {
-                    reportPropertiesHelp
-                            .append("  ")
-                            .append(property.name())
-                            .append(" - ")
-                            .append(property.description())
-                            .append(lineSeparator);
+                    reportPropertiesHelp.append("  ").append(property.name()).append(" - ")
+                        .append(property.description()).append(lineSeparator);
                     final Object deflt = property.defaultValue();
                     if (deflt != null && !"".equals(deflt)) {
-                        reportPropertiesHelp
-                                .append("    Default: ")
-                                .append(deflt)
-                                .append(lineSeparator);
+                        reportPropertiesHelp.append("    Default: ").append(deflt)
+                            .append(lineSeparator);
                     }
                 }
             }
         }
-
+        
         // System Properties are the easier way to inject dynamically computed values into the help of an option
         System.setProperty("pmd-cli.pmd.report.properties.help", reportPropertiesHelp.toString());
     }
 
     private List<String> rulesets;
+    
 
     private String format;
 
@@ -107,113 +107,90 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     private boolean showProgressBar;
 
+
     @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
     FileCollectionOptions<PMDConfiguration> files = new FileCollectionOptions<>();
 
-    @Option(
-            names = {"--rulesets", "-R"},
-            description =
-                    "Path to a ruleset xml file. "
-                            + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
-                            + "The option can be repeated, and multiple arguments separated by comma can be provided to a single occurrence of the option.",
-            required = true,
-            split = ",",
-            arity = "1..*")
+    @Option(names = { "--rulesets", "-R" },
+               description = "Path to a ruleset xml file. "
+                             + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
+                             + "The option can be repeated, and multiple arguments separated by comma can be provided to a single occurrence of the option.",
+               required = true, split = ",", arity = "1..*")
     public void setRulesets(final List<String> rulesets) {
         this.rulesets = rulesets;
     }
 
-    @Option(
-            names = {"--format", "-f"},
+
+    @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
                     + "Alternatively, you can provide the fully qualified name of a custom Renderer in the classpath.",
-            defaultValue = "text",
-            completionCandidates = PmdSupportedReportFormatsCandidates.class)
+            defaultValue = "text", completionCandidates = PmdSupportedReportFormatsCandidates.class)
     public void setFormat(final String format) {
         this.format = format;
     }
 
-    @Option(
-            names = {"--benchmark", "-b"},
+    @Option(names = { "--benchmark", "-b" },
             description = "Benchmark mode - output a benchmark report upon completion; default to System.err.")
     public void setBenchmark(final boolean benchmark) {
         this.benchmark = benchmark;
     }
 
-    @Option(
-            names = "--show-suppressed",
-            description = "Report should show suppressed rule violations if supported by the report format.")
+    @Option(names = "--show-suppressed", description = "Report should show suppressed rule violations if supported by the report format.")
     public void setShowSuppressed(final boolean showSuppressed) {
         this.showSuppressed = showSuppressed;
     }
 
-    @Option(
-            names = "--suppress-marker",
+    @Option(names = "--suppress-marker",
             description = "Specifies the string that marks a line which PMD should ignore.",
             defaultValue = "NOPMD")
     public void setSuppressMarker(final String suppressMarker) {
         this.suppressMarker = suppressMarker;
     }
 
-    @Option(
-            names = "--minimum-priority",
+    @Option(names = "--minimum-priority",
             description = "Rule priority threshold; rules with lower priority than configured here won't be used.%n"
                     + "Valid values (case insensitive): ${COMPLETION-CANDIDATES}",
             defaultValue = "Low",
-            completionCandidates = RulePriorityTypeSupport.class,
-            converter = RulePriorityTypeSupport.class)
+            completionCandidates = RulePriorityTypeSupport.class, converter = RulePriorityTypeSupport.class)
     public void setMinimumPriority(final RulePriority priority) {
         this.minimumPriority = priority;
     }
 
-    @Option(
-            names = {"--property", "-P"},
-            description = "Key-value pair defining a property for the report format.%n"
-                    + "Supported values for each report format:%n${sys:pmd-cli.pmd.report.properties.help}",
+    @Option(names = { "--property", "-P" }, description = "Key-value pair defining a property for the report format.%n"
+                + "Supported values for each report format:%n${sys:pmd-cli.pmd.report.properties.help}",
             completionCandidates = PmdReportPropertiesCandidates.class)
     public void setProperties(final Properties properties) {
         this.properties = properties;
     }
 
-    @Option(
-            names = "--use-version",
-            description =
-                    "The language version PMD should use when parsing source code.%nValid values: ${COMPLETION-CANDIDATES}",
-            completionCandidates = PmdLanguageVersionTypeSupport.class,
-            converter = PmdLanguageVersionTypeSupport.class)
+    @Option(names = "--use-version",
+            description = "The language version PMD should use when parsing source code.%nValid values: ${COMPLETION-CANDIDATES}",
+            completionCandidates = PmdLanguageVersionTypeSupport.class, converter = PmdLanguageVersionTypeSupport.class)
     public void setLanguageVersion(final List<LanguageVersion> languageVersion) {
         // Make sure we only set 1 version per language
-        languageVersion.stream()
-                .collect(Collectors.groupingBy(LanguageVersion::getLanguage))
-                .forEach((l, list) -> {
-                    if (list.size() > 1) {
-                        throw new ParameterException(
-                                spec.commandLine(),
-                                "Can only set one version per language, "
-                                        + "but for language " + l.getName() + " multiple versions were provided "
-                                        + list.stream()
-                                                .map(LanguageVersion::getTerseName)
-                                                .collect(Collectors.joining("', '", "'", "'")));
-                    }
-                });
+        languageVersion.stream().collect(Collectors.groupingBy(LanguageVersion::getLanguage))
+            .forEach((l, list) -> {
+                if (list.size() > 1) {
+                    throw new ParameterException(spec.commandLine(), "Can only set one version per language, "
+                            + "but for language " + l.getName() + " multiple versions were provided "
+                            + list.stream().map(LanguageVersion::getTerseName).collect(Collectors.joining("', '", "'", "'")));
+                }
+            });
 
         this.languageVersion = languageVersion;
     }
 
-    @Option(
-            names = "--force-language",
+    @Option(names = "--force-language",
             description = "Force a language to be used for all input files, irrespective of file names. "
-                    + "When using this option, the automatic language selection by extension is disabled, and PMD "
-                    + "tries to parse all input files with the given language's parser. "
-                    + "Parsing errors are ignored.%nValid values: ${COMPLETION-CANDIDATES}",
-            completionCandidates = PmdLanguageTypeSupport.class,
-            converter = PmdLanguageTypeSupport.class)
+                          + "When using this option, the automatic language selection by extension is disabled, and PMD "
+                          + "tries to parse all input files with the given language's parser. "
+                          + "Parsing errors are ignored.%nValid values: ${COMPLETION-CANDIDATES}",
+            completionCandidates = PmdLanguageTypeSupport.class, converter = PmdLanguageTypeSupport.class)
     public void setForceLanguage(final Language forceLanguage) {
         this.forceLanguage = forceLanguage;
     }
 
-    @Option(
-            names = "--aux-classpath",
+    @Option(names = "--aux-classpath",
             description = "Specifies the classpath for libraries used by the source code. "
                     + "This is used to resolve types in Java source files. The platform specific path delimiter "
                     + "(\":\" on Linux, \";\" on Windows) is used to separate the entries. "
@@ -223,8 +200,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.auxClasspath = auxClasspath;
     }
 
-    @Option(
-            names = "--cache",
+    @Option(names = "--cache",
             description = "Specify the location of the cache file for incremental analysis. "
                     + "This should be the full path to the file, including the desired file name (not just the parent directory). "
                     + "If the file doesn't exist, it will be created on the first run. The file will be overwritten on each run "
@@ -233,41 +209,31 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.cacheLocation = cacheLocation;
     }
 
-    @Option(
-            names = "--no-cache",
-            description =
-                    "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
+    @Option(names = "--no-cache", description = "Explicitly disable incremental analysis. The '-cache' option is ignored if this switch is present in the command line.")
     public void setNoCache(final boolean noCache) {
         this.noCache = noCache;
     }
 
-    @Option(
-            names = {"--threads", "-t"},
-            description =
-                    "Set the number of threads used by PMD. This can be an integer, or a float (or int) followed by the letter `C`, eg `0.5C` or `1C`. "
-                            + "In the latter case, the float will be multiplied by the number of cores of the host machine, and rounded down to an integer. "
-                            + "If the specified number of threads is zero, then PMD will use the main thread for everything. If it is `n` > 0, "
-                            + "PMD will spawn `n` separate analysis threads besides the main thread.",
-            defaultValue = "1C",
-            converter = NumThreadsConverter.class)
+    @Option(names = {"--threads", "-t"}, description =
+        "Set the number of threads used by PMD. This can be an integer, or a float (or int) followed by the letter `C`, eg `0.5C` or `1C`. "
+            + "In the latter case, the float will be multiplied by the number of cores of the host machine, and rounded down to an integer. "
+            + "If the specified number of threads is zero, then PMD will use the main thread for everything. If it is `n` > 0, "
+            + "PMD will spawn `n` separate analysis threads besides the main thread.",
+        defaultValue = "1C", converter = NumThreadsConverter.class)
     public void setThreads(final int threads) {
         if (threads < 0) {
-            throw new ParameterException(
-                    spec.commandLine(),
-                    "Thread count should be a positive number or zero, found " + threads + " instead.");
+            throw new ParameterException(spec.commandLine(), "Thread count should be a positive number or zero, found " + threads + " instead.");
         }
-
+        
         this.threads = threads;
     }
 
-    @Option(
-            names = "--no-progress",
-            negatable = true,
-            defaultValue = "true",
+    @Option(names = "--no-progress", negatable = true, defaultValue = "true",
             description = "Enables / disables progress bar indicator of live analysis progress.")
     public void setShowProgressBar(final boolean showProgressBar) {
         this.showProgressBar = showProgressBar;
     }
+
 
     @Override
     protected FileCollectionOptions<PMDConfiguration> getFileCollectionOptions() {
@@ -299,11 +265,11 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);
         }
-
+        
         // Important: do this after setting default versions, so we can pick them up
         if (forceLanguage != null) {
-            final LanguageVersion forcedLangVer =
-                    configuration.getLanguageVersionDiscoverer().getDefaultLanguageVersion(forceLanguage);
+            final LanguageVersion forcedLangVer = configuration.getLanguageVersionDiscoverer()
+                    .getDefaultLanguageVersion(forceLanguage);
             configuration.setForceLanguageVersion(forcedLangVer);
         }
 
@@ -342,9 +308,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
                 if (showProgressBar) {
                     if (configuration.getReportFilePath() == null) {
-                        pmdReporter.warn(
-                                "Progressbar rendering conflicts with reporting to STDOUT. "
-                                        + "No progressbar will be shown. Try running with argument '-r <file>' to output the report to a file instead.");
+                        pmdReporter.warn("Progressbar rendering conflicts with reporting to STDOUT. "
+                                + "No progressbar will be shown. Try running with argument '-r <file>' to output the report to a file instead.");
                     } else {
                         pmd.addListener(new ProgressBarListener());
                     }
@@ -414,7 +379,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     /**
      * Provider of candidates for valid report properties.
-     *
+     * 
      * Check the help for which ones are supported by each report format and possible values.
      */
     private static final class PmdReportPropertiesCandidates implements Iterable<String> {
@@ -425,7 +390,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
             final Properties emptyProps = new Properties();
             for (final String rendererName : RendererFactory.supportedRenderers()) {
                 final Renderer renderer = RendererFactory.createRenderer(rendererName, emptyProps);
-
+                
                 for (final PropertyDescriptor<?> property : renderer.getPropertyDescriptors()) {
                     propertyNames.add(property.name());
                 }

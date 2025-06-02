@@ -2,9 +2,11 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -22,15 +24,18 @@ public interface JAccessibleElementSymbol extends AnnotableSymbol {
      */
     String PRIMITIVE_PACKAGE = "java.lang";
 
+
     /**
      * Returns the modifiers of the element represented by this symbol,
      * as decodable by the standard {@link Modifier} API.
      */
     int getModifiers();
 
+
     default boolean isStatic() {
         return Modifier.isStatic(getModifiers());
     }
+
 
     /**
      * Returns the class that directly encloses this declaration.
@@ -45,6 +50,7 @@ public interface JAccessibleElementSymbol extends AnnotableSymbol {
     @Nullable
     JClassSymbol getEnclosingClass();
 
+
     /**
      * Returns the name of the package this element is declared in. This
      * recurses into the enclosing elements if needed. If this is an array
@@ -55,4 +61,6 @@ public interface JAccessibleElementSymbol extends AnnotableSymbol {
      */
     @NonNull
     String getPackageName();
+
+
 }

@@ -4,7 +4,9 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+
 import java.io.EOFException;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -68,6 +70,7 @@ public final class CharStream {
         return chars.charAt(curOffset++);
     }
 
+
     /**
      * Calls {@link #readChar()} and returns its value, marking its position
      * as the beginning of the next token. All characters must remain in
@@ -78,6 +81,7 @@ public final class CharStream {
         markOffset = curOffset;
         return readChar();
     }
+
 
     /**
      * Returns a string made up of characters from the token mark up to
@@ -100,6 +104,7 @@ public final class CharStream {
         return curOffset - markOffset;
     }
 
+
     /**
      * Appends the suffix of length 'len' of the current token to the given
      * string builder. This is used to build up the matched string
@@ -115,6 +120,7 @@ public final class CharStream {
             chars.appendChars(sb, curOffset - len, len);
         } // otherwise dead code, kept because Javacc's argument expressions do side effects
     }
+
 
     /**
      * Pushes a given number of already read chars into the buffer.
@@ -143,6 +149,7 @@ public final class CharStream {
         return endLocation().getEndColumn();
     }
 
+
     /**
      * Returns the line number of the last character for current token.
      * This is only used for parse exceptions and is very inefficient.
@@ -151,19 +158,23 @@ public final class CharStream {
         return endLocation().getEndLine();
     }
 
+
     private FileLocation endLocation() {
         return textDoc.toLocation(TextRegion.caretAt(getEndOffset()));
     }
+
 
     /** Returns the start offset of the current token (in the translated source), inclusive. */
     public int getStartOffset() {
         return markOffset;
     }
 
+
     /** Returns the end offset of the current token (in the translated source), exclusive. */
     public int getEndOffset() {
         return curOffset;
     }
+
 
     /**
      * Returns the token document for the tokens being built. Having it
@@ -172,4 +183,5 @@ public final class CharStream {
     public JavaccTokenDocument getTokenDocument() {
         return tokenDoc;
     }
+
 }

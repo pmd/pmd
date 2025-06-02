@@ -7,16 +7,17 @@ package net.sourceforge.pmd.lang.plsql.ast;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
+
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
 class ASTSqlStatementTest extends AbstractPLSQLParserTst {
 
     @Test
     void testCommit() {
         ASTInput input = plsql.parseResource("CommitStatement.pls");
-        List<ASTSqlStatement> sqlStatements =
-                input.descendants(ASTSqlStatement.class).toList();
+        List<ASTSqlStatement> sqlStatements = input.descendants(ASTSqlStatement.class).toList();
         assertEquals(1, sqlStatements.size());
         assertType(sqlStatements, 0, ASTSqlStatement.Type.COMMIT);
     }
@@ -24,8 +25,7 @@ class ASTSqlStatementTest extends AbstractPLSQLParserTst {
     @Test
     void testRollback() {
         ASTInput input = plsql.parseResource("RollbackStatement.pls");
-        List<ASTSqlStatement> sqlStatements =
-                input.descendants(ASTSqlStatement.class).toList();
+        List<ASTSqlStatement> sqlStatements = input.descendants(ASTSqlStatement.class).toList();
         assertEquals(1, sqlStatements.size());
         assertType(sqlStatements, 0, ASTSqlStatement.Type.ROLLBACK);
     }
@@ -33,8 +33,7 @@ class ASTSqlStatementTest extends AbstractPLSQLParserTst {
     @Test
     void testSavepoint() {
         ASTInput input = plsql.parseResource("SavepointStatement.pls");
-        List<ASTSqlStatement> sqlStatements =
-                input.descendants(ASTSqlStatement.class).toList();
+        List<ASTSqlStatement> sqlStatements = input.descendants(ASTSqlStatement.class).toList();
         assertEquals(2, sqlStatements.size());
         assertType(sqlStatements, 0, ASTSqlStatement.Type.SAVEPOINT);
         assertType(sqlStatements, 1, ASTSqlStatement.Type.ROLLBACK);
@@ -43,8 +42,7 @@ class ASTSqlStatementTest extends AbstractPLSQLParserTst {
     @Test
     void testSetTransaction() {
         ASTInput input = plsql.parseResource("SetTransactionStatement.pls");
-        List<ASTSqlStatement> sqlStatements =
-                input.descendants(ASTSqlStatement.class).toList();
+        List<ASTSqlStatement> sqlStatements = input.descendants(ASTSqlStatement.class).toList();
         assertEquals(3, sqlStatements.size());
         assertType(sqlStatements, 0, ASTSqlStatement.Type.COMMIT);
         assertType(sqlStatements, 1, ASTSqlStatement.Type.SET_TRANSACTION);

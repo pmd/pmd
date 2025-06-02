@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.stringProperty;
@@ -12,13 +13,15 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Apex unit tests should have System.assert methods in them
@@ -60,9 +63,8 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
     // Using a string property instead of a regex property to ensure that the
     // compiled pattern can be case-insensitive
     private static final PropertyDescriptor<String> ADDITIONAL_ASSERT_METHOD_PATTERN_DESCRIPTOR = stringProperty(
-                    "additionalAssertMethodPattern")
-            .desc("A regular expression for one or more custom test assertion method patterns.")
-            .defaultValue("")
+            "additionalAssertMethodPattern")
+            .desc("A regular expression for one or more custom test assertion method patterns.").defaultValue("")
             .build();
 
     // A simple compiled pattern cache to ensure that we only ever try to compile
@@ -83,14 +85,12 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
     }
 
     private Object checkForAssertStatements(ApexNode<?> node, Object data) {
-        final List<ASTBlockStatement> blockStatements =
-                node.descendants(ASTBlockStatement.class).toList();
+        final List<ASTBlockStatement> blockStatements = node.descendants(ASTBlockStatement.class).toList();
         final List<ASTStatement> statements = new ArrayList<>();
         final List<ASTMethodCallExpression> methodCalls = new ArrayList<>();
         for (ASTBlockStatement blockStatement : blockStatements) {
             statements.addAll(blockStatement.descendants(ASTStatement.class).toList());
-            methodCalls.addAll(
-                    blockStatement.descendants(ASTMethodCallExpression.class).toList());
+            methodCalls.addAll(blockStatement.descendants(ASTMethodCallExpression.class).toList());
         }
         boolean isAssertFound = false;
 
@@ -130,8 +130,8 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
             // don't compile
             if (compiledAdditionalAssertMethodPattern == null) {
                 try {
-                    compiledAdditionalAssertMethodPattern =
-                            Optional.of(Pattern.compile(additionalAssertMethodPattern, Pattern.CASE_INSENSITIVE));
+                    compiledAdditionalAssertMethodPattern = Optional
+                            .of(Pattern.compile(additionalAssertMethodPattern, Pattern.CASE_INSENSITIVE));
                 } catch (IllegalArgumentException e) {
                     // Cache a null compiled pattern so that we won't try to compile this one again
                     // during the run

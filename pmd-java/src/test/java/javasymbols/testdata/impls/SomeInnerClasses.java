@@ -4,9 +4,15 @@
 
 package javasymbols.testdata.impls;
 
+
 public class SomeInnerClasses<O> {
 
-    public static class StaticInner<O> {}
+    public static class StaticInner<O> {
 
-    public class Inner<T extends O> {}
+    }
+
+    public class Inner<T extends O> {
+
+    }
+
 }

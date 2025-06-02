@@ -8,19 +8,21 @@ import static net.sourceforge.pmd.util.CollectionUtil.map;
 
 import java.util.Collections;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.TypeParamOwnerNode;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * @author Clément Fournier
  */
-abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & ModifierOwner> extends AbstractAstAnnotableSym<T>
-        implements JTypeParameterOwnerSymbol {
+abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & ModifierOwner>
+    extends AbstractAstAnnotableSym<T> implements JTypeParameterOwnerSymbol {
 
     private final List<JTypeVar> tparams;
     private final int modifiers;
@@ -28,9 +30,10 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & ModifierOwn
     AbstractAstTParamOwner(T node, AstSymFactory factory) {
         super(node, factory);
         this.modifiers = JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
-        this.tparams = Collections.unmodifiableList(
-                map(ASTList.orEmpty(node.getTypeParameters()), it -> new AstTypeParamSym(it, factory, this)
-                        .getTypeMirror()));
+        this.tparams = Collections.unmodifiableList(map(
+            ASTList.orEmpty(node.getTypeParameters()),
+            it -> new AstTypeParamSym(it, factory, this).getTypeMirror()
+        ));
     }
 
     @Override
@@ -47,4 +50,5 @@ abstract class AbstractAstTParamOwner<T extends TypeParamOwnerNode & ModifierOwn
     public @NonNull String getPackageName() {
         return node.getRoot().getPackageName();
     }
+
 }

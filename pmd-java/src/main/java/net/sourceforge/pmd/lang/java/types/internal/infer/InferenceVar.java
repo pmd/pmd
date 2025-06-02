@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import java.util.Collections;
@@ -12,6 +13,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Function;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -20,10 +27,6 @@ import net.sourceforge.pmd.lang.java.types.JTypeVisitor;
 import net.sourceforge.pmd.lang.java.types.SubstVar;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
 
 /**
  * Represents an inference variable. Inference variables are just
@@ -80,6 +83,7 @@ public final class InferenceVar implements SubstVar {
         return boundSet.bounds.getOrDefault(kind, Collections.emptySet());
     }
 
+
     Set<JTypeMirror> getBounds(Set<BoundKind> kinds) {
         Set<JTypeMirror> bounds = new LinkedHashSet<>();
         for (BoundKind k : kinds) {
@@ -87,6 +91,7 @@ public final class InferenceVar implements SubstVar {
         }
         return bounds;
     }
+
 
     /**
      * Adds a new bound on this variable.
@@ -144,6 +149,7 @@ public final class InferenceVar implements SubstVar {
         return boundSet.inst;
     }
 
+
     void setInst(JTypeMirror inst) {
         this.boundSet.inst = inst;
     }
@@ -159,6 +165,7 @@ public final class InferenceVar implements SubstVar {
         for (Entry<BoundKind, Set<JTypeMirror>> entry : boundSet.bounds.entrySet()) {
             BoundKind kind = entry.getKey();
             Set<JTypeMirror> prevBounds = entry.getValue();
+
 
             // put the new bounds before updating
             Set<JTypeMirror> newBounds = new LinkedHashSet<>();
@@ -185,14 +192,14 @@ public final class InferenceVar implements SubstVar {
         return tvar;
     }
 
+
     boolean isCaptured() {
         return tvar.isCaptured();
     }
 
     public boolean isEquivalentTo(JTypeMirror t) {
-        return this == t
-                || t instanceof InferenceVar
-                        && ((InferenceVar) t).boundSet == this.boundSet; // NOPMD CompareObjectsWithEquals
+        return this == t || t instanceof InferenceVar
+            && ((InferenceVar) t).boundSet == this.boundSet; // NOPMD CompareObjectsWithEquals
     }
 
     public boolean isSubtypeNoSideEffect(@NonNull JTypeMirror other) {
@@ -223,8 +230,10 @@ public final class InferenceVar implements SubstVar {
     @Override
     public @Nullable JTypeDeclSymbol getSymbol() {
         JTypeMirror inst = getInst();
-        return inst != null ? inst.getSymbol() : new InferenceVarSym(ctx.ts, this);
+        return inst != null ? inst.getSymbol()
+                            : new InferenceVarSym(ctx.ts, this);
     }
+
 
     @Override
     public JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
@@ -235,6 +244,7 @@ public final class InferenceVar implements SubstVar {
     public <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
         return visitor.visitInferenceVar(this, p);
     }
+
 
     @Override
     public String toString() {
@@ -259,6 +269,7 @@ public final class InferenceVar implements SubstVar {
         return sb;
     }
 
+
     public enum BoundKind {
         UPPER(" <: ") {
             @Override
@@ -270,6 +281,7 @@ public final class InferenceVar implements SubstVar {
             public Set<BoundKind> complementSet(boolean eqIsAll) {
                 return EQ_LOWER;
             }
+
         },
         EQ(" = ") {
             @Override
@@ -320,6 +332,7 @@ public final class InferenceVar implements SubstVar {
          */
         public abstract BoundKind complement();
 
+
         /**
          * Returns the complement of this kind. There's two ways to complement EQ:
          * - With eqIsAll, this returns all constants.
@@ -342,5 +355,6 @@ public final class InferenceVar implements SubstVar {
 
         JTypeMirror inst;
         Map<BoundKind, Set<JTypeMirror>> bounds = new EnumMap<>(BoundKind.class);
+
     }
 }

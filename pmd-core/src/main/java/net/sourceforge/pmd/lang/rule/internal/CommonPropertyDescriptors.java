@@ -14,7 +14,9 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public final class CommonPropertyDescriptors {
 
-    private CommonPropertyDescriptors() {}
+    private CommonPropertyDescriptors() {
+
+    }
 
     /**
      * The "minimum" property that previously was on StatisticalRule.
@@ -22,4 +24,5 @@ public final class CommonPropertyDescriptors {
     public static GenericPropertyBuilder<Integer> reportLevelProperty() {
         return PropertyFactory.intProperty("minimum");
     }
+
 }

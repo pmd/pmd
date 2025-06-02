@@ -9,7 +9,6 @@ public @interface AnnotationWithEnum {
     Foo value();
 
     enum Foo {
-        A,
-        B
+        A, B
     }
 }

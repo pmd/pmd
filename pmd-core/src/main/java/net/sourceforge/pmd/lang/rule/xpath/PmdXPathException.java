@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.rule.xpath;
 
-import net.sf.saxon.trans.XPathException;
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sf.saxon.trans.XPathException;
 
 /**
  * Unchecked exception wrapper for {@link XPathException}.
@@ -57,4 +58,5 @@ public class PmdXPathException extends ContextedRuntimeException {
         INITIALIZATION,
         EVALUATION
     }
+
 }

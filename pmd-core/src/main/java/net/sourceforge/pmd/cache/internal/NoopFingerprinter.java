@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.zip.Checksum;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

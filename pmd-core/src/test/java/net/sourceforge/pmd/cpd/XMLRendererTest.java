@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,10 +24,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
-import net.sourceforge.pmd.lang.ast.LexException;
-import net.sourceforge.pmd.lang.document.FileId;
-import net.sourceforge.pmd.reporting.Report;
+
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
@@ -36,6 +34,11 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
+import net.sourceforge.pmd.lang.ast.LexException;
+import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.reporting.Report;
 
 /**
  * @author Philippe T'Seyen
@@ -55,21 +58,19 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        assertEquals(
-                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                        + "<pmd-cpd xmlns=\"https://pmd-code.org/schema/cpd-report\"\n"
-                        + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                        + "         pmdVersion=\"XXX\"\n"
-                        + "         timestamp=\"XXX\"\n"
-                        + "         version=\"1.0.0\"\n"
-                        + "         xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\"/>\n",
+        assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<pmd-cpd xmlns=\"https://pmd-code.org/schema/cpd-report\"\n"
+                + "         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "         pmdVersion=\"XXX\"\n"
+                + "         timestamp=\"XXX\"\n"
+                + "         version=\"1.0.0\"\n"
+                + "         xsi:schemaLocation=\"https://pmd-code.org/schema/cpd-report https://pmd.github.io/schema/cpd-report_1_0_0.xsd\"/>\n",
                 report.replaceAll("timestamp=\".+?\"", "timestamp=\"XXX\"")
                         .replaceAll("pmdVersion=\".+?\"", "pmdVersion=\"XXX\""),
                 "namespace is missing or wrong");
 
-        Document doc = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
-                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList nodes = doc.getChildNodes();
         Node n = nodes.item(0);
         assertEquals("pmd-cpd", n.getNodeName());
@@ -91,9 +92,8 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        Document doc = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
-                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList dupes = doc.getElementsByTagName("duplication");
         assertEquals(1, dupes.getLength());
         Node file = dupes.item(0).getFirstChild();
@@ -102,9 +102,7 @@ class XMLRendererTest {
         }
         if (file != null) {
             assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
-            assertEquals(
-                    foo1.getAbsolutePath(),
-                    file.getAttributes().getNamedItem("path").getNodeValue());
+            assertEquals(foo1.getAbsolutePath(), file.getAttributes().getNamedItem("path").getNodeValue());
             assertEquals("6", file.getAttributes().getNamedItem("endline").getNodeValue());
             assertEquals("1", file.getAttributes().getNamedItem("column").getNodeValue());
             assertEquals("1", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
@@ -120,9 +118,7 @@ class XMLRendererTest {
             assertEquals("1", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
         }
         assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
-        assertEquals(
-                CpdTestUtils.generateDummyContent(lineCount),
-                doc.getElementsByTagName("codefragment").item(0).getTextContent());
+        assertEquals(CpdTestUtils.generateDummyContent(lineCount), doc.getElementsByTagName("codefragment").item(0).getTextContent());
     }
 
     @Test
@@ -146,9 +142,8 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        Document doc = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
-                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         assertEquals(2, doc.getElementsByTagName("duplication").getLength());
         assertEquals(4, doc.getElementsByTagName("file").getLength());
     }
@@ -168,9 +163,8 @@ class XMLRendererTest {
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        Document doc = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
-                .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                                             .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList dupes = doc.getElementsByTagName("duplication");
         assertEquals(1, dupes.getLength());
         Node file = dupes.item(0).getFirstChild();
@@ -179,9 +173,7 @@ class XMLRendererTest {
         }
         if (file != null) {
             assertEquals("1", file.getAttributes().getNamedItem("line").getNodeValue());
-            assertEquals(
-                    fileName.getAbsolutePath(),
-                    file.getAttributes().getNamedItem("path").getNodeValue());
+            assertEquals(fileName.getAbsolutePath(), file.getAttributes().getNamedItem("path").getNodeValue());
             assertEquals("2", file.getAttributes().getNamedItem("endline").getNodeValue());
             assertEquals("2", file.getAttributes().getNamedItem("column").getNodeValue());
             assertEquals("3", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
@@ -197,9 +189,7 @@ class XMLRendererTest {
             assertEquals("5", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
         }
         assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
-        assertEquals(
-                CpdTestUtils.generateDummyContent(2),
-                doc.getElementsByTagName("codefragment").item(0).getTextContent());
+        assertEquals(CpdTestUtils.generateDummyContent(2), doc.getElementsByTagName("codefragment").item(0).getTextContent());
     }
 
     @Test
@@ -235,15 +225,12 @@ class XMLRendererTest {
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();
         assertReportIsValidSchema(xmlOutput);
-        final Document doc = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
-                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                                                   .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
         final NodeList files = doc.getElementsByTagName("file");
         final Node file = files.item(0);
         final NamedNodeMap attributes = file.getAttributes();
-        assertEquals(
-                CpdTestUtils.FOO_FILE_ID.getAbsolutePath(),
-                attributes.getNamedItem("path").getNodeValue());
+        assertEquals(CpdTestUtils.FOO_FILE_ID.getAbsolutePath(), attributes.getNamedItem("path").getNodeValue());
         assertEquals("888", attributes.getNamedItem("totalNumberOfTokens").getNodeValue());
     }
 
@@ -264,9 +251,8 @@ class XMLRendererTest {
         renderer.render(report, writer);
         final String xmlOutput = writer.toString();
         assertReportIsValidSchema(xmlOutput);
-        final Document doc = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
-                .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
+        final Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                                                   .parse(new ByteArrayInputStream(xmlOutput.getBytes(ENCODING)));
         final NodeList files = doc.getElementsByTagName("file");
         final Node dup_1 = files.item(1);
         final NamedNodeMap attrs_1 = dup_1.getAttributes();
@@ -281,8 +267,8 @@ class XMLRendererTest {
 
     @Test
     void testRendererXMLEscaping() throws Exception {
-        String codefragment =
-                "code fragment" + FORM_FEED + "\nline2\nline3\nno & escaping necessary in CDATA\nx=\"]]>\";";
+        String codefragment = "code fragment" + FORM_FEED
+            + "\nline2\nline3\nno & escaping necessary in CDATA\nx=\"]]>\";";
         CPDReportRenderer renderer = new XMLRenderer();
 
         CpdReportBuilder builder = new CpdReportBuilder();
@@ -309,18 +295,15 @@ class XMLRendererTest {
     void reportContainsProcessingError() throws Exception {
         FileId fileId = FileId.fromPathLikeString("file1.txt");
         Report.ProcessingError processingError = new Report.ProcessingError(
-                new LexException(2, 1, fileId, "test exception", new RuntimeException("cause exception")), fileId);
+                new LexException(2, 1, fileId, "test exception", new RuntimeException("cause exception")),
+                fileId);
         CPDReportRenderer renderer = new XMLRenderer();
         StringWriter sw = new StringWriter();
-        renderer.render(
-                CpdTestUtils.makeReport(
-                        Collections.emptyList(), Collections.emptyMap(), Collections.singletonList(processingError)),
-                sw);
+        renderer.render(CpdTestUtils.makeReport(Collections.emptyList(), Collections.emptyMap(), Collections.singletonList(processingError)), sw);
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
-        Document doc = DocumentBuilderFactory.newInstance()
-                .newDocumentBuilder()
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder()
                 .parse(new ByteArrayInputStream(report.getBytes(ENCODING)));
         NodeList nodes = doc.getChildNodes();
         Node n = nodes.item(0);
@@ -346,19 +329,11 @@ class XMLRendererTest {
     void cdataSectionInError() throws Exception {
         FileId fileId = FileId.fromPathLikeString("file1.txt");
         Report.ProcessingError processingError = new Report.ProcessingError(
-                new LexException(
-                        2,
-                        1,
-                        fileId,
-                        "test exception",
-                        new RuntimeException("Invalid source: '<![CDATA[ ... ]]> ...'")),
+                new LexException(2, 1, fileId, "test exception", new RuntimeException("Invalid source: '<![CDATA[ ... ]]> ...'")),
                 fileId);
         CPDReportRenderer renderer = new XMLRenderer();
         StringWriter sw = new StringWriter();
-        renderer.render(
-                CpdTestUtils.makeReport(
-                        Collections.emptyList(), Collections.emptyMap(), Collections.singletonList(processingError)),
-                sw);
+        renderer.render(CpdTestUtils.makeReport(Collections.emptyList(), Collections.emptyMap(), Collections.singletonList(processingError)), sw);
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
@@ -366,11 +341,9 @@ class XMLRendererTest {
         assertDoesNotThrow(() -> documentBuilder.parse(new InputSource(new StringReader(report))));
     }
 
-    private static void assertReportIsValidSchema(String report)
-            throws SAXException, ParserConfigurationException, IOException {
+    private static void assertReportIsValidSchema(String report) throws SAXException, ParserConfigurationException, IOException {
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = schemaFactory.newSchema(
-                new StreamSource(XMLRenderer.class.getResourceAsStream("/cpd-report_1_0_0.xsd")));
+        Schema schema = schemaFactory.newSchema(new StreamSource(XMLRenderer.class.getResourceAsStream("/cpd-report_1_0_0.xsd")));
 
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         saxParserFactory.setNamespaceAware(true);

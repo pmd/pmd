@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -21,7 +22,7 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
         }
 
         NodeStream<ASTReturnStatement> returnsExceptLast =
-                node.getBody().descendants(ASTReturnStatement.class).dropLast(1);
+            node.getBody().descendants(ASTReturnStatement.class).dropLast(1);
 
         for (ASTReturnStatement returnStmt : returnsExceptLast) {
             asCtx(data).addViolation(returnStmt);

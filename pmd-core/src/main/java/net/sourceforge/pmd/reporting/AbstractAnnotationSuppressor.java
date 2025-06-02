@@ -10,6 +10,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.mutable.MutableBoolean;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -20,9 +25,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
 import net.sourceforge.pmd.util.OptionalBool;
-import org.apache.commons.lang3.mutable.MutableBoolean;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Base class for a {@link ViolationSuppressor} that uses annotations
@@ -55,13 +57,9 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
 
     @Override
     public Set<UnusedSuppressorNode> getUnusedSuppressors(RootNode tree) {
-        return tree.descendants(annotationNodeType)
-                .crossFindBoundaries()
-                .toStream()
-                .map(this::getUnusedSuppressorNodes)
-                .flatMap(Set::stream)
-                .collect(Collectors.toSet());
+        return tree.descendants(annotationNodeType).crossFindBoundaries().toStream().map(this::getUnusedSuppressorNodes).flatMap(Set::stream).collect(Collectors.toSet());
     }
+
 
     private boolean contextSuppresses(Node node, Rule rule) {
         if (suppresses(node, rule)) {
@@ -91,6 +89,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
         }
         return false;
     }
+
 
     /**
      * Returns true if the node has an annotation that suppresses the
@@ -150,6 +149,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
      */
     protected abstract boolean walkAnnotation(A annotation, AnnotationWalkCallbacks callbacks);
 
+
     /** Return the annotations attached to the given node. */
     protected abstract NodeStream<A> getAnnotations(Node n);
 
@@ -157,6 +157,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
     protected String getAnnotationName(A annotation) {
         return "@SuppressWarnings annotation";
     }
+
 
     /**
      * Return whether one of the annotation params suppresses the given rule.
@@ -188,10 +189,10 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
          * @param stringValue The string extracted from the node
          */
         boolean processNode(Node annotationParam, @NonNull String stringValue);
+
     }
 
-    private static final SimpleDataKey<Boolean> KEY_SUPPRESSED_ANY_VIOLATION =
-            DataMap.simpleDataKey("pmd.core.suppressed.any");
+    private static final SimpleDataKey<Boolean> KEY_SUPPRESSED_ANY_VIOLATION = DataMap.simpleDataKey("pmd.core.suppressed.any");
 
     /**
      * Return the set of rule names for which the given annotation has suppressed at least one violation.
@@ -205,8 +206,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
         walkAnnotation(annotation, (annotationParam, stringValue) -> {
             anySuppressor.setTrue();
 
-            boolean suppressedAny =
-                    annotationParam.getUserMap().getOrDefault(KEY_SUPPRESSED_ANY_VIOLATION, Boolean.FALSE);
+            boolean suppressedAny = annotationParam.getUserMap().getOrDefault(KEY_SUPPRESSED_ANY_VIOLATION, Boolean.FALSE);
             if (suppressedAny) {
                 entireAnnotationIsUnused.setFalse();
             } else {
@@ -260,6 +260,7 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
         }
     }
 
+
     private static int compareSpecificity(AnnotationPartWrapper fstPart, AnnotationPartWrapper sndPart) {
         String fst = fstPart.stringValue;
         String snd = sndPart.stringValue;
@@ -285,10 +286,10 @@ public abstract class AbstractAnnotationSuppressor<A extends Node> implements Vi
         } else if ("PMD".equals(fst)) {
             return -1;
         } else {
-            throw AssertionUtil.shouldNotReachHere(
-                    "Logically if we are here then both strings are of the form PMD.RuleName and should therefore be equal!");
+            throw AssertionUtil.shouldNotReachHere("Logically if we are here then both strings are of the form PMD.RuleName and should therefore be equal!");
         }
     }
+
 
     private static final class AnnotationPartWrapper {
         private final Node node;

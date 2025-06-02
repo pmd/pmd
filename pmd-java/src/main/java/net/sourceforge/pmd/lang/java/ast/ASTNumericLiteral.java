@@ -1,13 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+
 
 /**
  * A numeric literal of any type (double, int, long, float, etc).
@@ -19,14 +22,15 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
      * false if this is a floating-point literal, ie float OR double.
      */
     private boolean isIntegral;
-
     private boolean is64bits;
     private long longValue;
     private double doubleValue;
 
+
     ASTNumericLiteral(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -61,6 +65,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         this.isIntegral = true;
     }
 
+
     void setFloatLiteral() {
         this.isIntegral = false;
     }
@@ -82,6 +87,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         }
     }
 
+
     public boolean isIntLiteral() {
         return isIntegral && !is64bits;
     }
@@ -97,6 +103,7 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     public boolean isDoubleLiteral() {
         return !isIntegral && is64bits;
     }
+
 
     /**
      * Returns true if this is an integral literal, ie either a long or
@@ -118,14 +125,14 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
     static int getBase(Chars image, boolean isIntegral) {
         if (image.length() > 1 && image.charAt(0) == '0') {
             switch (image.charAt(1)) {
-                case 'x':
-                case 'X':
-                    return 16;
-                case 'b':
-                case 'B':
-                    return 2;
-                default:
-                    return isIntegral ? 8 : 10;
+            case 'x':
+            case 'X':
+                return 16;
+            case 'b':
+            case 'B':
+                return 2;
+            default:
+                return isIntegral ? 8 : 10;
             }
         }
         return 10;
@@ -139,13 +146,16 @@ public final class ASTNumericLiteral extends AbstractLiteral implements ASTLiter
         return (int) longValue;
     }
 
+
     public long getValueAsLong() {
         return longValue;
     }
 
+
     public float getValueAsFloat() {
         return (float) doubleValue;
     }
+
 
     public double getValueAsDouble() {
         return doubleValue;

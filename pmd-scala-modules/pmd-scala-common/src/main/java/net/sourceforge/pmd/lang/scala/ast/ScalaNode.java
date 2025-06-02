@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.scala.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
+
 import scala.meta.Tree;
 
 /**

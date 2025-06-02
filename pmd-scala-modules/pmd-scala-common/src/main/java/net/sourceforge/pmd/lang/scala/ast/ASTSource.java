@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.scala.ast;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
+
 import scala.meta.Source;
 
 /**
@@ -19,6 +20,7 @@ public final class ASTSource extends AbstractScalaNode<Source> implements RootNo
     ASTSource(Source scalaNode) {
         super(scalaNode);
     }
+
 
     @Override
     public AstInfo<ASTSource> getAstInfo() {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import java.io.File;
@@ -8,10 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import net.sourceforge.pmd.util.AssertionUtil;
-import net.sourceforge.pmd.util.CollectionUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
  * This class can discover the LanguageVersion of a source file. Further, every
@@ -23,6 +26,7 @@ public class LanguageVersionDiscoverer {
     private LanguageRegistry languageRegistry;
     private final Map<Language, LanguageVersion> languageToLanguageVersion = new HashMap<>();
     private LanguageVersion forcedVersion;
+
 
     /**
      * Build a new instance.
@@ -52,8 +56,8 @@ public class LanguageVersionDiscoverer {
      */
     public LanguageVersion setDefaultLanguageVersion(LanguageVersion languageVersion) {
         AssertionUtil.requireParamNotNull("languageVersion", languageVersion);
-        LanguageVersion currentLanguageVersion =
-                languageToLanguageVersion.put(languageVersion.getLanguage(), languageVersion);
+        LanguageVersion currentLanguageVersion = languageToLanguageVersion.put(languageVersion.getLanguage(),
+                languageVersion);
         if (currentLanguageVersion == null) {
             currentLanguageVersion = languageVersion.getLanguage().getDefaultVersion();
         }
@@ -127,8 +131,8 @@ public class LanguageVersionDiscoverer {
     public List<Language> getLanguagesForFile(String fileName) {
         String extension = getExtension(fileName);
         List<Language> matching = languageRegistry.getLanguages().stream()
-                .filter(it -> it.hasExtension(extension))
-                .collect(CollectionUtil.toMutableList());
+                                                  .filter(it -> it.hasExtension(extension))
+                                                  .collect(CollectionUtil.toMutableList());
 
         if (matching.size() > 1) {
             // Remove all languages that have a more specific dialect that matched.

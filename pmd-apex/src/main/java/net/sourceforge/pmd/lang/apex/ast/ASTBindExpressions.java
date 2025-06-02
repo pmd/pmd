@@ -12,6 +12,7 @@ public final class ASTBindExpressions extends AbstractApexNode.Single<SoqlOrSosl
         super(bindExpressions);
     }
 
+
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

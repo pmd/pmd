@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.TreeSet;
+
 import net.sourceforge.pmd.util.IteratorUtil;
 
 public class Match implements Comparable<Match>, Iterable<Mark> {
@@ -19,6 +21,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     public static final Comparator<Match> MATCHES_COMPARATOR = (ma, mb) -> mb.getMarkCount() - ma.getMarkCount();
 
     public static final Comparator<Match> LINES_COMPARATOR = (ma, mb) -> mb.getLineCount() - ma.getLineCount();
+
 
     Match(int tokenCount, Mark first, Mark second) {
         markSet.add(first);
@@ -45,6 +48,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     public int getTokenCount() {
         return this.tokenCount;
     }
+
 
     public Set<Mark> getMarkSet() {
         return Collections.unmodifiableSet(markSet);

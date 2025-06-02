@@ -8,6 +8,11 @@ import static net.sourceforge.pmd.lang.rule.InternalApiBridge.ruleSetApplies;
 
 import java.util.Collection;
 import java.util.Iterator;
+
+import org.apache.commons.lang3.exception.ExceptionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -22,9 +27,6 @@ import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
-import org.apache.commons.lang3.exception.ExceptionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Applies a set of rules to a set of ASTs. */
 public class RuleApplicator {
@@ -44,6 +46,7 @@ public class RuleApplicator {
         this.idx = index;
     }
 
+
     public void index(RootNode root) {
         idx.reset();
         indexTree(root, idx);
@@ -59,7 +62,7 @@ public class RuleApplicator {
             if (!ruleSetApplies(rule, currentLangVer)) {
                 continue; // No point in even trying to apply the rule
             }
-
+            
             RuleContext ctx = InternalApiBridge.createRuleContext(listener, rule);
             rule.start(ctx);
             try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
@@ -75,14 +78,12 @@ public class RuleApplicator {
                     } catch (RuntimeException e) {
                         reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), true);
                     } catch (StackOverflowError e) {
-                        reportOrRethrow(
-                                listener, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
+                        reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
                     } catch (AssertionError e) {
-                        reportOrRethrow(
-                                listener, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
+                        reportOrRethrow(listener, rule, node, AssertionUtil.contexted(e), SystemProps.isErrorRecoveryMode());
                     }
                 }
-
+                
                 rcto.close(nodeCounter);
             } finally {
                 rule.end(ctx);
@@ -90,8 +91,8 @@ public class RuleApplicator {
         }
     }
 
-    private <E extends Throwable> void reportOrRethrow(
-            FileAnalysisListener listener, Rule rule, Node node, E e, boolean reportAndDontThrow) throws E {
+
+    private <E extends Throwable> void reportOrRethrow(FileAnalysisListener listener, Rule rule, Node node, E e, boolean reportAndDontThrow) throws E {
         if (e instanceof ExceptionContext) {
             ((ExceptionContext) e).addContextValue("Rule applied on node", node);
         }
@@ -103,20 +104,18 @@ public class RuleApplicator {
         }
     }
 
+
     private void reportException(FileAnalysisListener listener, Rule rule, Node node, Throwable e) {
         // The listener handles logging if needed,
         // it may also rethrow the error.
         listener.onError(new ProcessingError(e, node.getTextDocument().getFileId()));
 
         // fixme - maybe duplicated logging
-        LOG.warn(
-                "Exception applying rule {} on file {}, continuing with next rule",
-                rule.getName(),
-                node.getTextDocument().getFileId().getAbsolutePath(),
-                e);
+        LOG.warn("Exception applying rule {} on file {}, continuing with next rule", rule.getName(), node.getTextDocument().getFileId().getAbsolutePath(), e);
         String nodeToString = StringUtil.elide(node.toString(), 600, " ... (truncated)");
         LOG.warn("Exception occurred on node {}", nodeToString);
     }
+
 
     private void indexTree(Node top, TreeIndex idx) {
         idx.indexNode(top);
@@ -132,4 +131,5 @@ public class RuleApplicator {
         }
         return builder.build();
     }
+
 }

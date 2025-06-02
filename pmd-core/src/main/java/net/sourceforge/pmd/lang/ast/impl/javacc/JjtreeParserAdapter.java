@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
@@ -39,6 +40,7 @@ public abstract class JjtreeParserAdapter<R extends RootNode> implements Parser 
     }
 
     protected abstract R parseImpl(CharStream cs, ParserTask task) throws ParseException;
+
 
     @Override
     public String toString() {

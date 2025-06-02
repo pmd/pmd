@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
 
 import net.sourceforge.pmd.lang.symboltable.AbstractScope;
@@ -49,4 +50,5 @@ public class SourceFileScope extends AbstractScope {
         Applier.apply(finder, getDeclarations().keySet().iterator());
         return finder.getDecl();
     }
+
 }

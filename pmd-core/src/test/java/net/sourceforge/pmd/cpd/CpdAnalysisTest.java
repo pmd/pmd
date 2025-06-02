@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,6 +27,13 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.io.TempDir;
+
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.ast.LexException;
@@ -34,11 +42,6 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.util.log.PmdReporter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Unit test for {@link CpdAnalysis}
@@ -69,19 +72,12 @@ class CpdAnalysisTest {
     private void prepareSymLinks() throws Exception {
         Runtime runtime = Runtime.getRuntime();
         if (!new File(TARGET_TEST_RESOURCE_PATH, "symlink-for-real-file.txt").exists()) {
-            runtime.exec(new String[] {
-                        "ln",
-                        "-s",
-                        BASE_TEST_RESOURCE_PATH + "real-file.txt",
-                        TARGET_TEST_RESOURCE_PATH + "symlink-for-real-file.txt",
-                    })
-                    .waitFor();
+            runtime.exec(new String[] { "ln", "-s", BASE_TEST_RESOURCE_PATH + "real-file.txt",
+                TARGET_TEST_RESOURCE_PATH + "symlink-for-real-file.txt", }).waitFor();
         }
         if (!new File(BASE_TEST_RESOURCE_PATH, "this-is-a-broken-sym-link-for-test").exists()) {
-            runtime.exec(new String[] {
-                        "ln", "-s", "broken-sym-link", TARGET_TEST_RESOURCE_PATH + "this-is-a-broken-sym-link-for-test",
-                    })
-                    .waitFor();
+            runtime.exec(new String[] { "ln", "-s", "broken-sym-link",
+                TARGET_TEST_RESOURCE_PATH + "this-is-a-broken-sym-link-for-test", }).waitFor();
         }
     }
 
@@ -213,19 +209,13 @@ class CpdAnalysisTest {
 
         config.setSkipLexicalErrors(false);
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
-            assertTrue(cpd.files()
-                    .addSourceFile(
-                            FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
-            assertTrue(cpd.files()
-                    .addSourceFile(
-                            FileId.fromPathLikeString("foo2.dummy"),
-                            DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
             cpd.performAnalysis();
         }
         verify(reporter).errorEx(eq("Error while tokenizing"), any(LexException.class));
         verify(reporter).errorEx(eq("Error while tokenizing"), any(MalformedSourceException.class));
-        verify(reporter)
-                .error(eq("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset."));
+        verify(reporter).error(eq("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset."));
         verifyNoMoreInteractions(reporter);
     }
 
@@ -236,13 +226,8 @@ class CpdAnalysisTest {
         config.setReporter(reporter);
 
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
-            assertTrue(cpd.files()
-                    .addSourceFile(
-                            FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
-            assertTrue(cpd.files()
-                    .addSourceFile(
-                            FileId.fromPathLikeString("foo2.dummy"),
-                            DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
             cpd.performAnalysis(report::set);
         }
 
@@ -302,12 +287,11 @@ class CpdAnalysisTest {
 
         String reportContents = IOUtil.readFileToString(reportFile.toFile());
         assertThat(reportContents, containsString("duplication in the following files"));
-        assertThat(
-                reportContents, containsString(dup1.toAbsolutePath().normalize().toString()));
-        assertThat(
-                reportContents, containsString(dup2.toAbsolutePath().normalize().toString()));
+        assertThat(reportContents, containsString(dup1.toAbsolutePath().normalize().toString()));
+        assertThat(reportContents, containsString(dup2.toAbsolutePath().normalize().toString()));
         return reportContents;
     }
+
 
     @Test
     void testSkipLexicalErrors() throws IOException {
@@ -315,13 +299,8 @@ class CpdAnalysisTest {
         config.setReporter(reporter);
 
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
-            assertTrue(cpd.files()
-                    .addSourceFile(
-                            FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
-            assertTrue(cpd.files()
-                    .addSourceFile(
-                            FileId.fromPathLikeString("foo2.dummy"),
-                            DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo.dummy"), DummyLanguageModule.CPD_THROW_LEX_EXCEPTION));
+            assertTrue(cpd.files().addSourceFile(FileId.fromPathLikeString("foo2.dummy"), DummyLanguageModule.CPD_THROW_MALFORMED_SOURCE_EXCEPTION));
             cpd.performAnalysis();
         }
         verify(reporter).errorEx(eq("Skipping file"), any(LexException.class));
@@ -332,10 +311,8 @@ class CpdAnalysisTest {
     @Test
     void duplicatedFilesShouldBeSkipped() throws IOException {
         String filename = "file1.dummy";
-        Path aFile1 =
-                Files.createDirectory(tempDir.resolve("a")).resolve(filename).toAbsolutePath();
-        Path bFile1 =
-                Files.createDirectory(tempDir.resolve("b")).resolve(filename).toAbsolutePath();
+        Path aFile1 = Files.createDirectory(tempDir.resolve("a")).resolve(filename).toAbsolutePath();
+        Path bFile1 = Files.createDirectory(tempDir.resolve("b")).resolve(filename).toAbsolutePath();
 
         Files.write(aFile1, "Same content".getBytes(StandardCharsets.UTF_8));
         Files.write(bFile1, "Same content".getBytes(StandardCharsets.UTF_8));
@@ -344,10 +321,7 @@ class CpdAnalysisTest {
         config.setInputPathList(Arrays.asList(tempDir));
         try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
             List<TextFile> collectedFiles = cpd.files().getCollectedFiles();
-            collectedFiles.stream()
-                    .map(TextFile::getFileId)
-                    .map(FileId::getAbsolutePath)
-                    .forEach(System.out::println);
+            collectedFiles.stream().map(TextFile::getFileId).map(FileId::getAbsolutePath).forEach(System.out::println);
             assertEquals(1, collectedFiles.size());
 
             // the order of directory traversal is most likely not defined, so either one
@@ -383,9 +357,7 @@ class CpdAnalysisTest {
         }
 
         public void verify() {
-            assertEquals(
-                    expectedFilesCount,
-                    files,
+            assertEquals(expectedFilesCount, files,
                     "Expected " + expectedFilesCount + " files, but " + files + " have been added.");
         }
     }

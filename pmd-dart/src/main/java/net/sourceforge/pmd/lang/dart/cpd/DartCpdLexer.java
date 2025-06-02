@@ -4,14 +4,15 @@
 
 package net.sourceforge.pmd.lang.dart.cpd;
 
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
+
 import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
 import net.sourceforge.pmd.cpd.impl.AntlrTokenFilter;
 import net.sourceforge.pmd.cpd.impl.BaseTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.dart.ast.DartLexer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Lexer;
 
 /**
  * The Dart Tokenizer

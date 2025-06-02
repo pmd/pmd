@@ -27,4 +27,5 @@ abstract class AbstractFunctionCallNode<T extends FunctionCall> extends Abstract
     public boolean hasArguments() {
         return getNumArguments() != 0;
     }
+
 }

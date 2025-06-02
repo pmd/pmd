@@ -8,15 +8,17 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
-import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
  * @since 7.0.0
  */
 class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
+
 
     @Test
     void testEffectiveModifiers() {
@@ -34,6 +36,7 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
         assertFinds(rule, 0, code);
     }
 
+
     @Test
     void testNotModifierOwnerReturnsEmptySequence() {
         Rule rule = makeXpathRuleFromXPath("//ClassBody[pmd-java:modifiers()]");
@@ -42,11 +45,17 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
         assertFinds(rule, 0, code);
     }
 
+
     @Test
     void testStaticTypeError() {
-        testWithExpectedStaticException("//MethodDeclaration[(., .) is pmd-java:modifiers()]", e -> {
-            assertThat(e.getMessage(), containsString("Type error"));
-            assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
-        });
+        testWithExpectedStaticException(
+            "//MethodDeclaration[(., .) is pmd-java:modifiers()]",
+            e -> {
+                assertThat(e.getMessage(), containsString("Type error"));
+                assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
+            });
+
     }
+
+
 }

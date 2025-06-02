@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import net.sourceforge.pmd.util.AssertionUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.ClassReader;
@@ -39,6 +39,8 @@ import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
@@ -156,17 +158,14 @@ public class ClasspathClassLoader extends URLClassLoader {
             LOG.debug("Detected Java Runtime Filesystem Provider in {}", filePath);
 
             if (fileSystem != null) {
-                throw new IllegalStateException(
-                        "There is already a jrt filesystem. Do you have multiple jrt-fs.jar files on the classpath?");
+                throw new IllegalStateException("There is already a jrt filesystem. Do you have multiple jrt-fs.jar files on the classpath?");
             }
 
             if (filePath.getNameCount() < 2) {
-                throw new IllegalArgumentException(
-                        "Can't determine java home from " + filePath + " - please provide a complete path.");
+                throw new IllegalArgumentException("Can't determine java home from " + filePath + " - please provide a complete path.");
             }
 
-            try (URLClassLoader loader =
-                    new URLClassLoader(new URL[] {filePath.toUri().toURL()})) {
+            try (URLClassLoader loader = new URLClassLoader(new URL[] { filePath.toUri().toURL() })) {
                 Map<String, String> env = new HashMap<>();
                 // note: providing java.home here is crucial, so that the correct runtime image is loaded.
                 // the class loader is only used to provide an implementation of JrtFileSystemProvider, if the current
@@ -201,9 +200,9 @@ public class ClasspathClassLoader extends URLClassLoader {
     @Override
     public String toString() {
         return getClass().getSimpleName()
-                + "[["
-                + StringUtils.join(getURLs(), ":")
-                + "] jrt-fs: " + javaHome + " parent: " + getParent() + ']';
+            + "[["
+            + StringUtils.join(getURLs(), ":")
+            + "] jrt-fs: " + javaHome + " parent: " + getParent() + ']';
     }
 
     private static final String MODULE_INFO_SUFFIX = "module-info.class";
@@ -238,11 +237,8 @@ public class ClasspathClassLoader extends URLClassLoader {
             String packageName = name.substring(0, Math.max(lastSlash, 0));
             Set<String> moduleNames = packagesDirsToModules.get(packageName);
             if (moduleNames != null) {
-                LOG.trace(
-                        "Trying to find {} in jrt-fs with packageName={} and modules={}",
-                        name,
-                        packageName,
-                        moduleNames);
+                LOG.trace("Trying to find {} in jrt-fs with packageName={} and modules={}",
+                        name, packageName, moduleNames);
 
                 for (String moduleCandidate : moduleNames) {
                     Path candidate = fileSystem.getPath("modules", moduleCandidate, name);
@@ -263,8 +259,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         try {
             // Note: The input streams from JrtFileSystem are ByteArrayInputStreams and do not
             // need to be closed - we don't need to track these. The filesystem itself needs to be closed at the end.
-            // See
-            // https://github.com/openjdk/jdk/blob/970cd202049f592946f9c1004ea92dbd58abf6fb/src/java.base/share/classes/jdk/internal/jrtfs/JrtFileSystem.java#L334
+            // See https://github.com/openjdk/jdk/blob/970cd202049f592946f9c1004ea92dbd58abf6fb/src/java.base/share/classes/jdk/internal/jrtfs/JrtFileSystem.java#L334
             return Files.newInputStream(path);
         } catch (IOException e) {
             throw new UncheckedIOException(e);

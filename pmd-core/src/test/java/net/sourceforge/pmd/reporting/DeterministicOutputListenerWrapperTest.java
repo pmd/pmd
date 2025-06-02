@@ -12,6 +12,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+
+import org.junit.jupiter.api.Assumptions;
+import org.junit.jupiter.api.RepeatedTest;
+
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
@@ -20,8 +24,6 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.renderers.AbstractIncrementingRenderer;
-import org.junit.jupiter.api.Assumptions;
-import org.junit.jupiter.api.RepeatedTest;
 
 class DeterministicOutputListenerWrapperTest {
 
@@ -59,12 +61,13 @@ class DeterministicOutputListenerWrapperTest {
         fileIds.sort(Comparator.naturalOrder());
 
         // Unless this assumption is true, the test is not testing anything
-        Assumptions.assumeFalse(
-                mockrule.fileIds.equals(fileIds), "Order of application of rules was same as sorted by chance");
+        Assumptions.assumeFalse(mockrule.fileIds.equals(fileIds),
+                                "Order of application of rules was same as sorted by chance");
 
         // Assert that the renderer observed each file id in sorted order
         assertEquals(numFiles, myRenderer.fileIds.size());
         assertEquals(fileIds, myRenderer.fileIds);
+
     }
 
     static class MyRuleReportingAlways extends FooRule {
@@ -105,4 +108,6 @@ class DeterministicOutputListenerWrapperTest {
             return "";
         }
     }
+
+
 }

@@ -8,9 +8,11 @@ import static net.sourceforge.pmd.lang.document.TextPos2d.pos2d;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
-import org.junit.jupiter.api.Test;
 
 class FragmentedTextDocumentTest {
 
@@ -33,7 +35,10 @@ class FragmentedTextDocumentTest {
                 assertEquals(pos2d(1, 4), doc.lineColumnAtOffset(3, false));
                 assertEquals(pos2d(1, 4), doc.lineColumnAtOffset(5));
             }
+
         }
+
+
     }
 
     @Test
@@ -48,6 +53,7 @@ class FragmentedTextDocumentTest {
                 TextRegion region = TextRegion.caretAt(4);
                 assertEquals(pos2d(1, 3), doc.toLocation(region).getStartPos());
             }
+
         }
     }
 
@@ -64,6 +70,7 @@ class FragmentedTextDocumentTest {
                 TextRegion region = TextRegion.caretAt(2);
                 assertEquals(pos2d(1, 4), doc.toLocation(region).getStartPos());
             }
+
         }
     }
 
@@ -82,6 +89,7 @@ class FragmentedTextDocumentTest {
                 assertEquals(4, doc.offsetAtLineColumn(pos2d(2, 1)));
                 assertEquals(4, base.offsetAtLineColumn(pos2d(2, 1)));
             }
+
         }
     }
 }

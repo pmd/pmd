@@ -10,11 +10,13 @@ import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.internal.util.BaseCloseable;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A {@link TextFile} backed by a file in some {@link FileSystem}.
@@ -27,12 +29,11 @@ class NioTextFile extends BaseCloseable implements TextFile {
     private final FileId fileId;
     private boolean readOnly;
 
-    NioTextFile(
-            Path path,
-            @Nullable FileId parentFsPath,
-            Charset charset,
-            LanguageVersion languageVersion,
-            boolean readOnly) {
+    NioTextFile(Path path,
+                @Nullable FileId parentFsPath,
+                Charset charset,
+                LanguageVersion languageVersion,
+                boolean readOnly) {
         AssertionUtil.requireParamNotNull("path", path);
         AssertionUtil.requireParamNotNull("charset", charset);
         AssertionUtil.requireParamNotNull("language version", languageVersion);
@@ -87,6 +88,7 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
         return TextFileContent.fromInputStream(Files.newInputStream(path), charset);
     }
+
 
     @Override
     protected void doClose() throws IOException {

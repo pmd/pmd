@@ -6,52 +6,52 @@ package net.sourceforge.pmd.lang.java.ast
 
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_ANONYMOUS
 import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_ANONYMOUS
 
-class ASTAnonymousClassTest :
-    ParserTestSpec({
-        parserTestContainer("Anon class modifiers") {
-            inContext(StatementParsingCtx) {
-                """
+class ASTAnonymousClassTest : ParserTestSpec({
+
+    parserTestContainer("Anon class modifiers") {
+        inContext(StatementParsingCtx) {
+            """
                new java.lang.Runnable() {
 
                     @Override public void run() {
 
                     }
                };
-            """ should
-                    parseAs {
-                        exprStatement {
-                            constructorCall {
-                                it::getTypeNode shouldBe classType("Runnable")
+            """ should parseAs {
 
-                                it::getArguments shouldBe child {}
+                exprStatement {
 
-                                it::getAnonymousClassDeclaration shouldBe
-                                    child {
-                                        it::getModifiers shouldBe
-                                            modifiers {
-                                                it.effectiveModifiers shouldBe emptySet()
-                                                it.explicitModifiers shouldBe emptySet()
-                                            }
+                    constructorCall {
+                        it::getTypeNode shouldBe classType("Runnable")
 
-                                        it should haveVisibility(V_ANONYMOUS)
+                        it::getArguments shouldBe child {}
 
-                                        it::isAnonymous shouldBe true
-                                        it::isInterface shouldBe false
+                        it::getAnonymousClassDeclaration shouldBe child {
 
-                                        val anon = it
+                            it::getModifiers shouldBe modifiers {
+                                it.effectiveModifiers shouldBe emptySet()
+                                it.explicitModifiers shouldBe emptySet()
+                            }
 
-                                        child<ASTClassBody> {
-                                            child<ASTMethodDeclaration>(ignoreChildren = true) {
-                                                it::getEnclosingType shouldBe anon
-                                            }
-                                        }
-                                    }
+                            it should haveVisibility(V_ANONYMOUS)
+
+                            it::isAnonymous shouldBe true
+                            it::isInterface shouldBe false
+
+                            val anon = it
+
+                            child<ASTClassBody> {
+                                child<ASTMethodDeclaration>(ignoreChildren = true) {
+                                    it::getEnclosingType shouldBe anon
+                                }
                             }
                         }
                     }
+                }
             }
         }
-    })
+    }
+})

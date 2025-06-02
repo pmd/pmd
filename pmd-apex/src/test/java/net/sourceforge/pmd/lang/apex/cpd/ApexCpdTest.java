@@ -9,13 +9,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CpdAnalysis;
 import net.sourceforge.pmd.cpd.Match;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 class ApexCpdTest {
 
@@ -39,8 +41,7 @@ class ApexCpdTest {
             cpd.performAnalysis(matches -> {
                 assertEquals(1, matches.getMatches().size());
                 Match firstDuplication = matches.getMatches().get(0);
-                assertTrue(matches.getSourceCodeSlice(firstDuplication.getFirstMark())
-                        .startsWith("global with sharing class SFDCEncoder"));
+                assertTrue(matches.getSourceCodeSlice(firstDuplication.getFirstMark()).startsWith("global with sharing class SFDCEncoder"));
             });
         }
     }

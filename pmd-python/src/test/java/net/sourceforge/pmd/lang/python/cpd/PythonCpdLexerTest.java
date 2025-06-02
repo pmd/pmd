@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.python.cpd;
 
-import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 
 class PythonCpdLexerTest extends CpdTextComparisonTest {
 
@@ -42,4 +43,5 @@ class PythonCpdLexerTest extends CpdTextComparisonTest {
     void testVarWithDollar() {
         doTest("var_with_dollar");
     }
+
 }

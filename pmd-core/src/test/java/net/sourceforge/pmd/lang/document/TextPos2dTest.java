@@ -19,9 +19,18 @@ class TextPos2dTest {
     @Test
     void testToString() {
         TextPos2d pos = TextPos2d.pos2d(1, 2);
-        assertEquals("line 1, column 2", pos.toDisplayStringInEnglish());
-        assertEquals("1:2", pos.toDisplayStringWithColon());
-        assertEquals("(line=1, column=2)", pos.toTupleString());
+        assertEquals(
+            "line 1, column 2",
+            pos.toDisplayStringInEnglish()
+        );
+        assertEquals(
+            "1:2",
+            pos.toDisplayStringWithColon()
+        );
+        assertEquals(
+            "(line=1, column=2)",
+            pos.toTupleString()
+        );
         assertThat(pos.toString(), containsString("!debug only!"));
     }
 

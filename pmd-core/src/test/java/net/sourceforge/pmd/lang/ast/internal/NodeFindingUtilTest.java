@@ -10,6 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
@@ -19,7 +22,6 @@ import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import org.junit.jupiter.api.Test;
 
 class NodeFindingUtilTest {
 
@@ -55,14 +57,16 @@ class NodeFindingUtilTest {
         DummyLanguageModule lang = DummyLanguageModule.getInstance();
         try (LanguageProcessor processor = lang.createProcessor(lang.newPropertyBundle())) {
             Parser.ParserTask task = new Parser.ParserTask(
-                    TextDocument.readOnlyString(source, lang.getDefaultVersion()),
-                    SemanticErrorReporter.noop(),
-                    LanguageProcessorRegistry.singleton(processor));
+                TextDocument.readOnlyString(source, lang.getDefaultVersion()),
+                SemanticErrorReporter.noop(),
+                LanguageProcessorRegistry.singleton(processor)
+            );
             RootNode root = processor.services().getParser().parse(task);
 
             return (DummyNode.DummyRootNode) root;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
     }
 }

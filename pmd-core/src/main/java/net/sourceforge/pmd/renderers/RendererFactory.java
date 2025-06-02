@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.lang.reflect.Constructor;
@@ -11,10 +12,12 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
-import net.sourceforge.pmd.properties.PropertyDescriptor;
-import net.sourceforge.pmd.util.AssertionUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * This class handles the creation of Renderers.
@@ -48,7 +51,7 @@ public final class RendererFactory {
         REPORT_FORMAT_TO_RENDERER = Collections.unmodifiableMap(map);
     }
 
-    private RendererFactory() {}
+    private RendererFactory() { }
 
     /**
      * Retrieves a collection of all supported renderer names.
@@ -97,17 +100,13 @@ public final class RendererFactory {
                     "Unable to construct report renderer class: " + e.getLocalizedMessage(), e);
         } catch (InvocationTargetException e) {
             throw new IllegalArgumentException(
-                    "Unable to construct report renderer class: "
-                            + e.getTargetException().getLocalizedMessage(),
-                    e);
+                    "Unable to construct report renderer class: " + e.getTargetException().getLocalizedMessage(), e);
         }
         // Warn about legacy report format usages
         if (REPORT_FORMAT_TO_RENDERER.containsKey(reportFormat) && !reportFormat.equals(renderer.getName())) {
-            LOG.warn(
-                    "Report format '{}' is deprecated, and has been replaced with '{}'. "
-                            + "Future versions of PMD will remove support for this deprecated Report format usage.",
-                    reportFormat,
-                    renderer.getName());
+            LOG.warn("Report format '{}' is deprecated, and has been replaced with '{}'. "
+                    + "Future versions of PMD will remove support for this deprecated Report format usage.",
+                    reportFormat, renderer.getName());
         }
         return renderer;
     }

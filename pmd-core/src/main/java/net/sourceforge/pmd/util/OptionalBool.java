@@ -6,9 +6,7 @@ package net.sourceforge.pmd.util;
 
 /** Represents a boolean that may not be present. Use as a non-null type. */
 public enum OptionalBool {
-    NO,
-    UNKNOWN,
-    YES;
+    NO, UNKNOWN, YES;
 
     /**
      * Returns the logical complement.
@@ -20,12 +18,12 @@ public enum OptionalBool {
      */
     public OptionalBool complement() {
         switch (this) {
-            case YES:
-                return NO;
-            case NO:
-                return YES;
-            default:
-                return this;
+        case YES:
+            return NO;
+        case NO:
+            return YES;
+        default:
+            return this;
         }
     }
 

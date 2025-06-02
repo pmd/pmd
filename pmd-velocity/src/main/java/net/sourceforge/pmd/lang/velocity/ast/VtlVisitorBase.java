@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.velocity.ast;
 
+
 import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 
-public abstract class VtlVisitorBase<P, R> extends AstVisitorBase<P, R> implements VtlVisitor<P, R> {}
+public abstract class VtlVisitorBase<P, R> extends AstVisitorBase<P, R> implements VtlVisitor<P, R> {
+
+}

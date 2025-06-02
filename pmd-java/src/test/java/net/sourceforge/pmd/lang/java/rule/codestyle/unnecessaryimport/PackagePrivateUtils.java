@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
 final class PackagePrivateUtils {
-    private PackagePrivateUtils() {}
+    private PackagePrivateUtils() {
+    }
 
     static int f1(int x) {
         return x + 1;

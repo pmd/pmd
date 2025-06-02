@@ -7,11 +7,12 @@ package net.sourceforge.pmd.lang.impl;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.lang.rule.RuleSet;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.slf4j.event.Level;
+
+import net.sourceforge.pmd.PmdAnalysis;
+import net.sourceforge.pmd.lang.rule.RuleSet;
 
 class MonoThreadProcessorTest extends AbstractPMDProcessorTest {
 

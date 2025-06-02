@@ -10,11 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.Collections;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument.TokenDocumentBehavior;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import org.junit.jupiter.api.Test;
 
 class CharStreamTest {
 
@@ -39,6 +41,7 @@ class CharStreamTest {
         for (int i = 0; i < 3; i++) {
             assertThrows(EOFException.class, stream::readChar);
         }
+
     }
 
     @Test
@@ -69,6 +72,7 @@ class CharStreamTest {
         stream.backup(2);
         assertEquals('c', stream.readChar());
         assertEquals('d', stream.readChar());
+
 
         assertThrows(EOFException.class, stream::readChar);
     }
@@ -129,17 +133,20 @@ class CharStreamTest {
         assertThrows(IllegalArgumentException.class, () -> stream.backup(10));
     }
 
+
     CharStream simpleCharStream(String abcd) {
         return CharStream.create(TextDocument.readOnlyString(abcd, dummyVersion), TokenDocumentBehavior.DEFAULT);
     }
 
     CharStream javaCharStream(String abcd) {
         return CharStream.create(
-                TextDocument.readOnlyString(abcd, dummyVersion), new TokenDocumentBehavior(Collections.emptyList()) {
-                    @Override
-                    public TextDocument translate(TextDocument text) throws MalformedSourceException {
-                        return new JavaEscapeTranslator(text).translateDocument();
-                    }
-                });
+            TextDocument.readOnlyString(abcd, dummyVersion),
+            new TokenDocumentBehavior(Collections.emptyList()) {
+                @Override
+                public TextDocument translate(TextDocument text) throws MalformedSourceException {
+                    return new JavaEscapeTranslator(text).translateDocument();
+                }
+            });
     }
+
 }

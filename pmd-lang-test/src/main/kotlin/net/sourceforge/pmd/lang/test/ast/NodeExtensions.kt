@@ -4,12 +4,16 @@
 
 package net.sourceforge.pmd.lang.test.ast
 
-import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.shouldNotBe
 import net.sourceforge.pmd.lang.ast.Node
 import net.sourceforge.pmd.lang.ast.TextAvailableNode
 
-/** Returns the text as a string. This is to allow comparing the text to another string */
+
+/**
+ * Returns the text as a string. This is to allow
+ * comparing the text to another string
+ */
 val TextAvailableNode.textStr: String
     get() = text.toString()
 
@@ -18,7 +22,8 @@ infix fun TextAvailableNode.shouldHaveText(str: String) {
 }
 
 fun Node.textOfReportLocation(): String? =
-    reportLocation.regionInFile?.let(textDocument::sliceOriginalText)?.toString()
+        reportLocation.regionInFile?.let(textDocument::sliceOriginalText)?.toString()
+
 
 fun Node.assertTextRangeIsOk() {
 
@@ -30,6 +35,7 @@ fun Node.assertTextRangeIsOk() {
         parent.text.toString().shouldContain(this.text.toString())
     }
 }
+
 
 fun Node.assertBounds(bline: Int, bcol: Int, eline: Int, ecol: Int) {
     reportLocation.apply {

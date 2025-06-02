@@ -42,11 +42,11 @@ public class ExcessivePublicCountRule extends AbstractJavaCounterCheckRule<ASTTy
     @Override
     protected boolean isViolation(ASTTypeDeclaration node, int reportLevel) {
         long publicCount = node.getDeclarations()
-                .filterIs(ModifierOwner.class)
-                .filter(it -> it.hasModifiers(PUBLIC))
-                // filter out constants
-                .filter(it -> !(it instanceof ASTFieldDeclaration && it.hasModifiers(STATIC, FINAL)))
-                .count();
+                               .filterIs(ModifierOwner.class)
+                               .filter(it -> it.hasModifiers(PUBLIC))
+                               // filter out constants
+                               .filter(it -> !(it instanceof ASTFieldDeclaration && it.hasModifiers(STATIC, FINAL)))
+                               .count();
 
         return publicCount >= reportLevel;
     }

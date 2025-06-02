@@ -6,11 +6,12 @@ package net.sourceforge.pmd.lang.ast;
 
 import static java.lang.Math.max;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.util.StringUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * An error thrown during lexical analysis of a file.
@@ -45,8 +46,7 @@ public final class LexException extends FileAnalysisException {
      *
      * @apiNote Internal API.
      */
-    LexException(
-            boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
+    LexException(boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));
         line = max(errorLine, 1);
         column = max(errorColumn, 1);

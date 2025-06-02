@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.benchmark;
 
 import java.util.Collections;
@@ -34,7 +35,7 @@ public final class TimeTracker {
 
         @Override
         public void close(final int count) {
-            // noop
+         // noop
         }
     };
 
@@ -70,8 +71,8 @@ public final class TimeTracker {
         trackTime = false;
 
         // Fix UNACCOUNTED metric (total time is meaningless as is call count)
-        final TimedResult unaccountedResult =
-                ACCUMULATED_RESULTS.get(new TimedOperationKey(TimedOperationCategory.UNACCOUNTED, null));
+        final TimedResult unaccountedResult = ACCUMULATED_RESULTS.get(
+                new TimedOperationKey(TimedOperationCategory.UNACCOUNTED, null));
         unaccountedResult.totalTimeNanos.set(unaccountedResult.selfTimeNanos.get());
         unaccountedResult.callCount.set(0);
 

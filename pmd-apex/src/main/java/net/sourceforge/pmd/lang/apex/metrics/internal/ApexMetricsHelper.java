@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTBooleanExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTStandardCondition;
 import net.sourceforge.pmd.lang.apex.ast.BooleanOperator;
@@ -28,8 +29,7 @@ public final class ApexMetricsHelper {
      * @return The complexity of the expression
      */
     static int booleanExpressionComplexity(ASTStandardCondition expression) {
-        Set<ASTBooleanExpression> subs =
-                new HashSet<>(expression.descendants(ASTBooleanExpression.class).toList());
+        Set<ASTBooleanExpression> subs = new HashSet<>(expression.descendants(ASTBooleanExpression.class).toList());
         int complexity = 0;
 
         for (ASTBooleanExpression sub : subs) {

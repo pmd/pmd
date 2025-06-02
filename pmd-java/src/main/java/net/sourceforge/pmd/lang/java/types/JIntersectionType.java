@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Collection;
@@ -12,15 +13,17 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
 
 /**
  * An intersection type. Intersections type act as the
@@ -32,6 +35,7 @@ import org.pcollections.PSet;
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class JIntersectionType implements JTypeMirror {
 
+
     private final TypeSystem ts;
     private final JTypeMirror primaryBound;
     private final List<JTypeMirror> components;
@@ -41,17 +45,20 @@ public final class JIntersectionType implements JTypeMirror {
      * @param primaryBound may be Object if every bound is an interface
      * @param allBounds    including the superclass, unless Object
      */
-    JIntersectionType(TypeSystem ts, JTypeMirror primaryBound, List<? extends JTypeMirror> allBounds) {
+    JIntersectionType(TypeSystem ts,
+                      JTypeMirror primaryBound,
+                      List<? extends JTypeMirror> allBounds) {
         this.primaryBound = primaryBound;
         this.components = Collections.unmodifiableList(allBounds);
         this.ts = ts;
 
         assert Lub.isExclusiveIntersectionBound(primaryBound)
-                : "Wrong primary intersection bound: " + toString(primaryBound, allBounds);
+            : "Wrong primary intersection bound: " + toString(primaryBound, allBounds);
         assert primaryBound != ts.OBJECT || allBounds.size() > 1
-                : "Intersection of a single bound: " + toString(primaryBound, allBounds); // should be caught by GLB
+            : "Intersection of a single bound: " + toString(primaryBound, allBounds); // should be caught by GLB
 
         checkWellFormed(primaryBound, allBounds);
+
     }
 
     @Override
@@ -62,9 +69,10 @@ public final class JIntersectionType implements JTypeMirror {
     @Override
     public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         return new JIntersectionType(
-                ts,
-                primaryBound.withAnnotations(newTypeAnnots),
-                CollectionUtil.map(components, c -> c.withAnnotations(newTypeAnnots)));
+            ts,
+            primaryBound.withAnnotations(newTypeAnnots),
+            CollectionUtil.map(components, c -> c.withAnnotations(newTypeAnnots))
+        );
     }
 
     /**
@@ -76,6 +84,7 @@ public final class JIntersectionType implements JTypeMirror {
         return components;
     }
 
+
     /**
      * The primary bound of this intersection, which may be a type variable,
      * array type, or class type (not an interface). If all bounds are interfaces,
@@ -85,13 +94,15 @@ public final class JIntersectionType implements JTypeMirror {
         return primaryBound;
     }
 
+
     /**
      * Returns all additional bounds on the primary bound, which are
      * necessarily interface types.
      */
     @SuppressWarnings({"unchecked", "rawtypes"}) // safe because of checkWellFormed
     public @NonNull List<JClassType> getInterfaces() {
-        return (List) (primaryBound == ts.OBJECT ? components : components.subList(1, components.size()));
+        return (List) (primaryBound == ts.OBJECT ? components
+                                                 : components.subList(1, components.size()));
     }
 
     /**
@@ -124,10 +135,12 @@ public final class JIntersectionType implements JTypeMirror {
         return visitor.visitIntersection(this, p);
     }
 
+
     @Override
     public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
         return getComponents().stream().flatMap(it -> it.streamMethods(prefilter));
     }
+
 
     @Override
     public JIntersectionType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
@@ -135,8 +148,8 @@ public final class JIntersectionType implements JTypeMirror {
         List<JClassType> myItfs = getInterfaces();
         List<JClassType> newBounds = TypeOps.substClasses(myItfs, subst);
         return newPrimary == getPrimaryBound() && newBounds == myItfs // NOPMD UseEqualsToCompareObjectReferences
-                ? this
-                : new JIntersectionType(ts, newPrimary, newBounds);
+               ? this
+               : new JIntersectionType(ts, newPrimary, newBounds);
     }
 
     @Override
@@ -148,6 +161,7 @@ public final class JIntersectionType implements JTypeMirror {
     public TypeSystem getTypeSystem() {
         return ts;
     }
+
 
     @Override
     public JTypeMirror getErasure() {
@@ -178,7 +192,7 @@ public final class JIntersectionType implements JTypeMirror {
 
     private static void checkWellFormed(JTypeMirror primary, List<? extends JTypeMirror> flattened) {
         assert flattened.get(0) == primary || primary == primary.getTypeSystem().OBJECT
-                : "Not a well-formed intersection " + flattened;
+            : "Not a well-formed intersection " + flattened;
         for (int i = 0; i < flattened.size(); i++) {
             JTypeMirror ci = flattened.get(i);
             Objects.requireNonNull(ci, "Null intersection component");
@@ -196,12 +210,14 @@ public final class JIntersectionType implements JTypeMirror {
     }
 
     private static RuntimeException malformedIntersection(JTypeMirror primary, List<? extends JTypeMirror> flattened) {
-        return new IllegalArgumentException("Malformed intersection: " + toString(primary, flattened));
+        return new IllegalArgumentException(
+            "Malformed intersection: " + toString(primary, flattened)
+        );
     }
 
     private static String toString(JTypeMirror primary, List<? extends JTypeMirror> flattened) {
-        return flattened.stream()
-                .map(JTypeMirror::toString)
-                .collect(Collectors.joining(" & ", primary.toString() + " & ", ""));
+        return flattened.stream().map(JTypeMirror::toString).collect(Collectors.joining(" & ",
+                                                                                        primary.toString() + " & ",
+                                                                                        ""));
     }
 }

@@ -2,20 +2,24 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.renderers;
 
-import com.google.gson.stream.JsonWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
-import org.apache.commons.lang3.StringUtils;
+
+import com.google.gson.stream.JsonWriter;
 
 public class JsonRenderer extends AbstractIncrementingRenderer {
     public static final String NAME = "json";

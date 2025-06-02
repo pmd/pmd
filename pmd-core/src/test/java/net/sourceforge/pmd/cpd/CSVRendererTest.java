@@ -1,15 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.io.StringWriter;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.cpd.CpdTestUtils.CpdReportBuilder;
 import net.sourceforge.pmd.lang.document.FileId;
-import org.junit.jupiter.api.Test;
 
 class CSVRendererTest {
 
@@ -25,8 +28,8 @@ class CSVRendererTest {
         renderer.render(builder.build(), sw);
         String report = sw.toString();
         String expectedReport = "tokens,occurrences" + System.lineSeparator()
-                + "75,2,48,10," + CpdTestUtils.FOO_FILE_ID.getAbsolutePath() + ",73,20,"
-                + CpdTestUtils.BAR_FILE_ID.getAbsolutePath() + System.lineSeparator();
+            + "75,2,48,10," + CpdTestUtils.FOO_FILE_ID.getAbsolutePath() + ",73,20,"
+            + CpdTestUtils.BAR_FILE_ID.getAbsolutePath() + System.lineSeparator();
 
         assertEquals(expectedReport, report);
     }
@@ -45,8 +48,9 @@ class CSVRendererTest {
         renderer.render(builder.build(), sw);
         String report = sw.toString();
         String expectedReport = "lines,tokens,occurrences" + System.lineSeparator()
-                + "10,75,2,48,\"" + foo.getAbsolutePath() + "\",73,\"" + bar.getAbsolutePath() + "\""
-                + System.lineSeparator();
+            + "10,75,2,48,\"" + foo.getAbsolutePath() + "\",73,\"" + bar.getAbsolutePath() + "\""
+            + System.lineSeparator();
         assertEquals(expectedReport, report);
     }
+
 }

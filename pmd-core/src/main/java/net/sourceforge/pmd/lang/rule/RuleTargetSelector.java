@@ -4,12 +4,14 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.internal.TargetSelectorInternal;
@@ -108,8 +110,7 @@ public abstract class RuleTargetSelector extends TargetSelectorInternal {
 
     private static final class ClassRulechainVisits extends RuleTargetSelector {
 
-        public static final RuleTargetSelector ROOT_ONLY =
-                new ClassRulechainVisits(Collections.singleton(RootNode.class));
+        public static final RuleTargetSelector ROOT_ONLY = new ClassRulechainVisits(Collections.singleton(RootNode.class));
 
         private final Set<Class<? extends Node>> visits;
 

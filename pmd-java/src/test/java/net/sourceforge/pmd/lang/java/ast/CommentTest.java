@@ -1,13 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import net.sourceforge.pmd.lang.java.BaseParserTest;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 class CommentTest extends BaseParserTest {
     @Test
@@ -36,7 +38,11 @@ class CommentTest extends BaseParserTest {
 
     @Test
     void testMultiLinesInMultiLine() {
-        String comment = "/*\n" + " * line 1\n" + " * line 2\n" + " */\n";
+        String comment =
+                  "/*\n"
+                + " * line 1\n"
+                + " * line 2\n"
+                + " */\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
@@ -44,7 +50,11 @@ class CommentTest extends BaseParserTest {
 
     @Test
     void testMultiLinesInMultiLineCrLf() {
-        String comment = "/*\r\n" + " * line 1\r\n" + " * line 2\r\n" + " */\r\n";
+        String comment =
+                  "/*\r\n"
+                + " * line 1\r\n"
+                + " * line 2\r\n"
+                + " */\r\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
@@ -52,7 +62,11 @@ class CommentTest extends BaseParserTest {
 
     @Test
     void testMultiLinesInMultiLineFormal() {
-        String comment = "/**\n" + " * line 1\n" + " * line 2\n" + " */\n";
+        String comment =
+                  "/**\n"
+                + " * line 1\n"
+                + " * line 2\n"
+                + " */\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
@@ -60,7 +74,11 @@ class CommentTest extends BaseParserTest {
 
     @Test
     void testMultiLinesInMultiLineFormalCrLf() {
-        String comment = "/**\r\n" + " * line 1\r\n" + " * line 2\r\n" + " */\r\n";
+        String comment =
+                  "/**\r\n"
+                + " * line 1\r\n"
+                + " * line 2\r\n"
+                + " */\r\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);
@@ -68,7 +86,12 @@ class CommentTest extends BaseParserTest {
 
     @Test
     void testMultiLinesInMultiLineNoAsteriskEmpty() {
-        String comment = "/**\n" + " * line 1\n" + "line 2\n" + "\n" + " */\n";
+        String comment =
+                  "/**\n"
+                + " * line 1\n"
+                + "line 2\n"
+                + "\n"
+                + " */\n";
         String filtered = filter(comment);
         assertEquals(2, lineCount(filtered));
         assertEquals("line 1\nline 2", filtered);

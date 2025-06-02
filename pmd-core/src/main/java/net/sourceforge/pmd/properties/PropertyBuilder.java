@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.properties;
 
 import static java.util.Collections.emptyList;
@@ -12,14 +13,16 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
 import net.sourceforge.pmd.properties.internal.PropertyTypeId;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 // @formatter:off
 /**
@@ -60,8 +63,8 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * Non-null if declared in XML.
      */
     protected @Nullable PropertyTypeId typeId;
-
     protected boolean isXPathAvailable = false;
+
 
     PropertyBuilder(String name) {
 
@@ -84,6 +87,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         return StringUtils.isNotBlank(description);
     }
 
+
     /** Returns the value, asserting it has been set. */
     T getDefaultValue() {
         if (!isDefaultValueSet()) {
@@ -91,6 +95,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         }
         return defaultValue;
     }
+
 
     boolean isDefaultValueSet() {
         return defaultValue != null;
@@ -157,6 +162,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
     @SuppressWarnings("unchecked")
     public abstract B require(PropertyConstraint<? super T> constraint);
 
+
     /**
      * Specify a default value. Some subclasses provide convenient
      * related methods, see e.g. {@link GenericCollectionPropertyBuilder#defaultValues(Object, Object[])}.
@@ -180,6 +186,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         return (B) this;
     }
 
+
     /**
      * Builds the descriptor and returns it.
      *
@@ -190,6 +197,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      */
     public abstract PropertyDescriptor<T> build();
 
+
     /**
      * Returns the name of the property to be built.
      */
@@ -197,22 +205,24 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         return name;
     }
 
+
     // Technically this may very well be merged into PropertyBuilder
     // We'd have all properties (even collection properties) enjoy a ValueParser,
     // which means they could be parsed in a <value> tag (collections would use delimiters) if they opt in.
     // The delimiters wouldn't be configurable (we'd take our current defaults). If they could ambiguous
     // then the <seq> syntax should be the only one available.
-    // This would allow specifying eg lists of numbers as <value>1,2,3</value>, for which the <seq> syntax would look
-    // clumsy
+    // This would allow specifying eg lists of numbers as <value>1,2,3</value>, for which the <seq> syntax would look clumsy
     abstract static class BaseSinglePropertyBuilder<B extends PropertyBuilder<B, T>, T> extends PropertyBuilder<B, T> {
 
         private PropertySerializer<T> parser;
+
 
         // Class is not final but a package-private constructor restricts inheritance
         BaseSinglePropertyBuilder(String name, PropertySerializer<T> parser) {
             super(name);
             this.parser = parser;
         }
+
 
         protected PropertySerializer<T> getParser() {
             return parser;
@@ -264,15 +274,13 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
          *
          * @throws IllegalStateException if the default value has already been set
          */
-        public <C extends Iterable<T>> GenericCollectionPropertyBuilder<T, C> map(
-                Collector<? super T, ?, ? extends C> collector) {
+        public <C extends Iterable<T>> GenericCollectionPropertyBuilder<T, C> map(Collector<? super T, ?, ? extends C> collector) {
 
             if (isDefaultValueSet()) {
                 throw new IllegalStateException("The default value is already set!");
             }
 
-            GenericCollectionPropertyBuilder<T, C> result =
-                    new GenericCollectionPropertyBuilder<>(getName(), getParser(), collector);
+            GenericCollectionPropertyBuilder<T, C> result = new GenericCollectionPropertyBuilder<>(getName(), getParser(), collector);
 
             if (isDescriptionSet()) {
                 result.desc(getDescription());
@@ -294,8 +302,10 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         public GenericPropertyBuilder<Optional<T>> toOptional(String missingValue) {
             AssertionUtil.requireParamNotNull("missingValue", missingValue);
 
-            PropertySerializer<Optional<T>> serializer = PropertyParsingUtil.toOptional(getParser(), missingValue);
-            GenericPropertyBuilder<Optional<T>> result = new GenericPropertyBuilder<>(this.getName(), serializer);
+            PropertySerializer<Optional<T>> serializer =
+                PropertyParsingUtil.toOptional(getParser(), missingValue);
+            GenericPropertyBuilder<Optional<T>> result =
+                new GenericPropertyBuilder<>(this.getName(), serializer);
 
             if (isDefaultValueSet()) {
                 result.defaultValue(Optional.of(getDefaultValue()));
@@ -308,10 +318,16 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return result;
         }
 
+
         @Override
         public PropertyDescriptor<T> build() {
             return new PropertyDescriptor<>(
-                    getName(), getDescription(), getDefaultValue(), parser, typeId, isXPathAvailable);
+                getName(),
+                getDescription(),
+                getDefaultValue(),
+                parser,
+                typeId,
+                isXPathAvailable);
         }
     }
 
@@ -331,6 +347,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         }
     }
 
+
     /**
      * Specialized builder for regex properties. Allows specifying the pattern as a
      * string, with {@link #defaultValue(String)}.
@@ -343,6 +360,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         RegexPropertyBuilder(String name) {
             super(name, PropertyParsingUtil.REGEX);
         }
+
 
         /**
          * Specify a default value using a string pattern. The argument is
@@ -358,6 +376,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             super.defaultValue(Pattern.compile(pattern));
             return this;
         }
+
 
         /**
          * Specify a default value using a string pattern. The argument is
@@ -378,6 +397,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         }
     }
 
+
     /**
      * Generic builder for a collection-valued property.
      * This class adds methods related to {@link #defaultValue(Iterable)}
@@ -393,22 +413,24 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
      * @author Clément Fournier
      * @since 6.10.0
      */
-    public static final class GenericCollectionPropertyBuilder<V, C extends Iterable<V>>
-            extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
+    public static final class GenericCollectionPropertyBuilder<V, C extends Iterable<V>> extends PropertyBuilder<GenericCollectionPropertyBuilder<V, C>, C> {
 
         private PropertySerializer<V> itemParser;
         private final Collector<? super V, ?, ? extends C> collector;
         private final List<PropertyConstraint<? super C>> collectionConstraints = new ArrayList<>();
 
+
         /**
          * Builds a new builder for a collection type. Package-private.
          */
-        GenericCollectionPropertyBuilder(
-                String name, PropertySerializer<V> itemParser, Collector<? super V, ?, ? extends C> collector) {
+        GenericCollectionPropertyBuilder(String name,
+                                         PropertySerializer<V> itemParser,
+                                         Collector<? super V, ?, ? extends C> collector) {
             super(name);
             this.itemParser = itemParser;
             this.collector = collector;
         }
+
 
         private C getDefaultValue(Iterable<? extends V> list) {
             return IteratorUtil.toStream(list).collect(collector);
@@ -433,6 +455,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return this;
         }
 
+
         /**
          * Specify default values. To specify an empty
          * default value, use {@link #emptyDefaultValue()}.
@@ -447,6 +470,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
             return this.defaultValue(listOf(head, tail));
         }
 
+
         /**
          * Specify that the default value is an empty collection.
          *
@@ -455,6 +479,7 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         public GenericCollectionPropertyBuilder<V, C> emptyDefaultValue() {
             return this.defaultValue(emptyList());
         }
+
 
         /**
          * Require that the given constraint be fulfilled on each item of the
@@ -473,13 +498,16 @@ public abstract class PropertyBuilder<B extends PropertyBuilder<B, T>, T> {
         @Override
         public PropertyDescriptor<C> build() {
             PropertySerializer<C> syntax = PropertyParsingUtil.delimitedString(itemParser, collector);
-            syntax = PropertyParsingUtil.withAllConstraints(
-                    syntax,
-                    CollectionUtil.map(itemParser.getConstraints(), PropertyConstraint::toCollectionConstraint));
+            syntax = PropertyParsingUtil.withAllConstraints(syntax, CollectionUtil.map(itemParser.getConstraints(), PropertyConstraint::toCollectionConstraint));
             syntax = PropertyParsingUtil.withAllConstraints(syntax, collectionConstraints);
 
             return new PropertyDescriptor<>(
-                    getName(), getDescription(), getDefaultValue(), syntax, typeId, isXPathAvailable);
+                getName(),
+                getDescription(),
+                getDefaultValue(),
+                syntax,
+                typeId,
+                isXPathAvailable);
         }
     }
 }

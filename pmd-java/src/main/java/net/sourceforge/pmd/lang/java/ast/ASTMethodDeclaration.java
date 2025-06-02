@@ -1,14 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+
 
 /**
  * A method declaration, in a class or interface declaration. Since 7.0,
@@ -92,6 +95,7 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
         return components.toStream().first(it -> it.getVarId().getName().equals(this.getName()));
     }
 
+
     /**
      * Returns true if the result type of this method is {@code void}.
      */
@@ -129,12 +133,11 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
      */
     public boolean isMainMethod() {
         return this.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
-                        && "main".equals(this.getName())
-                        && this.isVoid()
-                        && this.getArity() == 1
-                        && TypeTestUtil.isExactlyA(
-                                String[].class, this.getFormalParameters().get(0))
-                || isLaunchableMainMethod();
+            && "main".equals(this.getName())
+            && this.isVoid()
+            && this.getArity() == 1
+            && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0))
+            || isLaunchableMainMethod();
     }
 
     /**
@@ -147,9 +150,6 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
                 && !this.hasModifiers(JModifier.PRIVATE)
                 && this.isVoid()
                 && (this.getArity() == 0
-                        || this.getArity() == 1
-                                && TypeTestUtil.isExactlyA(
-                                        String[].class,
-                                        this.getFormalParameters().get(0)));
+                    || this.getArity() == 1 && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0)));
     }
 }

@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
 import java.util.Iterator;
+
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
@@ -57,10 +59,10 @@ public class TextRenderer extends AbstractIncrementingRenderer {
         for (Report.SuppressedViolation excluded : suppressed) {
             buf.setLength(0);
             buf.append(excluded.getRuleViolation().getRule().getName())
-                    .append(" rule violation suppressed by ")
-                    .append(excluded.getSuppressor().getId())
-                    .append(" in ")
-                    .append(determineFileName(excluded.getRuleViolation().getFileId()));
+               .append(" rule violation suppressed by ")
+               .append(excluded.getSuppressor().getId())
+               .append(" in ")
+                .append(determineFileName(excluded.getRuleViolation().getFileId()));
             writer.println(buf);
         }
 
@@ -71,4 +73,5 @@ public class TextRenderer extends AbstractIncrementingRenderer {
             writer.println(buf);
         }
     }
+
 }

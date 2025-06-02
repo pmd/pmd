@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.CompositeName;
@@ -44,11 +45,7 @@ public final class ASTComponentReference extends AbstractModelicaNode implements
     @Override
     public ResolutionResult<ResolvableEntity> getResolutionCandidates() {
         if (resolutionCandidates == null) {
-            resolutionCandidates = getMostSpecificScope()
-                    .safeResolveLexically(
-                            ResolvableEntity.class,
-                            ResolutionState.forComponentReference(),
-                            getCompositeNameWithoutSubscripts());
+            resolutionCandidates = getMostSpecificScope().safeResolveLexically(ResolvableEntity.class, ResolutionState.forComponentReference(), getCompositeNameWithoutSubscripts());
         }
         return resolutionCandidates;
     }

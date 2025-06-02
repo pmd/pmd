@@ -18,6 +18,14 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.hamcrest.SelfDescribing;
+
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -27,17 +35,12 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.hamcrest.SelfDescribing;
 
 /**
  *
  */
 class BaseTypeInferenceUnitTest {
+
 
     protected final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
     protected final JClassSymbol listSym = ts.getClassSymbol(List.class);
@@ -49,6 +52,7 @@ class BaseTypeInferenceUnitTest {
     protected InferenceContext emptyCtx(TypeInferenceLogger log) {
         return new InferenceContext(ts, new SupertypeCheckCache(), Collections.emptyList(), log);
     }
+
 
     protected InferenceVar newIvar(InferenceContext ctx) {
         return newIvar(ctx, ts.OBJECT);
@@ -80,23 +84,19 @@ class BaseTypeInferenceUnitTest {
         assertThrows(ResolutionFailedException.class, ctx::incorporate);
     }
 
-    @NonNull
-    JTypeMirror listType(JTypeMirror t) {
+    @NonNull JTypeMirror listType(JTypeMirror t) {
         return ts.parameterise(listSym, listOf(t));
     }
 
-    @NonNull
-    JWildcardType extendsWild(JTypeMirror t) {
+    @NonNull JWildcardType extendsWild(JTypeMirror t) {
         return ts.wildcard(true, t);
     }
 
-    @NonNull
-    JWildcardType superWild(JTypeMirror t) {
+    @NonNull JWildcardType superWild(JTypeMirror t) {
         return ts.wildcard(false, t);
     }
 
-    @NonNull
-    JIntersectionType intersect(JTypeMirror... types) {
+    @NonNull JIntersectionType intersect(JTypeMirror... types) {
         JTypeMirror glb = ts.glb(Arrays.asList(types));
         assertThat(glb, Matchers.isA(JIntersectionType.class));
         return (JIntersectionType) glb;
@@ -105,7 +105,9 @@ class BaseTypeInferenceUnitTest {
     static Matcher<InferenceVar> hasBound(BoundKind kind, JTypeMirror t) {
         return new BaseMatcher<InferenceVar>() {
             @Override
-            public void describeTo(Description description) {}
+            public void describeTo(Description description) {
+
+            }
 
             @Override
             public boolean matches(Object actual) {
@@ -139,6 +141,7 @@ class BaseTypeInferenceUnitTest {
                 description.appendText(ivar.getName());
                 description.appendText(" ");
                 Bound.describeList(description, getBoundsObj(ivar));
+
             }
 
             @Override
@@ -156,13 +159,13 @@ class BaseTypeInferenceUnitTest {
                 // as captureMatchers don't support hashing. Also don't
                 // use Set::contains
 
+
                 // caller may omit OBJECT for conciseness
                 boolean expectTop = Arrays.stream(bounds).anyMatch(it -> it.kind == BoundKind.UPPER && it.t == top);
                 // may not have top if it has a different default bound
                 boolean hasTop = actualBounds.get(BoundKind.UPPER).contains(top);
 
-                int numToTest =
-                        actualBounds.values().stream().mapToInt(Set::size).sum();
+                int numToTest = actualBounds.values().stream().mapToInt(Set::size).sum();
                 if (!expectTop && hasTop) {
                     numToTest--;
                 }
@@ -192,7 +195,8 @@ class BaseTypeInferenceUnitTest {
         for (BoundKind kind : BoundKind.values()) {
             Set<JTypeMirror> bounds = actual.getBounds(kind);
             actualBounds.put(kind, bounds);
-            if (!bounds.isEmpty()) {}
+            if (!bounds.isEmpty()) {
+            }
         }
 
         return actualBounds;
@@ -245,4 +249,5 @@ class BaseTypeInferenceUnitTest {
             return "_" + kind.getSym() + t;
         }
     }
+
 }

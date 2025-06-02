@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -11,4 +12,5 @@ abstract class AbstractJavaPattern extends AbstractJavaTypeNode implements ASTPa
     AbstractJavaPattern(int i) {
         super(i);
     }
+
 }

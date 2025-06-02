@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import java.util.List;
+
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalAndExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTConditionalOrExpression;
 import net.sourceforge.pmd.lang.plsql.ast.ASTExpression;
@@ -25,6 +27,7 @@ public class NPathComplexityRule extends AbstractCounterCheckRule<ExecutableCode
     protected int defaultReportLevel() {
         return 200;
     }
+
 
     @Override
     protected int getMetric(ExecutableCode node) {
@@ -53,10 +56,8 @@ public class NPathComplexityRule extends AbstractCounterCheckRule<ExecutableCode
             return 0;
         }
 
-        List<ASTConditionalAndExpression> andNodes =
-                expr.descendants(ASTConditionalAndExpression.class).toList();
-        List<ASTConditionalOrExpression> orNodes =
-                expr.descendants(ASTConditionalOrExpression.class).toList();
+        List<ASTConditionalAndExpression> andNodes = expr.descendants(ASTConditionalAndExpression.class).toList();
+        List<ASTConditionalOrExpression> orNodes = expr.descendants(ASTConditionalOrExpression.class).toList();
 
         int children = 0;
 

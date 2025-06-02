@@ -7,6 +7,9 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -17,7 +20,6 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 public abstract class EmptyClassSymbol implements JClassSymbol {
     private final Supplier<TypeSystem> typeSystemSupplier;

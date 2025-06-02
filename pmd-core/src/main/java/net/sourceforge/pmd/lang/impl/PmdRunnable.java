@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.impl;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
@@ -26,8 +29,6 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A processing task for a single file.
@@ -55,7 +56,7 @@ abstract class PmdRunnable implements Runnable {
         TimeTracker.initThread();
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.FILE_PROCESSING);
-                FileAnalysisListener listener = task.getListener().startFileAnalysis(textFile)) {
+             FileAnalysisListener listener = task.getListener().startFileAnalysis(textFile)) {
 
             RuleSets ruleSets = getRulesets();
 
@@ -63,24 +64,18 @@ abstract class PmdRunnable implements Runnable {
             if (ruleSets.applies(textFile)) {
                 AnalysisCache analysisCache = task.getAnalysisCache();
                 try (TextDocument textDocument = TextDocument.create(textFile);
-                        FileAnalysisListener cacheListener = analysisCache.startFileAnalysis(textDocument)) {
+                     FileAnalysisListener cacheListener = analysisCache.startFileAnalysis(textDocument)) {
 
                     @SuppressWarnings("PMD.CloseResource")
                     FileAnalysisListener completeListener = FileAnalysisListener.tee(listOf(listener, cacheListener));
 
                     if (analysisCache.isUpToDate(textDocument)) {
-                        LOG.trace(
-                                "Skipping file (lang: {}) because it was found in the cache: {}",
-                                textFile.getLanguageVersion(),
-                                textFile.getFileId().getAbsolutePath());
+                        LOG.trace("Skipping file (lang: {}) because it was found in the cache: {}", textFile.getLanguageVersion(), textFile.getFileId().getAbsolutePath());
                         // note: no cache listener here
                         //                         vvvvvvvv
                         reportCachedRuleViolations(listener, textDocument);
                     } else {
-                        LOG.trace(
-                                "Processing file (lang: {}): {}",
-                                textFile.getLanguageVersion(),
-                                textFile.getFileId().getAbsolutePath());
+                        LOG.trace("Processing file (lang: {}): {}", textFile.getLanguageVersion(), textFile.getFileId().getAbsolutePath());
                         try {
                             processSource(completeListener, textDocument, ruleSets);
                         } catch (Exception | StackOverflowError | AssertionError e) {
@@ -95,10 +90,7 @@ abstract class PmdRunnable implements Runnable {
                     }
                 }
             } else {
-                LOG.trace(
-                        "Skipping file (lang: {}) because no rule applies: {}",
-                        textFile.getLanguageVersion(),
-                        textFile.getFileId());
+                LOG.trace("Skipping file (lang: {}) because no rule applies: {}", textFile.getLanguageVersion(), textFile.getFileId());
             }
         } catch (FileAnalysisException e) {
             throw e; // bubble managed exceptions, they were already reported
@@ -121,14 +113,17 @@ abstract class PmdRunnable implements Runnable {
         }
     }
 
-    private void processSource(FileAnalysisListener listener, TextDocument textDocument, RuleSets ruleSets)
-            throws FileAnalysisException {
+
+    private void processSource(FileAnalysisListener listener,
+                               TextDocument textDocument,
+                               RuleSets ruleSets) throws FileAnalysisException {
 
         SemanticErrorReporter reporter = SemanticErrorReporter.reportToLogger(task.getMessageReporter());
         @SuppressWarnings("PMD.CloseResource")
-        LanguageProcessor processor = task.getLpRegistry()
-                .getProcessor(textDocument.getLanguageVersion().getLanguage());
-        ParserTask parserTask = new ParserTask(textDocument, reporter, task.getLpRegistry());
+        LanguageProcessor processor = task.getLpRegistry().getProcessor(textDocument.getLanguageVersion().getLanguage());
+        ParserTask parserTask = new ParserTask(textDocument,
+                                               reporter,
+                                               task.getLpRegistry());
 
         LanguageVersionHandler handler = processor.services();
 
@@ -144,4 +139,5 @@ abstract class PmdRunnable implements Runnable {
 
         ruleSets.apply(rootNode, listener);
     }
+
 }

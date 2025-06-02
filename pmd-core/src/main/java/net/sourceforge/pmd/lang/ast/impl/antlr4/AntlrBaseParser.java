@@ -4,12 +4,13 @@
 
 package net.sourceforge.pmd.lang.ast.impl.antlr4;
 
-import net.sourceforge.pmd.lang.ast.ParseException;
-import net.sourceforge.pmd.lang.ast.Parser;
-import net.sourceforge.pmd.lang.ast.RootNode;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.Lexer;
+
+import net.sourceforge.pmd.lang.ast.ParseException;
+import net.sourceforge.pmd.lang.ast.Parser;
+import net.sourceforge.pmd.lang.ast.RootNode;
 
 /**
  * Generic Antlr parser adapter for all Antlr parsers. This wraps a parser
@@ -18,13 +19,14 @@ import org.antlr.v4.runtime.Lexer;
  * @param <N> Supertype of all nodes for the language, eg SwiftNode
  * @param <R> Type of the root node
  */
-public abstract class AntlrBaseParser<N extends AntlrNode<N>, R extends BaseAntlrInnerNode<N> & RootNode>
-        implements Parser {
+public abstract class AntlrBaseParser<
+    N extends AntlrNode<N>,
+    R extends BaseAntlrInnerNode<N> & RootNode
+    > implements Parser {
 
     @Override
     public R parse(ParserTask task) throws ParseException {
-        CharStream cs = CharStreams.fromString(
-                task.getSourceText(), task.getTextDocument().getFileId().getAbsolutePath());
+        CharStream cs = CharStreams.fromString(task.getSourceText(), task.getTextDocument().getFileId().getAbsolutePath());
         return parse(getLexer(cs), task);
     }
 

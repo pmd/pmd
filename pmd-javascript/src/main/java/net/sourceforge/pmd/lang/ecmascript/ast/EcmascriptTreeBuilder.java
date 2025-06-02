@@ -11,6 +11,7 @@ import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.mozilla.javascript.ScriptRuntime;
 import org.mozilla.javascript.ast.ArrayComprehension;
 import org.mozilla.javascript.ast.ArrayComprehensionLoop;
@@ -81,8 +82,7 @@ import org.mozilla.javascript.ast.Yield;
 
 final class EcmascriptTreeBuilder implements NodeVisitor {
 
-    private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractEcmascriptNode<?>>>
-            NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
+    private static final Map<Class<? extends AstNode>, Constructor<? extends AbstractEcmascriptNode<?>>> NODE_TYPE_TO_NODE_ADAPTER_TYPE = new HashMap<>();
 
     static {
         register(ArrayComprehension.class, ASTArrayComprehension.class);
@@ -164,8 +164,8 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
         this.parseProblems = parseProblems;
     }
 
-    private static <T extends AstNode> void register(
-            Class<T> nodeType, Class<? extends AbstractEcmascriptNode<T>> nodeAdapterType) {
+    private static <T extends AstNode> void register(Class<T> nodeType,
+            Class<? extends AbstractEcmascriptNode<T>> nodeAdapterType) {
         try {
             NODE_TYPE_TO_NODE_ADAPTER_TYPE.put(nodeType, nodeAdapterType.getDeclaredConstructor(nodeType));
         } catch (SecurityException | NoSuchMethodException e) {
@@ -178,9 +178,7 @@ final class EcmascriptTreeBuilder implements NodeVisitor {
             // the register function makes sure only AbstractEcmascriptNode<T> can be
             // added, where T is "T extends AstNode".
             @SuppressWarnings("unchecked")
-            Constructor<? extends AbstractEcmascriptNode<T>> constructor =
-                    (Constructor<? extends AbstractEcmascriptNode<T>>)
-                            NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(node.getClass());
+            Constructor<? extends AbstractEcmascriptNode<T>> constructor = (Constructor<? extends AbstractEcmascriptNode<T>>) NODE_TYPE_TO_NODE_ADAPTER_TYPE.get(node.getClass());
             if (constructor == null) {
                 throw new IllegalArgumentException(
                         "There is no Node adapter class registered for the Node class: " + node.getClass());

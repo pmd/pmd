@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.velocity.ast;
 
 /*
@@ -35,6 +36,7 @@ public final class ASTModNode extends ASTMathNode {
     ASTModNode(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVtlVisitor(VtlVisitor<? super P, ? extends R> visitor, P data) {

@@ -12,6 +12,7 @@ public final class ASTBreakStatement extends AbstractApexNode.Single<BreakStatem
         super(breakStatement);
     }
 
+
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

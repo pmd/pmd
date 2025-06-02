@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.coco.cpd;
 
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.coco.CocoLanguageModule;
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
-import org.junit.jupiter.api.Test;
 
 class CocoCpdLexerTest extends CpdTextComparisonTest {
     CocoCpdLexerTest() {

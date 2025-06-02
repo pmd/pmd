@@ -9,12 +9,14 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.visualforce.DataType;
 import net.sourceforge.pmd.lang.visualforce.VfLanguageProperties;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Visits {@link ASTExpression} nodes and stores type information for
@@ -40,7 +42,6 @@ class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
      * {@code controller} or {@code extensions} attribute.
      */
     private final List<String> apexClassNames;
-
     private final List<String> apexDirectories;
     private final List<String> objectsDirectories;
 
@@ -90,8 +91,8 @@ class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
 
     private static String getAttrValue(ASTAttribute attr) {
         return attr.firstChild(ASTAttributeValue.class)
-                .firstChild(ASTText.class)
-                .getImage();
+                   .firstChild(ASTText.class)
+                   .getImage();
     }
 
     /**
@@ -121,9 +122,9 @@ class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
             //        }
             //    }
             // }
-            // <apex:page standardController="Account" extensions="AccountExtension">
+            //<apex:page standardController="Account" extensions="AccountExtension">
             //    <apex:outputText value="{!Account.Name}" escape="false"/>
-            // </apex:page>
+            //</apex:page>
 
             // Try to find the identifier in an Apex class
             for (String apexClassName : apexClassNames) {
@@ -134,13 +135,10 @@ class VfExpressionTypeVisitor extends VfVisitorBase<Void, Void> {
                 }
             }
 
-            // Try to find the identifier in a CustomField if it wasn't found in an Apex class and the identifier
-            // corresponds
+            // Try to find the identifier in a CustomField if it wasn't found in an Apex class and the identifier corresponds
             // to the StandardController.
             if (type == null) {
-                if (parts.length >= 2
-                        && standardControllerName != null
-                        && standardControllerName.equalsIgnoreCase(parts[0])) {
+                if (parts.length >= 2 && standardControllerName != null && standardControllerName.equalsIgnoreCase(parts[0])) {
                     type = objectFieldTypes.getDataType(name, fileId, objectsDirectories);
                 }
             }

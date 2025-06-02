@@ -22,6 +22,10 @@ import static net.sourceforge.pmd.util.OptionalBool.definitely;
 
 import java.util.EnumSet;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -47,8 +51,6 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.util.OptionalBool;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Detects casts where the operand is already a subtype of the context
@@ -56,7 +58,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
-    private static final Set<BinaryOp> BINARY_PROMOTED_OPS = EnumSet.of(LE, GE, GT, LT, ADD, SUB, MUL, DIV, MOD);
+    private static final Set<BinaryOp> BINARY_PROMOTED_OPS =
+        EnumSet.of(LE, GE, GT, LT, ADD, SUB, MUL, DIV, MOD);
 
     public UnnecessaryCastRule() {
         super(ASTCastExpression.class);
@@ -69,11 +72,12 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         // eg in
         // Object o = (Integer) 1;
 
-        @Nullable ExprContext context = castExpr.getConversionContext(); // Object
-        JTypeMirror coercionType = castExpr.getCastType().getTypeMirror(); // Integer
-        JTypeMirror operandType = operand.getTypeMirror(); // int
+        @Nullable ExprContext context = castExpr.getConversionContext();        // Object
+        JTypeMirror coercionType = castExpr.getCastType().getTypeMirror();      // Integer
+        JTypeMirror operandType = operand.getTypeMirror();                      // int
 
-        if (TypeOps.isUnresolvedOrNull(operandType) || TypeOps.isUnresolvedOrNull(coercionType)) {
+        if (TypeOps.isUnresolvedOrNull(operandType)
+            || TypeOps.isUnresolvedOrNull(coercionType)) {
             return null;
         }
 
@@ -107,11 +111,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean isCastUnnecessary(
-            ASTCastExpression castExpr,
-            @NonNull ExprContext context,
-            JTypeMirror coercionType,
-            JTypeMirror operandType) {
+    private boolean isCastUnnecessary(ASTCastExpression castExpr, @NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType) {
         if (isCastDeterminingReturnOfLambda(castExpr) != NO) {
             return false;
         }
@@ -124,12 +124,12 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // then we have fewer violation conditions
 
             return !operandType.isBottom() // casts on a null literal are necessary
-                    && operandType.isSubtypeOf(coercionType)
-                    && !isCastToRawType(coercionType, operandType);
+                && operandType.isSubtypeOf(coercionType)
+                && !isCastToRawType(coercionType, operandType);
         }
 
         return !isCastDeterminingContext(castExpr, context, coercionType, operandType)
-                && castIsUnnecessaryToMatchContext(context, coercionType, operandType);
+            && castIsUnnecessaryToMatchContext(context, coercionType, operandType);
     }
 
     /**
@@ -148,8 +148,9 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         asCtx(data).addViolation(castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
     }
 
-    private static boolean castIsUnnecessaryToMatchContext(
-            ExprContext context, JTypeMirror coercionType, JTypeMirror operandType) {
+    private static boolean castIsUnnecessaryToMatchContext(ExprContext context,
+                                                           JTypeMirror coercionType,
+                                                           JTypeMirror operandType) {
         if (context.hasKind(ExprContextKind.INVOCATION)) {
             // todo unsupported for now, the cast may be disambiguating overloads
             return false;
@@ -177,11 +178,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
      * that the cast is necessary, because there's some primitive conversions
      * happening, or some other corner case.
      */
-    private static boolean isCastDeterminingContext(
-            ASTCastExpression castExpr,
-            ExprContext context,
-            @NonNull JTypeMirror coercionType,
-            JTypeMirror operandType) {
+    private static boolean isCastDeterminingContext(ASTCastExpression castExpr, ExprContext context, @NonNull JTypeMirror coercionType, JTypeMirror operandType) {
 
         if (castExpr.getParent() instanceof ASTConditionalExpression && castExpr.getIndexInParent() != 0) {
             // a branch of a ternary
@@ -191,7 +188,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
 
             // inside string concatenation
             return !TypeTestUtil.isA(String.class, JavaAstUtils.getOtherOperandIfInInfixExpr(castExpr))
-                    && !TypeTestUtil.isA(String.class, operandType);
+                && !TypeTestUtil.isA(String.class, operandType);
 
         } else if (context.hasKind(ExprContextKind.NUMERIC) && castExpr.getParent() instanceof ASTInfixExpression) {
             // numeric expr
@@ -215,6 +212,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
                 JTypeMirror promotedTypeWithCast = TypeConversion.binaryNumericPromotion(coercionType, otherType);
                 return !promotedTypeWithoutCast.equals(promotedTypeWithCast);
             }
+
         }
         return false;
     }
@@ -274,20 +272,24 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             }
             // Note that we don't capture this type, which may make the method type malformed (eg mentioning a wildcard
             // as return type). We need these bare wildcards for "mentionsAny" to work properly.
-            // The "correct" approach here to remove wildcards would be to infer the ground non-wildcard
-            // parameterization
+            // The "correct" approach here to remove wildcards would be to infer the ground non-wildcard parameterization
             // of the lambda but this is pretty deep inside the inference code and not readily usable.
             JClassType lambdaTyCapture = (JClassType) genericLambdaTy;
 
             // This is the method signature of the lambda, given the formal parameter type of the parent call.
             // The formal type is not instantiated, it may contain type variables of the parent method...
-            JMethodSig expectedLambdaMethod = genericLambdaTy
-                    .getTypeSystem()
-                    .sigOf(lambda.getFunctionalMethod().getSymbol(), lambdaTyCapture.getTypeParamSubst());
+            JMethodSig expectedLambdaMethod = genericLambdaTy.getTypeSystem().sigOf(
+                lambda.getFunctionalMethod().getSymbol(),
+                lambdaTyCapture.getTypeParamSubst()
+            );
             // but if the return type does not contain such tvars, then the parent method type does
             // not depend on the lambda type :)
             return definitely(
-                    TypeOps.mentionsAny(expectedLambdaMethod.getReturnType(), parentMethod.getTypeParameters()));
+                TypeOps.mentionsAny(
+                    expectedLambdaMethod.getReturnType(),
+                    parentMethod.getTypeParameters()
+                )
+            );
         }
         return UNKNOWN;
     }
@@ -305,4 +307,5 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         }
         return null;
     }
+
 }

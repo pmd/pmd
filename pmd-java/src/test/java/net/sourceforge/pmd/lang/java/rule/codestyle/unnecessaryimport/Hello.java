@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.ConcFlow.S
 abstract class Hello {
 
     public static void sayHello() {
-        // ...
+        //...
         Subscription x;
     }
 }

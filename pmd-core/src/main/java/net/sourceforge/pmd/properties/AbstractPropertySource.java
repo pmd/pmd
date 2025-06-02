@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.properties;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
 
 /**
  * Base class for {@link PropertySource}.
@@ -34,15 +36,18 @@ public abstract class AbstractPropertySource implements PropertySource {
      */
     private final Map<PropertyDescriptor<?>, Object> propertyValuesByDescriptor = new HashMap<>();
 
+
     @Override
     public void definePropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         // Check to ensure the property does not already exist.
         if (getPropertyDescriptor(propertyDescriptor.name()) != null) {
             throw new IllegalArgumentException("There is already a PropertyDescriptor with name '"
-                    + propertyDescriptor.name() + "' defined on " + getPropertySourceType() + " " + getName() + ".");
+                                                       + propertyDescriptor.name() + "' defined on " + getPropertySourceType() + " " + getName() + ".");
+
         }
         propertyDescriptors.add(propertyDescriptor);
     }
+
 
     protected abstract String getPropertySourceType();
 
@@ -56,20 +61,24 @@ public abstract class AbstractPropertySource implements PropertySource {
         return null;
     }
 
+
     @Override
     public boolean hasDescriptor(PropertyDescriptor<?> descriptor) {
         return propertyDescriptors.contains(descriptor);
     }
+
 
     @Override
     public final List<PropertyDescriptor<?>> getOverriddenPropertyDescriptors() {
         return new ArrayList<>(propertyValuesByDescriptor.keySet());
     }
 
+
     @Override
     public List<PropertyDescriptor<?>> getPropertyDescriptors() {
         return Collections.unmodifiableList(propertyDescriptors);
     }
+
 
     @Override
     public <T> T getProperty(PropertyDescriptor<T> propertyDescriptor) {
@@ -83,10 +92,12 @@ public abstract class AbstractPropertySource implements PropertySource {
         return result;
     }
 
+
     @Override
     public boolean isPropertyOverridden(PropertyDescriptor<?> propertyDescriptor) {
         return propertyValuesByDescriptor.containsKey(propertyDescriptor);
     }
+
 
     @Override
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
@@ -98,6 +109,7 @@ public abstract class AbstractPropertySource implements PropertySource {
         }
     }
 
+
     /**
      * Checks whether this property descriptor is defined for this property source.
      *
@@ -105,15 +117,16 @@ public abstract class AbstractPropertySource implements PropertySource {
      */
     private void checkValidPropertyDescriptor(PropertyDescriptor<?> propertyDescriptor) {
         if (!hasDescriptor(propertyDescriptor)) {
-            throw new IllegalArgumentException("Property descriptor not defined for " + getPropertySourceType() + " "
-                    + getName() + ": " + propertyDescriptor);
+            throw new IllegalArgumentException("Property descriptor not defined for " + getPropertySourceType() + " " + getName() + ": " + propertyDescriptor);
         }
     }
+
 
     @Override
     public final Map<PropertyDescriptor<?>, Object> getOverriddenPropertiesByPropertyDescriptor() {
         return new HashMap<>(propertyValuesByDescriptor);
     }
+
 
     @Override
     public Map<PropertyDescriptor<?>, Object> getPropertiesByPropertyDescriptor() {
@@ -135,6 +148,7 @@ public abstract class AbstractPropertySource implements PropertySource {
         return Collections.unmodifiableMap(propertiesByPropertyDescriptor);
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -153,20 +167,16 @@ public abstract class AbstractPropertySource implements PropertySource {
         // as java.util.regex.Pattern doesn't implement equals().
         Map<String, String> propertiesWithValues = new HashMap<>();
         propertyDescriptors.forEach(propertyDescriptor -> {
-            Object value =
-                    propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
+            Object value = propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
             @SuppressWarnings({"unchecked", "rawtypes"})
-            String valueString =
-                    ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
+            String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
             propertiesWithValues.put(propertyDescriptor.name(), valueString);
         });
         Map<String, String> thatPropertiesWithValues = new HashMap<>();
         that.propertyDescriptors.forEach(propertyDescriptor -> {
-            Object value =
-                    that.propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
+            Object value = that.propertyValuesByDescriptor.getOrDefault(propertyDescriptor, propertyDescriptor.defaultValue());
             @SuppressWarnings({"unchecked", "rawtypes"})
-            String valueString =
-                    ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
+            String valueString = ((PropertyDescriptor) propertyDescriptor).serializer().toString(value);
             thatPropertiesWithValues.put(propertyDescriptor.name(), valueString);
         });
         return Objects.equals(propertiesWithValues, thatPropertiesWithValues);

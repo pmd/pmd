@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
+
 import static net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers.multimapResolver;
 import static net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers.singleton;
 import static net.sourceforge.pmd.lang.java.symbols.table.coreimpl.CoreResolvers.singularMapResolver;
@@ -15,10 +16,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.MostlySingularMultimap.Builder;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.MostlySingularMultimap.MapMaker;
 import net.sourceforge.pmd.util.IteratorUtil;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Build a shadow chain for some type.
@@ -59,16 +62,14 @@ public abstract class ShadowChainBuilder<S, I> {
 
     // #augment overloads wrap a resolver into a new chain node
 
-    public ShadowChainNode<S, I> augment(
-            ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, ResolverBuilder symbols) {
+    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, ResolverBuilder symbols) {
         if (isPrunable(parent, shadowBarrier, symbols.isEmpty())) {
             return parent;
         }
         return new ShadowChainNodeBase<>(parent, shadowBarrier, scopeTag, symbols.build());
     }
 
-    public ShadowChainNode<S, I> augment(
-            ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
+    public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
         if (isPrunable(parent, shadowBarrier, resolver.isDefinitelyEmpty())) {
             return parent;
         }
@@ -77,8 +78,8 @@ public abstract class ShadowChainBuilder<S, I> {
 
     // prunes empty nodes if doing so will not alter results
     private boolean isPrunable(ShadowChainNode<S, I> parent, boolean shadowBarrier, boolean definitelyEmpty) {
-        return definitelyEmpty
-                && (!shadowBarrier || parent.getResolver().isDefinitelyEmpty() && parent.isShadowBarrier());
+        return definitelyEmpty && (!shadowBarrier
+            || parent.getResolver().isDefinitelyEmpty() && parent.isShadowBarrier());
     }
 
     public ShadowChainNode<S, I> augment(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, S symbol) {
@@ -90,32 +91,25 @@ public abstract class ShadowChainBuilder<S, I> {
     // resolver itself (the chain node will cache the results of the
     // parents too)
 
-    public ShadowChainNode<S, I> augmentWithCache(
-            ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
+    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver) {
         return augmentWithCache(parent, shadowBarrier, scopeTag, resolver, ShadowChainNodeBase.defaultMerger());
     }
 
-    public ShadowChainNode<S, I> augmentWithCache(
-            ShadowChainNode<S, I> parent,
-            boolean shadowBarrier,
-            I scopeTag,
-            NameResolver<? extends S> resolver,
-            BinaryOperator<List<S>> merger) {
+    public ShadowChainNode<S, I> augmentWithCache(ShadowChainNode<S, I> parent, boolean shadowBarrier, I scopeTag, NameResolver<? extends S> resolver, BinaryOperator<List<S>> merger) {
         return new CachingShadowChainNode<>(parent, new HashMap<>(), resolver, shadowBarrier, scopeTag, merger);
     }
 
-    public ShadowChainNode<S, I> shadowWithCache(
-            ShadowChainNode<S, I> parent,
-            I scopeTag,
-            // this map will be used as the cache without copy,
-            // it may contain initial bindings, which is only
-            // valid if the built group is a shadow barrier, which
-            // is why this parameter is defaulted.
-            Map<String, List<S>> cacheMap,
-            NameResolver<S> resolver) {
-        return new CachingShadowChainNode<>(
-                parent, cacheMap, resolver, true, scopeTag, ShadowChainNodeBase.defaultMerger());
+    public ShadowChainNode<S, I> shadowWithCache(ShadowChainNode<S, I> parent,
+                                                 I scopeTag,
+                                                 // this map will be used as the cache without copy,
+                                                 // it may contain initial bindings, which is only
+                                                 // valid if the built group is a shadow barrier, which
+                                                 // is why this parameter is defaulted.
+                                                 Map<String, List<S>> cacheMap,
+                                                 NameResolver<S> resolver) {
+        return new CachingShadowChainNode<>(parent, cacheMap, resolver, true, scopeTag, ShadowChainNodeBase.defaultMerger());
     }
+
 
     // #shadow overloads default the shadowBarrier param to true
 
@@ -131,10 +125,10 @@ public abstract class ShadowChainBuilder<S, I> {
         return augment(parent, true, scopeTag, symbol);
     }
 
+
     // convenience to build name resolvers
 
-    public <N> ResolverBuilder groupByName(
-            Iterable<? extends N> input, Function<? super N, ? extends @Nullable S> symbolFetcher) {
+    public <N> ResolverBuilder groupByName(Iterable<? extends N> input, Function<? super N, ? extends @Nullable S> symbolFetcher) {
         Iterable<? extends S> mapped = () -> IteratorUtil.mapNotNull(input.iterator(), symbolFetcher);
         return new ResolverBuilder(newMapBuilder().groupBy(mapped, this::getSimpleName));
     }

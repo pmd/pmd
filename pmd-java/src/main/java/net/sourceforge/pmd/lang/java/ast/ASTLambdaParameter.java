@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+
 /**
  * Formal parameter of a lambda expression. Child of {@link ASTLambdaParameterList}.
  *
@@ -18,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTLambdaParameter extends AbstractJavaTypeNode
-        implements InternalInterfaces.VariableIdOwner, ModifierOwner {
+    implements InternalInterfaces.VariableIdOwner, ModifierOwner {
 
     ASTLambdaParameter(int id) {
         super(id);

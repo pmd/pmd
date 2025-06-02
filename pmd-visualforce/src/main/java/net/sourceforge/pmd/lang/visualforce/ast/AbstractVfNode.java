@@ -33,4 +33,5 @@ abstract class AbstractVfNode extends AbstractJjtreeNode<AbstractVfNode, VfNode>
         }
         return visitor.cannotVisit(this, data);
     }
+
 }

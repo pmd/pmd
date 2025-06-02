@@ -8,6 +8,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -15,7 +18,6 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class CommentAssignmentPass {
 
@@ -38,7 +40,8 @@ final class CommentAssignmentPass {
     }
 
     public static void assignCommentsToDeclarations(ASTCompilationUnit root) {
-        final List<JavadocComment> comments = root.getComments().stream()
+        final List<JavadocComment> comments = root.getComments()
+                .stream()
                 .filter(JavadocComment.class::isInstance)
                 .map(JavadocComment.class::cast)
                 .collect(Collectors.toList());
@@ -58,11 +61,7 @@ final class CommentAssignmentPass {
 
                 JavadocComment searcher = new JavadocComment(maybeComment);
                 // we only search for the start of the first token of the comment
-                int index = Collections.binarySearch(
-                        comments,
-                        searcher,
-                        Comparator.comparing(
-                                JavaComment::getReportLocation, Comparator.comparing(FileLocation::getStartPos)));
+                int index = Collections.binarySearch(comments, searcher, Comparator.comparing(JavaComment::getReportLocation, Comparator.comparing(FileLocation::getStartPos)));
                 if (index >= 0) {
                     setComment(commentableNode, comments.get(index));
                     break;

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -22,13 +23,16 @@ public final class ASTCatchClause extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+
     /** Returns the catch parameter. */
     public ASTCatchParameter getParameter() {
         return (ASTCatchParameter) getFirstChild();
     }
 
+
     /** Returns the body of this catch branch. */
     public ASTBlock getBody() {
         return firstChild(ASTBlock.class);
     }
+
 }

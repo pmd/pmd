@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -47,8 +48,8 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         ASTExpression arg = ASTList.singleOrNull(argList);
 
         if (JavaAstUtils.isStringConcatExpr(arg)
-                // ignore concatenations that produce constants
-                && !arg.getConstFoldingResult().hasValue()) {
+            // ignore concatenations that produce constants
+            && !arg.getConstFoldingResult().hasValue()) {
             ctx.addViolation(arg);
         }
     }
@@ -61,6 +62,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         }
         Node parent = node.getParent();
 
-        return parent instanceof ASTMethodCall && JavaRuleUtil.isStringBuilderCtorOrAppend((ASTMethodCall) parent);
+        return parent instanceof ASTMethodCall
+            && JavaRuleUtil.isStringBuilderCtorOrAppend((ASTMethodCall) parent);
     }
 }

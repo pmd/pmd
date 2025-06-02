@@ -17,8 +17,13 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
 import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.SystemProps;
@@ -37,10 +42,8 @@ import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.ContextedAssertionError;
 import net.sourceforge.pmd.util.log.PmdReporter;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.slf4j.event.Level;
+
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class PmdRunnableTest {
 
@@ -53,6 +56,7 @@ class PmdRunnableTest {
     private PmdReporter reporter;
     private Rule rule;
 
+
     @BeforeEach
     void prepare() {
         // reset data
@@ -64,6 +68,7 @@ class PmdRunnableTest {
         // so this test only makes sense without separate threads
         configuration.setThreads(0);
     }
+
 
     private Report process(LanguageVersion lv) {
         configuration.setForceLanguageVersion(lv);
@@ -97,6 +102,7 @@ class PmdRunnableTest {
             assertThat(errors, hasSize(1));
             assertThat(errors.get(0).getError(), instanceOf(ContextedAssertionError.class));
         });
+
     }
 
     @Test
@@ -115,11 +121,13 @@ class PmdRunnableTest {
         });
     }
 
+
     @Test
     void semanticErrorShouldAbortTheRun() {
         Report report = process(versionWithParserThatReportsSemanticError());
 
-        verify(reporter, times(1)).log(eq(Level.ERROR), eq("at test.dummy:1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
+        verify(reporter, times(1))
+            .log(eq(Level.ERROR), eq("at test.dummy:1:1: " + TEST_MESSAGE_SEMANTIC_ERROR));
         verify(rule, never()).apply(Mockito.any(), Mockito.any());
 
         assertEquals(1, report.getProcessingErrors().size());
@@ -152,33 +160,30 @@ class PmdRunnableTest {
         static final ThrowingLanguageModule INSTANCE = new ThrowingLanguageModule();
 
         ThrowingLanguageModule() {
-            super(
-                    LanguageMetadata.withId("foo")
-                            .name("Foo")
-                            .extensions("foo")
-                            .addVersion(THROWS_ASSERTION_ERROR)
-                            .addVersion(THROWS_SEMANTIC_ERROR)
-                            .addVersion(PARSER_REPORTS_SEMANTIC_ERROR)
-                            .addDefaultVersion("defalt"),
-                    ThrowingLanguageModule::makeParser);
+            super(LanguageMetadata.withId("foo").name("Foo").extensions("foo")
+                                  .addVersion(THROWS_ASSERTION_ERROR)
+                                  .addVersion(THROWS_SEMANTIC_ERROR)
+                                  .addVersion(PARSER_REPORTS_SEMANTIC_ERROR)
+                                  .addDefaultVersion("defalt"),
+                  ThrowingLanguageModule::makeParser);
         }
 
         private static Parser makeParser() {
             return task -> {
                 switch (task.getLanguageVersion().getVersion()) {
-                    case THROWS_ASSERTION_ERROR:
-                        throw new AssertionError("test error while parsing");
-                    case PARSER_REPORTS_SEMANTIC_ERROR: {
-                        RootNode root = DummyLanguageModule.readLispNode(task);
-                        task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
-                        return root;
-                    }
-                    case THROWS_SEMANTIC_ERROR: {
-                        RootNode root = DummyLanguageModule.readLispNode(task);
-                        throw task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
-                    }
-                    default:
-                        return DummyLanguageModule.readLispNode(task);
+                case THROWS_ASSERTION_ERROR:
+                    throw new AssertionError("test error while parsing");
+                case PARSER_REPORTS_SEMANTIC_ERROR: {
+                    RootNode root = DummyLanguageModule.readLispNode(task);
+                    task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
+                    return root;
+                }
+                case THROWS_SEMANTIC_ERROR: {
+                    RootNode root = DummyLanguageModule.readLispNode(task);
+                    throw task.getReporter().error(root, TEST_MESSAGE_SEMANTIC_ERROR);
+                }
+                default:
+                    return DummyLanguageModule.readLispNode(task);
                 }
             };
         }
@@ -195,4 +200,5 @@ class PmdRunnableTest {
             throw new AssertionError("test");
         }
     }
+
 }

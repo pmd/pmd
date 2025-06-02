@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.kotlin.cpd;
 
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.Lexer;
+
 import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
 import net.sourceforge.pmd.cpd.impl.AntlrTokenFilter;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
 import net.sourceforge.pmd.lang.kotlin.ast.KotlinLexer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Lexer;
 
 /**
  * The Kotlin Tokenizer

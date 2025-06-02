@@ -15,8 +15,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * present on the API of {@link Node} and {@link AbstractNode} has been
  * moved here for 7.0.0 (e.g. jjtClose methods).
  */
-public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N extends JjtreeNode<N>>
-        extends AbstractNode<B, N> implements JjtreeNode<N> {
+public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N extends JjtreeNode<N>> extends AbstractNode<B, N> implements JjtreeNode<N> {
     protected final int id;
     private JavaccToken firstToken;
     private JavaccToken lastToken;
@@ -45,8 +44,8 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
 
     @Override
     public final TextRegion getTextRegion() {
-        return TextRegion.fromBothOffsets(
-                getFirstToken().getStartOffset(), getLastToken().getEndOffset());
+        return TextRegion.fromBothOffsets(getFirstToken().getStartOffset(),
+                                          getLastToken().getEndOffset());
     }
 
     @Override
@@ -76,6 +75,7 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     protected void addChild(B child, int index) {
         super.addChild(child, index);
     }
+
 
     @Override
     protected void insertChild(B child, int index) {
@@ -140,6 +140,6 @@ public abstract class AbstractJjtreeNode<B extends AbstractJjtreeNode<B, N>, N e
     public String toString() {
         FileLocation loc = getReportLocation();
         return "!debug only! [" + getXPathNodeName() + ":" + loc.getStartPos().toDisplayStringWithColon() + "]"
-                + StringUtil.elide(getText().toString(), 150, "(truncated)");
+            + StringUtil.elide(getText().toString(), 150, "(truncated)");
     }
 }

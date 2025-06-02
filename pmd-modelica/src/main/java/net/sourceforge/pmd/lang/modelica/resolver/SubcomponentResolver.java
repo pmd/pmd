@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import net.sourceforge.pmd.lang.modelica.resolver.internal.ResolutionState;
@@ -20,6 +21,5 @@ public interface SubcomponentResolver {
      * @param name  The name to resolve
      * @return The resolved declarations
      */
-    <T extends ResolvableEntity> ResolutionResult<T> safeResolveComponent(
-            Class<T> clazz, ResolutionState state, CompositeName name);
+    <T extends ResolvableEntity> ResolutionResult<T> safeResolveComponent(Class<T> clazz, ResolutionState state, CompositeName name);
 }

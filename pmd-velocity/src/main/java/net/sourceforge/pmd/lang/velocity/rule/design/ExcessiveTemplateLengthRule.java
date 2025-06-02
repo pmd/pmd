@@ -6,20 +6,22 @@ package net.sourceforge.pmd.lang.velocity.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.lang.velocity.ast.ASTTemplate;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class ExcessiveTemplateLengthRule extends AbstractVtlRule {
 
-    private static final PropertyDescriptor<Integer> REPORT_LEVEL = CommonPropertyDescriptors.reportLevelProperty()
-            .desc("Threshold above which a node is reported")
-            .require(positive())
-            .defaultValue(1000)
-            .build();
+    private static final PropertyDescriptor<Integer> REPORT_LEVEL =
+        CommonPropertyDescriptors.reportLevelProperty()
+                                 .desc("Threshold above which a node is reported")
+                                 .require(positive())
+                                 .defaultValue(1000)
+                                 .build();
 
     public ExcessiveTemplateLengthRule() {
         definePropertyDescriptor(REPORT_LEVEL);

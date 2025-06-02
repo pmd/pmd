@@ -9,11 +9,13 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+
 
 /**
  * Populates method declarations with the method they override.
@@ -23,7 +25,9 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
  */
 final class OverrideResolutionPass {
 
-    private OverrideResolutionPass() {}
+    private OverrideResolutionPass() {
+
+    }
 
     static void resolveOverrides(ASTTypeDeclaration node) {
         // collect methods that may override another method (non private, non static)
@@ -39,15 +43,17 @@ final class OverrideResolutionPass {
         }
 
         // stream all methods of supertypes
-        SuperTypesEnumerator.ALL_STRICT_SUPERTYPES.stream(node.getTypeMirror())
-                // Filter down to those that may be overridden by one of the possible violations
-                // This considers name, arity, and accessibility
-                //                                      vvvvvvvvvvvvvvvvvvvvvvvvvvv
-                .flatMap(st -> st.streamDeclaredMethods(relevantMethods::isRelevant))
-                // For those methods, a simple override-equivalence check is enough,
-                // because we already know they're accessible, and declared in a supertype
-                .forEach(relevantMethods::findMethodOverridingThisSig);
+        SuperTypesEnumerator.ALL_STRICT_SUPERTYPES
+            .stream(node.getTypeMirror())
+            // Filter down to those that may be overridden by one of the possible violations
+            // This considers name, arity, and accessibility
+            //                                      vvvvvvvvvvvvvvvvvvvvvvvvvvv
+            .flatMap(st -> st.streamDeclaredMethods(relevantMethods::isRelevant))
+            // For those methods, a simple override-equivalence check is enough,
+            // because we already know they're accessible, and declared in a supertype
+            .forEach(relevantMethods::findMethodOverridingThisSig);
     }
+
 
     /**
      * This does a prefilter, so that we only collect methods of supertypes
@@ -66,6 +72,7 @@ final class OverrideResolutionPass {
         private RelevantMethodSet(JClassType site) {
             this.site = site;
         }
+
 
         // add a method if it may be overriding another
         // this builds the data structure for isRelevant to work

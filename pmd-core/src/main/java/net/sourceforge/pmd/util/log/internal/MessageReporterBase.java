@@ -8,11 +8,13 @@ import static net.sourceforge.pmd.util.StringUtil.quoteMessageFormat;
 
 import java.text.MessageFormat;
 import java.util.Objects;
-import net.sourceforge.pmd.util.log.PmdReporter;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
+
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Base implementation.
@@ -33,7 +35,9 @@ public abstract class MessageReporterBase implements PmdReporter {
 
     @Override
     public final boolean isLoggable(Level level) {
-        return minLevel != null && minLevel.compareTo(level) >= 0 && isLoggableImpl(level);
+        return minLevel != null
+            && minLevel.compareTo(level) >= 0
+            && isLoggableImpl(level);
     }
 
     protected boolean isLoggableImpl(Level level) {
@@ -91,6 +95,7 @@ public abstract class MessageReporterBase implements PmdReporter {
      * Perform logging assuming {@link #isLoggable(Level)} is true.
      */
     protected abstract void logImpl(Level level, String message);
+
 
     @Override
     public int numErrors() {

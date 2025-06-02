@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Set;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -44,6 +45,7 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
     /** Postfix decrement operator {@code "--"}. */
     POST_DECREMENT("--");
 
+
     private final String code;
 
     UnaryOp(String code) {
@@ -76,6 +78,7 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
         return this == PRE_DECREMENT || this == POST_DECREMENT;
     }
 
+
     /** Returns true if this is a prefix operator. */
     public boolean isPrefix() {
         return this.ordinal() < POST_INCREMENT.ordinal();
@@ -85,6 +88,7 @@ public enum UnaryOp implements InternalInterfaces.OperatorLike {
     public boolean isPostfix() {
         return !isPrefix();
     }
+
 
     @Override
     public String getToken() {

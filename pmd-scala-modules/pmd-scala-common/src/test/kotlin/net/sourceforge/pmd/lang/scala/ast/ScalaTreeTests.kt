@@ -10,98 +10,73 @@ import net.sourceforge.pmd.lang.test.ast.assertPosition
 import net.sourceforge.pmd.lang.test.ast.matchNode
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
-class ScalaTreeTests :
-    FunSpec({
-        test("Test line/column numbers") {
-            """
+class ScalaTreeTests : FunSpec({
+
+
+    test("Test line/column numbers") {
+
+        """
 class Foo {
  val I = "" 
 }  
-      """
-                .trim()
-                .parseScala() should
-                matchNode<ASTSource> {
-                    child<ASTDefnClass> {
-                        it.assertPosition(bline = 1, bcol = 1, eline = 3, ecol = 2)
+      """.trim().parseScala() should matchNode<ASTSource> {
+
+            child<ASTDefnClass> {
+                it.assertPosition(bline = 1, bcol = 1, eline = 3, ecol = 2)
+                it::isImplicit shouldBe false
+
+                child<ASTTypeName> {
+                    it.assertPosition(bline = 1, bcol = 7, eline = 1, ecol = 10)
+                    it::isImplicit shouldBe false
+                }
+
+                child<ASTTypeParamClause> {
+                    it.assertPosition(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
+                    it::isImplicit shouldBe true
+                }
+
+                child<ASTCtorPrimary> {
+                    it.assertPosition(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
+                    it::isImplicit shouldBe true
+
+                    child<ASTNameAnonymous> {
+                        it.assertPosition(bline = 1, bcol = 11, eline = 1, ecol = 11) // node has zero length
+                        it::isImplicit shouldBe true
+                    }
+                }
+
+                child<ASTTemplate> {
+                    it.assertPosition(bline = 1, bcol = 11, eline = 3, ecol = 2)
+                    it::isImplicit shouldBe false
+
+                    child<ASTTemplateBody> {
+                        it.assertPosition(bline = 1, bcol = 11, eline = 3, ecol = 2)
                         it::isImplicit shouldBe false
 
-                        child<ASTTypeName> {
-                            it.assertPosition(bline = 1, bcol = 7, eline = 1, ecol = 10)
-                            it::isImplicit shouldBe false
-                        }
-
-                        child<ASTTypeParamClause> {
-                            it.assertPosition(
-                                bline = 1,
-                                bcol = 11,
-                                eline = 1,
-                                ecol = 11,
-                            ) // node has zero length
-                            it::isImplicit shouldBe true
-                        }
-
-                        child<ASTCtorPrimary> {
-                            it.assertPosition(
-                                bline = 1,
-                                bcol = 11,
-                                eline = 1,
-                                ecol = 11,
-                            ) // node has zero length
-                            it::isImplicit shouldBe true
-
-                            child<ASTNameAnonymous> {
-                                it.assertPosition(
-                                    bline = 1,
-                                    bcol = 11,
-                                    eline = 1,
-                                    ecol = 11,
-                                ) // node has zero length
-                                it::isImplicit shouldBe true
-                            }
-                        }
-
-                        child<ASTTemplate> {
-                            it.assertPosition(bline = 1, bcol = 11, eline = 3, ecol = 2)
+                        child<ASTDefnVal> {
+                            it.assertPosition(bline = 2, bcol = 2, eline = 2, ecol = 12)
                             it::isImplicit shouldBe false
 
-                            child<ASTTemplateBody> {
-                                it.assertPosition(bline = 1, bcol = 11, eline = 3, ecol = 2)
+                            child<ASTPatVar> {
+                                it.assertPosition(bline = 2, bcol = 6, eline = 2, ecol = 7)
                                 it::isImplicit shouldBe false
 
-                                child<ASTDefnVal> {
-                                    it.assertPosition(bline = 2, bcol = 2, eline = 2, ecol = 12)
+                                child<ASTTermName> {
+                                    it.assertPosition(bline = 2, bcol = 6, eline = 2, ecol = 7)
                                     it::isImplicit shouldBe false
-
-                                    child<ASTPatVar> {
-                                        it.assertPosition(bline = 2, bcol = 6, eline = 2, ecol = 7)
-                                        it::isImplicit shouldBe false
-
-                                        child<ASTTermName> {
-                                            it.assertPosition(
-                                                bline = 2,
-                                                bcol = 6,
-                                                eline = 2,
-                                                ecol = 7,
-                                            )
-                                            it::isImplicit shouldBe false
-                                        }
-                                    }
-
-                                    child<ASTLitString> {
-                                        it.assertPosition(
-                                            bline = 2,
-                                            bcol = 10,
-                                            eline = 2,
-                                            ecol = 12,
-                                        )
-                                        it::getValue shouldBe ""
-                                    }
                                 }
+                            }
+
+                            child<ASTLitString> {
+                                it.assertPosition(bline = 2, bcol = 10, eline = 2, ecol = 12)
+                                it::getValue shouldBe ""
                             }
                         }
                     }
                 }
+            }
         }
-    })
+    }
+})
 
 fun String.parseScala(): ASTSource = ScalaParsingHelper.DEFAULT.parse(this)

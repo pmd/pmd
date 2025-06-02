@@ -6,6 +6,7 @@ package net.sourceforge.pmd.internal.util;
 
 import java.util.Locale;
 import java.util.function.Predicate;
+
 import org.apache.commons.lang3.StringUtils;
 
 final class FileExtensionFilter implements Predicate<String> {
@@ -32,7 +33,8 @@ final class FileExtensionFilter implements Predicate<String> {
         if (!accept) {
             for (String extension : extensions) {
                 boolean matches =
-                        ignoreCase ? StringUtils.endsWithIgnoreCase(path, extension) : path.endsWith(extension);
+                    ignoreCase ? StringUtils.endsWithIgnoreCase(path, extension)
+                               : path.endsWith(extension);
                 if (matches) {
                     accept = true;
                     break;

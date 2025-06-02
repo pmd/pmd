@@ -1,10 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
@@ -18,7 +22,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Looking for potential Open redirect via PageReference variable input
@@ -28,6 +31,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class ApexOpenRedirectRule extends AbstractApexRule {
     private static final String PAGEREFERENCE = "PageReference";
     private final Set<String> listOfStringLiteralVariables = new HashSet<>();
+
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -74,19 +78,18 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
                 if (node instanceof ASTVariableDeclaration) {
                     addVariable((ASTVariableDeclaration) node);
                 } else if (node instanceof ASTBinaryExpression) {
-                    ASTVariableDeclaration parent =
-                            node.ancestors(ASTVariableDeclaration.class).first();
+                    ASTVariableDeclaration parent = node.ancestors(ASTVariableDeclaration.class).first();
                     if (parent != null) {
                         addVariable(parent);
                     }
-                    ASTAssignmentExpression assignment =
-                            node.ancestors(ASTAssignmentExpression.class).first();
+                    ASTAssignmentExpression assignment = node.ancestors(ASTAssignmentExpression.class).first();
                     if (assignment != null) {
                         ASTVariableExpression var = assignment.firstChild(ASTVariableExpression.class);
                         if (var != null) {
                             addVariable(var);
                         }
                     }
+
                 }
             }
         } else {
@@ -99,6 +102,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
                 }
             }
         }
+
     }
 
     private void addVariable(ASTVariableDeclaration node) {
@@ -152,4 +156,5 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
             getObjectValue(z, data);
         }
     }
+
 }

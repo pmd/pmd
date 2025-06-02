@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.ast;
 
 import static net.sourceforge.pmd.lang.test.ast.NodeExtensionsKt.textOfReportLocation;
@@ -17,11 +18,13 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import org.junit.jupiter.api.Test;
 
 class ApexParserTest extends ApexParserTestBase {
 
@@ -30,11 +33,11 @@ class ApexParserTest extends ApexParserTestBase {
 
         // Setup
         String code = "@isTest\n"
-                + " public class SimpleClass {\n"
-                + "    @isTest\n public static void testAnything() {\n"
-                + "        \n"
-                + "    }\n"
-                + "}";
+            + " public class SimpleClass {\n"
+            + "    @isTest\n public static void testAnything() {\n"
+            + "        \n"
+            + "    }\n"
+            + "}";
 
         // Exercise
         ASTUserClassOrInterface<?> rootNode = parse(code);
@@ -46,12 +49,12 @@ class ApexParserTest extends ApexParserTestBase {
 
     @Test
     void parseErrors() {
-        ParseException exception =
-                assertThrows(ParseException.class, () -> parse("public class SimpleClass { String x = \"a\"; }"));
+        ParseException exception = assertThrows(ParseException.class, () -> parse("public class SimpleClass { String x = \"a\"; }"));
         assertThat(exception.getMessage(), containsString("Syntax error at 1:38: token recognition error at: '\"'"));
     }
 
-    private final String testCodeForLineNumbers = "public class SimpleClass {\n" // line 1
+    private final String testCodeForLineNumbers =
+              "public class SimpleClass {\n" // line 1
             + "    public void method1() {\n" // line 2
             + "        System.out.println('abc');\n" // line 3
             + "        // this is a comment\n" // line 4
@@ -72,7 +75,7 @@ class ApexParserTest extends ApexParserTestBase {
     }
 
     private void assertLineNumbersForTestCode(ASTUserClassOrInterface<?> classNode) {
-
+        
         // identifier: "SimpleClass"
         assertEquals("SimpleClass", classNode.getSimpleName());
         // Class location starts at the "class" keyword. (It excludes modifiers.)
@@ -80,7 +83,7 @@ class ApexParserTest extends ApexParserTestBase {
         // "public" modifier for class
         assertPosition(classNode.getChild(0), 1, 1, 1, 7);
 
-        // identifier: "method1"
+        // identifier: "method1"                                                                                                                                                                  
         Node method1 = classNode.getChild(1);
         assertEquals("method1", ((ASTMethod) method1).getCanonicalName());
         // "method1" - spans from return type to end of its block statement. (It excludes modifiers.)
@@ -123,12 +126,12 @@ class ApexParserTest extends ApexParserTestBase {
     void checkComments() {
 
         String code = "public  /** Comment on Class */ class SimpleClass {\n" // line 1
-                + "    /** Comment on m1 */"
-                + "    public void method1() {\n" // line 2
-                + "    }\n" // line 3
-                + "    public void method2() {\n" // line 4
-                + "    }\n" // line 5
-                + "}\n"; // line 6
+            + "    /** Comment on m1 */"
+            + "    public void method1() {\n" // line 2
+            + "    }\n" // line 3
+            + "    public void method2() {\n" // line 4
+            + "    }\n" // line 5
+            + "}\n"; // line 6
 
         ASTUserClassOrInterface<?> root = parse(code);
 
@@ -166,8 +169,8 @@ class ApexParserTest extends ApexParserTestBase {
      */
     @Test
     void parseInheritedSharingClass() throws IOException {
-        String source = IOUtil.readToString(
-                ApexParserTest.class.getResourceAsStream("InheritedSharing.cls"), StandardCharsets.UTF_8);
+        String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("InheritedSharing.cls"),
+                StandardCharsets.UTF_8);
         assertNotNull(parse(source));
     }
 
@@ -178,8 +181,8 @@ class ApexParserTest extends ApexParserTestBase {
      */
     @Test
     void stackOverflowDuringClassParsing() throws Exception {
-        String source = IOUtil.readToString(
-                ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"), StandardCharsets.UTF_8);
+        String source = IOUtil.readToString(ApexParserTest.class.getResourceAsStream("StackOverflowClass.cls"),
+                                            StandardCharsets.UTF_8);
         ASTUserClassOrInterface<?> rootNode = parse(source);
         assertNotNull(rootNode);
 
@@ -196,7 +199,7 @@ class ApexParserTest extends ApexParserTestBase {
 
         ASTUserClassOrInterface<?> classNode = rootNode.getMainNode();
         assertEquals("InnerClassLocations", classNode.getSimpleName());
-        // Class location starts at the "class" keyword. (It excludes any modifiers.)
+        // Class location starts at the "class" keyword. (It excludes any modifiers.)                                                                                                             
         assertPosition(classNode, 1, 8, 16, 2);
 
         List<ASTUserClass> classes = classNode.descendants(ASTUserClass.class).toList();

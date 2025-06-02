@@ -4,4 +4,6 @@
 
 package javasymbols.testdata.deep;
 
-public class SomeClassA {}
+
+public class SomeClassA {
+}

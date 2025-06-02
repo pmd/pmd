@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.ast;
 
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
@@ -10,6 +11,7 @@ public class ApexParsingHelper extends BaseParsingHelper<ApexParsingHelper, ASTA
 
     public static final ApexParsingHelper DEFAULT = new ApexParsingHelper(Params.getDefault());
 
+
     private ApexParsingHelper(Params p) {
         super(ApexLanguageModule.getInstance(), ASTApexFile.class, p);
     }
@@ -18,4 +20,5 @@ public class ApexParsingHelper extends BaseParsingHelper<ApexParsingHelper, ASTA
     protected ApexParsingHelper clone(Params params) {
         return new ApexParsingHelper(params);
     }
+
 }

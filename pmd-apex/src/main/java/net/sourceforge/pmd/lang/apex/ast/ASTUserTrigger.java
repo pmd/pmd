@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.declaration.TriggerDeclaration;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.google.summit.ast.declaration.TriggerDeclaration;
 
 public final class ASTUserTrigger extends BaseApexClass<TriggerDeclaration> {
 
@@ -24,6 +25,9 @@ public final class ASTUserTrigger extends BaseApexClass<TriggerDeclaration> {
     }
 
     public List<TriggerUsage> getUsages() {
-        return node.getCases().stream().map(TriggerUsage::of).sorted().collect(Collectors.toList());
+        return node.getCases().stream()
+                .map(TriggerUsage::of)
+                .sorted()
+                .collect(Collectors.toList());
     }
 }

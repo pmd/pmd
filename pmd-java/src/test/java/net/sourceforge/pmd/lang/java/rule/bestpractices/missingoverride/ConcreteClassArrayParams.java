@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 public class ConcreteClassArrayParams extends AbstractClass {
@@ -8,6 +9,7 @@ public class ConcreteClassArrayParams extends AbstractClass {
     Object fun(String s) {
         return null;
     }
+
 
     @Override
     public void arrayParams(String dflt, int[] keys, StringBuilder[] labels) {

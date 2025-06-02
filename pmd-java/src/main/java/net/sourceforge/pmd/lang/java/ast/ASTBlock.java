@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -16,16 +17,19 @@ import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
  *
  * </pre>
  */
-public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement> implements ASTSwitchArrowRHS, ASTStatement {
+public final class ASTBlock extends ASTMaybeEmptyListOf<ASTStatement>
+        implements ASTSwitchArrowRHS, ASTStatement {
 
     ASTBlock(int id) {
         super(id, ASTStatement.class);
     }
 
+
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     public boolean containsComment() {
         JavaccToken t = getLastToken().getPreviousComment();

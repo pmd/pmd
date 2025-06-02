@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 
 /**
  * An explicit constructor invocation, occurring at the start of a
@@ -22,7 +24,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
-        implements InvocationNode, ASTStatement {
+    implements InvocationNode, ASTStatement {
 
     private boolean isSuper;
     private OverloadSelectionResult result;
@@ -31,10 +33,12 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
         super(id);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     @Override
     @NonNull
@@ -104,4 +108,5 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
     void setOverload(OverloadSelectionResult result) {
         this.result = result;
     }
+
 }

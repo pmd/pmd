@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.Collections;
@@ -13,6 +14,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
@@ -28,7 +32,6 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Detects if variables in Database.query(variable) or Database.countQuery is escaped with
@@ -38,19 +41,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  */
 public class ApexSOQLInjectionRule extends AbstractApexRule {
-    private static final Set<String> SAFE_VARIABLE_TYPES = Collections.unmodifiableSet(Stream.of(
-                    "double",
-                    "long",
-                    "decimal",
-                    "boolean",
-                    "id",
-                    "integer",
-                    "sobjecttype",
-                    "schema.sobjecttype",
-                    "sobjectfield",
-                    "schema.sobjectfield")
-            .collect(Collectors.toSet()));
-
+    private static final Set<String> SAFE_VARIABLE_TYPES = 
+        Collections.unmodifiableSet(Stream.of(
+            "double", "long", "decimal", "boolean", "id", "integer",
+            "sobjecttype", "schema.sobjecttype", "sobjectfield", "schema.sobjectfield"
+        ).collect(Collectors.toSet()));
+    
     private static final String JOIN = "join";
     private static final String ESCAPE_SINGLE_QUOTES = "escapeSingleQuotes";
     private static final String STRING = "String";
@@ -209,13 +205,13 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                 selectContainingVariables.put(Helper.getFQVariableName(var), Boolean.FALSE);
             }
         }
+
     }
 
     private void reportStrings(ASTMethodCallExpression m, Object data) {
         final Set<ASTVariableExpression> setOfSafeVars = new HashSet<>();
         for (ASTStandardCondition c : m.descendants(ASTStandardCondition.class)) {
-            List<ASTVariableExpression> vars =
-                    c.descendants(ASTVariableExpression.class).toList();
+            List<ASTVariableExpression> vars = c.descendants(ASTVariableExpression.class).toList();
             setOfSafeVars.addAll(vars);
         }
 
@@ -234,8 +230,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                     continue;
                 }
 
-                final ASTMethodCallExpression parentCall =
-                        v.ancestors(ASTMethodCallExpression.class).first();
+                final ASTMethodCallExpression parentCall = v.ancestors(ASTMethodCallExpression.class).first();
                 boolean isSafeMethod = Helper.isMethodName(parentCall, STRING, ESCAPE_SINGLE_QUOTES)
                         || Helper.isMethodName(parentCall, STRING, JOIN);
 

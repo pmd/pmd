@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,4 +20,5 @@ class TokenEntryTest {
         assertEquals(2, mark.getBeginColumn());
         assertEquals(4, mark.getEndColumn());
     }
+
 }

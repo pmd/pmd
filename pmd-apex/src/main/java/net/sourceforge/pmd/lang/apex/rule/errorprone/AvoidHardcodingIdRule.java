@@ -1,16 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class AvoidHardcodingIdRule extends AbstractApexRule {
     private static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9]{5}0[a-zA-Z0-9]{9}([a-zA-Z0-5]{3})?$");
@@ -31,6 +34,7 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
     protected @NonNull RuleTargetSelector buildTargetSelector() {
         return RuleTargetSelector.forTypes(ASTLiteralExpression.class);
     }
+
 
     @Override
     public Object visit(ASTLiteralExpression node, Object data) {
@@ -61,7 +65,8 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
         final char checksum2 = checksum(part2);
         final char checksum3 = checksum(part3);
 
-        return literal.charAt(15) == checksum1 && literal.charAt(16) == checksum2 && literal.charAt(17) == checksum3;
+        return literal.charAt(15) == checksum1 && literal.charAt(16) == checksum2
+                && literal.charAt(17) == checksum3;
     }
 
     private char checksum(String part) {

@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  */
 public interface TextAvailableNode extends Node {
 
+
     /**
      * Returns the exact region of text delimiting the node in the underlying
      * text document. Note that {@link #getReportLocation()} does not need
@@ -51,4 +52,6 @@ public interface TextAvailableNode extends Node {
     default Chars getText() {
         return getTextDocument().sliceTranslatedText(getTextRegion());
     }
+
+
 }

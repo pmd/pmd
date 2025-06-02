@@ -5,10 +5,12 @@
 package net.sourceforge.pmd.lang.ast;
 
 import java.text.MessageFormat;
-import net.sourceforge.pmd.util.StringUtil;
-import net.sourceforge.pmd.util.log.PmdReporter;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.event.Level;
+
+import net.sourceforge.pmd.util.StringUtil;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Reports errors that occur after parsing. This may be used to implement
@@ -16,6 +18,7 @@ import org.slf4j.event.Level;
  */
 public interface SemanticErrorReporter {
     // TODO use resource bundle keys instead of string messages.
+
 
     /**
      * Report a warning at the given location. Warnings do not abort
@@ -28,6 +31,7 @@ public interface SemanticErrorReporter {
      * @param formatArgs Format arguments
      */
     void warning(Node location, String message, Object... formatArgs);
+
 
     /**
      * Report an error at the given location. Errors abort subsequent analysis
@@ -51,14 +55,14 @@ public interface SemanticErrorReporter {
         e.setReported();
     }
 
+
     /**
      * If {@link #error(Node, String, Object...)} has been called, return
      * a semantic exception instance with the correct message. If it has been
      * called more than once, return the first exception, possibly with suppressed
      * exceptions for subsequent calls to {@link #error(Node, String, Object...)}.
      */
-    @Nullable
-    SemanticException getFirstError();
+    @Nullable SemanticException getFirstError();
 
     static SemanticErrorReporter noop() {
         return new SemanticErrorReporter() {
@@ -89,6 +93,7 @@ public interface SemanticErrorReporter {
         };
     }
 
+
     /**
      * Forwards to a {@link PmdReporter}, except trace and debug
      * messages which are reported on a logger.
@@ -99,7 +104,8 @@ public interface SemanticErrorReporter {
             private SemanticException exception = null;
 
             private String locPrefix(Node loc) {
-                return "at " + loc.getReportLocation().startPosToStringWithFile() + ": ";
+                return "at " + loc.getReportLocation().startPosToStringWithFile()
+                    + ": ";
             }
 
             private String makeMessage(Node location, String message, Object[] args) {
@@ -149,4 +155,5 @@ public interface SemanticErrorReporter {
             }
         };
     }
+
 }

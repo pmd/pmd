@@ -4,10 +4,12 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.Identifier;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+
+import com.google.summit.ast.Identifier;
 
 public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifier> {
 
@@ -19,6 +21,7 @@ public final class ASTReferenceExpression extends AbstractApexNode.Many<Identifi
         this.referenceType = referenceType;
         this.isSafe = isSafe;
     }
+
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {

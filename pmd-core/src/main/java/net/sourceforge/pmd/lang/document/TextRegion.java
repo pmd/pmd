@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.document;
 
 import java.util.Comparator;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -39,7 +40,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class TextRegion implements Comparable<TextRegion> {
 
     private static final Comparator<TextRegion> COMPARATOR =
-            Comparator.comparingInt(TextRegion::getStartOffset).thenComparingInt(TextRegion::getLength);
+        Comparator.comparingInt(TextRegion::getStartOffset)
+                  .thenComparingInt(TextRegion::getLength);
 
     private final int startOffset;
     private final int length;
@@ -97,7 +99,8 @@ public final class TextRegion implements Comparable<TextRegion> {
      * @param other Other region
      */
     public boolean contains(TextRegion other) {
-        return this.getStartOffset() <= other.getStartOffset() && other.getEndOffset() <= this.getEndOffset();
+        return this.getStartOffset() <= other.getStartOffset()
+            && other.getEndOffset() <= this.getEndOffset();
     }
 
     /**
@@ -120,8 +123,7 @@ public final class TextRegion implements Comparable<TextRegion> {
      */
     public TextRegion growLeft(int delta) {
         assert delta + length >= 0 : "Left delta " + delta + " would produce a negative length region " + parThis();
-        assert startOffset - delta >= 0
-                : "Left delta " + delta + " would produce a region that starts before zero " + parThis();
+        assert startOffset - delta >= 0 : "Left delta " + delta + " would produce a region that starts before zero " + parThis();
         return new TextRegion(startOffset - delta, delta + length);
     }
 
@@ -149,7 +151,8 @@ public final class TextRegion implements Comparable<TextRegion> {
         int start = Math.max(r1.getStartOffset(), r2.getStartOffset());
         int end = Math.min(r1.getEndOffset(), r2.getEndOffset());
 
-        return start <= end ? fromBothOffsets(start, end) : null;
+        return start <= end ? fromBothOffsets(start, end)
+                            : null;
     }
 
     /**
@@ -210,14 +213,14 @@ public final class TextRegion implements Comparable<TextRegion> {
         assert startOffset >= 0 : "Negative start offset: " + startOffset;
         assert endOffset >= 0 : "Negative end offset: " + endOffset;
         assert startOffset <= endOffset : "Start and end offset are not ordered: " + startOffset + " > " + endOffset;
-        assert endOffset <= doc.getLength()
-                : "End offset " + endOffset + " out of range for doc of length " + doc.getLength();
+        assert endOffset <= doc.getLength() : "End offset " + endOffset + " out of range for doc of length " + doc.getLength();
         return true;
     }
 
     private String parThis() {
         return "(" + this + ")";
     }
+
 
     /** Compares the start offset, then the length of a region. */
     @Override
@@ -239,7 +242,8 @@ public final class TextRegion implements Comparable<TextRegion> {
             return false;
         }
         TextRegion that = (TextRegion) o;
-        return startOffset == that.getStartOffset() && length == that.getLength();
+        return startOffset == that.getStartOffset()
+            && length == that.getLength();
     }
 
     @Override

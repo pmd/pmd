@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.go.cpd;
 
-import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
-import net.sourceforge.pmd.lang.go.ast.GolangLexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Lexer;
+
+import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
+import net.sourceforge.pmd.lang.go.ast.GolangLexer;
 
 /**
  * <p>Note: This class has been called GoTokenizer in PMD 6</p>.

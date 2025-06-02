@@ -12,19 +12,21 @@ import javasymbols.testdata.impls.Overloads
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ReflectedMethodSymbolTests :
-    WordSpec({
-        "A method symbol" should
-            {
+class ReflectedMethodSymbolTests : WordSpec({
 
-                // note that this is still limited because parameter symbols
-                // don't yet have access to their type
-                "not be equal to its overloads" {
-                    val clazz = classSym(Overloads::class.java)!!
+    "A method symbol" should {
 
-                    val overloads = clazz.getDeclaredMethods("anOverload")
+        // note that this is still limited because parameter symbols
+        // don't yet have access to their type
+        "not be equal to its overloads" {
 
-                    overloads[0] shouldNotBe overloads[1]
-                }
-            }
-    })
+            val clazz = classSym(Overloads::class.java)!!
+
+            val overloads = clazz.getDeclaredMethods("anOverload")
+
+            overloads[0] shouldNotBe overloads[1]
+        }
+
+    }
+
+})

@@ -4,29 +4,29 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.TypeReference;
+
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.TypePath;
-import org.objectweb.asm.TypeReference;
 
 class FieldStub extends MemberStubBase implements JFieldSymbol, TypeAnnotationReceiver {
 
     private final LazyTypeSig type;
     private final @Nullable Object constValue;
 
-    FieldStub(
-            ClassStub classStub,
-            String name,
-            int accessFlags,
-            String descriptor,
-            String signature,
-            @Nullable Object constValue) {
+    FieldStub(ClassStub classStub,
+              String name,
+              int accessFlags,
+              String descriptor,
+              String signature,
+              @Nullable Object constValue) {
         super(classStub, name, accessFlags);
         this.type = new LazyTypeSig(classStub, descriptor, signature);
         this.constValue = constValue;
@@ -67,4 +67,5 @@ class FieldStub extends MemberStubBase implements JFieldSymbol, TypeAnnotationRe
     public boolean equals(Object obj) {
         return SymbolEquality.FIELD.equals(this, obj);
     }
+
 }

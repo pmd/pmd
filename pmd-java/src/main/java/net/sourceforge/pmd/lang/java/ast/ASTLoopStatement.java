@@ -22,10 +22,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface ASTLoopStatement extends ASTStatement {
 
+
     /** Returns the statement that represents the body of this loop. */
     default ASTStatement getBody() {
         return (ASTStatement) getLastChild();
     }
+
 
     /**
      * Returns the node that represents the condition of this loop.
@@ -37,4 +39,5 @@ public interface ASTLoopStatement extends ASTStatement {
     default @Nullable ASTExpression getCondition() {
         return null;
     }
+
 }

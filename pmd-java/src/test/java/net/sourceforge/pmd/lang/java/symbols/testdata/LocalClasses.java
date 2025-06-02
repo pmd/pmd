@@ -6,8 +6,8 @@ package net.sourceforge.pmd.lang.java.symbols.testdata;
 
 public class LocalClasses {
     Object foo = new Object() {
-                // LocalClasses$1
-            };
+        // LocalClasses$1
+    };
 
     static {
         class Local1 {

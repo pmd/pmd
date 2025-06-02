@@ -13,8 +13,8 @@ import net.sourceforge.pmd.lang.xml.ast.internal.XmlParserImpl.RootXmlNode;
  */
 public final class XmlParsingHelper extends BaseParsingHelper<XmlParsingHelper, RootXmlNode> {
 
-    public static final XmlParsingHelper XML =
-            new XmlParsingHelper(XmlLanguageModule.getInstance(), Params.getDefault());
+    public static final XmlParsingHelper XML = new XmlParsingHelper(XmlLanguageModule.getInstance(), Params.getDefault());
+
 
     private XmlParsingHelper(PmdCapableLanguage langName, Params params) {
         super(langName, RootXmlNode.class, params);

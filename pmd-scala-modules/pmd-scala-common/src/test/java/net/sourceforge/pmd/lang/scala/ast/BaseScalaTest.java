@@ -10,4 +10,5 @@ package net.sourceforge.pmd.lang.scala.ast;
 public abstract class BaseScalaTest {
 
     protected final ScalaParsingHelper scala = ScalaParsingHelper.DEFAULT.withResourceContext(getClass());
+
 }

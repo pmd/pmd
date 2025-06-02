@@ -5,14 +5,17 @@
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import java.util.List;
-import net.sourceforge.pmd.util.OptionalBool;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * A {@link ShadowChain} viewed as individual nodes. This offers a lower
  * level API as {@link ShadowChain}.
  */
 public interface ShadowChainNode<S, I> {
+
 
     /**
      * Returns true if this group shadows the next groups in the chain.
@@ -22,12 +25,13 @@ public interface ShadowChainNode<S, I> {
      */
     boolean isShadowBarrier();
 
+
     /**
      * Returns the next node in the chain. Returns null if this is the
      * root.
      */
-    @Nullable
-    ShadowChainNode<S, I> getParent();
+    @Nullable ShadowChainNode<S, I> getParent();
+
 
     /**
      * Returns the resolver for this node.
@@ -48,5 +52,7 @@ public interface ShadowChainNode<S, I> {
      */
     OptionalBool knowsSymbol(String name);
 
+
     ShadowChain<S, I> asChain();
+
 }

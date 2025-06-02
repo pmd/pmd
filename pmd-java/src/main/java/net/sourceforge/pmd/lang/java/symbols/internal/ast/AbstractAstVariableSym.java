@@ -15,8 +15,10 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 /**
  * @author Clément Fournier
  */
-abstract class AbstractAstVariableSym extends AbstractAstAnnotableSym<ASTVariableId> implements JVariableSymbol {
-
+abstract class AbstractAstVariableSym
+    extends AbstractAstAnnotableSym<ASTVariableId>
+    implements JVariableSymbol {
+    
     AbstractAstVariableSym(ASTVariableId node, AstSymFactory factory) {
         super(node, factory);
     }
@@ -35,14 +37,14 @@ abstract class AbstractAstVariableSym extends AbstractAstAnnotableSym<ASTVariabl
     public JTypeMirror getTypeMirror(Substitution subst) {
         ASTType typeNode = node.getTypeNode();
         /*
-           Overridden on LocalVarSym.
+            Overridden on LocalVarSym.
 
-           This gives up on inferred types until a LazyTypeResolver has
-           been set for the compilation unit.
+            This gives up on inferred types until a LazyTypeResolver has
+            been set for the compilation unit.
 
-           Thankfully, the type of local vars is never requested by
-           anything before that moment.
-        */
+            Thankfully, the type of local vars is never requested by
+            anything before that moment.
+         */
         assert typeNode != null : "This implementation expects explicit types (" + this + ")";
         return subst(node.getTypeMirror(), subst);
     }

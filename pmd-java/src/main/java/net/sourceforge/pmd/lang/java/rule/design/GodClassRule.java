@@ -1,7 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.design;
+
 
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ACCESS_TO_FOREIGN_DATA;
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.TIGHT_CLASS_COHESION;
@@ -11,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.util.StringUtil;
+
 
 /**
  * The God Class Rule detects the God Class design flaw using metrics. A god class does too many things, is very big and
@@ -38,9 +41,11 @@ public class GodClassRule extends AbstractJavaRulechainRule {
      */
     private static final double TCC_THRESHOLD = 1.0 / 3.0;
 
+
     public GodClassRule() {
         super(ASTClassDeclaration.class);
     }
+
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
@@ -54,8 +59,11 @@ public class GodClassRule extends AbstractJavaRulechainRule {
 
         if (wmc >= WMC_VERY_HIGH && atfd > FEW_ATFD_THRESHOLD && tcc < TCC_THRESHOLD) {
 
-            asCtx(data).addViolation(node, wmc, StringUtil.percentageString(tcc, 3), atfd);
+            asCtx(data).addViolation(node, wmc,
+                                     StringUtil.percentageString(tcc, 3),
+                                     atfd);
         }
         return data;
     }
+
 }

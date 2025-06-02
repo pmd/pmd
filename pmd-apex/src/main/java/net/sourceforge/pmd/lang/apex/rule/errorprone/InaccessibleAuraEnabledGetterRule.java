@@ -1,7 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -9,14 +12,13 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * In the Summer '21 release, a mandatory security update enforces access
  * modifiers on Apex properties in Lightning component markup. The update
  * prevents access to private or protected Apex getters from Aura and Lightning
  * Web Components.
- *
+ * 
  * @author p.ozil
  */
 public class InaccessibleAuraEnabledGetterRule extends AbstractApexRule {

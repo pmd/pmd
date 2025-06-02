@@ -12,6 +12,7 @@ public final class ASTPostfixExpression extends AbstractApexNode.Single<UnaryExp
         super(unaryExpression);
     }
 
+
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

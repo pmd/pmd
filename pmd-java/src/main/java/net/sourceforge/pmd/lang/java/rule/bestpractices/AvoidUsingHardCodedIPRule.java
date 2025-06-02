@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
-import org.apache.commons.lang3.StringUtils;
+
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
 
@@ -32,18 +35,19 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
         }
     }
 
+
     private static final PropertyDescriptor<List<AddressKinds>> CHECK_ADDRESS_TYPES_DESCRIPTOR =
-            PropertyFactory.enumListProperty("checkAddressTypes", AddressKinds.class, k -> k.label)
-                    .desc("Check for IP address types.")
-                    .defaultValue(asList(AddressKinds.values()))
-                    .build();
+        PropertyFactory.enumListProperty("checkAddressTypes", AddressKinds.class, k -> k.label)
+                       .desc("Check for IP address types.")
+                       .defaultValue(asList(AddressKinds.values()))
+                       .build();
 
     // Provides 4 capture groups that can be used for additional validation
     private static final String IPV4_REGEXP = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";
 
     // Uses IPv4 pattern, but changes the groups to be non-capture
-    private static final String IPV6_REGEXP =
-            "(?:(?:[0-9a-fA-F]{1,4})?\\:)+(?:[0-9a-fA-F]{1,4}|" + IPV4_REGEXP.replace("(", "(?:") + ")?";
+    private static final String IPV6_REGEXP = "(?:(?:[0-9a-fA-F]{1,4})?\\:)+(?:[0-9a-fA-F]{1,4}|"
+        + IPV4_REGEXP.replace("(", "(?:") + ")?";
 
     private static final Pattern IPV4_PATTERN = Pattern.compile("^" + IPV4_REGEXP + "$");
     private static final Pattern IPV6_PATTERN = Pattern.compile("^" + IPV6_REGEXP + "$");
@@ -114,13 +118,13 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
         }
     }
 
-    private boolean isIPv6(final char firstChar, String s, final boolean checkIPv6, final boolean checkIPv4MappedIPv6) {
+    private boolean isIPv6(final char firstChar, String s, final boolean checkIPv6,
+            final boolean checkIPv4MappedIPv6) {
         // Quick check before using Regular Expression
         // 1) At least 3 characters
         // 2) 1st must be a Hex number or a : (colon)
         // 3) Must contain at least 2 colons (:)
-        if (s.length() < 3
-                || !(isHexCharacter(firstChar) || firstChar == ':')
+        if (s.length() < 3 || !(isHexCharacter(firstChar) || firstChar == ':')
                 || StringUtils.countMatches(s, ':') < 2) {
             return false;
         }

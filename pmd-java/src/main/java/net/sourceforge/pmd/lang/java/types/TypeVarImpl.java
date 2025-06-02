@@ -6,14 +6,17 @@ package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Objects;
 import java.util.function.Function;
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 abstract class TypeVarImpl implements JTypeVar {
+
 
     final TypeSystem ts;
     JTypeMirror upperBound;
@@ -108,6 +111,7 @@ abstract class TypeVarImpl implements JTypeVar {
             return tv;
         }
 
+
         @Override
         public JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots) {
             if (newTypeAnnots.isEmpty() && this.typeAnnots.isEmpty()) {
@@ -174,7 +178,7 @@ abstract class TypeVarImpl implements JTypeVar {
 
     static final class CapturedTypeVar extends TypeVarImpl {
 
-        private static final int PRIME = 997; // largest prime less than 1000
+        private static final int PRIME = 997;  // largest prime less than 1000
 
         private final @Nullable JWildcardType wildcard;
         private final @Nullable JTypeVar tvar;
@@ -186,20 +190,11 @@ abstract class TypeVarImpl implements JTypeVar {
             this(wild, wild.asLowerBound(), wild.asUpperBound(), typeAnnots);
         }
 
-        private CapturedTypeVar(
-                @Nullable JWildcardType wild,
-                @NonNull JTypeMirror lower,
-                @NonNull JTypeMirror upper,
-                PSet<SymAnnot> typeAnnots) {
+        private CapturedTypeVar(@Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
             this(null, wild, lower, upper, typeAnnots);
         }
 
-        private CapturedTypeVar(
-                @Nullable JTypeVar tvar,
-                @Nullable JWildcardType wild,
-                @NonNull JTypeMirror lower,
-                @NonNull JTypeMirror upper,
-                PSet<SymAnnot> typeAnnots) {
+        private CapturedTypeVar(@Nullable JTypeVar tvar, @Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
             super(lower.getTypeSystem(), typeAnnots);
             this.upperBound = upper;
             this.lowerBound = lower;
@@ -210,6 +205,7 @@ abstract class TypeVarImpl implements JTypeVar {
         void setUpperBound(@NonNull JTypeMirror upperBound) {
             this.upperBound = upperBound;
         }
+
 
         void setLowerBound(@NonNull JTypeMirror lowerBound) {
             this.lowerBound = lowerBound;
@@ -257,6 +253,7 @@ abstract class TypeVarImpl implements JTypeVar {
         public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
             return new CapturedTypeVar(wildcard, lower, upper, getTypeAnnotations());
         }
+
 
         @Override
         public JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots) {

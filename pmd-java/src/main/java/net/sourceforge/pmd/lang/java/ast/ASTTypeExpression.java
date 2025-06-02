@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Wraps a type node but presents the interface of {@link ASTExpression}.
@@ -26,8 +27,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  */
-public final class ASTTypeExpression extends AbstractJavaNode
-        implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
+public final class ASTTypeExpression extends AbstractJavaNode implements ASTPrimaryExpression, AtLeastOneChild, LeftRecursiveNode {
 
     ASTTypeExpression(int id) {
         super(id);
@@ -39,6 +39,7 @@ public final class ASTTypeExpression extends AbstractJavaNode
         copyTextCoordinates((AbstractJavaNode) wrapped);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -48,6 +49,7 @@ public final class ASTTypeExpression extends AbstractJavaNode
     public ASTType getTypeNode() {
         return (ASTType) getChild(0);
     }
+
 
     /** Returns 0, type expressions can never be parenthesized. */
     @Override
@@ -65,4 +67,5 @@ public final class ASTTypeExpression extends AbstractJavaNode
     public @NonNull JTypeMirror getTypeMirror(TypingContext ctx) {
         return getTypeNode().getTypeMirror(ctx);
     }
+
 }

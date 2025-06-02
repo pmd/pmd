@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.SourceLocation;
-import com.google.summit.ast.declaration.MethodDeclaration;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextPos2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+
+import com.google.summit.ast.SourceLocation;
+import com.google.summit.ast.declaration.MethodDeclaration;
 
 public final class ASTMethod extends AbstractApexNode implements ApexQualifiableNode {
     /**
@@ -42,11 +44,11 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
     private final SourceLocation sourceLocation;
 
     ASTMethod(
-            String name,
-            String internalName,
-            List<String> parameterTypes,
-            String returnType,
-            SourceLocation sourceLocation) {
+        String name,
+        String internalName,
+        List<String> parameterTypes,
+        String returnType,
+        SourceLocation sourceLocation) {
 
         this.name = name;
         this.internalName = internalName;
@@ -66,14 +68,15 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
         }
 
         return new ASTMethod(
-                name,
-                internalName,
-                node.getParameterDeclarations().stream()
-                        .map(p -> caseNormalizedTypeIfPrimitive(p.getType().asCodeString()))
-                        .collect(Collectors.toList()),
-                caseNormalizedTypeIfPrimitive(node.getReturnType().asCodeString()),
-                node.getSourceLocation());
+            name,
+            internalName,
+            node.getParameterDeclarations().stream()
+                .map(p -> caseNormalizedTypeIfPrimitive(p.getType().asCodeString()))
+                .collect(Collectors.toList()),
+            caseNormalizedTypeIfPrimitive(node.getReturnType().asCodeString()),
+            node.getSourceLocation());
     }
+
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
@@ -90,7 +93,8 @@ public final class ASTMethod extends AbstractApexNode implements ApexQualifiable
                 sourceCode.offsetAtLineColumn(
                         TextPos2d.pos2d(sourceLocation.getStartLine(), sourceLocation.getStartColumn() + 1)),
                 sourceCode.offsetAtLineColumn(
-                        TextPos2d.pos2d(sourceLocation.getEndLine(), sourceLocation.getEndColumn() + 1))));
+                        TextPos2d.pos2d(sourceLocation.getEndLine(), sourceLocation.getEndColumn() + 1))
+        ));
     }
 
     @Override

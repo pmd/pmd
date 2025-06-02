@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.properties.internal;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.properties.ConstraintViolatedException;
 import net.sourceforge.pmd.properties.PropertyConstraint;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -26,16 +28,21 @@ import net.sourceforge.pmd.util.internal.xml.XmlUtil;
 public final class PropertyParsingUtil {
 
     public static final ValueSyntax<String> STRING = ValueSyntax.withDefaultToString(String::trim);
-    public static final ValueSyntax<Character> CHARACTER = ValueSyntax.partialFunction(
+    public static final ValueSyntax<Character> CHARACTER =
+        ValueSyntax.partialFunction(
             c -> Character.toString(c),
             s -> s.charAt(0),
-            PropertyConstraint.fromPredicate(s -> s.length() == 1, "Should be exactly one character in length"));
+            PropertyConstraint.fromPredicate(
+                s -> s.length() == 1,
+                "Should be exactly one character in length"
+            ));
 
     public static final ValueSyntax<Pattern> REGEX = ValueSyntax.withDefaultToString(Pattern::compile);
     public static final ValueSyntax<Integer> INTEGER = ValueSyntax.withDefaultToString(preTrim(Integer::valueOf));
     public static final ValueSyntax<Long> LONG = ValueSyntax.withDefaultToString(preTrim(Long::valueOf));
     public static final ValueSyntax<Boolean> BOOLEAN = ValueSyntax.withDefaultToString(preTrim(Boolean::valueOf));
     public static final ValueSyntax<Double> DOUBLE = ValueSyntax.withDefaultToString(preTrim(Double::valueOf));
+
 
     public static final PropertySerializer<List<Integer>> INTEGER_LIST = numberList(INTEGER);
     public static final PropertySerializer<List<Double>> DOUBLE_LIST = numberList(DOUBLE);
@@ -44,7 +51,10 @@ public final class PropertyParsingUtil {
     public static final PropertySerializer<List<Character>> CHAR_LIST = otherList(CHARACTER);
     public static final PropertySerializer<List<String>> STRING_LIST = otherList(STRING);
 
-    private PropertyParsingUtil() {}
+    private PropertyParsingUtil() {
+
+    }
+
 
     private static <T extends Number> PropertySerializer<List<T>> numberList(ValueSyntax<T> valueSyntax) {
         return delimitedString(valueSyntax, Collectors.toList());
@@ -58,15 +68,18 @@ public final class PropertyParsingUtil {
         return parser.compose(String::trim);
     }
 
-    public static <T> PropertySerializer<Optional<T>> toOptional(
-            PropertySerializer<T> itemSyntax, String missingValue) {
-        return ValueSyntax.create(opt -> opt.map(itemSyntax::toString).orElse(missingValue), str -> {
-            if (str.equals(missingValue)) {
-                return Optional.empty();
+    public static <T> PropertySerializer<Optional<T>> toOptional(PropertySerializer<T> itemSyntax, String missingValue) {
+        return ValueSyntax.create(
+            opt -> opt.map(itemSyntax::toString).orElse(missingValue),
+            str -> {
+                if (str.equals(missingValue)) {
+                    return Optional.empty();
+                }
+                return Optional.of(itemSyntax.fromString(str));
             }
-            return Optional.of(itemSyntax.fromString(str));
-        });
+        );
     }
+
 
     /**
      * Checks the result of the constraints defined by this mapper on
@@ -91,8 +104,7 @@ public final class PropertyParsingUtil {
         }
     }
 
-    public static <T> PropertySerializer<T> withAllConstraints(
-            PropertySerializer<T> mapper, List<PropertyConstraint<? super T>> constraints) {
+    public static <T> PropertySerializer<T> withAllConstraints(PropertySerializer<T> mapper, List<PropertyConstraint<? super T>> constraints) {
         PropertySerializer<T> result = mapper;
         for (PropertyConstraint<? super T> constraint : constraints) {
             result = result.withConstraint(constraint);
@@ -111,16 +123,13 @@ public final class PropertyParsingUtil {
      *
      * @throws IllegalArgumentException If the item syntax doesn't support string mapping
      */
-    public static <T, C extends Iterable<T>> PropertySerializer<C> delimitedString(
-            PropertySerializer<T> itemSyntax, Collector<? super T, ?, ? extends C> collector) {
+    public static <T, C extends Iterable<T>> PropertySerializer<C> delimitedString(PropertySerializer<T> itemSyntax,
+                                                                                   Collector<? super T, ?, ? extends C> collector) {
         String delim = "" + PropertyFactory.DEFAULT_DELIMITER;
         return ValueSyntax.create(
-                coll -> IteratorUtil.toStream(coll.iterator())
-                        .map(itemSyntax::toString)
-                        .collect(Collectors.joining(delim)),
-                string ->
-                        parseListWithEscapes(string, PropertyFactory.DEFAULT_DELIMITER, itemSyntax::fromString).stream()
-                                .collect(collector));
+            coll -> IteratorUtil.toStream(coll.iterator()).map(itemSyntax::toString).collect(Collectors.joining(delim)),
+            string -> parseListWithEscapes(string, PropertyFactory.DEFAULT_DELIMITER, itemSyntax::fromString).stream().collect(collector)
+        );
     }
 
     private static final char ESCAPE_CHAR = '\\';
@@ -140,8 +149,7 @@ public final class PropertyParsingUtil {
      *
      * }</pre>
      */
-    public static <U> List<U> parseListWithEscapes(
-            String str, char delimiter, Function<? super String, ? extends U> extractor) {
+    public static <U> List<U> parseListWithEscapes(String str, char delimiter, Function<? super String, ? extends U> extractor) {
         if (str.isEmpty()) {
             return Collections.emptyList();
         }
@@ -174,18 +182,20 @@ public final class PropertyParsingUtil {
         return result;
     }
 
-    public static <T> ValueSyntax<T> enumerationParser(
-            final Map<String, T> mappings, Function<? super T, String> reverseFun) {
+
+    public static <T> ValueSyntax<T> enumerationParser(final Map<String, T> mappings, Function<? super T, String> reverseFun) {
 
         if (mappings.containsValue(null)) {
             throw new IllegalArgumentException("Map may not contain entries with null values");
         }
 
         return ValueSyntax.partialFunction(
-                reverseFun,
-                mappings::get,
-                PropertyConstraint.fromPredicate(
-                        mappings::containsKey,
-                        "Should be " + XmlUtil.formatPossibleNames(XmlUtil.toConstants(mappings.keySet()))));
+            reverseFun,
+            mappings::get,
+            PropertyConstraint.fromPredicate(
+                mappings::containsKey,
+                "Should be " + XmlUtil.formatPossibleNames(XmlUtil.toConstants(mappings.keySet()))
+            )
+        );
     }
 }

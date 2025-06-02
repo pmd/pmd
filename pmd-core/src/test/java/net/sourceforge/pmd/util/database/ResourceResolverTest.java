@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.xml.transform.Source;
+
 import org.junit.jupiter.api.Test;
 
 /**

@@ -21,8 +21,10 @@ public interface ReportingStrategy<T> {
     /** Create a blank accumulator before performing the check. */
     T createAccumulator();
 
+
     /** Consume the accumulator, after all violations have been reported. */
     void done(T accumulator);
+
 
     /**
      * Report that a node violates a language feature. This doesn't have
@@ -30,6 +32,7 @@ public interface ReportingStrategy<T> {
      * the parameter.
      */
     void report(Node node, String message, T acc);
+
 
     /**
      * Creates a reporter that throws a {@link ParseException} when the
@@ -53,4 +56,5 @@ public interface ReportingStrategy<T> {
             }
         };
     }
+
 }

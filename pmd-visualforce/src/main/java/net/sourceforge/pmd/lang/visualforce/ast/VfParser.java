@@ -38,4 +38,5 @@ public final class VfParser extends JjtreeParserAdapter<ASTCompilationUnit> {
 
         return root;
     }
+
 }

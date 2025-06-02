@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 
 class LanguageVersionDiscovererTest {
@@ -20,8 +22,7 @@ class LanguageVersionDiscovererTest {
         DummyLanguageModule lang = DummyLanguageModule.getInstance();
         LanguageRegistry lr = LanguageRegistry.singleton(lang);
         LanguageVersionDiscoverer lvDicoverer = new LanguageVersionDiscoverer(lr);
-        LanguageVersion versionForFile =
-                lvDicoverer.getDefaultLanguageVersionForFile(new File("file.unknown-extension"));
+        LanguageVersion versionForFile = lvDicoverer.getDefaultLanguageVersionForFile(new File("file.unknown-extension"));
 
         assertNull(versionForFile);
     }

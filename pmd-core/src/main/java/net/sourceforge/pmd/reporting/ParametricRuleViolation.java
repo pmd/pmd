@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.reporting;
 
 import java.util.Collections;
 import java.util.Map;
+
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.util.AssertionUtil;

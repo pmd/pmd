@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -26,4 +27,5 @@ public class CognitiveComplexityTestRule extends AbstractMetricTestRule.OfInt {
     protected String violationMessage(Node node, Integer result) {
         return AllMetricsTest.formatApexMessage(node, result, super.violationMessage(node, result));
     }
+
 }

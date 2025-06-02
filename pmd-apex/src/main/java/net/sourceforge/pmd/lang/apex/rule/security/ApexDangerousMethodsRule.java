@@ -1,12 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -15,7 +19,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Flags dangerous method calls, e.g. FinancialForce
@@ -29,8 +32,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 public class ApexDangerousMethodsRule extends AbstractApexRule {
     private static final String BOOLEAN = "boolean";
 
-    private static final Pattern REGEXP =
-            Pattern.compile("^.*?(pass|pwd|crypt|auth|session|token|saml)(?!id|user).*?$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern REGEXP = Pattern.compile("^.*?(pass|pwd|crypt|auth|session|token|saml)(?!id|user).*?$",
+            Pattern.CASE_INSENSITIVE);
 
     private static final String DISABLE_CRUD = "disableTriggerCRUDSecurity";
     private static final String CONFIGURATION = "Configuration";
@@ -44,6 +47,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
         return RuleTargetSelector.forTypes(ASTUserClass.class);
     }
 
+
     @Override
     public Object visit(ASTUserClass node, Object data) {
         if (Helper.isTestMethodOrClass(node)) {
@@ -52,8 +56,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
 
         collectBenignVariables(node);
 
-        List<ASTMethodCallExpression> methodCalls =
-                node.descendants(ASTMethodCallExpression.class).toList();
+        List<ASTMethodCallExpression> methodCalls = node.descendants(ASTMethodCallExpression.class).toList();
         for (ASTMethodCallExpression methodCall : methodCalls) {
             if (Helper.isMethodName(methodCall, CONFIGURATION, DISABLE_CRUD)) {
                 asCtx(data).addViolation(methodCall);
@@ -75,20 +78,20 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
             if (BOOLEAN.equalsIgnoreCase(field.getType())) {
                 whiteListedVariables.add(Helper.getFQVariableName(field));
             }
+
         }
 
-        List<ASTVariableDeclaration> declarations =
-                node.descendants(ASTVariableDeclaration.class).toList();
+        List<ASTVariableDeclaration> declarations = node.descendants(ASTVariableDeclaration.class).toList();
         for (ASTVariableDeclaration decl : declarations) {
             if (BOOLEAN.equalsIgnoreCase(decl.getType())) {
                 whiteListedVariables.add(Helper.getFQVariableName(decl));
             }
         }
+
     }
 
     private void validateParameters(ASTMethodCallExpression methodCall, Object data) {
-        List<ASTVariableExpression> variables =
-                methodCall.descendants(ASTVariableExpression.class).toList();
+        List<ASTVariableExpression> variables = methodCall.descendants(ASTVariableExpression.class).toList();
         for (ASTVariableExpression var : variables) {
             if (REGEXP.matcher(var.getImage()).matches()) {
                 if (!whiteListedVariables.contains(Helper.getFQVariableName(var))) {
@@ -97,4 +100,5 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
             }
         }
     }
+
 }

@@ -1,12 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.List;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.apex.ast.ApexParser;
 import net.sourceforge.pmd.lang.apex.internal.ApexDesignerBindings;
@@ -43,8 +45,11 @@ class ApexLanguageHandler implements LanguageVersionHandler {
 
     private static final class ApexMetricsProvider implements LanguageMetricsProvider {
 
-        private final Set<Metric<?, ?>> metrics =
-                setOf(ApexMetrics.COGNITIVE_COMPLEXITY, ApexMetrics.CYCLO, ApexMetrics.WEIGHED_METHOD_COUNT);
+        private final Set<Metric<?, ?>> metrics = setOf(
+            ApexMetrics.COGNITIVE_COMPLEXITY,
+            ApexMetrics.CYCLO,
+            ApexMetrics.WEIGHED_METHOD_COUNT
+        );
 
         @Override
         public Set<Metric<?, ?>> getMetrics() {

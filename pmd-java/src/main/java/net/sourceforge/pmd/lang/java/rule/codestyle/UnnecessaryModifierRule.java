@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.lang.java.ast.JModifier.ABSTRACT;
@@ -11,6 +12,9 @@ import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
 
 import java.util.EnumSet;
 import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -25,43 +29,44 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import org.apache.commons.lang3.StringUtils;
+
 
 public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
 
+
     public UnnecessaryModifierRule() {
-        super(
-                ASTTypeDeclaration.class,
-                ASTMethodDeclaration.class,
-                ASTResource.class,
-                ASTFieldDeclaration.class,
-                ASTConstructorDeclaration.class);
+        super(ASTTypeDeclaration.class,
+              ASTMethodDeclaration.class,
+              ASTResource.class,
+              ASTFieldDeclaration.class,
+              ASTConstructorDeclaration.class);
     }
 
-    private void reportUnnecessaryModifiers(
-            Object data, JavaNode node, JModifier unnecessaryModifier, String explanation) {
+
+    private void reportUnnecessaryModifiers(Object data, JavaNode node,
+                                            JModifier unnecessaryModifier, String explanation) {
         reportUnnecessaryModifiers(data, node, EnumSet.of(unnecessaryModifier), explanation);
     }
 
-    private void reportUnnecessaryModifiers(
-            Object data, JavaNode node, Set<JModifier> unnecessaryModifiers, String explanation) {
+
+    private void reportUnnecessaryModifiers(Object data, JavaNode node,
+                                            Set<JModifier> unnecessaryModifiers, String explanation) {
         if (unnecessaryModifiers.isEmpty()) {
             return;
         }
-        asCtx(data)
-                .addViolation(
-                        node,
-                        formatUnnecessaryModifiers(unnecessaryModifiers),
-                        PrettyPrintingUtil.getPrintableNodeKind(node),
-                        PrettyPrintingUtil.getNodeName(node),
-                        explanation.isEmpty() ? "" : ": " + explanation);
+        asCtx(data).addViolation(node, formatUnnecessaryModifiers(unnecessaryModifiers),
+                                 PrettyPrintingUtil.getPrintableNodeKind(node),
+                                 PrettyPrintingUtil.getNodeName(node),
+                                 explanation.isEmpty() ? "" : ": " + explanation);
     }
+
 
     private String formatUnnecessaryModifiers(Set<JModifier> set) {
         // prints in the standard modifier order (sorted by enum constant ordinal),
         // regardless of the actual order in which we checked
         return (set.size() > 1 ? "s" : "") + " '" + StringUtils.join(set, " ") + "'";
     }
+
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
@@ -78,12 +83,15 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
         return data;
     }
 
+
     @Override
     public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
         if (node.hasExplicitModifiers(ABSTRACT)) {
             // may have several violations, with different explanations
             reportUnnecessaryModifiers(data, node, ABSTRACT, "annotations types are implicitly abstract");
+
         }
+
 
         if (!node.isNested()) {
             return data;
@@ -104,6 +112,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
         ASTTypeDeclaration enclosing = node.getEnclosingType();
         return enclosing != null && enclosing.isInterface();
     }
+
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
@@ -187,9 +196,11 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
         return data;
     }
 
+
     private boolean isSafeVarargs(final ASTMethodDeclaration node) {
         return node.isAnnotationPresent(SafeVarargs.class.getName());
     }
+
 
     private void checkDeclarationInInterfaceType(Object data, ModifierOwner member, Set<JModifier> unnecessary) {
         // third ancestor could be an AllocationExpression
@@ -198,9 +209,10 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
         if (isParentInterfaceType(member)) {
             unnecessary.removeIf(mod -> !member.hasExplicitModifiers(mod));
 
-            String explanation = "the " + PrettyPrintingUtil.getPrintableNodeKind(member) + " is declared in an "
-                    + PrettyPrintingUtil.getPrintableNodeKind(parent) + " type";
+            String explanation = "the " + PrettyPrintingUtil.getPrintableNodeKind(member)
+                + " is declared in an " + PrettyPrintingUtil.getPrintableNodeKind(parent) + " type";
             reportUnnecessaryModifiers(data, member, unnecessary, explanation);
         }
     }
+
 }

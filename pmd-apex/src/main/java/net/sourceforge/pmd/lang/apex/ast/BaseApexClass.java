@@ -6,8 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.declaration.TypeDeclaration;
 
-abstract class BaseApexClass<T extends TypeDeclaration> extends AbstractApexNode.Single<T>
-        implements ASTUserClassOrInterface<T> {
+abstract class BaseApexClass<T extends TypeDeclaration> extends AbstractApexNode.Single<T> implements ASTUserClassOrInterface<T> {
 
     private ApexQualifiedName qname;
 
@@ -45,4 +44,6 @@ abstract class BaseApexClass<T extends TypeDeclaration> extends AbstractApexNode
 
         return qname;
     }
+
+
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import java.net.URI;
@@ -13,6 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -20,8 +25,6 @@ import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Base configuration class for both PMD and CPD.
@@ -49,6 +52,7 @@ public abstract class AbstractConfiguration {
 
     private boolean failOnViolation = true;
     private boolean failOnError = true;
+
 
     protected AbstractConfiguration(LanguageRegistry languageRegistry, PmdReporter messageReporter) {
         this.langRegistry = Objects.requireNonNull(languageRegistry);
@@ -89,7 +93,7 @@ public abstract class AbstractConfiguration {
     void checkLanguageIsRegistered(Language language) {
         if (!langRegistry.getLanguages().contains(language)) {
             throw new IllegalArgumentException(
-                    "Language '" + language.getId() + "' is not registered in " + getLanguageRegistry());
+                "Language '" + language.getId() + "' is not registered in " + getLanguageRegistry());
         }
         checkLanguageIsAcceptable(language);
     }
@@ -236,6 +240,7 @@ public abstract class AbstractConfiguration {
         return languageVersionDiscoverer.getDefaultLanguageVersionForFile(fileName);
     }
 
+
     /**
      * Set the path used to shorten paths output in the report.
      * The path does not need to exist. If it exists, it must point
@@ -379,6 +384,7 @@ public abstract class AbstractConfiguration {
         this.collectRecursive = collectRecursive;
     }
 
+
     /**
      * Get the file to which the report should render. If null, the
      * report is rendered on stdout.
@@ -399,6 +405,7 @@ public abstract class AbstractConfiguration {
     public void setReportFile(@Nullable Path reportFile) {
         this.reportFile = reportFile;
     }
+
 
     /**
      * Whether PMD should exit with status 4 (the default behavior, true) if

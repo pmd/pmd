@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,13 +9,15 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.reporting.RuleContext;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 class MultiThreadProcessorTest extends AbstractPMDProcessorTest {
 
@@ -51,11 +54,9 @@ class MultiThreadProcessorTest extends AbstractPMDProcessorTest {
         // the error on the first.
         assertTrue(reportListener.files.get() >= 1);
         // we report the first error
-        Mockito.verify(reporter)
-                .error(
-                        Mockito.eq("Unknown error occurred while executing a PmdRunnable: {0}"),
-                        Mockito.eq("java.lang.Error: test error"),
-                        Mockito.any(Error.class));
+        Mockito.verify(reporter).error(Mockito.eq("Unknown error occurred while executing a PmdRunnable: {0}"),
+                Mockito.eq("java.lang.Error: test error"),
+                Mockito.any(Error.class));
     }
 
     // TODO: Dysfunctional rules are pruned upstream of the processor.
@@ -68,8 +69,7 @@ class MultiThreadProcessorTest extends AbstractPMDProcessorTest {
     //        processor.processFiles(ruleSets, files, listener);
     //        renderer.end();
     //
-    //        final Iterator<ConfigurationError> configErrors =
-    // renderer.getReport().getConfigurationErrors().iterator();
+    //        final Iterator<ConfigurationError> configErrors = renderer.getReport().getConfigurationErrors().iterator();
     //        final ConfigurationError error = configErrors.next();
     //
     //        assertEquals("Dysfunctional rule message not present",
@@ -139,4 +139,5 @@ class MultiThreadProcessorTest extends AbstractPMDProcessorTest {
             return DYSFUNCTIONAL_RULE_REASON;
         }
     }
+
 }

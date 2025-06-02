@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTAnnotation;
@@ -57,17 +58,13 @@ public class AvoidNonExistentAnnotationsRule extends AbstractApexRule {
         return checkForNonExistentAnnotation(node, node.getModifiers(), data);
     }
 
-    private Object checkForNonExistentAnnotation(
-            final ApexNode<?> node, final ASTModifierNode modifierNode, final Object data) {
+    private Object checkForNonExistentAnnotation(final ApexNode<?> node, final ASTModifierNode modifierNode, final Object data) {
         if (modifierNode == null) {
             return data;
         }
         for (ASTAnnotation annotation : modifierNode.children(ASTAnnotation.class)) {
             if (!annotation.isResolved()) {
-                asCtx(data)
-                        .addViolationWithMessage(
-                                node,
-                                "Use of non existent annotations will lead to broken Apex code which will not compile in the future.");
+                asCtx(data).addViolationWithMessage(node, "Use of non existent annotations will lead to broken Apex code which will not compile in the future.");
             }
         }
         return data;

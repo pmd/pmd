@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.visualforce;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
@@ -8,13 +9,15 @@ import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
+
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.apex.ApexLanguageModule;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 public final class VFTestUtils {
-    private VFTestUtils() {}
+    private VFTestUtils() {
+    }
 
     /**
      * Salesforce metadata is stored in two different formats, the newer sfdx form and the older mdapi format. Used to
@@ -48,8 +51,7 @@ public final class VFTestUtils {
     }
 
     public static LanguageProcessorRegistry fakeLpRegistry() {
-        LanguageRegistry registry =
-                new LanguageRegistry(setOf(ApexLanguageModule.getInstance(), VfLanguageModule.getInstance()));
+        LanguageRegistry registry = new LanguageRegistry(setOf(ApexLanguageModule.getInstance(), VfLanguageModule.getInstance()));
         return LanguageProcessorRegistry.create(registry, Collections.emptyMap(), PmdReporter.quiet());
     }
 

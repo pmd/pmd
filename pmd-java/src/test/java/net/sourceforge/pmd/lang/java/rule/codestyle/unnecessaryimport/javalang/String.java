@@ -4,4 +4,5 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport.javalang;
 
-public class String {}
+public class String {
+}

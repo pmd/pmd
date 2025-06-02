@@ -6,21 +6,21 @@ package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import java.util.function.Supplier
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
+import java.util.function.Supplier
 
-/**  */
-class SpecialMethodsTest :
-    ProcessorTestSpec({
-        parserTestContainer("Test getClass special type") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+/**
+ *
+ */
+class SpecialMethodsTest : ProcessorTestSpec({
+    parserTestContainer("Test getClass special type") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.function.Function;
             import java.util.function.Supplier;
 
@@ -38,67 +38,60 @@ class SpecialMethodsTest :
                 }
             }
 
-        """
-                        .trimIndent()
-                )
+        """.trimIndent())
 
-            val t_Scratch = acu.declaredTypeSignatures()[0]
-            val kvar = acu.typeVar("K")
-            val (k, k2, _, call) = acu.methodCalls().toList()
+        val t_Scratch = acu.declaredTypeSignatures()[0]
+        val kvar = acu.typeVar("K")
+        val (k, k2, _, call) = acu.methodCalls().toList()
 
-            doTest("Test this::getClass") {
-                spy.shouldBeOk {
-                    k.shouldMatchN {
-                        methodCall("sup") {
-                            thisExpr {
-                                it shouldHaveType t_Scratch[kvar]
-                                null
-                            }
-                            argList {
-                                methodRef("getClass") {
-                                    thisExpr()
-                                    it shouldHaveType
-                                        Supplier::class[
-                                            Class::class[
-                                                captureMatcher(`?` extends t_Scratch[kvar])]]
-                                }
+        doTest("Test this::getClass") {
+            spy.shouldBeOk {
+                k.shouldMatchN {
+                    methodCall("sup") {
+                        thisExpr { it shouldHaveType t_Scratch[kvar]; null }
+                        argList {
+                            methodRef("getClass") {
+                                thisExpr()
+                                it shouldHaveType Supplier::class[Class::class[captureMatcher(`?` extends t_Scratch[kvar])]]
                             }
                         }
                     }
                 }
-            }
-
-            doTest("Test Scratch<K>::getClass") {
-                spy.shouldBeOk {
-                    k2.arguments[0].shouldMatchN {
-                        methodRef("getClass") {
-                            typeExpr { classType("Scratch") }
-
-                            it shouldHaveType
-                                let {
-                                    // note the return type is
-                                    // `? extends Scratch<K>`
-                                    // not the erasure
-                                    // `? extends Scratch`
-                                    val capture = captureMatcher(`?` extends t_Scratch[kvar])
-                                    // same capture in both params
-                                    java.util.function.Function::class[
-                                        capture, Class::class[capture]]
-                                }
-                        }
-                    }
-                }
-            }
-
-            doTest("Test method call") {
-                spy.shouldBeOk { call shouldHaveType Class::class[`?` extends t_Scratch.erasure] }
             }
         }
 
-        parserTest("Test enum methods") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+        doTest("Test Scratch<K>::getClass") {
+            spy.shouldBeOk {
+                k2.arguments[0].shouldMatchN {
+                    methodRef("getClass") {
+                        typeExpr {
+                            classType("Scratch")
+                        }
+
+                        it shouldHaveType let {
+                            // note the return type is
+                            // `? extends Scratch<K>`
+                            // not the erasure
+                            // `? extends Scratch`
+                            val capture = captureMatcher(`?` extends t_Scratch[kvar])
+                            // same capture in both params
+                            java.util.function.Function::class[capture, Class::class[capture]]
+                        }
+                    }
+                }
+            }
+        }
+
+        doTest("Test method call") {
+            spy.shouldBeOk {
+                call shouldHaveType Class::class[`?` extends t_Scratch.erasure]
+            }
+        }
+    }
+
+    parserTest("Test enum methods") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             import java.util.Arrays;
 
             enum Foo {
@@ -108,24 +101,22 @@ class SpecialMethodsTest :
                     Arrays.stream(values());
                 }
             }
-            """
-                        .trimIndent()
-                )
+            """.trimIndent()
+        )
 
-            val t_Foo = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
+        val t_Foo = acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror
 
-            val streamCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val streamCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                streamCall shouldHaveType gen.t_Stream[t_Foo]
-                streamCall.arguments[0] shouldHaveType t_Foo.toArray()
-            }
+        spy.shouldBeOk {
+            streamCall shouldHaveType gen.t_Stream[t_Foo]
+            streamCall.arguments[0] shouldHaveType t_Foo.toArray()
         }
+    }
 
-        parserTest("getClass in invocation ctx, unchecked conversion") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+    parserTest("getClass in invocation ctx, unchecked conversion") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Scratch {
                 public static <T,U> T[] copyOf(U[] original, Class<? extends T[]> newType) {
                     return null;
@@ -137,63 +128,59 @@ class SpecialMethodsTest :
                     return (T[]) copyOf(elements, a.getClass());
                 }
             }
-            """
-                        .trimIndent()
-                )
+            """.trimIndent()
+        )
 
-            acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror shouldNotBe
-                null
+        acu.descendants(ASTTypeDeclaration::class.java).firstOrThrow().typeMirror shouldNotBe null
 
-            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-            spy.shouldBeOk {
-                call.shouldMatchN {
-                    methodCall("copyOf") {
-                        it shouldHaveType ts.OBJECT.toArray()
+        spy.shouldBeOk {
+            call.shouldMatchN {
+                methodCall("copyOf") {
+                    it shouldHaveType ts.OBJECT.toArray()
 
-                        argList {
-                            variableAccess("elements")
+                    argList {
+                        variableAccess("elements")
 
-                            methodCall("getClass") {
-                                it shouldHaveType Class::class[`?` extends ts.OBJECT.toArray()]
+                        methodCall("getClass") {
+                            it shouldHaveType Class::class[`?` extends ts.OBJECT.toArray()]
 
-                                variableAccess("a")
+                            variableAccess("a")
 
-                                argList(0)
-                            }
+                            argList(0)
                         }
                     }
                 }
             }
         }
+    }
 
-        parserTest("Record ctor formal param reference") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+    parserTest("Record ctor formal param reference") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             record Foo(int comp) {
                 Foo {
                     comp = comp - 1;
                 }
             }
-            """
-                        .trimIndent()
-                )
+            """.trimIndent()
+        )
 
-            val (compLhs, compRhs) = acu.descendants(ASTVariableAccess::class.java).toList()
-            val id = acu.varId("comp")
+        val (compLhs, compRhs) = acu.descendants(ASTVariableAccess::class.java).toList()
+        val id = acu.varId("comp")
 
-            spy.shouldBeOk {
-                compLhs.referencedSym.shouldBeA<JFormalParamSymbol> {
-                    it.tryGetNode() shouldBe id
-                    it.declaringSymbol.shouldBeA<JConstructorSymbol>()
-                }
+        spy.shouldBeOk {
+            compLhs.referencedSym.shouldBeA<JFormalParamSymbol> {
+                it.tryGetNode() shouldBe id
+                it.declaringSymbol.shouldBeA<JConstructorSymbol>()
+            }
 
-                // same spec
-                compRhs.referencedSym.shouldBeA<JFormalParamSymbol> {
-                    it.tryGetNode() shouldBe id
-                    it.declaringSymbol.shouldBeA<JConstructorSymbol>()
-                }
+            // same spec
+            compRhs.referencedSym.shouldBeA<JFormalParamSymbol> {
+                it.tryGetNode() shouldBe id
+                it.declaringSymbol.shouldBeA<JConstructorSymbol>()
             }
         }
-    })
+    }
+})

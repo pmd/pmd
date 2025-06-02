@@ -14,7 +14,8 @@ import net.sourceforge.pmd.lang.rule.Rule;
  */
 public final class PmdCoreTestUtils {
 
-    private PmdCoreTestUtils() {}
+    private PmdCoreTestUtils() {
+    }
 
     public static DummyLanguageModule dummyLanguage() {
         return DummyLanguageModule.getInstance();
@@ -33,3 +34,4 @@ public final class PmdCoreTestUtils {
         return dummyLanguage().getDefaultVersion();
     }
 }
+

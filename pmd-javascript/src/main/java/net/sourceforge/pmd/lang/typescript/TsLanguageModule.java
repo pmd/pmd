@@ -17,7 +17,9 @@ public class TsLanguageModule extends CpdOnlyLanguageModuleBase {
     private static final String ID = "typescript";
 
     public TsLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("TypeScript").extensions("ts"));
+        super(LanguageMetadata.withId(ID)
+                  .name("TypeScript")
+                  .extensions("ts"));
     }
 
     public static TsLanguageModule getInstance() {

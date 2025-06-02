@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.statement.TryStatement;
 import java.util.List;
+
+import com.google.summit.ast.statement.TryStatement;
 
 public final class ASTTryCatchFinallyBlockStatement extends AbstractApexNode.Single<TryStatement> {
 
     ASTTryCatchFinallyBlockStatement(TryStatement tryStatement) {
         super(tryStatement);
     }
+
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {

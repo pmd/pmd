@@ -7,9 +7,11 @@ package net.sourceforge.pmd.lang.document;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A builder for a new text file.
@@ -40,6 +42,7 @@ public abstract class TextFileBuilder {
         parentFsId = fileId;
         return this;
     }
+
 
     /**
      * Creates and returns the new text file.
@@ -110,9 +113,11 @@ public abstract class TextFileBuilder {
             return super.setParentFsPath(fileId);
         }
 
+
         @Override
         public TextFile build() {
             return new ReaderTextFile(reader, fileId, languageVersion);
         }
     }
+
 }

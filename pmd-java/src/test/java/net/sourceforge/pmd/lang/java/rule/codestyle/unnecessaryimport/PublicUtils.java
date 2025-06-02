@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
 
 public class PublicUtils {
-    private PublicUtils() {}
+    private PublicUtils() {
+    }
 
     public static int g1(int x) {
         return x + 1;

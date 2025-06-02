@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -25,10 +26,16 @@ public class TreeIndex {
     private final Set<String> interestingNames;
     private final Map<String, List<Node>> byName;
 
-    public TreeIndex(Set<String> namesToIndex, Set<Class<? extends Node>> classesToIndex) {
+
+    public TreeIndex(Set<String> namesToIndex,
+                     Set<Class<? extends Node>> classesToIndex) {
 
         byClass = new LatticeRelation<>(
-                TopoOrder.TYPE_HIERARCHY_ORDERING, classesToIndex, Class::getSimpleName, Collectors.toSet());
+            TopoOrder.TYPE_HIERARCHY_ORDERING,
+            classesToIndex,
+            Class::getSimpleName,
+            Collectors.toSet()
+        );
         this.interestingNames = namesToIndex;
         byName = new HashMap<>();
     }
@@ -52,6 +59,7 @@ public class TreeIndex {
     Iterator<Node> getByClass(Class<? extends Node> n) {
         return byClass.get(n).iterator();
     }
+
 
     public Iterator<Node> getByName(Collection<String> n) {
         return IteratorUtil.flatMap(n.iterator(), this::getByName);

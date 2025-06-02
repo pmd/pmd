@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import org.mozilla.javascript.ast.AstNode;
+
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 public interface EcmascriptNode<T extends AstNode> extends GenericNode<EcmascriptNode<?>> {
 

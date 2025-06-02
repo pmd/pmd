@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.ant;
 
 import java.io.BufferedWriter;
@@ -19,6 +20,12 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.types.Parameter;
+
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.renderers.Renderer;
@@ -27,10 +34,6 @@ import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.FileNameRenderer;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.Parameter;
 
 /**
  * Part of PMD Ant task configuration. Setters of this class are interpreted by Ant as properties
@@ -224,8 +227,7 @@ public class Formatter {
             {
                 // try to use the system property "sun.jnu.encoding", which is the platform encoding.
                 // this property is not specified and might not always be available, but it is for
-                // openjdk 11:
-                // https://github.com/openjdk/jdk11u/blob/cee8535a9d3de8558b4b5028d68e397e508bef71/src/java.base/share/native/libjava/System.c#L384
+                // openjdk 11: https://github.com/openjdk/jdk11u/blob/cee8535a9d3de8558b4b5028d68e397e508bef71/src/java.base/share/native/libjava/System.c#L384
                 // if it exists, we use it - this avoids illegal reflective access below.
                 String jnuEncoding = System.getProperty("sun.jnu.encoding");
                 if (jnuEncoding != null) {

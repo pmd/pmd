@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Objects;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;

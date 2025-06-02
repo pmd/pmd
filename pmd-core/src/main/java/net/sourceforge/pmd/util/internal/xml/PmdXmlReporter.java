@@ -4,10 +4,13 @@
 
 package net.sourceforge.pmd.util.internal.xml;
 
-import com.github.oowekyala.ooxml.messages.XmlMessageReporter;
 import net.sourceforge.pmd.util.log.PmdReporter;
+
+import com.github.oowekyala.ooxml.messages.XmlMessageReporter;
 
 /**
  * @author Clément Fournier
  */
-public interface PmdXmlReporter extends XmlMessageReporter<PmdReporter> {}
+public interface PmdXmlReporter extends XmlMessageReporter<PmdReporter> {
+
+}

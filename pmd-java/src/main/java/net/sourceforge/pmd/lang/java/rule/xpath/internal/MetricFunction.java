@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.Optional;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
+
 
 /**
  * Implements the {@code metric()} XPath function. Takes the
@@ -24,6 +26,7 @@ public final class MetricFunction extends BaseJavaXPathFunction {
 
     public static final MetricFunction INSTANCE = new MetricFunction();
 
+
     private MetricFunction() {
         super("metric");
     }
@@ -33,15 +36,18 @@ public final class MetricFunction extends BaseJavaXPathFunction {
         return new Type[] {Type.SINGLE_STRING};
     }
 
+
     @Override
     public Type getResultType() {
         return Type.OPTIONAL_DECIMAL;
     }
 
+
     @Override
     public boolean dependsOnContext() {
         return true;
     }
+
 
     @Override
     public FunctionCall makeCallExpression() {
@@ -51,13 +57,15 @@ public final class MetricFunction extends BaseJavaXPathFunction {
         };
     }
 
+
     static String badMetricKeyMessage(String constantName) {
         return String.format("'%s' is not the name of a metric", constantName);
     }
 
+
     private static Optional<Double> getMetric(Node n, String metricKeyName) throws XPathFunctionException {
         LanguageMetricsProvider provider =
-                n.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
+            n.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
         Metric<?, ?> metric = provider.getMetricWithName(metricKeyName);
         if (metric == null) {
             throw new XPathFunctionException(badMetricKeyMessage(metricKeyName));
@@ -66,4 +74,5 @@ public final class MetricFunction extends BaseJavaXPathFunction {
         Number computed = Metric.compute(metric, n, MetricOptions.emptyOptions());
         return computed == null ? Optional.empty() : Optional.of(computed.doubleValue());
     }
+
 }

@@ -14,13 +14,15 @@ import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import org.junit.jupiter.api.Test;
 
 class BaseTokenFilterTest {
 
@@ -75,8 +77,7 @@ class BaseTokenFilterTest {
 
     static class StringTokenManager implements TokenManager<StringToken> {
 
-        Iterator<String> iterator =
-                Collections.unmodifiableList(Arrays.asList("a", "b", "c")).iterator();
+        Iterator<String> iterator = Collections.unmodifiableList(Arrays.asList("a", "b", "c")).iterator();
 
         @Override
         public StringToken getNextToken() {
@@ -86,6 +87,7 @@ class BaseTokenFilterTest {
                 return null;
             }
         }
+
     }
 
     static class DummyTokenFilter<T extends GenericToken<T>> extends BaseTokenFilter<T> {
@@ -191,4 +193,5 @@ class BaseTokenFilterTest {
         assertEquals("b", secondToken.getImage());
         assertThrows(ConcurrentModificationException.class, () -> it1.next());
     }
+
 }

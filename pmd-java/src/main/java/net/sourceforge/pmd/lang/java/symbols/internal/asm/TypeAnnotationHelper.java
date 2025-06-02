@@ -6,11 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.util.ArrayList;
 import java.util.List;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.lang.java.types.JArrayType;
-import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JWildcardType;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -18,6 +14,12 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.TypeReference;
 import org.pcollections.ConsPStack;
+
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JWildcardType;
 
 /**
  * @author Clément Fournier
@@ -27,6 +29,7 @@ final class TypeAnnotationHelper {
     private TypeAnnotationHelper() {
         // utility class
     }
+
 
     /** Accumulate type annotations to be applied on a single type. */
     static final class TypeAnnotationSet {
@@ -47,6 +50,7 @@ final class TypeAnnotationHelper {
             }
             return base;
         }
+
     }
 
     /**
@@ -113,42 +117,41 @@ final class TypeAnnotationHelper {
     }
 
     private static JTypeMirror resolvePathStepNoInner(JTypeMirror t, @Nullable TypePath path, int i, SymAnnot annot) {
-        assert path == null || path.getLength() == i || path.getStep(i) != TypePath.INNER_TYPE;
+        assert path == null || path.getLength() == i
+            || path.getStep(i) != TypePath.INNER_TYPE;
 
         if (path == null || i == path.getLength()) {
             return t.addAnnotation(annot);
         }
 
         switch (path.getStep(i)) {
-            case TypePath.TYPE_ARGUMENT:
-                if (t instanceof JClassType) {
-                    int typeArgIndex = path.getStepArgument(i);
-                    JTypeMirror arg = ((JClassType) t).getTypeArgs().get(typeArgIndex);
-                    JTypeMirror newArg = resolvePathStep(arg, path, i + 1, annot);
-                    List<JTypeMirror> newArgs = replaceAtIndex(((JClassType) t).getTypeArgs(), typeArgIndex, newArg);
-                    return ((JClassType) t).withTypeArguments(newArgs);
-                }
-                throw new IllegalArgumentException("Expected class type: " + t);
-            case TypePath.ARRAY_ELEMENT:
-                if (t instanceof JArrayType) {
-                    JTypeMirror component = ((JArrayType) t).getComponentType();
-                    JTypeMirror newComponent = resolvePathStep(component, path, i + 1, annot);
-                    return t.getTypeSystem().arrayType(newComponent).withAnnotations(t.getTypeAnnotations());
-                }
-                throw new IllegalArgumentException("Expected array type: " + t);
-            case TypePath.INNER_TYPE:
-                throw new IllegalStateException("Should be handled elsewhere"); // there's an assert above too
-            case TypePath.WILDCARD_BOUND:
-                if (t instanceof JWildcardType) {
-                    JWildcardType wild = (JWildcardType) t;
-                    JTypeMirror newBound = resolvePathStep(wild.getBound(), path, i + 1, annot);
-                    return wild.getTypeSystem()
-                            .wildcard(wild.isUpperBound(), newBound)
-                            .withAnnotations(wild.getTypeAnnotations());
-                }
-                throw new IllegalArgumentException("Expected wilcard type: " + t);
-            default:
-                throw new IllegalArgumentException("Illegal path step for annotation TypePath" + i);
+        case TypePath.TYPE_ARGUMENT:
+            if (t instanceof JClassType) {
+                int typeArgIndex = path.getStepArgument(i);
+                JTypeMirror arg = ((JClassType) t).getTypeArgs().get(typeArgIndex);
+                JTypeMirror newArg = resolvePathStep(arg, path, i + 1, annot);
+                List<JTypeMirror> newArgs = replaceAtIndex(((JClassType) t).getTypeArgs(), typeArgIndex, newArg);
+                return ((JClassType) t).withTypeArguments(newArgs);
+            }
+            throw new IllegalArgumentException("Expected class type: " + t);
+        case TypePath.ARRAY_ELEMENT:
+            if (t instanceof JArrayType) {
+                JTypeMirror component = ((JArrayType) t).getComponentType();
+                JTypeMirror newComponent = resolvePathStep(component, path, i + 1, annot);
+                return t.getTypeSystem().arrayType(newComponent).withAnnotations(t.getTypeAnnotations());
+            }
+            throw new IllegalArgumentException("Expected array type: " + t);
+        case TypePath.INNER_TYPE:
+            throw new IllegalStateException("Should be handled elsewhere"); // there's an assert above too
+        case TypePath.WILDCARD_BOUND:
+            if (t instanceof JWildcardType) {
+                JWildcardType wild = (JWildcardType) t;
+                JTypeMirror newBound = resolvePathStep(wild.getBound(), path, i + 1, annot);
+                return wild.getTypeSystem().wildcard(wild.isUpperBound(), newBound).withAnnotations(wild.getTypeAnnotations());
+            }
+            throw new IllegalArgumentException("Expected wilcard type: " + t);
+        default:
+            throw new IllegalArgumentException("Illegal path step for annotation TypePath" + i);
         }
     }
 
@@ -172,8 +175,7 @@ final class TypeAnnotationHelper {
         // Then, we may need to rebuild the type by adding the remaining segments.
         for (int j = selectedTypeIndex - 1; j >= 0; j--) {
             JClassType nextInner = enclosingTypes.get(j);
-            rebuiltType = rebuiltType.selectInner(
-                    nextInner.getSymbol(), nextInner.getTypeArgs(), nextInner.getTypeAnnotations());
+            rebuiltType = rebuiltType.selectInner(nextInner.getSymbol(), nextInner.getTypeArgs(), nextInner.getTypeAnnotations());
         }
         return rebuiltType;
     }

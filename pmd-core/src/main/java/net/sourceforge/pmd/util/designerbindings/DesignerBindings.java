@@ -6,6 +6,7 @@ package net.sourceforge.pmd.util.designerbindings;
 
 import java.util.Collection;
 import java.util.Collections;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.symboltable.ScopedNode;
@@ -26,6 +27,7 @@ public interface DesignerBindings {
      */
     RelatedNodesSelector getRelatedNodesSelector();
 
+
     /**
      * Returns a collection of "additional information" entries pertaining to
      * the given node. An entry may look like {@code ("Type = List<String>", 0)},
@@ -37,6 +39,7 @@ public interface DesignerBindings {
      */
     Collection<AdditionalInfo> getAdditionalInfo(Node node);
 
+
     /**
      * An entry for the "additional info" panel.
      */
@@ -44,6 +47,7 @@ public interface DesignerBindings {
 
         private final String sortKey;
         private final String display;
+
 
         public AdditionalInfo(String sortKey, String display) {
             this.sortKey = sortKey;
@@ -71,6 +75,7 @@ public interface DesignerBindings {
         }
     }
 
+
     /**
      * Returns the "main" attribute of the given node.
      * The string representation of this attribute ({@link Attribute#getStringValue()})
@@ -93,11 +98,13 @@ public interface DesignerBindings {
     //    @Nullable
     Attribute getMainAttribute(Node node);
 
+
     /**
      * Returns true if the children of this node should be displayed in
      * the treeview by default. Returning "true" is the safe default value.
      */
     boolean isExpandedByDefaultInTree(Node node);
+
 
     /**
      * Returns a constant describing an icon that the node should bear
@@ -106,6 +113,7 @@ public interface DesignerBindings {
      */
     //    @Nullable
     TreeIconId getIcon(Node node);
+
 
     /**
      * See {@link #getIcon(Node)}.
@@ -117,6 +125,7 @@ public interface DesignerBindings {
         FIELD,
         VARIABLE
     }
+
 
     /**
      * A base implementation for {@link DesignerBindings}.
@@ -159,4 +168,5 @@ public interface DesignerBindings {
             return INSTANCE;
         }
     }
+
 }

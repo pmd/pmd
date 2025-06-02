@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 class StandaloneExprMirror extends BaseExprMirror<ASTExpression> {
 

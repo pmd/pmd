@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -32,7 +33,8 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * </pre>
  */
-public final class ASTSwitchFallthroughBranch extends AbstractJavaNode implements ASTSwitchBranch {
+public final class ASTSwitchFallthroughBranch extends AbstractJavaNode
+    implements ASTSwitchBranch {
 
     ASTSwitchFallthroughBranch(int id) {
         super(id);
@@ -49,4 +51,5 @@ public final class ASTSwitchFallthroughBranch extends AbstractJavaNode implement
     public NodeStream<ASTStatement> getStatements() {
         return children(ASTStatement.class);
     }
+
 }

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util.treeexport;
 
 import java.io.IOException;
+
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -13,6 +14,7 @@ import net.sourceforge.pmd.lang.ast.Node;
  * @see XmlTreeRenderer
  */
 public interface TreeRenderer {
+
 
     /**
      * Appends the subtree rooted at the given node on the provided
@@ -25,4 +27,6 @@ public interface TreeRenderer {
      * @throws IOException If an IO error occurs while appending to the output
      */
     void renderSubtree(Node node, Appendable out) throws IOException;
+
+
 }

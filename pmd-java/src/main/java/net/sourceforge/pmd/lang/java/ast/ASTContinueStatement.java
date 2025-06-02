@@ -1,11 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
+
 import java.util.function.Function;
-import net.sourceforge.pmd.lang.ast.NodeStream;
+
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
  * A continue statement, that jumps to the next iteration of an enclosing loop.
@@ -19,16 +23,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class ASTContinueStatement extends AbstractStatement {
 
     private static final Function<Object, ASTLoopStatement> CONTINUE_TARGET_MAPPER =
-            NodeStream.asInstanceOf(ASTLoopStatement.class);
+        NodeStream.asInstanceOf(ASTLoopStatement.class);
 
     ASTContinueStatement(int id) {
         super(id);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     /**
      * Returns the label, or null if there is none.
@@ -47,7 +53,8 @@ public final class ASTContinueStatement extends AbstractStatement {
             return ancestors().map(CONTINUE_TARGET_MAPPER).first();
         }
         return ancestors(ASTLabeledStatement.class)
-                .filter(it -> it.getLabel().equals(myLabel))
-                .first();
+            .filter(it -> it.getLabel().equals(myLabel))
+            .first();
     }
+
 }

@@ -1,14 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import java.util.List;
+
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolvableEntity;
 
 final class Helper {
-    private Helper() {}
+    private Helper() {
+    }
 
     // For Rule Designer
     static String getResolvedTo(ResolutionResult<ResolvableEntity> result) {

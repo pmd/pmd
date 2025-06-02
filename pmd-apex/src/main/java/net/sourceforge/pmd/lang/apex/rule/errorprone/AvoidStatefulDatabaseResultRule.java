@@ -6,12 +6,14 @@ package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import java.util.Locale;
 import java.util.Set;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Using stateful {@code Database.[x]Result} instance variables can cause odd
@@ -26,14 +28,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  */
 public final class AvoidStatefulDatabaseResultRule extends AbstractApexRule {
 
-    private static final Set<String> DATABASE_RESULT_TYPES = CollectionUtil.immutableSetOf(
-            "database.leadconvertresult",
-            "database.deleteresult",
-            "database.emptyrecyclebinresult",
-            "database.mergeresult",
-            "database.saveresult",
-            "database.undeleteresult",
-            "database.upsertresult");
+    private static final Set<String> DATABASE_RESULT_TYPES = CollectionUtil.immutableSetOf("database.leadconvertresult",
+            "database.deleteresult", "database.emptyrecyclebinresult", "database.mergeresult", "database.saveresult",
+            "database.undeleteresult", "database.upsertresult");
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -71,8 +68,7 @@ public final class AvoidStatefulDatabaseResultRule extends AbstractApexRule {
      * of {@code Database.[x]Result} (or collection of them).
      */
     private boolean isNonTransientInstanceDatabaseResultField(ASTField theField) {
-        return !theField.getModifiers().isStatic()
-                && !theField.getModifiers().isTransient()
+        return !theField.getModifiers().isStatic() && !theField.getModifiers().isTransient()
                 && isDatabaseResultOrCollection(theField.getType());
     }
 

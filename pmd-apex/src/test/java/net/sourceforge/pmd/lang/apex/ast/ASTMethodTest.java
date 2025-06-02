@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 class ASTMethodTest extends ApexParserTestBase {
@@ -22,8 +23,7 @@ class ASTMethodTest extends ApexParserTestBase {
 
     @Test
     void qualifiedNameWithGenerics() {
-        ASTUserClass node = (ASTUserClass)
-                parse("public class Foo { public void bar(List<SObject> mylist, Map<Id, SObject> oldMap) {}}");
+        ASTUserClass node = (ASTUserClass) parse("public class Foo { public void bar(List<SObject> mylist, Map<Id, SObject> oldMap) {}}");
         ApexQualifiedName qualifiedName = node.getMethods().first().getQualifiedName();
         assertEquals("bar(List<SObject>, Map<Id, SObject>)", qualifiedName.getOperation());
     }

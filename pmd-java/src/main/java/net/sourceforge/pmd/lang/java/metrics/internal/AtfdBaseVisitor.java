@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
+import org.apache.commons.lang3.mutable.MutableInt;
+
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -12,7 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
-import org.apache.commons.lang3.mutable.MutableInt;
+
 
 /**
  * Computes Atfd.
@@ -45,13 +47,15 @@ public class AtfdBaseVisitor extends JavaVisitorBase<MutableInt, Void> {
         }
         ASTExpression qualifier = node.getQualifier();
         return !(qualifier instanceof ASTThisExpression
-                || qualifier instanceof ASTSuperExpression
-                || sym.getEnclosingClass().equals(node.getEnclosingType().getSymbol()));
+            || qualifier instanceof ASTSuperExpression
+            || sym.getEnclosingClass().equals(node.getEnclosingType().getSymbol())
+            );
     }
 
     private boolean isForeignMethod(ASTMethodCall node) {
         return JavaRuleUtil.isGetterOrSetterCall(node)
-                && node.getQualifier() != null
-                && !(node.getQualifier() instanceof ASTThisExpression);
+                  && node.getQualifier() != null
+                  && !(node.getQualifier() instanceof ASTThisExpression);
     }
+
 }

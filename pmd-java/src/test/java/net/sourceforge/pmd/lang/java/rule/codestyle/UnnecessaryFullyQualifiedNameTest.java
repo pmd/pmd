@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
@@ -12,18 +13,15 @@ class UnnecessaryFullyQualifiedNameTest extends PmdRuleTst {
     // #1436 UnnecessaryFullyQualifiedName false positive on clashing static
     // imports with enums
     public enum ENUM1 {
-        A,
-        B;
+        A, B;
     }
 
     public enum ENUM2 {
-        C,
-        D;
+        C, D;
     }
 
     // Do not delete these classes - it is needed for a test case
-    // see:
-    // /pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/rule/codestyle/xml/UnnecessaryFullyQualifiedName.xml
+    // see: /pmd-java/src/test/resources/net/sourceforge/pmd/lang/java/rule/codestyle/xml/UnnecessaryFullyQualifiedName.xml
     // #1546 part 1 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution
     // #1546 part 2 UnnecessaryFullyQualifiedName doesn't take into consideration conflict resolution
     public static class PhonyMockito {
@@ -49,4 +47,5 @@ class UnnecessaryFullyQualifiedNameTest extends PmdRuleTst {
         // static method PhonyMockito::mock is static imported
         // if MockitoInherited is imported on demand
     }
+
 }

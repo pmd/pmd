@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.rule.internal;
 
 import java.io.FileNotFoundException;
@@ -9,11 +10,13 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.util.internal.ResourceLoader;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.rule.RuleSetLoader;
+import net.sourceforge.pmd.util.internal.ResourceLoader;
 
 /**
  * This class is used to reference either a complete ruleset with all rules or to reference a single rule
@@ -99,6 +102,7 @@ public class RuleSetReferenceId {
     private final @Nullable String ruleName;
 
     private final @NonNull String originalRef;
+
 
     // Helper constructor, that does not parse the ruleSetReference string
     private RuleSetReferenceId(final String ruleSetReference, final String ruleName) {
@@ -191,6 +195,7 @@ public class RuleSetReferenceId {
         }
         return new RuleSetReferenceId(ruleSetReference, (String) null);
     }
+
 
     /**
      * Extracts the rule name out of a ruleset path. E.g. for
@@ -291,8 +296,7 @@ public class RuleSetReferenceId {
      */
     public InputStream getInputStream(final ResourceLoader rl) throws IOException {
         if (!isAbsolute()) {
-            throw new IllegalArgumentException(
-                    "Cannot resolve rule/ruleset reference '" + this + "' - reference is not absolute");
+            throw new IllegalArgumentException("Cannot resolve rule/ruleset reference '" + this + "' - reference is not absolute");
         }
         try {
             return rl.loadResourceAsStream(ruleSetReference);

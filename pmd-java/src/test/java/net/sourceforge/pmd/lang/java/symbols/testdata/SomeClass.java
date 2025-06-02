@@ -5,23 +5,30 @@
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
 @TypeAnnotation
-@AnnotWithDefaults(
-        valueNoDefault = "ohio",
-        stringArrayDefault = {})
+@AnnotWithDefaults(valueNoDefault = "ohio",
+                   stringArrayDefault = {})
 public class SomeClass {
 
     @FieldAnnotation
     private int f1;
-
+    
     @ConstructorAnnotation
-    public SomeClass() {}
-
-    void withAnnotatedParam(int a, @ParameterAnnotation final String foo) {}
-
-    void withAnnotatedLocal() {
-        @LocalVarAnnotation long local;
+    public SomeClass() {
+        
     }
 
+    void withAnnotatedParam(int a, @ParameterAnnotation final String foo) {
+        
+    }
+
+    void withAnnotatedLocal() {
+        @LocalVarAnnotation
+        long local;
+    }
+    
     @MethodAnnotation
-    void anotatedMethod(final int x) {}
+    void anotatedMethod(final int x) {
+
+    }
+
 }

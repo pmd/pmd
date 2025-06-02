@@ -4,14 +4,14 @@
 
 package net.sourceforge.pmd.util;
 
-import net.sourceforge.pmd.internal.util.ExceptionContextDefaultImpl;
 import org.apache.commons.lang3.exception.DefaultExceptionContext;
+
+import net.sourceforge.pmd.internal.util.ExceptionContextDefaultImpl;
 
 /**
  * An {@link AssertionError} with nice messages.
  */
-public final class ContextedAssertionError extends AssertionError
-        implements ExceptionContextDefaultImpl<ContextedAssertionError> {
+public final class ContextedAssertionError extends AssertionError implements ExceptionContextDefaultImpl<ContextedAssertionError> {
     /** The serialization version. */
     private static final long serialVersionUID = -8919808081157463410L;
 
@@ -22,8 +22,10 @@ public final class ContextedAssertionError extends AssertionError
         setStackTrace(e.getStackTrace()); // pretend we're a regular assertion error
     }
 
+
     public static ContextedAssertionError wrap(AssertionError e) {
-        return e instanceof ContextedAssertionError ? (ContextedAssertionError) e : new ContextedAssertionError(e);
+        return e instanceof ContextedAssertionError ? (ContextedAssertionError) e
+                                                    : new ContextedAssertionError(e);
     }
 
     @Override

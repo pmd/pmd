@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.expression.UnaryExpression;
@@ -29,12 +30,12 @@ public enum PostfixOperator {
      */
     public static PostfixOperator valueOf(UnaryExpression.Operator op) {
         switch (op) {
-            case POST_INCREMENT:
-                return INCREMENT;
-            case POST_DECREMENT:
-                return DECREMENT;
-            default:
-                throw new IllegalArgumentException("Invalid postfix operator " + op);
+        case POST_INCREMENT:
+            return INCREMENT;
+        case POST_DECREMENT:
+            return DECREMENT;
+        default:
+            throw new IllegalArgumentException("Invalid postfix operator " + op);
         }
     }
 }

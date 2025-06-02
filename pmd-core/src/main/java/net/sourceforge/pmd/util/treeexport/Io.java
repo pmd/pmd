@@ -23,7 +23,7 @@ final class Io {
         this.stderr = stderr;
         this.stdin = stdin;
     }
-
+    
     public static Io system() {
         return new Io(System.out, System.err, System.in);
     }

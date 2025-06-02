@@ -6,8 +6,9 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import net.sourceforge.pmd.lang.document.Chars;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.document.Chars;
 
 class ASTAnnotationTest extends ApexParserTestBase {
     @Test

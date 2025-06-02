@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.plsql.ast;
 
-import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.plsql.AbstractPLSQLParserTst;
 
 class PlsqlTreeDumpTest extends AbstractPLSQLParserTst {
 
@@ -33,7 +34,7 @@ class PlsqlTreeDumpTest extends AbstractPLSQLParserTst {
     void parseMergeStatement() {
         doTest("MergeStatementIssue1934");
     }
-
+  
     @Test
     void errorLoggingClause() {
         doTest("ErrorLoggingClause2779");

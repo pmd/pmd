@@ -19,6 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
@@ -29,15 +33,12 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.LanguageVersionDiscoverer;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 /**
  * @author Clément Fournier
  */
 class FileCollectorTest {
-    private static final Path RESOURCES =
-            Paths.get("src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/");
+    private static final Path RESOURCES = Paths.get("src/test/resources/net/sourceforge/pmd/lang/document/filecollectortest/");
 
     @TempDir
     private Path tempFolder;
@@ -148,14 +149,8 @@ class FileCollectorTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(2));
-            assertHasName(
-                    files.get(0),
-                    IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/anotherfile.dummy"),
-                    pmd);
-            assertHasName(
-                    files.get(1),
-                    IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/somefile.dummy"),
-                    pmd);
+            assertHasName(files.get(0), IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/anotherfile.dummy"), pmd);
+            assertHasName(files.get(1), IOUtil.normalizePath("net/sourceforge/pmd/lang/document/filecollectortest/src/somefile.dummy"), pmd);
         }
     }
 
@@ -196,23 +191,12 @@ class FileCollectorTest {
         try (PmdAnalysis pmd = PmdAnalysis.create(conf)) {
             List<TextFile> files = pmd.files().getCollectedFiles();
             assertThat(files, hasSize(3));
-            assertHasName(
-                    files.get(0),
-                    RESOURCES
-                            .resolve("otherSrc/somefile.dummy")
-                            .toAbsolutePath()
-                            .toString(),
-                    pmd);
-            assertHasName(
-                    files.get(1),
-                    RESOURCES.resolve("src/anotherfile.dummy").toAbsolutePath().toString(),
-                    pmd);
-            assertHasName(
-                    files.get(2),
-                    RESOURCES.resolve("src/somefile.dummy").toAbsolutePath().toString(),
-                    pmd);
+            assertHasName(files.get(0), RESOURCES.resolve("otherSrc/somefile.dummy").toAbsolutePath().toString(), pmd);
+            assertHasName(files.get(1), RESOURCES.resolve("src/anotherfile.dummy").toAbsolutePath().toString(), pmd);
+            assertHasName(files.get(2), RESOURCES.resolve("src/somefile.dummy").toAbsolutePath().toString(), pmd);
         }
     }
+
 
     @Test
     void testGetApplicableFilesWithDirAndIgnores() {

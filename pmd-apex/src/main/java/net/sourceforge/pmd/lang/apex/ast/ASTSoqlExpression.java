@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import com.google.summit.ast.expression.SoqlExpression;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.google.summit.ast.expression.SoqlExpression;
 
 public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpression> {
     private final String canoncialQuery;
@@ -15,6 +16,7 @@ public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpress
         super(soqlExpression);
         canoncialQuery = convertToCanonicalQuery(soqlExpression.getQuery());
     }
+
 
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {

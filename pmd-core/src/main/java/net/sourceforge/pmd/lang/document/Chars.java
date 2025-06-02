@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.document;
 
+
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
@@ -19,9 +20,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-import net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.util.IteratorUtil.AbstractIterator;
 
 /**
  * View on a string which doesn't copy the array for subsequence operations.
@@ -70,11 +73,13 @@ public final class Chars implements CharSequence {
         return this.start + off;
     }
 
+
     /** Whether this slice is the empty string. */
     @SuppressWarnings("PMD.MissingOverride") // with Java 15, isEmpty() has been added to java.lang.CharSequence (#4291)
     public boolean isEmpty() {
         return len == 0;
     }
+
 
     /**
      * Wraps the given char sequence into a {@link Chars}. This may
@@ -162,6 +167,7 @@ public final class Chars implements CharSequence {
     public void appendChars(StringBuilder sb) {
         sb.append(str, start, start + len);
     }
+
 
     /**
      * Returns the characters of this charsequence encoded with the
@@ -291,6 +297,7 @@ public final class Chars implements CharSequence {
         return startsWith(prefix, 0);
     }
 
+
     public boolean startsWith(char prefix, int fromIndex) {
         if (fromIndex < 0 || fromIndex + 1 > len) {
             return false;
@@ -395,6 +402,7 @@ public final class Chars implements CharSequence {
         }
         return this;
     }
+
 
     /**
      * Returns true if this char sequence is logically equal to the

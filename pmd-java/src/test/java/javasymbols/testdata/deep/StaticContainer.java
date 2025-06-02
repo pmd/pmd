@@ -9,5 +9,7 @@ public class StaticContainer {
     /**
      * Shadows a java.lang member
      */
-    public static class Exception {}
+    public static class Exception {
+
+    }
 }

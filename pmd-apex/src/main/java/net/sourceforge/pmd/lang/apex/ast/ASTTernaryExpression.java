@@ -12,6 +12,7 @@ public final class ASTTernaryExpression extends AbstractApexNode.Single<TernaryE
         super(ternaryExpression);
     }
 
+
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

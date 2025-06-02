@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
@@ -19,8 +20,8 @@ public class JUnitSpellingRule extends AbstractJavaRulechainRule {
     public Object visit(ASTClassDeclaration node, Object data) {
         if (TestFrameworksUtil.isJUnit3Class(node)) {
             node.getDeclarations(ASTMethodDeclaration.class)
-                    .filter(this::isViolation)
-                    .forEach(it -> asCtx(data).addViolation(it));
+                .filter(this::isViolation)
+                .forEach(it -> asCtx(data).addViolation(it));
         }
         return null;
     }
@@ -31,6 +32,7 @@ public class JUnitSpellingRule extends AbstractJavaRulechainRule {
         }
         String name = method.getName();
         return !"setUp".equals(name) && "setup".equalsIgnoreCase(name)
-                || !"tearDown".equals(name) && "teardown".equalsIgnoreCase(name);
+            || !"tearDown".equals(name) && "teardown".equalsIgnoreCase(name);
+
     }
 }

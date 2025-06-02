@@ -7,9 +7,10 @@ package net.sourceforge.pmd.lang.java.types.ast.internal;
 import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.INVOCATION;
 import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.MISSING;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class RegularCtx extends ExprContext {
 

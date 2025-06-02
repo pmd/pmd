@@ -10,6 +10,10 @@ import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutio
 
 import java.util.List;
 import java.util.function.Predicate;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -22,8 +26,6 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
 import net.sourceforge.pmd.util.OptionalBool;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Adapter class to manipulate expressions. The framework
@@ -38,6 +40,7 @@ public interface ExprMirror {
      */
     JavaNode getLocation();
 
+
     /**
      * If this expression is of a standalone form, returns the type of
      * the expression. Otherwise returns null.
@@ -47,8 +50,7 @@ public interface ExprMirror {
      *
      * @return The type of the expression if it is standalone
      */
-    @Nullable
-    JTypeMirror getStandaloneType();
+    @Nullable JTypeMirror getStandaloneType();
 
     /**
      * For a standalone expr, finish type inference by computing properties
@@ -60,6 +62,7 @@ public interface ExprMirror {
         // do nothing
     }
 
+
     /**
      * Set the type of the underlying ast node. Used when we need
      * to find out the type of a poly to infer the type of another,
@@ -68,8 +71,7 @@ public interface ExprMirror {
     void setInferredType(JTypeMirror mirror);
 
     /** Return the value set in the last call to {@link #setInferredType(JTypeMirror)}. */
-    @Nullable
-    JTypeMirror getInferredType();
+    @Nullable JTypeMirror getInferredType();
 
     /**
      * Returns typing information for the lambdas parameters in scope
@@ -103,6 +105,7 @@ public interface ExprMirror {
         return std == null ? UNKNOWN : getSpecies(std);
     }
 
+
     /**
      * Returns true if this mirror and its subexpressions are equivalent
      * to the underlying AST node. This is only relevant when making mirrors
@@ -130,6 +133,7 @@ public interface ExprMirror {
         VOID,
         UNKNOWN;
 
+
         public static TypeSpecies getSpecies(JTypeMirror t) {
             if (t.isPrimitive()) {
                 return PRIMITIVE;
@@ -142,19 +146,22 @@ public interface ExprMirror {
         }
     }
 
+
     interface PolyExprMirror extends ExprMirror {
+
 
         /**
          * Returns the class declaration wherein this invocation occurs.
          * Returns null if it's unresolved.
          */
-        @NonNull
-        JClassType getEnclosingType();
+        @NonNull JClassType getEnclosingType();
+
 
         @Override
         default @Nullable JTypeMirror getStandaloneType() {
             return null;
         }
+
 
         /**
          * If inference failed to determine the type of this node, returns
@@ -167,6 +174,7 @@ public interface ExprMirror {
             return null;
         }
     }
+
 
     /** Mirrors a conditional or switch expression. */
     interface BranchingMirror extends PolyExprMirror {
@@ -190,6 +198,7 @@ public interface ExprMirror {
             // do nothing by default
         }
 
+
         @Override
         default boolean isEquivalentToUnderlyingAst() {
             return branchesMatch(ExprMirror::isEquivalentToUnderlyingAst);
@@ -211,6 +220,7 @@ public interface ExprMirror {
          */
         @Override
         void setInferredType(@Nullable JTypeMirror mirror);
+
 
         /**
          * This is the method that is overridden in getInferredType.
@@ -250,8 +260,7 @@ public interface ExprMirror {
          * the type of the enclosing type. For constructor invocations this
          * is not defined and will return null.
          */
-        @Nullable
-        JTypeMirror getTypeToSearch();
+        @Nullable JTypeMirror getTypeToSearch();
     }
 
     /**
@@ -262,6 +271,7 @@ public interface ExprMirror {
         /** True if this references a ctor. */
         boolean isConstructorRef();
 
+
         /**
          * Returns the type to search as defined by the first section of
          * <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.13.1">JLS§15.13.1</a>
@@ -270,6 +280,7 @@ public interface ExprMirror {
          */
         @Override
         JTypeMirror getTypeToSearch();
+
 
         /**
          * Returns the type of the left hand-side, if it is not an expression.
@@ -283,15 +294,16 @@ public interface ExprMirror {
         @Nullable
         JTypeMirror getLhsIfType();
 
+
         /**
          * Returns the name of the invoked method, or {@link JConstructorSymbol#CTOR_NAME}
          * if this is a constructor reference.
          */
         String getMethodName();
 
+
         /** Returns the explicit type arguments (the ones to the right of the "::"). */
-        @NonNull
-        List<JTypeMirror> getExplicitTypeArguments();
+        @NonNull List<JTypeMirror> getExplicitTypeArguments();
 
         /**
          * This is the method that is referenced.
@@ -301,6 +313,7 @@ public interface ExprMirror {
         @Override
         void setCompileTimeDecl(InvocationMirror.MethodCtDecl methodType);
 
+
         /**
          * UNRESOLVED_METHOD if not yet computed, null if computed but
          * inexact, otherwise the real method.
@@ -308,7 +321,9 @@ public interface ExprMirror {
         @Nullable
         JMethodSig getCachedExactMethod();
 
+
         void setCachedExactMethod(@Nullable JMethodSig sig);
+
     }
 
     /** Mirrors a lambda expression. */
@@ -322,8 +337,7 @@ public interface ExprMirror {
          * <p>Note that a degenerate case of explicitly typed lambda
          * expression is a lambda with zero formal parameters.
          */
-        @Nullable
-        List<JTypeMirror> getExplicitParameterTypes();
+        @Nullable List<JTypeMirror> getExplicitParameterTypes();
 
         /**
          * See {@link #getExplicitParameterTypes()}.
@@ -338,12 +352,14 @@ public interface ExprMirror {
          */
         int getParamCount();
 
+
         /**
          * Returns all the expressions that appear in {@code return}
          * statements within the lambda. If this is an expression-bodied
          * lambda, returns the expression.
          */
         Iterable<ExprMirror> getResultExpressions();
+
 
         /**
          * Returns true if the body is value-compatible {@literal (JLS§15.27.2)}.
@@ -380,6 +396,7 @@ public interface ExprMirror {
      */
     interface InvocationMirror extends PolyExprMirror, MethodUsageMirror {
 
+
         /**
          * Enumerates *accessible* method (or ctor) signatures with
          * *the same name* as this invocation. Name and accessibility
@@ -391,6 +408,7 @@ public interface ExprMirror {
          */
         Iterable<JMethodSig> getAccessibleCandidates();
 
+
         /**
          * Returns the erased receiver type. This is only used to adapt the
          * {@code Object::getClass} method, other types of invocations don't
@@ -400,12 +418,13 @@ public interface ExprMirror {
             return null;
         }
 
+
         /**
          * Returns the erased receiver type. This is only used for method
          * invocations.
          */
-        @Nullable
-        JTypeMirror getReceiverType();
+        @Nullable JTypeMirror getReceiverType();
+
 
         /**
          * Returns the explicit type arguments, eg in {@code Arrays.<String>asList("q")},
@@ -413,10 +432,12 @@ public interface ExprMirror {
          */
         List<JTypeMirror> getExplicitTypeArguments();
 
+
         /**
          * @throws IndexOutOfBoundsException If there's no explicit type argument at the given index
          */
         JavaNode getExplicitTargLoc(int i);
+
 
         /**
          * Returns the name of the invoked method. If this is a
@@ -424,11 +445,14 @@ public interface ExprMirror {
          */
         String getName();
 
+
         /** Returns the expressions corresponding to the arguments of the call. */
         List<ExprMirror> getArgumentExpressions();
 
+
         /** Return the size of the argument list. */
         int getArgumentCount();
+
 
         /**
          * {@inheritDoc}
@@ -439,13 +463,13 @@ public interface ExprMirror {
         @Override
         void setCompileTimeDecl(MethodCtDecl methodType);
 
+
         /**
          * Returns the method type set with {@link #setCompileTimeDecl(MethodCtDecl)}
          * or null if that method was never called. This is used to perform
          * overload resolution exactly once per call site.
          */
-        @Nullable
-        MethodCtDecl getCtDecl();
+        @Nullable MethodCtDecl getCtDecl();
 
         @Override
         default @Nullable JTypeMirror getTypeToSearch() {
@@ -467,13 +491,12 @@ public interface ExprMirror {
             private final boolean failed;
             private final @Nullable MethodUsageMirror expr;
 
-            MethodCtDecl(
-                    JMethodSig methodType,
-                    MethodResolutionPhase resolvePhase,
-                    boolean canSkipInvocation,
-                    OptionalBool needsUncheckedConversion,
-                    boolean failed,
-                    @Nullable MethodUsageMirror expr) {
+            MethodCtDecl(JMethodSig methodType,
+                         MethodResolutionPhase resolvePhase,
+                         boolean canSkipInvocation,
+                         OptionalBool needsUncheckedConversion,
+                         boolean failed,
+                         @Nullable MethodUsageMirror expr) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
                 this.canSkipInvocation = canSkipInvocation;
@@ -489,13 +512,11 @@ public interface ExprMirror {
             }
 
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
-                return new MethodCtDecl(
-                        method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
             }
 
             public MethodCtDecl withExpr(MethodUsageMirror expr) {
-                return new MethodCtDecl(
-                        methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
             }
 
             MethodCtDecl asFailed() {
@@ -515,6 +536,7 @@ public interface ExprMirror {
             }
 
             // public:
+
 
             @Override
             public JMethodSig getMethodType() {
@@ -571,8 +593,7 @@ public interface ExprMirror {
          * Other return values may be eg {@link TypeSystem#UNKNOWN}, or
          * a {@link JTypeVar}, but indicate malformed code.
          */
-        @NonNull
-        JTypeMirror getNewType();
+        @NonNull JTypeMirror getNewType();
 
         /**
          * True if this creates an anonymous class. Since java 9 those
@@ -591,6 +612,7 @@ public interface ExprMirror {
          * </ul>
          */
         boolean isDiamond();
+
 
         /**
          * {@inheritDoc}
@@ -617,10 +639,13 @@ public interface ExprMirror {
          */
         Iterable<JMethodSig> getAccessibleCandidates(JTypeMirror newType);
 
+
         /** Must return {@link JConstructorSymbol#CTOR_NAME}. */
         @Override
         default String getName() {
             return JConstructorSymbol.CTOR_NAME;
         }
+
+
     }
 }

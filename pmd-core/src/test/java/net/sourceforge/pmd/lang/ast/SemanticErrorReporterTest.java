@@ -14,14 +14,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-import net.sourceforge.pmd.DummyParsingHelper;
-import net.sourceforge.pmd.util.log.PmdReporter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 import org.slf4j.helpers.NOPLogger;
+
+import net.sourceforge.pmd.DummyParsingHelper;
+import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
  * Reports errors that occur after parsing. This may be used to implement
@@ -76,4 +77,5 @@ class SemanticErrorReporterTest {
     private RootNode parseMockNode() {
         return helper.parse("(mock (node))", "dummy/file.txt");
     }
+
 }

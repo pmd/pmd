@@ -14,10 +14,12 @@ import static net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKi
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.types.TypeVarImpl.CapturedTypeVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Utility class for type conversions, as defined in <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html">JLS§5</a>.
@@ -25,7 +27,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class TypeConversion {
 
-    private TypeConversion() {}
+    private TypeConversion() {
+
+    }
 
     /**
      * Performs <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-5.html#jls-5.6.1">Unary numeric promotion
@@ -123,15 +127,14 @@ public final class TypeConversion {
         }
 
         if (isCastContext) {
-            return t.isPrimitive()
-                    ? t.box().isConvertibleTo(s).bySubtyping()
-                    : t.isConvertibleTo(s.box()).bySubtyping();
+            return t.isPrimitive() ? t.box().isConvertibleTo(s).bySubtyping()
+                                   : t.isConvertibleTo(s.box()).bySubtyping();
         } else {
-            return t.isPrimitive()
-                    ? t.box().isConvertibleTo(s).somehow()
-                    : t.unbox().isConvertibleTo(s).somehow();
+            return t.isPrimitive() ? t.box().isConvertibleTo(s).somehow()
+                                   : t.unbox().isConvertibleTo(s).somehow();
         }
     }
+
 
     /**
      * Perform capture conversion on the type t. This replaces wildcards
@@ -144,6 +147,7 @@ public final class TypeConversion {
     public static JTypeMirror capture(JTypeMirror t) {
         return t instanceof JClassType ? capture((JClassType) t) : t;
     }
+
 
     /**
      * Perform capture conversion on the type t. This replaces wildcards
@@ -190,14 +194,14 @@ public final class TypeConversion {
         Substitution subst = wellFormed ? Substitution.mapping(typeParams, freshVars) : Substitution.EMPTY;
 
         for (int i = 0; i < typeArgs.size(); i++) {
-            JTypeMirror fresh = freshVars.get(i); // Si
-            JTypeMirror arg = typeArgs.get(i); // Ti
+            JTypeMirror fresh = freshVars.get(i);       // Si
+            JTypeMirror arg = typeArgs.get(i);          // Ti
 
             // we mutate the bounds to preserve the correct instance in
             // the substitutions
 
             if (arg instanceof JWildcardType) {
-                JWildcardType w = (JWildcardType) arg; // Ti alias
+                JWildcardType w = (JWildcardType) arg;        // Ti alias
                 CapturedTypeVar freshVar = (CapturedTypeVar) fresh; // Si alias
 
                 JTypeMirror prevUpper = wellFormed ? typeParams.get(i).getUpperBound() : ts.OBJECT; // Ui
@@ -244,6 +248,7 @@ public final class TypeConversion {
                 && CollectionUtil.any(((JClassType) t).getTypeArgs(), it -> it instanceof JWildcardType);
     }
 
+
     private static List<JTypeMirror> makeFreshVars(JClassType type) {
         List<JTypeMirror> freshVars = new ArrayList<>(type.getTypeArgs().size());
         for (JTypeMirror typeArg : type.getTypeArgs()) {
@@ -255,4 +260,5 @@ public final class TypeConversion {
         }
         return freshVars;
     }
+
 }

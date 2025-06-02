@@ -53,6 +53,7 @@ public final class ASTModifierList extends AbstractJavaNode {
     private Set<JModifier> explicitModifiers;
     private Set<JModifier> effectiveModifiers;
 
+
     ASTModifierList(int id) {
         super(id);
     }
@@ -61,6 +62,7 @@ public final class ASTModifierList extends AbstractJavaNode {
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     void setDeclaredModifiers(Set<JModifier> explicit) {
         this.explicitModifiers = explicit;
@@ -88,11 +90,14 @@ public final class ASTModifierList extends AbstractJavaNode {
         if (effectiveModifiers == null) {
 
             Set<JModifier> mods =
-                    explicitModifiers.isEmpty() ? EnumSet.noneOf(JModifier.class) : EnumSet.copyOf(explicitModifiers);
+                explicitModifiers.isEmpty()
+                ? EnumSet.noneOf(JModifier.class)
+                : EnumSet.copyOf(explicitModifiers);
 
             getOwner().acceptVisitor(EffectiveModifierVisitor.INSTANCE, mods);
 
             this.effectiveModifiers = Collections.unmodifiableSet(mods);
+
         }
 
         return effectiveModifiers;
@@ -127,6 +132,7 @@ public final class ASTModifierList extends AbstractJavaNode {
         return actual.contains(mod1) && (mods.length == 0 || actual.containsAll(Arrays.asList(mods)));
     }
 
+
     /**
      * Returns true if the effective modifiers contain any of the mentioned
      * modifiers.
@@ -138,6 +144,7 @@ public final class ASTModifierList extends AbstractJavaNode {
         Set<JModifier> actual = getEffectiveModifiers();
         return actual.contains(mod1) || Arrays.stream(mods).anyMatch(actual::contains);
     }
+
 
     /**
      * Returns true if the explicit modifiers contain any of the mentioned
@@ -156,10 +163,12 @@ public final class ASTModifierList extends AbstractJavaNode {
      */
     private static final class EffectiveModifierVisitor extends JavaVisitorBase<Set<JModifier>, Void> {
 
+
         private static final EffectiveModifierVisitor INSTANCE = new EffectiveModifierVisitor();
 
         // TODO strictfp modifier is also implicitly given to descendants
         // TODO final modifier is implicitly given to direct subclasses of sealed interface/class
+
 
         @Override
         public Void visitJavaNode(JavaNode node, Set<JModifier> data) {
@@ -181,17 +190,19 @@ public final class ASTModifierList extends AbstractJavaNode {
                     effective.add(STATIC);
                 }
             } else if (!node.isTopLevel()
-                    && (node instanceof ASTEnumDeclaration || node instanceof ASTRecordDeclaration)) {
+                && (node instanceof ASTEnumDeclaration || node instanceof ASTRecordDeclaration)) {
                 effective.add(STATIC);
             }
 
-            if (node instanceof ASTEnumDeclaration && node.getEnumConstants().none(ASTEnumConstant::isAnonymousClass)
-                    || node instanceof ASTRecordDeclaration) {
+            if (node instanceof ASTEnumDeclaration
+                && node.getEnumConstants().none(ASTEnumConstant::isAnonymousClass)
+                || node instanceof ASTRecordDeclaration) {
                 effective.add(FINAL);
             }
 
             return null;
         }
+
 
         @Override
         public Void visit(ASTFieldDeclaration node, Set<JModifier> effective) {
@@ -230,17 +241,16 @@ public final class ASTModifierList extends AbstractJavaNode {
 
         @Override
         public Void visit(ASTAnonymousClassDeclaration node, Set<JModifier> effective) {
-            ASTBodyDeclaration enclosing =
-                    node.ancestors(ASTBodyDeclaration.class).first();
+            ASTBodyDeclaration enclosing = node.ancestors(ASTBodyDeclaration.class).first();
 
             assert enclosing != null && !(enclosing instanceof ASTTypeDeclaration)
-                    : "Weird position for an anonymous class " + enclosing;
+                : "Weird position for an anonymous class " + enclosing;
 
             if (enclosing instanceof ASTEnumConstant) {
                 effective.add(STATIC);
             } else {
                 if (enclosing instanceof ModifierOwner && ((ModifierOwner) enclosing).hasModifiers(STATIC)
-                        || enclosing instanceof ASTInitializer && ((ASTInitializer) enclosing).isStatic()) {
+                    || enclosing instanceof ASTInitializer && ((ASTInitializer) enclosing).isStatic()) {
                     effective.add(STATIC);
                 }
             }

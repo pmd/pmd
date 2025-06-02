@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaTokenKinds;
 
+
 /**
  * <p>Note: This class has been called MatlabTokenizer in PMD 6</p>.
  */

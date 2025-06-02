@@ -4,11 +4,12 @@
 
 package net.sourceforge.pmd.lang.swift.ast;
 
+import org.antlr.v4.runtime.ParserRuleContext;
+
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Parser.ParserTask;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.swift.ast.SwiftParser.SwTopLevel;
-import org.antlr.v4.runtime.ParserRuleContext;
 
 // package private base class
 abstract class SwiftRootNode extends SwiftInnerNode implements RootNode {
@@ -29,4 +30,5 @@ abstract class SwiftRootNode extends SwiftInnerNode implements RootNode {
         this.astInfo = new AstInfo<>(task, me);
         return me;
     }
+
 }

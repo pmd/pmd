@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 class MatchAlgorithm {
@@ -29,6 +31,7 @@ class MatchAlgorithm {
         }
     }
 
+
     public TokenEntry tokenAt(int offset, TokenEntry m) {
         return code.get(offset + m.getIndex());
     }
@@ -44,12 +47,15 @@ class MatchAlgorithm {
             Map<TokenEntry, Object> markGroups = hash();
 
             cpdListener.phaseUpdate(CPDListener.MATCH);
-            markGroups.values().stream().filter(it -> it instanceof List).forEach(it -> {
-                @SuppressWarnings("unchecked")
-                List<TokenEntry> l = (List<TokenEntry>) it;
-                Collections.reverse(l);
-                matchCollector.collect(l);
-            });
+            markGroups.values()
+                      .stream()
+                      .filter(it -> it instanceof List)
+                      .forEach(it -> {
+                          @SuppressWarnings("unchecked")
+                          List<TokenEntry> l = (List<TokenEntry>) it;
+                          Collections.reverse(l);
+                          matchCollector.collect(l);
+                      });
             // put markGroups out of scope
         }
 

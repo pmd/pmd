@@ -1,10 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -21,8 +26,6 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * <pre>
@@ -62,8 +65,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             return data;
         }
 
-        List<ASTReturnStatement> rsl =
-                node.descendants(ASTReturnStatement.class).toList();
+        List<ASTReturnStatement> rsl = node.descendants(ASTReturnStatement.class).toList();
         if (rsl.size() != 1) {
             return data;
         }
@@ -77,7 +79,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         JVariableSymbol returnVariable = ((ASTNamedReferenceExpr) returnExpr).getReferencedSym();
         // With Java5 and volatile keyword, DCL is no longer an issue
         if (returnVariable instanceof JFieldSymbol
-                && Modifier.isVolatile(((JFieldSymbol) returnVariable).getModifiers())) {
+            && Modifier.isVolatile(((JFieldSymbol) returnVariable).getModifiers())) {
             return data;
         }
 
@@ -92,17 +94,15 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             ASTIfStatement outerIf = isl.get(0);
             if (JavaRuleUtil.isNullCheck(outerIf.getCondition(), returnVariable)) {
                 // find synchronized
-                List<ASTSynchronizedStatement> ssl =
-                        outerIf.descendants(ASTSynchronizedStatement.class).toList();
+                List<ASTSynchronizedStatement> ssl = outerIf.descendants(ASTSynchronizedStatement.class).toList();
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
                     ASTIfStatement is2 = isl.get(1);
                     if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
-                        List<ASTAssignmentExpression> assignments =
-                                is2.descendants(ASTAssignmentExpression.class).toList();
+                        List<ASTAssignmentExpression> assignments = is2.descendants(ASTAssignmentExpression.class).toList();
                         if (assignments.size() == 1
-                                && JavaAstUtils.isReferenceToVar(
-                                        assignments.get(0).getLeftOperand(), returnVariable)) {
+                            && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
                             asCtx(data).addViolation(node);
+
                         }
                     }
                 }
@@ -125,9 +125,9 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         }
 
         return (initializer == null || isVolatileFieldReference(initializer))
-                && method.descendants(ASTAssignmentExpression.class)
-                        .filter(it -> JavaAstUtils.isReferenceToVar(it.getLeftOperand(), local))
-                        .all(it -> isVolatileFieldReference(it.getRightOperand()));
+            && method.descendants(ASTAssignmentExpression.class)
+                     .filter(it -> JavaAstUtils.isReferenceToVar(it.getLeftOperand(), local))
+                     .all(it -> isVolatileFieldReference(it.getRightOperand()));
     }
 
     private boolean isVolatileFieldReference(@Nullable ASTExpression initializer) {
@@ -138,4 +138,5 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             return false;
         }
     }
+
 }

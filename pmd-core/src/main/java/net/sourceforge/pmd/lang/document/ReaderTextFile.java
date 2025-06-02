@@ -6,9 +6,11 @@ package net.sourceforge.pmd.lang.document;
 
 import java.io.IOException;
 import java.io.Reader;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Read-only view on a string.
@@ -53,4 +55,5 @@ class ReaderTextFile implements TextFile {
     public String toString() {
         return "ReaderTextFile[" + fileId.getAbsolutePath() + "]";
     }
+
 }

@@ -1,12 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+
 
 /**
  * A lambda expression.
@@ -60,6 +63,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return (ASTLambdaParameterList) getChild(0);
     }
 
+
     /**
      * Return true if this lambda is explicitly typed, meaning
      * all parameters have an explicit type. Note that lambdas
@@ -99,6 +103,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return getExpressionBody();
     }
 
+
     /**
      * Returns the body of this lambda if it is a block.
      */
@@ -114,6 +119,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
         return getBlockBody();
     }
 
+
     /**
      * Returns the body of this lambda if it is an expression.
      */
@@ -125,6 +131,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     public boolean isFindBoundary() {
         return true;
     }
+
 
     /**
      * Returns the number of formal parameters of this lambda.

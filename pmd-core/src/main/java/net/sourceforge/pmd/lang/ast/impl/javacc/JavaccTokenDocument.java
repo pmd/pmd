@@ -6,10 +6,12 @@ package net.sourceforge.pmd.lang.ast.impl.javacc;
 
 import java.util.Collections;
 import java.util.List;
-import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
-import net.sourceforge.pmd.lang.document.TextDocument;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.impl.TokenDocument;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 /**
  * Token document for Javacc implementations. This is a helper object
@@ -64,6 +66,7 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
             return text;
         }
 
+
         /**
          * Returns a string that describes the token kind.
          *
@@ -102,6 +105,7 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
             return null;
         }
 
+
         /**
          * Creates a new token with the given kind. This is called back to
          * by JavaCC-generated token managers (jjFillToken). Note that a
@@ -118,7 +122,12 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
          */
         public JavaccToken createToken(JavaccTokenDocument self, int kind, CharStream cs, @Nullable String image) {
             return new JavaccToken(
-                    kind, image == null ? cs.getTokenImageCs() : image, cs.getStartOffset(), cs.getEndOffset(), self);
+                kind,
+                image == null ? cs.getTokenImageCs() : image,
+                cs.getStartOffset(),
+                cs.getEndOffset(),
+                self
+            );
         }
     }
 
@@ -145,6 +154,7 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
         return first;
     }
 
+
     @Override
     public JavaccToken getFirstToken() {
         if (first == null || first.next == null) {
@@ -165,5 +175,6 @@ public final class JavaccTokenDocument extends TokenDocument<JavaccToken> {
      */
     public JavaccToken createToken(int kind, CharStream cs, @Nullable String image) {
         return behavior.createToken(this, kind, cs, image);
+
     }
 }

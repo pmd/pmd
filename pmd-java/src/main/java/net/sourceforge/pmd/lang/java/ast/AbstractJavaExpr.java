@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -16,6 +17,7 @@ abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpre
     AbstractJavaExpr(int i) {
         super(i);
     }
+
 
     void bumpParenDepth() {
         parenDepth++;

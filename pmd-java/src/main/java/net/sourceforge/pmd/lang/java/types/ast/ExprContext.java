@@ -9,14 +9,15 @@ import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKin
 import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.INVOCATION;
 import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.MISSING;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.ast.internal.InvocCtx;
 import net.sourceforge.pmd.lang.java.types.ast.internal.RegularCtx;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Context of an expression. This determines the target type of poly
@@ -41,6 +42,7 @@ public abstract class ExprContext {
     // note: this may triggers type resolution of the context
     public abstract @Nullable JTypeMirror getTargetType();
 
+
     /**
      * Returns true if the given type is compatible with this context
      * implicitly (without cast). Conversions may occur to make this
@@ -59,9 +61,8 @@ public abstract class ExprContext {
         return targetType == null
                 // todo there's a gritty detail about compound assignment operators
                 //  with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
-                || (kind == CAST
-                        ? TypeConversion.isConvertibleInCastContext(type, targetType)
-                        : TypeConversion.isConvertibleUsingBoxing(type, targetType));
+                || (kind == CAST ? TypeConversion.isConvertibleInCastContext(type, targetType)
+                            : TypeConversion.isConvertibleUsingBoxing(type, targetType));
     }
 
     /**
@@ -78,7 +79,9 @@ public abstract class ExprContext {
     }
 
     final boolean canGiveContextToPoly(boolean lambdaOrMethodRef) {
-        return this.hasKind(ASSIGNMENT) || this.hasKind(INVOCATION) || this.hasKind(CAST) && lambdaOrMethodRef;
+        return this.hasKind(ASSIGNMENT)
+            || this.hasKind(INVOCATION)
+            || this.hasKind(CAST) && lambdaOrMethodRef;
     }
 
     public @Nullable InvocationNode getInvocNodeIfInvocContext() {
@@ -185,4 +188,5 @@ public abstract class ExprContext {
          */
         BOOLEAN,
     }
+
 }

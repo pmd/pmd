@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.reporting.Report;
@@ -25,11 +27,10 @@ public class CPDReport {
     private final Map<FileId, Integer> numberOfTokensPerFile;
     private final List<Report.ProcessingError> processingErrors;
 
-    CPDReport(
-            SourceManager sourceManager,
-            List<Match> matches,
-            Map<FileId, Integer> numberOfTokensPerFile,
-            List<Report.ProcessingError> processingErrors) {
+    CPDReport(SourceManager sourceManager,
+              List<Match> matches,
+              Map<FileId, Integer> numberOfTokensPerFile,
+              List<Report.ProcessingError> processingErrors) {
         this.sourceManager = sourceManager;
         this.matches = Collections.unmodifiableList(matches);
         this.numberOfTokensPerFile = Collections.unmodifiableMap(new TreeMap<>(numberOfTokensPerFile));
@@ -59,6 +60,7 @@ public class CPDReport {
     public Chars getSourceCodeSlice(Mark mark) {
         return sourceManager.getSlice(mark);
     }
+
 
     /**
      * Creates a new CPD report taking all the information from this report,

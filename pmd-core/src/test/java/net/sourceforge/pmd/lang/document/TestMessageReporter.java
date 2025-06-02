@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
  * @author Clément Fournier

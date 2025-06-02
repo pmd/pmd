@@ -18,8 +18,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule {
 
-    private static final InvocationMatcher BOOLEAN_VALUEOF_MATCHER =
-            InvocationMatcher.parse("java.lang.Boolean#valueOf(_)");
+    private static final InvocationMatcher BOOLEAN_VALUEOF_MATCHER = InvocationMatcher.parse("java.lang.Boolean#valueOf(_)");
 
     public PrimitiveWrapperInstantiationRule() {
         super(ASTConstructorCall.class, ASTMethodCall.class);
@@ -64,7 +63,9 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
             return;
         }
         boolean isNewBoolean = node instanceof ASTConstructorCall;
-        String messagePart = isNewBoolean ? "Do not use `new Boolean" : "Do not use `Boolean.valueOf";
+        String messagePart = isNewBoolean
+                ? "Do not use `new Boolean"
+                : "Do not use `Boolean.valueOf";
         ASTStringLiteral stringLiteral = getFirstArgStringLiteralOrNull(arguments);
         ASTBooleanLiteral boolLiteral = getFirstArgBooleanLiteralOrNull(arguments);
         if (stringLiteral != null) {

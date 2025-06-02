@@ -1,7 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.errorprone;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -11,8 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class NullAssignmentRule extends AbstractJavaRulechainRule {
 
@@ -40,9 +42,11 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAssignmentToFinal(ASTAssignmentExpression n) {
-        @NonNull ASTAssignableExpr leftOperand = n.getLeftOperand();
+        @NonNull
+        ASTAssignableExpr leftOperand = n.getLeftOperand();
         if (leftOperand instanceof ASTNamedReferenceExpr) {
-            @Nullable JVariableSymbol symbol = ((ASTNamedReferenceExpr) leftOperand).getReferencedSym();
+            @Nullable
+            JVariableSymbol symbol = ((ASTNamedReferenceExpr) leftOperand).getReferencedSym();
             return symbol != null && symbol.isFinal();
         }
         return false;
@@ -51,8 +55,7 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     private boolean isBadTernary(ASTConditionalExpression ternary, ASTNullLiteral nullLiteral) {
         boolean isInitializer = false;
 
-        ASTVariableDeclarator variableDeclarator =
-                ternary.ancestors(ASTVariableDeclarator.class).first();
+        ASTVariableDeclarator variableDeclarator = ternary.ancestors(ASTVariableDeclarator.class).first();
         isInitializer = variableDeclarator != null && variableDeclarator.getInitializer() == ternary;
 
         boolean isThenOrElse = ternary.getThenBranch() == nullLiteral || ternary.getElseBranch() == nullLiteral;
@@ -61,13 +64,14 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
         ASTConditionalExpression currentTernary = ternary;
         while (currentTernary.getParent() instanceof ASTConditionalExpression) {
             ASTConditionalExpression parentTernary = (ASTConditionalExpression) currentTernary.getParent();
-            isThenOrElse &=
-                    parentTernary.getThenBranch() == currentTernary || parentTernary.getElseBranch() == currentTernary;
+            isThenOrElse &= parentTernary.getThenBranch() == currentTernary || parentTernary.getElseBranch() == currentTernary;
             currentTernary = parentTernary;
         }
 
         boolean isAssignment = currentTernary.getParent() instanceof ASTAssignmentExpression;
 
-        return isThenOrElse && isAssignment && !isInitializer;
+        return isThenOrElse
+                && isAssignment
+                && !isInitializer;
     }
 }

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+
 import net.sourceforge.pmd.lang.DummyLanguageModule;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.LanguageProcessorRegistry;
@@ -79,6 +81,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
         this.region = region;
     }
 
+
     /**
      * Nodes with an image that starts with `#` also set the xpath name.
      */
@@ -113,6 +116,7 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
         attributes.add(new Attribute(this, name, value));
     }
 
+
     public void clearXPathAttributes() {
         attributes.clear();
     }
@@ -130,21 +134,22 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
     public static class DummyRootNode extends DummyNode implements RootNode, GenericNode<DummyNode> {
 
         // FIXME remove this
-        private static final LanguageProcessor STATIC_PROCESSOR = DummyLanguageModule.getInstance()
-                .createProcessor(DummyLanguageModule.getInstance().newPropertyBundle());
+        private static final LanguageProcessor STATIC_PROCESSOR =
+            DummyLanguageModule.getInstance().createProcessor(DummyLanguageModule.getInstance().newPropertyBundle());
         private AstInfo<DummyRootNode> astInfo;
 
         public DummyRootNode() {
             TextDocument document = TextDocument.readOnlyString(
-                    "dummy text",
-                    FileId.UNKNOWN,
-                    DummyLanguageModule.getInstance().getDefaultVersion());
+                "dummy text",
+                FileId.UNKNOWN,
+                DummyLanguageModule.getInstance().getDefaultVersion()
+            );
             astInfo = new AstInfo<>(
-                    new ParserTask(
-                            document,
-                            SemanticErrorReporter.noop(),
-                            LanguageProcessorRegistry.singleton(STATIC_PROCESSOR)),
-                    this);
+                new ParserTask(
+                    document,
+                    SemanticErrorReporter.noop(),
+                    LanguageProcessorRegistry.singleton(STATIC_PROCESSOR)),
+                this);
         }
 
         public DummyRootNode withTaskInfo(ParserTask task) {

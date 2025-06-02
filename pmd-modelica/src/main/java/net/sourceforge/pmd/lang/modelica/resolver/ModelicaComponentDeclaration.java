@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import net.sourceforge.pmd.lang.modelica.ast.ASTComponentClause;
@@ -85,15 +86,14 @@ public class ModelicaComponentDeclaration extends AbstractModelicaDeclaration im
     private final ASTConditionAttribute condition;
 
     public ModelicaComponentDeclaration(ASTComponentDeclaration node) {
-        declarationName = node.firstChild(ASTDeclaration.class)
-                .firstChild(ASTSimpleName.class)
-                .getName();
+        declarationName = node.firstChild(ASTDeclaration.class).firstChild(ASTSimpleName.class).getName();
         condition = node.firstChild(ASTConditionAttribute.class);
-        ASTComponentClause declarationRoot =
-                node.ancestors(ASTComponentClause.class).first();
+        ASTComponentClause declarationRoot = node.ancestors(ASTComponentClause.class).first();
         ASTTypePrefix prefixes = declarationRoot.firstChild(ASTTypePrefix.class);
         parseTypePrefix(prefixes);
-        typeName = declarationRoot.firstChild(ASTTypeSpecifier.class).firstChild(ASTName.class);
+        typeName = declarationRoot
+                .firstChild(ASTTypeSpecifier.class)
+                .firstChild(ASTName.class);
     }
 
     void setContainingScope(ModelicaClassScope scope) {
@@ -210,11 +210,11 @@ public class ModelicaComponentDeclaration extends AbstractModelicaDeclaration im
         }
 
         ResolutionResult<ModelicaType> resolvedType = getTypeCandidates();
-        for (ModelicaType decl : resolvedType.getBestCandidates()) {
+        for (ModelicaType decl: resolvedType.getBestCandidates()) {
             ((AbstractModelicaDeclaration) decl).resolveFurtherNameComponents(result, name);
         }
         result.markHidingPoint();
-        for (ModelicaType decl : resolvedType.getHiddenCandidates()) {
+        for (ModelicaType decl: resolvedType.getHiddenCandidates()) {
             ((AbstractModelicaDeclaration) decl).resolveFurtherNameComponents(result, name);
         }
     }

@@ -1,16 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AllChildrenAreOfType;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Common supertype for nodes that act as a kind of list of other nodes.
@@ -115,6 +118,7 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
         return list == null ? 0 : list.size();
     }
 
+
     /**
      * Returns the element if there is exactly one, otherwise returns null.
      *
@@ -131,8 +135,9 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
      * Super type for *nonempty* lists that *only* have nodes of type {@code <T>}
      * as a child.
      */
-    abstract static class ASTNonEmptyList<T extends JavaNode> extends ASTMaybeEmptyListOf<T>
-            implements AtLeastOneChildOfType<T> {
+    abstract static class ASTNonEmptyList<T extends JavaNode>
+        extends ASTMaybeEmptyListOf<T>
+        implements AtLeastOneChildOfType<T> {
 
         ASTNonEmptyList(int id, Class<T> kind) {
             super(id, kind);
@@ -143,8 +148,9 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
      * Super type for lists that *only* have nodes of type {@code <T>}
      * as a child.
      */
-    abstract static class ASTMaybeEmptyListOf<T extends JavaNode> extends ASTList<T>
-            implements AllChildrenAreOfType<T> {
+    abstract static class ASTMaybeEmptyListOf<T extends JavaNode>
+        extends ASTList<T>
+        implements AllChildrenAreOfType<T> {
 
         ASTMaybeEmptyListOf(int id, Class<T> kind) {
             super(id, kind);
@@ -154,5 +160,6 @@ public abstract class ASTList<N extends JavaNode> extends AbstractJavaNode imple
         public NodeStream<T> toStream() {
             return (NodeStream<T>) children();
         }
+
     }
 }

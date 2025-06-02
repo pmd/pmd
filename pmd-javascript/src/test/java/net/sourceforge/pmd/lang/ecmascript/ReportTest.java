@@ -1,17 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ecmascript;
 
 import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
 import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSuppressed;
+
+import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.ecmascript.ast.ASTFunctionNode;
 import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserTestBase;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
-import org.junit.jupiter.api.Test;
 
 class ReportTest extends EcmascriptParserTestBase {
 

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.design;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
@@ -36,22 +37,25 @@ public class ExcessivePublicCountRule extends AbstractCounterCheckRule<ASTUserCl
 
     @Override
     protected int getMetric(ASTUserClass node) {
-        int publicMethods = node.children(ASTMethod.class)
-                .filter(it -> it.getModifiers().isPublic())
-                .count();
-        int publicFields = node.children(ASTFieldDeclarationStatements.class)
-                .filter(it -> it.getModifiers().isPublic() && !it.getModifiers().isStatic())
-                .count();
+        int publicMethods =
+                node.children(ASTMethod.class)
+                        .filter(it -> it.getModifiers().isPublic())
+                        .count();
+        int publicFields =
+                node.children(ASTFieldDeclarationStatements.class)
+                        .filter(it -> it.getModifiers().isPublic() && !it.getModifiers().isStatic())
+                        .count();
 
-        int publicProperties = node.children(ASTProperty.class)
-                .filter(it -> it.getModifiers().isPublic() && !it.getModifiers().isStatic())
-                .count();
+        int publicProperties =
+                node.children(ASTProperty.class)
+                        .filter(it -> it.getModifiers().isPublic() && !it.getModifiers().isStatic())
+                        .count();
 
         return publicFields + publicMethods + publicProperties;
     }
 
     @Override
     protected Object[] getViolationParameters(ASTUserClass node, int metric, int limit) {
-        return new Object[] {node.getSimpleName(), metric, limit};
+        return new Object[] { node.getSimpleName(), metric, limit };
     }
 }

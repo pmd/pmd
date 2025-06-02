@@ -1,9 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.IOException;
+
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.Report;
 

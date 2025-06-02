@@ -5,9 +5,11 @@
 package net.sourceforge.pmd.ant;
 
 import java.io.IOException;
+
+import org.apache.tools.ant.Project;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
-import org.apache.tools.ant.Project;
 
 /**
  * Internal API.

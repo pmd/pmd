@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Base class for rules using the rulechain. The visit methods don't

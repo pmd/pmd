@@ -6,11 +6,15 @@ package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
 import java.io.IOException;
 import java.io.OutputStream;
+
 import org.w3c.dom.Node;
 
 public class Serializer {
 
-    public Serializer(OutputStream out, String encoding) {}
+    public Serializer(OutputStream out, String encoding) {
+    }
 
-    protected void writeChild(Node node) throws IOException {}
+    protected void writeChild(Node node) throws IOException {
+    }
+
 }

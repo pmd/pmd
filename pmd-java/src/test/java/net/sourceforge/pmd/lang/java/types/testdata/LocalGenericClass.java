@@ -6,7 +6,9 @@ package net.sourceforge.pmd.lang.java.types.testdata;
 
 public class LocalGenericClass {
 
-    private LocalGenericClass() {}
+    private LocalGenericClass() {
+
+    }
 
     public static <T> void localClassInGeneric() {
         class MyLocalClass implements MyCombiner<T, Optional<T>, MyLocalClass> {
@@ -14,7 +16,7 @@ public class LocalGenericClass {
             private T state;
 
             @Override
-            public void accept(T t) {}
+            public void accept(T t) { }
 
             @Override
             public Optional<T> get() {

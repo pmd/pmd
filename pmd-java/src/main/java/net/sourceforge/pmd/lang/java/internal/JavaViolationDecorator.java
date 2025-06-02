@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
@@ -22,8 +27,6 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.IteratorUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class JavaViolationDecorator implements ViolationDecorator {
 
@@ -48,9 +51,7 @@ final class JavaViolationDecorator implements ViolationDecorator {
             enclosing = javaNode.getEnclosingType();
         }
         if (enclosing == null) {
-            enclosing = javaNode.getRoot()
-                    .getTypeDeclarations()
-                    .first(it -> it.hasVisibility(ModifierOwner.Visibility.V_PUBLIC));
+            enclosing = javaNode.getRoot().getTypeDeclarations().first(it -> it.hasVisibility(ModifierOwner.Visibility.V_PUBLIC));
         }
         if (enclosing == null) {
             enclosing = javaNode.getRoot().getTypeDeclarations().first();
@@ -68,9 +69,10 @@ final class JavaViolationDecorator implements ViolationDecorator {
     }
 
     private static @Nullable String getMethodName(@NonNull JavaNode javaNode) {
-        @Nullable
-        ASTBodyDeclaration enclosingDecl =
-                javaNode.ancestorsOrSelf().filterIs(ASTBodyDeclaration.class).first();
+        @Nullable ASTBodyDeclaration enclosingDecl =
+            javaNode.ancestorsOrSelf()
+                    .filterIs(ASTBodyDeclaration.class)
+                    .first();
 
         if (enclosingDecl instanceof ASTExecutableDeclaration) {
             return ((ASTExecutableDeclaration) enclosingDecl).getName();
@@ -82,8 +84,8 @@ final class JavaViolationDecorator implements ViolationDecorator {
 
     private static String getVariableNames(Iterable<ASTVariableId> iterable) {
         return IteratorUtil.toStream(iterable.iterator())
-                .map(ASTVariableId::getName)
-                .collect(Collectors.joining(", "));
+                           .map(ASTVariableId::getName)
+                           .collect(Collectors.joining(", "));
     }
 
     private static @Nullable String getVariableNameIfExists(JavaNode node) {

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import java.io.File;
@@ -12,12 +13,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Renderer to another HTML format.
@@ -25,10 +28,11 @@ import org.apache.commons.lang3.StringUtils;
 public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
     public static final String NAME = "yahtml";
-    public static final PropertyDescriptor<String> OUTPUT_DIR = PropertyFactory.stringProperty("outputDir")
-            .desc("Output directory.")
-            .defaultValue(".")
-            .build();
+    public static final PropertyDescriptor<String> OUTPUT_DIR =
+        PropertyFactory.stringProperty("outputDir")
+                       .desc("Output directory.")
+                       .defaultValue(".")
+                       .build();
 
     private SortedMap<String, ReportNode> reportNodesByPackage = new TreeMap<>();
 
@@ -100,8 +104,7 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     private void renderIndex(String outputDir) throws IOException {
-        try (PrintWriter out = new PrintWriter(
-                Files.newBufferedWriter(new File(outputDir, "index.html").toPath(), StandardCharsets.UTF_8))) {
+        try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(new File(outputDir, "index.html").toPath(), StandardCharsets.UTF_8))) {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("    <head>");
@@ -142,8 +145,7 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     private void renderClasses(String outputDir) throws IOException {
         for (ReportNode node : reportNodesByPackage.values()) {
             if (node.hasViolations()) {
-                try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(
-                        new File(outputDir, node.getClassName() + ".html").toPath(), StandardCharsets.UTF_8))) {
+                try (PrintWriter out = new PrintWriter(Files.newBufferedWriter(new File(outputDir, node.getClassName() + ".html").toPath(), StandardCharsets.UTF_8))) {
                     out.println("<!DOCTYPE html>");
                     out.println("<html>");
                     out.println("    <head>");
@@ -166,8 +168,7 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
                         out.print("</td><td>");
                         out.print("<table border=\"0\">");
 
-                        out.print(
-                                renderViolationRow("Rule:", violation.getRule().getName()));
+                        out.print(renderViolationRow("Rule:", violation.getRule().getName()));
                         out.print(renderViolationRow("Description:", violation.getDescription()));
 
                         String variableName = violation.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
@@ -175,11 +176,9 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
                             out.print(renderViolationRow("Variable:", variableName));
                         }
 
-                        out.print(renderViolationRow(
-                                "Line:",
-                                violation.getEndLine() > 0
-                                        ? violation.getBeginLine() + " and " + violation.getEndLine()
-                                        : String.valueOf(violation.getBeginLine())));
+                        out.print(renderViolationRow("Line:", violation.getEndLine() > 0
+                                ? violation.getBeginLine() + " and " + violation.getEndLine()
+                                : String.valueOf(violation.getBeginLine())));
 
                         out.print("</table>");
 
@@ -195,7 +194,12 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     }
 
     private String renderViolationRow(String name, String value) {
-        return "<tr><td><b>" + name + "</b></td>" + "<td>" + value + "</td></tr>";
+        return "<tr><td><b>"
+            + name
+            + "</b></td>"
+            + "<td>"
+            + value
+            + "</td></tr>";
     }
 
     private static class ReportNode {
@@ -248,10 +252,10 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
         @Override
         public String toString() {
             return "ReportNode[packageName=" + packageName
-                    + ",className=" + className
-                    + ",violationCount=" + violationCount
-                    + ",violations=" + violations.size()
-                    + "]";
+                + ",className=" + className
+                + ",violationCount=" + violationCount
+                + ",violations=" + violations.size()
+                + "]";
         }
     }
 }

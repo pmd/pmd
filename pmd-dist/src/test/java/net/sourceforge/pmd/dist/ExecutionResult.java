@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.dist;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,10 +32,10 @@ public class ExecutionResult {
     @Override
     public String toString() {
         return "ExecutionResult:\n"
-                + " exit code: " + exitCode + "\n"
-                + " output:\n" + output + "\n"
-                + " errorOutput:\n" + errorOutput + "\n"
-                + " report:\n" + report + "\n";
+            + " exit code: " + exitCode + "\n"
+            + " output:\n" + output + "\n"
+            + " errorOutput:\n" + errorOutput + "\n"
+            + " report:\n" + report + "\n";
     }
 
     public ExecutionResult assertExitCode(int expectedExitCode) {

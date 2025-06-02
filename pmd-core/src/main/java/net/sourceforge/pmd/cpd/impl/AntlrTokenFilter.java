@@ -20,4 +20,5 @@ public class AntlrTokenFilter extends BaseTokenFilter<AntlrToken> {
     public AntlrTokenFilter(final TokenManager<AntlrToken> tokenManager) {
         super(tokenManager);
     }
+
 }

@@ -10,6 +10,11 @@ import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.Opcodes;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -20,9 +25,6 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 import net.sourceforge.pmd.lang.java.symbols.internal.ImplicitMemberSymbols;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.Opcodes;
 
 /**
  * Generic implementation for array symbols, which does not rely on
@@ -31,7 +33,8 @@ import org.objectweb.asm.Opcodes;
 class ArraySymbolImpl implements JClassSymbol {
 
     // Like Class::getModifiers, we preserve the public/private/protected flag
-    private static final int COMPONENT_MOD_MASK = Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_PUBLIC;
+    private static final int COMPONENT_MOD_MASK =
+        Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_PUBLIC;
 
     private final TypeSystem ts;
     private final JTypeDeclSymbol component;
@@ -93,9 +96,7 @@ class ArraySymbolImpl implements JClassSymbol {
 
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
-        return listOf(
-                getTypeSystem().CLONEABLE.getSymbol(),
-                getTypeSystem().SERIALIZABLE.getSymbol());
+        return listOf(getTypeSystem().CLONEABLE.getSymbol(), getTypeSystem().SERIALIZABLE.getSymbol());
     }
 
     @Override
@@ -211,4 +212,5 @@ class ArraySymbolImpl implements JClassSymbol {
     public String toString() {
         return SymbolToStrings.SHARED.toString(this);
     }
+
 }

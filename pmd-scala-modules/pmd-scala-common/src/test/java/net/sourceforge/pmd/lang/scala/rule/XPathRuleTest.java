@@ -6,11 +6,12 @@ package net.sourceforge.pmd.lang.scala.rule;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.scala.ast.BaseScalaTest;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.junit.jupiter.api.Test;
 
 class XPathRuleTest extends BaseScalaTest {
 

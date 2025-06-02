@@ -10,6 +10,11 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -21,9 +26,6 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.PSet;
 
 /**
  * Type mirrors represent Java types. They are created by a {@link TypeSystem}
@@ -81,6 +83,7 @@ public interface JTypeMirror extends JTypeVisitable {
      */
     TypeSystem getTypeSystem();
 
+
     /**
      * Return a list of annotations on this type. Annotations can be written
      * on nearly any type (eg {@code @A Out.@B In<@C T>}, {@code @A ? extends @B Up}).
@@ -97,6 +100,7 @@ public interface JTypeMirror extends JTypeVisitable {
      */
     // todo annotations do not participate in equality of types.
     PSet<SymAnnot> getTypeAnnotations();
+
 
     /**
      * Returns true if this type is the same type or a subtype of the
@@ -122,6 +126,7 @@ public interface JTypeMirror extends JTypeVisitable {
         return TypeOps.isConvertible(this, other);
     }
 
+
     /**
      * Returns the set of (nominal) supertypes of this type.
      * If this is a primitive type, returns the set of other
@@ -145,6 +150,7 @@ public interface JTypeMirror extends JTypeVisitable {
     default Set<JTypeMirror> getSuperTypeSet() {
         return TypeOps.getSuperTypeSet(this);
     }
+
 
     /**
      * Returns the erasure of this type. Erasure is defined by JLS§4.6,
@@ -171,6 +177,7 @@ public interface JTypeMirror extends JTypeVisitable {
         return this;
     }
 
+
     /**
      * Returns the symbol declaring this type. {@linkplain #isReifiable() Reifiable}
      * types present a symbol, and some other types too. This method's
@@ -193,6 +200,7 @@ public interface JTypeMirror extends JTypeVisitable {
         return null;
     }
 
+
     /**
      * Returns the primitive wrapper type of this type, if this is a
      * primitive type. Otherwise returns this type unchanged.
@@ -201,6 +209,7 @@ public interface JTypeMirror extends JTypeVisitable {
         return this;
     }
 
+
     /**
      * Returns the unboxed version of this type. Returns this type unchanged
      * if this is not a primitive wrapper type.
@@ -208,6 +217,7 @@ public interface JTypeMirror extends JTypeVisitable {
     default JTypeMirror unbox() {
         return this;
     }
+
 
     /**
      * Returns the most specific declared supertype of this type whose erasure
@@ -220,6 +230,8 @@ public interface JTypeMirror extends JTypeVisitable {
     default @Nullable JTypeMirror getAsSuper(@NonNull JClassSymbol symbol) {
         return TypeOps.asSuper(this, symbol);
     }
+
+
 
     /**
      * Returns true if this type is reifiable. If so, its {@link #getSymbol() symbol}
@@ -237,6 +249,7 @@ public interface JTypeMirror extends JTypeVisitable {
 
         return this instanceof JClassType && TypeOps.allArgsAreUnboundedWildcards(((JClassType) this).getTypeArgs());
     }
+
 
     /** Returns true if this type is a {@linkplain JPrimitiveType primitive type}. */
     default boolean isPrimitive() {
@@ -264,6 +277,7 @@ public interface JTypeMirror extends JTypeVisitable {
         return false; // overridden in JPrimitiveType
     }
 
+
     /** Returns true if this type is a {@linkplain JTypeVar type variable}. */
     default boolean isTypeVariable() {
         return this instanceof JTypeVar;
@@ -277,6 +291,7 @@ public interface JTypeMirror extends JTypeVisitable {
         return unbox() != this; // NOPMD CompareObjectsWithEquals
     }
 
+
     /**
      * Returns true if this is a primitive numeric type. The only
      * non-numeric primitive type is {@link TypeSystem#BOOLEAN}.
@@ -284,6 +299,7 @@ public interface JTypeMirror extends JTypeVisitable {
     default boolean isNumeric() {
         return false;
     }
+
 
     /** Returns true if this is a {@linkplain JClassType class or interface type}. */
     default boolean isClassOrInterface() {
@@ -296,6 +312,7 @@ public interface JTypeMirror extends JTypeVisitable {
     default boolean isTop() {
         return false; // overridden
     }
+
 
     /**
      * Returns true if this is {@link TypeSystem#NULL_TYPE}.
@@ -331,6 +348,8 @@ public interface JTypeMirror extends JTypeVisitable {
         return false;
     }
 
+
+
     /**
      * Returns true if this type is a generic class type.
      * This means, the symbol declares some type parameters,
@@ -345,6 +364,8 @@ public interface JTypeMirror extends JTypeVisitable {
         return false;
     }
 
+
+
     /**
      * Returns true if this type is generic, and it it neither {@linkplain #isRaw() raw},
      * nor a {@linkplain JClassType#isGenericTypeDeclaration() generic type declaration}.
@@ -356,6 +377,7 @@ public interface JTypeMirror extends JTypeVisitable {
     default boolean isParameterizedType() {
         return false;
     }
+
 
     /**
      * Returns true if this is a raw type. This may be
@@ -382,6 +404,7 @@ public interface JTypeMirror extends JTypeVisitable {
         JTypeDeclSymbol sym = getSymbol();
         return sym != null && sym.isInterface();
     }
+
 
     /**
      * Returns a stream of method signatures declared in and inherited
@@ -416,6 +439,7 @@ public interface JTypeMirror extends JTypeVisitable {
         return Stream.empty();
     }
 
+
     /**
      * Returns a list of all the declared constructors for this type.
      * Abstract types like type variables and interfaces have no constructors.
@@ -424,8 +448,10 @@ public interface JTypeMirror extends JTypeVisitable {
         return Collections.emptyList();
     }
 
+
     @Override
     JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
+
 
     /**
      * Returns a type mirror that is equal to this instance but has different
@@ -450,6 +476,7 @@ public interface JTypeMirror extends JTypeVisitable {
         return withAnnotations(getTypeAnnotations().plus(newAnnot));
     }
 
+
     /**
      * Returns true if the object is a type equivalent to this one. A
      * few kinds of types use reference identity, like captured type
@@ -473,6 +500,7 @@ public interface JTypeMirror extends JTypeVisitable {
     @Override
     boolean equals(Object o);
 
+
     /**
      * The toString of type mirrors prints useful debug information,
      * but shouldn't be relied on anywhere, as it may change anytime.
@@ -480,4 +508,5 @@ public interface JTypeMirror extends JTypeVisitable {
      */
     @Override
     String toString();
+
 }

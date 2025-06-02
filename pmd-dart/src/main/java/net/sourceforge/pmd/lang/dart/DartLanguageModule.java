@@ -17,7 +17,8 @@ public class DartLanguageModule extends CpdOnlyLanguageModuleBase {
     private static final String ID = "dart";
 
     public DartLanguageModule() {
-        super(LanguageMetadata.withId(ID).name("Dart").extensions("dart").addDefaultVersion("2"));
+        super(LanguageMetadata.withId(ID).name("Dart").extensions("dart")
+                              .addDefaultVersion("2"));
     }
 
     public DartLanguageModule getInstance() {

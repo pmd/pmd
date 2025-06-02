@@ -1,3 +1,4 @@
+
 package net.sourceforge.pmd.lang.velocity.ast;
 
 import java.util.Collections;
@@ -66,6 +67,7 @@ public final class ASTDirective extends AbstractVtlNode {
 
     private String directiveName = "";
 
+
     ASTDirective(int id) {
         super(id);
     }
@@ -101,7 +103,8 @@ public final class ASTDirective extends AbstractVtlNode {
     // block macro call of type: #@foobar($arg1 $arg2) astBody #end
     boolean isBlock() {
         assert directiveName != null; // directive name must be set before
-        return directiveName.startsWith("@") || BLOCK_DIRECTIVES.contains(directiveName);
+        return directiveName.startsWith("@")
+                || BLOCK_DIRECTIVES.contains(directiveName);
     }
 
     boolean isLine() {

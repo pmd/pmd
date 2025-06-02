@@ -6,12 +6,13 @@ package net.sourceforge.pmd.lang.cs.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.test.cpd.CpdTextComparisonTest;
 import net.sourceforge.pmd.lang.test.cpd.LanguagePropertyConfig;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
 
 class CsCpdLexerTest extends CpdTextComparisonTest {
 
@@ -53,6 +54,7 @@ class CsCpdLexerTest extends CpdTextComparisonTest {
     void testOperators() {
         doTest("operatorsAndStuff");
     }
+
 
     @Test
     void testLineNumberAfterMultilineString() {
@@ -116,8 +118,7 @@ class CsCpdLexerTest extends CpdTextComparisonTest {
         return properties(false, false, false);
     }
 
-    private LanguagePropertyConfig properties(
-            boolean ignoreUsings, boolean ignoreLiteralSequences, boolean ignoreAttributes) {
+    private LanguagePropertyConfig properties(boolean ignoreUsings, boolean ignoreLiteralSequences, boolean ignoreAttributes) {
         return properties -> {
             properties.setProperty(CpdLanguageProperties.CPD_IGNORE_IMPORTS, ignoreUsings);
             properties.setProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES, ignoreLiteralSequences);

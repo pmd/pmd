@@ -4,16 +4,19 @@
 
 package javasymbols.testdata.impls;
 
+
 public class SomeMethodsNoOverloads {
 
     public final String foo() {
         return "";
     }
 
+
     public interface Other {
 
         default int defaultMethod() {
             return 1;
         }
+
     }
 }

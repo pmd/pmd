@@ -14,4 +14,6 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.CONSTRUCTOR)
-public @interface ConstructorAnnotation {}
+public @interface ConstructorAnnotation {
+
+}

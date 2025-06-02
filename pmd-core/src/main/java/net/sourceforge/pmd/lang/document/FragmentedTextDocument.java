@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.document;
 
-import net.sourceforge.pmd.lang.LanguageVersion;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.LanguageVersion;
 
 /**
  * A text document built as a set of deltas over another document.
@@ -38,6 +39,7 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
         return text;
     }
 
+
     @Override
     public LanguageVersion getLanguageVersion() {
         return base.getLanguageVersion();
@@ -54,7 +56,8 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
 
         // Whether the fragment contains the offset we're looking for.
         // Will be true most of the time.
-        boolean containsOffset = f.outStart() <= outOffset && outOffset < f.outEnd();
+        boolean containsOffset =
+            f.outStart() <= outOffset && outOffset < f.outEnd();
 
         if (!containsOffset) {
             // Slow path, we must search for the fragment
@@ -84,6 +87,7 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
         return f.outToIn(outOffset);
     }
 
+
     /**
      * A delta from the original text to the translated text. This maps
      * a region of the original document to some new characters.
@@ -93,9 +97,7 @@ final class FragmentedTextDocument extends BaseMappedDocument implements TextDoc
         private final Chars chars;
 
         final @Nullable Fragment prev;
-
-        @Nullable
-        Fragment next;
+        @Nullable Fragment next;
 
         private final int inStart;
         private final int inLength;

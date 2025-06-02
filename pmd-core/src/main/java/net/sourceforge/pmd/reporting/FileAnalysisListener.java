@@ -7,6 +7,7 @@ package net.sourceforge.pmd.reporting;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
@@ -25,10 +26,12 @@ import net.sourceforge.pmd.util.AssertionUtil;
  */
 public interface FileAnalysisListener extends AutoCloseable {
 
+
     /**
      * Handle a new violation (not suppressed).
      */
     void onRuleViolation(RuleViolation violation);
+
 
     /**
      * Handle a new suppressed violation.
@@ -37,12 +40,14 @@ public interface FileAnalysisListener extends AutoCloseable {
         // by default do nothing
     }
 
+
     /**
      * Handle an error that occurred while processing a file.
      */
     default void onError(ProcessingError error) {
         // by default do nothing
     }
+
 
     /**
      * Signals the end of the analysis: no further calls will be made
@@ -58,12 +63,14 @@ public interface FileAnalysisListener extends AutoCloseable {
         // by default do nothing
     }
 
+
     /**
      * A listener that does nothing.
      */
     static FileAnalysisListener noop() {
         return NoopFileListener.INSTANCE;
     }
+
 
     /**
      * Produce an analysis listener that forwards all events to the given
@@ -130,4 +137,5 @@ public interface FileAnalysisListener extends AutoCloseable {
 
         return new TeeListener();
     }
+
 }

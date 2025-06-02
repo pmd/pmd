@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -11,4 +12,5 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 public interface TokenManager<T extends GenericToken<T>> {
 
     T getNextToken();
+
 }

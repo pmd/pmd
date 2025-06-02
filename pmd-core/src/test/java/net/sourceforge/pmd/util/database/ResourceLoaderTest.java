@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.InputStream;
+
 import org.junit.jupiter.api.Test;
 
 /**

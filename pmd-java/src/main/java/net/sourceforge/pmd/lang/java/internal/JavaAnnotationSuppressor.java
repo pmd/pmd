@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
@@ -63,21 +64,16 @@ import net.sourceforge.pmd.util.OptionalBool;
  */
 final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnnotation> {
 
-    private static final Set<String> UNUSED_RULES = new HashSet<>(Arrays.asList(
-            "UnusedPrivateField",
-            "UnusedLocalVariable",
-            "UnusedPrivateMethod",
-            "UnusedFormalParameter",
-            "UnusedAssignment",
-            "SingularField"));
-    private static final Set<String> SERIAL_RULES = new HashSet<>(
-            Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
+    private static final Set<String> UNUSED_RULES = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter", "UnusedAssignment", "SingularField"));
+    private static final Set<String> SERIAL_RULES = new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
+
 
     static final List<ViolationSuppressor> ALL_JAVA_SUPPRESSORS = listOf(new JavaAnnotationSuppressor());
 
     private JavaAnnotationSuppressor() {
         super(ASTAnnotation.class);
     }
+
 
     @Override
     protected NodeStream<ASTAnnotation> getAnnotations(Node n) {
@@ -90,9 +86,9 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
     @Override
     protected boolean annotationParamSuppresses(String stringVal, Rule rule) {
         return super.annotationParamSuppresses(stringVal, rule)
-                || "serial".equals(stringVal) && SERIAL_RULES.contains(rule.getName())
-                || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
-                || "fallthrough".equals(stringVal) && rule instanceof ImplicitSwitchFallThroughRule;
+            || "serial".equals(stringVal) && SERIAL_RULES.contains(rule.getName())
+            || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
+            || "fallthrough".equals(stringVal) && rule instanceof ImplicitSwitchFallThroughRule;
     }
 
     @Override
@@ -150,8 +146,7 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
             ASTClassDeclaration classDecl = (ASTClassDeclaration) node;
             if (classDecl.getEffectiveVisibility() == Visibility.V_PRIVATE) {
                 // is this private class is used in this compilation unit?
-                boolean used = node.getRoot()
-                        .descendants(ASTClassType.class)
+                boolean used = node.getRoot().descendants(ASTClassType.class)
                         .toStream()
                         .map(ASTClassType::getTypeMirror)
                         .map(JTypeMirror::getSymbol)
@@ -170,53 +165,54 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
      * Searches for local variables, fields, formal parameters.
      */
     private static boolean hasUnusedVariables(JavaNode node) {
-        return node.descendants(ASTVariableId.class).crossFindBoundaries().any(it -> {
-            return it.getLocalUsages().isEmpty()
-                    || it.getLocalUsages().stream()
+        return node.descendants(ASTVariableId.class)
+                .crossFindBoundaries()
+                .any(it -> {
+                    return it.getLocalUsages().isEmpty() || it.getLocalUsages().stream()
                             .map(ASTAssignableExpr::getAccessType)
                             .noneMatch(a -> a == ASTAssignableExpr.AccessType.READ);
-        });
+                });
+
     }
 
     private static boolean hasUnusedTypeParam(JavaNode node) {
         // we can do this in a single traversal because type params must
         // be declared before they are used (in tree order)
         Set<JTypeVar> unusedTypeParams = new HashSet<>();
-        node.acceptVisitor(
-                new JavaVisitorBase<Void, Void>() {
-                    @Override
-                    public Void visit(ASTTypeParameters node, Void p) {
-                        // add all params before visiting bounds
-                        for (ASTTypeParameter parm : node) {
-                            unusedTypeParams.add(parm.getTypeMirror());
-                        }
-                        return super.visit(node, p);
-                    }
+        node.acceptVisitor(new JavaVisitorBase<Void, Void>() {
+            @Override
+            public Void visit(ASTTypeParameters node, Void p) {
+                // add all params before visiting bounds
+                for (ASTTypeParameter parm : node) {
+                    unusedTypeParams.add(parm.getTypeMirror());
+                }
+                return super.visit(node, p);
+            }
 
-                    @Override
-                    public Void visit(ASTClassType node, Void data) {
-                        JTypeMirror ty = node.getTypeMirror();
-                        if (ty instanceof JTypeVar) {
-                            unusedTypeParams.remove(ty);
-                        }
-                        return super.visit(node, data);
-                    }
+            @Override
+            public Void visit(ASTClassType node, Void data) {
+                JTypeMirror ty = node.getTypeMirror();
+                if (ty instanceof JTypeVar) {
+                    unusedTypeParams.remove(ty);
+                }
+                return super.visit(node, data);
+            }
 
-                    @Override
-                    public Void visit(ASTModifierList node, Void data) {
-                        // no need to visit those
-                        return data;
-                    }
-                },
-                null);
+            @Override
+            public Void visit(ASTModifierList node, Void data) {
+                // no need to visit those
+                return data;
+            }
+        }, null);
 
         return !unusedTypeParams.isEmpty();
     }
 
     private static boolean hasUnusedMethod(JavaNode node) {
         Set<JExecutableSymbol> privateMethods = new HashSet<>();
-        for (ASTExecutableDeclaration decl :
-                node.descendantsOrSelf().crossFindBoundaries().filterIs(ASTExecutableDeclaration.class)) {
+        for (ASTExecutableDeclaration decl : node.descendantsOrSelf()
+                .crossFindBoundaries()
+                .filterIs(ASTExecutableDeclaration.class)) {
             Visibility visibility = decl.getEffectiveVisibility();
             if (visibility.isAtMost(Visibility.V_PRIVATE)) {
                 privateMethods.add(decl.getSymbol());

@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.cpp.cpd;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.EscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.Chars;

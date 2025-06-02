@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import net.sourceforge.pmd.lang.modelica.ast.ASTClassDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.modelica.ast.ModelicaClassSpecifierNode;
@@ -65,7 +67,7 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
                 ctx.markTtlExceeded();
             }
             resolvedExtends = new ArrayList<>();
-            for (ModelicaType decl : ctx.getTypes().getBestCandidates()) {
+            for (ModelicaType decl: ctx.getTypes().getBestCandidates()) {
                 if (decl instanceof ModelicaClassDeclaration) {
                     resolvedExtends.add(((ModelicaClassDeclaration) decl).getClassScope());
                 }
@@ -75,8 +77,7 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
     }
 
     @Override
-    public <T extends ResolvableEntity> ResolutionResult<T> safeResolveComponent(
-            Class<T> clazz, ResolutionState state, CompositeName name) {
+    public <T extends ResolvableEntity> ResolutionResult<T> safeResolveComponent(Class<T> clazz, ResolutionState state, CompositeName name) {
         ResolutionContext result = state.createContext();
         try {
             lookupInInstanceScope(result, name);
@@ -95,12 +96,11 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
      * @return List of candidate resolutions
      * @throws Watchdog.CountdownException if too many lookup steps were performed
      */
-    private ResolutionResult<ModelicaDeclaration> lookupImported(
-            ResolutionState state, String firstName, boolean qualified) throws Watchdog.CountdownException {
+    private ResolutionResult<ModelicaDeclaration> lookupImported(ResolutionState state, String firstName, boolean qualified) throws Watchdog.CountdownException {
         state.tick();
 
         ResolutionContext result = state.createContext();
-        for (final ModelicaImportClause importClause : imports) {
+        for (final ModelicaImportClause importClause: imports) {
             ResolutionContext subResult = state.createContext();
             if (InternalApiBridge.isQualifiedImport(importClause) == qualified) {
                 InternalApiBridge.resolveImportedSimpleName(importClause, subResult, firstName);
@@ -131,34 +131,34 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
 
         // Otherwise, lookup...
         // ... among declared names of the class
-        for (ModelicaDeclaration decl : ownScope.getDirectlyDeclared(firstName)) {
+        for (ModelicaDeclaration decl: ownScope.getDirectlyDeclared(firstName)) {
             lookupInInstanceScopeFurtherParts(result, decl, furtherParts);
         }
         result.markHidingPoint();
         // ... and from inherited, too
-        for (ModelicaClassScope extendedClass : getResolvedExtends(result.getState())) {
-            for (ModelicaDeclaration inheritedDecl : extendedClass.getDirectlyDeclared(firstName)) {
+        for (ModelicaClassScope extendedClass: getResolvedExtends(result.getState())) {
+            for (ModelicaDeclaration inheritedDecl: extendedClass.getDirectlyDeclared(firstName)) {
                 lookupInInstanceScopeFurtherParts(result, inheritedDecl, furtherParts);
             }
         }
         result.markHidingPoint();
         // ... using qualified imports
         ResolutionResult<ModelicaDeclaration> qualifiedImports = lookupImported(result.getState(), firstName, true);
-        for (ModelicaDeclaration importedDecl : qualifiedImports.getBestCandidates()) {
+        for (ModelicaDeclaration importedDecl: qualifiedImports.getBestCandidates()) {
             lookupInInstanceScopeFurtherParts(result, importedDecl, furtherParts);
         }
         result.markHidingPoint();
-        for (ModelicaDeclaration importedDecl : qualifiedImports.getHiddenCandidates()) {
+        for (ModelicaDeclaration importedDecl: qualifiedImports.getHiddenCandidates()) {
             lookupInInstanceScopeFurtherParts(result, importedDecl, furtherParts);
         }
         result.markHidingPoint();
         // ... then using unqualified imports
         ResolutionResult<ModelicaDeclaration> unqualifiedImports = lookupImported(result.getState(), firstName, false);
-        for (ModelicaDeclaration importedDecl : unqualifiedImports.getBestCandidates()) {
+        for (ModelicaDeclaration importedDecl: unqualifiedImports.getBestCandidates()) {
             lookupInInstanceScopeFurtherParts(result, importedDecl, furtherParts);
         }
         result.markHidingPoint();
-        for (ModelicaDeclaration importedDecl : unqualifiedImports.getHiddenCandidates()) {
+        for (ModelicaDeclaration importedDecl: unqualifiedImports.getHiddenCandidates()) {
             lookupInInstanceScopeFurtherParts(result, importedDecl, furtherParts);
         }
     }
@@ -174,9 +174,7 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
      * @param furtherParts       an unresolved "tail" of a composite name
      * @throws Watchdog.CountdownException if too many resolution steps were performed
      */
-    private void lookupInInstanceScopeFurtherParts(
-            ResolutionContext result, ModelicaDeclaration resolvedSimpleName, CompositeName furtherParts)
-            throws Watchdog.CountdownException {
+    private void lookupInInstanceScopeFurtherParts(ResolutionContext result, ModelicaDeclaration resolvedSimpleName, CompositeName furtherParts) throws Watchdog.CountdownException {
         result.watchdogTick();
 
         if (furtherParts.isEmpty()) {
@@ -219,8 +217,7 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
 
     @Override
     public boolean isConnectorLike() {
-        return specialization == ModelicaClassSpecialization.CONNECTOR
-                || specialization == ModelicaClassSpecialization.EXPANDABLE_CONNECTOR;
+        return specialization == ModelicaClassSpecialization.CONNECTOR || specialization == ModelicaClassSpecialization.EXPANDABLE_CONNECTOR;
     }
 
     @Override

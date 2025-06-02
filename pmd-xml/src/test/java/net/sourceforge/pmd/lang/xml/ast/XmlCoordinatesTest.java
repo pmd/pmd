@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.xml.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.CoordinatesPrinter;
 import net.sourceforge.pmd.lang.test.ast.TestUtilsKt;
 import net.sourceforge.pmd.lang.xml.XmlParsingHelper;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
 
 class XmlCoordinatesTest extends BaseTreeDumpTest {
 
@@ -37,4 +38,5 @@ class XmlCoordinatesTest extends BaseTreeDumpTest {
         final String xml = "<elementName att1='foo' att2='bar' att3='other' />";
         TestUtilsKt.assertPosition(XmlParsingHelper.XML.parse(xml), 1, 1, 1, xml.length());
     }
+
 }

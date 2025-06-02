@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import org.pcollections.PSet;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import org.pcollections.PSet;
 
 /**
  * Special primitive wrappers, these are the only ones for which
@@ -32,7 +33,12 @@ final class BoxedPrimitive extends ClassTypeImpl {
         if (newTypeAnnots.isEmpty() && this.getTypeAnnotations().isEmpty()) {
             return this;
         }
-        return new BoxedPrimitive(getTypeSystem(), this.getSymbol(), this.unboxed, newTypeAnnots);
+        return new BoxedPrimitive(
+            getTypeSystem(),
+            this.getSymbol(),
+            this.unboxed,
+            newTypeAnnots
+        );
     }
 
     @Override

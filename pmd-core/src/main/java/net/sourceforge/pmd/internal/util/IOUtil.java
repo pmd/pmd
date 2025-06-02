@@ -30,6 +30,7 @@ import java.security.PrivilegedAction;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -44,10 +45,10 @@ public final class IOUtil {
     public static final char UTF_BOM = '\uFEFF';
     /** Conventional return value for readers. */
     public static final int EOF = -1;
-
     private static final int BUFFER_SIZE = 8192;
 
-    private IOUtil() {}
+    private IOUtil() {
+    }
 
     /**
      * Creates a writer that writes to stdout using the system default charset.
@@ -111,28 +112,26 @@ public final class IOUtil {
     public static Writer createWriter(Charset charset, @Nullable String reportFile) {
         try {
             if (StringUtils.isBlank(reportFile)) {
-                return new OutputStreamWriter(
-                        new FilterOutputStream(System.out) {
-                            @Override
-                            public void close() {
-                                // avoid closing stdout, simply flush
-                                try {
-                                    out.flush();
-                                } catch (IOException ignored) {
-                                    // Nothing left to do
-                                }
-                            }
-
-                            @Override
-                            public void write(byte[] b, int off, int len) throws IOException {
-                                /*
-                                 * FilterOutputStream iterates over each byte, asking subclasses to provide more efficient implementations
-                                 * It therefore negates any such optimizations that the underlying stream actually may implement.
-                                 */
-                                out.write(b, off, len);
-                            }
-                        },
-                        charset);
+                return new OutputStreamWriter(new FilterOutputStream(System.out) {
+                    @Override
+                    public void close() {
+                        // avoid closing stdout, simply flush
+                        try {
+                            out.flush();
+                        } catch (IOException ignored) {
+                            // Nothing left to do
+                        }
+                    }
+                    
+                    @Override
+                    public void write(byte[] b, int off, int len) throws IOException {
+                        /*
+                         * FilterOutputStream iterates over each byte, asking subclasses to provide more efficient implementations
+                         * It therefore negates any such optimizations that the underlying stream actually may implement.
+                         */
+                        out.write(b, off, len);
+                    }
+                }, charset);
             }
             Path path = new File(reportFile).toPath().toAbsolutePath();
             Files.createDirectories(path.getParent()); // ensure parent dir exists
@@ -181,8 +180,8 @@ public final class IOUtil {
      * if not null. If both are non-null, adds one of them to the suppress
      * list of the other, and throws that one.
      */
-    public static void ensureClosed(List<? extends AutoCloseable> toClose, @Nullable Exception pendingException)
-            throws Exception {
+    public static void ensureClosed(List<? extends AutoCloseable> toClose,
+                                    @Nullable Exception pendingException) throws Exception {
         Exception closeException = closeAll(toClose);
         if (closeException != null) {
             if (pendingException != null) {
@@ -194,6 +193,7 @@ public final class IOUtil {
             throw pendingException;
         }
     }
+
 
     // The following methods are taken from Apache Commons IO.
     // The dependency was removed from PMD 6 because it had a security issue,
@@ -244,9 +244,7 @@ public final class IOUtil {
     public static String normalizePath(String path) {
         Path path1 = Paths.get(path);
         String normalized = path1.normalize().toString();
-        if (normalized.contains("." + File.separator)
-                || normalized.contains(".." + File.separator)
-                || "".equals(normalized)) {
+        if (normalized.contains("." + File.separator) || normalized.contains(".." + File.separator) || "".equals(normalized)) {
             return null;
         }
         return normalized;
@@ -328,8 +326,7 @@ public final class IOUtil {
 
             ReaderInputStream(Reader reader) {
                 this.reader = reader;
-                encoder = Charset.defaultCharset()
-                        .newEncoder()
+                encoder = Charset.defaultCharset().newEncoder()
                         .onMalformedInput(CodingErrorAction.REPLACE)
                         .onUnmappableCharacter(CodingErrorAction.REPLACE);
                 charBuffer.clear();
@@ -455,10 +452,10 @@ public final class IOUtil {
                     return new byte[0]; // skip all 3 bytes
                 } else if (count >= 2 && bytes[0] == (byte) 0xfe && bytes[1] == (byte) 0xff) {
                     charset = StandardCharsets.UTF_16BE.name();
-                    return new byte[] {bytes[2]};
+                    return new byte[] { bytes[2] };
                 } else if (count >= 2 && bytes[0] == (byte) 0xff && bytes[1] == (byte) 0xfe) {
                     charset = StandardCharsets.UTF_16LE.name();
-                    return new byte[] {bytes[2]};
+                    return new byte[] { bytes[2] };
                 } else if (count == 3) {
                     return bytes;
                 }

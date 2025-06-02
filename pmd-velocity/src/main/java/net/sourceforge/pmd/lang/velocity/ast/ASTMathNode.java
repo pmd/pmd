@@ -37,4 +37,5 @@ abstract class ASTMathNode extends AbstractVtlNode {
     ASTMathNode(int id) {
         super(id);
     }
+
 }

@@ -23,6 +23,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.AbstractNode;
 import net.sourceforge.pmd.lang.document.Chars;
@@ -30,7 +33,7 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute.NoAttrScope;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
+
 
 /**
  * Explores an AST node reflectively to iterate over its XPath
@@ -46,29 +49,31 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
     private static final ConcurrentMap<Class<?>, List<MethodWrapper>> METHOD_CACHE = new ConcurrentHashMap<>();
 
     /* Constants used to determine which methods are accessors */
-    private static final Set<Class<?>> CONSIDERED_RETURN_TYPES = setOf(
-            Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class, Long.TYPE, Character.TYPE, Float.TYPE, Chars.class);
+    private static final Set<Class<?>> CONSIDERED_RETURN_TYPES
+            = setOf(Integer.TYPE, Boolean.TYPE, Double.TYPE, String.class,
+                    Long.TYPE, Character.TYPE, Float.TYPE, Chars.class);
 
-    private static final Set<String> FILTERED_OUT_NAMES = setOf(
-            "toString",
-            "getNumChildren",
-            "getIndexInParent",
-            "getParent",
-            "getClass",
-            "getSourceCodeFile",
-            "isFindBoundary",
-            "getRuleIndex",
-            "getXPathNodeName",
-            "altNumber",
-            "toStringTree",
-            "getTypeNameNode",
-            "hashCode",
-            "getImportedNameNode",
-            "getScope");
+    private static final Set<String> FILTERED_OUT_NAMES
+        = setOf("toString",
+                "getNumChildren",
+                "getIndexInParent",
+                "getParent",
+                "getClass",
+                "getSourceCodeFile",
+                "isFindBoundary",
+                "getRuleIndex",
+                "getXPathNodeName",
+                "altNumber",
+                "toStringTree",
+                "getTypeNameNode",
+                "hashCode",
+                "getImportedNameNode",
+                "getScope");
 
     /* Iteration variables */
     private final Iterator<MethodWrapper> iterator;
     private final Node node;
+
 
     /**
      * Creates a new iterator that enumerates the attributes of the given node.
@@ -77,22 +82,20 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
      */
     public AttributeAxisIterator(@NonNull Node contextNode) {
         this.node = contextNode;
-        this.iterator = METHOD_CACHE
-                .computeIfAbsent(contextNode.getClass(), this::getWrappersForClass)
-                .iterator();
+        this.iterator = METHOD_CACHE.computeIfAbsent(contextNode.getClass(), this::getWrappersForClass).iterator();
     }
 
     private List<MethodWrapper> getWrappersForClass(Class<?> nodeClass) {
         return Arrays.stream(nodeClass.getMethods())
-                .filter(m -> isAttributeAccessor(nodeClass, m))
-                .map(m -> {
-                    try {
-                        return new MethodWrapper(m);
-                    } catch (ReflectiveOperationException e) {
-                        throw AssertionUtil.shouldNotReachHere("Method '" + m + "' should be accessible, but: " + e, e);
-                    }
-                })
-                .collect(Collectors.toList());
+                     .filter(m -> isAttributeAccessor(nodeClass, m))
+                     .map(m -> {
+                         try {
+                             return new MethodWrapper(m);
+                         } catch (ReflectiveOperationException e) {
+                             throw AssertionUtil.shouldNotReachHere("Method '" + m + "' should be accessible, but: " + e, e);
+                         }
+                     })
+                     .collect(Collectors.toList());
     }
 
     /**
@@ -106,15 +109,15 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         String methodName = method.getName();
 
         return !methodName.startsWith("jjt")
-                && !FILTERED_OUT_NAMES.contains(methodName)
-                && method.getParameterTypes().length == 0
-                && isConsideredReturnType(method)
-                // filter out methods declared in supertypes like the
-                // Antlr ones, unless they're opted-in
-                && Node.class.isAssignableFrom(method.getDeclaringClass())
-                // Methods of package-private classes are not accessible.
-                && Modifier.isPublic(method.getModifiers())
-                && !isIgnored(nodeClass, method);
+            && !FILTERED_OUT_NAMES.contains(methodName)
+            && method.getParameterTypes().length == 0
+            && isConsideredReturnType(method)
+            // filter out methods declared in supertypes like the
+            // Antlr ones, unless they're opted-in
+            && Node.class.isAssignableFrom(method.getDeclaringClass())
+            // Methods of package-private classes are not accessible.
+            && Modifier.isPublic(method.getModifiers())
+            && !isIgnored(nodeClass, method);
     }
 
     private boolean isConsideredReturnType(Method method) {
@@ -134,8 +137,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
                         return CONSIDERED_RETURN_TYPES.contains(elementKlass) || elementKlass.isEnum();
                     }
                 } catch (ClassNotFoundException e) {
-                    throw AssertionUtil.shouldNotReachHere(
-                            "Method '" + method + "' should return a known type, but: " + e, e);
+                    throw AssertionUtil.shouldNotReachHere("Method '" + method + "' should return a known type, but: " + e, e);
                 }
             }
         }
@@ -175,8 +177,10 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         } else {
             // then declaration == nodeClass so we need the scope to be ALL
             return localAnnot.scope() == NoAttrScope.ALL;
+
         }
     }
+
 
     @Override
     public Attribute next() {
@@ -184,10 +188,12 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         return new Attribute(node, m.name, m.methodHandle, m.method);
     }
 
+
     @Override
     public boolean hasNext() {
         return iterator.hasNext();
     }
+
 
     /**
      * Associates an attribute accessor with the XPath-accessible
@@ -202,6 +208,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
         public final Method method;
         public final String name;
 
+
         MethodWrapper(Method m) throws IllegalAccessException {
             this.method = m;
             this.name = truncateMethodName(m.getName());
@@ -210,6 +217,7 @@ public class AttributeAxisIterator implements Iterator<Attribute> {
             // See git history here and https://github.com/pmd/pmd/issues/4885
             this.methodHandle = LOOKUP.unreflect(m).asType(GETTER_TYPE);
         }
+
 
         /**
          * This method produces the actual XPath name of an attribute

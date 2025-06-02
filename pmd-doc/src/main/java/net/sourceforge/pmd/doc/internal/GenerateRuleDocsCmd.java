@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.doc.internal;
 
 import java.io.File;
@@ -15,6 +16,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
@@ -32,16 +34,12 @@ public final class GenerateRuleDocsCmd {
         }
 
         long start = System.currentTimeMillis();
-        Path output = FileSystems.getDefault()
-                .getPath(args[0])
-                .resolve("..")
-                .toAbsolutePath()
-                .normalize();
+        Path output = FileSystems.getDefault().getPath(args[0]).resolve("..").toAbsolutePath().normalize();
         System.out.println("Generating docs into " + output);
 
         // important: use a RuleSetFactory that includes all rules, e.g. deprecated rule references
-        List<RuleSet> registeredRuleSets =
-                new RuleSetLoader().includeDeprecatedRuleReferences(true).getStandardRuleSets();
+        List<RuleSet> registeredRuleSets = new RuleSetLoader().includeDeprecatedRuleReferences(true)
+                .getStandardRuleSets();
         List<String> additionalRulesets = findAdditionalRulesets(output);
 
         RuleDocGenerator generator = new RuleDocGenerator(new DefaultFileWriter(), output);
@@ -51,9 +49,7 @@ public final class GenerateRuleDocsCmd {
     }
 
     static final Pattern ADDITIONAL_RULESET_PATTERN = Pattern.compile("^.+" + Pattern.quote(File.separator) + "pmd-\\w+"
-            + Pattern.quote(IOUtil.normalizePath(File.separator
-                            + Paths.get("src", "main", "resources", "rulesets").toString())
-                    + File.separator)
+            + Pattern.quote(IOUtil.normalizePath(File.separator + Paths.get("src", "main", "resources", "rulesets").toString()) + File.separator)
             + "\\w+" + Pattern.quote(File.separator) + "\\w+.xml$");
 
     public static List<String> findAdditionalRulesets(Path basePath) {

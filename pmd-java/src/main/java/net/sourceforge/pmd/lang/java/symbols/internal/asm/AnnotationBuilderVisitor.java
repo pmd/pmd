@@ -4,9 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.TypePath;
+
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 
 class AnnotationBuilderVisitor extends SymbolicValueBuilder {
 
@@ -36,13 +37,12 @@ class AnnotationBuilderVisitor extends SymbolicValueBuilder {
         private final @Nullable TypePath path;
         private final SymbolicAnnotationImpl annot;
 
-        TypeAnnotBuilderImpl(
-                AsmSymbolResolver resolver,
-                TypeAnnotationReceiver owner,
-                int typeRef,
-                @Nullable TypePath path,
-                boolean visible,
-                String descriptor) {
+        TypeAnnotBuilderImpl(AsmSymbolResolver resolver,
+                             TypeAnnotationReceiver owner,
+                             int typeRef,
+                             @Nullable TypePath path,
+                             boolean visible,
+                             String descriptor) {
             super(resolver);
             this.owner = owner;
             this.typeRef = typeRef;

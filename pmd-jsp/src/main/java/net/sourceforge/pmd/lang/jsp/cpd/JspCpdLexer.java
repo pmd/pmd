@@ -21,4 +21,5 @@ public class JspCpdLexer extends JavaccCpdLexer {
     protected TokenManager<JavaccToken> makeLexerImpl(TextDocument doc) {
         return JspTokenKinds.newTokenManager(CharStream.create(doc, InternalApiBridge.getJspTokenBehavior()));
     }
+
 }

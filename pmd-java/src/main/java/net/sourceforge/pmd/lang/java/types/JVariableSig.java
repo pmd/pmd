@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Objects;
+
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
@@ -69,6 +70,7 @@ public class JVariableSig {
         return declarator;
     }
 
+
     /**
      * Returns the symbol for this variable.
      */
@@ -76,18 +78,19 @@ public class JVariableSig {
         return sym;
     }
 
+
     /**
      * Returns the type given to the symbol in the particular scope this
      * signature is valid in.
      */
     public JTypeMirror getTypeMirror() {
         Substitution subst = declarator instanceof JClassType
-                ? ((JClassType) declarator).getTypeParamSubst()
-                : Substitution.EMPTY; // array
+                             ? ((JClassType) declarator).getTypeParamSubst()
+                             : Substitution.EMPTY; // array
 
         JTypeMirror symType = declarator.isRaw()
-                ? ClassTypeImpl.eraseToRaw(sym.getTypeMirror(Substitution.EMPTY), subst)
-                : sym.getTypeMirror(subst);
+                                  ? ClassTypeImpl.eraseToRaw(sym.getTypeMirror(Substitution.EMPTY), subst)
+                                  : sym.getTypeMirror(subst);
         if (symType instanceof JWildcardType) {
             throw new IllegalStateException("Forgotten capture of " + this.declarator + " for symbol " + sym);
         }
@@ -111,7 +114,8 @@ public class JVariableSig {
             return false;
         }
         JVariableSig that = (JVariableSig) o;
-        return Objects.equals(sym, that.sym) && Objects.equals(declarator, that.declarator);
+        return Objects.equals(sym, that.sym)
+            && Objects.equals(declarator, that.declarator);
     }
 
     @Override
@@ -138,4 +142,5 @@ public class JVariableSig {
             return (JFieldSymbol) super.sym;
         }
     }
+
 }

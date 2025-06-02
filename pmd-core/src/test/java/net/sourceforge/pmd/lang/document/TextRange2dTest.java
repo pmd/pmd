@@ -45,7 +45,11 @@ class TextRange2dTest {
     @Test
     void testToString() {
         TextRange2d range = TextRange2d.range2d(1, 2, 3, 4);
-        assertEquals("1:2-3:4", range.toDisplayStringWithColon());
+        assertEquals(
+            "1:2-3:4",
+            range.toDisplayStringWithColon()
+        );
         assertThat(range.toString(), containsString("!debug only!"));
     }
+
 }

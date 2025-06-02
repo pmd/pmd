@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,6 +15,11 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.function.Consumer;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
+import org.junit.jupiter.api.io.TempDir;
+
 import net.sourceforge.pmd.DummyParsingHelper;
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.RuleWithProperties;
@@ -33,9 +39,6 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.junit.jupiter.api.io.TempDir;
 
 abstract class AbstractRendererTest {
 
@@ -43,7 +46,6 @@ abstract class AbstractRendererTest {
     protected final DummyParsingHelper helper = new DummyParsingHelper();
 
     protected static final String EOL = System.lineSeparator();
-
     @TempDir
     private Path tempDir;
 
@@ -81,7 +83,8 @@ abstract class AbstractRendererTest {
 
     @Test
     void testNullPassedIn() throws Exception {
-        assertThrows(NullPointerException.class, () -> getRenderer().renderFileReport(null));
+        assertThrows(NullPointerException.class, () ->
+            getRenderer().renderFileReport(null));
     }
 
     protected Consumer<FileAnalysisListener> reportOneViolation() {
@@ -146,8 +149,8 @@ abstract class AbstractRendererTest {
     @Test
     void testRuleWithProperties() throws Exception {
         RuleWithProperties theRule = new RuleWithProperties();
-        theRule.setProperty(
-                RuleWithProperties.STRING_PROPERTY_DESCRIPTOR, "the string value\nsecond line with \"quotes\"");
+        theRule.setProperty(RuleWithProperties.STRING_PROPERTY_DESCRIPTOR,
+                "the string value\nsecond line with \"quotes\"");
         RuleViolation violation = newRuleViolation(1, 1, 1, 1, theRule);
         String rendered = renderReport(getRenderer(), it -> it.onRuleViolation(violation));
         assertEquals(filter(getExpectedWithProperties()), filter(rendered));
@@ -177,16 +180,14 @@ abstract class AbstractRendererTest {
 
     @Test
     void testError() throws Exception {
-        Report.ProcessingError err =
-                new Report.ProcessingError(new RuntimeException("Error"), FileId.fromPathLikeString("file"));
+        Report.ProcessingError err = new Report.ProcessingError(new RuntimeException("Error"), FileId.fromPathLikeString("file"));
         String actual = render(it -> it.onError(err));
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
 
     @Test
     void testErrorWithoutMessage() throws Exception {
-        Report.ProcessingError err =
-                new Report.ProcessingError(new NullPointerException(), FileId.fromPathLikeString("file"));
+        Report.ProcessingError err = new Report.ProcessingError(new NullPointerException(), FileId.fromPathLikeString("file"));
         String actual = render(it -> it.onError(err));
         assertEquals(filter(getExpectedErrorWithoutMessage(err)), filter(actual));
     }
@@ -202,37 +203,30 @@ abstract class AbstractRendererTest {
         assertEquals(filter(getExpectedError(err)), filter(actual));
     }
 
-    protected String renderReport(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects)
-            throws IOException {
+    protected String renderReport(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects) throws IOException {
         return renderReport(renderer, listenerEffects, Charset.defaultCharset());
     }
 
-    protected String renderReport(
-            Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects, Charset expectedEncoding)
-            throws IOException {
-        return renderGlobal(
-                renderer,
-                globalListener -> {
-                    LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
-                    TextFile dummyFile =
-                            TextFile.forCharSeq("dummyText", FileId.fromPathLikeString("fname1.dummy"), version);
-                    try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
-                        listenerEffects.accept(fal);
-                    } catch (Exception e) {
-                        throw new AssertionError(e);
-                    }
-                },
-                expectedEncoding);
+    protected String renderReport(Renderer renderer, Consumer<? super FileAnalysisListener> listenerEffects,
+                                  Charset expectedEncoding) throws IOException {
+        return renderGlobal(renderer, globalListener -> {
+
+            LanguageVersion version = DummyLanguageModule.getInstance().getDefaultVersion();
+            TextFile dummyFile = TextFile.forCharSeq("dummyText", FileId.fromPathLikeString("fname1.dummy"), version);
+            try (FileAnalysisListener fal = globalListener.startFileAnalysis(dummyFile)) {
+                listenerEffects.accept(fal);
+            } catch (Exception e) {
+                throw new AssertionError(e);
+            }
+        }, expectedEncoding);
     }
 
-    private String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects)
-            throws IOException {
+    private String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects) throws IOException {
         return renderGlobal(renderer, listenerEffects, Charset.defaultCharset());
     }
 
-    private String renderGlobal(
-            Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects, Charset expectedEncoding)
-            throws IOException {
+    private String renderGlobal(Renderer renderer, Consumer<? super GlobalAnalysisListener> listenerEffects,
+                                Charset expectedEncoding) throws IOException {
         File file = tempDir.resolve("report.out").toFile();
         renderer.setReportFile(file.getAbsolutePath());
 
@@ -244,4 +238,5 @@ abstract class AbstractRendererTest {
 
         return IOUtil.readFileToString(file, expectedEncoding);
     }
+
 }

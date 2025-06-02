@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.html.cpd;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.lang.LanguageProcessor;
@@ -31,7 +32,10 @@ public class HtmlCpdLexer implements CpdLexer {
         try (LanguageProcessor processor = html.createProcessor(html.newPropertyBundle())) {
 
             ParserTask task = new ParserTask(
-                    document, SemanticErrorReporter.noop(), LanguageProcessorRegistry.singleton(processor));
+                document,
+                SemanticErrorReporter.noop(),
+                LanguageProcessorRegistry.singleton(processor)
+            );
 
             HtmlParser parser = new HtmlParser();
             ASTHtmlDocument root = parser.parse(task);

@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
+
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
@@ -17,17 +19,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * </pre>
  */
 public final class ASTEnumConstant extends AbstractJavaTypeNode
-        implements InvocationNode,
-                ModifierOwner,
-                ASTBodyDeclaration,
-                InternalInterfaces.VariableIdOwner,
-                JavadocCommentOwner {
+    implements InvocationNode,
+               ModifierOwner,
+               ASTBodyDeclaration,
+               InternalInterfaces.VariableIdOwner,
+               JavadocCommentOwner {
 
     private OverloadSelectionResult result;
 
     ASTEnumConstant(int id) {
         super(id);
     }
+
 
     @Override
     public FileLocation getReportLocation() {
@@ -38,6 +41,7 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     @Override
     public ASTVariableId getVarId() {

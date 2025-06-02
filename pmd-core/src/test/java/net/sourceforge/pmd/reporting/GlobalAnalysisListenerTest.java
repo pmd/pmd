@@ -13,6 +13,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import net.sourceforge.pmd.FooRule;
 import net.sourceforge.pmd.InternalApiBridgeForTestsOnly;
 import net.sourceforge.pmd.PMDConfiguration;
@@ -24,9 +29,6 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 class GlobalAnalysisListenerTest {
 
@@ -37,14 +39,14 @@ class GlobalAnalysisListenerTest {
 
         PMDConfiguration config = newConfig();
 
-        GlobalAnalysisListener.ViolationCounterListener listener =
-                new GlobalAnalysisListener.ViolationCounterListener();
+        GlobalAnalysisListener.ViolationCounterListener listener = new GlobalAnalysisListener.ViolationCounterListener();
 
         MyFooRule mockrule = Mockito.spy(MyFooRule.class);
         runPmd(config, listener, mockrule);
 
         Mockito.verify(mockrule, times(NUM_DATA_SOURCES)).apply(any(), any());
         assertEquals(2, (int) listener.getResult());
+
     }
 
     @Test
@@ -53,8 +55,7 @@ class GlobalAnalysisListenerTest {
         PMDConfiguration config = newConfig();
         config.setThreads(2);
 
-        GlobalAnalysisListener.ViolationCounterListener listener =
-                new GlobalAnalysisListener.ViolationCounterListener();
+        GlobalAnalysisListener.ViolationCounterListener listener = new GlobalAnalysisListener.ViolationCounterListener();
 
         MyFooRule mockrule = Mockito.spy(MyFooRule.class);
         when(mockrule.deepCopy()).thenReturn(mockrule); // the spy cannot track the deep copies
@@ -63,6 +64,7 @@ class GlobalAnalysisListenerTest {
 
         Mockito.verify(mockrule, times(NUM_DATA_SOURCES)).apply(any(), any());
         assertEquals(2, (int) listener.getResult());
+
     }
 
     @Test
@@ -87,7 +89,7 @@ class GlobalAnalysisListenerTest {
         AnalysisCache mockCache = spy(NoopAnalysisCache.class);
         InternalApiBridgeForTestsOnly.setAnalysisCache(config, mockCache);
 
-        BrokenRule rule = new BrokenRule(); // the broken rule throws
+        BrokenRule rule = new BrokenRule();  // the broken rule throws
         runPmd(config, GlobalAnalysisListener.noop(), rule);
 
         // cache methods are called regardless
@@ -103,7 +105,7 @@ class GlobalAnalysisListenerTest {
         AnalysisCache mockCache = spy(NoopAnalysisCache.class);
         InternalApiBridgeForTestsOnly.setAnalysisCache(config, mockCache);
 
-        BrokenRule rule = new BrokenRule(); // the broken rule throws
+        BrokenRule rule = new BrokenRule();  // the broken rule throws
         // now the exception should be propagated
         GlobalAnalysisListener listener = GlobalAnalysisListener.exceptionThrower();
         FileAnalysisException exception = assertThrows(FileAnalysisException.class, () -> {
@@ -137,6 +139,7 @@ class GlobalAnalysisListenerTest {
             pmd.performAnalysis();
         }
     }
+
 
     public static class MyFooRule extends FooRule {
 

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnitMethod;
@@ -46,8 +47,9 @@ public class JUnitUseExpectedRule extends AbstractJavaRulechainRule {
     public Object visit(ASTMethodDeclaration node, Object data) {
         ASTBlock body = node.getBody();
         if (body != null && isJUnitMethod(node)) {
-            body.descendants(ASTTryStatement.class).filter(this::isWeirdTry).forEach(it -> asCtx(data)
-                    .addViolation(it));
+            body.descendants(ASTTryStatement.class)
+                .filter(this::isWeirdTry)
+                .forEach(it -> asCtx(data).addViolation(it));
         }
         return null;
     }
@@ -55,8 +57,8 @@ public class JUnitUseExpectedRule extends AbstractJavaRulechainRule {
     private boolean isWeirdTry(ASTTryStatement tryStmt) {
         ASTStatement lastStmt = tryStmt.getBody().getLastChild();
         return (lastStmt instanceof ASTThrowStatement
-                        || lastStmt instanceof ASTExpressionStatement && isFailStmt((ASTExpressionStatement) lastStmt))
-                && tryStmt.getCatchClauses().any(it -> it.getBody().size() == 0);
+            || lastStmt instanceof ASTExpressionStatement && isFailStmt((ASTExpressionStatement) lastStmt))
+            && tryStmt.getCatchClauses().any(it -> it.getBody().size() == 0);
     }
 
     private boolean isFailStmt(ASTExpressionStatement stmt) {
@@ -66,4 +68,5 @@ public class JUnitUseExpectedRule extends AbstractJavaRulechainRule {
         }
         return false;
     }
+
 }

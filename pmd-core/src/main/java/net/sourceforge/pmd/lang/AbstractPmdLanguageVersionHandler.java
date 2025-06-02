@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang;
 
 /**
@@ -10,4 +11,7 @@ package net.sourceforge.pmd.lang;
  * @author Clément Fournier
  * @since 6.10.0
  */
-public abstract class AbstractPmdLanguageVersionHandler extends AbstractLanguageVersionHandler {}
+public abstract class AbstractPmdLanguageVersionHandler extends AbstractLanguageVersionHandler {
+
+
+}

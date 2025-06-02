@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.util.database;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 /**
@@ -39,8 +41,7 @@ class DBURITest {
     /**
      * Fully specified URI, overriding defaults in testdefaults.properties
      */
-    static final String C_TEST_EXPLICIT =
-            "jdbc:oracle:testdefault:system/oracle@//192.168.100.21:1521/ORCL?characterset=us7ascii&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java&sourcecodenames=PKG_%25%25,PRC_%25%25";
+    static final String C_TEST_EXPLICIT = "jdbc:oracle:testdefault:system/oracle@//192.168.100.21:1521/ORCL?characterset=us7ascii&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java&sourcecodenames=PKG_%25%25,PRC_%25%25";
 
     /*
      * Expected values from testdefaults.properties, with values overridden by
@@ -56,34 +57,21 @@ class DBURITest {
 
     static final String C_TEST_URI = "test?param1=x%261&param2=&param3=";
     static final String C_ORACLE_OCI_1 = "jdbc:oracle:oci:system/oracle@//192.168.100.21:1521/ORCL";
-    static final String C_ORACLE_OCI_2 =
-            "jdbc:oracle:oci:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java";
-    static final String C_ORACLE_OCI_3 =
-            "jdbc:oracle:oci:system/oracle@//myserver.com:1521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java&sourcecodenames=PKG_%25%25,PRC_%25%25";
+    static final String C_ORACLE_OCI_2 = "jdbc:oracle:oci:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java";
+    static final String C_ORACLE_OCI_3 = "jdbc:oracle:oci:system/oracle@//myserver.com:1521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java&sourcecodenames=PKG_%25%25,PRC_%25%25";
 
     static final String C_ORACLE_THIN_1 = "jdbc:oracle:thin:system/oracle@//192.168.100.21:1521/ORCL";
-    static final String C_ORACLE_THIN_2 =
-            "jdbc:oracle:thin:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java";
-    static final String C_ORACLE_THIN_3 =
-            "jdbc:oracle:thin:system/oracle@//myserver.com:1521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java&sourcecodenames=PKG_%25%25,PRC_%25%25";
+    static final String C_ORACLE_THIN_2 = "jdbc:oracle:thin:system/oracle@//192.168.100.21:1521/ORCL?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java";
+    static final String C_ORACLE_THIN_3 = "jdbc:oracle:thin:system/oracle@//myserver.com:1521/customer_db?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java&sourcecodenames=PKG_%25%25,PRC_%25%25";
 
     static final String C_POSTGRES_1 = "jdbc:postgresql://host/database";
-    static final String C_HTTP =
-            "http://localhost:80?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java";
+    static final String C_HTTP = "http://localhost:80?characterset=utf8&schemas=scott,hr,sh,system&sourcecodetypes=procedures,functions,triggers,package,types&languages=plsql,java";
 
     static void dump(String description, URI dburi) {
         System.err.printf(
                 "Test %s\n: isOpaque=%s, isAbsolute=%s Scheme=%s,\n SchemeSpecificPart=%s,\n Host=%s,\n Port=%s,\n Path=%s,\n Fragment=%s,\n Query=%s\n",
-                description,
-                dburi.isOpaque(),
-                dburi.isAbsolute(),
-                dburi.getScheme(),
-                dburi.getSchemeSpecificPart(),
-                dburi.getHost(),
-                dburi.getPort(),
-                dburi.getPath(),
-                dburi.getFragment(),
-                dburi.getQuery());
+                description, dburi.isOpaque(), dburi.isAbsolute(), dburi.getScheme(), dburi.getSchemeSpecificPart(),
+                dburi.getHost(), dburi.getPort(), dburi.getPath(), dburi.getFragment(), dburi.getQuery());
         String query = dburi.getQuery();
         if (null != query && !"".equals(query)) {
             String[] params = query.split("&");
@@ -335,8 +323,8 @@ class DBURITest {
         String result = instance.getDriverClass();
         System.out.println("testGetThinDriverClass: driverClass=" + result);
         System.out.println("testGetThinDriverClass: getDbType().getProperties() follows");
-        System.out.println("testGetThinDriverClass: getDbType().getProperties()="
-                + instance.getDbType().getProperties());
+        System.out
+                .println("testGetThinDriverClass: getDbType().getProperties()=" + instance.getDbType().getProperties());
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to
         // fail.
@@ -677,4 +665,5 @@ class DBURITest {
         // TODO review the generated test code and remove the call to fail.
         // fail("The test case is a prototype.");
     }
+
 }

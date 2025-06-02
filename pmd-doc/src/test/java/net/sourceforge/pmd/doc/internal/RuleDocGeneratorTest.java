@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.doc.internal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -13,13 +14,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import net.sourceforge.pmd.doc.internal.MockedFileWriter.FileEntry;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 class RuleDocGeneratorTest {
 
@@ -58,26 +61,22 @@ class RuleDocGeneratorTest {
         RuleSetLoader rsl = new RuleSetLoader().includeDeprecatedRuleReferences(true);
         RuleSet ruleset = rsl.loadFromResource("rulesets/ruledoctest/sample.xml");
 
-        generator.generate(
-                Arrays.asList(ruleset),
-                Arrays.asList("rulesets/ruledoctest/sample-deprecated.xml", "rulesets/ruledoctest/other-ruleset.xml"));
+        generator.generate(Arrays.asList(ruleset),
+                Arrays.asList(
+                        "rulesets/ruledoctest/sample-deprecated.xml",
+                        "rulesets/ruledoctest/other-ruleset.xml"));
 
         assertEquals(3, writer.getData().size());
         FileEntry languageIndex = writer.getData().get(0);
-        assertTrue(IOUtil.normalizePath(languageIndex.getFilename())
-                .endsWith(Paths.get("docs", "pages", "pmd", "rules", "java.md").toString()));
+        assertTrue(IOUtil.normalizePath(languageIndex.getFilename()).endsWith(Paths.get("docs", "pages", "pmd", "rules", "java.md").toString()));
         assertEquals(loadResource("/expected/java.md"), languageIndex.getContent());
 
         FileEntry ruleSetIndex = writer.getData().get(1);
-        assertTrue(IOUtil.normalizePath(ruleSetIndex.getFilename())
-                .endsWith(Paths.get("docs", "pages", "pmd", "rules", "java", "sample.md")
-                        .toString()));
+        assertTrue(IOUtil.normalizePath(ruleSetIndex.getFilename()).endsWith(Paths.get("docs", "pages", "pmd", "rules", "java", "sample.md").toString()));
         assertEquals(loadResource("/expected/sample.md"), ruleSetIndex.getContent());
 
         FileEntry sidebar = writer.getData().get(2);
-        assertTrue(IOUtil.normalizePath(sidebar.getFilename())
-                .endsWith(Paths.get("docs", "_data", "sidebars", "pmd_sidebar.yml")
-                        .toString()));
+        assertTrue(IOUtil.normalizePath(sidebar.getFilename()).endsWith(Paths.get("docs", "_data", "sidebars", "pmd_sidebar.yml").toString()));
         assertEquals(loadResource("/expected/pmd_sidebar.yml"), sidebar.getContent());
     }
 }

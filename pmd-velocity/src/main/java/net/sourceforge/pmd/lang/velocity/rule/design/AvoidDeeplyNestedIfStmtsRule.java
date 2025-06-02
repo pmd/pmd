@@ -14,17 +14,16 @@ import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
+
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractVtlRule {
 
     private int depth;
     private int depthLimit;
 
-    private static final PropertyDescriptor<Integer> PROBLEM_DEPTH_DESCRIPTOR = PropertyFactory.intProperty(
-                    "problemDepth")
-            .desc("The if statement depth reporting threshold")
-            .require(positive())
-            .defaultValue(3)
-            .build();
+    private static final PropertyDescriptor<Integer> PROBLEM_DEPTH_DESCRIPTOR
+            = PropertyFactory.intProperty("problemDepth")
+                             .desc("The if statement depth reporting threshold")
+                             .require(positive()).defaultValue(3).build();
 
     public AvoidDeeplyNestedIfStmtsRule() {
         definePropertyDescriptor(PROBLEM_DEPTH_DESCRIPTOR);
@@ -56,4 +55,5 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractVtlRule {
         depth--;
         return data;
     }
+
 }

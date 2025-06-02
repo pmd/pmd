@@ -15,6 +15,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.EnumeratedAttribute;
+import org.apache.tools.ant.types.FileSet;
+
 import net.sourceforge.pmd.cpd.CPDConfiguration;
 import net.sourceforge.pmd.cpd.CPDReport;
 import net.sourceforge.pmd.cpd.CPDReportRenderer;
@@ -25,12 +33,6 @@ import net.sourceforge.pmd.cpd.XMLOldRenderer;
 import net.sourceforge.pmd.cpd.XMLRenderer;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.EnumeratedAttribute;
-import org.apache.tools.ant.types.FileSet;
 
 /**
  * CPD Ant task. Setters of this class are interpreted by Ant as properties
@@ -65,10 +67,8 @@ public class CPDTask extends Task {
 
     private static final String TEXT_FORMAT = "text";
     private static final String XML_FORMAT = "xml";
-
     @Deprecated
     private static final String XMLOLD_FORMAT = "xmlold";
-
     private static final String CSV_FORMAT = "csv";
 
     private String format = TEXT_FORMAT;
@@ -78,10 +78,8 @@ public class CPDTask extends Task {
     private boolean ignoreIdentifiers;
     private boolean ignoreAnnotations;
     private boolean ignoreUsings;
-
     @Deprecated
     private boolean skipLexicalErrors;
-
     private boolean skipDuplicateFiles;
     private boolean skipBlocks = true;
     private String skipBlocksPattern;
@@ -108,11 +106,9 @@ public class CPDTask extends Task {
             config.setSkipDuplicates(skipDuplicateFiles);
 
             if (skipLexicalErrors) {
-                log(
-                        "skipLexicalErrors is deprecated since 7.3.0 and the property is ignored. "
-                                + "Lexical errors are now skipped by default and the build is failed. "
-                                + "Use failOnError=\"false\" to not fail the build.",
-                        Project.MSG_WARN);
+                log("skipLexicalErrors is deprecated since 7.3.0 and the property is ignored. "
+                        + "Lexical errors are now skipped by default and the build is failed. "
+                        + "Use failOnError=\"false\" to not fail the build.", Project.MSG_WARN);
             }
 
             config.setIgnoreAnnotations(ignoreAnnotations);
@@ -290,7 +286,7 @@ public class CPDTask extends Task {
     }
 
     public static class FormatAttribute extends EnumeratedAttribute {
-        private static final String[] FORMATS = new String[] {XML_FORMAT, TEXT_FORMAT, CSV_FORMAT, XMLOLD_FORMAT};
+        private static final String[] FORMATS = new String[] { XML_FORMAT, TEXT_FORMAT, CSV_FORMAT, XMLOLD_FORMAT };
 
         @Override
         public String[] getValues() {

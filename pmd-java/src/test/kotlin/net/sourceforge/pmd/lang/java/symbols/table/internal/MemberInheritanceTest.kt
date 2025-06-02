@@ -9,24 +9,20 @@ import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
-import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.component6
 import net.sourceforge.pmd.lang.test.ast.component7
 import net.sourceforge.pmd.lang.test.ast.component8
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
+import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain
+import net.sourceforge.pmd.lang.java.types.*
 
 @Suppress("UNUSED_VARIABLE")
-class MemberInheritanceTest :
-    ParserTestSpec({
-        parserTest("Test problem with values scope in enum") {
-            inContext(ExpressionParsingCtx) {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+class MemberInheritanceTest : ParserTestSpec({
+    parserTest("Test problem with values scope in enum") {
+        inContext(ExpressionParsingCtx) {
+            val acu = parser.withProcessing().parse(
+                    """
                         package coco;
 
                         import static coco.Opcode.Set.*;
@@ -45,35 +41,27 @@ class MemberInheritanceTest :
 
                             public enum Set { STANDARD, PICOJAVA }
                         }
-                """
-                                .trimIndent()
-                        )
+                """.trimIndent()
+            )
 
-                val (outer, inner) =
-                    acu.descendants(ASTEnumDeclaration::class.java).toList { it.symbol }
+            val (outer, inner) = acu.descendants(ASTEnumDeclaration::class.java).toList { it.symbol }
 
-                val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+            val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
 
-                call.shouldMatchN {
-                    methodCall("values") {
-                        it.symbolTable.methods().resolve("values").shouldBeSingleton {
-                            it.symbol.enclosingClass shouldBe outer
-                        }
-
-                        argList(0) {}
+            call.shouldMatchN {
+                methodCall("values") {
+                    it.symbolTable.methods().resolve("values").shouldBeSingleton {
+                        it.symbol.enclosingClass shouldBe outer
                     }
+
+                    argList(0) {}
                 }
             }
         }
+    }
 
-        parserTestContainer(
-            "Comb rule: methods of an inner type shadow methods of the enclosing ones"
-        ) {
-            val acu =
-                parser
-                    .withProcessing()
-                    .parse(
-                        """
+    parserTestContainer("Comb rule: methods of an inner type shadow methods of the enclosing ones") {
+        val acu = parser.withProcessing().parse("""
             package test;
 
             class Sup {
@@ -101,63 +89,55 @@ class MemberInheritanceTest :
                     void f() {} // shadows both
                 }
             }
-        """
-                    )
+        """)
 
-            val (supF, supG, supK, sup2F, outerF, outerG, outerK, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).crossFindBoundaries().toList {
-                    it.genericSignature
-                }
+        val (supF, supG, supK, sup2F, outerF, outerG, outerK, innerF) =
+                acu
+                    .descendants(ASTMethodDeclaration::class.java)
+                    .crossFindBoundaries()
+                    .toList { it.genericSignature }
 
-            val (sup, _, outer, inner) =
+        val (sup, _, outer, inner) =
                 acu.descendants(ASTTypeDeclaration::class.java).toList { it.body!! }
 
-            doTest("Inside Sup: Sup#f(int) is in scope") {
-                sup.symbolTable.methods().resolve("f").let {
-                    it.shouldHaveSize(1)
-                    it[0] shouldBe supF
-                }
-            }
-
-            doTest("Inside Outer: both Sup#f(int) and Outer#f() are in scope") {
-                outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, supF)
-            }
-
-            doTest("Inside Inner: Outer#f() is shadowed") {
-                // All of Inner#f(), Sup2#f(String), and Sup#f(int) (through Outer) are in scope
-                // But Outer#f() is shadowed by Inner#f()
-                inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, sup2F, supF)
-            }
-
-            doTest("Inside Inner: Sup#k() is shadowed by Outer#k()") {
-                inner.symbolTable.methods().resolve("k").shouldContainExactly(outerK)
-            }
-
-            doTest("Inside Outer: Sup#k() is shadowed by Outer#k()") {
-                outer.symbolTable.methods().resolve("k").shouldContainExactly(outerK)
-            }
-
-            doTest(
-                "Inside Outer: g() is overridden, the superclass implementation is not in scope"
-            ) {
-                // only Outer#g() overrides its parent
-                outer.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
-            }
-
-            doTest(
-                "If there is no shadowing then declarations of outer classes are in scope (g methods)"
-            ) {
-                // only Outer#g() overrides its parent
-                inner.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
+        doTest("Inside Sup: Sup#f(int) is in scope") {
+            sup.symbolTable.methods().resolve("f").let {
+                it.shouldHaveSize(1)
+                it[0] shouldBe supF
             }
         }
 
-        parserTestContainer("Non-static methods in static inner class") {
-            val acu =
-                parser
-                    .withProcessing()
-                    .parse(
-                        """
+        doTest("Inside Outer: both Sup#f(int) and Outer#f() are in scope") {
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, supF)
+        }
+
+        doTest("Inside Inner: Outer#f() is shadowed") {
+            // All of Inner#f(), Sup2#f(String), and Sup#f(int) (through Outer) are in scope
+            // But Outer#f() is shadowed by Inner#f()
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, sup2F, supF)
+        }
+
+        doTest("Inside Inner: Sup#k() is shadowed by Outer#k()") {
+            inner.symbolTable.methods().resolve("k").shouldContainExactly(outerK)
+        }
+
+        doTest("Inside Outer: Sup#k() is shadowed by Outer#k()") {
+            outer.symbolTable.methods().resolve("k").shouldContainExactly(outerK)
+        }
+
+        doTest("Inside Outer: g() is overridden, the superclass implementation is not in scope") {
+            // only Outer#g() overrides its parent
+            outer.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
+        }
+
+        doTest("If there is no shadowing then declarations of outer classes are in scope (g methods)") {
+            // only Outer#g() overrides its parent
+            inner.symbolTable.methods().resolve("g").shouldContainExactly(outerG)
+        }
+    }
+
+    parserTestContainer("Non-static methods in static inner class") {
+        val acu = parser.withProcessing().parse("""
             package test;
 
             class Outer {
@@ -170,32 +150,30 @@ class MemberInheritanceTest :
                     void f(int i) {}
                 }
             }
-        """
-                    )
+        """)
 
-            val (outerF, staticOuter, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).crossFindBoundaries().toList {
-                    it.genericSignature
-                }
+        val (outerF, staticOuter, innerF) =
+                acu
+                    .descendants(ASTMethodDeclaration::class.java)
+                    .crossFindBoundaries()
+                    .toList { it.genericSignature }
 
-            val (outer, inner) =
+        val (outer, inner) =
                 acu.descendants(ASTTypeDeclaration::class.java).toList { it.body!! }
 
-            doTest("Inside Outer: both Outer's fs are in scope") {
-                outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
-            }
 
-            doTest("Inside Inner: non-static Outer#f() is not in scope") {
-                inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, staticOuter)
-            }
+        doTest("Inside Outer: both Outer's fs are in scope") {
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
         }
 
-        parserTestContainer("Non-static methods in inner class") {
-            val acu =
-                parser
-                    .withProcessing()
-                    .parse(
-                        """
+        doTest("Inside Inner: non-static Outer#f() is not in scope") {
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, staticOuter)
+        }
+
+    }
+
+    parserTestContainer("Non-static methods in inner class") {
+        val acu = parser.withProcessing().parse("""
             package test;
 
             class Outer {
@@ -208,60 +186,52 @@ class MemberInheritanceTest :
                     void f(int i) {}
                 }
             }
-        """
-                    )
+        """)
 
-            val (outerF, staticOuter, innerF) =
-                acu.descendants(ASTMethodDeclaration::class.java).crossFindBoundaries().toList {
-                    it.genericSignature
-                }
+        val (outerF, staticOuter, innerF) =
+                acu.descendants(ASTMethodDeclaration::class.java)
+                    .crossFindBoundaries()
+                    .toList { it.genericSignature }
 
-            val (outer, inner) =
+        val (outer, inner) =
                 acu.descendants(ASTTypeDeclaration::class.java).toList { it.body!! }
 
-            doTest("Inside Outer: both Outer's fs are in scope") {
-                outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
-            }
 
-            doTest("Inside Inner: all methods are in scope") {
-                inner.symbolTable
-                    .methods()
-                    .resolve("f")
-                    .shouldContainExactly(innerF, outerF, staticOuter)
-            }
+        doTest("Inside Outer: both Outer's fs are in scope") {
+            outer.symbolTable.methods().resolve("f").shouldContainExactly(outerF, staticOuter)
         }
 
-        parserTest("Methods of Object are in scope in interfaces") {
-            val acu =
-                parser
-                    .withProcessing()
-                    .parse(
-                        """
+        doTest("Inside Inner: all methods are in scope") {
+            inner.symbolTable.methods().resolve("f").shouldContainExactly(innerF, outerF, staticOuter)
+        }
+    }
+
+    parserTest("Methods of Object are in scope in interfaces") {
+        val acu = parser.withProcessing().parse(
+                """
             interface Foo {
                 default Class<? extends Foo> foo() {
                     return getClass();
                 }
             }
         """
-                    )
+        )
 
-            val (insideFoo) = acu.descendants(ASTMethodCall::class.java).toList()
+        val (insideFoo) =
+            acu.descendants(ASTMethodCall::class.java).toList()
 
-            insideFoo.symbolTable.methods().resolve("getClass").also {
-                it.shouldHaveSize(1)
-                it[0].apply {
-                    formalParameters shouldBe emptyList()
-                    declaringType shouldBe acu.typeSystem.OBJECT
-                }
+        insideFoo.symbolTable.methods().resolve("getClass").also {
+            it.shouldHaveSize(1)
+            it[0].apply {
+                formalParameters shouldBe emptyList()
+                declaringType shouldBe acu.typeSystem.OBJECT
             }
         }
+    }
 
-        parserTest("Inner types may be inherited") {
-            val acu =
-                parser
-                    .withProcessing()
-                    .parse(
-                        """
+    parserTest("Inner types may be inherited") {
+        val acu = parser.withProcessing().parse(
+                """
             class Scratch<T> {
                 class Inner {}
             }
@@ -276,39 +246,35 @@ class MemberInheritanceTest :
 
             }
         """
-                    )
+        )
 
-            val (typeScratch, typeInner) =
-                acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
+        val (typeScratch, typeInner) =
+            acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
 
-            val insideFoo = acu.descendants(ASTClassBody::class.java).crossFindBoundaries().get(2)!!
+        val insideFoo =
+            acu.descendants(ASTClassBody::class.java)
+                .crossFindBoundaries().get(2)!!
 
-            val `typeScratch{String}Inner` =
-                with(acu.typeDsl) {
-                    typeScratch[gen.t_String].selectInner(typeInner.symbol, emptyList())
-                }
-
-            insideFoo.symbolTable.types().resolve("Inner").shouldBeSingleton {
-                it.shouldBe(`typeScratch{String}Inner`)
-            }
-
-            val typeNode =
-                acu.descendants(ASTClassType::class.java).first { it.simpleName == "Inner" }!!
-
-            typeNode.shouldMatchN {
-                classType("Inner") { it shouldHaveType `typeScratch{String}Inner` }
-            }
+        val `typeScratch{String}Inner` = with(acu.typeDsl) {
+            typeScratch[gen.t_String].selectInner(typeInner.symbol, emptyList())
         }
 
-        parserTestContainer("Shadowing of inherited types") {
-            doTest(
-                "Inaccessible member types of supertypes hide types inherited from further supertypes"
-            ) {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+        insideFoo.symbolTable.types().resolve("Inner").shouldBeSingleton {
+            it.shouldBe(`typeScratch{String}Inner`)
+        }
+
+        val typeNode = acu.descendants(ASTClassType::class.java).first { it.simpleName == "Inner" }!!
+
+        typeNode.shouldMatchN {
+            classType("Inner") {
+                it shouldHaveType `typeScratch{String}Inner`
+            }
+        }
+    }
+
+    parserTestContainer("Shadowing of inherited types") {
+        doTest("Inaccessible member types of supertypes hide types inherited from further supertypes") {
+            val acu = parser.withProcessing().parse("""
 
             interface M { class E {} }
 
@@ -319,22 +285,15 @@ class MemberInheritanceTest :
             class Foo extends Sup {
                 E e; // not in scope
             }
-        """
-                        )
+        """)
 
-                val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
+            val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
-                insideFoo.symbolTable.types().resolveFirst("E") shouldBe null
-            }
+            insideFoo.symbolTable.types().resolveFirst("E") shouldBe null
+        }
 
-            doTest(
-                "Accessible member types of supertypes hide types inherited from further supertypes"
-            ) {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+        doTest("Accessible member types of supertypes hide types inherited from further supertypes") {
+            val acu = parser.withProcessing().parse("""
 
             interface M { class E {} }
 
@@ -345,23 +304,17 @@ class MemberInheritanceTest :
             class Foo extends Sup {
                 E e; // Sup.E
             }
-        """
-                        )
+        """)
 
-                val (m, me, sup, supe, foo) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (m, me, sup, supe, foo) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-                val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
+            val (insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
-                insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("E", supe)
-            }
+            insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("E", supe)
+        }
 
-            doTest("All member types should be inherited transitively") {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+        doTest("All member types should be inherited transitively") {
+            val acu = parser.withProcessing().parse("""
 
             interface M { class E {} }
 
@@ -376,37 +329,27 @@ class MemberInheritanceTest :
 
                 class K { }
             }
-        """
-                        )
+        """)
 
-                val (m, me, sup, supf, supk, foo, fook) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (m, me, sup, supf, supk, foo, fook) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-                val (insideSup, insideFoo) =
-                    acu.descendants(ASTFieldDeclaration::class.java).toList()
+            val (insideSup, insideFoo) = acu.descendants(ASTFieldDeclaration::class.java).toList()
 
-                insideFoo.symbolTable.shouldResolveTypeTo("E", me)
-                insideFoo.symbolTable.shouldResolveTypeTo("F", supf)
-                insideFoo.symbolTable.shouldResolveTypeTo("K", fook)
+            insideFoo.symbolTable.shouldResolveTypeTo("E", me)
+            insideFoo.symbolTable.shouldResolveTypeTo("F", supf)
+            insideFoo.symbolTable.shouldResolveTypeTo("K", fook)
 
-                insideSup.symbolTable.shouldResolveTypeTo("K", supk)
-            }
+            insideSup.symbolTable.shouldResolveTypeTo("K", supk)
         }
+    }
 
-        fun ShadowChain<JVariableSig, *>.resolveSyms(name: String) = resolve(name).map { it.symbol }
+    fun ShadowChain<JVariableSig, *>.resolveSyms(name: String) = resolve(name).map { it.symbol }
 
-        parserTestContainer(
-            "Ambiguity handling when inheriting members from several unrelated interfaces"
-        ) {
-            // only happens for types & fields, for methods this is handled through
-            // override/overload resolution
+    parserTestContainer("Ambiguity handling when inheriting members from several unrelated interfaces") {
+        // only happens for types & fields, for methods this is handled through override/overload resolution
 
-            doTest("Case 1: two unrelated interfaces") {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+        doTest("Case 1: two unrelated interfaces") {
+            val acu = parser.withProcessing().parse("""
 
 interface I1 {
     class C { }
@@ -421,31 +364,24 @@ interface I2 {
 class Impl implements I1, I2 {
     private final C i = A; // both "C" and "A" are ambiguous
 }
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(i1c, i2c) // ambiguous
-                }
-
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
-                        listOf(i1a.symbol, i2a.symbol) // ambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i1c, i2c) // ambiguous
             }
 
-            doTest(
-                "Case 2: two interfaces extending each other, impl has both as direct supertypes"
-            ) {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
+                        listOf(i1a.symbol, i2a.symbol) // ambiguous
+            }
+        }
+
+        doTest("Case 2: two interfaces extending each other, impl has both as direct supertypes") {
+            val acu = parser.withProcessing().parse("""
 
 interface I1 {
     class C { }
@@ -460,31 +396,24 @@ interface I2 extends I1 { // <- difference here
 class Impl implements I1, I2 {
     private final C i = A; // both "C" and "A" are still ambiguous
 }
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(i1c, i2c) // ambiguous
-                }
-
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
-                        listOf(i1a.symbol, i2a.symbol) // ambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i1c, i2c) // ambiguous
             }
 
-            doTest(
-                "Case 3: two interfaces extending each other, impl has only the deepest as direct supertype"
-            ) {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
+                        listOf(i1a.symbol, i2a.symbol) // ambiguous
+            }
+        }
+
+        doTest("Case 3: two interfaces extending each other, impl has only the deepest as direct supertype") {
+            val acu = parser.withProcessing().parse("""
 
 interface I1 {
     class C { }
@@ -499,29 +428,24 @@ interface I2 extends I1 {
 class Impl implements I2 { // <- difference here
     private final C i = A; // I2.A, I2.C
 }
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(i2c) // unambiguous
-                }
-
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
-                        listOf(i2a.symbol) // unambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i2c) // unambiguous
             }
 
-            doTest("Case 4: I1 as n+1 and n+2 superinterface through superclass ") {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
+                        listOf(i2a.symbol) // unambiguous
+            }
+        }
+
+        doTest("Case 4: I1 as n+1 and n+2 superinterface through superclass ") {
+            val acu = parser.withProcessing().parse("""
 
 
 interface I1 {
@@ -538,29 +462,24 @@ class Impl extends I2 implements I1 { // <- still implements I1
     private final C i = A; // both are ambiguous
 }
 
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(i2c, i1c) // ambiguous
-                }
-
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
-                        listOf(i2a.symbol, i1a.symbol) // ambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i2c, i1c) // ambiguous
             }
 
-            doTest("Case 4.1: superclass doesn't hide unrelated field") {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
+                        listOf(i2a.symbol, i1a.symbol) // ambiguous
+            }
+        }
+
+        doTest("Case 4.1: superclass doesn't hide unrelated field") {
+            val acu = parser.withProcessing().parse("""
 
 interface I1 {
     class C { }
@@ -577,29 +496,25 @@ class Impl extends I2 implements I1 { // <- still implements I1
 }
 
 
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(i2c, i1c) // ambiguous
-                }
-
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
-                        listOf(i2a.symbol, i1a.symbol) // unambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i2c, i1c) // ambiguous
             }
 
-            doTest("Case 4.1: private superclass field member doesn't hide anything") {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
+                        listOf(i2a.symbol, i1a.symbol) // unambiguous
+            }
+        }
+
+
+        doTest("Case 4.1: private superclass field member doesn't hide anything") {
+            val acu = parser.withProcessing().parse("""
 
 interface I1 {
     class C { }
@@ -615,29 +530,25 @@ class Impl extends I2 implements I1 { // <- still implements I1
     private final C i = A;            // both come from I1
 }
 
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(i1c) // unambiguous
-                }
-
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
-                        listOf(i1a.symbol) // unambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i1c) // unambiguous
             }
 
-            doTest("Case 5: class only extends superclass") {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
+                        listOf(i1a.symbol) // unambiguous
+            }
+        }
+
+
+        doTest("Case 5: class only extends superclass") {
+            val acu = parser.withProcessing().parse("""
 
 
 interface I1 {
@@ -654,29 +565,24 @@ class Impl extends I2 { // <- difference here, doesn't implement I1
     private final C i = A; // both are UNambiguous
 }
 
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(i2c) // unambiguous
-                }
-
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
-                        listOf(i2a.symbol) // unambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i2c) // unambiguous
             }
 
-            doTest("Case 6: ambiguity in n+1 supertypes is not transferred to subclass") {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
+                        listOf(i2a.symbol) // unambiguous
+            }
+        }
+
+        doTest("Case 6: ambiguity in n+1 supertypes is not transferred to subclass") {
+            val acu = parser.withProcessing().parse("""
 
 
 interface I1 {
@@ -699,29 +605,25 @@ class Impl extends Sup  {
 }
 
 
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c, sup, supC) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, supA, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c, sup, supC) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, supA, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(supC) // ambiguous
-                }
-
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
-                        listOf(supA.symbol) // unambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(supC) // ambiguous
             }
 
-            doTest("Case 7: ambiguity in n+1 supertypes may be transferred to subclass") {
-                val acu =
-                    parser
-                        .withProcessing()
-                        .parse(
-                            """
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
+                        listOf(supA.symbol) // unambiguous
+            }
+        }
+
+
+        doTest("Case 7: ambiguity in n+1 supertypes may be transferred to subclass") {
+            val acu = parser.withProcessing().parse("""
 
 
 interface I1 {
@@ -743,30 +645,28 @@ class Impl extends Sup {
 }
 
 
-        """
-                        )
+        """)
 
-                val (i1, i1c, i2, i2c) =
-                    acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
-                val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
+            val (i1, i1c, i2, i2c) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (i1a, i2a, implA) = acu.descendants(ASTVariableId::class.java).toList()
 
-                withClue("For types") {
-                    implA.symbolTable.types().resolve("C") shouldBe listOf(i1c, i2c) // ambiguous
-                }
+            withClue("For types") {
+                implA.symbolTable.types().resolve("C") shouldBe
+                        listOf(i1c, i2c) // ambiguous
+            }
 
-                withClue("For fields") {
-                    implA.symbolTable.variables().resolveSyms("A") shouldBe
+            withClue("For fields") {
+                implA.symbolTable.variables().resolveSyms("A") shouldBe
                         listOf(i1a.symbol, i2a.symbol) // unambiguous
-                }
             }
         }
 
-        parserTest("Import of member defined in the file should not fail") {
-            val acu =
-                parser
-                    .withProcessing()
-                    .parse(
-                        """
+    }
+
+
+    parserTest("Import of member defined in the file should not fail") {
+        val acu = parser.withProcessing().parse(
+                """
 package p;
 
 import static p.Top.ClassValueMap.importedMethod;
@@ -788,35 +688,26 @@ class Top {
   }
 }
         """
-                    )
+        )
 
-            val importedFieldAccess = acu.descendants(ASTVariableAccess::class.java).firstOrThrow()
-            val importedFieldSym =
-                acu.descendants(ASTVariableId::class.java)
-                    .crossFindBoundaries()
-                    .firstOrThrow()
-                    .symbol
+        val importedFieldAccess = acu.descendants(ASTVariableAccess::class.java).firstOrThrow()
+        val importedFieldSym = acu.descendants(ASTVariableId::class.java)
+            .crossFindBoundaries().firstOrThrow().symbol
 
-            val importedMethodCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-            val importedMethodSym =
-                acu.descendants(ASTMethodDeclaration::class.java)
-                    .crossFindBoundaries()
-                    .firstOrThrow()
-                    .symbol
+        val importedMethodCall = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
+        val importedMethodSym = acu.descendants(ASTMethodDeclaration::class.java)
+            .crossFindBoundaries().firstOrThrow().symbol
 
-            importedFieldAccess.referencedSym shouldBe importedFieldSym
-            importedMethodCall.methodType.symbol shouldBe importedMethodSym
-        }
+        importedFieldAccess.referencedSym shouldBe importedFieldSym
+        importedMethodCall.methodType.symbol shouldBe importedMethodSym
+    }
 
-        parserTest("Static methods of interfaces are not in scope in subclasses") {
-            // This is what allows the import below to not be shadowed by the inherited declaration
-            // This was tested with javac. The intellij compiler doesn't understand this code.
+    parserTest("Static methods of interfaces are not in scope in subclasses") {
+        // This is what allows the import below to not be shadowed by the inherited declaration
+        // This was tested with javac. The intellij compiler doesn't understand this code.
 
-            val acu =
-                parser
-                    .withProcessing()
-                    .parse(
-                        """
+        val acu = parser.withProcessing().parse(
+            """
 package p;
 
 import static p.Top2.foo;
@@ -843,13 +734,19 @@ interface Top2 {
     static void foo() {}
 }
         """
-                    )
+        )
 
-            val (fooInTop1, _, fooInTop2) = acu.methodDeclarations().toList()
-            val (call1, call2, callInBar) = acu.methodCalls().crossFindBoundaries().toList()
+        val (fooInTop1, _, fooInTop2) = acu.methodDeclarations().toList()
+        val (call1, call2, callInBar) = acu.methodCalls().crossFindBoundaries().toList()
 
-            withClue(call1) { call1.methodType.symbol shouldBe fooInTop2.symbol }
-            withClue(call2) { call2.methodType.symbol shouldBe fooInTop2.symbol }
-            withClue(callInBar) { callInBar.methodType.symbol shouldBe fooInTop1.symbol }
+        withClue(call1) {
+            call1.methodType.symbol shouldBe fooInTop2.symbol
         }
-    })
+        withClue(call2) {
+            call2.methodType.symbol shouldBe fooInTop2.symbol
+        }
+        withClue(callInBar) {
+            callInBar.methodType.symbol shouldBe fooInTop1.symbol
+        }
+    }
+})

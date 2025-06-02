@@ -23,11 +23,11 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
         if (node.isRegularClass()
-                && !node.hasModifiers(JModifier.FINAL)
-                && !node.isAnnotationPresent("lombok.Value")
-                && !hasPublicLombokConstructors(node)
-                && hasOnlyPrivateCtors(node)
-                && hasNoSubclasses(node)) {
+            && !node.hasModifiers(JModifier.FINAL)
+            && !node.isAnnotationPresent("lombok.Value")
+            && !hasPublicLombokConstructors(node)
+            && hasOnlyPrivateCtors(node)
+            && hasNoSubclasses(node)) {
             asCtx(data).addViolation(node);
         }
         return null;
@@ -35,19 +35,17 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
 
     private boolean hasPublicLombokConstructors(ASTClassDeclaration node) {
         return node.getDeclaredAnnotations()
-                .filter(it -> TypeTestUtil.isA("lombok.NoArgsConstructor", it)
-                        || TypeTestUtil.isA("lombok.RequiredArgsConstructor", it)
-                        || TypeTestUtil.isA("lombok.AllArgsConstructor", it))
-                .any(it -> it.getFlatValue("access")
-                        .filterIs(ASTNamedReferenceExpr.class)
-                        .none(ref -> "PRIVATE".equals(ref.getName())));
+                   .filter(it -> TypeTestUtil.isA("lombok.NoArgsConstructor", it)
+                       || TypeTestUtil.isA("lombok.RequiredArgsConstructor", it)
+                       || TypeTestUtil.isA("lombok.AllArgsConstructor", it))
+                   .any(it -> it.getFlatValue("access").filterIs(ASTNamedReferenceExpr.class).none(ref -> "PRIVATE".equals(ref.getName())));
     }
 
     private boolean hasNoSubclasses(ASTClassDeclaration klass) {
         return klass.getRoot()
-                .descendants(ASTTypeDeclaration.class)
-                .crossFindBoundaries()
-                .none(it -> doesExtend(it, klass));
+                    .descendants(ASTTypeDeclaration.class)
+                    .crossFindBoundaries()
+                    .none(it -> doesExtend(it, klass));
     }
 
     private boolean doesExtend(ASTTypeDeclaration sub, ASTClassDeclaration superClass) {
@@ -56,7 +54,8 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
 
     private boolean hasOnlyPrivateCtors(ASTClassDeclaration node) {
         return node.getDeclarations(ASTConstructorDeclaration.class).all(it -> it.getVisibility() == V_PRIVATE)
-                && (node.getVisibility() == V_PRIVATE // then the default ctor is private
-                        || node.getDeclarations(ASTConstructorDeclaration.class).nonEmpty());
+            && (node.getVisibility() == V_PRIVATE // then the default ctor is private
+            || node.getDeclarations(ASTConstructorDeclaration.class).nonEmpty());
     }
+
 }

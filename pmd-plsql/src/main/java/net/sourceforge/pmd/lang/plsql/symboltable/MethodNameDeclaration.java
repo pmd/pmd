@@ -1,7 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.plsql.symboltable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameter;
@@ -9,8 +13,6 @@ import net.sourceforge.pmd.lang.plsql.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.plsql.ast.ASTMethodDeclarator;
 import net.sourceforge.pmd.lang.plsql.ast.ASTTriggerTimingPointSection;
 import net.sourceforge.pmd.lang.symboltable.AbstractNameDeclaration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MethodNameDeclaration extends AbstractNameDeclaration {
     private static final Logger LOG = LoggerFactory.getLogger(MethodNameDeclaration.class);
@@ -81,8 +83,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
 
         // compare parameter count - this catches the case where there are no
         // params, too
-        if (((ASTMethodDeclarator) other.node).getParameterCount()
-                != ((ASTMethodDeclarator) node).getParameterCount()) {
+        if (((ASTMethodDeclarator) other.node).getParameterCount() != ((ASTMethodDeclarator) node)
+                .getParameterCount()) {
             return false;
         }
 
@@ -91,10 +93,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         // node.getChild(0);
         // SRT ASTFormalParameters otherParams = (ASTFormalParameters)
         // other.node.getChild(0);
-        ASTFormalParameters myParams =
-                node.descendants(ASTFormalParameters.class).first();
-        ASTFormalParameters otherParams =
-                other.node.descendants(ASTFormalParameters.class).first();
+        ASTFormalParameters myParams = node.descendants(ASTFormalParameters.class).first();
+        ASTFormalParameters otherParams = other.node.descendants(ASTFormalParameters.class).first();
         for (int i = 0; i < ((ASTMethodDeclarator) node).getParameterCount(); i++) {
             ASTFormalParameter myParam = (ASTFormalParameter) myParams.getChild(i);
             ASTFormalParameter otherParam = (ASTFormalParameter) otherParams.getChild(i);
@@ -144,10 +144,8 @@ public class MethodNameDeclaration extends AbstractNameDeclaration {
         } catch (Exception e) {
             LOG.trace(
                     "MethodNameDeclaration problem for {} of class {} => {}/{}",
-                    node,
-                    node.getClass().getCanonicalName(),
-                    node.getBeginLine(),
-                    node.getBeginColumn());
+                            node, node.getClass().getCanonicalName(),
+                            node.getBeginLine(), node.getBeginColumn());
             // @TODO SRT restore the thrown exception - throw e;
             return 0;
         }

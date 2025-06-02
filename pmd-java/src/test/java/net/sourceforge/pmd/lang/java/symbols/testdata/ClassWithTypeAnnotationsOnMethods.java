@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.symbols.testdata;
 
 import java.io.Serializable;
 import java.util.List;
+
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.B;
 
@@ -36,15 +37,16 @@ public abstract class ClassWithTypeAnnotationsOnMethods {
 
     abstract <@A T, E extends @B Cloneable & @A Serializable> E bOnTypeParmBoundIntersection(T t);
 
+
     abstract void abOnReceiver(@A @B ClassWithTypeAnnotationsOnMethods this);
 
     public static class CtorOwner {
 
-        CtorOwner(@A @B int i) {}
+        CtorOwner(@A @B int i) { }
 
-        @A
-        CtorOwner() {}
+        @A CtorOwner() { }
 
         CtorOwner(String i, int x) throws @A Exception {}
     }
+
 }

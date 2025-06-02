@@ -1,12 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -62,11 +64,10 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
         checkMemberAccess(data, node, symbol, reportedNodes);
     }
 
-    static void checkMemberAccess(
-            RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
+    static void checkMemberAccess(RuleContext ruleContext, JavaNode refExpr, JAccessibleElementSymbol sym, Set<JavaNode> reportedNodes) {
         if (Modifier.isPrivate(sym.getModifiers())
-                && !Objects.equals(
-                        sym.getEnclosingClass(), refExpr.getEnclosingType().getSymbol())) {
+            && !Objects.equals(sym.getEnclosingClass(),
+                               refExpr.getEnclosingType().getSymbol())) {
 
             JavaNode node = sym.tryGetNode();
             if (node == null && JConstructorSymbol.CTOR_NAME.equals(sym.getSimpleName())) {
@@ -75,8 +76,7 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
             }
             assert node != null : "Node should be in the same compilation unit";
             if (reportedNodes.add(node)) {
-                ruleContext.addViolation(
-                        node, stripPackageName(refExpr.getEnclosingType().getSymbol()));
+                ruleContext.addViolation(node, stripPackageName(refExpr.getEnclosingType().getSymbol()));
             }
         }
     }
@@ -94,6 +94,6 @@ public class AccessorMethodGenerationRule extends AbstractJavaRulechainRule {
         if (p.isEmpty()) {
             return canoName;
         }
-        return canoName.substring(p.length() + 1); // +1 for the dot
+        return canoName.substring(p.length() + 1); //+1 for the dot
     }
 }

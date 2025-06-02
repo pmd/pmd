@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.ast;
 
 /**
@@ -11,6 +12,8 @@ package net.sourceforge.pmd.lang.ast;
  */
 public interface RootNode extends Node {
 
+
     @Override
     AstInfo<? extends RootNode> getAstInfo();
+
 }

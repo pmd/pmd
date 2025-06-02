@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.SemanticException;
@@ -32,8 +35,6 @@ import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.util.AssertionUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Internal API.
@@ -84,31 +85,35 @@ public final class InternalApiBridge {
      * rules are applied, so several semantic exceptions may be collected.
      */
     public static void forceTypeResolutionPhase(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants(TypeNode.class).crossFindBoundaries().forEach(typeNode -> {
-            try {
-                typeNode.getTypeMirror();
-            } catch (SemanticException e) {
-                processor.getLogger().acceptError(e);
-            }
-        });
+        root.descendants(TypeNode.class)
+            .crossFindBoundaries()
+            .forEach(typeNode -> {
+                try {
+                    typeNode.getTypeMirror();
+                } catch (SemanticException e) {
+                    processor.getLogger().acceptError(e);
+                }
+            });
     }
 
     public static void usageResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants(ASTNamedReferenceExpr.class).crossFindBoundaries().forEach(node -> {
-            JVariableSymbol sym = node.getReferencedSym();
-            if (sym != null) {
-                ASTVariableId reffed = sym.tryGetNode();
-                if (reffed != null) { // declared in this file
-                    reffed.addUsage(node);
+        root.descendants(ASTNamedReferenceExpr.class)
+            .crossFindBoundaries()
+            .forEach(node -> {
+                JVariableSymbol sym = node.getReferencedSym();
+                if (sym != null) {
+                    ASTVariableId reffed = sym.tryGetNode();
+                    if (reffed != null) { // declared in this file
+                        reffed.addUsage(node);
+                    }
                 }
-            }
-        });
+            });
     }
 
     public static void overrideResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
         root.descendants(ASTTypeDeclaration.class)
-                .crossFindBoundaries()
-                .forEach(OverrideResolutionPass::resolveOverrides);
+            .crossFindBoundaries()
+            .forEach(OverrideResolutionPass::resolveOverrides);
     }
 
     public static @Nullable JTypeMirror getTypeMirrorInternal(TypeNode node) {
@@ -141,8 +146,7 @@ public final class InternalApiBridge {
         methodReference.setCompileTimeDecl(methodType);
     }
 
-    public static void initTypeResolver(
-            ASTCompilationUnit acu, JavaAstProcessor processor, TypeInferenceLogger logger) {
+    public static void initTypeResolver(ASTCompilationUnit acu, JavaAstProcessor processor, TypeInferenceLogger logger) {
         acu.setTypeResolver(new LazyTypeResolver(processor, logger));
     }
 

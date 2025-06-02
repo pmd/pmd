@@ -15,6 +15,7 @@ public class FooRuleWithLanguageSetInJava extends AbstractRule {
         setLanguage(DummyLanguageModule.getInstance());
     }
 
+
     @Override
     public void apply(Node node, RuleContext ctx) {
         // do nothing

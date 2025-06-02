@@ -9,4 +9,6 @@ import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 /**
  * Base class for kotlin visitors.
  */
-public abstract class KotlinVisitorBase<P, R> extends AstVisitorBase<P, R> implements KotlinVisitor<P, R> {}
+public abstract class KotlinVisitorBase<P, R> extends AstVisitorBase<P, R> implements KotlinVisitor<P, R> {
+
+}

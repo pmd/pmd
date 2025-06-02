@@ -7,6 +7,10 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -17,8 +21,6 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Unresolved <i>external reference</i> to a class.
@@ -59,6 +61,7 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
     public boolean isUnresolved() {
         return true;
     }
+
 
     @Override
     public @Nullable JExecutableSymbol getEnclosingMethod() {
@@ -101,6 +104,7 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
         }
     }
 
+
     @Nullable
     @Override
     public JClassSymbol getSuperclass() {
@@ -112,15 +116,18 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
         return Collections.emptyList();
     }
 
+
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
         return Collections.emptyList();
     }
 
+
     @Override
     public @Nullable JClassType getSuperclassType(Substitution substitution) {
         return getTypeSystem().OBJECT;
     }
+
 
     @Override
     public List<JClassSymbol> getDeclaredClasses() {
@@ -172,6 +179,7 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
         return Modifier.PUBLIC;
     }
 
+
     @Nullable
     @Override
     public JTypeDeclSymbol getArrayComponent() {
@@ -207,4 +215,5 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
     public int hashCode() {
         return SymbolEquality.hash(this);
     }
+
 }

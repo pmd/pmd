@@ -9,13 +9,15 @@ import java.util.List;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.Function;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A greedy stream evaluates all axis operations, except for descendants,
@@ -72,8 +74,8 @@ abstract class GreedyNStream<T extends Node> extends IteratorBasedNStream<T> {
     @Override
     public Spliterator<T> spliterator() {
         Spliterator<T> spliter = toList().spliterator();
-        return Spliterators.spliterator(
-                iterator(), spliter.estimateSize(), spliter.characteristics() | Spliterator.NONNULL);
+        return Spliterators.spliterator(iterator(), spliter.estimateSize(),
+                                        spliter.characteristics() | Spliterator.NONNULL);
     }
 
     @Override

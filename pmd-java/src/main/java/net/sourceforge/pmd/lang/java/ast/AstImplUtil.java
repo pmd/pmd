@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.Node;
 
 /**
  * KEEP PRIVATE
@@ -14,7 +15,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 final class AstImplUtil {
 
-    private AstImplUtil() {}
+    private AstImplUtil() {
+
+    }
 
     public static String getLastSegment(String nameWithDots, char sep) {
         assert nameWithDots != null;
@@ -37,8 +40,10 @@ final class AstImplUtil {
         return type.isInstance(child) ? type.cast(child) : null;
     }
 
+
     static void bumpParenDepth(ASTExpression expression) {
-        assert expression instanceof AbstractJavaExpr : expression.getClass() + " doesn't have parenDepth attribute!";
+        assert expression instanceof AbstractJavaExpr
+            : expression.getClass() + " doesn't have parenDepth attribute!";
 
         ((AbstractJavaExpr) expression).bumpParenDepth();
     }

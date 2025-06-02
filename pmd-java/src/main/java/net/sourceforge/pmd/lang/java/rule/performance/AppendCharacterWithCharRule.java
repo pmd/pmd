@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -32,14 +33,15 @@ public class AppendCharacterWithCharRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTStringLiteral node, Object data) {
         if (node.getParent() instanceof ASTArgumentList
-                && node.length() == 1
-                && ((ASTArgumentList) node.getParent()).size() == 1) {
+            && node.length() == 1
+            && ((ASTArgumentList) node.getParent()).size() == 1) {
             JavaNode callParent = node.getParent().getParent();
             if (callParent instanceof ASTMethodCall) {
                 ASTMethodCall call = (ASTMethodCall) callParent;
                 if ("append".equals(call.getMethodName())
-                        && (TypeTestUtil.isDeclaredInClass(StringBuilder.class, call.getMethodType())
-                                || TypeTestUtil.isDeclaredInClass(StringBuffer.class, call.getMethodType()))) {
+                    && (TypeTestUtil.isDeclaredInClass(StringBuilder.class, call.getMethodType())
+                    || TypeTestUtil.isDeclaredInClass(StringBuffer.class, call.getMethodType()))
+                ) {
                     asCtx(data).addViolation(node);
                 }
             }

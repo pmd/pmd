@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.renderers;
 
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
@@ -15,8 +16,8 @@ class CSVRendererTest extends AbstractRendererTest {
 
     @Override
     String getExpected() {
-        return getHeader() + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\""
-                + EOL;
+        return getHeader()
+                + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + EOL;
     }
 
     @Override

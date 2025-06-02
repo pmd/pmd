@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -36,6 +38,7 @@ class SourceManager implements AutoCloseable {
         files.forEach(f -> fileByPathId.put(f.getFileId(), f));
     }
 
+
     List<TextFile> getTextFiles() {
         return textFiles;
     }
@@ -53,8 +56,7 @@ class SourceManager implements AutoCloseable {
     }
 
     TextDocument get(TextFile file) {
-        TextDocument textDocument =
-                files.computeIfAbsent(file, f -> new SoftReference<>(load(f))).get();
+        TextDocument textDocument = files.computeIfAbsent(file, f -> new SoftReference<>(load(f))).get();
         if (textDocument == null) {
             // SoftReference was freed up already, recreate it
             TextDocument doc = load(file);
@@ -67,6 +69,7 @@ class SourceManager implements AutoCloseable {
     public int size() {
         return files.size();
     }
+
 
     @Override
     public void close() throws IOException {

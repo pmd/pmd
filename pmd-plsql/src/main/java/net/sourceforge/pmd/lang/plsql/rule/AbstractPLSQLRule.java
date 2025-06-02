@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.plsql.rule;
 
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.plsql.ast.ASTInput;
 import net.sourceforge.pmd.lang.plsql.ast.ASTPackageBody;

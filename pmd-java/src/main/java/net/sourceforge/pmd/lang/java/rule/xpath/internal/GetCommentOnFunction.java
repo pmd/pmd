@@ -6,9 +6,11 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.List;
 import java.util.Optional;
+
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
+
 
 /**
  * The XPath query "//VariableDeclarator[contains(getCommentOn(),
@@ -18,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaComment;
  * @author Andy Throgmorton
  */
 public class GetCommentOnFunction extends BaseJavaXPathFunction {
+
 
     public static final GetCommentOnFunction INSTANCE = new GetCommentOnFunction();
 
@@ -30,10 +33,12 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
         return Type.OPTIONAL_STRING;
     }
 
+
     @Override
     public boolean dependsOnContext() {
         return true;
     }
+
 
     @Override
     public FunctionCall makeCallExpression() {
@@ -41,11 +46,7 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
             int codeBeginLine = contextNode.getBeginLine();
             int codeEndLine = contextNode.getEndLine();
 
-            List<JavaComment> commentList = contextNode
-                    .ancestorsOrSelf()
-                    .filterIs(ASTCompilationUnit.class)
-                    .first()
-                    .getComments();
+            List<JavaComment> commentList = contextNode.ancestorsOrSelf().filterIs(ASTCompilationUnit.class).first().getComments();
             for (JavaComment comment : commentList) {
                 FileLocation location = comment.getReportLocation();
                 if (location.getStartLine() == codeBeginLine || location.getEndLine() == codeEndLine) {
@@ -56,3 +57,6 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
         };
     }
 }
+
+
+

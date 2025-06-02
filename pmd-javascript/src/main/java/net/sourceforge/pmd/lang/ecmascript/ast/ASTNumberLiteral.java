@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import java.math.BigDecimal;
+
 import org.mozilla.javascript.ast.NumberLiteral;
 
 public final class ASTNumberLiteral extends AbstractEcmascriptNode<NumberLiteral> {

@@ -6,4 +6,5 @@ package net.sourceforge.pmd.lang.velocity.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
 
-public interface VtlNode extends JjtreeNode<VtlNode> {}
+public interface VtlNode extends JjtreeNode<VtlNode> {
+}

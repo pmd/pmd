@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import java.math.BigInteger;
+
 import org.mozilla.javascript.ast.BigIntLiteral;
 
 public final class ASTBigIntLiteral extends AbstractEcmascriptNode<BigIntLiteral> {

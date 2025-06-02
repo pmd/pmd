@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+
 /**
  * An unnamed pattern, a Java 22 language feature.
  *
@@ -14,7 +15,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables &amp; Patterns</a> (Java 22)
- */
+*/
 public final class ASTUnnamedPattern extends AbstractJavaPattern {
 
     ASTUnnamedPattern(int id) {

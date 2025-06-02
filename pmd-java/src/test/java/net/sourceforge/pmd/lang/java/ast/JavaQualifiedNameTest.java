@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,14 +10,17 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
  */
 class JavaQualifiedNameTest {
+
 
     private <T extends Node> List<T> getNodes(Class<T> target, String code) {
         return JavaParsingHelper.DEFAULT.withDefaultVersion("15").getNodes(target, code);
@@ -32,6 +36,7 @@ class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     void testPackage() {
         final String TEST = "package foo.bar; class Bzaz{}";
@@ -41,6 +46,7 @@ class JavaQualifiedNameTest {
             assertEquals("foo.bar.Bzaz", coid.getBinaryName());
         }
     }
+
 
     @Test
     void testNestedClass() {
@@ -55,6 +61,7 @@ class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     void testNestedEnum() {
         final String TEST = "package foo.bar; class Foo { enum Bzaz{HOO;}}";
@@ -68,6 +75,7 @@ class JavaQualifiedNameTest {
         }
     }
 
+
     @Test
     void testEnum() {
         final String TEST = "package foo.bar; enum Bzaz{HOO;}";
@@ -80,6 +88,7 @@ class JavaQualifiedNameTest {
             assertEquals("foo.bar", coid.getPackageName());
         }
     }
+
 
     @Test
     void testNestedEmptyPackage() {
@@ -104,29 +113,34 @@ class JavaQualifiedNameTest {
         assertEquals("bar.Boron$1Local", classes.get(1).getBinaryName());
     }
 
+
     @Test
     void testLocalClassNameClash() {
         final String TEST = "package bar; class Bzaz{ void foo() { class Local {} } {// initializer\n class Local {}}}";
 
-        List<ASTClassDeclaration> classes = getNodes(ASTClassDeclaration.class, TEST);
+        List<ASTClassDeclaration> classes
+            = getNodes(ASTClassDeclaration.class, TEST);
 
         assertEquals("bar.Bzaz$1Local", classes.get(1).getBinaryName());
         assertEquals("bar.Bzaz$2Local", classes.get(2).getBinaryName());
     }
 
+
     @Test
     void testLocalClassDeepNesting() {
-        final String TEST = "class Bzaz{ void foo() { "
-                + "  class Local { "
-                + "    class Nested {"
-                + "      {"
-                + "        class InnerLocal{}"
-                + "      }"
-                + "    }"
-                + "  }"
-                + "}}";
+        final String TEST
+            = "class Bzaz{ void foo() { "
+            + "  class Local { "
+            + "    class Nested {"
+            + "      {"
+            + "        class InnerLocal{}"
+            + "      }"
+            + "    }"
+            + "  }"
+            + "}}";
 
-        List<ASTClassDeclaration> classes = getNodes(ASTClassDeclaration.class, TEST);
+        List<ASTClassDeclaration> classes
+            = getNodes(ASTClassDeclaration.class, TEST);
 
         assertEquals("Bzaz$1Local", classes.get(1).getBinaryName());
         assertEquals("Local", classes.get(1).getSimpleName());
@@ -142,10 +156,15 @@ class JavaQualifiedNameTest {
         assertFalse(classes.get(3).isNested());
     }
 
+
     @Test
     void testAnonymousClass() {
-        final String TEST =
-                "class Bzaz{ void foo() { " + "  new Runnable() {" + "      public void run() {}" + "  };" + "}}";
+        final String TEST
+            = "class Bzaz{ void foo() { "
+            + "  new Runnable() {"
+            + "      public void run() {}"
+            + "  };"
+            + "}}";
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
@@ -155,16 +174,18 @@ class JavaQualifiedNameTest {
         assertEquals("", classes.get(0).getSimpleName());
     }
 
+
     @Test
     void testMultipleAnonymousClasses() {
-        final String TEST = "class Bzaz{ void foo() { "
-                + "  new Runnable() {"
-                + "      public void run() {}"
-                + "  };"
-                + "  new Runnable() {"
-                + "      public void run() {}"
-                + "  };"
-                + "}}";
+        final String TEST
+            = "class Bzaz{ void foo() { "
+            + "  new Runnable() {"
+            + "      public void run() {}"
+            + "  };"
+            + "  new Runnable() {"
+            + "      public void run() {}"
+            + "  };"
+            + "}}";
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
@@ -173,17 +194,19 @@ class JavaQualifiedNameTest {
         assertEquals("Bzaz$2", classes.get(1).getBinaryName());
     }
 
+
     @Test
     void testNestedAnonymousClass() {
-        final String TEST = "class Bzaz{ void foo() {"
-                + "  new Runnable() {"
-                + "    public void run() {"
-                + "      new Runnable() {"
-                + "        public void run() {}"
-                + "      };"
-                + "    }"
-                + "  };"
-                + "}}";
+        final String TEST
+            = "class Bzaz{ void foo() {"
+            + "  new Runnable() {"
+            + "    public void run() {"
+            + "      new Runnable() {"
+            + "        public void run() {}"
+            + "      };"
+            + "    }"
+            + "  };"
+            + "}}";
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
@@ -192,9 +215,11 @@ class JavaQualifiedNameTest {
         assertEquals("Bzaz$1$1", classes.get(1).getBinaryName());
     }
 
+
     @Test
     void testLocalInAnonymousClass() {
-        final String TEST = "class Bzaz{ void foo() {"
+        final String TEST
+                = "class Bzaz{ void foo() {"
                 + "  new Runnable() {"
                 + "    public void run() {"
                 + "      class FooRunnable {}"
@@ -207,4 +232,6 @@ class JavaQualifiedNameTest {
         assertTrue(classes.get(1).isLocal());
         assertEquals("Bzaz$1$1FooRunnable", classes.get(1).getBinaryName());
     }
+
 }
+

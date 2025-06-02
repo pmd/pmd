@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
@@ -16,6 +17,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
@@ -23,32 +25,28 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
 
+
 public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
 
-    public static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR = intProperty("maxDuplicateLiterals")
-            .desc("Max duplicate literals")
-            .require(positive())
-            .defaultValue(4)
-            .build();
+    public static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
+            = intProperty("maxDuplicateLiterals")
+                             .desc("Max duplicate literals")
+                             .require(positive()).defaultValue(4).build();
 
-    public static final PropertyDescriptor<Integer> MINIMUM_LENGTH_DESCRIPTOR = intProperty("minimumLength")
-            .desc("Minimum string length to check")
-            .require(positive())
-            .defaultValue(3)
-            .build();
+    public static final PropertyDescriptor<Integer> MINIMUM_LENGTH_DESCRIPTOR = intProperty("minimumLength").desc("Minimum string length to check").require(positive()).defaultValue(3).build();
 
-    public static final PropertyDescriptor<Boolean> SKIP_ANNOTATIONS_DESCRIPTOR = booleanProperty("skipAnnotations")
-            .desc("Skip literals within annotations")
-            .defaultValue(false)
-            .build();
+    public static final PropertyDescriptor<Boolean> SKIP_ANNOTATIONS_DESCRIPTOR =
+            booleanProperty("skipAnnotations")
+                    .desc("Skip literals within annotations").defaultValue(false).build();
 
-    private static final PropertyDescriptor<Set<String>> EXCEPTION_LIST_DESCRIPTOR = stringProperty("exceptionList")
-            .desc("List of literals to ignore. "
-                    + "A literal is ignored if its image can be found in this list. "
-                    + "Components of this list should not be surrounded by double quotes.")
-            .map(Collectors.toSet())
-            .defaultValue(Collections.emptySet())
-            .build();
+    private static final PropertyDescriptor<Set<String>> EXCEPTION_LIST_DESCRIPTOR
+        = stringProperty("exceptionList")
+                         .desc("List of literals to ignore. "
+                                          + "A literal is ignored if its image can be found in this list. "
+                                          + "Components of this list should not be surrounded by double quotes.")
+                         .map(Collectors.toSet())
+                         .defaultValue(Collections.emptySet())
+                         .build();
 
     private Map<String, SortedSet<ASTStringLiteral>> literals = new HashMap<>();
     private Set<String> exceptions = new HashSet<>();
@@ -73,6 +71,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
         }
 
         minLength = 2 + getProperty(MINIMUM_LENGTH_DESCRIPTOR);
+
     }
 
     @Override
@@ -89,9 +88,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
             SortedSet<ASTStringLiteral> occurrences = entry.getValue();
             if (occurrences.size() >= threshold) {
                 ASTStringLiteral first = occurrences.first();
-                Object[] args = {
-                    first.toPrintableString(), occurrences.size(), first.getBeginLine(),
-                };
+                Object[] args = { first.toPrintableString(), occurrences.size(), first.getBeginLine(), };
                 asCtx(data).addViolation(first, args);
             }
         }
@@ -113,16 +110,16 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
         }
 
         // Skip literals in annotations
-        if (getProperty(SKIP_ANNOTATIONS_DESCRIPTOR)
-                && node.ancestors(ASTAnnotation.class).nonEmpty()) {
+        if (getProperty(SKIP_ANNOTATIONS_DESCRIPTOR) && node.ancestors(ASTAnnotation.class).nonEmpty()) {
             return data;
         }
 
         // This is a rulechain rule - the nodes might be visited out of order. Therefore sort the occurrences.
-        SortedSet<ASTStringLiteral> occurrences =
-                literals.computeIfAbsent(image, key -> new TreeSet<>(Node.COORDS_COMPARATOR));
+        SortedSet<ASTStringLiteral> occurrences = literals.computeIfAbsent(image,
+                key -> new TreeSet<>(Node.COORDS_COMPARATOR));
         occurrences.add(node);
 
         return data;
     }
+
 }

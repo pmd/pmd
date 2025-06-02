@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -18,17 +19,18 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
-public final class ASTForeachStatement extends AbstractStatement
-        implements InternalInterfaces.VariableIdOwner, ASTLoopStatement {
+public final class ASTForeachStatement extends AbstractStatement implements InternalInterfaces.VariableIdOwner, ASTLoopStatement {
 
     ASTForeachStatement(int id) {
         super(id);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     @Override
     @NonNull
@@ -45,4 +47,6 @@ public final class ASTForeachStatement extends AbstractStatement
     public ASTExpression getIterableExpr() {
         return firstChild(ASTExpression.class);
     }
+
+
 }

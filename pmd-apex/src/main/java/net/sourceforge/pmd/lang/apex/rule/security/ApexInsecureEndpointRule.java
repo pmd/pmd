@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.security;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTBinaryExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclaration;
@@ -56,6 +58,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
         if (binaryNode != null) {
             findInnerInsecureEndpoints(binaryNode, variableNode);
         }
+
     }
 
     private void findInnerInsecureEndpoints(ApexNode<?> node, ASTVariableExpression variableNode) {
@@ -88,6 +91,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
         }
 
         runChecks(node, data);
+
     }
 
     private void runChecks(ApexNode<?> node, Object data) {
@@ -104,6 +108,7 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
             if (httpEndpointStrings.contains(Helper.getFQVariableName(variableNode))) {
                 asCtx(data).addViolation(variableNode);
             }
+
         }
     }
 }

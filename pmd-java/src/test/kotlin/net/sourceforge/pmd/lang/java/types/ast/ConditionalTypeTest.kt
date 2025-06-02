@@ -11,7 +11,9 @@ import io.kotest.property.checkAll
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.ast.internal.PolyResolution
 
-/** @author Clément Fournier */
+/**
+ * @author Clément Fournier
+ */
 class ConditionalTypeTest : FunSpec({}) {
 
     private val tested = mutableMapOf<TypePair, JTypeMirror>()
@@ -19,18 +21,16 @@ class ConditionalTypeTest : FunSpec({}) {
     private fun runTest(t1: JTypeMirror, t2: JTypeMirror, expected: JTypeMirror) {
         val key = TypePair(t1, t2)
         if (key in tested && tested[key] != expected)
-            throw AssertionError(
-                "Already tested $t1 : $t2 against ${tested[key]}, doesn't match $expected"
-            )
+            throw AssertionError("Already tested $t1 : $t2 against ${tested[key]}, doesn't match $expected")
         else if (key in tested) return
 
         tested[key] = expected
 
         withClue("$t1 : $t2 => $expected") {
-            PolyResolution.computeStandaloneConditionalType(testTypeSystem, t1, t2) shouldBe
-                expected
+            PolyResolution.computeStandaloneConditionalType(testTypeSystem, t1, t2) shouldBe expected
         }
     }
+
 
     private fun bnp(t: JTypeMirror, u: JTypeMirror) = TypeConversion.binaryNumericPromotion(t, u)
 
@@ -43,46 +43,72 @@ class ConditionalTypeTest : FunSpec({}) {
         context("Tests for conditional expressions") {
             // we need a suspend fun
 
-            test("Primitive Types") { prims.checkAll { runTest(it, it, it) } }
+            test("Primitive Types") {
+                prims.checkAll {
+                    runTest(it, it, it)
+                }
+            }
 
             test("Primitive Types with left one boxed") {
-                prims.checkAll { runTest(it.box(), it, it) }
+                prims.checkAll {
+                    runTest(it.box(), it, it)
+                }
             }
 
             test("Primitive Types with right one boxed") {
-                prims.checkAll { runTest(it, it.box(), it) }
+                prims.checkAll {
+                    runTest(it, it.box(), it)
+                }
             }
 
             test("Primitive Types all boxed") {
-                prims.checkAll { runTest(it.box(), it.box(), it.box()) }
+                prims.checkAll {
+                    runTest(it.box(), it.box(), it.box())
+                }
             }
 
             test("Primitive Types with left one null") {
-                prims.checkAll { runTest(ts.NULL_TYPE, it, ts.lub(ts.NULL_TYPE, it.box())) }
+                prims.checkAll {
+                    runTest(ts.NULL_TYPE, it, ts.lub(ts.NULL_TYPE, it.box()))
+                }
             }
 
             test("Primitive Types with right one null") {
-                prims.checkAll { runTest(it, ts.NULL_TYPE, ts.lub(it.box(), ts.NULL_TYPE)) }
+                prims.checkAll {
+                    runTest(it, ts.NULL_TYPE, ts.lub(it.box(), ts.NULL_TYPE))
+                }
             }
 
             test("Primitive Types with null and boxed") {
-                prims.checkAll { runTest(it.box(), ts.NULL_TYPE, it.box()) }
+                prims.checkAll {
+                    runTest(it.box(), ts.NULL_TYPE, it.box())
+                }
             }
 
-            test("Reference Types") { refTypes.checkAll { runTest(it, it, it) } }
+            test("Reference Types") {
+                refTypes.checkAll {
+                    runTest(it, it, it)
+                }
+            }
 
             test("Reference Types with left one null") {
-                refTypes.checkAll { runTest(ts.NULL_TYPE, it, it) }
+                refTypes.checkAll {
+                    runTest(ts.NULL_TYPE, it, it)
+                }
             }
 
             test("Reference Types with right one null") {
-                refTypes.checkAll { runTest(it, ts.NULL_TYPE, it) }
+                refTypes.checkAll {
+                    runTest(it, ts.NULL_TYPE, it)
+                }
             }
 
             val shortOnes =
-                listOf(ts.BYTE to ts.SHORT, ts.SHORT to ts.BYTE).flatMap { (a, b) ->
-                    listOf(a to b, a.box() to b, a to b.box())
-                }
+                    listOf(ts.BYTE to ts.SHORT, ts.SHORT to ts.BYTE)
+                            .flatMap { (a, b) ->
+                                listOf(a to b, a.box() to b, a to b.box())
+                            }
+
 
             test("Short Types (BYTE, SHORT)") {
                 shortOnes.forEach { (a, b) -> runTest(a, b, ts.SHORT) }
@@ -90,9 +116,7 @@ class ConditionalTypeTest : FunSpec({}) {
 
             val allPrims: List<JTypeMirror> = (prims.values + prims.values.map { it.box() })
 
-            val bnpOnes =
-                allPrims
-                    .zip(allPrims)
+            val bnpOnes = allPrims.zip(allPrims)
                     .filter { it !in shortOnes }
                     .filter { (a, b) -> a != b }
                     .filter { (a, b) -> a.isNumeric && b.isNumeric }
@@ -109,6 +133,7 @@ class ConditionalTypeTest : FunSpec({}) {
             }
         }
     }
+
 
     /*
 

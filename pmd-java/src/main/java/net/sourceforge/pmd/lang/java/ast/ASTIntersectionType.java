@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
+
 
 /**
  * Represents an <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-4.html#jls-4.9">intersection type</a>.
@@ -25,7 +27,9 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * </pre>
  */
 public final class ASTIntersectionType extends AbstractJavaTypeNode
-        implements ASTReferenceType, InternalInterfaces.AtLeastOneChildOfType<ASTType>, Iterable<ASTType> {
+    implements ASTReferenceType,
+               InternalInterfaces.AtLeastOneChildOfType<ASTType>,
+               Iterable<ASTType> {
 
     ASTIntersectionType(int id) {
         super(id);

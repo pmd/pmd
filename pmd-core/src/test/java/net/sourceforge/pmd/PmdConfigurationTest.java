@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
@@ -23,6 +24,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.Properties;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
@@ -31,16 +36,13 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 
 class PmdConfigurationTest {
 
     @Test
     void testSuppressMarker() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(
-                PMDConfiguration.DEFAULT_SUPPRESS_MARKER, configuration.getSuppressMarker(), "Default suppress marker");
+        assertEquals(PMDConfiguration.DEFAULT_SUPPRESS_MARKER, configuration.getSuppressMarker(), "Default suppress marker");
         configuration.setSuppressMarker("CUSTOM_MARKER");
         assertEquals("CUSTOM_MARKER", configuration.getSuppressMarker(), "Changed suppress marker");
     }
@@ -58,19 +60,15 @@ class PmdConfigurationTest {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Default ClassLoader");
         configuration.prependAuxClasspath("some.jar");
-        assertEquals(
-                ClasspathClassLoader.class, configuration.getClassLoader().getClass(), "Prepended ClassLoader class");
+        assertEquals(ClasspathClassLoader.class, configuration.getClassLoader().getClass(),
+                "Prepended ClassLoader class");
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
         assertEquals(1, urls.length, "urls length");
         assertTrue(urls[0].toString().endsWith("/some.jar"), "url[0]");
-        assertEquals(
-                PMDConfiguration.class.getClassLoader(),
-                configuration.getClassLoader().getParent(),
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader().getParent(),
                 "parent classLoader");
         configuration.setClassLoader(null);
-        assertEquals(
-                PMDConfiguration.class.getClassLoader(),
-                configuration.getClassLoader(),
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(),
                 "Revert to default ClassLoader");
     }
 
@@ -108,21 +106,10 @@ class PmdConfigurationTest {
         URI[] expectedUris = new URI[] {
             new URI(FILE_SCHEME, null, currentWorkingDirectory + "lib1.jar", null),
             new URI(FILE_SCHEME, null, currentWorkingDirectory + "other/directory/lib2.jar", null),
-            new URI(
-                    FILE_SCHEME,
-                    null,
-                    new File("/home/jondoe/libs/lib3.jar")
-                            .getAbsoluteFile()
-                            .toURI()
-                            .getPath(),
-                    null),
+            new URI(FILE_SCHEME, null, new File("/home/jondoe/libs/lib3.jar").getAbsoluteFile().toURI().getPath(), null),
             new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes", null),
             new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes2", null),
-            new URI(
-                    FILE_SCHEME,
-                    null,
-                    new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(),
-                    null),
+            new URI(FILE_SCHEME, null, new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(), null),
             new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
             new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
         };
@@ -155,10 +142,7 @@ class PmdConfigurationTest {
     @Test
     void testSourceEncoding() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(
-                System.getProperty("file.encoding"),
-                configuration.getSourceEncoding().name(),
-                "Default source encoding");
+        assertEquals(System.getProperty("file.encoding"), configuration.getSourceEncoding().name(), "Default source encoding");
         configuration.setSourceEncoding(StandardCharsets.UTF_16LE);
         assertEquals(StandardCharsets.UTF_16LE, configuration.getSourceEncoding(), "Changed source encoding");
     }
@@ -229,10 +213,10 @@ class PmdConfigurationTest {
 
         configuration.setAnalysisCacheLocation("pmd.cache");
         assertNotNull(configuration.getAnalysisCache(), "Not null cache location produces null cache");
-        assertTrue(
-                configuration.getAnalysisCache() instanceof FileAnalysisCache,
+        assertTrue(configuration.getAnalysisCache() instanceof FileAnalysisCache,
                 "File cache location doesn't produce a file cache");
     }
+
 
     @Test
     void testIgnoreIncrementalAnalysis(@TempDir Path folder) throws IOException {
@@ -244,26 +228,19 @@ class PmdConfigurationTest {
         final FileAnalysisCache analysisCache = new FileAnalysisCache(cacheFile);
         configuration.setAnalysisCache(analysisCache);
         assertNotNull(configuration.getAnalysisCache(), "Null cache location accepted");
-        assertFalse(
-                configuration.getAnalysisCache() instanceof NoopAnalysisCache,
-                "Non null cache location, cache should not be noop");
+        assertFalse(configuration.getAnalysisCache() instanceof NoopAnalysisCache, "Non null cache location, cache should not be noop");
 
         configuration.setIgnoreIncrementalAnalysis(true);
-        assertTrue(
-                configuration.getAnalysisCache() instanceof NoopAnalysisCache,
-                "Ignoring incremental analysis should turn the cache into a noop");
+        assertTrue(configuration.getAnalysisCache() instanceof NoopAnalysisCache, "Ignoring incremental analysis should turn the cache into a noop");
     }
 
     @Test
     void testCpdOnlyLanguage() {
         final PMDConfiguration configuration = new PMDConfiguration(LanguageRegistry.CPD);
 
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> configuration.setOnlyRecognizeLanguage(CpdOnlyDummyLanguage.getInstance()));
-        assertThrows(
-                UnsupportedOperationException.class,
-                () -> configuration.setDefaultLanguageVersion(
-                        CpdOnlyDummyLanguage.getInstance().getDefaultVersion()));
+        assertThrows(UnsupportedOperationException.class,
+            () -> configuration.setOnlyRecognizeLanguage(CpdOnlyDummyLanguage.getInstance()));
+        assertThrows(UnsupportedOperationException.class,
+            () -> configuration.setDefaultLanguageVersion(CpdOnlyDummyLanguage.getInstance().getDefaultVersion()));
     }
 }

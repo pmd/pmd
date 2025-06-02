@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.document;
 
 import java.io.IOException;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -72,8 +73,8 @@ abstract class BaseMappedDocument implements TextDocument {
         if (outputRegion.isEmpty()) {
             return TextRegion.caretAt(inputOffset(outputRegion.getStartOffset(), true));
         }
-        return TextRegion.fromBothOffsets(
-                inputOffset(outputRegion.getStartOffset(), true), inputOffset(outputRegion.getEndOffset(), false));
+        return TextRegion.fromBothOffsets(inputOffset(outputRegion.getStartOffset(), true),
+                                          inputOffset(outputRegion.getEndOffset(), false));
     }
 
     /**
@@ -108,6 +109,7 @@ abstract class BaseMappedDocument implements TextDocument {
      * Output offset to input offset.
      */
     protected abstract int localOffsetTransform(int outOffset, boolean inclusive);
+
 
     @Override
     public void close() throws IOException {

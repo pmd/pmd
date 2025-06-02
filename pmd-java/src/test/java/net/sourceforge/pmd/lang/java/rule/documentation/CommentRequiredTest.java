@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.documentation;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -8,10 +9,12 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.test.PmdRuleTst;
-import org.junit.jupiter.api.Test;
 
 class CommentRequiredTest extends PmdRuleTst {
     @Test
@@ -29,8 +32,7 @@ class CommentRequiredTest extends PmdRuleTst {
         // now, try out combinations: only one of the properties is required.
         for (PropertyDescriptor<?> property : propertyDescriptors) {
             setPropertyValue(rule, property, "Required");
-            assertNull(
-                    rule.dysfunctionReason(),
+            assertNull(rule.dysfunctionReason(),
                     "The property " + property.name() + " is set to required, the rule should be functional.");
             setPropertyValue(rule, property, "Ignored");
         }

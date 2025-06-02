@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cache.internal;
 
 import java.io.BufferedInputStream;
@@ -16,6 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
@@ -42,8 +44,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     }
 
     @Override
-    public void checkValidity(
-            RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
         // load cached data before checking for validity
         loadFromFile(cacheFile, files);
         super.checkValidity(ruleSets, auxclassPathClassLoader, files);
@@ -56,12 +57,15 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
      */
     private void loadFromFile(final File cacheFile, Collection<? extends TextFile> files) {
         Map<String, FileId> idMap =
-                files.stream().map(TextFile::getFileId).collect(Collectors.toMap(FileId::getUriString, id -> id));
+            files.stream().map(TextFile::getFileId)
+                 .collect(Collectors.toMap(FileId::getUriString, id -> id));
 
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "load")) {
             if (cacheExists()) {
-                try (DataInputStream inputStream =
-                        new DataInputStream(new BufferedInputStream(Files.newInputStream(cacheFile.toPath()))); ) {
+                try (
+                    DataInputStream inputStream = new DataInputStream(
+                        new BufferedInputStream(Files.newInputStream(cacheFile.toPath())));
+                ) {
                     final String cacheVersion = inputStream.readUTF();
 
                     if (PMDVersion.VERSION.equals(cacheVersion)) {
@@ -77,7 +81,8 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                             final String filePathId = inputStream.readUTF();
                             FileId fileId = idMap.get(filePathId);
                             if (fileId == null) {
-                                LOG.debug("File {} is in the cache but is not part of the analysis", filePathId);
+                                LOG.debug("File {} is in the cache but is not part of the analysis",
+                                          filePathId);
                                 fileId = FileId.fromURI(filePathId);
                             }
                             final long checksum = inputStream.readLong();
@@ -124,8 +129,10 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                 }
             }
 
-            try (DataOutputStream outputStream =
-                    new DataOutputStream(new BufferedOutputStream(Files.newOutputStream(cacheFile.toPath())))) {
+            try (
+                DataOutputStream outputStream = new DataOutputStream(
+                    new BufferedOutputStream(Files.newOutputStream(cacheFile.toPath())))
+            ) {
                 outputStream.writeUTF(pmdVersion);
 
                 outputStream.writeLong(rulesetChecksum);
@@ -133,8 +140,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
                 outputStream.writeLong(executionClassPathChecksum);
 
                 for (final Map.Entry<FileId, AnalysisResult> resultEntry : updatedResultsCache.entrySet()) {
-                    final List<RuleViolation> violations =
-                            resultEntry.getValue().getViolations();
+                    final List<RuleViolation> violations = resultEntry.getValue().getViolations();
 
                     outputStream.writeUTF(resultEntry.getKey().getUriString()); // the path id
                     outputStream.writeLong(resultEntry.getValue().getFileChecksum());

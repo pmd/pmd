@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.apex.ast;
 
-import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 
 /**
  * Root interface implemented by all Apex nodes. Apex nodes wrap a tree
@@ -17,9 +18,10 @@ public interface ApexNode<T> extends GenericNode<ApexNode<?>> {
 
     boolean hasRealLoc();
 
+
     String getDefiningType();
 
+
     @Override
-    @NonNull
-    ASTApexFile getRoot();
+    @NonNull ASTApexFile getRoot();
 }

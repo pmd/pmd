@@ -14,6 +14,7 @@ public enum XPathVersion {
     /** XPath 3.1. */
     XPATH_3_1("3.1");
 
+
     /**
      * The default XPath version for XPath queries.
      */
@@ -22,15 +23,18 @@ public enum XPathVersion {
     private static final Map<String, XPathVersion> BY_NAME = new HashMap<>();
     private final String version;
 
+
     static {
         for (XPathVersion value : values()) {
             BY_NAME.put(value.getXmlName(), value);
         }
     }
 
+
     XPathVersion(String version) {
         this.version = version;
     }
+
 
     /**
      * Returns the string used to represent the version in the XML.

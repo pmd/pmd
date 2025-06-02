@@ -1,13 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-import net.sourceforge.pmd.lang.ast.NodeStream;
-import net.sourceforge.pmd.lang.java.types.JClassType;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 
 /**
  * Represents an annotation.
@@ -23,6 +26,7 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
     ASTAnnotation(int id) {
         super(id);
     }
+
 
     /**
      * Returns the node that represents the name of the annotation.
@@ -43,6 +47,7 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
         return getTypeNode().getSimpleName();
     }
 
+
     /**
      * Returns the list of members, or null if there is none.
      */
@@ -56,6 +61,7 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
     public NodeStream<ASTMemberValuePair> getMembers() {
         return children(ASTAnnotationMemberList.class).children(ASTMemberValuePair.class);
     }
+
 
     @Override
     public Iterator<ASTMemberValuePair> iterator() {
@@ -74,7 +80,8 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
      * }</pre>
      */
     public NodeStream<ASTMemberValue> getFlatValue(String attrName) {
-        return NodeStream.of(getAttribute(attrName)).flatMap(ASTAnnotation::flatValue);
+        return NodeStream.of(getAttribute(attrName))
+                         .flatMap(ASTAnnotation::flatValue);
     }
 
     /**
@@ -89,13 +96,14 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
      * }</pre>
      */
     public NodeStream<ASTMemberValue> getFlatValues() {
-        return getMembers().map(ASTMemberValuePair::getValue).flatMap(ASTAnnotation::flatValue);
+        return getMembers().map(ASTMemberValuePair::getValue)
+                           .flatMap(ASTAnnotation::flatValue);
     }
 
     private static NodeStream<ASTMemberValue> flatValue(ASTMemberValue value) {
         return value instanceof ASTMemberValueArrayInitializer
-                ? value.children(ASTMemberValue.class)
-                : NodeStream.of(value);
+            ? value.children(ASTMemberValue.class)
+            : NodeStream.of(value);
     }
 
     /**
@@ -112,14 +120,15 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
      * @param attrName Name of an attribute
      */
     public @Nullable ASTMemberValue getAttribute(String attrName) {
-        return getMembers()
-                .filter(pair -> pair.getName().equals(attrName))
-                .map(ASTMemberValuePair::getValue)
-                .first();
+        return getMembers().filter(pair -> pair.getName().equals(attrName))
+                           .map(ASTMemberValuePair::getValue)
+                           .first();
     }
+
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 }

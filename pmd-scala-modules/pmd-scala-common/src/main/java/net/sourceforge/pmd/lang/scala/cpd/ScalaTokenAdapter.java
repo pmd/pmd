@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.scala.cpd;
 
 import net.sourceforge.pmd.lang.ast.GenericToken;
@@ -8,6 +9,7 @@ import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
+
 import scala.meta.tokens.Token;
 
 /**
@@ -67,6 +69,9 @@ public class ScalaTokenAdapter implements GenericToken<ScalaTokenAdapter> {
 
     @Override
     public String toString() {
-        return "ScalaTokenAdapter{" + "token=" + token + ", previousComment=" + previousComment + "}";
+        return "ScalaTokenAdapter{"
+                + "token=" + token
+                + ", previousComment=" + previousComment
+                + "}";
     }
 }

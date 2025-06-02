@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.metrics.internal;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
@@ -20,13 +21,17 @@ public class CycloTestRule extends AbstractMetricTestRule.OfInt {
         super(ApexMetrics.CYCLO);
     }
 
+
     @Override
     protected boolean reportOn(Node node) {
         return node instanceof ASTUserClassOrInterface || node instanceof ASTMethod;
     }
 
+
+
     @Override
     protected String violationMessage(Node node, Integer result) {
         return AllMetricsTest.formatApexMessage(node, result, super.violationMessage(node, result));
     }
+
 }

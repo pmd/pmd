@@ -7,10 +7,12 @@ package net.sourceforge.pmd.lang.java.types;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.function.Function;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * Represents the signature of methods and constructors. An instance of
@@ -37,6 +39,7 @@ public interface JMethodSig extends JTypeVisitable {
     /** Return the type system with which this method was created. */
     TypeSystem getTypeSystem();
 
+
     /** Return the symbol of the method or constructor. */
     JExecutableSymbol getSymbol();
 
@@ -53,10 +56,12 @@ public interface JMethodSig extends JTypeVisitable {
         return JConstructorSymbol.CTOR_NAME.equals(getName());
     }
 
+
     /** Return method modifiers as decodable by {@link java.lang.reflect.Modifier}. */
     default int getModifiers() {
         return getSymbol().getModifiers();
     }
+
 
     /**
      * Return the type that declares this method. May be an array type,
@@ -71,6 +76,7 @@ public interface JMethodSig extends JTypeVisitable {
      */
     JTypeMirror getAnnotatedReceiverType();
 
+
     /**
      * Return the result type of the method. If this is a constructor,
      * returns the type of the instance produced by the constructor. In
@@ -79,6 +85,7 @@ public interface JMethodSig extends JTypeVisitable {
      * returns {@code ArrayList<String>}.
      */
     JTypeMirror getReturnType();
+
 
     /**
      * The erasure of a method is a new, non-generic method, whose
@@ -93,6 +100,7 @@ public interface JMethodSig extends JTypeVisitable {
      */
     JMethodSig getErasure();
 
+
     /**
      * Return the types of the formal parameters. If this is a varargs
      * method, the last parameter should have an array type. For generic
@@ -101,6 +109,7 @@ public interface JMethodSig extends JTypeVisitable {
      * returns a singleton list containing {@code String[]}.
      */
     List<JTypeMirror> getFormalParameters();
+
 
     /**
      * Number of formal parameters. A varargs parameter counts as one.
@@ -125,10 +134,12 @@ public interface JMethodSig extends JTypeVisitable {
      */
     List<JTypeMirror> getThrownExceptions();
 
+
     /** Return true if this method is abstract. */
     default boolean isAbstract() {
         return Modifier.isAbstract(getModifiers());
     }
+
 
     /** Return true if this method is static. */
     default boolean isStatic() {
@@ -149,6 +160,7 @@ public interface JMethodSig extends JTypeVisitable {
         // can't compare to the symbol
         return !getTypeParameters().isEmpty();
     }
+
 
     /**
      * Returns the type of the i-th formal parameter of the method.
@@ -177,8 +189,10 @@ public interface JMethodSig extends JTypeVisitable {
         return formals.get(i);
     }
 
+
     @Override
     JMethodSig subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst);
+
 
     @Override
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {

@@ -6,11 +6,12 @@ package net.sourceforge.pmd.lang.java.types.ast.internal;
 
 import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.INVOCATION;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class InvocCtx extends ExprContext {
 

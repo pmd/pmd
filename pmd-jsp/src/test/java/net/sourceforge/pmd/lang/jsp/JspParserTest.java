@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.jsp;
 
-import net.sourceforge.pmd.lang.jsp.ast.AbstractJspNodesTst;
 import org.junit.jupiter.api.Test;
+
+import net.sourceforge.pmd.lang.jsp.ast.AbstractJspNodesTst;
 
 /**
  * Unit test for JSP parsing.
@@ -17,8 +19,7 @@ class JspParserTest extends AbstractJspNodesTst {
      */
     @Test
     void testParseDollar() {
-        jsp.parse(
-                "<span class=\"CostUnit\">$</span><span class=\"CostMain\">129</span><span class=\"CostFrac\">.00</span>");
+        jsp.parse("<span class=\"CostUnit\">$</span><span class=\"CostMain\">129</span><span class=\"CostFrac\">.00</span>");
     }
 
     @Test
@@ -28,8 +29,7 @@ class JspParserTest extends AbstractJspNodesTst {
 
     @Test
     void testParseELAttributeValue() {
-        jsp.parse(
-                "<div class=\"${something == 0 ? 'zero_something' : something == 1 ? 'one_something' : 'other_something'}\">Div content here.</div>");
+        jsp.parse("<div class=\"${something == 0 ? 'zero_something' : something == 1 ? 'one_something' : 'other_something'}\">Div content here.</div>");
     }
 
     /**

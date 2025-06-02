@@ -1,7 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
+
 
 /**
  * Represents a unary operation on a value. The syntactic form may be
@@ -26,15 +28,18 @@ public final class ASTUnaryExpression extends AbstractJavaExpr {
         super(id);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
+
     /** Returns the expression nested within this expression. */
     public ASTExpression getOperand() {
         return (ASTExpression) getChild(0);
     }
+
 
     /** Returns the constant representing the operator of this expression. */
     public UnaryOp getOperator() {
@@ -44,4 +49,5 @@ public final class ASTUnaryExpression extends AbstractJavaExpr {
     void setOp(UnaryOp op) {
         this.operator = op;
     }
+
 }

@@ -8,5 +8,7 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedna
  * Test case for #4133
  */
 public class ClassA {
-    public static class Foo implements net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.Foo {}
+    public static class Foo implements net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryfullyqualifiedname.Foo {
+
+    }
 }

@@ -8,4 +8,5 @@ package javasymbols.testdata;
  * Shadows java.lang.Thread
  *
  */
-public class Thread {}
+public class Thread {
+}

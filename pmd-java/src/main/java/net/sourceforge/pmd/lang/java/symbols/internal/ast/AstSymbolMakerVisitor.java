@@ -8,6 +8,11 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
@@ -18,9 +23,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+
 
 /**
  * Populates symbols on declaration nodes. Cannot be reused.
@@ -70,9 +73,9 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
 
     private boolean isTrueLocalVar(ASTVariableId node) {
         return !(node.isField()
-                || node.isEnumConstant()
-                || node.isRecordComponent()
-                || node.getParent() instanceof ASTFormalParameter);
+            || node.isEnumConstant()
+            || node.isRecordComponent()
+            || node.getParent() instanceof ASTFormalParameter);
     }
 
     @Override
@@ -108,8 +111,8 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
     private String makeBinaryName(ASTTypeDeclaration node) {
         String simpleName = node.getSimpleName();
         if (node.isLocal()) {
-            simpleName =
-                    getNextIndexFromHistogram(currentLocalIndices.getFirst(), node.getSimpleName(), 1) + simpleName;
+            simpleName = getNextIndexFromHistogram(currentLocalIndices.getFirst(), node.getSimpleName(), 1)
+                + simpleName;
         } else if (node.isAnonymous()) {
             simpleName = "" + anonymousCounters.getFirst().incrementAndGet();
         } else if (node.isUnnamedToplevelClass()) {
@@ -117,9 +120,9 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         }
 
         String enclosing = enclosingBinaryNames.peek();
-        return enclosing != null
-                ? enclosing + "$" + simpleName
-                : packageName.isEmpty() ? simpleName : packageName + "." + simpleName;
+        return enclosing != null ? enclosing + "$" + simpleName
+                                 : packageName.isEmpty() ? simpleName
+                                                         : packageName + "." + simpleName;
     }
 
     @Nullable
@@ -135,8 +138,9 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
 
         String enclCanon = enclosingCanonicalNames.getFirst();
         return NO_CANONICAL_NAME.equals(enclCanon)
-                ? null // enclosing has no canonical name, so this one doesn't either
-                : enclCanon + '.' + node.getSimpleName();
+               ? null  // enclosing has no canonical name, so this one doesn't either
+               : enclCanon + '.' + node.getSimpleName();
+
     }
 
     @Override
@@ -146,6 +150,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         enclosingSymbols.pop();
         return null;
     }
+
 
     /**
      * Gets the next available index based on a key and a histogram (map of keys to int counters).
@@ -169,4 +174,5 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
             return count + 1;
         }
     }
+
 }

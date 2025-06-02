@@ -4,4 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.performance.stringtostring;
 
-public class Car {}
+public class Car {
+
+}

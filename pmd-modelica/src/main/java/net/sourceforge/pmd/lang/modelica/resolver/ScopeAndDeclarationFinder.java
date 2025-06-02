@@ -1,10 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.resolver;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+
 import net.sourceforge.pmd.lang.modelica.ast.ASTClassDefinition;
 import net.sourceforge.pmd.lang.modelica.ast.ASTComponentDeclaration;
 import net.sourceforge.pmd.lang.modelica.ast.ASTStoredDefinition;

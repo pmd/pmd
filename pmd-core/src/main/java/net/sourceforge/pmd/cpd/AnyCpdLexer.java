@@ -1,14 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.util.StringUtil;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Simple tokenization into words and separators. Can ignore end-of-line
@@ -26,13 +29,13 @@ public class AnyCpdLexer implements CpdLexer {
 
     private static Pattern makePattern(String singleLineCommentStart) {
         return Pattern.compile(
-                "\\w++" // either a word
-                        + eolCommentFragment(singleLineCommentStart) // a comment
-                        + "|[^\"'\\s]" // a single separator char
-                        + "|\"(?:[^\"\\\\]++|\\\\.)*+\"" // a double-quoted string
-                        + "|'(?:[^'\\\\]++|\\\\.)*+'" // a single-quoted string
-                        + "|\n" // or a newline (to count lines), note that sourcecode normalizes line endings
-                );
+            "\\w++" // either a word
+                + eolCommentFragment(singleLineCommentStart) // a comment
+                + "|[^\"'\\s]" // a single separator char
+                + "|\"(?:[^\"\\\\]++|\\\\.)*+\"" // a double-quoted string
+                + "|'(?:[^'\\\\]++|\\\\.)*+'" // a single-quoted string
+                + "|\n" // or a newline (to count lines), note that sourcecode normalizes line endings
+        );
     }
 
     private final Pattern pattern;

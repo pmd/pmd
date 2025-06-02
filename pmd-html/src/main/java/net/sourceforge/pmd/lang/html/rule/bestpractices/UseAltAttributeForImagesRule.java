@@ -5,11 +5,13 @@
 package net.sourceforge.pmd.lang.html.rule.bestpractices;
 
 import java.util.Arrays;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.html.ast.ASTHtmlElement;
 import net.sourceforge.pmd.lang.html.rule.AbstractHtmlRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.reporting.RuleContext;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 public class UseAltAttributeForImagesRule extends AbstractHtmlRule {
 

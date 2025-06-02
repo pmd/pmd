@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
@@ -20,10 +21,12 @@ public final class ASTTypeArguments extends ASTMaybeEmptyListOf<ASTType> {
         super(id, ASTType.class);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     /**
      * Returns true if this is a diamond, that is, the
@@ -33,4 +36,5 @@ public final class ASTTypeArguments extends ASTMaybeEmptyListOf<ASTType> {
     public boolean isDiamond() {
         return size() == 0;
     }
+
 }

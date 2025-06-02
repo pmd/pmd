@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.visualforce.ast;
 
-import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
@@ -27,7 +26,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import net.sourceforge.pmd.lang.visualforce.DataType;
+
 import org.apache.commons.lang3.exception.ContextedRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import net.sourceforge.pmd.lang.visualforce.DataType;
+
+import com.google.common.reflect.ClassPath;
 
 /**
  * Responsible for storing a mapping of Fields that can be referenced from Visualforce to the type of the field.
@@ -54,8 +57,7 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     private static final Map<String, ClassPath.ClassInfo> SOBJECTS;
 
     static {
-        // see
-        // https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/system_fields.htm
+        // see https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/system_fields.htm
         SYSTEM_FIELDS = new HashMap<>();
         SYSTEM_FIELDS.put("id", DataType.Lookup);
         SYSTEM_FIELDS.put("isdeleted", DataType.Checkbox);
@@ -68,15 +70,15 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
         SYSTEM_FIELDS.put("name", DataType.Text);
 
         try {
-            // see
-            // https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm
+            // see https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm
             // and https://github.com/apex-dev-tools/sobject-types
-            SOBJECTS = Collections.unmodifiableMap(ClassPath.from(ClassLoader.getSystemClassLoader())
-                    .getTopLevelClasses(com.nawforce.runforce.SObjects.Account.class
-                            .getPackage()
-                            .getName())
-                    .stream()
-                    .collect(Collectors.toMap(c -> c.getSimpleName().toLowerCase(Locale.ROOT), Function.identity())));
+            SOBJECTS = Collections.unmodifiableMap(
+                    ClassPath.from(ClassLoader.getSystemClassLoader())
+                            .getTopLevelClasses(com.nawforce.runforce.SObjects.Account.class.getPackage().getName())
+                            .stream()
+                            .collect(Collectors.toMap(c -> c.getSimpleName().toLowerCase(Locale.ROOT),
+                                    Function.identity()))
+            );
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -219,16 +221,11 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
                         }
                     }
                     if (dataType == null) {
-                        LOG.warn(
-                                "Couldn't determine data type of customObjectName={} from {}",
-                                customObjectName,
-                                sfdxCustomFieldPath);
+                        LOG.warn("Couldn't determine data type of customObjectName={} from {}", customObjectName, sfdxCustomFieldPath);
                         dataType = DataType.Unknown;
                     }
                 } else {
-                    LOG.warn(
-                            "Couldn't determine data type of customObjectName={} - no sobject definition found",
-                            customObjectName);
+                    LOG.warn("Couldn't determine data type of customObjectName={} - no sobject definition found", customObjectName);
                     dataType = DataType.Unknown;
                 }
             }
@@ -252,21 +249,18 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
         if (!objectFileProcessed.contains(customObjectName)) {
             try {
                 Document document = documentBuilder.parse(mdapiObjectFile.toFile());
-                NodeList fieldsNodes =
-                        (NodeList) customObjectFieldsExpression.evaluate(document, XPathConstants.NODESET);
+                NodeList fieldsNodes = (NodeList) customObjectFieldsExpression.evaluate(document, XPathConstants.NODESET);
                 for (int i = 0; i < fieldsNodes.getLength(); i++) {
                     Node fieldsNode = fieldsNodes.item(i);
                     Node fullNameNode = (Node) customFieldFullNameExpression.evaluate(fieldsNode, XPathConstants.NODE);
                     if (fullNameNode == null) {
-                        throw new RuntimeException(
-                                "fullName evaluate failed for " + customObjectName + " " + fieldsNode.getTextContent());
+                        throw new RuntimeException("fullName evaluate failed for " + customObjectName + " " + fieldsNode.getTextContent());
                     }
                     String name = fullNameNode.getNodeValue();
                     if (endsWithIgnoreCase(name, CUSTOM_OBJECT_SUFFIX)) {
                         Node typeNode = (Node) customFieldTypeExpression.evaluate(fieldsNode, XPathConstants.NODE);
                         if (typeNode == null) {
-                            throw new RuntimeException("type evaluate failed for object=" + customObjectName
-                                    + ", field=" + name + " " + fieldsNode.getTextContent());
+                            throw new RuntimeException("type evaluate failed for object=" + customObjectName + ", field=" + name + " " + fieldsNode.getTextContent());
                         }
                         String type = typeNode.getNodeValue();
                         DataType dataType = DataType.fromString(type);
@@ -307,8 +301,12 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
         DataType previousType = super.putDataType(name, dataType);
         if (previousType != null && !previousType.equals(dataType)) {
             // It should not be possible to have conflicting types for CustomFields
-            throw new RuntimeException(
-                    "Conflicting types for " + name + ". CurrentType=" + dataType + ", PreviousType=" + previousType);
+            throw new RuntimeException("Conflicting types for "
+                    + name
+                    + ". CurrentType="
+                    + dataType
+                    + ", PreviousType="
+                    + previousType);
         }
         return previousType;
     }

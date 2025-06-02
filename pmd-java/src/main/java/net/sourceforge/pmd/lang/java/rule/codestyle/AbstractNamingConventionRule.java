@@ -1,15 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
+
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil.CaseConvention;
+
 
 /**
  * Base class for naming conventions rule. Not public API, but
@@ -33,19 +36,19 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
 
     /** The argument is interpreted as the display name, and is converted to camel case to get the property name. */
     RegexPropertyBuilder defaultProp(String displayName) {
-        return defaultProp(
-                CaseConvention.SPACE_SEPARATED.convertTo(CaseConvention.CAMEL_CASE, displayName), displayName);
+        return defaultProp(CaseConvention.SPACE_SEPARATED.convertTo(CaseConvention.CAMEL_CASE, displayName), displayName);
     }
 
     /** Returns a pre-filled builder with the given name and display name (for the description). */
     RegexPropertyBuilder defaultProp(String name, String displayName) {
         return PropertyFactory.regexProperty(name + "Pattern")
-                .desc("Regex which applies to " + displayName.trim() + " names")
-                .defaultValue(defaultConvention());
+                              .desc("Regex which applies to " + displayName.trim() + " names")
+                              .defaultValue(defaultConvention());
     }
 
     /** Default regex string for this kind of entities. */
     abstract String defaultConvention();
+
 
     /** Generic "kind" of node, eg "static method" or "utility class". */
     abstract String kindDisplayName(T node, PropertyDescriptor<Pattern> descriptor);
@@ -53,15 +56,14 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
     /** Extracts the name that should be pattern matched. */
     abstract String nameExtractor(T node);
 
+
     void checkMatches(T node, PropertyDescriptor<Pattern> regex, Object data) {
         String name = nameExtractor(node);
         if (!getProperty(regex).matcher(name).matches()) {
-            asCtx(data)
-                    .addViolation(
-                            node,
-                            kindDisplayName(node, regex),
-                            name,
-                            getProperty(regex).toString());
+            asCtx(data).addViolation(node, kindDisplayName(node, regex),
+                                     name,
+                                     getProperty(regex).toString());
         }
     }
+
 }

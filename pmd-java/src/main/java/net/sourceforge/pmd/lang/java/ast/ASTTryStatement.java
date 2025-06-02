@@ -1,10 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
 import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.lang.ast.NodeStream;
+
 
 /**
  * Try statement node.
@@ -25,10 +28,12 @@ public final class ASTTryStatement extends AbstractStatement {
         super(id);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     /**
      * Returns true if this node is a try-with-resources, in which case it
@@ -47,6 +52,7 @@ public final class ASTTryStatement extends AbstractStatement {
         return AstImplUtil.getChildAs(this, 0, ASTResourceList.class);
     }
 
+
     /**
      * Returns the body of this try statement.
      */
@@ -62,6 +68,7 @@ public final class ASTTryStatement extends AbstractStatement {
         return children(ASTCatchClause.class);
     }
 
+
     /**
      * Returns the {@code finally} clause of this try statement, if any.
      *
@@ -71,4 +78,5 @@ public final class ASTTryStatement extends AbstractStatement {
     public ASTFinallyClause getFinallyClause() {
         return firstChild(ASTFinallyClause.class);
     }
+
 }

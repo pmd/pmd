@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.renderers.internal.sarif;
 
-import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+
+import com.google.gson.annotations.SerializedName;
 
 /**
  * This class represents a SARIF report that can be serialized with Gson into Json.
@@ -24,7 +25,6 @@ import java.util.Set;
 public final class SarifLog {
     @SerializedName("$schema")
     private String schema;
-
     private String version;
     private List<Run> runs;
 
@@ -74,8 +74,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.Location.LocationBuilder(id=" + this.id + ", physicalLocation=" + this.physicalLocation
-                        + ")";
+                return "SarifLog.Location.LocationBuilder(id=" + this.id + ", physicalLocation=" + this.physicalLocation + ")";
             }
         }
 
@@ -137,6 +136,7 @@ public final class SarifLog {
         }
     }
 
+
     /**
      * Specifies the location of an artifact.
      */
@@ -197,8 +197,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.ArtifactLocation.ArtifactLocationBuilder(uri=" + this.uri + ", uriBaseId="
-                        + this.uriBaseId + ", index=" + this.index + ")";
+                return "SarifLog.ArtifactLocation.ArtifactLocationBuilder(uri=" + this.uri + ", uriBaseId=" + this.uriBaseId + ", index=" + this.index + ")";
             }
         }
 
@@ -265,9 +264,7 @@ public final class SarifLog {
                 return false;
             }
             ArtifactLocation that = (ArtifactLocation) o;
-            return Objects.equals(uri, that.uri)
-                    && Objects.equals(uriBaseId, that.uriBaseId)
-                    && Objects.equals(index, that.index);
+            return Objects.equals(uri, that.uri) && Objects.equals(uriBaseId, that.uriBaseId) && Objects.equals(index, that.index);
         }
 
         @Override
@@ -277,10 +274,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.ArtifactLocation(uri=" + this.getUri() + ", uriBaseId=" + this.getUriBaseId() + ", index="
-                    + this.getIndex() + ")";
+            return "SarifLog.ArtifactLocation(uri=" + this.getUri() + ", uriBaseId=" + this.getUriBaseId() + ", index=" + this.getIndex() + ")";
         }
     }
+
 
     /**
      * A physical location relevant to a result. Specifies a reference to a programming artifact together with a range
@@ -295,6 +292,7 @@ public final class SarifLog {
             this.region = region;
         }
 
+
         public static final class PhysicalLocationBuilder {
             private ArtifactLocation artifactLocation;
             private Region region;
@@ -308,8 +306,7 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.PhysicalLocation.PhysicalLocationBuilder artifactLocation(
-                    final ArtifactLocation artifactLocation) {
+            public SarifLog.PhysicalLocation.PhysicalLocationBuilder artifactLocation(final ArtifactLocation artifactLocation) {
                 this.artifactLocation = artifactLocation;
                 return this;
             }
@@ -330,8 +327,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.PhysicalLocation.PhysicalLocationBuilder(artifactLocation=" + this.artifactLocation
-                        + ", region=" + this.region + ")";
+                return "SarifLog.PhysicalLocation.PhysicalLocationBuilder(artifactLocation=" + this.artifactLocation + ", region=" + this.region + ")";
             }
         }
 
@@ -389,8 +385,7 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.PhysicalLocation(artifactLocation=" + this.getArtifactLocation() + ", region="
-                    + this.getRegion() + ")";
+            return "SarifLog.PhysicalLocation(artifactLocation=" + this.getArtifactLocation() + ", region=" + this.getRegion() + ")";
         }
     }
 
@@ -407,6 +402,7 @@ public final class SarifLog {
             this.priority = priority;
             this.tags = tags;
         }
+
 
         public static final class PropertyBagBuilder {
             private String ruleset;
@@ -453,8 +449,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.PropertyBag.PropertyBagBuilder(ruleset=" + this.ruleset + ", priority=" + this.priority
-                        + ", tags=" + this.tags + ")";
+                return "SarifLog.PropertyBag.PropertyBagBuilder(ruleset=" + this.ruleset + ", priority=" + this.priority + ", tags=" + this.tags + ")";
             }
         }
 
@@ -519,9 +514,7 @@ public final class SarifLog {
                 return false;
             }
             PropertyBag that = (PropertyBag) o;
-            return Objects.equals(ruleset, that.ruleset)
-                    && Objects.equals(priority, that.priority)
-                    && Objects.equals(tags, that.tags);
+            return Objects.equals(ruleset, that.ruleset) && Objects.equals(priority, that.priority) && Objects.equals(tags, that.tags);
         }
 
         @Override
@@ -531,10 +524,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.PropertyBag(ruleset=" + this.getRuleset() + ", priority=" + this.getPriority() + ", tags="
-                    + this.getTags() + ")";
+            return "SarifLog.PropertyBag(ruleset=" + this.getRuleset() + ", priority=" + this.getPriority() + ", tags=" + this.getTags() + ")";
         }
     }
+
 
     /**
      * A region within an artifact where a result was detected.
@@ -545,13 +538,13 @@ public final class SarifLog {
         private Integer endLine;
         private Integer endColumn;
 
-        private Region(
-                final Integer startLine, final Integer startColumn, final Integer endLine, final Integer endColumn) {
+        private Region(final Integer startLine, final Integer startColumn, final Integer endLine, final Integer endColumn) {
             this.startLine = startLine;
             this.startColumn = startColumn;
             this.endLine = endLine;
             this.endColumn = endColumn;
         }
+
 
         public static final class RegionBuilder {
             private Integer startLine;
@@ -609,8 +602,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.Region.RegionBuilder(startLine=" + this.startLine + ", startColumn=" + this.startColumn
-                        + ", endLine=" + this.endLine + ", endColumn=" + this.endColumn + ")";
+                return "SarifLog.Region.RegionBuilder(startLine=" + this.startLine + ", startColumn=" + this.startColumn + ", endLine=" + this.endLine + ", endColumn=" + this.endColumn + ")";
             }
         }
 
@@ -692,10 +684,7 @@ public final class SarifLog {
                 return false;
             }
             Region region = (Region) o;
-            return Objects.equals(startLine, region.startLine)
-                    && Objects.equals(startColumn, region.startColumn)
-                    && Objects.equals(endLine, region.endLine)
-                    && Objects.equals(endColumn, region.endColumn);
+            return Objects.equals(startLine, region.startLine) && Objects.equals(startColumn, region.startColumn) && Objects.equals(endLine, region.endLine) && Objects.equals(endColumn, region.endColumn);
         }
 
         @Override
@@ -705,10 +694,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.Region(startLine=" + this.getStartLine() + ", startColumn=" + this.getStartColumn()
-                    + ", endLine=" + this.getEndLine() + ", endColumn=" + this.getEndColumn() + ")";
+            return "SarifLog.Region(startLine=" + this.getStartLine() + ", startColumn=" + this.getStartColumn() + ", endLine=" + this.getEndLine() + ", endColumn=" + this.getEndColumn() + ")";
         }
     }
+
 
     /**
      * A result produced by an analysis tool.
@@ -721,13 +710,7 @@ public final class SarifLog {
         private List<Location> locations;
         private PropertyBag properties;
 
-        private Result(
-                final String ruleId,
-                final Integer ruleIndex,
-                final Message message,
-                final String level,
-                final List<Location> locations,
-                final PropertyBag properties) {
+        private Result(final String ruleId, final Integer ruleIndex, final Message message, final String level, final List<Location> locations, final PropertyBag properties) {
             this.ruleId = ruleId;
             this.ruleIndex = ruleIndex;
             this.message = message;
@@ -735,6 +718,7 @@ public final class SarifLog {
             this.locations = locations;
             this.properties = properties;
         }
+
 
         public static final class ResultBuilder {
             private String ruleId;
@@ -812,15 +796,12 @@ public final class SarifLog {
             }
 
             public SarifLog.Result build() {
-                return new SarifLog.Result(
-                        this.ruleId, this.ruleIndex, this.message, this.level, this.locations, this.properties);
+                return new SarifLog.Result(this.ruleId, this.ruleIndex, this.message, this.level, this.locations, this.properties);
             }
 
             @Override
             public String toString() {
-                return "SarifLog.Result.ResultBuilder(ruleId=" + this.ruleId + ", ruleIndex=" + this.ruleIndex
-                        + ", message=" + this.message + ", level=" + this.level + ", locations=" + this.locations
-                        + ", properties=" + this.properties + ")";
+                return "SarifLog.Result.ResultBuilder(ruleId=" + this.ruleId + ", ruleIndex=" + this.ruleIndex + ", message=" + this.message + ", level=" + this.level + ", locations=" + this.locations + ", properties=" + this.properties + ")";
             }
         }
 
@@ -943,12 +924,7 @@ public final class SarifLog {
                 return false;
             }
             Result result = (Result) o;
-            return Objects.equals(ruleId, result.ruleId)
-                    && Objects.equals(ruleIndex, result.ruleIndex)
-                    && Objects.equals(message, result.message)
-                    && Objects.equals(level, result.level)
-                    && Objects.equals(locations, result.locations)
-                    && Objects.equals(properties, result.properties);
+            return Objects.equals(ruleId, result.ruleId) && Objects.equals(ruleIndex, result.ruleIndex) && Objects.equals(message, result.message) && Objects.equals(level, result.level) && Objects.equals(locations, result.locations) && Objects.equals(properties, result.properties);
         }
 
         @Override
@@ -958,11 +934,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.Result(ruleId=" + this.getRuleId() + ", ruleIndex=" + this.getRuleIndex() + ", message="
-                    + this.getMessage() + ", level=" + this.getLevel() + ", locations=" + this.getLocations()
-                    + ", properties=" + this.getProperties() + ")";
+            return "SarifLog.Result(ruleId=" + this.getRuleId() + ", ruleIndex=" + this.getRuleIndex() + ", message=" + this.getMessage() + ", level=" + this.getLevel() + ", locations=" + this.getLocations() + ", properties=" + this.getProperties() + ")";
         }
     }
+
 
     /**
      * Encapsulates a message intended to be read by the end user.
@@ -977,6 +952,7 @@ public final class SarifLog {
             this.markdown = markdown;
             this.id = id;
         }
+
 
         public static final class MessageBuilder {
             private String text;
@@ -1023,8 +999,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.Message.MessageBuilder(text=" + this.text + ", markdown=" + this.markdown + ", id="
-                        + this.id + ")";
+                return "SarifLog.Message.MessageBuilder(text=" + this.text + ", markdown=" + this.markdown + ", id=" + this.id + ")";
             }
         }
 
@@ -1089,9 +1064,7 @@ public final class SarifLog {
                 return false;
             }
             Message message = (Message) o;
-            return Objects.equals(text, message.text)
-                    && Objects.equals(markdown, message.markdown)
-                    && Objects.equals(id, message.id);
+            return Objects.equals(text, message.text) && Objects.equals(markdown, message.markdown) && Objects.equals(id, message.id);
         }
 
         @Override
@@ -1101,10 +1074,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.Message(text=" + this.getText() + ", markdown=" + this.getMarkdown() + ", id="
-                    + this.getId() + ")";
+            return "SarifLog.Message(text=" + this.getText() + ", markdown=" + this.getMarkdown() + ", id=" + this.getId() + ")";
         }
     }
+
 
     /**
      * Describes a single run of an analysis tool, and contains the reported output of that run.
@@ -1119,6 +1092,7 @@ public final class SarifLog {
             this.results = results;
             this.invocations = invocations;
         }
+
 
         public static final class RunBuilder {
             private Tool tool;
@@ -1194,22 +1168,21 @@ public final class SarifLog {
             public SarifLog.Run build() {
                 List<Result> results;
                 switch (this.results == null ? 0 : this.results.size()) {
-                    case 0:
-                        results = Collections.emptyList();
-                        break;
-                    case 1:
-                        results = Collections.singletonList(this.results.get(0));
-                        break;
-                    default:
-                        results = Collections.unmodifiableList(new ArrayList<>(this.results));
+                case 0:
+                    results = Collections.emptyList();
+                    break;
+                case 1:
+                    results = Collections.singletonList(this.results.get(0));
+                    break;
+                default:
+                    results = Collections.unmodifiableList(new ArrayList<>(this.results));
                 }
                 return new SarifLog.Run(this.tool, results, this.invocations);
             }
 
             @Override
             public String toString() {
-                return "SarifLog.Run.RunBuilder(tool=" + this.tool + ", results=" + this.results + ", invocations="
-                        + this.invocations + ")";
+                return "SarifLog.Run.RunBuilder(tool=" + this.tool + ", results=" + this.results + ", invocations=" + this.invocations + ")";
             }
         }
 
@@ -1282,9 +1255,7 @@ public final class SarifLog {
                 return false;
             }
             Run run = (Run) o;
-            return Objects.equals(tool, run.tool)
-                    && Objects.equals(results, run.results)
-                    && Objects.equals(invocations, run.invocations);
+            return Objects.equals(tool, run.tool) && Objects.equals(results, run.results) && Objects.equals(invocations, run.invocations);
         }
 
         @Override
@@ -1294,10 +1265,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.Run(tool=" + this.getTool() + ", results=" + this.getResults() + ", invocations="
-                    + this.getInvocations() + ")";
+            return "SarifLog.Run(tool=" + this.getTool() + ", results=" + this.getResults() + ", invocations=" + this.getInvocations() + ")";
         }
     }
+
 
     /**
      * The analysis tool that was run.
@@ -1308,6 +1279,7 @@ public final class SarifLog {
         private Tool(final Component driver) {
             this.driver = driver;
         }
+
 
         public static final class ToolBuilder {
             private Component driver;
@@ -1377,6 +1349,7 @@ public final class SarifLog {
         }
     }
 
+
     /**
      * A component, such as a plug-in or the driver, of the analysis tool that was run.
      */
@@ -1386,11 +1359,7 @@ public final class SarifLog {
         private String informationUri;
         private List<ReportingDescriptor> rules;
 
-        private Component(
-                final String name,
-                final String version,
-                final String informationUri,
-                final List<ReportingDescriptor> rules) {
+        private Component(final String name, final String version, final String informationUri, final List<ReportingDescriptor> rules) {
             this.name = name;
             this.version = version;
             this.informationUri = informationUri;
@@ -1453,8 +1422,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.Component.ComponentBuilder(name=" + this.name + ", version=" + this.version
-                        + ", informationUri=" + this.informationUri + ", rules=" + this.rules + ")";
+                return "SarifLog.Component.ComponentBuilder(name=" + this.name + ", version=" + this.version + ", informationUri=" + this.informationUri + ", rules=" + this.rules + ")";
             }
         }
 
@@ -1463,11 +1431,7 @@ public final class SarifLog {
         }
 
         public SarifLog.Component.ComponentBuilder toBuilder() {
-            return new SarifLog.Component.ComponentBuilder()
-                    .name(this.name)
-                    .version(this.version)
-                    .informationUri(this.informationUri)
-                    .rules(this.rules);
+            return new SarifLog.Component.ComponentBuilder().name(this.name).version(this.version).informationUri(this.informationUri).rules(this.rules);
         }
 
         /**
@@ -1544,10 +1508,7 @@ public final class SarifLog {
                 return false;
             }
             Component component = (Component) o;
-            return Objects.equals(name, component.name)
-                    && Objects.equals(version, component.version)
-                    && Objects.equals(informationUri, component.informationUri)
-                    && Objects.equals(rules, component.rules);
+            return Objects.equals(name, component.name) && Objects.equals(version, component.version) && Objects.equals(informationUri, component.informationUri) && Objects.equals(rules, component.rules);
         }
 
         @Override
@@ -1557,10 +1518,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.Component(name=" + this.getName() + ", version=" + this.getVersion() + ", informationUri="
-                    + this.getInformationUri() + ", rules=" + this.getRules() + ")";
+            return "SarifLog.Component(name=" + this.getName() + ", version=" + this.getVersion() + ", informationUri=" + this.getInformationUri() + ", rules=" + this.getRules() + ")";
         }
     }
+
 
     /**
      * Metadata that describes a specific report produced by the tool, as part of the analysis it provides or its runtime
@@ -1577,16 +1538,7 @@ public final class SarifLog {
         private PropertyBag properties;
         private ReportingConfiguration defaultConfiguration;
 
-        private ReportingDescriptor(
-                final String id,
-                final String name,
-                final MultiformatMessage shortDescription,
-                final MultiformatMessage fullDescription,
-                final MultiformatMessage messageStrings,
-                final String helpUri,
-                final MultiformatMessage help,
-                final PropertyBag properties,
-                final ReportingConfiguration defaultConfiguration) {
+        private ReportingDescriptor(final String id, final String name, final MultiformatMessage shortDescription, final MultiformatMessage fullDescription, final MultiformatMessage messageStrings, final String helpUri, final MultiformatMessage help, final PropertyBag properties, final ReportingConfiguration defaultConfiguration) {
             this.id = id;
             this.name = name;
             this.shortDescription = shortDescription;
@@ -1597,6 +1549,7 @@ public final class SarifLog {
             this.properties = properties;
             this.defaultConfiguration = defaultConfiguration;
         }
+
 
         public static final class ReportingDescriptorBuilder {
             private String id;
@@ -1639,8 +1592,7 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder shortDescription(
-                    final MultiformatMessage shortDescription) {
+            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder shortDescription(final MultiformatMessage shortDescription) {
                 this.shortDescription = shortDescription;
                 return this;
             }
@@ -1651,8 +1603,7 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder fullDescription(
-                    final MultiformatMessage fullDescription) {
+            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder fullDescription(final MultiformatMessage fullDescription) {
                 this.fullDescription = fullDescription;
                 return this;
             }
@@ -1664,8 +1615,7 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder messageStrings(
-                    final MultiformatMessage messageStrings) {
+            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder messageStrings(final MultiformatMessage messageStrings) {
                 this.messageStrings = messageStrings;
                 return this;
             }
@@ -1705,32 +1655,18 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder defaultConfiguration(
-                    final ReportingConfiguration defaultConfiguration) {
+            public SarifLog.ReportingDescriptor.ReportingDescriptorBuilder defaultConfiguration(final ReportingConfiguration defaultConfiguration) {
                 this.defaultConfiguration = defaultConfiguration;
                 return this;
             }
 
             public SarifLog.ReportingDescriptor build() {
-                return new SarifLog.ReportingDescriptor(
-                        this.id,
-                        this.name,
-                        this.shortDescription,
-                        this.fullDescription,
-                        this.messageStrings,
-                        this.helpUri,
-                        this.help,
-                        this.properties,
-                        this.defaultConfiguration);
+                return new SarifLog.ReportingDescriptor(this.id, this.name, this.shortDescription, this.fullDescription, this.messageStrings, this.helpUri, this.help, this.properties, this.defaultConfiguration);
             }
 
             @Override
             public String toString() {
-                return "SarifLog.ReportingDescriptor.ReportingDescriptorBuilder(id=" + this.id + ", name=" + this.name
-                        + ", shortDescription=" + this.shortDescription + ", fullDescription=" + this.fullDescription
-                        + ", messageStrings=" + this.messageStrings + ", helpUri=" + this.helpUri + ", help="
-                        + this.help + ", properties=" + this.properties + ", defaultConfiguration="
-                        + this.defaultConfiguration + ")";
+                return "SarifLog.ReportingDescriptor.ReportingDescriptorBuilder(id=" + this.id + ", name=" + this.name + ", shortDescription=" + this.shortDescription + ", fullDescription=" + this.fullDescription + ", messageStrings=" + this.messageStrings + ", helpUri=" + this.helpUri + ", help=" + this.help + ", properties=" + this.properties + ", defaultConfiguration=" + this.defaultConfiguration + ")";
             }
         }
 
@@ -1905,40 +1841,20 @@ public final class SarifLog {
                 return false;
             }
             ReportingDescriptor that = (ReportingDescriptor) o;
-            return Objects.equals(id, that.id)
-                    && Objects.equals(name, that.name)
-                    && Objects.equals(shortDescription, that.shortDescription)
-                    && Objects.equals(fullDescription, that.fullDescription)
-                    && Objects.equals(messageStrings, that.messageStrings)
-                    && Objects.equals(helpUri, that.helpUri)
-                    && Objects.equals(help, that.help)
-                    && Objects.equals(properties, that.properties)
-                    && Objects.equals(defaultConfiguration, that.defaultConfiguration);
+            return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(shortDescription, that.shortDescription) && Objects.equals(fullDescription, that.fullDescription) && Objects.equals(messageStrings, that.messageStrings) && Objects.equals(helpUri, that.helpUri) && Objects.equals(help, that.help) && Objects.equals(properties, that.properties) && Objects.equals(defaultConfiguration, that.defaultConfiguration);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(
-                    id,
-                    name,
-                    shortDescription,
-                    fullDescription,
-                    messageStrings,
-                    helpUri,
-                    help,
-                    properties,
-                    defaultConfiguration);
+            return Objects.hash(id, name, shortDescription, fullDescription, messageStrings, helpUri, help, properties, defaultConfiguration);
         }
 
         @Override
         public String toString() {
-            return "SarifLog.ReportingDescriptor(id=" + this.getId() + ", name=" + this.getName()
-                    + ", shortDescription=" + this.getShortDescription() + ", fullDescription="
-                    + this.getFullDescription() + ", messageStrings=" + this.getMessageStrings() + ", helpUri="
-                    + this.getHelpUri() + ", help=" + this.getHelp() + ", properties=" + this.getProperties()
-                    + ", defaultConfiguration=" + this.getDefaultConfiguration() + ")";
+            return "SarifLog.ReportingDescriptor(id=" + this.getId() + ", name=" + this.getName() + ", shortDescription=" + this.getShortDescription() + ", fullDescription=" + this.getFullDescription() + ", messageStrings=" + this.getMessageStrings() + ", helpUri=" + this.getHelpUri() + ", help=" + this.getHelp() + ", properties=" + this.getProperties() + ", defaultConfiguration=" + this.getDefaultConfiguration() + ")";
         }
     }
+
 
     /**
      * Configure the Sarif reporting defined by a reportingDescriptor.
@@ -1951,8 +1867,7 @@ public final class SarifLog {
         private Double rank;
         private PropertyBag parameters;
 
-        private ReportingConfiguration(
-                final Boolean enabled, final String level, final Double rank, final PropertyBag parameters) {
+        private ReportingConfiguration(final Boolean enabled, final String level, final Double rank, final PropertyBag parameters) {
             this.enabled = enabled;
             this.level = level;
             this.rank = rank;
@@ -2002,8 +1917,7 @@ public final class SarifLog {
             /**
              * Define configuration information (propertyBag) specific to the Descriptor.
              */
-            public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder parameters(
-                    final PropertyBag parameters) {
+            public SarifLog.ReportingConfiguration.ReportingConfigurationBuilder parameters(final PropertyBag parameters) {
                 this.parameters = parameters;
                 return this;
             }
@@ -2014,8 +1928,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.ReportingConfiguration.ReportingConfigurationBuilder(enabled=" + this.enabled
-                        + ", level=" + this.level + ", rank=" + this.rank + ", parameters=" + this.parameters + ")";
+                return "SarifLog.ReportingConfiguration.ReportingConfigurationBuilder(enabled=" + this.enabled + ", level=" + this.level + ", rank=" + this.rank + ", parameters=" + this.parameters + ")";
             }
         }
 
@@ -2097,10 +2010,7 @@ public final class SarifLog {
                 return false;
             }
             ReportingConfiguration that = (ReportingConfiguration) o;
-            return Objects.equals(enabled, that.enabled)
-                    && Objects.equals(level, that.level)
-                    && Objects.equals(rank, that.rank)
-                    && Objects.equals(parameters, that.parameters);
+            return Objects.equals(enabled, that.enabled) && Objects.equals(level, that.level) && Objects.equals(rank, that.rank) && Objects.equals(parameters, that.parameters);
         }
 
         @Override
@@ -2110,10 +2020,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.ReportingConfiguration(enabled=" + this.getEnabled() + ", level=" + this.getLevel()
-                    + ", rank=" + this.getRank() + ", parameters=" + this.getParameters() + ")";
+            return "SarifLog.ReportingConfiguration(enabled=" + this.getEnabled() + ", level=" + this.getLevel() + ", rank=" + this.getRank() + ", parameters=" + this.getParameters() + ")";
         }
     }
+
 
     /**
      * A message string or message format string rendered in multiple formats.
@@ -2165,8 +2075,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.MultiformatMessage.MultiformatMessageBuilder(text=" + this.text + ", markdown="
-                        + this.markdown + ")";
+                return "SarifLog.MultiformatMessage.MultiformatMessageBuilder(text=" + this.text + ", markdown=" + this.markdown + ")";
             }
         }
 
@@ -2227,6 +2136,7 @@ public final class SarifLog {
             return "SarifLog.MultiformatMessage(text=" + this.getText() + ", markdown=" + this.getMarkdown() + ")";
         }
     }
+
 
     /**
      * An exception information object, for the tool runtime errors.
@@ -2310,6 +2220,7 @@ public final class SarifLog {
         }
     }
 
+
     /**
      * An associated rule to the toolConfigurationNotification.
      */
@@ -2392,6 +2303,7 @@ public final class SarifLog {
         }
     }
 
+
     /**
      * An invocation property to specify tool configuration errors.
      */
@@ -2417,8 +2329,7 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder associatedRule(
-                    final AssociatedRule associatedRule) {
+            public SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder associatedRule(final AssociatedRule associatedRule) {
                 this.associatedRule = associatedRule;
                 return this;
             }
@@ -2428,8 +2339,7 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder message(
-                    final Message message) {
+            public SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder message(final Message message) {
                 this.message = message;
                 return this;
             }
@@ -2440,8 +2350,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder(associatedRule="
-                        + this.associatedRule + ", message=" + this.message + ")";
+                return "SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder(associatedRule=" + this.associatedRule + ", message=" + this.message + ")";
             }
         }
 
@@ -2450,9 +2359,7 @@ public final class SarifLog {
         }
 
         public SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder toBuilder() {
-            return new SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder()
-                    .associatedRule(this.associatedRule)
-                    .message(this.message);
+            return new SarifLog.ToolConfigurationNotification.ToolConfigurationNotificationBuilder().associatedRule(this.associatedRule).message(this.message);
         }
 
         /**
@@ -2505,10 +2412,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.ToolConfigurationNotification(associatedRule=" + this.getAssociatedRule() + ", message="
-                    + this.getMessage() + ")";
+            return "SarifLog.ToolConfigurationNotification(associatedRule=" + this.getAssociatedRule() + ", message=" + this.getMessage() + ")";
         }
     }
+
 
     /**
      * An invocation property to specify tool runtime errors.
@@ -2518,8 +2425,7 @@ public final class SarifLog {
         private Message message;
         private Exception exception;
 
-        private ToolExecutionNotification(
-                final List<Location> locations, final Message message, final Exception exception) {
+        private ToolExecutionNotification(final List<Location> locations, final Message message, final Exception exception) {
             this.locations = locations;
             this.message = message;
             this.exception = exception;
@@ -2539,8 +2445,7 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder locations(
-                    final List<Location> locations) {
+            public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder locations(final List<Location> locations) {
                 this.locations = locations;
                 return this;
             }
@@ -2560,8 +2465,7 @@ public final class SarifLog {
              *
              * @return {@code this}.
              */
-            public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder exception(
-                    final Exception exception) {
+            public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder exception(final Exception exception) {
                 this.exception = exception;
                 return this;
             }
@@ -2572,8 +2476,7 @@ public final class SarifLog {
 
             @Override
             public String toString() {
-                return "SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder(locations=" + this.locations
-                        + ", message=" + this.message + ", exception=" + this.exception + ")";
+                return "SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder(locations=" + this.locations + ", message=" + this.message + ", exception=" + this.exception + ")";
             }
         }
 
@@ -2582,10 +2485,7 @@ public final class SarifLog {
         }
 
         public SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder toBuilder() {
-            return new SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder()
-                    .locations(this.locations)
-                    .message(this.message)
-                    .exception(this.exception);
+            return new SarifLog.ToolExecutionNotification.ToolExecutionNotificationBuilder().locations(this.locations).message(this.message).exception(this.exception);
         }
 
         /**
@@ -2645,9 +2545,7 @@ public final class SarifLog {
                 return false;
             }
             ToolExecutionNotification that = (ToolExecutionNotification) o;
-            return Objects.equals(locations, that.locations)
-                    && Objects.equals(message, that.message)
-                    && Objects.equals(exception, that.exception);
+            return Objects.equals(locations, that.locations) && Objects.equals(message, that.message) && Objects.equals(exception, that.exception);
         }
 
         @Override
@@ -2657,10 +2555,10 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.ToolExecutionNotification(locations=" + this.getLocations() + ", message="
-                    + this.getMessage() + ", exception=" + this.getException() + ")";
+            return "SarifLog.ToolExecutionNotification(locations=" + this.getLocations() + ", message=" + this.getMessage() + ", exception=" + this.getException() + ")";
         }
     }
+
 
     /**
      * An invocation component to specify tool invocation details/errors.
@@ -2670,10 +2568,7 @@ public final class SarifLog {
         private List<ToolConfigurationNotification> toolConfigurationNotifications;
         private List<ToolExecutionNotification> toolExecutionNotifications;
 
-        private Invocation(
-                final Boolean executionSuccessful,
-                final List<ToolConfigurationNotification> toolConfigurationNotifications,
-                final List<ToolExecutionNotification> toolExecutionNotifications) {
+        private Invocation(final Boolean executionSuccessful, final List<ToolConfigurationNotification> toolConfigurationNotifications, final List<ToolExecutionNotification> toolExecutionNotifications) {
             this.executionSuccessful = executionSuccessful;
             this.toolConfigurationNotifications = toolConfigurationNotifications;
             this.toolExecutionNotifications = toolExecutionNotifications;
@@ -2699,8 +2594,7 @@ public final class SarifLog {
             /**
              * A list of associated tool configuration errors.
              */
-            public SarifLog.Invocation.InvocationBuilder toolConfigurationNotifications(
-                    final List<ToolConfigurationNotification> toolConfigurationNotifications) {
+            public SarifLog.Invocation.InvocationBuilder toolConfigurationNotifications(final List<ToolConfigurationNotification> toolConfigurationNotifications) {
                 this.toolConfigurationNotifications = toolConfigurationNotifications;
                 return this;
             }
@@ -2708,22 +2602,18 @@ public final class SarifLog {
             /**
              * A list of associated tool runtime errors.
              */
-            public SarifLog.Invocation.InvocationBuilder toolExecutionNotifications(
-                    final List<ToolExecutionNotification> toolExecutionNotifications) {
+            public SarifLog.Invocation.InvocationBuilder toolExecutionNotifications(final List<ToolExecutionNotification> toolExecutionNotifications) {
                 this.toolExecutionNotifications = toolExecutionNotifications;
                 return this;
             }
 
             public SarifLog.Invocation build() {
-                return new SarifLog.Invocation(
-                        this.executionSuccessful, this.toolConfigurationNotifications, this.toolExecutionNotifications);
+                return new SarifLog.Invocation(this.executionSuccessful, this.toolConfigurationNotifications, this.toolExecutionNotifications);
             }
 
             @Override
             public String toString() {
-                return "SarifLog.Invocation.InvocationBuilder(executionSuccessful=" + this.executionSuccessful
-                        + ", toolConfigurationNotifications=" + this.toolConfigurationNotifications
-                        + ", toolExecutionNotifications=" + this.toolExecutionNotifications + ")";
+                return "SarifLog.Invocation.InvocationBuilder(executionSuccessful=" + this.executionSuccessful + ", toolConfigurationNotifications=" + this.toolConfigurationNotifications + ", toolExecutionNotifications=" + this.toolExecutionNotifications + ")";
             }
         }
 
@@ -2732,10 +2622,7 @@ public final class SarifLog {
         }
 
         public SarifLog.Invocation.InvocationBuilder toBuilder() {
-            return new SarifLog.Invocation.InvocationBuilder()
-                    .executionSuccessful(this.executionSuccessful)
-                    .toolConfigurationNotifications(this.toolConfigurationNotifications)
-                    .toolExecutionNotifications(this.toolExecutionNotifications);
+            return new SarifLog.Invocation.InvocationBuilder().executionSuccessful(this.executionSuccessful).toolConfigurationNotifications(this.toolConfigurationNotifications).toolExecutionNotifications(this.toolExecutionNotifications);
         }
 
         public Boolean getExecutionSuccessful() {
@@ -2755,14 +2642,12 @@ public final class SarifLog {
             return this;
         }
 
-        public SarifLog.Invocation setToolConfigurationNotifications(
-                final List<ToolConfigurationNotification> toolConfigurationNotifications) {
+        public SarifLog.Invocation setToolConfigurationNotifications(final List<ToolConfigurationNotification> toolConfigurationNotifications) {
             this.toolConfigurationNotifications = toolConfigurationNotifications;
             return this;
         }
 
-        public SarifLog.Invocation setToolExecutionNotifications(
-                final List<ToolExecutionNotification> toolExecutionNotifications) {
+        public SarifLog.Invocation setToolExecutionNotifications(final List<ToolExecutionNotification> toolExecutionNotifications) {
             this.toolExecutionNotifications = toolExecutionNotifications;
             return this;
         }
@@ -2773,9 +2658,7 @@ public final class SarifLog {
                 return false;
             }
             Invocation that = (Invocation) o;
-            return Objects.equals(executionSuccessful, that.executionSuccessful)
-                    && Objects.equals(toolConfigurationNotifications, that.toolConfigurationNotifications)
-                    && Objects.equals(toolExecutionNotifications, that.toolExecutionNotifications);
+            return Objects.equals(executionSuccessful, that.executionSuccessful) && Objects.equals(toolConfigurationNotifications, that.toolConfigurationNotifications) && Objects.equals(toolExecutionNotifications, that.toolExecutionNotifications);
         }
 
         @Override
@@ -2785,9 +2668,7 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.Invocation(executionSuccessful=" + this.getExecutionSuccessful()
-                    + ", toolConfigurationNotifications=" + this.getToolConfigurationNotifications()
-                    + ", toolExecutionNotifications=" + this.getToolExecutionNotifications() + ")";
+            return "SarifLog.Invocation(executionSuccessful=" + this.getExecutionSuccessful() + ", toolConfigurationNotifications=" + this.getToolConfigurationNotifications() + ", toolExecutionNotifications=" + this.getToolExecutionNotifications() + ")";
         }
     }
 
@@ -2804,6 +2685,7 @@ public final class SarifLog {
         this.version = version;
         this.runs = runs;
     }
+
 
     public static final class SarifLogBuilder {
         private boolean schemaSet;
@@ -2862,8 +2744,7 @@ public final class SarifLog {
 
         @Override
         public String toString() {
-            return "SarifLog.SarifLogBuilder(schema$value=" + this.schemaValue + ", version$value=" + this.versionValue
-                    + ", runs=" + this.runs + ")";
+            return "SarifLog.SarifLogBuilder(schema$value=" + this.schemaValue + ", version$value=" + this.versionValue + ", runs=" + this.runs + ")";
         }
     }
 
@@ -2928,9 +2809,7 @@ public final class SarifLog {
             return false;
         }
         SarifLog sarifLog = (SarifLog) o;
-        return Objects.equals(schema, sarifLog.schema)
-                && Objects.equals(version, sarifLog.version)
-                && Objects.equals(runs, sarifLog.runs);
+        return Objects.equals(schema, sarifLog.schema) && Objects.equals(version, sarifLog.version) && Objects.equals(runs, sarifLog.runs);
     }
 
     @Override
@@ -2940,7 +2819,6 @@ public final class SarifLog {
 
     @Override
     public String toString() {
-        return "SarifLog(schema=" + this.getSchema() + ", version=" + this.getVersion() + ", runs=" + this.getRuns()
-                + ")";
+        return "SarifLog(schema=" + this.getSchema() + ", version=" + this.getVersion() + ", runs=" + this.getRuns() + ")";
     }
 }

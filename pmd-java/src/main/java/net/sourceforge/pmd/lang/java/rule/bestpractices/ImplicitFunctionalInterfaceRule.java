@@ -18,8 +18,8 @@ public class ImplicitFunctionalInterfaceRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
         if (node.isRegularInterface()
-                && !node.isAnnotationPresent(FunctionalInterface.class)
-                && !node.hasModifiers(JModifier.SEALED)) {
+            && !node.isAnnotationPresent(FunctionalInterface.class)
+            && !node.hasModifiers(JModifier.SEALED)) {
             JMethodSig fun = TypeOps.findFunctionalInterfaceMethod(node.getTypeMirror());
             if (fun != null) {
                 asCtx(data).addViolation(node);

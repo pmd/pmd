@@ -1,11 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.apex.rule.internal;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlDeleteStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlInsertStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTDmlMergeStatement;
@@ -66,33 +68,22 @@ public final class Helper {
      */
     public static boolean foundAnyDML(final ApexNode<?> node) {
 
-        final List<ASTDmlUpsertStatement> dmlUpsertStatement =
-                node.descendants(ASTDmlUpsertStatement.class).toList();
-        final List<ASTDmlUpdateStatement> dmlUpdateStatement =
-                node.descendants(ASTDmlUpdateStatement.class).toList();
-        final List<ASTDmlUndeleteStatement> dmlUndeleteStatement =
-                node.descendants(ASTDmlUndeleteStatement.class).toList();
-        final List<ASTDmlMergeStatement> dmlMergeStatement =
-                node.descendants(ASTDmlMergeStatement.class).toList();
-        final List<ASTDmlInsertStatement> dmlInsertStatement =
-                node.descendants(ASTDmlInsertStatement.class).toList();
-        final List<ASTDmlDeleteStatement> dmlDeleteStatement =
-                node.descendants(ASTDmlDeleteStatement.class).toList();
+        final List<ASTDmlUpsertStatement> dmlUpsertStatement = node.descendants(ASTDmlUpsertStatement.class).toList();
+        final List<ASTDmlUpdateStatement> dmlUpdateStatement = node.descendants(ASTDmlUpdateStatement.class).toList();
+        final List<ASTDmlUndeleteStatement> dmlUndeleteStatement = node.descendants(ASTDmlUndeleteStatement.class).toList();
+        final List<ASTDmlMergeStatement> dmlMergeStatement = node.descendants(ASTDmlMergeStatement.class).toList();
+        final List<ASTDmlInsertStatement> dmlInsertStatement = node.descendants(ASTDmlInsertStatement.class).toList();
+        final List<ASTDmlDeleteStatement> dmlDeleteStatement = node.descendants(ASTDmlDeleteStatement.class).toList();
 
-        return !dmlUpsertStatement.isEmpty()
-                || !dmlUpdateStatement.isEmpty()
-                || !dmlUndeleteStatement.isEmpty()
-                || !dmlMergeStatement.isEmpty()
-                || !dmlInsertStatement.isEmpty()
-                || !dmlDeleteStatement.isEmpty();
+        return !dmlUpsertStatement.isEmpty() || !dmlUpdateStatement.isEmpty() || !dmlUndeleteStatement.isEmpty()
+                || !dmlMergeStatement.isEmpty() || !dmlInsertStatement.isEmpty() || !dmlDeleteStatement.isEmpty();
     }
 
-    public static boolean isMethodName(
-            final ASTMethodCallExpression methodNode, final String className, final String methodName) {
+    public static boolean isMethodName(final ASTMethodCallExpression methodNode, final String className,
+            final String methodName) {
         final ASTReferenceExpression reference = methodNode.firstChild(ASTReferenceExpression.class);
 
-        return reference != null
-                && reference.getNames().size() == 1
+        return reference != null && reference.getNames().size() == 1
                 && reference.getNames().get(0).equalsIgnoreCase(className)
                 && (ANY_METHOD.equals(methodName) || isMethodName(methodNode, methodName));
     }
@@ -106,7 +97,8 @@ public final class Helper {
         if (Helper.isMethodName(methodNode, methodName)) {
             final ASTReferenceExpression reference = methodNode.firstChild(ASTReferenceExpression.class);
             if (reference != null) {
-                final ASTMethodCallExpression nestedMethod = reference.firstChild(ASTMethodCallExpression.class);
+                final ASTMethodCallExpression nestedMethod = reference
+                        .firstChild(ASTMethodCallExpression.class);
                 if (nestedMethod != null) {
                     String[] newMethodNames = Arrays.copyOf(methodNames, methodNames.length - 1);
                     return isMethodCallChain(nestedMethod, newMethodNames);
@@ -129,58 +121,47 @@ public final class Helper {
             objectName = ref.getNames().get(0) + ".";
         }
 
-        StringBuilder sb = new StringBuilder()
-                .append(variable.getDefiningType())
-                .append(":")
-                .append(objectName)
+        StringBuilder sb = new StringBuilder().append(variable.getDefiningType()).append(":").append(objectName)
                 .append(variable.getImage());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTVariableDeclaration variable) {
-        StringBuilder sb = new StringBuilder()
-                .append(variable.getDefiningType())
-                .append(":")
+        StringBuilder sb = new StringBuilder().append(variable.getDefiningType()).append(":")
                 .append(variable.getImage());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTField variable) {
         StringBuilder sb = new StringBuilder()
-                .append(variable.getDefiningType())
-                .append(":")
+                .append(variable.getDefiningType()).append(":")
                 .append(variable.getName());
         return sb.toString();
     }
 
     static String getVariableType(final ASTField variable) {
-        StringBuilder sb = new StringBuilder()
-                .append(variable.getDefiningType())
-                .append(":")
+        StringBuilder sb = new StringBuilder().append(variable.getDefiningType()).append(":")
                 .append(variable.getName());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTFieldDeclaration variable) {
         StringBuilder sb = new StringBuilder()
-                .append(variable.getDefiningType())
-                .append(":")
+                .append(variable.getDefiningType()).append(":")
                 .append(variable.getImage());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTNewKeyValueObjectExpression variable) {
         StringBuilder sb = new StringBuilder()
-                .append(variable.getDefiningType())
-                .append(":")
+                .append(variable.getDefiningType()).append(":")
                 .append(variable.getType());
         return sb.toString();
     }
 
     public static String getFQVariableName(final ASTNewObjectExpression variable) {
         StringBuilder sb = new StringBuilder()
-                .append(variable.getDefiningType())
-                .append(":")
+                .append(variable.getDefiningType()).append(":")
                 .append(variable.getType());
         return sb.toString();
     }
@@ -192,12 +173,12 @@ public final class Helper {
 
     private static boolean isAllowed(String identifier) {
         switch (identifier.toLowerCase(Locale.ROOT)) {
-            case "queueable":
-            case "database.batchable":
-            case "installhandler":
-                return true;
-            default:
-                break;
+        case "queueable":
+        case "database.batchable":
+        case "installhandler":
+            return true;
+        default:
+            break;
         }
         return false;
     }

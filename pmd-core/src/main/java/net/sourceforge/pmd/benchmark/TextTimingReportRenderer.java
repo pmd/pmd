@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.benchmark;
 
 import java.io.IOException;
@@ -12,8 +13,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
-import net.sourceforge.pmd.benchmark.TimeTracker.TimedResult;
+
 import org.apache.commons.lang3.StringUtils;
+
+import net.sourceforge.pmd.benchmark.TimeTracker.TimedResult;
 
 /**
  * A text based renderer for {@link TimingReport}.
@@ -30,8 +33,8 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
     private static final int CALL_COLUMN_WIDTH = 9;
     private static final int COUNTER_COLUMN_WIDTH = 12;
 
-    private static final int COLUMNS =
-            LABEL_COLUMN_WIDTH + TIME_COLUMN_WIDTH + SELF_TIME_COLUMN_WIDTH + CALL_COLUMN_WIDTH + COUNTER_COLUMN_WIDTH;
+    private static final int COLUMNS = LABEL_COLUMN_WIDTH + TIME_COLUMN_WIDTH
+            + SELF_TIME_COLUMN_WIDTH + CALL_COLUMN_WIDTH + COUNTER_COLUMN_WIDTH;
 
     @Override
     public void render(final TimingReport report, final Writer writer0) throws IOException {
@@ -63,8 +66,8 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         writer.flush();
     }
 
-    private void renderMeasurement(final String label, final TimedResult timedResult, final PrintWriter writer)
-            throws IOException {
+    private void renderMeasurement(final String label, final TimedResult timedResult,
+            final PrintWriter writer) throws IOException {
         writer.write(StringUtils.rightPad(label, LABEL_COLUMN_WIDTH));
 
         final String time = MessageFormat.format(TIME_FORMAT, timedResult.totalTimeNanos.get() / 1000000000.0);
@@ -85,16 +88,12 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         writer.println();
     }
 
-    private void renderCategoryMeasurements(
-            final TimedOperationCategory category,
-            final Map<String, TimedResult> labeledMeasurements,
-            final PrintWriter writer)
-            throws IOException {
+    private void renderCategoryMeasurements(final TimedOperationCategory category,
+            final Map<String, TimedResult> labeledMeasurements, final PrintWriter writer) throws IOException {
         renderHeader(category.displayName(), writer);
 
         final TimedResult grandTotal = new TimedResult();
-        final Set<Entry<String, TimedResult>> sortedKeySet = new TreeSet<>(
-                Comparator.comparingLong(o -> o.getValue().selfTimeNanos.get()));
+        final Set<Entry<String, TimedResult>> sortedKeySet = new TreeSet<>(Comparator.comparingLong(o -> o.getValue().selfTimeNanos.get()));
         sortedKeySet.addAll(labeledMeasurements.entrySet());
 
         for (final Map.Entry<String, TimedResult> entry : sortedKeySet) {
@@ -108,7 +107,8 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
     }
 
     private void renderHeader(final String displayName, final PrintWriter writer) throws IOException {
-        final StringBuilder sb = new StringBuilder(COLUMNS).append(displayName);
+        final StringBuilder sb = new StringBuilder(COLUMNS)
+                .append(displayName);
 
         // Make sure we have an even-length string
         if (displayName.length() % 2 == 1) {
@@ -135,4 +135,5 @@ public class TextTimingReportRenderer implements TimingReportRenderer {
         writer.println();
         writer.println();
     }
+
 }

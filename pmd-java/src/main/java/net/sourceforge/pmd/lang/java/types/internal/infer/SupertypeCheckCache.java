@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -45,8 +46,10 @@ final class SupertypeCheckCache {
         }
     }
 
+
     private boolean shouldCache(JTypeMirror t) {
         // some types are never cached
         return !(t instanceof InferenceVar) && !(t instanceof JPrimitiveType);
     }
+
 }

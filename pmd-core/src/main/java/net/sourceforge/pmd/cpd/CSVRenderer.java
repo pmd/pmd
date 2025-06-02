@@ -1,13 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import net.sourceforge.pmd.lang.document.FileLocation;
+
 import org.apache.commons.lang3.StringEscapeUtils;
+
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * Renders a report to CSV. The CSV format renders each match (duplication)
@@ -88,11 +91,9 @@ public class CSVRenderer implements CPDReportRenderer {
             if (!lineCountPerFile) {
                 writer.append(String.valueOf(match.getLineCount())).append(separator);
             }
-            writer.append(String.valueOf(match.getTokenCount()))
-                    .append(separator)
-                    .append(String.valueOf(match.getMarkCount()))
-                    .append(separator);
-            for (Iterator<Mark> marks = match.iterator(); marks.hasNext(); ) {
+            writer.append(String.valueOf(match.getTokenCount())).append(separator)
+                  .append(String.valueOf(match.getMarkCount())).append(separator);
+            for (Iterator<Mark> marks = match.iterator(); marks.hasNext();) {
                 Mark mark = marks.next();
                 FileLocation loc = mark.getLocation();
 

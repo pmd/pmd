@@ -12,6 +12,7 @@ public final class ASTIfBlockStatement extends AbstractApexNode.Single<IfStateme
         super(ifStatement);
     }
 
+
     @Override
     protected <P, R> R acceptApexVisitor(ApexVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

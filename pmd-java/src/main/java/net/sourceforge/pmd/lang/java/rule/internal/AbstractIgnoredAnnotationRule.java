@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -18,11 +19,11 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
 
-    private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor = stringListProperty(
-                    "ignoredAnnotations")
-            .desc(defaultIgnoredAnnotationsDescription())
-            .defaultValue(defaultSuppressionAnnotations())
-            .build();
+    private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor
+        = stringListProperty("ignoredAnnotations")
+        .desc(defaultIgnoredAnnotationsDescription())
+        .defaultValue(defaultSuppressionAnnotations())
+        .build();
 
     protected Collection<String> defaultSuppressionAnnotations() {
         return Collections.emptyList();
@@ -35,6 +36,7 @@ public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
     protected AbstractIgnoredAnnotationRule() {
         definePropertyDescriptor(ignoredAnnotationsDescriptor);
     }
+
 
     /**
      * Checks whether any annotation in ignoredAnnotationsDescriptor is present on the node.

@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.modelica.ast;
 
 import net.sourceforge.pmd.lang.modelica.resolver.ModelicaDeclaration;
@@ -32,15 +33,13 @@ abstract class AbstractModelicaImportClause extends AbstractModelicaNode impleme
      * A template method to be used by {@link #resolveSimpleName}. Usually used to fetch the lexically referenced
      * class in the corresponding import statement.
      */
-    protected abstract ResolutionResult<ModelicaDeclaration> getCacheableImportSources(
-            ResolutionState state, ModelicaScope scope);
+    protected abstract ResolutionResult<ModelicaDeclaration> getCacheableImportSources(ResolutionState state, ModelicaScope scope);
 
     /**
      * A template method to be used by {@link #resolveSimpleName}. Usually used to try to fetch declarations for
      * <code>simpleName</code> from particular <i>source</i> returned by {@link #getCacheableImportSources}.
      */
-    protected abstract void fetchImportedClassesFromSource(
-            ResolutionContext result, ModelicaDeclaration source, String simpleName) throws Watchdog.CountdownException;
+    protected abstract void fetchImportedClassesFromSource(ResolutionContext result, ModelicaDeclaration source, String simpleName) throws Watchdog.CountdownException;
 
     /**
      * Tries to resolve the specified name via this import clause.
@@ -52,8 +51,7 @@ abstract class AbstractModelicaImportClause extends AbstractModelicaNode impleme
     final void resolveSimpleName(ResolutionContext result, String simpleName) throws Watchdog.CountdownException {
         // No need to re-resolve if already resolved successfully
         if (importSourcesCache == null || importSourcesCache.wasTimedOut()) {
-            importSourcesCache = getCacheableImportSources(
-                    result.getState(), getMostSpecificScope().getParent());
+            importSourcesCache = getCacheableImportSources(result.getState(), getMostSpecificScope().getParent());
         }
         for (ModelicaDeclaration source : importSourcesCache.getBestCandidates()) {
             fetchImportedClassesFromSource(result, source, simpleName);

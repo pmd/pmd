@@ -7,6 +7,10 @@ package net.sourceforge.pmd.lang.ast;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
@@ -19,8 +23,7 @@ import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
+
 
 /**
  * Root interface for all AST nodes. This interface provides only the API
@@ -53,7 +56,8 @@ public interface Node extends Reportable {
      * Note that this comparator is not <i>consistent with equals</i>
      * (see {@link Comparator}) as some nodes have the same location.
      */
-    Comparator<Node> COORDS_COMPARATOR = Comparator.comparing(Node::getReportLocation, FileLocation.COMPARATOR);
+    Comparator<Node> COORDS_COMPARATOR =
+        Comparator.comparing(Node::getReportLocation, FileLocation.COMPARATOR);
 
     /**
      * Returns a string token, usually filled-in by the parser, which describes some textual characteristic of this
@@ -69,6 +73,7 @@ public interface Node extends Reportable {
     default String getImage() {
         return null;
     }
+
 
     /**
      * Returns true if this node's image is equal to the given string.
@@ -119,10 +124,10 @@ public interface Node extends Reportable {
      */
     TextRegion getTextRegion();
 
+
     // Those are kept here because they're handled specially as XPath
     // attributes, for now
-    // ->  [core] Deprecate XPath attributes for node coordinates (eg @BeginLine) #3876
-    // (https://github.com/pmd/pmd/issues/3876)
+    // ->  [core] Deprecate XPath attributes for node coordinates (eg @BeginLine) #3876 (https://github.com/pmd/pmd/issues/3876)
 
     default int getBeginLine() {
         return getReportLocation().getStartLine();
@@ -140,6 +145,7 @@ public interface Node extends Reportable {
         return getReportLocation().getEndColumn();
     }
 
+
     /**
      * Returns true if this node is considered a boundary by traversal
      * methods. Traversal methods such as {@link #descendants()}
@@ -156,6 +162,7 @@ public interface Node extends Reportable {
         return false;
     }
 
+
     /**
      * Returns a data map used to store additional information on this node.
      *
@@ -164,6 +171,7 @@ public interface Node extends Reportable {
      * @since 6.22.0
      */
     DataMap<DataKey<?, ?>> getUserMap();
+
 
     /**
      * Returns the text document from which this tree was parsed. This
@@ -185,6 +193,7 @@ public interface Node extends Reportable {
      */
     Node getParent();
 
+
     /**
      * Returns the child of this node at the given index.
      *
@@ -192,6 +201,7 @@ public interface Node extends Reportable {
      * @since 6.21.0
      */
     Node getChild(int index);
+
 
     /**
      * Returns the number of children of this node.
@@ -209,6 +219,7 @@ public interface Node extends Reportable {
      * @since 6.21.0
      */
     int getIndexInParent();
+
 
     /**
      * Calls back the visitor's visit method corresponding to the runtime
@@ -246,12 +257,14 @@ public interface Node extends Reportable {
         return getRoot().getAstInfo();
     }
 
+
     /**
      * Gets the name of the node that is used to match it with XPath queries.
      *
      * @return The XPath node name
      */
     String getXPathNodeName();
+
 
     /**
      * Returns an iterator enumerating all the attributes that are available
@@ -265,6 +278,7 @@ public interface Node extends Reportable {
         return new AttributeAxisIterator(this);
     }
 
+
     /**
      * Returns the first child of this node, or null if it doesn't exist.
      *
@@ -274,6 +288,7 @@ public interface Node extends Reportable {
         return getNumChildren() > 0 ? getChild(0) : null;
     }
 
+
     /**
      * Returns the first last of this node, or null if it doesn't exist.
      *
@@ -282,6 +297,7 @@ public interface Node extends Reportable {
     default @Nullable Node getLastChild() {
         return getNumChildren() > 0 ? getChild(getNumChildren() - 1) : null;
     }
+
 
     /**
      * Returns the previous sibling of this node, or null if it does not exist.
@@ -325,6 +341,7 @@ public interface Node extends Reportable {
         return StreamImpl.singleton(this);
     }
 
+
     /**
      * Returns a node stream containing all the children of
      * this node. This method does not provide much type safety,
@@ -336,6 +353,7 @@ public interface Node extends Reportable {
     default NodeStream<? extends Node> children() {
         return StreamImpl.children(this);
     }
+
 
     /**
      * Returns a node stream containing all the descendants
@@ -350,6 +368,7 @@ public interface Node extends Reportable {
         return StreamImpl.descendants(this);
     }
 
+
     /**
      * Returns a node stream containing this node, then all its
      * descendants. See {@link DescendantNodeStream} for details.
@@ -363,6 +382,7 @@ public interface Node extends Reportable {
         return StreamImpl.descendantsOrSelf(this);
     }
 
+
     /**
      * Returns a node stream containing all the strict ancestors of this node,
      * in innermost to outermost order. The returned stream doesn't contain this
@@ -375,7 +395,9 @@ public interface Node extends Reportable {
      */
     default NodeStream<? extends Node> ancestors() {
         return StreamImpl.ancestors(this);
+
     }
+
 
     /**
      * Returns a node stream containing this node and its ancestors.
@@ -389,6 +411,7 @@ public interface Node extends Reportable {
     default NodeStream<? extends Node> ancestorsOrSelf() {
         return StreamImpl.ancestorsOrSelf(this);
     }
+
 
     /**
      * Returns a {@linkplain NodeStream node stream} of the {@linkplain #children() children}
@@ -425,6 +448,7 @@ public interface Node extends Reportable {
         return children(rClass).first();
     }
 
+
     /**
      * Returns a {@linkplain NodeStream node stream} of the {@linkplain #descendants() descendants}
      * of this node that are of the given type. See {@link DescendantNodeStream}
@@ -441,6 +465,7 @@ public interface Node extends Reportable {
     default <R extends Node> DescendantNodeStream<R> descendants(Class<? extends R> rClass) {
         return StreamImpl.descendants(this, rClass);
     }
+
 
     /**
      * Returns the {@linkplain #ancestors() ancestor stream} of this node

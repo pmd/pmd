@@ -15,12 +15,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.junit.jupiter.api.Test;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.visualforce.DataType;
 import net.sourceforge.pmd.lang.visualforce.VFTestUtils;
 import net.sourceforge.pmd.util.treeexport.XmlTreeRenderer;
-import org.junit.jupiter.api.Test;
 
 class VfExpressionTypeVisitorTest {
     private static final Map<String, DataType> EXPECTED_CUSTOM_FIELD_DATA_TYPES;
@@ -78,10 +80,10 @@ class VfExpressionTypeVisitorTest {
 
         for (Map.Entry<String, DataType> entry : EXPECTED_CUSTOM_FIELD_DATA_TYPES.entrySet()) {
             List<ASTLiteral> nodes = rootNode.descendants(ASTLiteral.class)
-                    // Literals are surrounded by apostrophes
-                    .filterMatching(ASTLiteral::getImage, "'" + entry.getKey() + "'")
-                    .filterMatching(ASTLiteral::getDataType, null)
-                    .toList();
+                                             // Literals are surrounded by apostrophes
+                                             .filterMatching(ASTLiteral::getImage, "'" + entry.getKey() + "'")
+                                             .filterMatching(ASTLiteral::getDataType, null)
+                                             .toList();
 
             // Each string appears twice, it is set on a "value" attribute and inline
             assertEquals(2, nodes.size(), entry.getKey());
@@ -101,9 +103,10 @@ class VfExpressionTypeVisitorTest {
     void testDataTypeForCustomFieldsNotFound() {
         Node rootNode = compile("StandardAccount.page");
 
-        checkNodes(
-                rootNode.descendants(ASTIdentifier.class).filterMatching(ASTIdentifier::getImage, "NotFoundField__c"));
-        checkNodes(rootNode.descendants(ASTLiteral.class).filterMatching(ASTLiteral::getImage, "'NotFoundField__c'"));
+        checkNodes(rootNode.descendants(ASTIdentifier.class)
+                           .filterMatching(ASTIdentifier::getImage, "NotFoundField__c"));
+        checkNodes(rootNode.descendants(ASTLiteral.class)
+                           .filterMatching(ASTLiteral::getImage, "'NotFoundField__c'"));
     }
 
     private void checkNodes(NodeStream<? extends VfTypedNode> nodeStream) {
@@ -138,9 +141,9 @@ class VfExpressionTypeVisitorTest {
 
     private List<ASTIdentifier> getIdentifiers(Node rootNode, Entry<String, DataType> entry) {
         return rootNode.descendants(ASTIdentifier.class)
-                .filterMatching(ASTIdentifier::getImage, entry.getKey())
-                .filterMatching(ASTIdentifier::getDataType, entry.getValue())
-                .toList();
+                       .filterMatching(ASTIdentifier::getImage, entry.getKey())
+                       .filterMatching(ASTIdentifier::getDataType, entry.getValue())
+                       .toList();
     }
 
     /**
@@ -151,7 +154,8 @@ class VfExpressionTypeVisitorTest {
         Node rootNode = compile("ApexController.page");
 
         // Each string appears twice, it is set on a "value" attribute and inline
-        checkNodes(rootNode.descendants(ASTIdentifier.class).filterMatching(ASTIdentifier::getImage, "NotFoundProp"));
+        checkNodes(rootNode.descendants(ASTIdentifier.class)
+                           .filterMatching(ASTIdentifier::getImage, "NotFoundProp"));
     }
 
     /**
@@ -172,8 +176,7 @@ class VfExpressionTypeVisitorTest {
     }
 
     private Node compile(String pageName, boolean renderAST) {
-        Path vfPagePath = VFTestUtils.getMetadataPath(
-                        this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
+        Path vfPagePath = VFTestUtils.getMetadataPath(this, VFTestUtils.MetadataFormat.SFDX, VFTestUtils.MetadataType.Vf)
                 .resolve(pageName);
         return compile(vfPagePath, renderAST);
     }

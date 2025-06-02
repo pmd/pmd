@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.cpd;
 
 import net.sourceforge.pmd.lang.document.FileId;
@@ -49,9 +50,11 @@ public class TokenEntry implements Comparable<TokenEntry> {
         return coord >= 1;
     }
 
+
     FileId getFileId() {
         return fileId;
     }
+
 
     /** The line number where this token starts. */
     public int getBeginLine() {
@@ -131,4 +134,5 @@ public class TokenEntry implements Comparable<TokenEntry> {
         }
         return Integer.toString(identifier);
     }
+
 }

@@ -4,13 +4,14 @@
 
 package net.sourceforge.pmd.lang.ast.impl;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
-import org.apache.commons.lang3.ArrayUtils;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Base class for implementations of the Node interface whose children
@@ -25,11 +26,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <N> Public interface for nodes of this language (eg JavaNode
  *            in the java module).
  */
-public abstract class AbstractNode<
-                B extends AbstractNode<B, N>,
-                // node the Node as first bound here is to make casts from Node to N noops at runtime.
-                N extends Node & GenericNode<N>>
-        implements GenericNode<N> {
+public abstract class AbstractNode<B extends AbstractNode<B, N>,
+    // node the Node as first bound here is to make casts from Node to N noops at runtime.
+    N extends Node & GenericNode<N>> implements GenericNode<N> {
 
     private static final Node[] EMPTY_ARRAY = new Node[0];
 
@@ -124,7 +123,7 @@ public abstract class AbstractNode<
      */
     protected void insertChild(final B child, final int index) {
         assert index >= 0 && index <= children.length
-                : "Invalid index for insertion into array of length " + children.length + ": " + index;
+            : "Invalid index for insertion into array of length " + children.length + ": " + index;
 
         Node[] newChildren = new Node[children.length + 1];
         if (index != 0) {
@@ -141,6 +140,7 @@ public abstract class AbstractNode<
         }
         this.children = newChildren;
     }
+
 
     protected void remove() {
         // Detach current node of its parent, if any
@@ -180,6 +180,7 @@ public abstract class AbstractNode<
         }
         return userData;
     }
+
 
     @Override
     public String toString() {

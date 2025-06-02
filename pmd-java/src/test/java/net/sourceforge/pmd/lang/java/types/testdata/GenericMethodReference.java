@@ -20,7 +20,7 @@ public final class GenericMethodReference {
         Supplier<GenericMethodReference> supplier5 = GenericMethodReference::<Integer>create2;
 
         // providing too many parameter here is a compile error
-        // Supplier<GenericMethodReference> supplier6 = GenericMethodReference::<Integer, String>create2;
+        //Supplier<GenericMethodReference> supplier6 = GenericMethodReference::<Integer, String>create2;
     }
 
     public static GenericMethodReference create1() {
@@ -31,5 +31,6 @@ public final class GenericMethodReference {
         return null;
     }
 
-    private GenericMethodReference() {}
+    private GenericMethodReference() {
+    }
 }

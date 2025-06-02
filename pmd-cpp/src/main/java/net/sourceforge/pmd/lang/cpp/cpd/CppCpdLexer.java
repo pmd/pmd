@@ -5,6 +5,9 @@
 package net.sourceforge.pmd.lang.cpp.cpd;
 
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.cpd.impl.JavaCCTokenFilter;
@@ -18,7 +21,6 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.cpp.CppLanguageModule;
 import net.sourceforge.pmd.lang.cpp.ast.CppTokenKinds;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * The C++ tokenizer.
@@ -37,8 +39,7 @@ public class CppCpdLexer extends JavaccCpdLexer {
 
     public CppCpdLexer(LanguagePropertyBundle cppProperties) {
         ignoreLiteralSequences = cppProperties.getProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_SEQUENCES);
-        ignoreIdentifierAndLiteralSeqences =
-                cppProperties.getProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
+        ignoreIdentifierAndLiteralSeqences = cppProperties.getProperty(CpdLanguageProperties.CPD_IGNORE_LITERAL_AND_IDENTIFIER_SEQUENCES);
         ignoreLiterals = cppProperties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
         ignoreIdentifiers = cppProperties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
         String skipBlocksPattern = cppProperties.getProperty(CppLanguageModule.CPD_SKIP_BLOCKS);
@@ -82,15 +83,7 @@ public class CppCpdLexer extends JavaccCpdLexer {
         int kind = currentToken.getKind();
         String image = currentToken.getImage();
 
-        boolean isLiteral = kind == CppTokenKinds.STRING
-                || kind == CppTokenKinds.RSTRING
-                || kind == CppTokenKinds.CHARACTER
-                || kind == CppTokenKinds.DECIMAL_INT_LITERAL
-                || kind == CppTokenKinds.HEXADECIMAL_INT_LITERAL
-                || kind == CppTokenKinds.OCTAL_INT_LITERAL
-                || kind == CppTokenKinds.FLOAT_LITERAL
-                || kind == CppTokenKinds.BINARY_INT_LITERAL
-                || kind == CppTokenKinds.ZERO;
+        boolean isLiteral = kind == CppTokenKinds.STRING || kind == CppTokenKinds.RSTRING || kind == CppTokenKinds.CHARACTER || kind == CppTokenKinds.DECIMAL_INT_LITERAL || kind == CppTokenKinds.HEXADECIMAL_INT_LITERAL || kind == CppTokenKinds.OCTAL_INT_LITERAL || kind == CppTokenKinds.FLOAT_LITERAL || kind == CppTokenKinds.BINARY_INT_LITERAL || kind == CppTokenKinds.ZERO;
         if (ignoreLiterals && isLiteral) {
             image = CppTokenKinds.describe(kind);
         }
@@ -109,10 +102,7 @@ public class CppCpdLexer extends JavaccCpdLexer {
         private JavaccToken discardingTokensUntil = null;
         private boolean discardCurrent = false;
 
-        CppTokenFilter(
-                final TokenManager<JavaccToken> tokenManager,
-                final boolean ignoreLiteralSequences,
-                final boolean ignoreIdentifierAndLiteralSeqences) {
+        CppTokenFilter(final TokenManager<JavaccToken> tokenManager, final boolean ignoreLiteralSequences, final boolean ignoreIdentifierAndLiteralSeqences) {
             super(tokenManager);
             this.ignoreIdentifierAndLiteralSeqences = ignoreIdentifierAndLiteralSeqences;
             this.ignoreLiteralSequences = ignoreLiteralSequences;
@@ -133,53 +123,51 @@ public class CppCpdLexer extends JavaccCpdLexer {
                         discardCurrent = true;
                     }
                 } else if (kind == CppTokenKinds.LCURLYBRACE) {
-                    discardingTokensUntil =
-                            findEndOfSequenceToDiscard(remainingTokens, ignoreIdentifierAndLiteralSeqences);
+                    discardingTokensUntil = findEndOfSequenceToDiscard(remainingTokens, ignoreIdentifierAndLiteralSeqences);
                 }
             }
         }
 
-        private static JavaccToken findEndOfSequenceToDiscard(
-                final Iterable<JavaccToken> remainingTokens, boolean ignoreIdentifierAndLiteralSeqences) {
+        private static JavaccToken findEndOfSequenceToDiscard(final Iterable<JavaccToken> remainingTokens, boolean ignoreIdentifierAndLiteralSeqences) {
             boolean seenAllowedToken = false;
             int braceCount = 0;
             for (final JavaccToken token : remainingTokens) {
                 switch (token.getKind()) {
-                    case CppTokenKinds.BINARY_INT_LITERAL:
-                    case CppTokenKinds.DECIMAL_INT_LITERAL:
-                    case CppTokenKinds.FLOAT_LITERAL:
-                    case CppTokenKinds.HEXADECIMAL_INT_LITERAL:
-                    case CppTokenKinds.OCTAL_INT_LITERAL:
-                    case CppTokenKinds.ZERO:
-                    case CppTokenKinds.STRING:
+                case CppTokenKinds.BINARY_INT_LITERAL:
+                case CppTokenKinds.DECIMAL_INT_LITERAL:
+                case CppTokenKinds.FLOAT_LITERAL:
+                case CppTokenKinds.HEXADECIMAL_INT_LITERAL:
+                case CppTokenKinds.OCTAL_INT_LITERAL:
+                case CppTokenKinds.ZERO:
+                case CppTokenKinds.STRING:
+                    seenAllowedToken = true;
+                    break; // can be skipped; continue to the next token
+                case CppTokenKinds.ID:
+                    // Ignore identifiers if instructed
+                    if (ignoreIdentifierAndLiteralSeqences) {
                         seenAllowedToken = true;
                         break; // can be skipped; continue to the next token
-                    case CppTokenKinds.ID:
-                        // Ignore identifiers if instructed
-                        if (ignoreIdentifierAndLiteralSeqences) {
-                            seenAllowedToken = true;
-                            break; // can be skipped; continue to the next token
-                        } else {
-                            // token not expected, other than identifier
-                            return null;
-                        }
-                    case CppTokenKinds.COMMA:
-                        break; // can be skipped; continue to the next token
-                    case CppTokenKinds.LCURLYBRACE:
-                        braceCount++;
-                        break; // curly braces are allowed, as long as they're balanced
-                    case CppTokenKinds.RCURLYBRACE:
-                        braceCount--;
-                        if (braceCount < 0) {
-                            // end of the list; skip all contents
-                            return seenAllowedToken ? token : null;
-                        } else {
-                            // curly braces are not yet balanced; continue to the next token
-                            break;
-                        }
-                    default:
-                        // some other token than the expected ones; this is not a sequence of literals
+                    } else {
+                        // token not expected, other than identifier
                         return null;
+                    }
+                case CppTokenKinds.COMMA:
+                    break; // can be skipped; continue to the next token
+                case CppTokenKinds.LCURLYBRACE:
+                    braceCount++;
+                    break; // curly braces are allowed, as long as they're balanced
+                case CppTokenKinds.RCURLYBRACE:
+                    braceCount--;
+                    if (braceCount < 0) {
+                        // end of the list; skip all contents
+                        return seenAllowedToken ? token : null;
+                    } else {
+                        // curly braces are not yet balanced; continue to the next token
+                        break;
+                    }
+                default:
+                    // some other token than the expected ones; this is not a sequence of literals
+                    return null;
                 }
             }
             return null;

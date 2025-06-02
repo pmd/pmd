@@ -1,6 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
+
 package net.sourceforge.pmd.lang.visualforce;
 
 import java.util.Arrays;
@@ -9,6 +10,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,6 +56,7 @@ public enum DataType {
     Unknown(true);
 
     private static final Logger LOG = LoggerFactory.getLogger(DataType.class);
+
 
     /**
      * True if this field is an XSS risk

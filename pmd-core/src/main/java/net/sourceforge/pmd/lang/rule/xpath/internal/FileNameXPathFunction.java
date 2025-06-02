@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule.xpath.internal;
 
 import java.util.Objects;
+
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
@@ -37,7 +38,9 @@ public final class FileNameXPathFunction extends XPathFunctionDefinition {
         return (node, arguments) -> {
             if (node == null) {
                 throw new XPathFunctionException(
-                        "Cannot call function '" + getQName().getLocalPart() + "' without context item");
+                    "Cannot call function '" + getQName().getLocalPart()
+                        + "' without context item"
+                );
             }
             RootNode root = node.getRoot();
             Objects.requireNonNull(root, "No root node in tree?");

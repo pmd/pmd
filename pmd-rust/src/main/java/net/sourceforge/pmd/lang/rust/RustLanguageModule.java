@@ -25,4 +25,5 @@ public class RustLanguageModule extends CpdOnlyLanguageModuleBase {
     public CpdLexer createCpdLexer(LanguagePropertyBundle bundle) {
         return new RustCpdLexer();
     }
+  
 }
