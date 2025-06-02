@@ -721,10 +721,10 @@
                         <java>
                             <removeUnusedImports/>
                             <eclipse>
-                                <file>.config/pmd-eclipse-code-formatter.xml</file>
+                                <file>${project.basedir}/.config/pmd-eclipse-code-formatter.xml</file>
                             </eclipse>
                             <importOrder>
-                                <file>.config/pmd-eclipse-imports.importorder</file>
+                                <file>${project.basedir}/.config/pmd-eclipse-imports.importorder</file>
                             </importOrder>
                         </java>
                         <kotlin>
