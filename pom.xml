@@ -720,14 +720,14 @@
                         </formats>
                         <java>
 <!--                            <googleJavaFormat/>-->
-<!--                            <palantirJavaFormat/>-->
+                            <palantirJavaFormat/>
                             <removeUnusedImports/>
-                            <eclipse>
+<!--                            <eclipse>-->
 <!--                                <file>${maven.multiModuleProjectDirectory}.config/pmd-eclipse-code-formatter.xml</file>-->
-                            </eclipse>
-                            <importOrder>
+<!--                            </eclipse>-->
+<!--                            <importOrder>-->
 <!--                                <file>${maven.multiModuleProjectDirectory}.config/pmd-eclipse-imports.importorder</file>-->
-                            </importOrder>
+<!--                            </importOrder>-->
                         </java>
                         <kotlin>
                             <ktfmt>
