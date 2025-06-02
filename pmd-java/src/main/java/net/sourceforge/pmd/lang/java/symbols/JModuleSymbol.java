@@ -11,7 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 /**
  * @since 7.5.0
  */
-public interface JModuleSymbol extends AnnotableSymbol, BoundToNode<ASTModuleDeclaration> {
+public interface JModuleSymbol extends AnnotableSymbol,
+                                       BoundToNode<ASTModuleDeclaration> {
 
     Set<String> getExportedPackages();
 }

@@ -28,14 +28,15 @@ import net.sourceforge.pmd.reporting.RuleContext;
 
 public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
+
     private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_METHODS_DESCRIPTOR = booleanProperty(
             "checkNonStaticMethods")
-            .desc("Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.")
-            .defaultValue(true).build();
+                    .desc("Check for non-static methods.  Do not set this to false and checkNonStaticFields to true.")
+                    .defaultValue(true).build();
     private static final PropertyDescriptor<Boolean> CHECK_NON_STATIC_FIELDS_DESCRIPTOR = booleanProperty(
             "checkNonStaticFields")
-            .desc("Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.")
-            .defaultValue(false).build();
+                    .desc("Check for non-static fields.  Do not set this to true and checkNonStaticMethods to false.")
+                    .defaultValue(false).build();
 
     private Set<String> fields = new HashSet<>();
 
@@ -48,12 +49,14 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
         definePropertyDescriptor(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
     }
 
+
     @Override
     public void start(RuleContext ctx) {
         fields.clear();
         checkNonStaticMethods = getProperty(CHECK_NON_STATIC_METHODS_DESCRIPTOR);
         checkNonStaticFields = getProperty(CHECK_NON_STATIC_FIELDS_DESCRIPTOR);
     }
+
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
@@ -64,6 +67,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
         }
         return data;
     }
+
 
     @Override
     public Object visit(ASTMethodDeclaration node, Object data) {

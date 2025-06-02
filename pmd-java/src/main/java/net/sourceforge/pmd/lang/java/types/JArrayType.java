@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.List;
@@ -20,8 +21,8 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * An array type (1 dimension). Multi-level arrays have an array type as
- * component themselves.
+ * An array type (1 dimension). Multi-level arrays have an array type
+ * as component themselves.
  */
 public final class JArrayType implements JTypeMirror {
 
@@ -81,15 +82,15 @@ public final class JArrayType implements JTypeMirror {
     @Override
     public JArrayType getErasure() {
         JTypeMirror erasedComp = component.getErasure();
-        return erasedComp == component
-                ? this // NOPMD CompareObjectsWithEquals
-                : new JArrayType(ts, erasedComp, symbol, typeAnnots);
+        return erasedComp == component ? this  // NOPMD CompareObjectsWithEquals
+                                       : new JArrayType(ts, erasedComp, symbol, typeAnnots);
     }
 
+
     /**
-     * Gets the component type of this array. This is the same type as the array,
-     * stripped of a single array dimensions, e.g. the component type of
-     * {@code int[][][]} is {@code int[][]}.
+     * Gets the component type of this array. This is the same type as
+     * the array, stripped of a single array dimensions, e.g. the component
+     * type of {@code int[][][]} is {@code int[][]}.
      *
      * @return The component type of this array type
      *
@@ -100,9 +101,9 @@ public final class JArrayType implements JTypeMirror {
     }
 
     /**
-     * Gets the element type of this array. This is the same type as the array,
-     * stripped of all array dimensions, e.g. the element type of {@code int[][][]}
-     * is {@code int}.
+     * Gets the element type of this array. This is the same type as
+     * the array, stripped of all array dimensions, e.g. the element
+     * type of {@code int[][][]} is {@code int}.
      *
      * @return The element type of this array type
      *
@@ -117,16 +118,21 @@ public final class JArrayType implements JTypeMirror {
         return c;
     }
 
+
     @Override
     public Stream<JMethodSig> streamMethods(Predicate<? super JMethodSymbol> prefilter) {
-        return Stream.concat(streamDeclaredMethods(prefilter),
-                // inherited object methods
-                ts.OBJECT.streamMethods(prefilter));
+        return Stream.concat(
+            streamDeclaredMethods(prefilter),
+            // inherited object methods
+            ts.OBJECT.streamMethods(prefilter)
+        );
     }
 
     @Override
     public Stream<JMethodSig> streamDeclaredMethods(Predicate<? super JMethodSymbol> prefilter) {
-        return getSymbol().getDeclaredMethods().stream().filter(prefilter).map(it -> new ArrayMethodSigImpl(this, it));
+        return getSymbol().getDeclaredMethods().stream()
+                          .filter(prefilter)
+                          .map(it -> new ArrayMethodSigImpl(this, it));
     }
 
     @Override
@@ -147,9 +153,8 @@ public final class JArrayType implements JTypeMirror {
     @Override
     public JArrayType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         JTypeMirror newComp = getComponentType().subst(subst);
-        return newComp == component
-                ? this // NOPMD UseEqualsToCompareObjectReferences
-                : getTypeSystem().arrayType(newComp).withAnnotations(getTypeAnnotations());
+        return newComp == component ? this // NOPMD UseEqualsToCompareObjectReferences
+                                    : getTypeSystem().arrayType(newComp).withAnnotations(getTypeAnnotations());
     }
 
     @Override

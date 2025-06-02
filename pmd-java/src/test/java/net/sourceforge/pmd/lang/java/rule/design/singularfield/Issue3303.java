@@ -16,8 +16,8 @@ public class Issue3303 {
     public void performClosing() {
         // note: this is uncommented in the test case, it needs
         // java 9
-        // try (first) {
+        //        try (first) {
         // this block can be empty or not
-        // }
+        //        }
     }
 }

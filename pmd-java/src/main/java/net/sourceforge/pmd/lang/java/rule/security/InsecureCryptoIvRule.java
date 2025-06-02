@@ -14,9 +14,7 @@ package net.sourceforge.pmd.lang.java.rule.security;
  * //bad: byte[] ivBytes = someString.getBytes();
  * </code>
  *
- * <p>
- * {@link javax.crypto.spec.IvParameterSpec} must not be created from a static
- * sources
+ * <p>{@link javax.crypto.spec.IvParameterSpec} must not be created from a static sources
  *
  * @author sergeygorbaty
  * @since 6.3.0

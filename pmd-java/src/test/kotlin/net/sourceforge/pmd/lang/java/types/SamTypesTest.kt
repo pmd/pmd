@@ -11,12 +11,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 
-class SamTypesTest :
-    ProcessorTestSpec({
-        parserTest("Test SAM when some default overrides an abstract method") {
-            val acu =
-                parser.parse(
-                    """
+class SamTypesTest : ProcessorTestSpec({
+    parserTest("Test SAM when some default overrides an abstract method") {
+        val acu = parser.parse(
+            """
 interface Top<T> {
     void accept(T t);
 }
@@ -26,17 +24,17 @@ interface Sub extends Top<Integer> {
     
     void accept(int i); // this is the single abstract method of Sub
 }
-            """
-                        .trimIndent()
-                )
+            """.trimIndent()
+        )
 
-            val (t_Top, t_Sub) =
-                acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
-            val (topAccept, subAcceptOverride, subAccept) =
-                acu.descendants(ASTMethodDeclaration::class.java).toList { it.genericSignature }
+        val (t_Top, t_Sub) = acu.descendants(ASTClassDeclaration::class.java).toList { it.typeMirror }
+        val (topAccept, subAcceptOverride, subAccept) = acu.descendants(ASTMethodDeclaration::class.java)
+            .toList { it.genericSignature }
 
-            TypeOps.findFunctionalInterfaceMethod(t_Top) shouldBe topAccept
-            TypeOps.findFunctionalInterfaceMethod(t_Sub) shouldBe subAccept
-            TypeOps.overrides(subAcceptOverride, topAccept, t_Sub) shouldBe true
-        }
-    })
+        TypeOps.findFunctionalInterfaceMethod(t_Top) shouldBe topAccept
+        TypeOps.findFunctionalInterfaceMethod(t_Sub) shouldBe subAccept
+        TypeOps.overrides(subAcceptOverride, topAccept, t_Sub) shouldBe true
+    }
+})
+
+

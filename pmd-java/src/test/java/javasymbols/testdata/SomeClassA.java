@@ -4,5 +4,6 @@
 
 package javasymbols.testdata;
 
+
 public class SomeClassA {
 }

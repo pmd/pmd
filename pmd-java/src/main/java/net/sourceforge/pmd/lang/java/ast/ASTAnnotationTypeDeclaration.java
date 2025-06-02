@@ -7,12 +7,11 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * The declaration of an annotation type. This is a
- * {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
+ * The declaration of an annotation type.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
- * <p>
- * Note that in contrast to interface types, no {@linkplain ASTExtendsList
- * extends clause} is permitted, and an annotation type cannot be generic.
+ * <p>Note that in contrast to interface types, no {@linkplain ASTExtendsList extends clause}
+ * is permitted, and an annotation type cannot be generic.
  *
  * <pre class="grammar">
  *
@@ -26,14 +25,17 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public final class ASTAnnotationTypeDeclaration extends AbstractTypeDeclaration {
 
+
     ASTAnnotationTypeDeclaration(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     @Override
     public boolean isInterface() {

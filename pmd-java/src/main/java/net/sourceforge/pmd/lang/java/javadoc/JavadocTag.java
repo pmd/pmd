@@ -27,19 +27,17 @@ public final class JavadocTag {
     public static final JavadocTag RETURN = new JavadocTag("return", " ");
     public static final JavadocTag SEE = new JavadocTag("see", " ");
 
-    /*
-     * public static final JavadocTag POST = new JavadocTag("post", " "); public
-     * static final JavadocTag PRE = new JavadocTag("pre", " "); public static final
-     * JavadocTag RETURN = new JavadocTag("return", " "); public static final
-     * JavadocTag INV = new JavadocTag("inv", " "); public static final JavadocTag
-     * INVARIANT = new JavadocTag("invariant", " "); public static final JavadocTag
-     * PATTERN = new JavadocTag("pattern", " "); public static final JavadocTag
-     * SERIAL = new JavadocTag("serial", " "); public static final JavadocTag
-     * SERIAL_DATA = new JavadocTag("serialData", " "); public static final
-     * JavadocTag SERIAL_FIELD = new JavadocTag("serialField"," "); public static
-     * final JavadocTag GENERATED = new JavadocTag("generated", " "); public static
-     * final JavadocTag GENERATED_BY = new JavadocTag("generatedBy"," ");
-     */
+    /*  public static final JavadocTag POST         = new JavadocTag("post",       " ");
+        public static final JavadocTag PRE          = new JavadocTag("pre",        " ");
+        public static final JavadocTag RETURN       = new JavadocTag("return",     " ");
+        public static final JavadocTag INV          = new JavadocTag("inv",        " ");
+        public static final JavadocTag INVARIANT    = new JavadocTag("invariant",  " ");
+        public static final JavadocTag PATTERN      = new JavadocTag("pattern",    " ");
+        public static final JavadocTag SERIAL       = new JavadocTag("serial",     " ");
+        public static final JavadocTag SERIAL_DATA  = new JavadocTag("serialData", " ");
+        public static final JavadocTag SERIAL_FIELD = new JavadocTag("serialField"," ");
+        public static final JavadocTag GENERATED    = new JavadocTag("generated",  " ");
+        public static final JavadocTag GENERATED_BY = new JavadocTag("generatedBy"," ");  */
 
     private JavadocTag(String theLabel, String theDescription) {
         label = theLabel;

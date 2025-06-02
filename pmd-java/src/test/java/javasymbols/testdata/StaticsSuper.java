@@ -6,12 +6,12 @@ package javasymbols.testdata;
 
 public class StaticsSuper {
 
+
     public static void oha() {
 
     }
 
     public static int oha;
-    public static class oha {
-    }
+    public static class oha {}
 
 }

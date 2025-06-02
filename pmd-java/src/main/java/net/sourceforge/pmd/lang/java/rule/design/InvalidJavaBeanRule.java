@@ -39,13 +39,15 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     private static final String LOMBOK_GETTER = "Getter";
     private static final String LOMBOK_SETTER = "Setter";
 
-    private static final PropertyDescriptor<Boolean> ENSURE_SERIALIZATION = PropertyFactory
-            .booleanProperty("ensureSerialization").desc("Require that beans implement java.io.Serializable.")
-            .defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> ENSURE_SERIALIZATION = PropertyFactory.booleanProperty("ensureSerialization")
+            .desc("Require that beans implement java.io.Serializable.")
+            .defaultValue(false)
+            .build();
 
     private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR = stringListProperty("packages")
             .desc("Consider classes in only these package to be beans. Set to an empty value to check all classes.")
-            .defaultValues("org.example.beans").build();
+            .defaultValues("org.example.beans")
+            .build();
 
     private Map<String, PropertyInfo> properties;
 
@@ -76,7 +78,8 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         }
 
         if (!hasNoArgConstructor(node)) {
-            asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' is missing a no-arg constructor.", beanName);
+            asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' is missing a no-arg constructor.",
+                    beanName);
         }
 
         if (hasLombokDataAnnotation(node)) {
@@ -89,25 +92,27 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         collectMethods(node);
 
         for (PropertyInfo propertyInfo : properties.values()) {
-            if (!hasLombokGetterAnnotation(node) && !hasLombokSetterAnnotation(node) && propertyInfo.hasMissingGetter()
-                    && propertyInfo.hasMissingSetter()) {
+            if (!hasLombokGetterAnnotation(node) && !hasLombokSetterAnnotation(node)
+                && propertyInfo.hasMissingGetter() && propertyInfo.hasMissingSetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
-                        "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.", beanName,
-                        propertyInfo.getName());
+                        "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.",
+                        beanName, propertyInfo.getName());
             } else if (!hasLombokGetterAnnotation(node) && propertyInfo.hasMissingGetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
-                        "The bean ''{0}'' is missing a getter for property ''{1}''.", beanName, propertyInfo.getName());
+                        "The bean ''{0}'' is missing a getter for property ''{1}''.",
+                        beanName, propertyInfo.getName());
 
             } else if (!hasLombokSetterAnnotation(node) && propertyInfo.hasMissingSetter()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
-                        "The bean ''{0}'' is missing a setter for property ''{1}''.", beanName, propertyInfo.getName());
+                        "The bean ''{0}'' is missing a setter for property ''{1}''.",
+                        beanName, propertyInfo.getName());
 
             }
 
             if (propertyInfo.hasWrongGetterType()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
-                        "The bean ''{0}'' should return a ''{1}'' in getter of property ''{2}''.", beanName,
-                        propertyInfo.getTypeName(), propertyInfo.getName());
+                        "The bean ''{0}'' should return a ''{1}'' in getter of property ''{2}''.",
+                        beanName, propertyInfo.getTypeName(), propertyInfo.getName());
             }
             if (propertyInfo.hasWrongBooleanGetterName()) {
                 asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
@@ -138,8 +143,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         for (ASTFieldDeclaration fieldDeclaration : node.getDeclarations(ASTFieldDeclaration.class).toList()) {
             for (ASTVariableId variableId : fieldDeclaration) {
                 String propertyName = StringUtils.capitalize(variableId.getName());
-                if (!fieldDeclaration.hasModifiers(JModifier.STATIC)
-                        && !fieldDeclaration.hasModifiers(JModifier.TRANSIENT)) {
+                if (!fieldDeclaration.hasModifiers(JModifier.STATIC) && !fieldDeclaration.hasModifiers(JModifier.TRANSIENT)) {
                     PropertyInfo field = getOrCreatePropertyInfo(propertyName);
                     field.setDeclaratorId(variableId);
                     field.setReadonly(fieldDeclaration.hasModifiers(JModifier.FINAL));
@@ -166,8 +170,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
                 if (parameterCount == 0) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setGetter(methodDeclaration);
-                } else if (parameterCount == 1
-                        && getFirstParameterType(methodDeclaration).isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)) {
+                } else if (parameterCount == 1 && getFirstParameterType(methodDeclaration).isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setIndexedGetter(methodDeclaration);
                 }
@@ -175,8 +178,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
                 if (parameterCount == 1) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setSetter(methodDeclaration);
-                } else if (parameterCount == 2
-                        && getFirstParameterType(methodDeclaration).isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)) {
+                } else if (parameterCount == 2 && getFirstParameterType(methodDeclaration).isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setIndexedSetter(methodDeclaration);
                 }
@@ -190,8 +192,7 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
 
     private static JTypeMirror getParameterType(ASTMethodDeclaration declaration, int i) {
         if (declaration.getArity() >= i + 1) {
-            ASTFormalParameter firstParameter = declaration.getFormalParameters().children(ASTFormalParameter.class)
-                    .get(i);
+            ASTFormalParameter firstParameter = declaration.getFormalParameters().children(ASTFormalParameter.class).get(i);
             return firstParameter.getTypeMirror();
         }
         return null;
@@ -215,8 +216,10 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean hasLombokImport(Annotatable node) {
-        return node.getRoot().descendants(ASTImportDeclaration.class).filter(ASTImportDeclaration::isImportOnDemand)
-                .filterNot(ASTImportDeclaration::isStatic).any(i -> LOMBOK_PACKAGE.equals(i.getImportedName()));
+        return node.getRoot().descendants(ASTImportDeclaration.class)
+                .filter(ASTImportDeclaration::isImportOnDemand)
+                .filterNot(ASTImportDeclaration::isStatic)
+                .any(i -> LOMBOK_PACKAGE.equals(i.getImportedName()));
     }
 
     private static boolean hasLombokDataAnnotation(Annotatable node) {
@@ -323,13 +326,14 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         }
 
         private boolean hasWrongGetterType() {
-            return declaratorId != null && getter != null && !getter.getResultTypeNode().isVoid()
+            return declaratorId != null
+                    && getter != null
+                    && !getter.getResultTypeNode().isVoid()
                     && !declaratorId.getTypeMirror().equals(getResultType(getter));
         }
 
         private boolean hasWrongBooleanGetterName() {
-            if (getter != null && (TypeTestUtil.isA(Boolean.class, declaratorId)
-                    || TypeTestUtil.isA(Boolean.TYPE, declaratorId))) {
+            if (getter != null && (TypeTestUtil.isA(Boolean.class, declaratorId) || TypeTestUtil.isA(Boolean.TYPE, declaratorId))) {
                 return !getter.getName().startsWith("is");
             }
             return false;
@@ -340,7 +344,8 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
                 return false;
             }
             JTypeMirror parameterType = getFirstParameterType(setter);
-            return getter.getResultTypeNode().isVoid() || !getResultType(getter).equals(parameterType);
+            return getter.getResultTypeNode().isVoid()
+                    || !getResultType(getter).equals(parameterType);
         }
 
         private boolean hasWrongIndexedGetterType() {
@@ -368,16 +373,12 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         }
 
         private boolean hasFieldLombokGetter() {
-            ASTFieldDeclaration fieldDeclaration = declaratorId != null
-                    ? declaratorId.ancestors(ASTFieldDeclaration.class).first()
-                    : null;
+            ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.ancestors(ASTFieldDeclaration.class).first() : null;
             return fieldDeclaration != null && hasLombokGetterAnnotation(fieldDeclaration);
         }
 
         private boolean hasFieldLombokSetter() {
-            ASTFieldDeclaration fieldDeclaration = declaratorId != null
-                    ? declaratorId.ancestors(ASTFieldDeclaration.class).first()
-                    : null;
+            ASTFieldDeclaration fieldDeclaration = declaratorId != null ? declaratorId.ancestors(ASTFieldDeclaration.class).first() : null;
             return fieldDeclaration != null && hasLombokSetterAnnotation(fieldDeclaration);
         }
     }

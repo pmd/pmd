@@ -28,12 +28,11 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 
 /**
- * Context of a usage reference ("in which class does the name occur?"), which
- * determines accessibility of referenced symbols. The context may have no
- * enclosing class, eg in the "extends" clause of a toplevel type.
+ * Context of a usage reference ("in which class does the name occur?"),
+ * which determines accessibility of referenced symbols. The context may
+ * have no enclosing class, eg in the "extends" clause of a toplevel type.
  *
- * <p>
- * This is an internal helper class for disambiguation pass
+ * <p>This is an internal helper class for disambiguation pass
  */
 public final class ReferenceCtx {
 
@@ -57,8 +56,9 @@ public final class ReferenceCtx {
 
     public ReferenceCtx scopeDownToNested(JClassSymbol newEnclosing) {
         assert enclosingClass == null || enclosingClass.equals(newEnclosing.getEnclosingClass())
-                : "Not a child class of the current context (" + this + "): " + newEnclosing;
-        assert newEnclosing.getPackageName().equals(packageName) : "Mismatched package name";
+            : "Not a child class of the current context (" + this + "): " + newEnclosing;
+        assert newEnclosing.getPackageName().equals(packageName)
+            : "Mismatched package name";
         return new ReferenceCtx(processor, packageName, newEnclosing);
     }
 
@@ -73,17 +73,15 @@ public final class ReferenceCtx {
     public @Nullable JClassSymbol findTypeMember(JTypeDeclSymbol classSym, String name, JavaNode errorLocation) {
         if (classSym instanceof JClassSymbol) {
             JClassType c = (JClassType) classSym.getTypeSystem().typeOf(classSym, false);
-            @NonNull
-            List<JClassType> found = JavaResolvers.getMemberClassResolver(c, packageName, enclosingClass, name)
-                    .resolveHere(name);
+            @NonNull List<JClassType> found = JavaResolvers.getMemberClassResolver(c, packageName, enclosingClass, name).resolveHere(name);
             JClassType result = maybeAmbiguityError(name, errorLocation, found);
             return result == null ? null : result.getSymbol();
         }
         return null;
     }
 
-    <T extends JTypeMirror> T maybeAmbiguityError(String name, JavaNode errorLocation,
-            @NonNull List<? extends T> found) {
+
+    <T extends JTypeMirror> T maybeAmbiguityError(String name, JavaNode errorLocation, @NonNull List<? extends T> found) {
         if (found.isEmpty()) {
             return null;
         } else if (found.size() > 1) {
@@ -92,8 +90,13 @@ public final class ReferenceCtx {
             if (distinct.size() == 1) {
                 return distinct.iterator().next();
             }
-            processor.getLogger().warning(errorLocation, AMBIGUOUS_NAME_REFERENCE, name,
-                    canonicalNameOf(found.get(0).getSymbol()), canonicalNameOf(found.get(1).getSymbol()));
+            processor.getLogger().warning(
+                errorLocation,
+                AMBIGUOUS_NAME_REFERENCE,
+                name,
+                canonicalNameOf(found.get(0).getSymbol()),
+                canonicalNameOf(found.get(1).getSymbol())
+            );
             // fallthrough and use the first one anyway
         }
         return found.get(0);
@@ -126,16 +129,14 @@ public final class ReferenceCtx {
         }
     }
 
-    public void reportUnresolvedMember(JavaNode location, Fallback fallbackStrategy, String memberName,
-            JTypeDeclSymbol owner) {
+    public void reportUnresolvedMember(JavaNode location, Fallback fallbackStrategy, String memberName, JTypeDeclSymbol owner) {
         if (owner.isUnresolved()) {
             // would already have been reported on owner
             return;
         }
 
-        String ownerName = owner instanceof JClassSymbol
-                ? ((JClassSymbol) owner).getCanonicalName()
-                : "type variable " + owner.getSimpleName();
+        String ownerName = owner instanceof JClassSymbol ? ((JClassSymbol) owner).getCanonicalName()
+                                                         : "type variable " + owner.getSimpleName();
 
         this.processor.getLogger().warning(location, CANNOT_RESOLVE_MEMBER, memberName, ownerName, fallbackStrategy);
     }
@@ -146,12 +147,16 @@ public final class ReferenceCtx {
 
     @Override
     public String toString() {
-        return "ReferenceCtx{" + "packageName='" + packageName + '\'' + ", enclosingClass=" + enclosingClass + '}';
+        return "ReferenceCtx{"
+            + "packageName='" + packageName + '\''
+            + ", enclosingClass=" + enclosingClass
+            + '}';
     }
 
     public JTypeMirror resolveSingleTypeName(JSymbolTable symTable, String image, JavaNode errorLoc) {
         return maybeAmbiguityError(image, errorLoc, symTable.types().resolve(image));
     }
+
 
     public JClassSymbol makeUnresolvedReference(String canonicalName, int typeArity) {
         return processor.makeUnresolvedReference(canonicalName, typeArity);
@@ -165,8 +170,10 @@ public final class ReferenceCtx {
      * Fallback strategy for unresolved stuff.
      */
     public enum Fallback {
-        AMBIGUOUS("ambiguous"), FIELD_ACCESS("a field access"), PACKAGE_NAME("a package name"), TYPE(
-                "an unresolved type");
+        AMBIGUOUS("ambiguous"),
+        FIELD_ACCESS("a field access"),
+        PACKAGE_NAME("a package name"),
+        TYPE("an unresolved type");
 
         private final String displayName;
 

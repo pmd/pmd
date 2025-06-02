@@ -49,6 +49,6 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     private boolean isResultSetMethod(ASTMethodCall node) {
         return METHODS.contains(node.getMethodName())
-                && TypeTestUtil.isDeclaredInClass(ResultSet.class, node.getMethodType());
+            && TypeTestUtil.isDeclaredInClass(ResultSet.class, node.getMethodType());
     }
 }

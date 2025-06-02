@@ -19,10 +19,12 @@ public final class ASTAssertStatement extends AbstractStatement {
         super(id);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     /**
      * Returns the expression tested by this assert statement.
@@ -31,17 +33,20 @@ public final class ASTAssertStatement extends AbstractStatement {
         return (ASTExpression) getChild(0);
     }
 
+
     /**
-     * Returns true if this assert statement has a "detail message" expression. In
-     * that case, {@link #getDetailMessageNode()} doesn't return null.
+     * Returns true if this assert statement has a "detail message"
+     * expression. In that case, {@link #getDetailMessageNode()} doesn't
+     * return null.
      */
     public boolean hasDetailMessage() {
         return getNumChildren() == 2;
     }
 
+
     /**
-     * Returns the expression that corresponds to the detail message, i.e. the
-     * expression after the colon, if it's present.
+     * Returns the expression that corresponds to the detail message,
+     * i.e. the expression after the colon, if it's present.
      */
     public ASTExpression getDetailMessageNode() {
         return hasDetailMessage() ? (ASTExpression) getChild(1) : null;

@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
+
 /**
  * CouplingBetweenObjects attempts to capture all unique Class attributes, local
  * variables, and return types to determine how many objects a class is coupled
@@ -34,8 +35,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR = PropertyFactory.intProperty("threshold")
-            .desc("Unique type reporting threshold").require(positive()).defaultValue(20).build();
+    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
+        = PropertyFactory.intProperty("threshold")
+                         .desc("Unique type reporting threshold")
+                         .require(positive()).defaultValue(20).build();
 
     private int couplingCount;
     private boolean inInterface;
@@ -97,11 +100,10 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * performs a check on the variable and updates the counter. Counter is instance
-     * for a class and is reset upon new class scan.
+     * performs a check on the variable and updates the counter. Counter is
+     * instance for a class and is reset upon new class scan.
      *
-     * @param typeNode
-     *            The variable type.
+     * @param typeNode The variable type.
      */
     private void checkVariableType(ASTType typeNode) {
         if (inInterface || typeNode == null) {
@@ -120,8 +122,7 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
      * This needs more work. I'd like to filter out super types and perhaps
      * interfaces
      *
-     * @param t
-     *            The variable type.
+     * @param t The variable type.
      *
      * @return boolean true if variableType is not what we care about
      */
@@ -130,8 +131,10 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
             return true;
         }
         JTypeDeclSymbol symbol = t.getSymbol();
-        return symbol == null || JAccessibleElementSymbol.PRIMITIVE_PACKAGE.equals(symbol.getPackageName())
-                || t.isPrimitive() || t.isBoxedPrimitive();
+        return symbol == null
+            || JAccessibleElementSymbol.PRIMITIVE_PACKAGE.equals(symbol.getPackageName())
+            || t.isPrimitive()
+            || t.isBoxedPrimitive();
     }
 
 }

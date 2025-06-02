@@ -41,6 +41,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
  */
 class BaseTypeInferenceUnitTest {
 
+
     protected final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
     protected final JClassSymbol listSym = ts.getClassSymbol(List.class);
 
@@ -51,6 +52,7 @@ class BaseTypeInferenceUnitTest {
     protected InferenceContext emptyCtx(TypeInferenceLogger log) {
         return new InferenceContext(ts, new SupertypeCheckCache(), Collections.emptyList(), log);
     }
+
 
     protected InferenceVar newIvar(InferenceContext ctx) {
         return newIvar(ctx, ts.OBJECT);
@@ -66,10 +68,11 @@ class BaseTypeInferenceUnitTest {
     }
 
     /**
-     * Note: we systematically incorporate because the order in which constraints
-     * are added should not be overly specified by tests. Eg whether
-     * {@code a.isConvertibleTo(b)} creates {@code 'a <: 'b} or {@code 'b >: 'a} is
-     * irrelevant, provided the incorporation phase properly propagates either.
+     * Note: we systematically incorporate because the order in which
+     * constraints are added should not be overly specified by tests.
+     * Eg whether {@code a.isConvertibleTo(b)} creates {@code 'a <: 'b} or
+     * {@code 'b >: 'a} is irrelevant, provided the incorporation phase
+     * properly propagates either.
      */
     protected void addSubtypeConstraint(InferenceContext ctx, JTypeMirror t, JTypeMirror s) {
         t.isConvertibleTo(s); // nota: this captures t
@@ -81,23 +84,19 @@ class BaseTypeInferenceUnitTest {
         assertThrows(ResolutionFailedException.class, ctx::incorporate);
     }
 
-    @NonNull
-    JTypeMirror listType(JTypeMirror t) {
+    @NonNull JTypeMirror listType(JTypeMirror t) {
         return ts.parameterise(listSym, listOf(t));
     }
 
-    @NonNull
-    JWildcardType extendsWild(JTypeMirror t) {
+    @NonNull JWildcardType extendsWild(JTypeMirror t) {
         return ts.wildcard(true, t);
     }
 
-    @NonNull
-    JWildcardType superWild(JTypeMirror t) {
+    @NonNull JWildcardType superWild(JTypeMirror t) {
         return ts.wildcard(false, t);
     }
 
-    @NonNull
-    JIntersectionType intersect(JTypeMirror... types) {
+    @NonNull JIntersectionType intersect(JTypeMirror... types) {
         JTypeMirror glb = ts.glb(Arrays.asList(types));
         assertThat(glb, Matchers.isA(JIntersectionType.class));
         return (JIntersectionType) glb;
@@ -160,6 +159,7 @@ class BaseTypeInferenceUnitTest {
                 // as captureMatchers don't support hashing. Also don't
                 // use Set::contains
 
+
                 // caller may omit OBJECT for conciseness
                 boolean expectTop = Arrays.stream(bounds).anyMatch(it -> it.kind == BoundKind.UPPER && it.t == top);
                 // may not have top if it has a different default bound
@@ -174,7 +174,8 @@ class BaseTypeInferenceUnitTest {
                     return false;
                 }
 
-                b : for (Bound bound : bounds) {
+                b:
+                for (Bound bound : bounds) {
                     for (JTypeMirror t : actualBounds.getOrDefault(bound.kind, Collections.emptySet())) {
                         if (t.equals(bound.t)) {
                             numToTest--;

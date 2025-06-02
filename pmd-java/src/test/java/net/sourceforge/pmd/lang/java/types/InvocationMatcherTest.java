@@ -23,8 +23,9 @@ class InvocationMatcherTest extends BaseParserTest {
     @Test
     void testSimpleMatcher() {
 
-        ASTMethodCall call = java.parse("class Foo {{ Integer.valueOf('c'); }}").descendants(ASTMethodCall.class)
-                .firstOrThrow();
+        ASTMethodCall call =
+            java.parse("class Foo {{ Integer.valueOf('c'); }}")
+                .descendants(ASTMethodCall.class).firstOrThrow();
 
         assertMatch(call, "_#valueOf(int)");
         assertMatch(call, "java.lang.Integer#valueOf(int)");
@@ -39,7 +40,8 @@ class InvocationMatcherTest extends BaseParserTest {
     @Test
     void testCtorMatchers() {
 
-        ASTConstructorCall call = java.parse("class Foo {{ new java.util.ArrayList('c'); }}")
+        ASTConstructorCall call =
+            java.parse("class Foo {{ new java.util.ArrayList('c'); }}")
                 .descendants(ASTConstructorCall.class).firstOrThrow();
 
         assertMatch(call, "_#new(int)");
@@ -58,8 +60,9 @@ class InvocationMatcherTest extends BaseParserTest {
     @Test
     void testArray() {
 
-        ASTMethodCall call = java.parse("class Foo {{ new int[0].toString(); }}").descendants(ASTMethodCall.class)
-                .firstOrThrow();
+        ASTMethodCall call =
+            java.parse("class Foo {{ new int[0].toString(); }}")
+                .descendants(ASTMethodCall.class).firstOrThrow();
 
         assertMatch(call, "int[]#toString()");
         assertMatch(call, "_#toString()");
@@ -78,8 +81,9 @@ class InvocationMatcherTest extends BaseParserTest {
 
         parse("_#_(int,int)"); // does not fail
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> parse("_#_(int, int)"));
-        assertThat(e.getMessage(),
-                equalTo("Expected type at index 8:\n" + "    \"_#_(int, int)\"\n" + "             ^\n"));
+        assertThat(e.getMessage(), equalTo("Expected type at index 8:\n"
+                                                 + "    \"_#_(int, int)\"\n"
+                                                 + "             ^\n"));
     }
 
     private void assertMatch(InvocationNode call, String sig) {

@@ -19,9 +19,9 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStu
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.MethodStub;
 
 /**
- * Populates a {@link ClassStub} by reading a class file. Some info is known by
- * the ClassStub without parsing (like its internal name), so we defer parsing
- * until later. The class should be parsed only once.
+ * Populates a {@link ClassStub} by reading a class file. Some info is
+ * known by the ClassStub without parsing (like its internal name), so
+ * we defer parsing until later. The class should be parsed only once.
  */
 class ClassStubBuilder extends ClassVisitor {
 
@@ -40,8 +40,7 @@ class ClassStubBuilder extends ClassVisitor {
     }
 
     @Override
-    public void visit(int version, int access, String internalName, @Nullable String signature, String superName,
-            String[] interfaces) {
+    public void visit(int version, int access, String internalName, @Nullable String signature, String superName, String[] interfaces) {
         myStub.setModifiers(access, true);
         myStub.setHeader(signature, superName, interfaces);
     }
@@ -50,6 +49,7 @@ class ClassStubBuilder extends ClassVisitor {
     public AnnotationBuilderVisitor visitAnnotation(String descriptor, boolean visible) {
         return new AnnotationBuilderVisitor(myStub, resolver, visible, descriptor);
     }
+
 
     @Override
     public RecordComponentVisitor visitRecordComponent(String name, String descriptor, String signature) {
@@ -62,20 +62,18 @@ class ClassStubBuilder extends ClassVisitor {
             }
 
             @Override
-            public AnnotationVisitor visitTypeAnnotation(int typeRef, @Nullable TypePath typePath, String descriptor,
-                    boolean visible) {
+            public AnnotationVisitor visitTypeAnnotation(int typeRef, @Nullable TypePath typePath, String descriptor, boolean visible) {
                 assert new TypeReference(typeRef).getSort() == TypeReference.FIELD : typeRef;
-                return new AnnotationBuilderVisitor.TypeAnnotBuilderImpl(resolver, componentStub, typeRef, typePath,
-                        visible, descriptor);
+                return new AnnotationBuilderVisitor.TypeAnnotBuilderImpl(resolver, componentStub, typeRef, typePath, visible, descriptor);
             }
 
         };
     }
 
+
     // called only if this is local or anonymous class
     @Override
-    public void visitOuterClass(String ownerInternalName, @Nullable String methodName,
-            @Nullable String methodDescriptor) {
+    public void visitOuterClass(String ownerInternalName, @Nullable String methodName, @Nullable String methodDescriptor) {
         isAnonOrLocalClass = true;
         isInnerNonStaticClass = true;
         // only for enclosing method
@@ -84,8 +82,7 @@ class ClassStubBuilder extends ClassVisitor {
     }
 
     @Override
-    public FieldVisitor visitField(int access, String name, String descriptor, @Nullable String signature,
-            @Nullable Object value) {
+    public FieldVisitor visitField(int access, String name, String descriptor, @Nullable String signature, @Nullable Object value) {
         FieldStub field = new FieldStub(myStub, name, access, descriptor, signature, value);
         myStub.addField(field);
         return new FieldVisitor(AsmSymbolResolver.ASM_API_V) {
@@ -95,11 +92,9 @@ class ClassStubBuilder extends ClassVisitor {
             }
 
             @Override
-            public AnnotationVisitor visitTypeAnnotation(int typeRef, @Nullable TypePath typePath, String descriptor,
-                    boolean visible) {
+            public AnnotationVisitor visitTypeAnnotation(int typeRef, @Nullable TypePath typePath, String descriptor, boolean visible) {
                 assert new TypeReference(typeRef).getSort() == TypeReference.FIELD : typeRef;
-                return new AnnotationBuilderVisitor.TypeAnnotBuilderImpl(resolver, field, typeRef, typePath, visible,
-                        descriptor);
+                return new AnnotationBuilderVisitor.TypeAnnotBuilderImpl(resolver, field, typeRef, typePath, visible, descriptor);
             }
         };
     }
@@ -111,30 +106,21 @@ class ClassStubBuilder extends ClassVisitor {
     }
 
     /**
-     * Visits information about an inner class. This inner class is not necessarily
-     * a member of the class being visited.
+     * Visits information about an inner class. This inner class is not necessarily a member of the
+     * class being visited.
      *
-     * <p>
-     * Spec:
-     * https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.7.6
+     * <p>Spec: https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.7.6
      *
-     * @param innerInternalName
-     *            the internal name of an inner class (see
-     *            {@link Type#getInternalName()}).
-     * @param outerName
-     *            the internal name of the class to which the inner class belongs
-     *            (see {@link Type#getInternalName()}). May be {@literal null} for
-     *            not member classes.
-     * @param innerSimpleName
-     *            the (simple) name of the inner class inside its enclosing class.
-     *            May be {@literal null} for anonymous inner classes.
-     * @param access
-     *            the access flags of the inner class as originally declared in the
-     *            enclosing class.
+     * @param innerInternalName the internal name of an inner class (see {@link Type#getInternalName()}).
+     * @param outerName         the internal name of the class to which the inner class belongs (see {@link
+     *                          Type#getInternalName()}). May be {@literal null} for not member classes.
+     * @param innerSimpleName   the (simple) name of the inner class inside its enclosing class. May be
+     *                          {@literal null} for anonymous inner classes.
+     * @param access            the access flags of the inner class as originally
+     *                          declared in the enclosing class.
      */
     @Override
-    public void visitInnerClass(String innerInternalName, @Nullable String outerName, @Nullable String innerSimpleName,
-            int access) {
+    public void visitInnerClass(String innerInternalName, @Nullable String outerName, @Nullable String innerSimpleName, int access) {
         if (myInternalName.equals(outerName) && innerSimpleName != null) { // not anonymous
             ClassStub member = resolver.resolveFromInternalNameCannotFail(innerInternalName, ClassStub.UNKNOWN_ARITY);
             member.setSimpleName(innerSimpleName);
@@ -154,8 +140,7 @@ class ClassStubBuilder extends ClassVisitor {
     }
 
     @Override
-    public MethodVisitor visitMethod(int access, String name, String descriptor, String signature,
-            String[] exceptions) {
+    public MethodVisitor visitMethod(int access, String name, String descriptor, String signature, String[] exceptions) {
         if ((access & (Opcodes.ACC_SYNTHETIC | Opcodes.ACC_BRIDGE)) != 0) {
             // ignore synthetic methods
             return null;
@@ -164,6 +149,7 @@ class ClassStubBuilder extends ClassVisitor {
         if ("<clinit>".equals(name)) {
             return null;
         }
+
 
         ExecutableStub execStub;
         if ("<init>".equals(name)) {

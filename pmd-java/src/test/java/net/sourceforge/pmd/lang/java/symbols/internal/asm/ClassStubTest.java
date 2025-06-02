@@ -49,6 +49,7 @@ class ClassStubTest {
         assertFalse(annotationAttributeNames.isEmpty());
     }
 
+
     @Test
     void recordReflectionTest() {
         TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
@@ -66,6 +67,8 @@ class ClassStubTest {
 
     }
 
+
+
     @Test
     void varargsRecordReflectionTest() {
         TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
@@ -82,6 +85,7 @@ class ClassStubTest {
         assertEquals(ctors.get(0).getFormalParameterTypes(Substitution.EMPTY).get(0), ts.arrayType(ts.FLOAT));
     }
 
+
     @Test
     void annotatedRecordReflectionTest() {
         TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
@@ -91,8 +95,7 @@ class ClassStubTest {
 
         assertThat(components.get(0).getSimpleName(), equalTo("x"));
         // Interestingly record components cannot be deprecated.
-        // The field and accessor method are marked with the deprecated annotation
-        // though
+        // The field and accessor method are marked with the deprecated annotation though
         assertNull(components.get(0).getDeclaredAnnotation(Deprecated.class), "should not be deprecated");
         assertNotNull(record.getDeclaredField("x").getDeclaredAnnotation(Deprecated.class), "should be deprecated");
 
@@ -137,6 +140,7 @@ class ClassStubTest {
         assertThat(innerOfObj, hasProperty("modifiers", equalTo(Modifier.PRIVATE | Modifier.STATIC)));
     }
 
+
     @Test
     void testLoadAnonClassFromEnum() {
         TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
@@ -144,8 +148,8 @@ class ClassStubTest {
         assertThat(enumClass, hasProperty("simpleName", equalTo("EnumConstantWithBody")));
 
         AsmSymbolResolver resolver = (AsmSymbolResolver) ts.bootstrapResolver();
-        JClassSymbol anonClass = resolver
-                .resolveFromInternalNameCannotFail(ClassNamesUtil.getInternalName(EnumConstantWithBody.class) + "$1");
+        JClassSymbol anonClass = resolver.resolveFromInternalNameCannotFail(
+            ClassNamesUtil.getInternalName(EnumConstantWithBody.class) + "$1");
         assertThat(anonClass, hasProperty("unresolved", equalTo(false)));
         assertThat(anonClass, hasProperty("simpleName", equalTo("")));
         assertThat(anonClass.getEnclosingClass(), sameInstance(enumClass));
@@ -157,8 +161,8 @@ class ClassStubTest {
         JClassSymbol outerClass = loadTestDataClass(ts, "LocalClasses");
 
         AsmSymbolResolver resolver = (AsmSymbolResolver) ts.bootstrapResolver();
-        JClassSymbol local1 = resolver
-                .resolveFromInternalNameCannotFail(ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local1");
+        JClassSymbol local1 = resolver.resolveFromInternalNameCannotFail(
+            ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local1");
 
         assertThat(local1, hasProperty("unresolved", equalTo(false)));
         assertThat(local1, hasProperty("simpleName", equalTo("Local1")));
@@ -167,8 +171,8 @@ class ClassStubTest {
         assertThat(local1, hasProperty("enclosingMethod", equalTo(null)));
         assertThat(local1.getEnclosingClass(), sameInstance(outerClass));
 
-        JClassSymbol local2 = resolver
-                .resolveFromInternalNameCannotFail(ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local2");
+        JClassSymbol local2 = resolver.resolveFromInternalNameCannotFail(
+            ClassNamesUtil.getInternalName(LocalClasses.class) + "$1Local2");
         assertThat(local2, hasProperty("unresolved", equalTo(false)));
         assertThat(local2, hasProperty("simpleName", equalTo("Local2")));
         assertThat(local2, hasProperty("localClass", equalTo(true)));
@@ -177,13 +181,17 @@ class ClassStubTest {
         assertThat(local2.getEnclosingClass(), sameInstance(outerClass));
     }
 
+
+
+
     private static void assertIsListWithTyAnnotation(JClassType withTyAnnotation) {
         assertThat(withTyAnnotation.getSymbol().getBinaryName(), equalTo("java.util.List"));
         JTypeMirror tyArg = withTyAnnotation.getTypeArgs().get(0);
         assertThat(tyArg.getTypeAnnotations(), hasSize(1));
         assertThat(CollectionUtil.asSingle(tyArg.getTypeAnnotations()).getAnnotationSymbol().getBinaryName(),
-                equalTo("net.sourceforge.pmd.lang.java.symbols.recordclasses.TypeAnnotation"));
+                   equalTo("net.sourceforge.pmd.lang.java.symbols.recordclasses.TypeAnnotation"));
     }
+
 
     private static @NonNull JClassSymbol loadScalaClass(TypeSystem typeSystem, String simpleName) {
         return loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.scalaclasses", simpleName, typeSystem);
@@ -194,8 +202,7 @@ class ClassStubTest {
     }
 
     private static @NonNull JClassSymbol loadRecordClass(TypeSystem typeSystem, String simpleName) {
-        JClassSymbol symbol = loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.recordclasses", simpleName,
-                typeSystem);
+        JClassSymbol symbol = loadClassInPackage("net.sourceforge.pmd.lang.java.symbols.recordclasses", simpleName, typeSystem);
         assertTrue(symbol.isRecord(), "is a record");
         return symbol;
     }

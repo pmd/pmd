@@ -6,9 +6,10 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTNonEmptyList;
 
+
 /**
- * Represents the {@code extends} clause of a class or interface declaration. If
- * the parent is an interface declaration, then these types are all interface
+ * Represents the {@code extends} clause of a class or interface declaration.
+ * If the parent is an interface declaration, then these types are all interface
  * types. Otherwise, then this list contains exactly one element.
  *
  * <pre class="grammar">
@@ -21,6 +22,7 @@ public final class ASTExtendsList extends ASTNonEmptyList<ASTClassType> {
     ASTExtendsList(int id) {
         super(id, ASTClassType.class);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

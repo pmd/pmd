@@ -53,9 +53,9 @@ abstract class BaseExprMirror<T extends JavaNode> implements ExprMirror {
     }
 
     /**
-     * TODO get the type mirror like LazyTypeResolver does, but with a contextual
-     * mapping of symbol -> type. Lambda parameters may have a different type in
-     * this mirror hierarchy as they have in the AST.
+     * TODO get the type mirror like LazyTypeResolver does, but with a
+     * contextual mapping of symbol -> type. Lambda parameters may have
+     * a different type in this mirror hierarchy as they have in the AST.
      */
     protected JTypeMirror typeOf(ASTExpression e) {
         return e.getTypeMirror();

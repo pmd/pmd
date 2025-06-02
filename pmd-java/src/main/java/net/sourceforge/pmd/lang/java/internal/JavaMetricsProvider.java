@@ -17,10 +17,19 @@ import net.sourceforge.pmd.lang.metrics.Metric;
  */
 class JavaMetricsProvider implements LanguageMetricsProvider {
 
-    private final Set<Metric<?, ?>> metrics = setOf(JavaMetrics.ACCESS_TO_FOREIGN_DATA, JavaMetrics.CYCLO,
-            JavaMetrics.NPATH_COMP, JavaMetrics.NCSS, JavaMetrics.LINES_OF_CODE, JavaMetrics.FAN_OUT,
-            JavaMetrics.WEIGHED_METHOD_COUNT, JavaMetrics.WEIGHT_OF_CLASS, JavaMetrics.NUMBER_OF_ACCESSORS,
-            JavaMetrics.NUMBER_OF_PUBLIC_FIELDS, JavaMetrics.TIGHT_CLASS_COHESION);
+    private final Set<Metric<?, ?>> metrics = setOf(
+        JavaMetrics.ACCESS_TO_FOREIGN_DATA,
+        JavaMetrics.CYCLO,
+        JavaMetrics.NPATH_COMP,
+        JavaMetrics.NCSS,
+        JavaMetrics.LINES_OF_CODE,
+        JavaMetrics.FAN_OUT,
+        JavaMetrics.WEIGHED_METHOD_COUNT,
+        JavaMetrics.WEIGHT_OF_CLASS,
+        JavaMetrics.NUMBER_OF_ACCESSORS,
+        JavaMetrics.NUMBER_OF_PUBLIC_FIELDS,
+        JavaMetrics.TIGHT_CLASS_COHESION
+    );
 
     @Override
     public Set<Metric<?, ?>> getMetrics() {

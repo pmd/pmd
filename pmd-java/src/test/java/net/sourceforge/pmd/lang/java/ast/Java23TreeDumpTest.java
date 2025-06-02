@@ -22,8 +22,9 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class Java23TreeDumpTest extends BaseJavaTreeDumpTest {
-    private final JavaParsingHelper java23 = JavaParsingHelper.DEFAULT.withDefaultVersion("23")
-            .withResourceContext(Java21TreeDumpTest.class, "jdkversiontests/java23/");
+    private final JavaParsingHelper java23 =
+            JavaParsingHelper.DEFAULT.withDefaultVersion("23")
+                    .withResourceContext(Java21TreeDumpTest.class, "jdkversiontests/java23/");
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
@@ -57,7 +58,9 @@ class Java23TreeDumpTest extends BaseJavaTreeDumpTest {
         assertFalse(classComment.isSingleLine());
 
         List<JavadocComment> methodComments = unit.descendants(ASTMethodDeclaration.class).toStream()
-                .map(ASTMethodDeclaration::getJavadocComment).filter(Objects::nonNull).collect(Collectors.toList());
+                .map(ASTMethodDeclaration::getJavadocComment)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         assertEquals(2, methodComments.size());
         assertThat(methodComments.get(0).getText().toString(), containsString("@param prefix the prefix"));
         assertFalse(methodComments.get(0).isSingleLine());

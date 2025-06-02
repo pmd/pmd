@@ -16,6 +16,5 @@ public final class Issue2080 {
         B value;
     }
 
-    class B {
-    }
+    class B { }
 }

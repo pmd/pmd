@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 public @interface AnnotWithDefaults {
 
+
     String valueNoDefault();
 
     String valueWithDefault() default "ddd";

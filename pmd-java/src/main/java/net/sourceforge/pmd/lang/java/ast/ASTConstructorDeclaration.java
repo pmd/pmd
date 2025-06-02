@@ -34,10 +34,12 @@ public final class ASTConstructorDeclaration extends AbstractExecutableDeclarati
         return visitor.visit(this, data);
     }
 
+
     @Override
     public String getImage() {
         return getName();
     }
+
 
     public boolean containsComment() {
         return getBody().containsComment();

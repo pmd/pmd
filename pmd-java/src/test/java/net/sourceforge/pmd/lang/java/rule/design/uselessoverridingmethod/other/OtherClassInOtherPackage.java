@@ -8,8 +8,7 @@ public class OtherClassInOtherPackage {
 
     public void foo() {
         DirectSubclassInOtherPackage instance = new DirectSubclassInOtherPackage();
-        // the following calls are only possible, because DirectSubclassInOtherPackage
-        // makes this
+        // the following calls are only possible, because DirectSubclassInOtherPackage makes this
         // method available in this package as well.
         instance.doBase();
         instance.doBaseWithArg("a");

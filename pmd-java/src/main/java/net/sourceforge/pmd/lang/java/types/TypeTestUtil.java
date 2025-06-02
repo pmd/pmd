@@ -31,10 +31,11 @@ public final class TypeTestUtil {
         // utility class
     }
 
+
     /**
-     * Checks whether the static type of the node is a subtype of the class
-     * identified by the given name. This ignores type arguments, if the type of the
-     * node is parameterized. Examples:
+     * Checks whether the static type of the node is a subtype of the
+     * class identified by the given name. This ignores type arguments,
+     * if the type of the node is parameterized. Examples:
      *
      * <pre>{@code
      * isA(List.class, <new ArrayList<String>()>)      = true
@@ -45,42 +46,36 @@ public final class TypeTestUtil {
      * isA(null, _) = NullPointerException
      * }</pre>
      *
-     * <p>
-     * If either type is unresolved, the types are tested for equality, thus giving
-     * more useful results than {@link JTypeMirror#isSubtypeOf(JTypeMirror)}.
+     * <p>If either type is unresolved, the types are tested for equality,
+     * thus giving more useful results than {@link JTypeMirror#isSubtypeOf(JTypeMirror)}.
      *
-     * <p>
-     * Note that primitives are NOT considered subtypes of one another by this
-     * method, even though {@link JTypeMirror#isSubtypeOf(JTypeMirror)} does.
+     * <p>Note that primitives are NOT considered subtypes of one another
+     * by this method, even though {@link JTypeMirror#isSubtypeOf(JTypeMirror)} does.
      *
-     * @param clazz
-     *            a class (non-null)
-     * @param node
-     *            the type node to check
+     * @param clazz a class (non-null)
+     * @param node  the type node to check
      *
      * @return true if the type test matches
      *
-     * @throws NullPointerException
-     *             if the class parameter is null
+     * @throws NullPointerException if the class parameter is null
      */
     public static boolean isA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
-        return node != null && (hasNoSubtypes(clazz) ? isExactlyA(clazz, node) : isA(clazz, node.getTypeMirror()));
+        return node != null && (hasNoSubtypes(clazz) ? isExactlyA(clazz, node)
+                                    : isA(clazz, node.getTypeMirror()));
     }
 
     /**
-     * Checks whether the given type of the node is a subtype of the first argument.
-     * See {@link #isA(Class, TypeNode)} for examples and more info.
+     * Checks whether the given type of the node is a subtype of the
+     * first argument. See {@link #isA(Class, TypeNode)} for examples
+     * and more info.
      *
-     * @param clazz
-     *            a class or array type (without whitespace)
-     * @param type
-     *            the type node to check
+     * @param clazz a class or array type (without whitespace)
+     * @param type  the type node to check
      *
      * @return true if the second argument is not null and the type test matches
      *
-     * @throws NullPointerException
-     *             if the class parameter is null
+     * @throws NullPointerException     if the class parameter is null
      * @see #isA(Class, TypeNode)
      */
     public static boolean isA(@NonNull Class<?> clazz, @Nullable JTypeMirror type) {
@@ -100,23 +95,20 @@ public final class TypeTestUtil {
         return isA(otherType, type);
     }
 
+
     /**
-     * Checks whether the static type of the node is a subtype of the class
-     * identified by the given name. See {@link #isA(Class, TypeNode)} for examples
-     * and more info.
+     * Checks whether the static type of the node is a subtype of the
+     * class identified by the given name. See {@link #isA(Class, TypeNode)}
+     * for examples and more info.
      *
-     * @param canonicalName
-     *            the canonical name of a class or array type (without whitespace)
-     * @param node
-     *            the type node to check
+     * @param canonicalName the canonical name of a class or array type (without whitespace)
+     * @param node          the type node to check
      *
      * @return true if the type test matches
      *
-     * @throws NullPointerException
-     *             if the class name parameter is null
-     * @throws IllegalArgumentException
-     *             if the class name parameter is not a valid java binary name, eg
-     *             it has type arguments
+     * @throws NullPointerException     if the class name parameter is null
+     * @throws IllegalArgumentException if the class name parameter is not a valid java binary name,
+     *                                  eg it has type arguments
      * @see #isA(Class, TypeNode)
      */
     public static boolean isA(final @NonNull String canonicalName, final @Nullable TypeNode node) {
@@ -140,14 +132,12 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Checks whether the second type is a subtype of the first. This removes some
-     * behavior of isSubtypeOf that we don't want (eg, that unresolved types are
-     * subtypes of everything).
+     * Checks whether the second type is a subtype of the first. This
+     * removes some behavior of isSubtypeOf that we don't want (eg, that
+     * unresolved types are subtypes of everything).
      *
-     * @param t1
-     *            A supertype
-     * @param t2
-     *            A type
+     * @param t1 A supertype
+     * @param t2 A type
      *
      * @return Whether t2 is a subtype of t1
      */
@@ -175,8 +165,7 @@ public final class TypeTestUtil {
         return t2.isSubtypeOf(t1);
     }
 
-    private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType,
-            @Nullable UnresolvedClassStore unresolvedStore) {
+    private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType, @Nullable UnresolvedClassStore unresolvedStore) {
         OptionalBool exactMatch = isExactlyAOrAnon(canonicalName, thisType);
         if (exactMatch != OptionalBool.NO) {
             return exactMatch == OptionalBool.YES; // otherwise anon, and we return false
@@ -186,22 +175,20 @@ public final class TypeTestUtil {
 
         if (thisClass != null && thisClass.isUnresolved()) {
             // we can't get any useful info from this, isSubtypeOf would return true
-            // do not test for equality, we already checked isExactlyA, which has its
-            // fallback
+            // do not test for equality, we already checked isExactlyA, which has its fallback
             return false;
         }
 
         TypeSystem ts = thisType.getTypeSystem();
-        @Nullable
-        JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
+        @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
 
         return isA(otherType, thisType);
     }
 
     /**
-     * Checks whether the static type of the node is exactly the type of the class.
-     * This ignores strict supertypes, and type arguments, if the type of the node
-     * is parameterized.
+     * Checks whether the static type of the node is exactly the type
+     * of the class. This ignores strict supertypes, and type arguments,
+     * if the type of the node is parameterized.
      *
      * <pre>{@code
      * isExactlyA(List.class, <new ArrayList<String>()>)      = false
@@ -212,15 +199,12 @@ public final class TypeTestUtil {
      * isExactlyA(null, _) = NullPointerException
      * }</pre>
      *
-     * @param clazz
-     *            a class (non-null)
-     * @param node
-     *            the type node to check
+     * @param clazz a class (non-null)
+     * @param node  the type node to check
      *
      * @return true if the node is non-null and has the given type
      *
-     * @throws NullPointerException
-     *             if the class parameter is null
+     * @throws NullPointerException if the class parameter is null
      */
     public static boolean isExactlyA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
@@ -251,37 +235,32 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Returns true if the signature is that of a method declared in the given
-     * class.
+     * Returns true if the signature is that of a method declared in the
+     * given class.
      *
-     * @param klass
-     *            Class
-     * @param sig
-     *            Method signature to test
+     * @param klass Class
+     * @param sig   Method signature to test
      *
-     * @throws NullPointerException
-     *             If any argument is null
+     * @throws NullPointerException If any argument is null
      */
     public static boolean isDeclaredInClass(@NonNull Class<?> klass, @NonNull JMethodSig sig) {
         return isExactlyA(klass, sig.getDeclaringType().getSymbol());
     }
 
+
     /**
-     * Checks whether the static type of the node is exactly the type given by the
-     * name. See {@link #isExactlyA(Class, TypeNode)} for examples and more info.
+     * Checks whether the static type of the node is exactly the type
+     * given by the name. See {@link #isExactlyA(Class, TypeNode)} for
+     * examples and more info.
      *
-     * @param canonicalName
-     *            a canonical name of a class or array type
-     * @param node
-     *            the type node to check
+     * @param canonicalName a canonical name of a class or array type
+     * @param node          the type node to check
      *
      * @return true if the node is non-null and has the given type
      *
-     * @throws NullPointerException
-     *             if the class name parameter is null
-     * @throws IllegalArgumentException
-     *             if the class name parameter is not a valid java binary name, eg
-     *             it has type arguments
+     * @throws NullPointerException     if the class name parameter is null
+     * @throws IllegalArgumentException if the class name parameter is not a valid java binary name,
+     *                                  eg it has type arguments
      * @see #isExactlyA(Class, TypeNode)
      */
     public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {
@@ -306,6 +285,7 @@ public final class TypeTestUtil {
         }
         return OptionalBool.definitely(canonical.equals(canonicalName));
     }
+
 
     private static boolean hasNoSubtypes(Class<?> clazz) {
         // Neither final nor an annotation. Enums & records have ACC_FINAL

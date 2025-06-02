@@ -18,6 +18,7 @@ abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpre
         super(i);
     }
 
+
     void bumpParenDepth() {
         parenDepth++;
     }
@@ -42,10 +43,8 @@ abstract class AbstractJavaExpr extends AbstractJavaTypeNode implements ASTExpre
     }
 
     /**
-     * @deprecated Since 7.12.0. Kept for binary compatibility. This method should
-     *             have been package-private from the start. Use
-     *             {@link ASTExpression#getConstValue()} or
-     *             {@link ASTExpression#getConstFoldingResult()} instead.
+     * @deprecated Since 7.12.0. Kept for binary compatibility. This method should have been package-private from the start.
+     *     Use {@link ASTExpression#getConstValue()} or {@link ASTExpression#getConstFoldingResult()} instead.
      */
     @Deprecated
     protected @Nullable Object buildConstValue() {

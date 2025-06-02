@@ -48,8 +48,8 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         ASTExpression arg = ASTList.singleOrNull(argList);
 
         if (JavaAstUtils.isStringConcatExpr(arg)
-                // ignore concatenations that produce constants
-                && !arg.getConstFoldingResult().hasValue()) {
+            // ignore concatenations that produce constants
+            && !arg.getConstFoldingResult().hasValue()) {
             ctx.addViolation(arg);
         }
     }
@@ -62,6 +62,7 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         }
         Node parent = node.getParent();
 
-        return parent instanceof ASTMethodCall && JavaRuleUtil.isStringBuilderCtorOrAppend((ASTMethodCall) parent);
+        return parent instanceof ASTMethodCall
+            && JavaRuleUtil.isStringBuilderCtorOrAppend((ASTMethodCall) parent);
     }
 }

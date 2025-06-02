@@ -22,8 +22,9 @@ import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class JDKVersionTest extends BaseJavaTreeDumpTest {
 
-    private final JavaParsingHelper java3 = JavaParsingHelper.DEFAULT.withDefaultVersion("1.3")
-            .withResourceContext(JDKVersionTest.class, "jdkversiontests/");
+    private final JavaParsingHelper java3 = JavaParsingHelper.DEFAULT
+        .withDefaultVersion("1.3")
+        .withResourceContext(JDKVersionTest.class, "jdkversiontests/");
 
     private final JavaParsingHelper java4 = java3.withDefaultVersion("1.4");
     private final JavaParsingHelper java5 = java3.withDefaultVersion("1.5");
@@ -308,8 +309,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
 
     @Test
     void jdk7PrivateMethodInnerClassInterface2() {
-        ParseException thrown = assertThrows(ParseException.class,
-                () -> java7.parseResource("private_method_in_inner_class_interface2.java"));
+        ParseException thrown = assertThrows(ParseException.class, () -> java7.parseResource("private_method_in_inner_class_interface2.java"));
         assertThat(thrown.getMessage(), containsString("line 19"));
     }
 

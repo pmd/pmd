@@ -21,9 +21,11 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<List<String>> CLOSE_METHODS = stringListProperty("closeMethods")
-            .desc("Method names in finally block, which trigger this rule").defaultValues("close", "closeQuietly")
-            .build();
+    private static final PropertyDescriptor<List<String>> CLOSE_METHODS =
+            stringListProperty("closeMethods")
+                    .desc("Method names in finally block, which trigger this rule")
+                    .defaultValues("close", "closeQuietly")
+                    .build();
 
     public UseTryWithResourcesRule() {
         super(ASTTryStatement.class);
@@ -37,7 +39,8 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
         ASTFinallyClause finallyClause = node.getFinallyClause();
         if (finallyClause != null) {
             List<ASTMethodCall> methods = finallyClause.descendants(ASTMethodCall.class)
-                    .filter(m -> getProperty(CLOSE_METHODS).contains(m.getMethodName())).toList();
+                .filter(m -> getProperty(CLOSE_METHODS).contains(m.getMethodName()))
+                .toList();
             for (ASTMethodCall method : methods) {
                 ASTExpression closeTarget = method.getQualifier();
                 if (!(closeTarget instanceof ASTTypeExpression) // ignore static method calls
@@ -53,7 +56,8 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
     }
 
     private boolean hasAutoClosableArguments(ASTMethodCall method) {
-        return method.getArguments().children().filter(e -> TypeTestUtil.isA(AutoCloseable.class, (TypeNode) e))
+        return method.getArguments().children()
+                .filter(e -> TypeTestUtil.isA(AutoCloseable.class, (TypeNode) e))
                 .nonEmpty();
     }
 }

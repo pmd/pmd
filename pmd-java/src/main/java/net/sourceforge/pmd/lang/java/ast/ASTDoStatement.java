@@ -20,22 +20,26 @@ public final class ASTDoStatement extends AbstractStatement implements ASTLoopSt
         super(id);
     }
 
+
     /**
-     * Returns the node that represents the guard of this loop. This may be any
-     * expression of type boolean.
+     * Returns the node that represents the guard of this loop.
+     * This may be any expression of type boolean.
      */
     @Override
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(1);
     }
 
+
     /**
-     * Returns the statement that will be run while the guard evaluates to true.
+     * Returns the statement that will be run while the guard
+     * evaluates to true.
      */
     @Override
     public ASTStatement getBody() {
         return (ASTStatement) getChild(0);
     }
+
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

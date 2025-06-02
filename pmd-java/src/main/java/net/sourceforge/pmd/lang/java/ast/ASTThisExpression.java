@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+
 /**
- * The "this" expression. Related to the {@link ASTSuperExpression "super"}
- * pseudo-expression.
+ * The "this" expression. Related to the {@link ASTSuperExpression "super"} pseudo-expression.
  *
  * <pre class="grammar">
  *
@@ -22,6 +22,7 @@ public final class ASTThisExpression extends AbstractJavaExpr implements ASTPrim
     ASTThisExpression(int id) {
         super(id);
     }
+
 
     @Nullable
     public ASTClassType getQualifier() {

@@ -10,8 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A simple double-checked initializer, that parses something (a class, or a
- * type signature).
+ * A simple double-checked initializer, that parses something (a class,
+ * or a type signature).
  */
 @SuppressWarnings({"PMD.AvoidUsingVolatile", "PMD.AvoidCatchingThrowable"})
 abstract class ParseLock {
@@ -29,6 +29,7 @@ abstract class ParseLock {
         getFinalStatus();
     }
 
+
     private void logParseLockTrace(String prefix) {
         if (LOG.isTraceEnabled()) {
             LOG.trace("{} {}: {}", Thread.currentThread().getName(), String.format("%-15s", prefix), this);
@@ -36,8 +37,9 @@ abstract class ParseLock {
     }
 
     void checkWeAreNotParsingAnother() {
-        // by default do nothing, overridden by CheckedParseLock
+       // by default do nothing, overridden by CheckedParseLock
     }
+
 
     void releaseLock() {
         // by default do nothing, overridden by CheckedParseLock
@@ -112,7 +114,10 @@ abstract class ParseLock {
     }
 
     private enum ParseStatus {
-        NOT_PARSED(false), BEING_PARSED(false), FULL(true), FAILED(true);
+        NOT_PARSED(false),
+        BEING_PARSED(false),
+        FULL(true),
+        FAILED(true);
 
         final boolean isFinished;
 
@@ -122,11 +127,10 @@ abstract class ParseLock {
     }
 
     /**
-     * Subclasses of this assert that any thread can hold at most one lock at a
-     * time. Threads cannot even reenter in the lock they currently own. This
-     * prevents deadlocks while parsing ClassStub. However, all the instances of all
-     * derived subclasses are mutually exclusive. This is meant for the parse lock
-     * of ClassStub, and should therefore only be extended by that one.
+     * Subclasses of this assert that any thread can hold at most one lock at a time. Threads cannot even reenter in the
+     * lock they currently own. This prevents deadlocks while parsing ClassStub. However, all the instances of all derived
+     * subclasses are mutually exclusive. This is meant for the parse lock of ClassStub, and should therefore only be extended
+     * by that one.
      */
     abstract static class CheckedParseLock extends ParseLock {
         private static final ThreadLocal<ParseLock> CURRENT_LOCK = new ThreadLocal<>();
@@ -146,12 +150,12 @@ abstract class ParseLock {
             }
         }
 
+
         @Override
         final void releaseLock() {
             if (isAssertEnabled()) {
                 ParseLock lock = CURRENT_LOCK.get();
-                assert lock == this : "Tried to release different parse lock " + lock + " from " + this; // NOPMD
-                                                                                                         // CompareObjectsWithEquals
+                assert lock == this : "Tried to release different parse lock " + lock + " from " + this; // NOPMD CompareObjectsWithEquals
                 CURRENT_LOCK.remove();
             }
         }

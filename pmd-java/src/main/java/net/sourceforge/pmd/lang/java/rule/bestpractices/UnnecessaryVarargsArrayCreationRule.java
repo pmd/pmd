@@ -33,7 +33,8 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
             // node is the last param in an arguments list
             InvocationNode call = (InvocationNode) parent.getParent();
             OverloadSelectionResult info = call.getOverloadSelectionInfo();
-            if (info.isFailed() || info.isVarargsCall() || !info.getMethodType().isVarargs()) {
+            if (info.isFailed() || info.isVarargsCall()
+                || !info.getMethodType().isVarargs()) {
                 return null;
             }
 
@@ -41,8 +42,7 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
             JTypeMirror lastFormal = formals.get(formals.size() - 1);
 
             if (array.getTypeMirror().equals(lastFormal)) {
-                // If type not equal, then it would not actually be equivalent to remove the
-                // array creation.
+                // If type not equal, then it would not actually be equivalent to remove the array creation.
                 // That case may be caught by ConfusingArgumentToVarargsMethod
                 asCtx(data).addViolation(array);
             }

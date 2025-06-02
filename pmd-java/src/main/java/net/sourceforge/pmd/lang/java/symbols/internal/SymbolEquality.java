@@ -24,11 +24,10 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  * Routines to share logic for equality, respecting the contract of
  * {@link JElementSymbol#equals(Object)}.
  *
- * <p>
- * Despite this two equal symbols may not hold the same amount of information...
- * Reflection symbols are nice, but they also add some synthetic stuff (eg
- * implicit formal parameters, bridge methods), which we must either filter-out
- * or replicate in AST symbols. This is TODO
+ * <p>Despite this two equal symbols may not hold the same amount of
+ * information... Reflection symbols are nice, but they also add some
+ * synthetic stuff (eg implicit formal parameters, bridge methods),
+ * which we must either filter-out or replicate in AST symbols. This is TODO
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class SymbolEquality {
@@ -54,7 +53,7 @@ public final class SymbolEquality {
             JTypeParameterSymbol m2 = (JTypeParameterSymbol) o;
 
             return Objects.equals(m1.getSimpleName(), m2.getSimpleName())
-                    && m1.getDeclaringSymbol().equals(m2.getDeclaringSymbol());
+                && m1.getDeclaringSymbol().equals(m2.getDeclaringSymbol());
         }
     };
 
@@ -79,11 +78,12 @@ public final class SymbolEquality {
     };
 
     private static boolean executableSymsAreEqual(JExecutableSymbol m1, JExecutableSymbol m2) {
-        return m1.getModifiers() == m2.getModifiers() && m1.getArity() == m2.getArity()
-                && Objects.equals(m1.getSimpleName(), m2.getSimpleName())
-                && m1.getEnclosingClass().equals(m2.getEnclosingClass())
-                && m1.getFormalParameterTypes(Substitution.erasing(m1.getTypeParameters()))
-                        .equals(m2.getFormalParameterTypes(Substitution.erasing(m2.getTypeParameters())));
+        return m1.getModifiers() == m2.getModifiers()
+            && m1.getArity() == m2.getArity()
+            && Objects.equals(m1.getSimpleName(), m2.getSimpleName())
+            && m1.getEnclosingClass().equals(m2.getEnclosingClass())
+            && m1.getFormalParameterTypes(Substitution.erasing(m1.getTypeParameters()))
+                 .equals(m2.getFormalParameterTypes(Substitution.erasing(m2.getTypeParameters())));
     }
 
     public static final EqAndHash<JConstructorSymbol> CONSTRUCTOR = new EqAndHash<JConstructorSymbol>() {
@@ -105,6 +105,7 @@ public final class SymbolEquality {
             return executableSymsAreEqual(m1, m2);
         }
     };
+
 
     public static final EqAndHash<JClassSymbol> CLASS = new EqAndHash<JClassSymbol>() {
         @Override
@@ -139,7 +140,7 @@ public final class SymbolEquality {
             }
             JFieldSymbol f2 = (JFieldSymbol) o;
             return Objects.equals(f1.getSimpleName(), f2.getSimpleName())
-                    && f1.getEnclosingClass().equals(f2.getEnclosingClass());
+                && f1.getEnclosingClass().equals(f2.getEnclosingClass());
 
         }
     };
@@ -174,10 +175,11 @@ public final class SymbolEquality {
             }
             JFormalParamSymbol f2 = (JFormalParamSymbol) o;
             return Objects.equals(f1.getSimpleName(), f2.getSimpleName())
-                    && f1.getDeclaringSymbol().equals(f2.getDeclaringSymbol());
+                && f1.getDeclaringSymbol().equals(f2.getDeclaringSymbol());
 
         }
     };
+
 
     public static final EqAndHash<JRecordComponentSymbol> RECORD_COMPONENT = new EqAndHash<JRecordComponentSymbol>() {
         @Override
@@ -192,7 +194,7 @@ public final class SymbolEquality {
             }
             JRecordComponentSymbol f2 = (JRecordComponentSymbol) o;
             return Objects.equals(f1.getSimpleName(), f2.getSimpleName())
-                    && f1.getEnclosingClass().equals(f2.getEnclosingClass());
+                && f1.getEnclosingClass().equals(f2.getEnclosingClass());
 
         }
     };
@@ -210,12 +212,13 @@ public final class SymbolEquality {
     };
 
     /**
-     * Strategy to perform equals/hashcode for a type T. There are libraries for
-     * that, whatever.
+     * Strategy to perform equals/hashcode for a type T. There are libraries
+     * for that, whatever.
      */
     public abstract static class EqAndHash<T> {
 
         public abstract int hash(T t1);
+
 
         public abstract boolean equals(T t1, Object t2);
 
@@ -237,6 +240,7 @@ public final class SymbolEquality {
         EqAndHash<T> eqAndHash = (EqAndHash<T>) e1.acceptVisitor(EqAndHashVisitor.INSTANCE, null);
         return eqAndHash.hash(e1);
     }
+
 
     private static final class EqAndHashVisitor implements SymbolVisitor<EqAndHash<?>, Void> {
 
@@ -282,10 +286,12 @@ public final class SymbolEquality {
             return FORMAL_PARAM;
         }
 
+
         @Override
         public EqAndHash<?> visitRecordComponent(JRecordComponentSymbol sym, Void param) {
             return RECORD_COMPONENT;
         }
     }
+
 
 }

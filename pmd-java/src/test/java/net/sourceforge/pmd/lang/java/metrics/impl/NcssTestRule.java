@@ -20,8 +20,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  */
 public class NcssTestRule extends JavaIntMetricTestRule {
 
-    static final PropertyDescriptor<Boolean> REPORT_CLASSES = PropertyFactory.booleanProperty("reportClasses")
-            .desc("...").defaultValue(false).build();
+    static final PropertyDescriptor<Boolean> REPORT_CLASSES =
+        PropertyFactory.booleanProperty("reportClasses")
+                       .desc("...")
+                       .defaultValue(false).build();
 
     public NcssTestRule() {
         super(JavaMetrics.NCSS);
@@ -30,8 +32,9 @@ public class NcssTestRule extends JavaIntMetricTestRule {
 
     @Override
     protected boolean reportOn(Node node) {
-        return super.reportOn(node) && (node instanceof ASTExecutableDeclaration
-                || getProperty(REPORT_CLASSES) && node instanceof ASTTypeDeclaration);
+        return super.reportOn(node)
+            && (node instanceof ASTExecutableDeclaration
+            || getProperty(REPORT_CLASSES) && node instanceof ASTTypeDeclaration);
     }
 
     @Override

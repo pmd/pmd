@@ -21,12 +21,12 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import com.github.stefanbirkner.systemlambda.SystemLambda;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
+
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 
 class PMDCoverageTest {
 
@@ -35,8 +35,7 @@ class PMDCoverageTest {
 
     @Test
     void runAllJavaPmdOnSourceTree() {
-        runPmd("src/main/java", conf -> {
-        });
+        runPmd("src/main/java", conf -> {});
     }
 
     @Test
@@ -80,10 +79,8 @@ class PMDCoverageTest {
 
             // No processing errors expected
             assertThat(report.toString(), not(containsString("Error while processing")));
-            // we might have explicit examples of parsing errors, so these are maybe false
-            // positives
-            // these examples of parsing errors need to be excluded in
-            // rulesets/internal/all-java.xml via
+            // we might have explicit examples of parsing errors, so these are maybe false positives
+            // these examples of parsing errors need to be excluded in rulesets/internal/all-java.xml via
             // exclude-patterns.
             assertThat(report.toString(), not(containsString("Error while parsing")));
         } catch (IOException ioe) {

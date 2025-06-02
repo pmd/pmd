@@ -21,11 +21,9 @@ class SwitchMirror extends BasePolyMirror<ASTSwitchExpression> implements Branch
 
     private final List<ExprMirror> branches;
 
-    SwitchMirror(JavaExprMirrors mirrors, ASTSwitchExpression myNode, boolean isStandalone, @Nullable ExprMirror parent,
-            MirrorMaker subexprMaker) {
+    SwitchMirror(JavaExprMirrors mirrors, ASTSwitchExpression myNode, boolean isStandalone, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
         super(mirrors, myNode, parent, subexprMaker);
-        branches = myNode.getYieldExpressions()
-                .toList(it -> factory.getBranchMirrorSubexpression(it, isStandalone, this, subexprMaker));
+        branches = myNode.getYieldExpressions().toList(it -> factory.getBranchMirrorSubexpression(it, isStandalone, this, subexprMaker));
     }
 
     @Override

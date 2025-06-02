@@ -34,8 +34,7 @@ public final class JPrimitiveType implements JTypeMirror {
     private final JClassType box;
     private final PSet<SymAnnot> typeAnnots;
 
-    JPrimitiveType(TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType,
-            PSet<SymAnnot> typeAnnots) {
+    JPrimitiveType(TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType, PSet<SymAnnot> typeAnnots) {
         this.ts = ts;
         this.kind = kind;
         this.type = type;
@@ -82,8 +81,8 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     /**
-     * Returns the type of the primitive class, eg {@link Integer#TYPE}. The
-     * returned type {@link Class#isPrimitive()} is true.
+     * Returns the type of the primitive class, eg {@link Integer#TYPE}.
+     * The returned type {@link Class#isPrimitive()} is true.
      */
     @Override
     public @NonNull JClassSymbol getSymbol() {
@@ -94,6 +93,7 @@ public final class JPrimitiveType implements JTypeMirror {
     public boolean isNumeric() {
         return kind != PrimitiveTypeKind.BOOLEAN;
     }
+
 
     @Override
     public boolean isPrimitive(PrimitiveTypeKind kind) {
@@ -136,8 +136,8 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     /**
-     * Returns the token used to represent the type in source, e.g. "int" or
-     * "double".
+     * Returns the token used to represent the type in source,
+     * e.g. "int" or "double".
      */
     public @NonNull String getSimpleName() {
         return kind.name;
@@ -158,8 +158,14 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     public enum PrimitiveTypeKind {
-        BOOLEAN(boolean.class), CHAR(char.class), BYTE(byte.class), SHORT(short.class), INT(int.class), LONG(
-                long.class), FLOAT(float.class), DOUBLE(double.class);
+        BOOLEAN(boolean.class),
+        CHAR(char.class),
+        BYTE(byte.class),
+        SHORT(short.class),
+        INT(int.class),
+        LONG(long.class),
+        FLOAT(float.class),
+        DOUBLE(double.class);
 
         final String name = name().toLowerCase(Locale.ROOT);
         private final Class<?> jvm;
@@ -182,35 +188,26 @@ public final class JPrimitiveType implements JTypeMirror {
         }
 
         /**
-         * Gets an enum constant from the token used to represent it in source, e.g.
-         * "int" or "double". Note that "void" is not a valid primitive name in this
-         * API, and this would return null in this case.
+         * Gets an enum constant from the token used to represent it in source,
+         * e.g. "int" or "double". Note that "void" is not a valid primitive name
+         * in this API, and this would return null in this case.
          *
-         * @param token
-         *            String token
+         * @param token String token
          *
-         * @return A constant, or null if the string doesn't correspond to a primitive
-         *         type
+         * @return A constant, or null if the string doesn't correspond
+         *     to a primitive type
          */
         public static @Nullable PrimitiveTypeKind fromName(String token) {
             switch (token) {
-                case "boolean" :
-                return BOOLEAN;
-                case "char" :
-                return CHAR;
-                case "byte" :
-                return BYTE;
-                case "short" :
-                return SHORT;
-                case "int" :
-                return INT;
-                case "long" :
-                return LONG;
-                case "float" :
-                return FLOAT;
-                case "double" :
-                return DOUBLE;
-                default :
+            case "boolean": return BOOLEAN;
+            case "char": return CHAR;
+            case "byte": return BYTE;
+            case "short": return SHORT;
+            case "int": return INT;
+            case "long": return LONG;
+            case "float": return FLOAT;
+            case "double": return DOUBLE;
+            default:
                 return null;
             }
         }

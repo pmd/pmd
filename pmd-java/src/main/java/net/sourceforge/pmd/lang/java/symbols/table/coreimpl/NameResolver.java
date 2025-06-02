@@ -14,40 +14,42 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- * Name resolvers are strategies backing {@link ShadowChain}s. They have no
- * information about outer context, instead the structure of the shadow group
- * chain handles that.
+ * Name resolvers are strategies backing {@link ShadowChain}s. They have
+ * no information about outer context, instead the structure of the shadow
+ * group chain handles that.
  *
- * @param <S>
- *            Type of symbols
+ * @param <S> Type of symbols
  */
 public interface NameResolver<S> {
 
     /**
-     * Returns all symbols known by this resolver that have the given simple name.
-     * Depending on language semantics, finding several symbols may mean there is
-     * ambiguity. If no such symbol is known, returns an empty list.
+     * Returns all symbols known by this resolver that have the given
+     * simple name. Depending on language semantics, finding several
+     * symbols may mean there is ambiguity. If no such symbol is known,
+     * returns an empty list.
      *
-     * @param simpleName
-     *            Simple name
+     * @param simpleName Simple name
      */
     @NonNull
     List<S> resolveHere(String simpleName);
 
+
     /**
-     * Resolves the first symbol that would be part of the list yielded by
-     * {@link #resolveHere(String)} for the given name. If the list would be empty
-     * (no such symbol is known), returns null.
+     * Resolves the first symbol that would be part of the list yielded
+     * by {@link #resolveHere(String)} for the given name. If the list
+     * would be empty (no such symbol is known), returns null.
      */
     default @Nullable S resolveFirst(String simpleName) {
         List<S> result = resolveHere(simpleName);
         return result.isEmpty() ? null : result.get(0);
     }
 
+
     /**
-     * Returns whether this resolver knows if it has a declaration for the given
-     * name. If the result is NO, then resolveFirst MUST be null, if the result is
-     * YES, then resolveFirst MUST be non-null. Otherwise we don't know.
+     * Returns whether this resolver knows if it has a declaration for
+     * the given name. If the result is NO, then resolveFirst MUST be null,
+     * if the result is YES, then resolveFirst MUST be non-null. Otherwise
+     * we don't know.
      */
     default @NonNull OptionalBool knows(String simpleName) {
         return OptionalBool.UNKNOWN;
@@ -58,18 +60,17 @@ public interface NameResolver<S> {
         return false;
     }
 
+
     /** Please implement toString to ease debugging. */
     @Override
     String toString();
 
     /**
-     * Returns a resolver that concatenates the results of every resolver in the
-     * given list.
+     * Returns a resolver that concatenates the results of every resolver
+     * in the given list.
      *
-     * @param resolvers
-     *            Resolvers
-     * @param <T>
-     *            Type of symbol
+     * @param resolvers Resolvers
+     * @param <T>       Type of symbol
      */
     static <T> NameResolver<T> composite(List<? extends NameResolver<? extends T>> resolvers) {
         if (resolvers.isEmpty()) {
@@ -106,11 +107,13 @@ public interface NameResolver<S> {
         };
     }
 
+
     /**
-     * A base class for resolvers that know at most one symbol for any given name.
-     * This means {@link #resolveHere(String)} may delegate to
-     * {@link #resolveFirst(String)}, for implementation simplicity. This is also a
-     * marker interface used to optimise some things internally.
+     * A base class for resolvers that know at most one symbol for any
+     * given name. This means {@link #resolveHere(String)} may delegate
+     * to {@link #resolveFirst(String)}, for implementation simplicity.
+     * This is also a marker interface used to optimise some things
+     * internally.
      */
     interface SingleNameResolver<S> extends NameResolver<S> {
 
@@ -119,9 +122,9 @@ public interface NameResolver<S> {
             return CollectionUtil.listOfNotNull(resolveFirst(simpleName));
         }
 
+
         // make it abstract
         @Override
-        @Nullable
-        S resolveFirst(String simpleName);
+        @Nullable S resolveFirst(String simpleName);
     }
 }

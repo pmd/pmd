@@ -6,9 +6,9 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+
 /**
- * The "super" keyword. Technically not an expression but it's easier to analyse
- * that way.
+ * The "super" keyword. Technically not an expression but it's easier to analyse that way.
  *
  * <pre class="grammar">
  *
@@ -21,6 +21,7 @@ public final class ASTSuperExpression extends AbstractJavaExpr implements ASTPri
     ASTSuperExpression(int id) {
         super(id);
     }
+
 
     @Nullable
     public ASTClassType getQualifier() {

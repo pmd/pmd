@@ -21,8 +21,12 @@ class FieldStub extends MemberStubBase implements JFieldSymbol, TypeAnnotationRe
     private final LazyTypeSig type;
     private final @Nullable Object constValue;
 
-    FieldStub(ClassStub classStub, String name, int accessFlags, String descriptor, String signature,
-            @Nullable Object constValue) {
+    FieldStub(ClassStub classStub,
+              String name,
+              int accessFlags,
+              String descriptor,
+              String signature,
+              @Nullable Object constValue) {
         super(classStub, name, accessFlags);
         this.type = new LazyTypeSig(classStub, descriptor, signature);
         this.constValue = constValue;

@@ -23,10 +23,12 @@ public final class ASTCatchClause extends AbstractJavaNode {
         return visitor.visit(this, data);
     }
 
+
     /** Returns the catch parameter. */
     public ASTCatchParameter getParameter() {
         return (ASTCatchParameter) getFirstChild();
     }
+
 
     /** Returns the body of this catch branch. */
     public ASTBlock getBody() {

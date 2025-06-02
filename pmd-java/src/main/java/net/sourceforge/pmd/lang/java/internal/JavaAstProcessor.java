@@ -26,17 +26,15 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 
 /**
- * Processes the output of the parser before rules get access to the AST. This
- * performs all semantic analyses in layered passes.
+ * Processes the output of the parser before rules get access to the AST.
+ * This performs all semantic analyses in layered passes.
  *
- * <p>
- * This is the root context object for file-specific context. Instances do not
- * need to be thread-safe. Global information about eg the classpath is held in
- * a {@link TypeSystem} instance.
+ * <p>This is the root context object for file-specific context. Instances
+ * do not need to be thread-safe. Global information about eg the classpath
+ * is held in a {@link TypeSystem} instance.
  *
- * <p>
- * The object lives as long as a file, it is accessible from nodes using
- * {@link InternalApiBridge#getProcessor(JavaNode)}.
+ * <p>The object lives as long as a file, it is accessible from nodes
+ * using {@link InternalApiBridge#getProcessor(JavaNode)}.
  */
 public final class JavaAstProcessor {
     private final TypeInferenceLogger typeInferenceLogger;
@@ -48,8 +46,11 @@ public final class JavaAstProcessor {
     private final UnresolvedClassStore unresolvedTypes;
     private final ASTCompilationUnit acu;
 
-    private JavaAstProcessor(JavaLanguageProcessor globalProc, SemanticErrorReporter logger,
-            TypeInferenceLogger typeInfLogger, ASTCompilationUnit acu) {
+
+    private JavaAstProcessor(JavaLanguageProcessor globalProc,
+                             SemanticErrorReporter logger,
+                             TypeInferenceLogger typeInfLogger,
+                             ASTCompilationUnit acu) {
 
         this.symResolver = globalProc.getTypeSystem().bootstrapResolver();
         this.globalProc = globalProc;
@@ -67,17 +68,18 @@ public final class JavaAstProcessor {
         return unresolvedTypes;
     }
 
+
     /**
-     * Find a symbol from the auxclasspath. If not found, will create an unresolved
-     * symbol.
+     * Find a symbol from the auxclasspath. If not found, will create
+     * an unresolved symbol.
      */
     public @NonNull JClassSymbol findSymbolCannotFail(String name) {
         return findSymbolCannotFail(null, name);
     }
 
     /**
-     * Find a symbol from the auxclasspath. If not found, will create an unresolved
-     * symbol, and may report the failure if the location is non-null.
+     * Find a symbol from the auxclasspath. If not found, will create
+     * an unresolved symbol, and may report the failure if the location is non-null.
      */
     public @NonNull JClassSymbol findSymbolCannotFail(@Nullable JavaNode location, String canoName) {
         JClassSymbol found = getSymResolver().resolveClassFromCanonicalName(canoName);
@@ -122,8 +124,7 @@ public final class JavaAstProcessor {
      */
     public void process() {
 
-        SymbolResolver knownSyms = TimeTracker.bench("Symbol resolution",
-                () -> SymbolResolutionPass.traverse(this, acu));
+        SymbolResolver knownSyms = TimeTracker.bench("Symbol resolution", () -> SymbolResolutionPass.traverse(this, acu));
 
         // Now symbols are on the relevant nodes
         this.symResolver = SymbolResolver.layer(knownSyms, this.symResolver);
@@ -134,8 +135,7 @@ public final class JavaAstProcessor {
 
         TimeTracker.bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
 
-        TimeTracker.bench("AST disambiguation",
-                () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
+        TimeTracker.bench("AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
         if (globalProc.getProperties().getProperty(JavaLanguageProperties.INTERNAL_DO_STRICT_TYPERES)) {
             TimeTracker.bench("Force type resolution", () -> InternalApiBridge.forceTypeResolutionPhase(this, acu));
         }
@@ -148,15 +148,25 @@ public final class JavaAstProcessor {
         return globalProc.getTypeSystem();
     }
 
-    public static void process(JavaLanguageProcessor globalProcessor, SemanticErrorReporter semanticErrorReporter,
-            ASTCompilationUnit ast) {
+
+    public static void process(JavaLanguageProcessor globalProcessor,
+                                          SemanticErrorReporter semanticErrorReporter,
+                                           ASTCompilationUnit ast) {
         process(globalProcessor, semanticErrorReporter, globalProcessor.newTypeInfLogger(), ast);
     }
 
-    public static void process(JavaLanguageProcessor globalProcessor, SemanticErrorReporter semanticErrorReporter,
-            TypeInferenceLogger typeInfLogger, ASTCompilationUnit ast) {
+    public static void process(JavaLanguageProcessor globalProcessor,
+                                          SemanticErrorReporter semanticErrorReporter,
+                                          TypeInferenceLogger typeInfLogger,
+                                           ASTCompilationUnit ast) {
 
-        JavaAstProcessor astProc = new JavaAstProcessor(globalProcessor, semanticErrorReporter, typeInfLogger, ast);
+
+        JavaAstProcessor astProc = new JavaAstProcessor(
+            globalProcessor,
+            semanticErrorReporter,
+            typeInfLogger,
+            ast
+        );
 
         astProc.process();
     }

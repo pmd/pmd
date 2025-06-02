@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
+
 /**
  * Visitor for the ClassFanOut metric.
  *

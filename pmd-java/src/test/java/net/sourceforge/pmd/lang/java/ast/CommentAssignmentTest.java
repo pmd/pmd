@@ -26,9 +26,10 @@ class CommentAssignmentTest extends BaseParserTest {
      */
     @Test
     void testFilteredCommentIn() {
-        ASTCompilationUnit node = java
-                .parse("public class Foo {\n" + "     /* multi line comment with blank lines\n\n\n */\n"
-                        + "        /** a formal comment with blank lines\n\n\n */" + "}");
+        ASTCompilationUnit node = java.parse("public class Foo {\n"
+                                                 + "     /* multi line comment with blank lines\n\n\n */\n"
+                                                 + "        /** a formal comment with blank lines\n\n\n */"
+                                                 + "}");
 
         JavaComment comment = node.getComments().get(0);
 
@@ -43,12 +44,18 @@ class CommentAssignmentTest extends BaseParserTest {
         assertEquals("a formal comment with blank lines", StringUtils.join(comment.getFilteredLines(), ' '));
     }
 
+
     @Test
     void testCommentAssignments() {
 
-        ASTCompilationUnit node = java.parse("public class Foo {\n" + "     /** Comment 1 */\n"
-                + "        public void method1() {}\n" + "    \n" + "        /** Comment 2 */\n" + "    \n"
-                + "        /** Comment 3 */\n" + "        public void method2() {}" + "}");
+        ASTCompilationUnit node = java.parse("public class Foo {\n"
+                                                 + "     /** Comment 1 */\n"
+                                                 + "        public void method1() {}\n"
+                                                 + "    \n"
+                                                 + "        /** Comment 2 */\n"
+                                                 + "    \n"
+                                                 + "        /** Comment 3 */\n"
+                                                 + "        public void method2() {}" + "}");
 
         List<ASTMethodDeclaration> methods = node.descendants(ASTMethodDeclaration.class).toList();
         assertCommentEquals(methods.get(0), "/** Comment 1 */");
@@ -58,10 +65,15 @@ class CommentAssignmentTest extends BaseParserTest {
     @Test
     void testCommentAssignmentsWithAnnotation() {
 
-        ASTCompilationUnit node = java.parse("public class Foo {\n" + "     /** Comment 1 */\n"
-                + "        @Oha public void method1() {}\n" + "    \n" + "        /** Comment 2 */\n" + "    @Oha\n"
-                // note that since this is the first token, the prev comment gets selected
-                + "        /** Comment 3 */\n" + "        public void method2() {}" + "}");
+        ASTCompilationUnit node = java.parse("public class Foo {\n"
+                                                 + "     /** Comment 1 */\n"
+                                                 + "        @Oha public void method1() {}\n"
+                                                 + "    \n"
+                                                 + "        /** Comment 2 */\n"
+                                                 + "    @Oha\n"
+                                                 // note that since this is the first token, the prev comment gets selected
+                                                 + "        /** Comment 3 */\n"
+                                                 + "        public void method2() {}" + "}");
 
         List<ASTMethodDeclaration> methods = node.descendants(ASTMethodDeclaration.class).toList();
         assertCommentEquals(methods.get(0), "/** Comment 1 */");
@@ -71,16 +83,22 @@ class CommentAssignmentTest extends BaseParserTest {
     @Test
     void testCommentAssignmentOnPackage() {
 
-        ASTCompilationUnit node = java.parse("/** Comment 1 */\n" + "package bar;\n");
+        ASTCompilationUnit node = java.parse("/** Comment 1 */\n"
+                                                 + "package bar;\n");
 
-        assertCommentEquals(node.descendants(ASTPackageDeclaration.class).firstOrThrow(), "/** Comment 1 */");
+        assertCommentEquals(node.descendants(ASTPackageDeclaration.class).firstOrThrow(),
+                            "/** Comment 1 */");
     }
 
     @Test
     void testCommentAssignmentOnClass() {
 
-        ASTCompilationUnit node = java.parse("/** outer */\n" + "class Foo { " + " /** inner */ class Nested { } "
-                + " { /** local */ class Local {}} " + " /** enum */enum NestedEnum {}" + "}");
+        ASTCompilationUnit node = java.parse("/** outer */\n"
+                                                 + "class Foo { "
+                                                 + " /** inner */ class Nested { } "
+                                                 + " { /** local */ class Local {}} "
+                                                 + " /** enum */enum NestedEnum {}"
+                                                 + "}");
 
         List<ASTTypeDeclaration> types = node.descendants(ASTTypeDeclaration.class).crossFindBoundaries().toList();
         assertCommentEquals(types.get(0), "/** outer */");
@@ -92,8 +110,12 @@ class CommentAssignmentTest extends BaseParserTest {
     @Test
     void testCommentAssignmentOnEnum() {
 
-        ASTCompilationUnit node = java
-                .parse("enum Foo { " + " /** A */ A," + " /** B */ @Oha B," + " C," + " /* not javadoc */ D," + "}");
+        ASTCompilationUnit node = java.parse("enum Foo { "
+                                                 + " /** A */ A,"
+                                                 + " /** B */ @Oha B,"
+                                                 + " C,"
+                                                 + " /* not javadoc */ D,"
+                                                 + "}");
 
         List<ASTEnumConstant> constants = node.descendants(ASTEnumConstant.class).toList();
         assertCommentEquals(constants.get(0), "/** A */");
@@ -101,6 +123,7 @@ class CommentAssignmentTest extends BaseParserTest {
         assertHasNoComment(constants.get(2));
         assertHasNoComment(constants.get(3));
     }
+
 
     private void assertCommentEquals(JavadocCommentOwner pack, String expected) {
         assertNotNull(pack.getJavadocComment(), "null comment on " + pack);

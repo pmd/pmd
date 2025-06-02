@@ -27,22 +27,25 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.AssertionUtil;
 
+
 public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
     // todo rename to UnnecessaryParentheses
 
-    private static final PropertyDescriptor<Boolean> IGNORE_CLARIFYING = PropertyFactory
-            .booleanProperty("ignoreClarifying").defaultValue(true)
-            .desc("Ignore parentheses that separate expressions of difference precedence,"
-                    + " like in `(a % 2 == 0) ? x : -x`")
-            .build();
+    private static final PropertyDescriptor<Boolean> IGNORE_CLARIFYING =
+        PropertyFactory.booleanProperty("ignoreClarifying")
+                       .defaultValue(true)
+                       .desc("Ignore parentheses that separate expressions of difference precedence,"
+                                 + " like in `(a % 2 == 0) ? x : -x`")
+                       .build();
 
-    private static final PropertyDescriptor<Boolean> IGNORE_BALANCING = PropertyFactory
-            .booleanProperty("ignoreBalancing").defaultValue(true)
-            .desc("Ignore unnecessary parentheses that appear balanced around an equality "
-                    + "operator, because the other operand requires parentheses."
-                    + "For example, in `(a == null) == (b == null)`, only the second pair "
-                    + "of parentheses is necessary, but the expression is clearer that way.")
-            .build();
+    private static final PropertyDescriptor<Boolean> IGNORE_BALANCING =
+        PropertyFactory.booleanProperty("ignoreBalancing")
+                       .defaultValue(true)
+                       .desc("Ignore unnecessary parentheses that appear balanced around an equality "
+                                 + "operator, because the other operand requires parentheses."
+                                 + "For example, in `(a == null) == (b == null)`, only the second pair "
+                                 + "of parentheses is necessary, but the expression is clearer that way.")
+                       .build();
 
     public UselessParenthesesRule() {
         super(ASTExpression.class);
@@ -57,6 +60,7 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
     private boolean reportBalancing() {
         return !getProperty(IGNORE_BALANCING);
     }
+
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
@@ -75,69 +79,70 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
 
         Necessity necessity = needsParentheses(e, e.getParent());
 
-        if (necessity == NEVER || reportClarifying() && necessity == CLARIFYING
-                || reportBalancing() && necessity == BALANCING) {
+        if (necessity == NEVER
+            || reportClarifying() && necessity == CLARIFYING
+            || reportBalancing() && necessity == BALANCING) {
             asCtx(data).addViolation(e);
         }
 
     }
+
 
     public static Necessity needsParentheses(ASTExpression inner, JavaNode outer) {
         // Note: as of jdk 15, PatternExpression cannot be parenthesized
         // TypeExpression may never be parenthesized either
         assert inner.isParenthesized() : inner + " is not parenthesized";
 
-        if (inner.getParenthesisDepth() > 1 || !(outer instanceof ASTExpression)) {
-            // ((a + b)) unnecessary
-            // new int[(2)] unnecessary
+
+        if (inner.getParenthesisDepth() > 1
+            || !(outer instanceof ASTExpression)) {
+            // ((a + b))        unnecessary
+            // new int[(2)]     unnecessary
             // return (1 + 2);
             return NEVER;
         }
 
-        if (inner instanceof ASTPrimaryExpression || inner instanceof ASTSwitchExpression) {
+        if (inner instanceof ASTPrimaryExpression
+            || inner instanceof ASTSwitchExpression) {
             return NEVER;
         }
 
         if (outer instanceof ASTLambdaExpression) {
-            // () -> (a + b) unnecessary
-            // () -> (() -> b) unnecessary
-            // () -> (a ? b : c); unnecessary unless the parent of the lambda is itself a
-            // ternary
+            // () -> (a + b)        unnecessary
+            // () -> (() -> b)      unnecessary
+            // () -> (a ? b : c);   unnecessary unless the parent of the lambda is itself a ternary
             if (inner instanceof ASTLambdaExpression) {
                 return NEVER;
             }
-            return definitely(
-                    inner instanceof ASTConditionalExpression && outer.getParent() instanceof ASTConditionalExpression);
+            return definitely(inner instanceof ASTConditionalExpression && outer.getParent() instanceof ASTConditionalExpression);
         }
 
         if (inner instanceof ASTAssignmentExpression) {
-            // a * (b = c) necessary
-            // a ? (b = c) : d necessary
-            // a = (b = c) associative
-            // (a = b) = c (impossible)
+            //  a * (b = c)          necessary
+            //  a ? (b = c) : d      necessary
+            //  a = (b = c)          associative
+            //  (a = b) = c          (impossible)
             return outer instanceof ASTAssignmentExpression ? NEVER : ALWAYS;
         }
 
         if (inner instanceof ASTConditionalExpression) {
 
-            // a ? (b ? c : d) : e necessary
-            // a ? b : (c ? d : e) associative
-            // (a ? b : c) ? d : e necessary
+            // a ? (b ? c : d) : e    necessary
+            // a ? b : (c ? d : e)    associative
+            // (a ? b : c) ? d : e    necessary
             if (outer instanceof ASTConditionalExpression) {
-                return inner.getIndexInParent() == 2
-                        ? NEVER // last child
-                        : ALWAYS;
+                return inner.getIndexInParent() == 2 ? NEVER  // last child
+                                                     : ALWAYS;
             } else {
                 return necessaryIf(!(outer instanceof ASTAssignmentExpression));
             }
         }
 
         if (inner instanceof ASTLambdaExpression) {
-            // a ? (() -> b) + c : d invalid, but necessary
-            // a ? (() -> b) : d clarifying
-            return outer instanceof ASTConditionalExpression
-                    ? CLARIFYING
-                    : definitely(!(outer instanceof ASTAssignmentExpression));
+            // a ? (() -> b) + c : d     invalid, but necessary
+            // a ? (() -> b) : d         clarifying
+            return outer instanceof ASTConditionalExpression ? CLARIFYING
+                                                             : definitely(!(outer instanceof ASTAssignmentExpression));
         }
 
         if (inner instanceof ASTInfixExpression) {
@@ -146,11 +151,11 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
                 BinaryOp outop = ((ASTInfixExpression) outer).getOperator();
                 int comp = outop.comparePrecedence(inop);
 
-                // (a * b) + c unnecessary
-                // a * (b + c) necessary
-                // a + (b + c) unnecessary
-                // (a + b) + c unnecessary
-                // (a - b) + c clarifying
+                // (a * b) + c       unnecessary
+                // a * (b + c)       necessary
+                // a + (b + c)       unnecessary
+                // (a + b) + c       unnecessary
+                // (a - b) + c       clarifying
 
                 if (comp > 0) {
                     return ALWAYS; // outer has greater precedence
@@ -178,12 +183,12 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
                     // parentheses are on the left
                     // eg (a + b) + c
                     if (outop.hasSamePrecedenceAs(BinaryOp.EQ) // EQ or NE
-                            && ((ASTInfixExpression) outer).getRightOperand().isParenthesized()) {
+                        && ((ASTInfixExpression) outer).getRightOperand().isParenthesized()) {
                         // (a == null) == (b == null)
                         return BALANCING;
-                    } else if (outop == BinaryOp.ADD && inop.hasSamePrecedenceAs(BinaryOp.ADD)
-                            && inner.getTypeMirror().isNumeric()
-                            && !((ASTInfixExpression) outer).getTypeMirror().isNumeric()) {
+                    } else if (outop == BinaryOp.ADD
+                        && inop.hasSamePrecedenceAs(BinaryOp.ADD) && inner.getTypeMirror().isNumeric()
+                        && !((ASTInfixExpression) outer).getTypeMirror().isNumeric()) {
                         return CLARIFYING;
                     }
 
@@ -203,6 +208,7 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
             return isUnary(outer) ? NEVER : necessaryIf(outer instanceof ASTPrimaryExpression);
         }
 
+
         throw AssertionUtil.shouldNotReachHere("Unhandled case inside " + outer);
     }
 
@@ -210,59 +216,60 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
         return expr instanceof ASTUnaryExpression || expr instanceof ASTCastExpression;
     }
 
-    // Returns true if it is safe to remove parentheses in the expression `A outop
-    // (B inop C)`
+    // Returns true if it is safe to remove parentheses in the expression `A outop (B inop C)`
     // outop and inop have the same precedence class
-    private static boolean associatesRightWith(BinaryOp outop, BinaryOp inop, ASTInfixExpression inner,
-            ASTInfixExpression outer) {
+    private static boolean associatesRightWith(BinaryOp outop, BinaryOp inop, ASTInfixExpression inner, ASTInfixExpression outer) {
 
         /*
-         * Notes about associativity: - Integer multiplication/addition is associative
-         * when the operands are all of the same type. - Floating-point
-         * multiplication/addition is not associative. - The boolean equality operators
-         * are associative, but input type != output type in general - Bitwise and
-         * logical operators are associative - The conditional-OR/AND operator is fully
-         * associative with respect to both side effects and result value.
+         Notes about associativity:
+         - Integer multiplication/addition is associative when the operands are all of the same type.
+         - Floating-point multiplication/addition is not associative.
+         - The boolean equality operators are associative, but input type != output type in general
+         - Bitwise and logical operators are associative
+         - The conditional-OR/AND operator is fully associative with respect to both side effects and result value.
          */
 
         switch (inop) {
-            case AND :
-            case OR :
-            case XOR :
-            case CONDITIONAL_AND :
-            case CONDITIONAL_OR :
+        case AND:
+        case OR:
+        case XOR:
+        case CONDITIONAL_AND:
+        case CONDITIONAL_OR:
             return true;
-            case MUL :
-            // a * (b * c) -- yes
-            // a * (b / c) -- no, could change semantics
-            // a * (b % c) -- no
+        case MUL:
+            // a * (b * c)      -- yes
+            // a * (b / c)      -- no, could change semantics
+            // a * (b % c)      -- no
 
-            // a / (b * c) -- no
-            // a / (b / c) -- no
-            // a / (b % c) -- no
+            // a / (b * c)      -- no
+            // a / (b / c)      -- no
+            // a / (b % c)      -- no
 
-            // a % (b * c) -- no
-            // a % (b / c) -- no
-            // a % (b % c) -- no
+            // a % (b * c)      -- no
+            // a % (b / c)      -- no
+            // a % (b % c)      -- no
 
             return inop == outop; // == MUL
-            case SUB :
-            case ADD :
-            // a + (b + c) -- yes, unless outop is concatenation and inop is addition, or
-            // operands are floats
-            // a + (b - c) -- yes
+        case SUB:
+        case ADD:
+            // a + (b + c)      -- yes, unless outop is concatenation and inop is addition, or operands are floats
+            // a + (b - c)      -- yes
 
-            // a - (b + c) -- no
-            // a - (b - c) -- no
-            return outop == BinaryOp.ADD && outer.getTypeMirror().isPrimitive() == inner.getTypeMirror().isPrimitive()
-                    && !inner.getTypeMirror().isFloatingPoint();
-            default :
+            // a - (b + c)      -- no
+            // a - (b - c)      -- no
+            return outop == BinaryOp.ADD
+                && outer.getTypeMirror().isPrimitive() == inner.getTypeMirror().isPrimitive()
+                && !inner.getTypeMirror().isFloatingPoint();
+        default:
             return false;
         }
     }
 
     public enum Necessity {
-        ALWAYS, NEVER, CLARIFYING, BALANCING;
+        ALWAYS,
+        NEVER,
+        CLARIFYING,
+        BALANCING;
 
         static Necessity definitely(boolean b) {
             return b ? ALWAYS : NEVER;

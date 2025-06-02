@@ -5,8 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents the {@code default} clause of an {@linkplain ASTMethodDeclaration
- * annotation method}.
+ * Represents the {@code default} clause of an {@linkplain ASTMethodDeclaration annotation method}.
  *
  * <pre class="grammar">
  *
@@ -26,6 +25,7 @@ public final class ASTDefaultValue extends AbstractJavaNode {
     public ASTMemberValue getConstant() {
         return (ASTMemberValue) getChild(0);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

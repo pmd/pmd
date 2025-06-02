@@ -10,14 +10,13 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.VariableIdOwner;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
 
+
 /**
- * Formal parameter node for a {@linkplain ASTFormalParameters formal parameter
- * list}. This is distinct from {@linkplain ASTLambdaParameter lambda
- * parameters}.
+ * Formal parameter node for a {@linkplain ASTFormalParameters formal parameter list}.
+ * This is distinct from {@linkplain ASTLambdaParameter lambda parameters}.
  *
- * <p>
- * The varargs ellipsis {@code "..."} is parsed as an
- * {@linkplain ASTArrayTypeDim array dimension} in the type node.
+ * <p>The varargs ellipsis {@code "..."} is parsed as an {@linkplain ASTArrayTypeDim array dimension}
+ * in the type node.
  *
  * <pre class="grammar">
  *
@@ -25,7 +24,8 @@ import net.sourceforge.pmd.lang.java.types.TypingContext;
  *
  * </pre>
  */
-public final class ASTFormalParameter extends AbstractJavaNode implements ModifierOwner, TypeNode, VariableIdOwner {
+public final class ASTFormalParameter extends AbstractJavaNode
+    implements ModifierOwner, TypeNode, VariableIdOwner {
 
     ASTFormalParameter(int id) {
         super(id);
@@ -36,6 +36,7 @@ public final class ASTFormalParameter extends AbstractJavaNode implements Modifi
         return Visibility.V_LOCAL;
     }
 
+
     /**
      * Returns the list of formal parameters containing this param.
      */
@@ -44,19 +45,22 @@ public final class ASTFormalParameter extends AbstractJavaNode implements Modifi
     }
 
     /**
-     * Returns true if this node is a varargs parameter. Then, the type node is an
-     * {@link ASTArrayType ArrayType}, and its last dimension
+     * Returns true if this node is a varargs parameter. Then, the type
+     * node is an {@link ASTArrayType ArrayType}, and its last dimension
      * {@linkplain ASTArrayTypeDim#isVarargs() is varargs}.
      */
     public boolean isVarargs() {
         ASTType tn = getTypeNode();
-        return tn instanceof ASTArrayType && ((ASTArrayType) tn).getDimensions().getLastChild().isVarargs();
+        return tn instanceof ASTArrayType
+            && ((ASTArrayType) tn).getDimensions().getLastChild().isVarargs();
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     /**
      * Returns the declarator ID of this formal parameter.
@@ -66,12 +70,11 @@ public final class ASTFormalParameter extends AbstractJavaNode implements Modifi
         return firstChild(ASTVariableId.class);
     }
 
+
     /**
      * Returns the type node of this formal parameter.
      *
-     * <p>
-     * If this formal parameter is varargs, the type node is an
-     * {@link ASTArrayType}.
+     * <p>If this formal parameter is varargs, the type node is an {@link ASTArrayType}.
      */
     public ASTType getTypeNode() {
         return firstChild(ASTType.class);

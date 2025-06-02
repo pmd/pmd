@@ -6,11 +6,11 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+
 /**
  * An array initializer. May occur in two syntactic contexts:
  * <ul>
- * <li>The right-hand side of a {@linkplain ASTVariableDeclarator variable
- * declarator}
+ * <li>The right-hand side of a {@linkplain ASTVariableDeclarator variable declarator}
  * <li>Inside an {@linkplain ASTArrayAllocation array allocation expression}
  * </ul>
  *
@@ -28,6 +28,7 @@ public final class ASTArrayInitializer extends AbstractJavaExpr implements Itera
         super(id);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
@@ -39,6 +40,7 @@ public final class ASTArrayInitializer extends AbstractJavaExpr implements Itera
     public int length() {
         return getNumChildren();
     }
+
 
     @Override
     public Iterator<ASTExpression> iterator() {

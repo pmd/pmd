@@ -15,9 +15,9 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.util.StringUtil;
 
 /**
- * Represents a string literal. The image of this node is the literal as it
- * appeared in the source ({@link #getLiteralText()}). {@link #getConstValue()}
- * allows to recover the actual runtime value, by processing escapes.
+ * Represents a string literal. The image of this node is the literal as it appeared
+ * in the source ({@link #getLiteralText()}). {@link #getConstValue()} allows to recover
+ * the actual runtime value, by processing escapes.
  */
 public final class ASTStringLiteral extends AbstractLiteral implements ASTLiteral {
 
@@ -28,6 +28,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     ASTStringLiteral(int id) {
         super(id);
     }
+
 
     // TODO deprecate / remove this
     // it's ambiguous whether it returns getOriginalText or getTranslatedText
@@ -50,10 +51,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         return isTextBlock;
     }
 
-    /**
-     * True if the constant value is empty. Does not necessarily compute the
-     * constant value.
-     */
+    /** True if the constant value is empty. Does not necessarily compute the constant value. */
     public boolean isEmpty() {
         if (isTextBlock) {
             return getConstValue().isEmpty(); // could be a bunch of ignorable indents?
@@ -68,10 +66,10 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
     /**
-     * Returns a string where non-printable characters have been escaped using
-     * Java-like escape codes (eg \n, \t, \u005cu00a0).
+     * Returns a string where non-printable characters have been escaped
+     * using Java-like escape codes (eg \n, \t, \u005cu00a0).
      */
-    // ^^^^^^
+    //                                          ^^^^^^
     // this is a backslash, it's printed as \u00a0
     @NoAttribute
     public @NonNull String toPrintableString() {
@@ -83,6 +81,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
         return visitor.visit(this, data);
     }
 
+
     /** Returns the value without delimiters and unescaped. */
     @Override
     public @NonNull String getConstValue() {
@@ -90,8 +89,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
     /**
-     * @deprecated Since 7.12.0. See super method. This override is needed due to
-     *             covariant return type change.
+     * @deprecated Since 7.12.0. See super method. This override is needed due to covariant return type change.
      */
     @Override
     @Deprecated
@@ -146,27 +144,24 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
     /**
-     * Interpret escape sequences. This appends the interpreted contents of 'line'
-     * into the StringBuilder. The line does not contain any line terminators,
-     * instead, an implicit line terminator may be at the end (parameter
-     * {@code isEndANewLine}), to interpret line continuations.
+     * Interpret escape sequences. This appends the interpreted contents
+     * of 'line' into the StringBuilder. The line does not contain any
+     * line terminators, instead, an implicit line terminator may be at
+     * the end (parameter {@code isEndANewLine}), to interpret line
+     * continuations.
      *
-     * @param line
-     *            Source line
-     * @param out
-     *            Output
-     * @param isEndANewLine
-     *            Whether the end of the line is a newline, as in text blocks
+     * @param line          Source line
+     * @param out           Output
+     * @param isEndANewLine Whether the end of the line is a newline,
+     *                      as in text blocks
      *
-     * @return Whether a newline should be appended at the end. Returns false if
-     *         {@code isEndANewLine} and the line ends with a backslash, as this is
-     *         a line continuation.
+     * @return Whether a newline should be appended at the end. Returns
+     *     false if {@code isEndANewLine} and the line ends with a backslash,
+     *     as this is a line continuation.
      */
-    // See
-    // https://docs.oracle.com/javase/specs/jls/se17/html/jls-3.html#jls-EscapeSequence
+    // See https://docs.oracle.com/javase/specs/jls/se17/html/jls-3.html#jls-EscapeSequence
     private static boolean interpretEscapeSequences(Chars line, StringBuilder out, boolean isEndANewLine) {
-        // we need to interpret everything in one pass, so regex replacement is
-        // inappropriate
+        // we need to interpret everything in one pass, so regex replacement is inappropriate
         int appended = 0;
         int i = 0;
         while (i < line.length()) {
@@ -187,15 +182,15 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
             }
             char cnext = line.charAt(i + 1);
             switch (cnext) {
-                case '\\' :
-                case 'n' :
-                case 't' :
-                case 'b' :
-                case 'r' :
-                case 'f' :
-                case 's' :
-                case '"' :
-                case '\'' :
+            case '\\':
+            case 'n':
+            case 't':
+            case 'b':
+            case 'r':
+            case 'f':
+            case 's':
+            case '"':
+            case '\'':
                 // append up to and not including backslash
                 line.appendChars(out, appended, i);
                 // append the translation
@@ -204,24 +199,24 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
                 i += 2;
                 appended = i;
                 continue;
-                // octal digits
-                case '0' :
-                case '1' :
-                case '2' :
-                case '3' :
-                case '4' :
-                case '5' :
-                case '6' :
-                case '7' :
+            // octal digits
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
                 // append up to and not including backslash
                 line.appendChars(out, appended, i);
                 i = translateOctalEscape(line, i + 1, out);
                 appended = i;
                 continue;
-                default :
+            default:
                 // unknown escape - do nothing - it stays
                 i++;
-                    break;
+                break;
             }
         }
 
@@ -234,25 +229,16 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
 
     private static char translateBackslashEscape(char c) {
         switch (c) {
-            case '\\' :
-            return '\\';
-            case 'n' :
-            return '\n';
-            case 't' :
-            return '\t';
-            case 'b' :
-            return '\b';
-            case 'r' :
-            return '\r';
-            case 'f' :
-            return '\f';
-            case 's' :
-            return ' ';
-            case '"' :
-            return '"';
-            case '\'' :
-            return '\'';
-            default :
+        case '\\': return '\\';
+        case 'n': return '\n';
+        case 't': return '\t';
+        case 'b': return '\b';
+        case 'r': return '\r';
+        case 'f': return '\f';
+        case 's': return ' ';
+        case '"': return '"';
+        case '\'': return '\'';
+        default:
             throw new IllegalArgumentException("Not a valid escape \\" + c);
         }
     }

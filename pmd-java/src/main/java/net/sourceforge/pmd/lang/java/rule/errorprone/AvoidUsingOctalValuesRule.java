@@ -10,10 +10,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+
 public class AvoidUsingOctalValuesRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> STRICT_METHODS_DESCRIPTOR = booleanProperty("strict")
-            .desc("Detect violations between 00 and 07").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> STRICT_METHODS_DESCRIPTOR =
+        booleanProperty("strict")
+            .desc("Detect violations between 00 and 07")
+            .defaultValue(false)
+            .build();
 
     public AvoidUsingOctalValuesRule() {
         super(ASTNumericLiteral.class);

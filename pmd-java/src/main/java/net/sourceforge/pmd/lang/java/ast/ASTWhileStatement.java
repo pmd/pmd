@@ -19,14 +19,17 @@ public final class ASTWhileStatement extends AbstractStatement implements ASTLoo
         super(id);
     }
 
+
     /**
-     * Returns the node that represents the guard of this loop. This may be any
-     * expression of type boolean.
+     * Returns the node that represents the guard of this loop.
+     * This may be any expression of type boolean.
      */
     @Override
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(0);
     }
+
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

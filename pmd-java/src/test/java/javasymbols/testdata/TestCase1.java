@@ -4,9 +4,12 @@
 
 package javasymbols.testdata;
 
+
+
 public class TestCase1 {
 
     String foo;
     SomeClassA a;
+
 
 }

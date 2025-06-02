@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+
 import java.lang.reflect.Modifier;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -43,6 +44,7 @@ abstract class BasePrimitiveSymbol extends EmptyClassSymbol {
 
     }
 
+
     static final class RealPrimitiveSymbol extends BasePrimitiveSymbol {
 
         private final PrimitiveTypeKind kind;
@@ -66,6 +68,7 @@ abstract class BasePrimitiveSymbol extends EmptyClassSymbol {
         public @NonNull String getSimpleName() {
             return kind.getSimpleName();
         }
+
 
     }
 

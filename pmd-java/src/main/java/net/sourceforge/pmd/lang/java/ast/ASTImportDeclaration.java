@@ -17,9 +17,7 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * </pre>
  *
- * @see <a href=
- *      "https://docs.oracle.com/javase/specs/jls/se9/html/jls-7.html#jls-7.5">JLS
- *      7.5</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-7.html#jls-7.5">JLS 7.5</a>
  */
 public final class ASTImportDeclaration extends AbstractJavaNode implements ASTTopLevelDeclaration {
 
@@ -30,6 +28,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
     ASTImportDeclaration(int id) {
         super(id);
     }
+
 
     void setImportOnDemand() {
         isImportOnDemand = true;
@@ -52,9 +51,11 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         return isImportOnDemand;
     }
 
+
     void setStatic() {
         isStatic = true;
     }
+
 
     /**
      * Returns true if this is a static import. If this import is not on-demand,
@@ -64,14 +65,16 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         return isStatic;
     }
 
+
     /**
-     * Returns the full name of the import. For on-demand imports, this is the name
-     * without the final dot and asterisk. For {@link #isModuleImport() module
-     * declaration imports}, this is the name of the module.
+     * Returns the full name of the import. For on-demand imports, this is the name without
+     * the final dot and asterisk. For {@link #isModuleImport() module declaration imports},
+     * this is the name of the module.
      */
     public @NonNull String getImportedName() {
         return super.getImage();
     }
+
 
     @Override
     public String getImage() {
@@ -83,10 +86,8 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * Returns the simple name of the type or method imported by this declaration.
      * For on-demand imports, returns {@code null}.
      *
-     * <p>
-     * For {@link #isModuleImport() module import declarations}, this returns
-     * {@code null}. Use {@link #getImportedName()} for the module name of a module
-     * import declaration.
+     * <p>For {@link #isModuleImport() module import declarations}, this returns {@code null}.
+     * Use {@link #getImportedName()} for the module name of a module import declaration.
      */
     public String getImportedSimpleName() {
         if (isImportOnDemand || moduleImport) {
@@ -97,16 +98,14 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         return importName.substring(importName.lastIndexOf('.') + 1);
     }
 
+
     /**
-     * Returns the "package" prefix of the imported name. For type imports,
-     * including on-demand imports, this is really the package name of the imported
-     * type(s). For static imports, this is actually the qualified name of the
-     * enclosing type, including the type name.
+     * Returns the "package" prefix of the imported name. For type imports, including on-demand
+     * imports, this is really the package name of the imported type(s). For static imports,
+     * this is actually the qualified name of the enclosing type, including the type name.
      *
-     * <p>
-     * For {@link #isModuleImport() module import declarations}, this returns
-     * {@code null}. Use {@link #getImportedName()} for the module name of a module
-     * import declaration.
+     * <p>For {@link #isModuleImport() module import declarations}, this returns {@code null}.
+     * Use {@link #getImportedName()} for the module name of a module import declaration.
      */
     public String getPackageName() {
         if (moduleImport) {
@@ -134,15 +133,13 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
     }
 
     /**
-     * If this import declaration imports all the public top-level classes and
-     * interfaces of a module.
+     * If this import declaration imports all the public top-level classes and interfaces
+     * of a module.
      *
      * @return {@code true} if this is a module declaration import
      * @since 7.5.0
-     * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import
-     *      Declarations (Preview)</a> (Java 23)
-     * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import
-     *      Declarations (Second Preview)</a> (Java 24)
+     * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
+     * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java 24)
      */
     @Experimental
     public boolean isModuleImport() {

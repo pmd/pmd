@@ -17,9 +17,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.Mi
 /**
  *
  */
-abstract class BaseFunctionalMirror<N extends FunctionalExpression> extends BasePolyMirror<N>
-        implements
-            FunctionalExprMirror {
+abstract class BaseFunctionalMirror<N extends FunctionalExpression> extends BasePolyMirror<N> implements FunctionalExprMirror {
     private JMethodSig inferredMethod;
 
     BaseFunctionalMirror(JavaExprMirrors mirrors, N myNode, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {

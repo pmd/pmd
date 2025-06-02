@@ -14,8 +14,9 @@ import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class Java15TreeDumpTest extends BaseJavaTreeDumpTest {
-    private final JavaParsingHelper java15 = JavaParsingHelper.DEFAULT.withDefaultVersion("15")
-            .withResourceContext(Java15TreeDumpTest.class, "jdkversiontests/java15/");
+    private final JavaParsingHelper java15 =
+            JavaParsingHelper.DEFAULT.withDefaultVersion("15")
+                                     .withResourceContext(Java15TreeDumpTest.class, "jdkversiontests/java15/");
     private final JavaParsingHelper java14 = java15.withDefaultVersion("14");
 
     @Override

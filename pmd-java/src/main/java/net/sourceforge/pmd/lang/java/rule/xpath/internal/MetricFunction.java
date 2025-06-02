@@ -12,10 +12,12 @@ import net.sourceforge.pmd.lang.metrics.Metric;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
+
 /**
- * Implements the {@code metric()} XPath function. Takes the string name of a
- * metric and the context node and returns the result if the metric can be
- * computed, otherwise returns {@link Double#NaN}.
+ * Implements the {@code metric()} XPath function. Takes the
+ * string name of a metric and the context node and returns
+ * the result if the metric can be computed, otherwise returns
+ * {@link Double#NaN}.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -24,24 +26,28 @@ public final class MetricFunction extends BaseJavaXPathFunction {
 
     public static final MetricFunction INSTANCE = new MetricFunction();
 
+
     private MetricFunction() {
         super("metric");
     }
 
     @Override
     public Type[] getArgumentTypes() {
-        return new Type[]{Type.SINGLE_STRING};
+        return new Type[] {Type.SINGLE_STRING};
     }
+
 
     @Override
     public Type getResultType() {
         return Type.OPTIONAL_DECIMAL;
     }
 
+
     @Override
     public boolean dependsOnContext() {
         return true;
     }
+
 
     @Override
     public FunctionCall makeCallExpression() {
@@ -51,13 +57,15 @@ public final class MetricFunction extends BaseJavaXPathFunction {
         };
     }
 
+
     static String badMetricKeyMessage(String constantName) {
         return String.format("'%s' is not the name of a metric", constantName);
     }
 
+
     private static Optional<Double> getMetric(Node n, String metricKeyName) throws XPathFunctionException {
-        LanguageMetricsProvider provider = n.getAstInfo().getLanguageProcessor().services()
-                .getLanguageMetricsProvider();
+        LanguageMetricsProvider provider =
+            n.getAstInfo().getLanguageProcessor().services().getLanguageMetricsProvider();
         Metric<?, ?> metric = provider.getMetricWithName(metricKeyName);
         if (metric == null) {
             throw new XPathFunctionException(badMetricKeyMessage(metricKeyName));

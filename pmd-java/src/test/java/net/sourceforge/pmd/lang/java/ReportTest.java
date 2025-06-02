@@ -18,6 +18,7 @@ import net.sourceforge.pmd.reporting.Report;
 
 class ReportTest {
 
+
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 
     @Test
@@ -46,7 +47,8 @@ class ReportTest {
 
     @Test
     void testExclusionsInReportWithAnnotations() {
-        Report rpt = java.executeRule(new FooRule(), TEST2);
+        Report rpt =
+            java.executeRule(new FooRule(), TEST2);
         assertSize(rpt, 0);
         assertSuppressed(rpt, 1);
     }

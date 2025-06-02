@@ -15,15 +15,15 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
 final class SymbolTableImpl implements JSymbolTable {
 
-    static final JSymbolTable EMPTY = new SymbolTableImpl(ShadowChainBuilder.rootGroup(),
-            ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup());
+    static final JSymbolTable EMPTY = new SymbolTableImpl(ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup(), ShadowChainBuilder.rootGroup());
 
     private final ShadowChainNode<JVariableSig, ScopeInfo> vars;
     private final ShadowChainNode<JTypeMirror, ScopeInfo> types;
     private final ShadowChainNode<JMethodSig, ScopeInfo> methods;
 
-    SymbolTableImpl(ShadowChainNode<JVariableSig, ScopeInfo> vars, ShadowChainNode<JTypeMirror, ScopeInfo> types,
-            ShadowChainNode<JMethodSig, ScopeInfo> methods) {
+    SymbolTableImpl(ShadowChainNode<JVariableSig, ScopeInfo> vars,
+                    ShadowChainNode<JTypeMirror, ScopeInfo> types,
+                    ShadowChainNode<JMethodSig, ScopeInfo> methods) {
         this.vars = vars;
         this.types = types;
         this.methods = methods;
@@ -46,7 +46,11 @@ final class SymbolTableImpl implements JSymbolTable {
 
     @Override
     public String toString() {
-        return "NSymTableImpl{" + "vars=" + vars + ", types=" + types + ", methods=" + methods + '}';
+        return "NSymTableImpl{"
+            + "vars=" + vars
+            + ", types=" + types
+            + ", methods=" + methods
+            + '}';
     }
 
     static JSymbolTable withVars(JSymbolTable parent, ShadowChainNode<JVariableSig, ScopeInfo> vars) {

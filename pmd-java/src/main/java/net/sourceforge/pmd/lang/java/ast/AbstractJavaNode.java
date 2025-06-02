@@ -21,6 +21,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super(id);
     }
 
+
     @Override
     public void jjtClose() {
         super.jjtClose();
@@ -48,8 +49,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super.addChild(child, index);
     }
 
-    @Override // override to make it accessible to tests that build nodes (which have been
-              // removed on java-grammar)
+    @Override // override to make it accessible to tests that build nodes (which have been removed on java-grammar)
     protected void insertChild(AbstractJavaNode child, int index) {
         super.insertChild(child, index);
     }
@@ -63,6 +63,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     protected void setImage(String image) {
         super.setImage(image);
     }
+
 
     @Override
     protected void setFirstToken(JavaccToken token) {
@@ -105,6 +106,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         return getRoot().getTypeSystem();
     }
 
+
+
     @Override
     public final @NonNull ASTCompilationUnit getRoot() {
         // storing a reference on each node ensures that each path is roamed
@@ -115,11 +118,11 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         return root;
     }
 
+
     /**
      * Shift the start and end tokens by the given offsets.
-     * 
-     * @throws IllegalStateException
-     *             if the right shift identifies a token that is left of this node
+     * @throws IllegalStateException if the right shift identifies
+     * a token that is left of this node
      */
     void shiftTokens(int leftShift, int rightShift) {
         if (leftShift != 0) {
@@ -140,6 +143,7 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
             return TokenUtils.nthFollower(token, shift);
         }
     }
+
 
     void copyTextCoordinates(AbstractJavaNode copy) {
         setFirstToken(copy.getFirstToken());

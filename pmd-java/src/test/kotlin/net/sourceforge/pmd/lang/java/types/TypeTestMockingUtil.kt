@@ -12,11 +12,10 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger
 import org.mockito.Mockito
 import org.mockito.Mockito.*
 
+
 // kept out of TypeTestUtil so as not to import Mockito there
 
-fun JavaParsingHelper.parseWithTypeInferenceSpy(
-    code: String
-): Pair<ASTCompilationUnit, TypeInferenceSpy> {
+fun JavaParsingHelper.parseWithTypeInferenceSpy(code: String): Pair<ASTCompilationUnit, TypeInferenceSpy> {
     val spy = spy(typeInfLogger)
     `when`(spy.isNoop).thenReturn(false) // enable log for exceptions though
     val acu = this.logTypeInference(spy).parse(code)
@@ -44,12 +43,17 @@ data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSy
     }
 
     fun shouldHaveMissingCtDecl(node: InvocationNode) {
-        verify(spy, times(1)).noCompileTimeDeclaration(argThat { it.expr.location == node })
+        verify(spy, times(1))
+            .noCompileTimeDeclaration(argThat { it.expr.location == node })
     }
 
     fun shouldHaveNoApplicableMethods(node: InvocationNode) {
-        verify(spy, times(1)).noApplicableCandidates(argThat { it.expr.location == node })
+        verify(spy, times(1))
+            .noApplicableCandidates(argThat {
+                it.expr.location == node
+            })
     }
+
 
     fun shouldHaveUnresolvedLambdaCtx(lambdaOrMref: FunctionalExpression) {
         verify(spy, times(1))
@@ -58,15 +62,14 @@ data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSy
 
     fun shouldHaveNoLambdaCtx(lambdaOrMref: FunctionalExpression) {
         verify(spy, times(1))
-            .logResolutionFail(
-                argThat {
-                    it.reason == "Missing target type for functional expression" &&
-                        it.location == lambdaOrMref
-                }
-            )
+            .logResolutionFail(argThat {
+                it.reason == "Missing target type for functional expression"
+                        && it.location == lambdaOrMref
+            })
     }
 
     fun shouldBeAmbiguous(node: InvocationNode) {
-        verify(spy, times(1)).ambiguityError(argThat { it.expr.location == node }, any(), any())
+        verify(spy, times(1))
+            .ambiguityError(argThat { it.expr.location==node }, any(), any())
     }
 }

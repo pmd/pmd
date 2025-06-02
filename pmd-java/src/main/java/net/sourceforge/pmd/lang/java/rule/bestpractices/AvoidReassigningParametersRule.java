@@ -25,6 +25,7 @@ public class AvoidReassigningParametersRule extends AbstractJavaRulechainRule {
         return data;
     }
 
+
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
         lookForViolations(node, data);

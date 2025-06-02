@@ -9,68 +9,70 @@ import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.TypeOps
 import net.sourceforge.pmd.lang.java.types.TypeSystem
 import net.sourceforge.pmd.lang.java.types.testTypeSystem
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 
-class BrokenClasspathTest :
-    FunSpec({
-        val rootCp = Classpath.contextClasspath()
-        val brokenCp = rootCp.exclude(setOf("javasymbols/testdata/SuperItf.class"))
+class BrokenClasspathTest : FunSpec({
 
-        test("Test classpath setup ") {
-            rootCp.findResource("javasymbols/testdata/BrokenGeneric.class") shouldNotBe null
-            rootCp.findResource("javasymbols/testdata/SuperItf.class") shouldNotBe null
-            rootCp.findResource("javasymbols/testdata/SuperKlass.class") shouldNotBe null
+    val rootCp = Classpath.contextClasspath()
+    val brokenCp = rootCp.exclude(setOf("javasymbols/testdata/SuperItf.class"))
 
-            // this one is null
-            brokenCp.findResource("javasymbols/testdata/SuperItf.class") shouldBe null
-            brokenCp.findResource("javasymbols/testdata/BrokenGeneric.class") shouldNotBe null
-            brokenCp.findResource("javasymbols/testdata/SuperKlass.class") shouldNotBe null
+    test("Test classpath setup ") {
+        rootCp.findResource("javasymbols/testdata/BrokenGeneric.class") shouldNotBe null
+        rootCp.findResource("javasymbols/testdata/SuperItf.class") shouldNotBe null
+        rootCp.findResource("javasymbols/testdata/SuperKlass.class") shouldNotBe null
+
+        // this one is null
+        brokenCp.findResource("javasymbols/testdata/SuperItf.class") shouldBe null
+        brokenCp.findResource("javasymbols/testdata/BrokenGeneric.class") shouldNotBe null
+        brokenCp.findResource("javasymbols/testdata/SuperKlass.class") shouldNotBe null
+    }
+
+    test("Test load subclass (symbol only)") {
+
+        val resolver = AsmSymbolResolver(testTypeSystem, brokenCp)
+
+        val found = resolver.resolveClassFromBinaryName("javasymbols.testdata.BrokenGeneric")
+            ?: fail("not found")
+
+        found.superclass!!::getBinaryName shouldBe "javasymbols.testdata.SuperKlass"
+        found.superInterfaces!!.map { it.binaryName } shouldBe listOf("javasymbols.testdata.SuperItf")
+
+        withClue("Isn't resolved") {
+            found.superInterfaces[0]::isUnresolved shouldBe true
         }
+    }
 
-        test("Test load subclass (symbol only)") {
-            val resolver = AsmSymbolResolver(testTypeSystem, brokenCp)
 
-            val found =
-                resolver.resolveClassFromBinaryName("javasymbols.testdata.BrokenGeneric")
-                    ?: fail("not found")
+    test("Test load from typesystem") {
 
-            found.superclass!!::getBinaryName shouldBe "javasymbols.testdata.SuperKlass"
-            found.superInterfaces!!.map { it.binaryName } shouldBe
-                listOf("javasymbols.testdata.SuperItf")
+        val ts = TypeSystem.usingClasspath(brokenCp)
+        val subclassSym = ts.getClassSymbol("javasymbols.testdata.BrokenGeneric")!!
 
-            withClue("Isn't resolved") { found.superInterfaces[0]::isUnresolved shouldBe true }
-        }
+        val unresolvedItfSym = subclassSym.superInterfaces[0]
+        unresolvedItfSym::isUnresolved shouldBe true
 
-        test("Test load from typesystem") {
-            val ts = TypeSystem.usingClasspath(brokenCp)
-            val subclassSym = ts.getClassSymbol("javasymbols.testdata.BrokenGeneric")!!
+        // since we're loading things lazily this type hasn't tried to populate its superinterfaces
+        val superItfType = ts.declaration(unresolvedItfSym) as JClassType
+        val subclassType = ts.declaration(subclassSym) as JClassType
+        val (_, tvarD) = subclassType.formalTypeParams
 
-            val unresolvedItfSym = subclassSym.superInterfaces[0]
-            unresolvedItfSym::isUnresolved shouldBe true
+        // and now since the super interface *type* is parameterized, we'll try to create SuperItf<D,D>
+        // Except SuperItf is unresolved.
 
-            // since we're loading things lazily this type hasn't tried to populate its
-            // superinterfaces
-            val superItfType = ts.declaration(unresolvedItfSym) as JClassType
-            val subclassType = ts.declaration(subclassSym) as JClassType
-            val (_, tvarD) = subclassType.formalTypeParams
+        val expected = ts.parameterise(unresolvedItfSym, listOf(tvarD, tvarD))
 
-            // and now since the super interface *type* is parameterized, we'll try to create
-            // SuperItf<D,D>
-            // Except SuperItf is unresolved.
+        expected shouldBe superItfType.withTypeArguments(listOf(tvarD, tvarD))
+        subclassType.superInterfaces[0] shouldBe expected
 
-            val expected = ts.parameterise(unresolvedItfSym, listOf(tvarD, tvarD))
+        subclassType.isConvertibleTo(expected) shouldBe TypeOps.Convertibility.SUBTYPING
+    }
 
-            expected shouldBe superItfType.withTypeArguments(listOf(tvarD, tvarD))
-            subclassType.superInterfaces[0] shouldBe expected
-
-            subclassType.isConvertibleTo(expected) shouldBe TypeOps.Convertibility.SUBTYPING
-        }
-    })
+})
 
 fun TypeSystem.createUnresolvedAsmSymbol(binaryName: String): JClassSymbol =
     AsmSymbolResolver(this, Classpath.contextClasspath())

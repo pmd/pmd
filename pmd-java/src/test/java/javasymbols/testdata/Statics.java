@@ -4,6 +4,7 @@
 
 package javasymbols.testdata;
 
+
 public class Statics extends StaticsSuper {
 
     public static final int PUBLIC_FIELD = 0;
@@ -12,20 +13,25 @@ public class Statics extends StaticsSuper {
     static final int PACKAGE_FIELD = 0;
     private static final int PRIVATE_FIELD = 0;
 
+
     public void publicInstanceMethod() {
 
     }
 
+
     private static void privateMethod() {
     }
+
 
     protected static void protectedMethod() {
 
     }
 
+
     static void packageMethod() {
 
     }
+
 
     public static void publicMethod() {
 
@@ -35,9 +41,11 @@ public class Statics extends StaticsSuper {
 
     }
 
+
     public static void publicMethod2() {
 
     }
+
 
     static class PackageStatic {
 
@@ -54,6 +62,7 @@ public class Statics extends StaticsSuper {
     private static class PrivateStatic {
 
     }
+
 
     public static class PublicShadowed {
 

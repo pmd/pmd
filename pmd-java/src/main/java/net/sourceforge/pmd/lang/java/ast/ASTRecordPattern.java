@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+
 /**
  * A record pattern, a Java 21 language feature.
  *
@@ -14,9 +15,8 @@ package net.sourceforge.pmd.lang.java.ast;
  * </pre>
  *
  * @see ASTRecordDeclaration
- * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a>
- *      (Java 21)
- */
+ * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
+*/
 public final class ASTRecordPattern extends AbstractJavaPattern {
 
     ASTRecordPattern(int id) {
@@ -35,6 +35,7 @@ public final class ASTRecordPattern extends AbstractJavaPattern {
         return firstChild(ASTReferenceType.class);
     }
 
+
     /**
      * Return the patterns for each record component.
      *
@@ -44,13 +45,13 @@ public final class ASTRecordPattern extends AbstractJavaPattern {
         return firstChild(ASTPatternList.class);
     }
 
+
     /**
      * Returns the declared variable.
      *
-     * @deprecated This method was added here by mistake. Record patterns don't
-     *             declare a pattern variable for the whole pattern, but rather for
-     *             individual record components, which can be accessed via
-     *             {@link #getComponentPatterns()}.
+     * @deprecated This method was added here by mistake. Record patterns don't declare a pattern variable
+     * for the whole pattern, but rather for individual record components, which can be accessed via
+     * {@link #getComponentPatterns()}.
      */
     @Deprecated
     public ASTVariableId getVarId() {

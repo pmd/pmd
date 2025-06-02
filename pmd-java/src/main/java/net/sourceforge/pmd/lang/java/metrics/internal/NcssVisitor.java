@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
+
 /**
  * Visitor for the Ncss metric.
  *
@@ -53,6 +54,7 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
 
     protected final boolean countImports;
 
+
     @SuppressWarnings("PMD.UnusedFormalParameter")
     public NcssVisitor(MetricOptions options, JavaNode topNode) {
         countImports = options.contains(NcssOption.COUNT_IMPORTS);
@@ -60,11 +62,13 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         // if we add it later, we break binary compatibility
     }
 
+
     @Override
     public final Void visitJavaNode(JavaNode node, MutableInt data) {
         // same here
         return super.visitJavaNode(node, data);
     }
+
 
     @Override
     public Void visit(ASTClassDeclaration node, MutableInt data) {
@@ -83,17 +87,20 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTEnumDeclaration node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTAnnotationTypeDeclaration node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTFieldDeclaration node, MutableInt data) {
@@ -102,17 +109,20 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTMethodDeclaration node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTConstructorDeclaration node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTLocalVariableDeclaration node, MutableInt data) {
@@ -125,6 +135,7 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTIfStatement node, MutableInt data) {
         data.increment();
@@ -135,17 +146,20 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTWhileStatement node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTSwitchStatement node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTExpressionStatement node, MutableInt data) {
@@ -155,11 +169,13 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return null;
     }
 
+
     @Override
     public Void visit(ASTExplicitConstructorInvocation node, MutableInt data) {
         data.increment();
         return null;
     }
+
 
     @Override
     public Void visit(ASTContinueStatement node, MutableInt data) {
@@ -167,11 +183,13 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return null;
     }
 
+
     @Override
     public Void visit(ASTBreakStatement node, MutableInt data) {
         data.increment();
         return null;
     }
+
 
     @Override
     public Void visit(ASTReturnStatement node, MutableInt data) {
@@ -179,11 +197,13 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return null;
     }
 
+
     @Override
     public Void visit(ASTDoStatement node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTForStatement node, MutableInt data) {
@@ -191,11 +211,13 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTSynchronizedStatement node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTCatchClause node, MutableInt data) {
@@ -203,11 +225,13 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTThrowStatement node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTFinallyClause node, MutableInt data) {
@@ -215,11 +239,13 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTLabeledStatement node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
+
 
     @Override
     public Void visit(ASTSwitchLabel node, MutableInt data) {
@@ -227,16 +253,19 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTInitializer node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
 
+
     @Override
     public Void visit(ASTAssertStatement node, MutableInt data) {
         data.increment();
         return super.visit(node, data);
     }
+
 
 }

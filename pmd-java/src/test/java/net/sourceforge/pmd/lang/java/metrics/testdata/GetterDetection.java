@@ -16,29 +16,44 @@ public class GetterDetection {
     private MutableInt mutX;
     private boolean bool;
 
+
     public int getValue() {
         return value;
     }
+
 
     public boolean isBool() {
         return bool;
     }
 
+
     public int value() {
         return value;
     }
 
-    /*
-     * public double speedModified() { return speed * 12 + 1; }
-     * 
-     * public int mutableInt() { return mutX.getValue(); }
-     * 
-     * public MutableInt theMutable() { return mutX; }
-     * 
-     * public int mutableIntIf() { if (mutX == null) { return 0; } else { return
-     * mutX.getValue(); } }
-     * 
-     * public int mutableIntConditional() { return mutX == null ? 0 :
-     * mutX.getValue(); }
-     */
+
+    /*  public double speedModified() {
+        return speed * 12 + 1;
+    }
+
+    public int mutableInt() {
+        return mutX.getValue();
+    }
+
+    public MutableInt theMutable() {
+        return mutX;
+    }
+
+    public int mutableIntIf() {
+        if (mutX == null) {
+            return 0;
+        } else {
+            return mutX.getValue();
+        }
+    }
+
+    public int mutableIntConditional() {
+        return mutX == null ? 0 : mutX.getValue();
+    }
+    */
 }

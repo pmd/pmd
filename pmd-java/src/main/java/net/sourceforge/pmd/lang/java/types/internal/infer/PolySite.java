@@ -10,13 +10,14 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.PolyExprMirror;
 
 /**
- * Context of a poly expression. Includes info about an expected target type,
- * and the expression mirror.
+ * Context of a poly expression. Includes info about an expected target
+ * type, and the expression mirror.
  */
 public class PolySite<E extends PolyExprMirror> {
 
     private final JTypeMirror expectedType;
     private final E expr;
+
 
     PolySite(E expr, @Nullable JTypeMirror expectedType) {
         this.expectedType = expectedType;
@@ -36,5 +37,6 @@ public class PolySite<E extends PolyExprMirror> {
     public String toString() {
         return "PolySite:" + expr;
     }
+
 
 }

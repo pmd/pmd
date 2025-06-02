@@ -5,8 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * A node that can appear as the right-hand-side of a
- * {@link ASTSwitchArrowBranch SwitchArrowRule}.
+ * A node that can appear as the right-hand-side of a {@link ASTSwitchArrowBranch SwitchArrowRule}.
  *
  * <pre class="grammar">
  *

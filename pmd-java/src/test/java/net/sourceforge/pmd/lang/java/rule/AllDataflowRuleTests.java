@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
+
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
 
@@ -17,8 +18,15 @@ import net.sourceforge.pmd.lang.java.rule.errorprone.ImplicitSwitchFallThroughTe
 import net.sourceforge.pmd.lang.java.rule.errorprone.InvalidLogMessageFormatTest;
 
 @Suite
-@SelectClasses({LocalVariableCouldBeFinalTest.class, ImmutableFieldTest.class, UnusedAssignmentTest.class,
-        LawOfDemeterTest.class, SingularFieldTest.class, ImplicitSwitchFallThroughTest.class,
-        InvalidLogMessageFormatTest.class, AvoidThrowingNullPointerExceptionTest.class})
+@SelectClasses({
+    LocalVariableCouldBeFinalTest.class,
+    ImmutableFieldTest.class,
+    UnusedAssignmentTest.class,
+    LawOfDemeterTest.class,
+    SingularFieldTest.class,
+    ImplicitSwitchFallThroughTest.class,
+    InvalidLogMessageFormatTest.class,
+    AvoidThrowingNullPointerExceptionTest.class
+})
 public class AllDataflowRuleTests {
 }

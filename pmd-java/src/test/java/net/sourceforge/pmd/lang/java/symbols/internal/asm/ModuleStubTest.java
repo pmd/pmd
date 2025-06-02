@@ -42,12 +42,10 @@ class ModuleStubTest {
         });
         JModuleSymbol moduleSymbol = ts.getModuleSymbol("test.net.sourceforge.pmd");
         assertThat(moduleSymbol.getExportedPackages(), hasSize(3));
-        assertThat(moduleSymbol.getExportedPackages(),
-                hasItems("net.sourceforge.pmd", "net.sourceforge.pmd.annotation", "net.sourceforge.pmd.lang"));
+        assertThat(moduleSymbol.getExportedPackages(), hasItems("net.sourceforge.pmd", "net.sourceforge.pmd.annotation", "net.sourceforge.pmd.lang"));
 
         PSet<SymbolicValue.SymAnnot> annotations = moduleSymbol.getDeclaredAnnotations();
         assertThat(annotations.size(), is(1));
-        assertEquals("net.sourceforge.pmd.annotation.ModuleTestExperimental",
-                annotations.stream().findFirst().get().getBinaryName());
+        assertEquals("net.sourceforge.pmd.annotation.ModuleTestExperimental", annotations.stream().findFirst().get().getBinaryName());
     }
 }

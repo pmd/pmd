@@ -19,6 +19,7 @@ public final class ASTEmptyStatement extends AbstractStatement {
         super(id);
     }
 
+
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

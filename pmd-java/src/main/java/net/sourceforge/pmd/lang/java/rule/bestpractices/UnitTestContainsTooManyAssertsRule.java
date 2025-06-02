@@ -18,13 +18,20 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class UnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Integer> MAX_ASSERTS = PropertyFactory.intProperty("maximumAsserts")
-            .desc("Maximum number of assert calls in a test method").require(NumericConstraints.positive())
-            .defaultValue(1).build();
+    private static final PropertyDescriptor<Integer> MAX_ASSERTS =
+        PropertyFactory.intProperty("maximumAsserts")
+                       .desc("Maximum number of assert calls in a test method")
+                       .require(NumericConstraints.positive())
+                       .defaultValue(1)
+                       .build();
 
-    private static final PropertyDescriptor<Set<String>> EXTRA_ASSERT_METHOD_NAMES = PropertyFactory
-            .stringProperty("extraAssertMethodNames").desc("Extra valid assertion methods names")
-            .map(Collectors.toSet()).emptyDefaultValue().build();
+    private static final PropertyDescriptor<Set<String>> EXTRA_ASSERT_METHOD_NAMES =
+            PropertyFactory.stringProperty("extraAssertMethodNames")
+                           .desc("Extra valid assertion methods names")
+                           .map(Collectors.toSet())
+                           .emptyDefaultValue()
+                           .build();
+
 
     public UnitTestContainsTooManyAssertsRule() {
         super(ASTMethodDeclaration.class);
@@ -38,9 +45,9 @@ public class UnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRul
         if (body != null && TestFrameworksUtil.isTestMethod(method)) {
             Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
             int assertCount = body.descendants(ASTMethodCall.class)
-                    .filter(call -> TestFrameworksUtil.isProbableAssertCall(call)
-                            || extraAsserts.contains(call.getMethodName()))
-                    .count();
+                                  .filter(call -> TestFrameworksUtil.isProbableAssertCall(call)
+                                  || extraAsserts.contains(call.getMethodName()))
+                                  .count();
             if (assertCount > getProperty(MAX_ASSERTS)) {
                 asCtx(data).addViolation(method);
             }

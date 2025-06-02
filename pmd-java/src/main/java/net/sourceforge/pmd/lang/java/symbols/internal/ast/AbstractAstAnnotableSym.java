@@ -14,11 +14,11 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 /**
  * @author Clément Fournier
  */
-abstract class AbstractAstAnnotableSym<T extends SymbolDeclaratorNode & Annotatable> extends AbstractAstBackedSymbol<T>
-        implements
-            AnnotableSymbol {
+abstract class AbstractAstAnnotableSym<T extends SymbolDeclaratorNode & Annotatable>
+    extends AbstractAstBackedSymbol<T> implements AnnotableSymbol {
 
     private PSet<SymAnnot> annots;
+
 
     AbstractAstAnnotableSym(T node, AstSymFactory factory) {
         super(node, factory);

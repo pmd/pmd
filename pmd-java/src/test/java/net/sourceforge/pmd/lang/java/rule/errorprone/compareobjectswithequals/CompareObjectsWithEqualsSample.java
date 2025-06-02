@@ -9,6 +9,5 @@ public class CompareObjectsWithEqualsSample {
         return false;
     }
 
-    void array(int[] a, String[] b) {
-    }
+    void array(int[] a, String[] b) { }
 }

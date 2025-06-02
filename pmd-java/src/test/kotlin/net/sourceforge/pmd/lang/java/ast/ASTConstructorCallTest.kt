@@ -4,149 +4,156 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
 import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType.READ
 
-class ASTConstructorCallTest :
-    ParserTestSpec({
-        parserTestContainer("Class instance creation") {
-            inContext(ExpressionParsingCtx) {
-                "new Foo(a)" should
-                    parseAs {
-                        constructorCall {
-                            it::isQualifiedInstanceCreation shouldBe false
+class ASTConstructorCallTest : ParserTestSpec({
+    parserTestContainer("Class instance creation") {
+        inContext(ExpressionParsingCtx) {
+            "new Foo(a)" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe false
 
-                            it::getTypeNode shouldBe classType("Foo")
+                    it::getTypeNode shouldBe classType("Foo")
 
-                            it::getArguments shouldBe argList(1) { variableAccess("a") }
+                    it::getArguments shouldBe argList(1) {
+                        variableAccess("a")
+                    }
+                }
+            }
+
+            "new <Bar> Foo<F>()" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe false
+
+                    it::getExplicitTypeArguments shouldBe child {
+                        unspecifiedChild()
+                    }
+
+                    it::getTypeNode shouldBe classType("Foo") {
+                        it::getTypeArguments shouldBe child {
+                            unspecifiedChild()
                         }
                     }
 
-                "new <Bar> Foo<F>()" should
-                    parseAs {
-                        constructorCall {
-                            it::isQualifiedInstanceCreation shouldBe false
+                    it::getArguments shouldBe child {}
+                }
+            }
 
-                            it::getExplicitTypeArguments shouldBe child { unspecifiedChild() }
+            "new @Lol Foo<F>()" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe false
 
-                            it::getTypeNode shouldBe
-                                classType("Foo") {
-                                    it::getTypeArguments shouldBe child { unspecifiedChild() }
-                                }
+                    it::getExplicitTypeArguments shouldBe null
 
-                            it::getArguments shouldBe child {}
+                    it::getTypeNode shouldBe classType("Foo") {
+
+                        annotation("Lol")
+
+                        it::getTypeArguments shouldBe child {
+                            unspecifiedChild()
                         }
                     }
 
-                "new @Lol Foo<F>()" should
-                    parseAs {
-                        constructorCall {
-                            it::isQualifiedInstanceCreation shouldBe false
-
-                            it::getExplicitTypeArguments shouldBe null
-
-                            it::getTypeNode shouldBe
-                                classType("Foo") {
-                                    annotation("Lol")
-
-                                    it::getTypeArguments shouldBe child { unspecifiedChild() }
-                                }
-
-                            it::getArguments shouldBe argList(0) {}
-                        }
-                    }
+                    it::getArguments shouldBe argList(0) {}
+                }
             }
         }
+    }
 
-        parserTestContainer("Qualified class instance auto disambiguation") {
-            /* JLS:
-             *  A name is syntactically classified as an ExpressionName in these contexts:
-             *       ...
-             *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
-             */
-            // hence here it must be a field access
+    parserTestContainer("Qualified class instance auto disambiguation") {
+        /* JLS:
+         *  A name is syntactically classified as an ExpressionName in these contexts:
+         *       ...
+         *     - As the qualifying expression in a qualified class instance creation expression (§15.9)*
+         */
+        // hence here it must be a field access
 
-            inContext(ExpressionParsingCtx) {
-                "a.g.c.new Foo(a)" should
-                    parseAs {
-                        constructorCall {
-                            it::isQualifiedInstanceCreation shouldBe true
+        inContext(ExpressionParsingCtx) {
+            "a.g.c.new Foo(a)" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe true
 
-                            it::getQualifier shouldBe
-                                fieldAccess("c", READ) {
-                                    it::getName shouldBe "c"
+                    it::getQualifier shouldBe fieldAccess("c", READ) {
+                        it::getName shouldBe "c"
 
-                                    it::getQualifier shouldBe ambiguousName("a.g")
-                                }
-
-                            it::getTypeNode shouldBe classType("Foo")
-
-                            it::getArguments shouldBe argList { variableAccess("a") }
-                        }
+                        it::getQualifier shouldBe ambiguousName("a.g")
                     }
 
-                // and here a variable reference
-                "a.new Foo(a)" should
-                    parseAs {
-                        constructorCall {
-                            it::isQualifiedInstanceCreation shouldBe true
+                    it::getTypeNode shouldBe classType("Foo")
 
-                            it::getQualifier shouldBe variableAccess("a")
+                    it::getArguments shouldBe argList {
 
-                            it::getTypeNode shouldBe classType("Foo")
-
-                            it::getArguments shouldBe child { variableAccess("a") }
-                        }
+                        variableAccess("a")
                     }
+                }
+            }
+
+            // and here a variable reference
+            "a.new Foo(a)" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe true
+
+                    it::getQualifier shouldBe variableAccess("a")
+
+                    it::getTypeNode shouldBe classType("Foo")
+
+                    it::getArguments shouldBe child {
+
+                        variableAccess("a")
+                    }
+                }
             }
         }
+    }
 
-        parserTestContainer("Qualified class instance creation") {
-            inContext(ExpressionParsingCtx) {
-                "new O().new <Bar> Foo<F>()" should
-                    parseAs {
-                        constructorCall {
-                            it::isQualifiedInstanceCreation shouldBe true
+    parserTestContainer("Qualified class instance creation") {
+        inContext(ExpressionParsingCtx) {
+            "new O().new <Bar> Foo<F>()" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe true
 
-                            it::getQualifier shouldBe
-                                child<ASTConstructorCall> {
-                                    it::getTypeNode shouldBe classType("O")
+                    it::getQualifier shouldBe child<ASTConstructorCall> {
 
-                                    it::getArguments shouldBe child {}
-                                }
+                        it::getTypeNode shouldBe classType("O")
 
-                            it::getExplicitTypeArguments shouldBe child { unspecifiedChild() }
-
-                            it::getTypeNode shouldBe
-                                classType("Foo") { it::getTypeArguments shouldBe typeArgList() }
-
-                            it::getArguments shouldBe argList {}
-                        }
+                        it::getArguments shouldBe child {}
                     }
 
-                "method().new @Lol Foo<F>()" should
-                    parseAs {
-                        constructorCall {
-                            it::isQualifiedInstanceCreation shouldBe true
-
-                            it::getQualifier shouldBe
-                                child<ASTMethodCall> {
-                                    it::getMethodName shouldBe "method"
-                                    it::getArguments shouldBe child {}
-                                }
-
-                            it::getExplicitTypeArguments shouldBe null
-
-                            it::getTypeNode shouldBe
-                                classType("Foo") {
-                                    annotation("Lol")
-
-                                    it::getTypeArguments shouldBe typeArgList()
-                                }
-
-                            it::getArguments shouldBe argList {}
-                        }
+                    it::getExplicitTypeArguments shouldBe child {
+                        unspecifiedChild()
                     }
+
+                    it::getTypeNode shouldBe classType("Foo") {
+
+                        it::getTypeArguments shouldBe typeArgList()
+                    }
+
+                    it::getArguments shouldBe argList {}
+                }
+            }
+
+            "method().new @Lol Foo<F>()" should parseAs {
+                constructorCall {
+                    it::isQualifiedInstanceCreation shouldBe true
+
+                    it::getQualifier shouldBe child<ASTMethodCall> {
+                        it::getMethodName shouldBe "method"
+                        it::getArguments shouldBe child {}
+                    }
+
+                    it::getExplicitTypeArguments shouldBe null
+
+                    it::getTypeNode shouldBe classType("Foo") {
+
+                        annotation("Lol")
+
+                        it::getTypeArguments shouldBe typeArgList()
+                    }
+
+                    it::getArguments shouldBe argList {}
+                }
             }
         }
-    })
+    }
+})

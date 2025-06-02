@@ -26,6 +26,7 @@ public abstract class HierarchyWithSeveralBridges<T extends Node> {
         }
     }
 
+
     public static class Concrete extends SubclassTwo<ASTPrimitiveType> {
 
         // bridges: foo(AbstractJavaTypeNode), foo(JavaNode), foo(Node)

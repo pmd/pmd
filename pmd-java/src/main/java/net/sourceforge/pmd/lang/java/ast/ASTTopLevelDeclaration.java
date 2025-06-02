@@ -5,11 +5,11 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Marker interface for nodes that can appear on the top-level of a file. In
- * these contexts, they are children of the {@link ASTCompilationUnit
- * CompilationUnit} node. Note that both {@link ASTTypeDeclaration
- * TypeDeclaration} and {@link ASTEmptyDeclaration EmptyDeclaration} can appear
- * also in a {@linkplain ASTTypeBody type body}.
+ * Marker interface for nodes that can appear on the top-level of a file.
+ * In these contexts, they are children of the {@link ASTCompilationUnit CompilationUnit}
+ * node. Note that both {@link ASTTypeDeclaration TypeDeclaration}
+ * and {@link ASTEmptyDeclaration EmptyDeclaration} can appear also in
+ * a {@linkplain ASTTypeBody type body}.
  *
  * <pre class="grammar">
  *

@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 /**
- * Test only. This binds to the first capture variable it tests equal with, and
- * keeps the same binding forever.
+ * Test only. This binds to the first capture variable it tests equal
+ * with, and keeps the same binding forever.
  */
 final class CaptureMatcher implements JTypeVar {
 
@@ -126,6 +126,7 @@ final class CaptureMatcher implements JTypeVar {
 
     @Override
     public String toString() {
-        return captured == null ? "unbound capture matcher of (" + wild + ")" : "bound(" + captured + ")";
+        return captured == null ? "unbound capture matcher of (" + wild + ")"
+                                : "bound(" + captured + ")";
     }
 }

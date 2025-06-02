@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Locale;
@@ -14,30 +15,38 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
 /**
- * A Java modifier. The ordering of constants respects the ordering recommended
- * by the JLS.
+ * A Java modifier. The ordering of constants respects the ordering
+ * recommended by the JLS.
  */
 // Note: the class is named JModifier and not Modifier to avoid conflict
 // with java.lang.reflect.Modifier
 public enum JModifier {
     // for anything
-    PUBLIC(Modifier.PUBLIC), PROTECTED(Modifier.PROTECTED), PRIVATE(Modifier.PRIVATE),
+    PUBLIC(Modifier.PUBLIC),
+    PROTECTED(Modifier.PROTECTED),
+    PRIVATE(Modifier.PRIVATE),
 
     /** Modifier {@code "sealed"} (since Java 17). */
     SEALED(0),
     /** Modifier {@code "non-sealed"} (since Java 17). */
     NON_SEALED("non-sealed", 0),
 
-    ABSTRACT(Modifier.ABSTRACT), STATIC(Modifier.STATIC), FINAL(Modifier.FINAL),
+    ABSTRACT(Modifier.ABSTRACT),
+    STATIC(Modifier.STATIC),
+    FINAL(Modifier.FINAL),
 
     // for methods
-    SYNCHRONIZED(Modifier.SYNCHRONIZED), NATIVE(Modifier.NATIVE), DEFAULT(0),
+    SYNCHRONIZED(Modifier.SYNCHRONIZED),
+    NATIVE(Modifier.NATIVE),
+    DEFAULT(0),
 
     // not for fields
     STRICTFP(Modifier.STRICT),
 
     // for fields
-    TRANSIENT(Modifier.TRANSIENT), VOLATILE(Modifier.VOLATILE);
+    TRANSIENT(Modifier.TRANSIENT),
+    VOLATILE(Modifier.VOLATILE);
+
 
     private final String token;
     private final int reflect;
@@ -53,25 +62,25 @@ public enum JModifier {
     }
 
     /**
-     * Returns the constant of java.lang.reflect.Modifier that this modifier
-     * corresponds to. Be aware that the following constants are source-level
-     * modifiers only, for which this method returns 0:
+     * Returns the constant of java.lang.reflect.Modifier that this
+     * modifier corresponds to. Be aware that the following constants
+     * are source-level modifiers only, for which this method returns 0:
      * <ul>
-     * <li>{@link #DEFAULT}: this doesn't exist at the class file level. A default
-     * method is a non-static non-abstract public method declared in an interface
-     * ({@link JMethodSymbol#isDefaultMethod()}.
-     * <li>{@link #SEALED}: a sealed class has an attribute
-     * {@code PermittedSubclasses} with a non-zero length (in the compiled class
-     * file). ({@link JClassSymbol#isSealed()})
+     * <li>{@link #DEFAULT}: this doesn't exist at the class file level.
+     * A default method is a non-static non-abstract public method declared
+     * in an interface ({@link JMethodSymbol#isDefaultMethod()}.
+     * <li>{@link #SEALED}: a sealed class has an attribute {@code PermittedSubclasses}
+     * with a non-zero length (in the compiled class file). ({@link JClassSymbol#isSealed()})
      * <li>{@link #NON_SEALED}: this doesn't exist at the class file level at all.
-     * But a class must have the non-sealed modifier in source if it is neither
-     * sealed, nor final, and appears in the {@code PermittedSubclasses} attribute
-     * of some direct supertype.
+     * But a class must have the non-sealed modifier in source if it
+     * is neither sealed, nor final, and appears in the {@code PermittedSubclasses}
+     * attribute of some direct supertype.
      * </ul>
      */
     public int getReflectMod() {
         return reflect;
     }
+
 
     /**
      * Returns how the modifier is written in source.
@@ -85,6 +94,7 @@ public enum JModifier {
         return getToken();
     }
 
+
     public static int toReflect(Collection<JModifier> mods) {
         int res = 0;
         for (JModifier mod : mods) {
@@ -96,8 +106,7 @@ public enum JModifier {
     /**
      * Gets a modifier from its name.
      *
-     * @throws IllegalArgumentException
-     *             if the name is incorrect
+     * @throws IllegalArgumentException if the name is incorrect
      */
     public static @NonNull JModifier fromToken(@NonNull String token) {
         return valueOf(token.toLowerCase(Locale.ROOT));

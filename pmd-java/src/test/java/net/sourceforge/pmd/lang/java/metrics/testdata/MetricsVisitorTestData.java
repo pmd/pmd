@@ -40,6 +40,7 @@ public class MetricsVisitorTestData {
         y = n;
     }
 
+
     public static class NestedClass {
 
         public NestedClass() {

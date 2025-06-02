@@ -38,8 +38,11 @@ import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationM
  */
 public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
 
-    private static final CompoundInvocationMatcher TIME_METHODS = InvocationMatcher
-            .parseAll("java.lang.System#nanoTime()", "java.lang.System#currentTimeMillis()");
+    private static final CompoundInvocationMatcher TIME_METHODS =
+        InvocationMatcher.parseAll(
+            "java.lang.System#nanoTime()",
+            "java.lang.System#currentTimeMillis()"
+        );
 
     public PrematureDeclarationRule() {
         super(ASTLocalVariableDeclaration.class);
@@ -47,7 +50,8 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
-        if (node.getParent() instanceof ASTForInit || node.getParent() instanceof ASTResource) {
+        if (node.getParent() instanceof ASTForInit
+            || node.getParent() instanceof ASTResource) {
             // those don't count
             return null;
         }
@@ -56,19 +60,18 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
             ASTExpression initializer = id.getInitializer();
 
             if (JavaAstUtils.isNeverUsed(id) // avoid the duplicate with unused variables
-                    || cannotBeMoved(initializer) || JavaRuleUtil.hasSideEffect(initializer, emptySet())) {
+                || cannotBeMoved(initializer)
+                || JavaRuleUtil.hasSideEffect(initializer, emptySet())) {
                 continue;
             }
 
             Set<JVariableSymbol> refsInInitializer = getReferencedVars(initializer);
-            // If there's no initializer, or the initializer doesn't depend on anything (eg,
-            // a literal),
+            // If there's no initializer, or the initializer doesn't depend on anything (eg, a literal),
             // then we don't care about side-effects
-            boolean hasStatefulInitializer = !refsInInitializer.isEmpty()
-                    || JavaRuleUtil.hasSideEffect(initializer, emptySet());
+            boolean hasStatefulInitializer = !refsInInitializer.isEmpty() || JavaRuleUtil.hasSideEffect(initializer, emptySet());
             for (ASTStatement stmt : statementsAfter(node)) {
                 if (hasReferencesIn(stmt, id)
-                        || hasStatefulInitializer && JavaRuleUtil.hasSideEffect(stmt, refsInInitializer)) {
+                    || hasStatefulInitializer && JavaRuleUtil.hasSideEffect(stmt, refsInInitializer)) {
                     break;
                 }
 
@@ -86,17 +89,17 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
      * Returns the set of local variables referenced inside the expression.
      */
     private static Set<JVariableSymbol> getReferencedVars(ASTExpression term) {
-        return term == null
-                ? emptySet()
-                : term.descendantsOrSelf().filterIs(ASTNamedReferenceExpr.class)
-                        .filter(it -> it.getReferencedSym() != null)
-                        .collect(Collectors.mapping(ASTNamedReferenceExpr::getReferencedSym, Collectors.toSet()));
+        return term == null ? emptySet()
+                            : term.descendantsOrSelf()
+                                  .filterIs(ASTNamedReferenceExpr.class)
+                                  .filter(it -> it.getReferencedSym() != null)
+                                  .collect(Collectors.mapping(ASTNamedReferenceExpr::getReferencedSym, Collectors.toSet()));
     }
 
     /**
-     * Time methods cannot be moved ever, even when there are no side-effects. The
-     * side effect they depend on is the program being executed. Are they the only
-     * methods like that?
+     * Time methods cannot be moved ever, even when there are no side-effects.
+     * The side effect they depend on is the program being executed. Are they
+     * the only methods like that?
      */
     private boolean cannotBeMoved(ASTExpression initializer) {
         return TIME_METHODS.anyMatch(initializer);
@@ -107,15 +110,20 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
      * Exclude blocks that have these things as part of an inner class.
      */
     private static boolean hasExit(ASTStatement block) {
-        return block.descendants().map(asInstanceOf(ASTThrowStatement.class, ASTReturnStatement.class)).nonEmpty();
+        return block.descendants()
+                    .map(asInstanceOf(ASTThrowStatement.class, ASTReturnStatement.class))
+                    .nonEmpty();
     }
+
 
     /**
      * Returns whether the variable is mentioned within the statement or not.
      */
     private static boolean hasReferencesIn(ASTStatement stmt, ASTVariableId var) {
-        return stmt.descendants(ASTVariableAccess.class).crossFindBoundaries()
-                .filterMatching(ASTNamedReferenceExpr::getReferencedSym, var.getSymbol()).nonEmpty();
+        return stmt.descendants(ASTVariableAccess.class)
+                   .crossFindBoundaries()
+                   .filterMatching(ASTNamedReferenceExpr::getReferencedSym, var.getSymbol())
+                   .nonEmpty();
     }
 
     /** Returns all the statements following the given local var declaration. */

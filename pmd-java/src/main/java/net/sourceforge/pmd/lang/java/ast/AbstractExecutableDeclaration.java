@@ -9,10 +9,11 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 
-abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol> extends AbstractJavaNode
-        implements
-            ASTExecutableDeclaration,
-            LeftRecursiveNode {
+
+abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol>
+    extends AbstractJavaNode
+    implements ASTExecutableDeclaration,
+               LeftRecursiveNode {
 
     private T symbol;
     private JMethodSig sig;
@@ -50,6 +51,7 @@ abstract class AbstractExecutableDeclaration<T extends JExecutableSymbol> extend
         }
         return sig;
     }
+
 
     @Override
     public FileLocation getReportLocation() {

@@ -19,11 +19,12 @@ public interface TypeParamOwnerNode extends SymbolDeclaratorNode {
     JTypeParameterOwnerSymbol getSymbol();
 
     /**
-     * Returns the type parameter declaration of this node, or null if there is
-     * none.
+     * Returns the type parameter declaration of this node, or null if
+     * there is none.
      */
     default @Nullable ASTTypeParameters getTypeParameters() {
         return firstChild(ASTTypeParameters.class);
     }
+
 
 }

@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -19,16 +20,15 @@ public class SingleMethodSingletonRule extends AbstractJavaRulechainRule {
 
     /**
      * Checks for getInstance method usage in the same class.
-     * 
-     * @param node
-     *            of ASTCLass
-     * @param data
-     *            of Object
+     * @param node of ASTCLass
+     * @param data of Object
      * @return Object
      */
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
-        int count = node.descendants(ASTMethodDeclaration.class).filter(m -> "getInstance".equals(m.getName())).count();
+        int count = node.descendants(ASTMethodDeclaration.class)
+            .filter(m -> "getInstance".equals(m.getName()))
+            .count();
         if (count > 1) {
             asCtx(data).addViolation(node);
         }

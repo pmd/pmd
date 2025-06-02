@@ -33,7 +33,9 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
         if (node.getNumChildren() > 0) {
             return null;
         }
-        NodeStream<ASTStatement> enclosingStatements = node.ancestorsOrSelf().takeWhile(it -> !isCfgLimit(it))
+        NodeStream<ASTStatement> enclosingStatements =
+            node.ancestorsOrSelf()
+                .takeWhile(it -> !isCfgLimit(it))
                 .filterIs(ASTStatement.class);
 
         if (enclosingStatements.all(UnnecessaryReturnRule::isLastStatementOfParent)) {
@@ -43,13 +45,16 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isCfgLimit(JavaNode it) {
-        return it instanceof ASTExecutableDeclaration || it instanceof ASTCompactConstructorDeclaration
-                || it instanceof ASTInitializer || it instanceof ASTLambdaExpression;
+        return it instanceof ASTExecutableDeclaration
+            || it instanceof ASTCompactConstructorDeclaration
+            || it instanceof ASTInitializer
+            || it instanceof ASTLambdaExpression;
     }
 
     /**
-     * Returns true if this is the last statement of the parent node, ie the next
-     * statement to be executed is after the parent in the CFG.
+     * Returns true if this is the last statement of the parent node,
+     * ie the next statement to be executed is after the parent in the
+     * CFG.
      */
     private static boolean isLastStatementOfParent(ASTStatement it) {
         // Note that local class declaration statements could be ignored
@@ -64,16 +69,14 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
             } else if (parent instanceof ASTSwitchFallthroughBranch) {
                 return JavaAstUtils.isLastChild(parent) && !isBranchOfSwitchExpr((ASTSwitchBranch) parent);
             } else {
-                return !(parent instanceof ASTLoopStatement); // returns break the loop so are not unnecessary (though
-                                                              // it could be replaced by break)
+                return !(parent instanceof ASTLoopStatement); // returns break the loop so are not unnecessary (though it could be replaced by break)
             }
         }
 
         // so we're not the last child...
-        return parent instanceof ASTIfStatement // maybe we're before the else clause
-                || parent instanceof ASTTryStatement; // maybe we're the body of a try
-        // also maybe we're the body of a do/while, but that is a loop, so it's
-        // necessary
+        return parent instanceof ASTIfStatement  // maybe we're before the else clause
+            || parent instanceof ASTTryStatement; // maybe we're the body of a try
+            // also maybe we're the body of a do/while, but that is a loop, so it's necessary
     }
 
     private static boolean isBranchOfSwitchExpr(ASTSwitchBranch branch) {

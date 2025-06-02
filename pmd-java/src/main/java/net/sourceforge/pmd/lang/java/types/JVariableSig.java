@@ -11,39 +11,38 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 
 /**
- * Represents a {@link JVariableSymbol value symbol} viewed in the context of a
- * particular program point (ie under a particular {@link Substitution}).
+ * Represents a {@link JVariableSymbol value symbol} viewed in the context
+ * of a particular program point (ie under a particular {@link Substitution}).
  *
- * <p>
- * The type given to a symbol is context-dependent. For example, when looking in
- * the supertypes of the current class for a field, we have:
- * 
+ * <p>The type given to a symbol is context-dependent. For example,
+ * when looking in the supertypes of the current class for a field, we
+ * have:
  * <pre>{@code
  *
  * abstract class Sup<K> {
- *     K field;
+ *      K field;
  *
- *     // In this scope the type of `field` is `K`, an abstract type variable
+ *      // In this scope the type of `field` is `K`, an abstract type variable
  *
  * }
  *
+ *
  * class Foo extends Sup<Integer> {
  *
- *     {
- *         // in this scope, the type of `super.field` is `Integer`, not `K`,
- *         // because we inherit `Sup` where `K` is substituted with `Integer`.
- *         // `K` is not even in scope.
+ *      {
+ *          // in this scope, the type of `super.field` is `Integer`, not `K`,
+ *          // because we inherit `Sup` where `K` is substituted with `Integer`.
+ *          // `K` is not even in scope.
  *
- *         super.field = 2;
- *     }
+ *          super.field = 2;
+ *      }
  *
  * }
  *
  * }</pre>
  *
- * <p>
- * This interface plays a similar role to {@link JMethodSig}. It is the type of
- * search results of a {@link JSymbolTable}, see
+ * <p>This interface plays a similar role to {@link JMethodSig}. It is
+ * the type of search results of a {@link JSymbolTable}, see
  * {@link JSymbolTable#variables()}.
  */
 public class JVariableSig {
@@ -59,9 +58,10 @@ public class JVariableSig {
     }
 
     /**
-     * This is the substituted type. Eg in the example of the class javadoc, for
-     * {@code super.field}, this would be {@code Sup<Integer>}. For local variables,
-     * this is always the generic type declaration of the enclosing type.
+     * This is the substituted type. Eg in the example of the class javadoc,
+     * for {@code super.field}, this would be {@code Sup<Integer>}. For local
+     * variables, this is always the generic type declaration of the enclosing
+     * type.
      */
     // mm so this thing is useless except for FieldSig
     // Looks weird to me. Also getTypeMirror is captured by LazyTypeResolver
@@ -70,6 +70,7 @@ public class JVariableSig {
         return declarator;
     }
 
+
     /**
      * Returns the symbol for this variable.
      */
@@ -77,18 +78,19 @@ public class JVariableSig {
         return sym;
     }
 
+
     /**
-     * Returns the type given to the symbol in the particular scope this signature
-     * is valid in.
+     * Returns the type given to the symbol in the particular scope this
+     * signature is valid in.
      */
     public JTypeMirror getTypeMirror() {
         Substitution subst = declarator instanceof JClassType
-                ? ((JClassType) declarator).getTypeParamSubst()
-                : Substitution.EMPTY; // array
+                             ? ((JClassType) declarator).getTypeParamSubst()
+                             : Substitution.EMPTY; // array
 
         JTypeMirror symType = declarator.isRaw()
-                ? ClassTypeImpl.eraseToRaw(sym.getTypeMirror(Substitution.EMPTY), subst)
-                : sym.getTypeMirror(subst);
+                                  ? ClassTypeImpl.eraseToRaw(sym.getTypeMirror(Substitution.EMPTY), subst)
+                                  : sym.getTypeMirror(subst);
         if (symType instanceof JWildcardType) {
             throw new IllegalStateException("Forgotten capture of " + this.declarator + " for symbol " + sym);
         }
@@ -112,7 +114,8 @@ public class JVariableSig {
             return false;
         }
         JVariableSig that = (JVariableSig) o;
-        return Objects.equals(sym, that.sym) && Objects.equals(declarator, that.declarator);
+        return Objects.equals(sym, that.sym)
+            && Objects.equals(declarator, that.declarator);
     }
 
     @Override

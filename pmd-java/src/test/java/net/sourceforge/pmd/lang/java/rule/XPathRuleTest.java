@@ -47,12 +47,17 @@ class XPathRuleTest {
         assertEquals("a", rv.getDescription());
     }
 
+
     @Test
     void testXPathMultiProperty() throws Exception {
         XPathRule rule = makeXPath("//VariableId[@Name=$forbiddenNames]");
         rule.setMessage("Avoid vars");
-        PropertyDescriptor<List<String>> varDescriptor = PropertyFactory.stringListProperty("forbiddenNames")
-                .desc("Forbidden names").defaultValues("forbid1", "forbid2").availableInXPath(true).build();
+        PropertyDescriptor<List<String>> varDescriptor
+            = PropertyFactory.stringListProperty("forbiddenNames")
+                             .desc("Forbidden names")
+                             .defaultValues("forbid1", "forbid2")
+                             .availableInXPath(true)
+                             .build();
 
         rule.definePropertyDescriptor(varDescriptor);
 
@@ -60,12 +65,13 @@ class XPathRuleTest {
         assertEquals(2, report.getViolations().size());
     }
 
+
     @Test
     void testVariables() throws Exception {
         XPathRule rule = makeXPath("//VariableId[@Name=$var]");
         rule.setMessage("Avoid vars");
-        PropertyDescriptor<String> varDescriptor = PropertyFactory.stringProperty("var").desc("Test var")
-                .defaultValue("").availableInXPath(true).build();
+        PropertyDescriptor<String> varDescriptor =
+            PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").availableInXPath(true).build();
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
         Report report = getReportForTestString(rule, TEST2);
@@ -91,8 +97,7 @@ class XPathRuleTest {
 
     @Test
     void testSimpleQueryIsRuleChain() {
-        // ((/)/descendant::element(Q{}VariableId))[matches(convertUntyped(data(@Name)),
-        // "fiddle", "")]
+        // ((/)/descendant::element(Q{}VariableId))[matches(convertUntyped(data(@Name)), "fiddle", "")]
         assertIsRuleChain("//VariableId[matches(@Name, 'fiddle')]");
     }
 
@@ -106,18 +111,17 @@ class XPathRuleTest {
         XPathRule rule = makeXPath(xpath);
         try (LanguageProcessor proc = JavaParsingHelper.DEFAULT.newProcessor()) {
             rule.initialize(proc);
-            assertNotSame(rule.getTargetSelector(), RuleTargetSelector.forRootOnly(),
-                    "Not recognized as a rulechain query: " + xpath);
+            assertNotSame(rule.getTargetSelector(), RuleTargetSelector.forRootOnly(), "Not recognized as a rulechain query: " + xpath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
+
     /**
      * Following sibling check: See https://sourceforge.net/p/pmd/bugs/1209/
      *
-     * @throws Exception
-     *             any error
+     * @throws Exception any error
      */
     @Test
     void testFollowingSibling() throws Exception {
@@ -126,8 +130,12 @@ class XPathRuleTest {
 
         String xpath = "//ExtendsList/ClassType/following-sibling::ClassType";
 
-        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath, XPathVersion.DEFAULT, new HashMap<>(),
-                XPathHandler.noFunctionDefinitions(), DeprecatedAttrLogger.noop());
+
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath,
+                                                                     XPathVersion.DEFAULT,
+                                                                     new HashMap<>(),
+                                                                     XPathHandler.noFunctionDefinitions(),
+                                                                     DeprecatedAttrLogger.noop());
         List<Node> nodes = xpathRuleQuery.evaluate(cu);
         assertEquals(2, nodes.size());
         assertEquals("Bar", ((JavaNode) nodes.get(0)).getText().toString());
@@ -138,11 +146,19 @@ class XPathRuleTest {
         return JavaParsingHelper.DEFAULT.executeRule(r, test);
     }
 
-    private static final String TEST1 = "public class Foo {\n" + " int a;\n" + "}";
 
-    private static final String TEST2 = "public class Foo {\n" + " int faddle;\n" + " int fiddle;\n" + "}";
+    private static final String TEST1 = "public class Foo {\n"
+        + " int a;\n"
+        + "}";
 
-    private static final String TEST3 = "public class Foo {\n" + " int forbid1; int forbid2; int forbid1$forbid2;\n"
-            + "}";
+    private static final String TEST2 = "public class Foo {\n"
+        + " int faddle;\n"
+        + " int fiddle;\n"
+        + "}";
+
+
+    private static final String TEST3 = "public class Foo {\n"
+        + " int forbid1; int forbid2; int forbid1$forbid2;\n"
+        + "}";
 
 }

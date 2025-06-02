@@ -11,8 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
 
 /**
- * An unqualified reference to a variable (either local, or a field that is in
- * scope).
+ * An unqualified reference to a variable (either local, or a field that
+ * is in scope).
  *
  * <pre class="grammar">
  *
@@ -20,9 +20,9 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
  *
  * </pre>
  *
- * @implNote {@linkplain ASTAmbiguousName Ambiguous names} are promoted to this
- *           status in the syntactic contexts, where we know they're definitely
- *           variable references.
+ * @implNote {@linkplain ASTAmbiguousName Ambiguous names} are promoted
+ *     to this status in the syntactic contexts, where we know they're definitely
+ *     variable references.
  */
 public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr {
 
@@ -46,6 +46,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
         setLastToken(identifier);
     }
 
+
     ASTVariableAccess(int id) {
         super(id);
     }
@@ -54,6 +55,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
     public String getName() {
         return getImage();
     }
+
 
     @Override
     public @Nullable JVariableSig getSignature() {
@@ -67,6 +69,7 @@ public final class ASTVariableAccess extends AbstractJavaExpr implements ASTName
         this.typedSym = sig;
         assert typedSym != null : "Null signature?";
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

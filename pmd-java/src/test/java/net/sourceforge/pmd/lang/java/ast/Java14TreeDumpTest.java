@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,8 +20,9 @@ import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
  */
 class Java14TreeDumpTest extends BaseJavaTreeDumpTest {
 
-    private final JavaParsingHelper java14 = JavaParsingHelper.DEFAULT.withDefaultVersion("14")
-            .withResourceContext(Java14TreeDumpTest.class, "jdkversiontests/java14/");
+    private final JavaParsingHelper java14 =
+        JavaParsingHelper.DEFAULT.withDefaultVersion("14")
+                                 .withResourceContext(Java14TreeDumpTest.class, "jdkversiontests/java14/");
 
     private final JavaParsingHelper java13 = java14.withDefaultVersion("13");
 

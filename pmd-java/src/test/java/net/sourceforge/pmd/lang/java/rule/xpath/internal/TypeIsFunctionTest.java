@@ -14,17 +14,19 @@ import net.sourceforge.pmd.lang.rule.Rule;
  */
 class TypeIsFunctionTest extends BaseXPathFunctionTest {
 
+
     @Test
     void testHasAnnotation() {
         Rule rule = makeXpathRuleFromXPath("//Annotation[pmd-java:typeIs('java.lang.Override')]");
         assertFinds(rule, 1, "interface O { @Override void foo(); }");
     }
 
+
     @Test
     void testHasAnnotationNonQual() {
         Rule rule = makeXpathRuleFromXPath("//Annotation[pmd-java:typeIs('Override')]");
 
-        // does not match
+        //does not match
         assertFinds(rule, 0, "interface O { @Override void foo(); }");
     }
 

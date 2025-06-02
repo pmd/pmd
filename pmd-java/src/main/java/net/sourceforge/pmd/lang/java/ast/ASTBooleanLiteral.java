@@ -15,9 +15,11 @@ public final class ASTBooleanLiteral extends AbstractLiteral implements ASTLiter
 
     private boolean isTrue;
 
+
     ASTBooleanLiteral(int id) {
         super(id);
     }
+
 
     void setTrue() {
         isTrue = true;

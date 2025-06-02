@@ -14,20 +14,20 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  */
 public interface FunctionalExpression extends ASTExpression {
 
+
     /**
-     * Returns the type of the functional interface. E.g. in
-     * {@code stringStream.map(s -> s.isEmpty())}, this is
+     * Returns the type of the functional interface.
+     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
      * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}.
      *
      * @see #getFunctionalMethod()
      */
     @Override
-    @NonNull
-    JTypeMirror getTypeMirror();
+    @NonNull JTypeMirror getTypeMirror();
 
     /**
-     * Returns the method that is overridden in the functional interface. E.g. in
-     * {@code stringStream.map(s -> s.isEmpty())}, this is
+     * Returns the method that is overridden in the functional interface.
+     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
      * {@code java.util.function.Function#apply(java.lang.String) ->
      * java.lang.Boolean}
      *

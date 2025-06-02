@@ -23,9 +23,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface QualifiableExpression extends ASTPrimaryExpression {
 
     /**
-     * Returns the expression to the left of the "." if it exists. This may be a
-     * {@link ASTTypeExpression type expression}, or an {@link ASTAmbiguousName
-     * ambiguous name}.
+     * Returns the expression to the left of the "." if it exists.
+     * This may be a {@link ASTTypeExpression type expression}, or
+     * an {@link ASTAmbiguousName ambiguous name}.
      */
     default @Nullable ASTExpression getQualifier() {
         return AstImplUtil.getChildAs(this, 0, ASTExpression.class);

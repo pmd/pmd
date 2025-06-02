@@ -38,11 +38,11 @@ class JavaCpdLexerTest extends CpdTextComparisonTest {
     @Test
     void testLexExceptionLocation() {
         CpdLexer cpdLexer = newCpdLexer(defaultProperties());
-        LexException lexException = assertThrows(LexException.class, () -> CpdLexer.tokenize(cpdLexer,
-                // note: the source deliberately contains an unbalanced quote, unterminated
-                // string literal
-                TextDocument.readOnlyString("class F {\n    String s=\"abc\";\"\n}\n", FileId.UNKNOWN,
-                        getLanguage().getDefaultVersion())));
+        LexException lexException = assertThrows(LexException.class, () ->
+            CpdLexer.tokenize(cpdLexer,
+                    // note: the source deliberately contains an unbalanced quote, unterminated string literal
+                    TextDocument.readOnlyString("class F {\n    String s=\"abc\";\"\n}\n", FileId.UNKNOWN, getLanguage().getDefaultVersion()))
+        );
         // this shouldn't throw a IllegalArgumentException
         assertThat(lexException.getMessage(), containsString("at line 3, column 1"));
     }
@@ -112,6 +112,7 @@ class JavaCpdLexerTest extends CpdTextComparisonTest {
         doTest("tabWidth");
     }
 
+
     private static LanguagePropertyConfig ignoreAnnotations() {
         return properties(true, false, false);
     }
@@ -124,18 +125,21 @@ class JavaCpdLexerTest extends CpdTextComparisonTest {
         return properties(false, true, false);
     }
 
+
     @Override
     public LanguagePropertyConfig defaultProperties() {
         return properties(false, false, false);
     }
 
-    private static LanguagePropertyConfig properties(boolean ignoreAnnotations, boolean ignoreLiterals,
-            boolean ignoreIdents) {
+    private static LanguagePropertyConfig properties(boolean ignoreAnnotations,
+                                                     boolean ignoreLiterals,
+                                                     boolean ignoreIdents) {
         return properties -> {
             properties.setProperty(CpdLanguageProperties.CPD_IGNORE_METADATA, ignoreAnnotations);
             properties.setProperty(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS, ignoreIdents);
             properties.setProperty(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS, ignoreLiterals);
         };
     }
+
 
 }

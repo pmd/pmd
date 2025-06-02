@@ -7,5 +7,5 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
 class UseShortArrayInitializerTest extends PmdRuleTst {
-    // no additional unit tests
+  // no additional unit tests
 }

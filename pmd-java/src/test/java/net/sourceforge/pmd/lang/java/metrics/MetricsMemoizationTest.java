@@ -46,6 +46,7 @@ class MetricsMemoizationTest extends BaseParserTest {
         assertEquals(expected, real);
     }
 
+
     @Test
     void forceMemoizationTest() {
 
@@ -62,6 +63,7 @@ class MetricsMemoizationTest extends BaseParserTest {
         }
     }
 
+
     private List<Integer> visitWith(ASTCompilationUnit acu, final boolean force) {
         final List<Integer> result = new ArrayList<>();
 
@@ -75,6 +77,7 @@ class MetricsMemoizationTest extends BaseParserTest {
                 return super.visitMethodOrCtor(node, data);
             }
 
+
             @Override
             public Object visitTypeDecl(ASTTypeDeclaration node, Object data) {
                 Integer value = MetricsUtil.computeMetric(randomMetric, node, MetricOptions.emptyOptions(), force);
@@ -87,5 +90,6 @@ class MetricsMemoizationTest extends BaseParserTest {
 
         return result;
     }
+
 
 }

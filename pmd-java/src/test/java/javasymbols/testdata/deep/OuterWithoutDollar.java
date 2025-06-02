@@ -9,6 +9,5 @@ package javasymbols.testdata.deep;
  */
 public class OuterWithoutDollar {
 
-    final class Inner {
-    }
+    final class Inner {}
 }

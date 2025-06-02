@@ -21,7 +21,9 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
     private final JClassSymbol owner;
     private final int modifiers;
 
-    AstFieldSym(ASTVariableId node, AstSymFactory factory, JClassSymbol owner) {
+    AstFieldSym(ASTVariableId node,
+                AstSymFactory factory,
+                JClassSymbol owner) {
         super(node, factory);
         this.owner = owner;
         this.modifiers = JModifier.toReflect(node.getModifiers().getEffectiveModifiers());
@@ -45,6 +47,7 @@ final class AstFieldSym extends AbstractAstVariableSym implements JFieldSymbol {
     public boolean isEnumConstant() {
         return node.isEnumConstant();
     }
+
 
     @Override
     public @NonNull JClassSymbol getEnclosingClass() {

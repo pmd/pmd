@@ -22,18 +22,19 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public interface ASTLoopStatement extends ASTStatement {
 
+
     /** Returns the statement that represents the body of this loop. */
     default ASTStatement getBody() {
         return (ASTStatement) getLastChild();
     }
 
+
     /**
-     * Returns the node that represents the condition of this loop. This may be any
-     * expression of type boolean.
+     * Returns the node that represents the condition of this loop.
+     * This may be any expression of type boolean.
      *
-     * <p>
-     * If there is no specified guard, then returns null (in particular, returns
-     * null if this is a foreach loop).
+     * <p>If there is no specified guard, then returns null (in particular,
+     * returns null if this is a foreach loop).
      */
     default @Nullable ASTExpression getCondition() {
         return null;

@@ -106,8 +106,9 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
             ASTNamedReferenceExpr refExpr = (ASTNamedReferenceExpr) valueNode;
             JTypeMirror t = refExpr.getTypeMirror();
             if (t instanceof JClassType && ((JClassType) t).getSymbol().isEnum()) {
-                return SymEnum.fromBinaryName(t.getTypeSystem(), ((JClassType) t).getSymbol().getBinaryName(),
-                        refExpr.getName());
+                return SymEnum.fromBinaryName(t.getTypeSystem(),
+                                              ((JClassType) t).getSymbol().getBinaryName(),
+                                              refExpr.getName());
             }
         }
         return null;

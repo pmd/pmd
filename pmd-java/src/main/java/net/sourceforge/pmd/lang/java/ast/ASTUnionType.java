@@ -9,9 +9,10 @@ import java.util.Iterator;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfType;
 
+
 /**
- * Represents the type node of a multi-catch statement. This node is used to
- * make the grammar of {@link ASTCatchParameter CatchParameter} more
+ * Represents the type node of a multi-catch statement. This node is used
+ * to make the grammar of {@link ASTCatchParameter CatchParameter} more
  * straightforward. Note though, that the Java type system does not feature
  * union types at all. The type of this node is defined as the least upper-bound
  * of all its components.
@@ -25,10 +26,9 @@ import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChildOfTyp
  * @see ASTCatchParameter#getAllExceptionTypes()
  */
 public final class ASTUnionType extends AbstractJavaTypeNode
-        implements
-            ASTReferenceType,
-            AtLeastOneChildOfType<ASTClassType>,
-            Iterable<ASTClassType> {
+    implements ASTReferenceType,
+               AtLeastOneChildOfType<ASTClassType>,
+               Iterable<ASTClassType> {
 
     ASTUnionType(int id) {
         super(id);

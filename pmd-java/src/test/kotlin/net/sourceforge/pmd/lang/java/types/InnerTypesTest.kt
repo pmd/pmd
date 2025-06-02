@@ -2,19 +2,18 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
+
 package net.sourceforge.pmd.lang.java.types
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldMatchN
+import net.sourceforge.pmd.lang.java.ast.*
 
-class InnerTypesTest :
-    ProcessorTestSpec({
-        parserTestContainer("Test erased types ") {
-            val acu =
-                parser.parse(
-                    """
+class InnerTypesTest : ProcessorTestSpec({
+    parserTestContainer("Test erased types ") {
+        val acu = parser.parse("""
             class Scratch<T> {
 
                 class Inner { }
@@ -38,64 +37,57 @@ class InnerTypesTest :
 
         }
 
-        """
-                        .trimIndent()
-                )
+        """.trimIndent())
 
-            val (scratch, inner) = acu.descendants(ASTTypeDeclaration::class.java).toList()
+        val (scratch, inner) =
+                acu.descendants(ASTTypeDeclaration::class.java).toList()
 
-            val (implicitlyDecl, explicitlyRaw, explicitlyParam, explicitlyDecl) =
-                acu.descendants(ASTMethodDeclaration::class.java)
-                    .map { it.formalParameters.toStream()[0]!! }
-                    .toList { it.typeMirror }
+        val (implicitlyDecl, explicitlyRaw, explicitlyParam, explicitlyDecl) =
+                acu.descendants(ASTMethodDeclaration::class.java).map { it.formalParameters.toStream()[0]!! }.toList { it.typeMirror }
 
-            val t_Scratch = scratch.typeMirror
-            val t_Inner = inner.typeMirror
 
-            t_Scratch::isGenericTypeDeclaration shouldBe true
-            t_Inner::getEnclosingType shouldBe t_Scratch
+        val t_Scratch = scratch.typeMirror
+        val t_Inner = inner.typeMirror
 
-            with(scratch.typeDsl) {
-                doTest("Test erasure erases enclosing types") {
-                    t_Inner.erasure shouldBe
-                        t_Scratch.erasure.selectInner(inner.symbol, emptyList())
-                    t_Inner.erasure.toString() shouldBe "Scratch#Inner"
-                    t_Inner.erasure::isRaw shouldBe true
-                }
+        t_Scratch::isGenericTypeDeclaration shouldBe true
+        t_Inner::getEnclosingType shouldBe t_Scratch
 
-                doTest("Test implicit type decl resolution in AST") {
-                    implicitlyDecl shouldBe t_Inner
-                    t_Scratch.getMethodsByName("doStuff")[0].formalParameters[0] shouldBe
-                        implicitlyDecl
-                    explicitlyRaw shouldBe t_Inner.erasure
-                    t_Scratch.getMethodsByName("doStuffR")[0].formalParameters[0] shouldBe
-                        explicitlyRaw
-                    explicitlyParam shouldBe
-                        t_Scratch[ts.STRING].selectInner(inner.symbol, emptyList())
-                    t_Scratch.getMethodsByName("doStuffP")[0].formalParameters[0] shouldBe
-                        explicitlyParam
-                    explicitlyDecl shouldBe t_Scratch.selectInner(inner.symbol, emptyList())
-                    explicitlyDecl shouldBe t_Inner
-                    t_Scratch.getMethodsByName("doStuffD")[0].formalParameters[0] shouldBe
-                        explicitlyDecl
-                }
+        with(scratch.typeDsl) {
 
-                doTest("Test erasure erases formal params ") {
-                    // todo fields
-                    val raw = t_Scratch.erasure
+            doTest("Test erasure erases enclosing types") {
+                t_Inner.erasure shouldBe t_Scratch.erasure.selectInner(inner.symbol, emptyList())
+                t_Inner.erasure.toString() shouldBe "Scratch#Inner"
+                t_Inner.erasure::isRaw shouldBe true
+            }
 
-                    raw.getMethodsByName("doStuff")[0].formalParameters[0] shouldBe t_Inner.erasure
-                    raw.getMethodsByName("doStuffR")[0].formalParameters[0] shouldBe t_Inner.erasure
-                    raw.getMethodsByName("doStuffP")[0].formalParameters[0] shouldBe explicitlyParam
-                    raw.getMethodsByName("doStuffD")[0].formalParameters[0] shouldBe t_Inner.erasure
-                }
+            doTest("Test implicit type decl resolution in AST") {
+                implicitlyDecl shouldBe t_Inner
+                t_Scratch.getMethodsByName("doStuff")[0].formalParameters[0] shouldBe implicitlyDecl
+                explicitlyRaw shouldBe t_Inner.erasure
+                t_Scratch.getMethodsByName("doStuffR")[0].formalParameters[0] shouldBe explicitlyRaw
+                explicitlyParam shouldBe t_Scratch[ts.STRING].selectInner(inner.symbol, emptyList())
+                t_Scratch.getMethodsByName("doStuffP")[0].formalParameters[0] shouldBe explicitlyParam
+                explicitlyDecl shouldBe t_Scratch.selectInner(inner.symbol, emptyList())
+                explicitlyDecl shouldBe t_Inner
+                t_Scratch.getMethodsByName("doStuffD")[0].formalParameters[0] shouldBe explicitlyDecl
+            }
+
+            doTest("Test erasure erases formal params ") {
+                // todo fields
+                val raw = t_Scratch.erasure
+
+                raw.getMethodsByName("doStuff")[0].formalParameters[0] shouldBe t_Inner.erasure
+                raw.getMethodsByName("doStuffR")[0].formalParameters[0] shouldBe t_Inner.erasure
+                raw.getMethodsByName("doStuffP")[0].formalParameters[0] shouldBe explicitlyParam
+                raw.getMethodsByName("doStuffD")[0].formalParameters[0] shouldBe t_Inner.erasure
+
             }
         }
+    }
 
-        parserTest("Test erased types overload resolution") {
-            val acu =
-                parser.parse(
-                    """
+    parserTest("Test erased types overload resolution") {
+        val acu = parser.parse(
+            """
             class Scratch<T> {
 
                 class Inner { }
@@ -111,45 +103,48 @@ class InnerTypesTest :
                   rawScratch.doStuff(notRaw);
                 }
             }
-            """
-                        .trimIndent()
-                )
+            """.trimIndent()
+        )
 
-            val (scratch, inner) = acu.descendants(ASTTypeDeclaration::class.java).toList()
+        val (scratch, inner) =
+            acu.descendants(ASTTypeDeclaration::class.java).toList()
 
-            val (call, rawCall) = acu.descendants(ASTMethodCall::class.java).toList()
+        val (call, rawCall) = acu.descendants(ASTMethodCall::class.java).toList()
 
-            val t_Scratch = scratch.typeMirror
-            val t_Inner = inner.typeMirror
+        val t_Scratch = scratch.typeMirror
+        val t_Inner = inner.typeMirror
 
-            call.shouldMatchN {
-                methodCall("doStuff") {
-                    it.methodType.formalParameters[0].shouldBe(t_Inner)
-                    argList { variableAccess("raw") { it.typeMirror.shouldBe(t_Inner.erasure) } }
-                }
-            }
-
-            rawCall.shouldMatchN {
-                methodCall("doStuff") {
-                    it.methodType.formalParameters[0].shouldBe(t_Inner.erasure)
-
-                    variableAccess("rawScratch") { it.typeMirror.shouldBe(t_Scratch.erasure) }
-                    argList {
-                        variableAccess("notRaw") {
-                            it shouldHaveType
-                                with(it.typeDsl) {
-                                    t_Scratch[ts.STRING].selectInner(inner.symbol, emptyList())
-                                }
-                        }
+        call.shouldMatchN {
+            methodCall("doStuff") {
+                it.methodType.formalParameters[0].shouldBe(t_Inner)
+                argList {
+                    variableAccess("raw") {
+                        it.typeMirror.shouldBe(t_Inner.erasure)
                     }
                 }
             }
         }
 
-        parserTestContainer("Inner types can be inherited") {
-            val acu =
-                parser.parse(
-                    """
+        rawCall.shouldMatchN {
+            methodCall("doStuff") {
+                it.methodType.formalParameters[0].shouldBe(t_Inner.erasure)
+
+                variableAccess("rawScratch") {
+                    it.typeMirror.shouldBe(t_Scratch.erasure)
+                }
+                argList {
+                    variableAccess("notRaw") {
+                        it shouldHaveType with(it.typeDsl) {
+                            t_Scratch[ts.STRING].selectInner(inner.symbol, emptyList())
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    parserTestContainer("Inner types can be inherited") {
+        val acu = parser.parse("""
 
 class Scratch<T> {
     class I {}
@@ -169,38 +164,39 @@ class O {
 
     }
 }
-        """
-                        .trimIndent()
-                )
+        """.trimIndent())
 
-            val (t_Scratch, t_Inner, t_Sub) =
+
+        val (t_Scratch, t_Inner, t_Sub) =
                 acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-            val (innerCtor, supCtor, innerCtor2, subCtor) =
+        val (innerCtor, supCtor, innerCtor2, subCtor) =
                 acu.descendants(ASTConstructorCall::class.java).toList()
 
-            val `t_Scratch{String}` = with(acu.typeDsl) { t_Scratch[gen.t_String] }
-
-            val `t_Sub{String}` = with(acu.typeDsl) { t_Sub[gen.t_String] }
-
-            val `t_Scratch{String}Inner` =
-                `t_Scratch{String}`.selectInner(t_Inner.symbol, emptyList())
-
-            doTest("Can call ctor on the real enclosing class") {
-                supCtor shouldHaveType `t_Scratch{String}`
-                innerCtor shouldHaveType `t_Scratch{String}Inner`
-            }
-
-            doTest("Can call ctor on some subclass") {
-                subCtor shouldHaveType `t_Sub{String}` // sub
-                innerCtor2 shouldHaveType `t_Scratch{String}Inner` // but scratch
-            }
+        val `t_Scratch{String}` = with (acu.typeDsl) {
+            t_Scratch[gen.t_String]
         }
 
-        parserTest("Capturing an inner type captures the enclosing type") {
-            val (acu, spy) =
-                parser.parseWithTypeInferenceSpy(
-                    """
+        val `t_Sub{String}` = with (acu.typeDsl) {
+            t_Sub[gen.t_String]
+        }
+
+        val `t_Scratch{String}Inner` = `t_Scratch{String}`.selectInner(t_Inner.symbol, emptyList())
+
+        doTest("Can call ctor on the real enclosing class") {
+            supCtor shouldHaveType `t_Scratch{String}`
+            innerCtor shouldHaveType `t_Scratch{String}Inner`
+        }
+
+        doTest("Can call ctor on some subclass") {
+            subCtor shouldHaveType `t_Sub{String}` // sub
+            innerCtor2 shouldHaveType `t_Scratch{String}Inner` // but scratch
+        }
+    }
+
+    parserTest("Capturing an inner type captures the enclosing type") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
             class Scratch<T> {
                 class Inner {
                     T getT() { return null; }
@@ -210,15 +206,14 @@ class O {
                     var k = i.getT();
                 }
             }
-            """
-                        .trimIndent()
-                )
+            """.trimIndent()
+        )
 
-            val kvar = acu.typeVar("K")
+        val kvar = acu.typeVar("K")
 
-            spy.shouldBeOk {
-                // not <? extends K>
-                acu.varId("k") shouldHaveType kvar
-            }
+        spy.shouldBeOk {
+            // not <? extends K>
+            acu.varId("k") shouldHaveType kvar
         }
-    })
+    }
+})

@@ -26,24 +26,25 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
- * Using a Formatter (e.g. SimpleDateFormatter, DecimalFormatter) which is
- * static can cause unexpected results when used in a multi-threaded
- * environment. This rule will find static Formatters which are used in an
- * unsynchronized manner.
+ * Using a Formatter (e.g. SimpleDateFormatter, DecimalFormatter) which is static can cause
+ * unexpected results when used in a multi-threaded environment. This rule will
+ * find static Formatters which are used in an unsynchronized
+ * manner.
  *
  * @author Allan Caplan
- * @see <a href="https://sourceforge.net/p/pmd/feature-requests/226/">feature
- *      #226 Check for SimpleDateFormat as singleton?</a>
+ * @see <a href="https://sourceforge.net/p/pmd/feature-requests/226/">feature #226 Check for SimpleDateFormat as singleton?</a>
  */
 public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule {
-    private static final List<String> THREAD_SAFE_FORMATTER = Arrays
-            .asList("org.apache.commons.lang3.time.FastDateFormat");
+    private static final List<String> THREAD_SAFE_FORMATTER = Arrays.asList(
+        "org.apache.commons.lang3.time.FastDateFormat"
+    );
 
-    private static final PropertyDescriptor<Boolean> ALLOW_METHOD_LEVEL_SYNC = PropertyFactory
-            .booleanProperty("allowMethodLevelSynchronization")
+    private static final PropertyDescriptor<Boolean> ALLOW_METHOD_LEVEL_SYNC =
+        PropertyFactory.booleanProperty("allowMethodLevelSynchronization")
             .desc("If true, method level synchronization is allowed as well as synchronized block. Otherwise"
-                    + " only synchronized blocks are allowed.")
-            .defaultValue(false).build();
+                + " only synchronized blocks are allowed.")
+            .defaultValue(false)
+            .build();
 
     private Class<?> formatterClassToCheck = Format.class;
 
@@ -63,12 +64,13 @@ public class UnsynchronizedStaticFormatterRule extends AbstractJavaRulechainRule
             return data;
         }
         ASTType cit = node.getTypeNode();
-        if (!(cit instanceof ASTClassType) || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
+        if (!(cit instanceof ASTClassType)
+            || !TypeTestUtil.isA(formatterClassToCheck, cit)) {
             return data;
         }
 
         ASTVariableId var = node.getVarIds().firstOrThrow();
-        for (String formatter : THREAD_SAFE_FORMATTER) {
+        for (String formatter: THREAD_SAFE_FORMATTER) {
             if (TypeTestUtil.isA(formatter, var)) {
                 return data;
             }

@@ -34,12 +34,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> ALLOW_COMMENTED_BLOCKS = PropertyFactory
-            .booleanProperty("allowCommentedBlocks")
+    private static final PropertyDescriptor<Boolean> ALLOW_COMMENTED_BLOCKS
+            = PropertyFactory.booleanProperty("allowCommentedBlocks")
             .desc("Option for allowing empty but commented blocks. This is useful where a developer "
                     + "wants to have the code structure and explain why a condition does not require "
                     + "logic or to hold TODO comments for future work.")
-            .defaultValue(Boolean.FALSE).build();
+            .defaultValue(Boolean.FALSE)
+            .build();
 
     public EmptyControlStatementRule() {
         super(ASTFinallyClause.class, ASTSynchronizedStatement.class, ASTTryStatement.class, ASTDoStatement.class,
@@ -150,12 +151,9 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
                         // not a concise resource.
                         ASTExpression init = resource.getInitializer();
                         if (isSimpleExpression(init)) {
-                            // The expression is simple enough, it should be just written this.close() or
-                            // var.close(),
+                            // The expression is simple enough, it should be just written this.close() or var.close(),
                             // so we report this case
-                            asCtx(data).addViolationWithMessage(node,
-                                    "Empty try-with-resources statement. Should be written {0}.close()",
-                                    PrettyPrintingUtil.prettyPrint(init));
+                            asCtx(data).addViolationWithMessage(node, "Empty try-with-resources statement. Should be written {0}.close()", PrettyPrintingUtil.prettyPrint(init));
                             return null;
                         }
                         // Otherwise the expression is more complex and this is allowed, in order
@@ -171,8 +169,7 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
                     }
                     String name = varId.getName();
                     if (!JavaRuleUtil.isExplicitUnusedVarName(name)) {
-                        asCtx(data).addViolationWithMessage(node,
-                                "Empty try-with-resources statement. Rename the resource to `ignored`, `unused` or `_` (Java 22+).");
+                        asCtx(data).addViolationWithMessage(node, "Empty try-with-resources statement. Rename the resource to `ignored`, `unused` or `_` (Java 22+).");
                         return null;
                     }
                 }
@@ -186,15 +183,16 @@ public class EmptyControlStatementRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isSimpleExpression(ASTExpression init) {
-        return init instanceof ASTThisExpression || init instanceof ASTSuperExpression
-                || init instanceof ASTVariableAccess
-                || init instanceof ASTFieldAccess && isSimpleExpression(((ASTFieldAccess) init).getQualifier());
+        return init instanceof ASTThisExpression
+            || init instanceof ASTSuperExpression
+            || init instanceof ASTVariableAccess
+            || init instanceof ASTFieldAccess && isSimpleExpression(((ASTFieldAccess) init).getQualifier());
     }
 
     private boolean isEmpty(JavaNode node) {
         boolean allowCommentedBlocks = getProperty(ALLOW_COMMENTED_BLOCKS);
 
-        return (node instanceof ASTBlock && node.getNumChildren() == 0
-                && !(((ASTBlock) node).containsComment() && allowCommentedBlocks)) || node instanceof ASTEmptyStatement;
+        return (node instanceof ASTBlock && node.getNumChildren() == 0 && !(((ASTBlock) node).containsComment() && allowCommentedBlocks))
+            || node instanceof ASTEmptyStatement;
     }
 }

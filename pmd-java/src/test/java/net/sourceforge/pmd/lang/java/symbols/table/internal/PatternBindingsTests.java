@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+
 import static java.util.Collections.emptySet;
 import static java.util.stream.Collectors.toSet;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
@@ -51,24 +52,31 @@ class PatternBindingsTests extends BaseParserTest {
     @Test
     void testUnaries() {
         String stringS = "a instanceof String s";
-        assertAll(declares(stringS, setOf("s"), emptySet()), declares("!(" + stringS + ")", emptySet(), setOf("s")),
+        assertAll(
+            declares(stringS, setOf("s"), emptySet()),
+            declares("!(" + stringS + ")", emptySet(), setOf("s")),
 
-                declaresNothing("foo(" + stringS + ")"), declaresNothing("foo(" + stringS + ") || true"));
+            declaresNothing("foo(" + stringS + ")"),
+            declaresNothing("foo(" + stringS + ") || true")
+        );
     }
 
     @Test
     void testBooleanConditionals() {
         String stringS = "(a instanceof String s)";
         String stringP = "(a instanceof String p)";
-        assertAll(declares(stringS + " || " + stringP, emptySet(), emptySet()),
-                declares(stringS + " && " + stringP, setOf("s", "p"), emptySet()),
-                declares("!(" + stringS + " || " + stringP + ")", emptySet(), emptySet()),
-                declares("!(" + stringS + " && " + stringP + ")", emptySet(), setOf("s", "p")),
+        assertAll(
+            declares(stringS + " || " + stringP, emptySet(), emptySet()),
+            declares(stringS + " && " + stringP, setOf("s", "p"), emptySet()),
+            declares("!(" + stringS + " || " + stringP + ")", emptySet(), emptySet()),
+            declares("!(" + stringS + " && " + stringP + ")", emptySet(), setOf("s", "p")),
 
-                declares("!" + stringS + " || " + stringP, emptySet(), setOf("s")),
-                declares("!" + stringS + " || !" + stringP, emptySet(), setOf("s", "p")),
-                declares("!" + stringS + " && !" + stringP, emptySet(), emptySet()),
-                declares(stringS + " && !" + stringP, setOf("s"), emptySet()));
+            declares("!" + stringS + " || " + stringP, emptySet(), setOf("s")),
+            declares("!" + stringS + " || !" + stringP, emptySet(), setOf("s", "p")),
+            declares("!" + stringS + " && !" + stringP, emptySet(), emptySet()),
+            declares(stringS + " && !" + stringP, setOf("s"), emptySet())
+        );
     }
+
 
 }

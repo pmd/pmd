@@ -15,14 +15,15 @@ public final class ASTModuleName extends AbstractJavaNode {
         super(id);
     }
 
+
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
 
     /**
-     * Returns the name of the declared module. Module names look like package
-     * names, eg {@code java.base}.
+     * Returns the name of the declared module. Module names look
+     * like package names, eg {@code java.base}.
      */
     public String getName() {
         return name;

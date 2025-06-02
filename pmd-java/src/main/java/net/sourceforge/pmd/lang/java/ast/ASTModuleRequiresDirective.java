@@ -9,8 +9,7 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A "requires" directive of a {@linkplain ASTModuleDeclaration module
- * declaration}.
+ * A "requires"  directive of a {@linkplain ASTModuleDeclaration module declaration}.
  *
  * <pre class="grammar">
  *

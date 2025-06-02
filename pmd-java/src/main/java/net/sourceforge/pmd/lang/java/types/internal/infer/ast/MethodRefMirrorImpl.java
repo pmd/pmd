@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import java.util.List;
@@ -31,8 +32,7 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
     private JMethodSig exactMethod;
     private MethodCtDecl ctdecl;
 
-    MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent,
-            MirrorMaker subexprMaker) {
+    MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent, MirrorMaker subexprMaker) {
         super(mirrors, lambda, parent, subexprMaker);
         exactMethod = mirrors.ts.UNRESOLVED_METHOD;
 
@@ -76,7 +76,9 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
     @Override
     public JTypeMirror getLhsIfType() {
         ASTExpression lhsType = myNode.getQualifier();
-        return lhsType instanceof ASTTypeExpression ? lhsType.getTypeMirror() : null;
+        return lhsType instanceof ASTTypeExpression
+               ? lhsType.getTypeMirror()
+               : null;
     }
 
     @Override
@@ -99,7 +101,10 @@ final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference>
 
     @Override
     public @NonNull List<JTypeMirror> getExplicitTypeArguments() {
-        return CollectionUtil.map(ASTList.orEmpty(myNode.getExplicitTypeArguments()), TypeNode::getTypeMirror);
+        return CollectionUtil.map(
+            ASTList.orEmpty(myNode.getExplicitTypeArguments()),
+            TypeNode::getTypeMirror
+        );
     }
 
     @Override

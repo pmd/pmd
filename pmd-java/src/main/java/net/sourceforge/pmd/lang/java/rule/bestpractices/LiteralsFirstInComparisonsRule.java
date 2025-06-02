@@ -20,8 +20,11 @@ import net.sourceforge.pmd.reporting.RuleContext;
 
 public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
-    private static final Set<String> STRING_COMPARISONS = setOf("equalsIgnoreCase", "compareTo", "compareToIgnoreCase",
-            "contentEquals");
+    private static final Set<String> STRING_COMPARISONS =
+        setOf("equalsIgnoreCase",
+              "compareTo",
+              "compareToIgnoreCase",
+              "contentEquals");
 
     public LiteralsFirstInComparisonsRule() {
         super(ASTMethodCall.class);
@@ -29,11 +32,13 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
-        if ("equals".equals(call.getMethodName()) && call.getArguments().size() == 1
-                && isEqualsObjectAndNotAnOverload(call)) {
+        if ("equals".equals(call.getMethodName())
+            && call.getArguments().size() == 1
+            && isEqualsObjectAndNotAnOverload(call)) {
             checkArgs((RuleContext) data, call);
-        } else if (STRING_COMPARISONS.contains(call.getMethodName()) && call.getArguments().size() == 1
-                && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
+        } else if (STRING_COMPARISONS.contains(call.getMethodName())
+            && call.getArguments().size() == 1
+            && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
             checkArgs((RuleContext) data, call);
         }
         return data;
@@ -45,13 +50,13 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isConstantString(@Nullable ASTExpression node) {
-        return node instanceof ASTStringLiteral || node != null && node.getConstValue() instanceof String;
+        return node instanceof ASTStringLiteral
+            || node != null && node.getConstValue() instanceof String;
     }
 
     private void checkArgs(RuleContext ctx, ASTMethodCall call) {
         ASTExpression arg = call.getArguments().get(0);
-        @Nullable
-        ASTExpression qualifier = call.getQualifier();
+        @Nullable ASTExpression qualifier = call.getQualifier();
         if (qualifier != null && !isConstantString(qualifier) && isConstantString(arg)) {
             ctx.addViolation(call);
         }

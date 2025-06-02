@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
+
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -12,9 +13,9 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.util.IteratorUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
-class ShadowChainIteratorImpl<S, I> extends IteratorUtil.AbstractPausingIterator<ShadowChainNode<S, I>>
-        implements
-            ShadowChainIterator<S, I> {
+class ShadowChainIteratorImpl<S, I>
+    extends IteratorUtil.AbstractPausingIterator<ShadowChainNode<S, I>>
+    implements ShadowChainIterator<S, I> {
 
     private ShadowChainNode<S, I> nextGroupToTest;
     private final String name;
@@ -36,6 +37,7 @@ class ShadowChainIteratorImpl<S, I> extends IteratorUtil.AbstractPausingIterator
         assert !next.resolveHere(name).isEmpty() : "Shadow iterator stopped on wrong node";
         setNext(next);
     }
+
 
     @Override
     protected void prepareViewOn(ShadowChainNode<S, I> current) {
@@ -67,8 +69,7 @@ class ShadowChainIteratorImpl<S, I> extends IteratorUtil.AbstractPausingIterator
     }
 
     private static boolean definitelyKnows(@NonNull ShadowChainNode<?, ?> group, String name) {
-        // It's not cool to depend on the implementation, but doing otherwise is
-        // publishing a lot of API
+        // It's not cool to depend on the implementation, but doing otherwise is publishing a lot of API
         OptionalBool opt = group.knowsSymbol(name);
         if (opt.isKnown()) {
             return opt.isTrue();

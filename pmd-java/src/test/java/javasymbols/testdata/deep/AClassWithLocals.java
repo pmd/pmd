@@ -9,34 +9,29 @@ package javasymbols.testdata.deep;
  */
 public class AClassWithLocals {
 
-    private static Object foo0 = new Object() {
-    }; // AClassWithLocals$0
+    private static Object foo0 = new Object() {}; // AClassWithLocals$0
     private final Object foo1 = new Object() {
-        class Member {
-        } // AClassWithLocals$1$Member
+        class Member {} // AClassWithLocals$1$Member
     }; // AClassWithLocals$1
 
     public AClassWithLocals() {
         class Local { // AClassWithLocals$0Local
 
         }
-        new Object() {
-        }; // // AClassWithLocals$2
+        new Object() {}; // // AClassWithLocals$2
     }
 
-    static {
+    static  {
         class Local { // AClassWithLocals$1Local
 
         }
-        new Object() {
-        }; // // AClassWithLocals$3
+        new Object() {}; // // AClassWithLocals$3
     }
 
     void method() {
         class Local { // AClassWithLocals$2Local
 
         }
-        new Object() {
-        }; // // AClassWithLocals$4
+        new Object() {}; // // AClassWithLocals$4
     }
 }

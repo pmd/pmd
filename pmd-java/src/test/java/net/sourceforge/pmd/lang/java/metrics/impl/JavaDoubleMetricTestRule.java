@@ -23,7 +23,9 @@ public abstract class JavaDoubleMetricTestRule extends AbstractMetricTestRule.Of
 
     @Override
     protected boolean reportOn(Node node) {
-        return super.reportOn(node) && (node instanceof ASTExecutableDeclaration || node instanceof ASTTypeDeclaration);
+        return super.reportOn(node)
+            && (node instanceof ASTExecutableDeclaration
+            || node instanceof ASTTypeDeclaration);
     }
 
     @Override

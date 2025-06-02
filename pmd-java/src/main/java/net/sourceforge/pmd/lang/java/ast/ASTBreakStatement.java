@@ -21,12 +21,13 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  */
 public final class ASTBreakStatement extends AbstractStatement {
 
-    private static final Function<Object, ASTStatement> BREAK_TARGET_MAPPER = NodeStream
-            .asInstanceOf(ASTLoopStatement.class, ASTSwitchStatement.class);
+    private static final Function<Object, ASTStatement> BREAK_TARGET_MAPPER =
+        NodeStream.asInstanceOf(ASTLoopStatement.class, ASTSwitchStatement.class);
 
     ASTBreakStatement(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
@@ -41,16 +42,18 @@ public final class ASTBreakStatement extends AbstractStatement {
     }
 
     /**
-     * Returns the statement that is the target of this break. This may be a loop,
-     * or a switch statement, or a labeled statement. This may return null if the
-     * code is invalid.
+     * Returns the statement that is the target of this break. This may be
+     * a loop, or a switch statement, or a labeled statement. This may
+     * return null if the code is invalid.
      */
     public ASTStatement getTarget() {
         String myLabel = this.getLabel();
         if (myLabel == null) {
             return ancestors().map(BREAK_TARGET_MAPPER).first();
         }
-        return ancestors(ASTLabeledStatement.class).filter(it -> it.getLabel().equals(myLabel)).first();
+        return ancestors(ASTLabeledStatement.class)
+            .filter(it -> it.getLabel().equals(myLabel))
+            .first();
     }
 
 }

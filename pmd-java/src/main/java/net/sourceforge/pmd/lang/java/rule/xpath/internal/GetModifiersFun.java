@@ -42,7 +42,8 @@ public final class GetModifiersFun extends BaseJavaXPathFunction {
         return (contextNode, arguments) -> {
             if (contextNode instanceof ModifierOwner) {
                 ASTModifierList modList = ((ModifierOwner) contextNode).getModifiers();
-                Set<JModifier> mods = explicit ? modList.getExplicitModifiers() : modList.getEffectiveModifiers();
+                Set<JModifier> mods = explicit ? modList.getExplicitModifiers()
+                                               : modList.getEffectiveModifiers();
                 return CollectionUtil.map(mods, JModifier::getToken);
             }
             return Collections.<String>emptyList();

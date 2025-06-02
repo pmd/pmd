@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
+
 /**
  * @author Clément Fournier
  * @since 6.2.0

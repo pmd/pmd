@@ -17,6 +17,7 @@ class SignatureScanner {
     protected final int start;
     protected final int end; // exclusive
 
+
     SignatureScanner(String descriptor) {
         if (descriptor == null || descriptor.isEmpty()) {
             throw new IllegalArgumentException("Type descriptor \"" + descriptor + "\" is empty or null");
@@ -34,6 +35,7 @@ class SignatureScanner {
         this.start = start;
         this.end = end;
     }
+
 
     public char charAt(int off) {
         return off < end ? chars.charAt(off) : 0;
@@ -74,10 +76,12 @@ class SignatureScanner {
         return cur;
     }
 
+
     public RuntimeException expected(String expectedWhat, int pos) {
         final String indent = "    ";
-        String sb = "Expected " + expectedWhat + ":\n" + indent + bufferToString() + "\n" + indent
-                + StringUtils.repeat(' ', pos - start) + '^' + "\n";
+        String sb = "Expected " + expectedWhat + ":\n"
+            + indent + bufferToString() + "\n"
+            + indent + StringUtils.repeat(' ', pos - start) + '^' + "\n";
         return new InvalidTypeSignatureException(sb);
     }
 

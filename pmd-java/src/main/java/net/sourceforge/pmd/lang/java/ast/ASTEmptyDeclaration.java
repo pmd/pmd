@@ -5,8 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * An empty declaration (useless). This is kept separate from
- * {@link ASTStatement} because they don't occur in the same syntactic contexts.
+ * An empty declaration (useless). This is kept separate from {@link ASTStatement}
+ * because they don't occur in the same syntactic contexts.
  *
  * <pre class="grammar">
  *
@@ -14,11 +14,13 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public final class ASTEmptyDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, ASTTopLevelDeclaration {
+public final class ASTEmptyDeclaration extends AbstractJavaNode
+    implements ASTBodyDeclaration, ASTTopLevelDeclaration {
 
     ASTEmptyDeclaration(int id) {
         super(id);
     }
+
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {

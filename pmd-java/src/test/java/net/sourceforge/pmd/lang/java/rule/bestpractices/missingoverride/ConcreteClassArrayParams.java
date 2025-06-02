@@ -10,6 +10,7 @@ public class ConcreteClassArrayParams extends AbstractClass {
         return null;
     }
 
+
     @Override
     public void arrayParams(String dflt, int[] keys, StringBuilder[] labels) {
         super.arrayParams(dflt, keys, labels);

@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.util.OptionalBool;
 
+
 /**
  * An empty group, bottom of the linked lists, for implementation simplicity.
  */

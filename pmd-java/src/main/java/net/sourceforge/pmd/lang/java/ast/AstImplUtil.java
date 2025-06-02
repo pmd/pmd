@@ -40,8 +40,10 @@ final class AstImplUtil {
         return type.isInstance(child) ? type.cast(child) : null;
     }
 
+
     static void bumpParenDepth(ASTExpression expression) {
-        assert expression instanceof AbstractJavaExpr : expression.getClass() + " doesn't have parenDepth attribute!";
+        assert expression instanceof AbstractJavaExpr
+            : expression.getClass() + " doesn't have parenDepth attribute!";
 
         ((AbstractJavaExpr) expression).bumpParenDepth();
     }

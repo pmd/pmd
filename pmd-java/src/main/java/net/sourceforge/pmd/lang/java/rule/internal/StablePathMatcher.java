@@ -22,14 +22,13 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 /**
  * A matcher for an expression like {@code a}, {@code a.b}, {@code a.getFoo()}.
- * Those are expressions we assume to be pure, and to be referring to the same
- * reference when they're called repeatedly if no side effect occurs between
- * calls.
+ * Those are expressions we assume to be pure, and to be referring to
+ * the same reference when they're called repeatedly if no side effect
+ * occurs between calls.
  *
- * <p>
- * Note that this is not relocatable: you must use a matcher in the same scope
- * it has been created in, to avoid bugs with accessibility/shadowing/etc. You
- * must take care yourself that no side-effect occurs.
+ * <p>Note that this is not relocatable: you must use a matcher in the
+ * same scope it has been created in, to avoid bugs with accessibility/shadowing/etc.
+ * You must take care yourself that no side-effect occurs.
  */
 public final class StablePathMatcher {
 
@@ -74,6 +73,7 @@ public final class StablePathMatcher {
             }
         }
 
+
         if (e instanceof ASTVariableAccess) {
             return Objects.equals(((ASTVariableAccess) e).getReferencedSym(), owner);
         } else if (e instanceof ASTFieldAccess) {
@@ -85,8 +85,8 @@ public final class StablePathMatcher {
     }
 
     /**
-     * Returns a matcher matching the given expression if it is stable. Otherwise
-     * returns null.
+     * Returns a matcher matching the given expression if it is stable.
+     * Otherwise returns null.
      */
     public static @Nullable StablePathMatcher matching(ASTExpression e) {
         if (e == null) {
@@ -148,7 +148,8 @@ public final class StablePathMatcher {
 
         @Override
         public String toString() {
-            return isField ? "." + name : "." + name + "()";
+            return isField ? "." + name
+                           : "." + name + "()";
         }
     }
 }

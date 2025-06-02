@@ -34,8 +34,7 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
 
     private final List<JVariableSymbol> formalSymbols;
 
-    LambdaMirrorImpl(JavaExprMirrors mirrors, ASTLambdaExpression lambda, @Nullable ExprMirror parent,
-            MirrorMaker subexprMaker) {
+    LambdaMirrorImpl(JavaExprMirrors mirrors, ASTLambdaExpression lambda, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
         super(mirrors, lambda, parent, subexprMaker);
 
         if (isExplicitlyTyped()) {
@@ -56,7 +55,7 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
         JTypeMirror inferredType = getInferredType();
         JMethodSig inferredMethod = getInferredMethod();
         AssertionUtil.validateState(inferredType != null && inferredMethod != null,
-                "overload resolution is not complete");
+                                    "overload resolution is not complete");
 
         ASTLambdaParameterList astFormals = myNode.getParameters();
         List<JTypeMirror> thisFormals = inferredMethod.getFormalParameters();
@@ -83,14 +82,15 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
             return null; // NOPMD ReturnEmptyCollectionRatherThanNull
         }
 
-        return parameters.toStream().toList(e -> {
-            ASTType typeNode = e.getTypeNode();
-            if (typeNode == null) {
-                // var type
-                return factory.ts.UNKNOWN;
-            }
-            return typeNode.getTypeMirror();
-        });
+        return parameters.toStream()
+                         .toList(e -> {
+                             ASTType typeNode = e.getTypeNode();
+                             if (typeNode == null) {
+                                 // var type
+                                 return factory.ts.UNKNOWN;
+                             }
+                             return typeNode.getTypeMirror();
+                         });
     }
 
     @Override
@@ -104,8 +104,9 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
         if (block == null) {
             return Collections.singletonList(createSubexpression(myNode.getExpressionBody()));
         } else {
-            return block.descendants(ASTReturnStatement.class).map(ASTReturnStatement::getExpr)
-                    .toList(this::createSubexpression);
+            return block.descendants(ASTReturnStatement.class)
+                        .map(ASTReturnStatement::getExpr)
+                        .toList(this::createSubexpression);
         }
     }
 
@@ -133,14 +134,14 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
         }
     }
 
+
     /**
      * Malformed bodies may be neither (it's a compile error)
      */
     private static boolean isLambdaBodyCompatible(ASTBlock body, boolean voidCompatible) {
         boolean noReturnsWithExpr = body.descendants(ASTReturnStatement.class).none(it -> it.getExpr() != null);
         if (noReturnsWithExpr && !voidCompatible) {
-            // normally we should be determining whether the block must complete abruptly on
-            // all paths
+            // normally we should be determining whether the block must complete abruptly on all paths
             return body.descendants(ASTThrowStatement.class).nonEmpty();
         }
         return noReturnsWithExpr == voidCompatible;
@@ -151,9 +152,10 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
      */
     private static boolean isExpressionStatement(ASTExpression body) {
         // statement expression
-        return body instanceof ASTMethodCall || body instanceof ASTConstructorCall
-                || body instanceof ASTAssignmentExpression
-                || body instanceof ASTUnaryExpression && !((ASTUnaryExpression) body).getOperator().isPure();
+        return body instanceof ASTMethodCall
+            || body instanceof ASTConstructorCall
+            || body instanceof ASTAssignmentExpression
+            || body instanceof ASTUnaryExpression && !((ASTUnaryExpression) body).getOperator().isPure();
 
     }
 

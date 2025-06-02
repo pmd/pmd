@@ -38,8 +38,13 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     private List<JFormalParamSymbol> params;
     private PMap<Integer, PSet<SymAnnot>> parameterAnnotations = IntTreePMap.empty();
 
-    protected ExecutableStub(ClassStub owner, String simpleName, int accessFlags, String descriptor,
-            @Nullable String signature, @Nullable String[] exceptions, boolean skipFirstParam) {
+    protected ExecutableStub(ClassStub owner,
+                             String simpleName,
+                             int accessFlags,
+                             String descriptor,
+                             @Nullable String signature,
+                             @Nullable String[] exceptions,
+                             boolean skipFirstParam) {
         super(owner, simpleName, accessFlags);
         this.descriptor = descriptor;
         this.type = new LazyMethodType(this, descriptor, signature, exceptions, skipFirstParam);
@@ -48,6 +53,7 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     boolean matches(String name, String descriptor) {
         return this.nameEquals(name) && descriptor.equals(this.descriptor);
     }
+
 
     @Override
     public List<JTypeVar> getTypeParameters() {
@@ -120,9 +126,9 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     /**
-     * Formal parameter symbols obtained from the class have no info about name or
-     * whether it's final. This info is missing from classfiles when they're not
-     * compiled with debug symbols.
+     * Formal parameter symbols obtained from the class have no info
+     * about name or whether it's final. This info is missing from
+     * classfiles when they're not compiled with debug symbols.
      */
     class FormalParamStub implements JFormalParamSymbol {
 
@@ -166,22 +172,25 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
     }
 
     /**
-     * Formal parameter symbols obtained from the class have no info about name or
-     * whether it's final. This is because due to ASM's design, parsing this
-     * information would entail parsing a lot of other information we don't care
-     * about, and so this would be wasteful. It's unlikely anyone cares about this
-     * anyway.
+     * Formal parameter symbols obtained from the class have no info
+     * about name or whether it's final. This is because due to ASM's
+     * design, parsing this information would entail parsing a lot of
+     * other information we don't care about, and so this would be
+     * wasteful. It's unlikely anyone cares about this anyway.
      *
-     * <p>
-     * If classes are compiled without debug symbols that info is NOT in the
-     * classfile anyway.
+     * <p>If classes are compiled without debug symbols that info
+     * is NOT in the classfile anyway.
      */
     static class MethodStub extends ExecutableStub implements JMethodSymbol {
 
         private @Nullable SymbolicValue defaultAnnotValue;
 
-        protected MethodStub(ClassStub owner, String simpleName, int accessFlags, String descriptor,
-                @Nullable String signature, @Nullable String[] exceptions) {
+        protected MethodStub(ClassStub owner,
+                             String simpleName,
+                             int accessFlags,
+                             String descriptor,
+                             @Nullable String signature,
+                             @Nullable String[] exceptions) {
             super(owner, simpleName, accessFlags, descriptor, signature, exceptions, false);
         }
 
@@ -218,10 +227,13 @@ abstract class ExecutableStub extends MemberStubBase implements JExecutableSymbo
 
     static class CtorStub extends ExecutableStub implements JConstructorSymbol {
 
-        protected CtorStub(ClassStub owner, int accessFlags, String descriptor, @Nullable String signature,
-                @Nullable String[] exceptions, boolean isInnerNonStaticClass) {
-            super(owner, JConstructorSymbol.CTOR_NAME, accessFlags, descriptor, signature, exceptions,
-                    isInnerNonStaticClass);
+        protected CtorStub(ClassStub owner,
+                           int accessFlags,
+                           String descriptor,
+                           @Nullable String signature,
+                           @Nullable String[] exceptions,
+                           boolean isInnerNonStaticClass) {
+            super(owner, JConstructorSymbol.CTOR_NAME, accessFlags, descriptor, signature, exceptions, isInnerNonStaticClass);
         }
 
         @Override

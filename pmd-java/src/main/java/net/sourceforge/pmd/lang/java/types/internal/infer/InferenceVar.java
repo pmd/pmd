@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import java.util.Collections;
@@ -28,10 +29,10 @@ import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
- * Represents an inference variable. Inference variables are just placeholder
- * for types, used during the inference process. After type inference they
- * should have been erased and hence this type is of no importance outside the
- * implementation of this framework.
+ * Represents an inference variable. Inference variables are just
+ * placeholder for types, used during the inference process.
+ * After type inference they should have been erased and hence this
+ * type is of no importance outside the implementation of this framework.
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class InferenceVar implements SubstVar {
@@ -75,11 +76,13 @@ public final class InferenceVar implements SubstVar {
     }
 
     /**
-     * Returns the bounds of a certain kind that apply to this variable.
+     * Returns the bounds of a certain kind that apply to
+     * this variable.
      */
     public Set<JTypeMirror> getBounds(BoundKind kind) {
         return boundSet.bounds.getOrDefault(kind, Collections.emptySet());
     }
+
 
     Set<JTypeMirror> getBounds(Set<BoundKind> kinds) {
         Set<JTypeMirror> bounds = new LinkedHashSet<>();
@@ -88,6 +91,7 @@ public final class InferenceVar implements SubstVar {
         }
         return bounds;
     }
+
 
     /**
      * Adds a new bound on this variable.
@@ -101,10 +105,9 @@ public final class InferenceVar implements SubstVar {
     }
 
     /**
-     * @param isPrimaryBound
-     *            Whether this is the default bound conferred by the bound on a type
-     *            parameter declaration. This is treated specially by java 7
-     *            inference.
+     * @param isPrimaryBound Whether this is the default bound conferred
+     *                       by the bound on a type parameter declaration.
+     *                       This is treated specially by java 7 inference.
      */
     private void addBound(BoundKind kind, JTypeMirror type, boolean isPrimaryBound) {
         if (this.isEquivalentTo(type)) {
@@ -125,43 +128,44 @@ public final class InferenceVar implements SubstVar {
     }
 
     /**
-     * Returns true if the node has no bounds except the ones given by the upper
-     * bound of the type parameter. In the Java 7 inference process, this indicates
-     * that we should use additional constraints binding the return type of the
-     * method to the target type (determined by an assignment context).
+     * Returns true if the node has no bounds except the ones given
+     * by the upper bound of the type parameter. In the Java 7 inference
+     * process, this indicates that we should use additional constraints
+     * binding the return type of the method to the target type (determined by
+     * an assignment context).
      *
-     * <p>
-     * Remove this if you remove support for java 7 at some point.
+     * <p>Remove this if you remove support for java 7 at some point.
      */
     boolean hasOnlyPrimaryBound() {
         return !hasNonTrivialBound;
     }
 
     /**
-     * Returns the instantiation of this inference variable if it has already been
-     * determined. Returns null otherwise.
+     * Returns the instantiation of this inference variable if
+     * it has already been determined. Returns null otherwise.
      */
     @Nullable
     JTypeMirror getInst() {
         return boundSet.inst;
     }
 
+
     void setInst(JTypeMirror inst) {
         this.boundSet.inst = inst;
     }
 
     /**
-     * Apply a substitution to the bounds of this variable. Called when an ivar is
-     * instantiated.
+     * Apply a substitution to the bounds of this variable. Called when
+     * an ivar is instantiated.
      *
-     * @param substitution
-     *            The substitution to apply
+     * @param substitution The substitution to apply
      */
     void substBounds(Function<? super SubstVar, ? extends JTypeMirror> substitution) {
 
         for (Entry<BoundKind, Set<JTypeMirror>> entry : boundSet.bounds.entrySet()) {
             BoundKind kind = entry.getKey();
             Set<JTypeMirror> prevBounds = entry.getValue();
+
 
             // put the new bounds before updating
             Set<JTypeMirror> newBounds = new LinkedHashSet<>();
@@ -188,13 +192,14 @@ public final class InferenceVar implements SubstVar {
         return tvar;
     }
 
+
     boolean isCaptured() {
         return tvar.isCaptured();
     }
 
     public boolean isEquivalentTo(JTypeMirror t) {
-        return this == t || t instanceof InferenceVar && ((InferenceVar) t).boundSet == this.boundSet; // NOPMD
-                                                                                                       // CompareObjectsWithEquals
+        return this == t || t instanceof InferenceVar
+            && ((InferenceVar) t).boundSet == this.boundSet; // NOPMD CompareObjectsWithEquals
     }
 
     public boolean isSubtypeNoSideEffect(@NonNull JTypeMirror other) {
@@ -225,8 +230,10 @@ public final class InferenceVar implements SubstVar {
     @Override
     public @Nullable JTypeDeclSymbol getSymbol() {
         JTypeMirror inst = getInst();
-        return inst != null ? inst.getSymbol() : new InferenceVarSym(ctx.ts, this);
+        return inst != null ? inst.getSymbol()
+                            : new InferenceVarSym(ctx.ts, this);
     }
+
 
     @Override
     public JTypeMirror subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
@@ -237,6 +244,7 @@ public final class InferenceVar implements SubstVar {
     public <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
         return visitor.visitInferenceVar(this, p);
     }
+
 
     @Override
     public String toString() {
@@ -260,6 +268,7 @@ public final class InferenceVar implements SubstVar {
         sb.append(any ? " }" : "}");
         return sb;
     }
+
 
     public enum BoundKind {
         UPPER(" <: ") {
@@ -297,8 +306,7 @@ public final class InferenceVar implements SubstVar {
             }
         };
 
-        // These sets are shared because otherwise *literal millions* of enumsets are
-        // created, with the same constants
+        // These sets are shared because otherwise *literal millions* of enumsets are created, with the same constants
         static final Set<BoundKind> ALL = EnumSet.allOf(BoundKind.class);
         static final Set<BoundKind> EQ_LOWER = EnumSet.of(EQ, LOWER);
         static final Set<BoundKind> EQ_UPPER = EnumSet.of(EQ, UPPER);
@@ -316,7 +324,6 @@ public final class InferenceVar implements SubstVar {
 
         /**
          * Returns the complementary bound kind.
-         * 
          * <pre>
          *     complement(LOWER) = UPPER
          *     complement(UPPER) = LOWER
@@ -325,9 +332,11 @@ public final class InferenceVar implements SubstVar {
          */
         public abstract BoundKind complement();
 
+
         /**
-         * Returns the complement of this kind. There's two ways to complement EQ: -
-         * With eqIsAll, this returns all constants. - Otherwise this returns just EQ.
+         * Returns the complement of this kind. There's two ways to complement EQ:
+         * - With eqIsAll, this returns all constants.
+         * - Otherwise this returns just EQ.
          */
         public abstract Set<BoundKind> complementSet(boolean eqIsAll);
 

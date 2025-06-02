@@ -27,6 +27,7 @@ public class UseEnumCollectionsRule extends AbstractJavaRulechainRule {
         super(ASTConstructorCall.class);
     }
 
+
     @Override
     public Object visit(ASTConstructorCall call, Object data) {
         JTypeMirror builtType = call.getTypeMirror();

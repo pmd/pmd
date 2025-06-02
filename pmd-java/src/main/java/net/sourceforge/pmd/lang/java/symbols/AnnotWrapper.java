@@ -17,14 +17,14 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
- * Wraps an instance of a JVM {@link Annotation} and provide the same API as
- * {@link SymAnnot}.
+ * Wraps an instance of a JVM {@link Annotation} and provide the same API as {@link SymAnnot}.
  */
 final class AnnotWrapper implements SymAnnot {
 
     private final Annotation annotation;
     private final Class<? extends Annotation> annotationClass;
     private final JClassSymbol annotationClassSymbol;
+
 
     private AnnotWrapper(JClassSymbol annotationClassSymbol, @NonNull Annotation annotation) {
         this.annotationClassSymbol = annotationClassSymbol;
@@ -48,14 +48,17 @@ final class AnnotWrapper implements SymAnnot {
     @Override
     public @Nullable SymbolicValue getAttribute(String attrName) {
         return Arrays.stream(annotationClass.getDeclaredMethods())
-                .filter(it -> it.getName().equals(attrName) && it.getParameterCount() == 0).map(it -> {
-                    try {
-                        Object result = it.invoke(annotation);
-                        return SymbolicValue.of(annotationClassSymbol.getTypeSystem(), result);
-                    } catch (Exception ignored) {
-                        return null;
-                    }
-                }).filter(Objects::nonNull).findAny().orElse(null);
+                     .filter(it -> it.getName().equals(attrName) && it.getParameterCount() == 0)
+                     .map(it -> {
+                         try {
+                             Object result = it.invoke(annotation);
+                             return SymbolicValue.of(annotationClassSymbol.getTypeSystem(), result);
+                         } catch (Exception ignored) {
+                             return null;
+                         }
+                     })
+                     .filter(Objects::nonNull)
+                     .findAny().orElse(null);
     }
 
     @Override

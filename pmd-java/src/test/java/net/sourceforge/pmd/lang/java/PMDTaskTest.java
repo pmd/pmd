@@ -127,6 +127,7 @@ class PMDTaskTest extends AbstractAntTestHelper {
         assertTrue(currentTempFile().exists());
     }
 
+
     @Test
     void testDisableIncrementalAnalysis() {
         executeTarget("testDisableIncrementalAnalysis");

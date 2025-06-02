@@ -7,13 +7,12 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
- * Represents an enum declaration. This is a {@linkplain Node#isFindBoundary()
- * find boundary} for tree traversal methods.
+ * Represents an enum declaration.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
- * <p>
- * An enum declaration is implicitly final <i>unless it contains at least one
- * enum constant that has a class body</i>. A nested enum type is implicitly
- * static.
+ * <p>An enum declaration is implicitly final <i>unless it contains at
+ * least one enum constant that has a class body</i>. A nested enum type
+ * is implicitly static.
  *
  * <pre class="grammar">
  *
@@ -27,14 +26,17 @@ import net.sourceforge.pmd.lang.ast.Node;
  */
 public final class ASTEnumDeclaration extends AbstractTypeDeclaration {
 
+
     ASTEnumDeclaration(int id) {
         super(id);
     }
+
 
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
+
 
     @Override
     public ASTEnumBody getBody() {

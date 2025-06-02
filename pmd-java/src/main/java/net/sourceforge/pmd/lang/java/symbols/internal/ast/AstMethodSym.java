@@ -18,7 +18,9 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
 /**
  * @author Clément Fournier
  */
-final class AstMethodSym extends AbstractAstExecSymbol<ASTMethodDeclaration> implements JMethodSymbol {
+final class AstMethodSym
+    extends AbstractAstExecSymbol<ASTMethodDeclaration>
+    implements JMethodSymbol {
 
     AstMethodSym(ASTMethodDeclaration node, AstSymFactory factory, JClassSymbol owner) {
         super(node, factory, owner);
@@ -45,7 +47,7 @@ final class AstMethodSym extends AbstractAstExecSymbol<ASTMethodDeclaration> imp
         if (node.getDefaultClause() != null) {
             return AstSymbolicAnnot.ofNode(node.getDefaultClause().getConstant());
         }
-
+        
         return null;
     }
 }

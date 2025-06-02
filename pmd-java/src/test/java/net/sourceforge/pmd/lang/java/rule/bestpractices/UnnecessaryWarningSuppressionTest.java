@@ -18,8 +18,10 @@ class UnnecessaryWarningSuppressionTest extends PmdRuleTst {
 
     @Override
     protected Collection<? extends Rule> getExtraRules() {
-        return listOf(new FakeRuleThatReportsIncrements(), new FakeRuleThatReportsDecrements());
+        return listOf(new FakeRuleThatReportsIncrements(),
+                      new FakeRuleThatReportsDecrements());
     }
+
 
     static class FakeRuleThatReportsIncrements extends AbstractJavaRulechainRule {
 

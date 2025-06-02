@@ -20,15 +20,18 @@ class RecordComponentStub extends MemberStubBase implements JRecordComponentSymb
 
     private final LazyTypeSig type;
 
+
     RecordComponentStub(ClassStub classStub, String name, String descriptor, String signature) {
         super(classStub, name, JRecordComponentSymbol.RECORD_COMPONENT_MODIFIERS);
         this.type = new LazyTypeSig(classStub, descriptor, signature);
     }
 
+
     @Override
     public JTypeMirror getTypeMirror(Substitution substitution) {
         return type.get(substitution);
     }
+
 
     @Override
     public void acceptTypeAnnotation(int typeRef, @Nullable TypePath path, SymAnnot annot) {

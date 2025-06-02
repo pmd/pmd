@@ -17,13 +17,12 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+
 /**
  * <code>if (x != y) { diff(); } else { same(); }</code> and<br>
  * <code>(!x ? diff() : same());</code>
  *
- * <p>
- * XPath can handle the easy cases, e.g.:
- * </p>
+ * <p>XPath can handle the easy cases, e.g.:</p>
  *
  * <pre>
  *    //IfStatement[
@@ -33,20 +32,16 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  *        UnaryExpressionNotPlusMinus[@Image="!"]]]
  * </pre>
  *
- * <p>
- * But "&amp;&amp;" and "||" are difficult, since we need a match for <i>all</i>
+ * <p>But "&amp;&amp;" and "||" are difficult, since we need a match for <i>all</i>
  * children instead of just one. This can be done by using a double-negative,
- * e.g.:
- * </p>
+ * e.g.:</p>
  *
  * <pre>
  *    not(*[not(<i>matchme</i>)])
  * </pre>
  *
- * <p>
- * Still, XPath is unable to handle arbitrarily nested cases, since it lacks
- * recursion, e.g.:
- * </p>
+ * <p>Still, XPath is unable to handle arbitrarily nested cases, since it lacks
+ * recursion, e.g.:</p>
  *
  * <pre>
  * if (((x != !y)) || !(x)) {
@@ -69,9 +64,11 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTIfStatement node, Object data) {
         // look for "if (match) ..; else .."
-        if (node.getNumChildren() == 3 && isMatch(node.getCondition())) {
-            if (!getProperty(IGNORE_ELSE_IF) || !(node.getElseBranch() instanceof ASTIfStatement)
-                    && !(node.getParent() instanceof ASTIfStatement)) {
+        if (node.getNumChildren() == 3
+            && isMatch(node.getCondition())) {
+            if (!getProperty(IGNORE_ELSE_IF)
+                || !(node.getElseBranch() instanceof ASTIfStatement)
+                && !(node.getParent() instanceof ASTIfStatement)) {
                 asCtx(data).addViolation(node);
             }
         }
@@ -94,7 +91,8 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
 
     private static boolean isUnaryNot(ASTExpression node) {
         // look for "!x"
-        return node instanceof ASTUnaryExpression && ((ASTUnaryExpression) node).getOperator().equals(UnaryOp.NEGATION);
+        return node instanceof ASTUnaryExpression
+            && ((ASTUnaryExpression) node).getOperator().equals(UnaryOp.NEGATION);
     }
 
     private static boolean isNotEquals(ASTExpression node) {
@@ -103,8 +101,9 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         }
         ASTInfixExpression infix = (ASTInfixExpression) node;
         // look for "x != y"
-        return infix.getOperator().equals(BinaryOp.NE) && !(infix.getLeftOperand() instanceof ASTNullLiteral)
-                && !(infix.getRightOperand() instanceof ASTNullLiteral);
+        return infix.getOperator().equals(BinaryOp.NE)
+            && !(infix.getLeftOperand() instanceof ASTNullLiteral)
+            && !(infix.getRightOperand() instanceof ASTNullLiteral);
     }
 
     private static boolean isConditionalWithAllMatches(ASTExpression node) {

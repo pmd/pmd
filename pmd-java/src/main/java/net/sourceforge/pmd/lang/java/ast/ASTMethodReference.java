@@ -24,11 +24,10 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
  * </pre>
  */
 public final class ASTMethodReference extends AbstractJavaExpr
-        implements
-            QualifiableExpression,
-            LeftRecursiveNode,
-            MethodUsage,
-            FunctionalExpression {
+    implements QualifiableExpression,
+               LeftRecursiveNode,
+               MethodUsage,
+               FunctionalExpression {
 
     private JMethodSig functionalMethod;
     private OverloadSelectionResult compileTimeDecl;
@@ -38,6 +37,7 @@ public final class ASTMethodReference extends AbstractJavaExpr
     ASTMethodReference(int id) {
         super(id);
     }
+
 
     @Override
     public void jjtClose() {
@@ -54,15 +54,16 @@ public final class ASTMethodReference extends AbstractJavaExpr
     }
 
     /**
-     * Returns the LHS, whether it is a type or an expression. Returns null if this
-     * is an unqualified method call.
+     * Returns the LHS, whether it is a type or an expression.
+     * Returns null if this is an unqualified method call.
      */
     public TypeNode getLhs() {
         return AstImplUtil.getChildAs(this, 0, TypeNode.class);
     }
 
     /**
-     * Returns true if this is a constructor reference, e.g. {@code ArrayList::new}.
+     * Returns true if this is a constructor reference,
+     * e.g. {@code ArrayList::new}.
      */
     public boolean isConstructorReference() {
         return JavaTokenKinds.NEW == getLastToken().kind;
@@ -70,31 +71,31 @@ public final class ASTMethodReference extends AbstractJavaExpr
 
     /**
      * Returns the node to the left of the "::". This may be a
-     * {@link ASTTypeExpression type expression}, or an {@link ASTAmbiguousName
-     * ambiguous name}.
+     * {@link ASTTypeExpression type expression}, or an
+     * {@link ASTAmbiguousName ambiguous name}.
      *
-     * <p>
-     * Note that if this is a {@linkplain #isConstructorReference() constructor
-     * reference}, then this can only return a {@linkplain ASTTypeExpression type
-     * expression}.
+     * <p>Note that if this is a {@linkplain #isConstructorReference() constructor reference},
+     * then this can only return a {@linkplain ASTTypeExpression type expression}.
      */
     @Override
     public @NonNull ASTExpression getQualifier() {
         return (ASTExpression) getChild(0);
     }
 
+
     /**
      * Returns the explicit type arguments mentioned after the "::" if they exist.
-     * Type arguments mentioned before the "::", if any, are contained within the
-     * {@linkplain #getQualifier() lhs type}.
+     * Type arguments mentioned before the "::", if any, are contained within
+     * the {@linkplain #getQualifier() lhs type}.
      */
     public @Nullable ASTTypeArguments getExplicitTypeArguments() {
         return firstChild(ASTTypeArguments.class);
     }
 
+
     /**
-     * Returns the method name, or an {@link JConstructorSymbol#CTOR_NAME} if this
-     * is a {@linkplain #isConstructorReference() constructor reference}.
+     * Returns the method name, or an {@link JConstructorSymbol#CTOR_NAME}
+     * if this is a {@linkplain #isConstructorReference() constructor reference}.
      */
     @Override
     public @NonNull String getMethodName() {
@@ -112,8 +113,8 @@ public final class ASTMethodReference extends AbstractJavaExpr
     }
 
     /**
-     * Returns the type of the functional interface. E.g. in
-     * {@code stringStream.map(String::isEmpty)}, this is
+     * Returns the type of the functional interface.
+     * E.g. in {@code stringStream.map(String::isEmpty)}, this is
      * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}.
      *
      * @see #getFunctionalMethod()
@@ -125,8 +126,8 @@ public final class ASTMethodReference extends AbstractJavaExpr
     }
 
     /**
-     * Returns the method that is overridden in the functional interface. E.g. in
-     * {@code stringStream.map(String::isEmpty)}, this is
+     * Returns the method that is overridden in the functional interface.
+     * E.g. in {@code stringStream.map(String::isEmpty)}, this is
      * {@code java.util.function.Function#apply(java.lang.String) -> java.lang.Boolean}
      *
      * @see #getReferencedMethod()
@@ -139,16 +140,14 @@ public final class ASTMethodReference extends AbstractJavaExpr
     }
 
     /**
-     * Returns the method that is referenced. E.g. in
-     * {@code stringStream.map(String::isEmpty)}, this is
+     * Returns the method that is referenced.
+     * E.g. in {@code stringStream.map(String::isEmpty)}, this is
      * {@code java.lang.String.isEmpty() -> boolean}.
      *
-     * <p>
-     * This is called the <i>compile-time declaration</i> of the method reference in
-     * the JLS.
+     * <p>This is called the <i>compile-time declaration</i> of the
+     * method reference in the JLS.
      *
-     * <p>
-     * If no such method can be found, returns {@link TypeSystem#UNRESOLVED_METHOD}.
+     * <p>If no such method can be found, returns {@link TypeSystem#UNRESOLVED_METHOD}.
      *
      * @see #getFunctionalMethod()
      * @see #getTypeMirror()

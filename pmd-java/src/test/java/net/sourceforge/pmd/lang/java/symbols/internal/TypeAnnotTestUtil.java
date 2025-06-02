@@ -36,6 +36,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  */
 public class TypeAnnotTestUtil {
 
+
     static final List<Annotation> ANNOT_A = listOf(createAnnotationInstance(ClassWithTypeAnnotationsInside.A.class));
     static final List<Annotation> ANNOT_B = listOf(createAnnotationInstance(ClassWithTypeAnnotationsInside.B.class));
     static final List<Annotation> ANNOTS_A_B = listOf(ANNOT_A.get(0), ANNOT_B.get(0));
@@ -47,6 +48,7 @@ public class TypeAnnotTestUtil {
     public static JTypeMirror getFieldType(JClassType sym, String fieldName) {
         return sym.getDeclaredField(fieldName).getTypeMirror();
     }
+
 
     public static JMethodSig getMethodType(JClassType sym, String fieldName) {
         return sym.streamMethods(it -> it.nameEquals(fieldName)).findFirst().get();
@@ -60,16 +62,15 @@ public class TypeAnnotTestUtil {
         return sym.getDeclaredMethods().stream().filter(it -> it.nameEquals(fieldName)).findFirst().get();
     }
 
+
     public static void assertHasTypeAnnots(JTypeMirror t, List<Annotation> annots) {
         assertNotNull(t);
-        assertThat(t.getTypeAnnotations(),
-                equalTo(annots.stream().map(a -> SymbolicValue.of(t.getTypeSystem(), a)).collect(Collectors.toSet())));
+        assertThat(t.getTypeAnnotations(), equalTo(annots.stream().map(a -> SymbolicValue.of(t.getTypeSystem(), a)).collect(Collectors.toSet())));
     }
 
     public static void assertHasAnnots(AnnotableSymbol t, List<Annotation> annots) {
         assertNotNull(t);
-        assertThat(t.getDeclaredAnnotations(),
-                equalTo(annots.stream().map(a -> SymbolicValue.of(t.getTypeSystem(), a)).collect(Collectors.toSet())));
+        assertThat(t.getDeclaredAnnotations(), equalTo(annots.stream().map(a -> SymbolicValue.of(t.getTypeSystem(), a)).collect(Collectors.toSet())));
     }
 
     public static <A extends Annotation> A createAnnotationInstance(Class<A> annotationClass) {
@@ -77,36 +78,35 @@ public class TypeAnnotTestUtil {
     }
 
     /**
-     * Creates a fake instance of the annotation class using a {@link Proxy}. The
-     * proxy tries to be a faithful implementation of an annotation, albeit simple.
-     * It can use the provided map to get attribute values. If an attribute is not
-     * provided in the map, it will use the default value defined on the method
-     * declaration. If there is no defined default value, the invocation will fail.
+     * Creates a fake instance of the annotation class using a {@link Proxy}.
+     * The proxy tries to be a faithful implementation of an annotation, albeit simple.
+     * It can use the provided map to get attribute values. If an attribute is
+     * not provided in the map, it will use the default value defined on the
+     * method declaration. If there is no defined default value, the invocation
+     * will fail.
      */
     @SuppressWarnings("unchecked")
-    public static <A extends Annotation> A createAnnotationInstance(Class<A> annotationClass,
-            Map<String, Object> attributes) {
-        return (A) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[]{annotationClass},
-                (proxy, method, args) -> {
-                    if (method.getName().equals("annotationType") && args == null) {
-                        return annotationClass;
-                    } else if (method.getName().equals("toString") && args == null) {
-                        return AnnotationUtils.toString((Annotation) proxy);
-                    } else if (method.getName().equals("hashCode") && args == null) {
-                        return AnnotationUtils.hashCode((Annotation) proxy);
-                    } else if (method.getName().equals("equals") && args.length == 1) {
-                        if (args[0] instanceof Annotation) {
-                            return AnnotationUtils.equals((Annotation) proxy, (Annotation) args[0]);
-                        }
-                        return false;
-                    } else if (attributes.containsKey(method.getName()) && args == null) {
-                        return attributes.get(method.getName());
-                    } else if (method.getDefaultValue() != null && args == null) {
-                        return method.getDefaultValue();
-                    }
+    public static <A extends Annotation> A createAnnotationInstance(Class<A> annotationClass, Map<String, Object> attributes) {
+        return (A) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[] { annotationClass }, (proxy, method, args) -> {
+            if (method.getName().equals("annotationType") && args == null) {
+                return annotationClass;
+            } else if (method.getName().equals("toString") && args == null) {
+                return AnnotationUtils.toString((Annotation) proxy);
+            } else if (method.getName().equals("hashCode") && args == null) {
+                return AnnotationUtils.hashCode((Annotation) proxy);
+            } else if (method.getName().equals("equals") && args.length == 1) {
+                if (args[0] instanceof Annotation) {
+                    return AnnotationUtils.equals((Annotation) proxy, (Annotation) args[0]);
+                }
+                return false;
+            } else if (attributes.containsKey(method.getName()) && args == null) {
+                return attributes.get(method.getName());
+            } else if (method.getDefaultValue() != null && args == null) {
+                return method.getDefaultValue();
+            }
 
-                    throw new UnsupportedOperationException("Proxy does not implement " + method);
-                });
+            throw new UnsupportedOperationException("Proxy does not implement " + method);
+        });
     }
 
     private static Matcher<SymAnnot> matchesAnnot(Annotation o) {
@@ -122,5 +122,6 @@ public class TypeAnnotTestUtil {
             }
         };
     }
+
 
 }

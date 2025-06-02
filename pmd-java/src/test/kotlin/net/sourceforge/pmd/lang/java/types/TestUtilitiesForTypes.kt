@@ -10,9 +10,6 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.assertions.*
 import io.kotest.assertions.print.print
 import io.kotest.matchers.shouldBe
-import java.util.stream.Collectors
-import kotlin.String
-import kotlin.test.assertTrue
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.ast.InvocationNode
 import net.sourceforge.pmd.lang.java.ast.TypeNode
@@ -22,38 +19,39 @@ import net.sourceforge.pmd.lang.java.types.TypeOps.isSameTypeWithSameAnnotations
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import org.hamcrest.Description
+import java.util.stream.Collectors
+import kotlin.String
+import kotlin.test.assertTrue
 
 /*
-   Note: in parser tests, you can get a log for the inference by calling
-   logTypeInference(verbose = true/false)
+    Note: in parser tests, you can get a log for the inference by calling
+    logTypeInference(verbose = true/false)
 
-   Remember to getTypeMirror() / getMethodType() somewhere as the inference
-   is done lazily.
-*/
+    Remember to getTypeMirror() / getMethodType() somewhere as the inference
+    is done lazily.
+ */
 
 val javaParser: JavaParsingHelper = JavaParsingHelper.DEFAULT
 
-val testTypeSystem: TypeSystem
-    get() = JavaParsingHelper.TEST_TYPE_SYSTEM
+val testTypeSystem: TypeSystem get() = JavaParsingHelper.TEST_TYPE_SYSTEM
 
 // bc the method is package private
-val TypeSystem.asmLoader: AsmSymbolResolver
-    get() = this.resolver as AsmSymbolResolver
+val TypeSystem.asmLoader: AsmSymbolResolver get() = this.resolver as AsmSymbolResolver
 
 fun TypeSystem.lub(vararg us: JTypeMirror): JTypeMirror = lub(us.toList())
-
 fun TypeSystem.glb(vararg us: JTypeMirror): JTypeMirror = glb(us.toList())
 
-val TypeSystem.STRING
-    get() = declaration(getClassSymbol(String::class.java)) as JClassType
+val TypeSystem.STRING get() = declaration(getClassSymbol(String::class.java)) as JClassType
 
 typealias TypePair = Pair<JTypeMirror, JTypeMirror>
 
-fun JTypeMirror.getMethodsByName(name: String): List<JMethodSig> =
-    streamMethods { it.simpleName == name }.collect(Collectors.toList())
+
+fun JTypeMirror.getMethodsByName(name: String): List<JMethodSig> = streamMethods { it.simpleName == name }.collect(Collectors.toList())
 
 fun JTypeMirror.shouldBeUnresolvedClass(canonicalName: String) =
-    this.shouldBeA<JClassType> { it.symbol::getCanonicalName shouldBe canonicalName }
+    this.shouldBeA<JClassType> {
+        it.symbol::getCanonicalName shouldBe canonicalName
+    }
 
 infix fun TypeNode.shouldHaveType(expected: JTypeMirror) {
     withClue(this) {
@@ -61,29 +59,40 @@ infix fun TypeNode.shouldHaveType(expected: JTypeMirror) {
         // test considering annotations
         if (!isSameTypeWithSameAnnotations(actual, expected))
             errorCollector.collectOrThrow(
-                failure(Expected(expected.print()), Actual(actual.print()))
+                failure(
+                    Expected(expected.print()),
+                    Actual(actual.print()),
+                )
             )
+
     }
 }
 
-/** A hamcrest matcher usable from Java. */
+
+/**
+ * A hamcrest matcher usable from Java.
+ */
 fun hasType(t: JTypeMirror): org.hamcrest.Matcher<TypeNode> =
     object : org.hamcrest.BaseMatcher<TypeNode>() {
         override fun describeTo(p0: Description) {
             p0.appendText("a node with type $t")
         }
 
-        override fun matches(p0: Any?): Boolean = p0 is TypeNode && TypeTestUtil.isA(t, p0)
+        override fun matches(p0: Any?): Boolean =
+            p0 is TypeNode && TypeTestUtil.isA(t, p0)
     }
 
-/** A hamcrest matcher usable from Java. */
+/**
+ * A hamcrest matcher usable from Java.
+ */
 fun hasType(t: Class<*>): org.hamcrest.Matcher<TypeNode> =
     object : org.hamcrest.BaseMatcher<TypeNode>() {
         override fun describeTo(p0: Description) {
             p0.appendText("a node with type ${t.name}")
         }
 
-        override fun matches(p0: Any?): Boolean = p0 is TypeNode && TypeTestUtil.isA(t, p0)
+        override fun matches(p0: Any?): Boolean =
+            p0 is TypeNode && TypeTestUtil.isA(t, p0)
     }
 
 // pairs of type param name to value
@@ -97,7 +106,8 @@ fun JMethodSig.subst(vararg mapping: Pair<String, JTypeMirror>): JMethodSig {
 }
 
 infix fun JMethodSig?.shouldBeSomeInstantiationOf(m: JMethodSig): JMethodSig {
-    if (this == null) fail("Got null, expected some instantiation of $m")
+    if (this == null)
+        fail("Got null, expected some instantiation of $m")
 
     this::getSymbol shouldBe m.symbol
     this::getArity shouldBe m.arity
@@ -108,21 +118,26 @@ infix fun JMethodSig?.shouldBeSomeInstantiationOf(m: JMethodSig): JMethodSig {
 }
 
 fun JMethodSig?.shouldMatchMethod(
-    named: String,
-    declaredIn: JTypeMirror? = null,
-    withFormals: List<JTypeMirror>? = null,
-    returning: JTypeMirror? = null,
+        named: String,
+        declaredIn: JTypeMirror? = null,
+        withFormals: List<JTypeMirror>? = null,
+        returning: JTypeMirror? = null
 ): JMethodSig {
-    if (this == null) fail("Expected non-null result")
+    if (this == null)
+        fail("Expected non-null result")
 
     withClue(this) {
         this::getName shouldBe named
 
-        if (declaredIn != null) this::getDeclaringType shouldBe declaredIn
+        if (declaredIn != null)
+            this::getDeclaringType shouldBe declaredIn
 
-        if (withFormals != null) this::getFormalParameters shouldBe withFormals
+        if (withFormals != null)
+            this::getFormalParameters shouldBe withFormals
 
-        if (returning != null) this::getReturnType shouldBe returning
+        if (returning != null)
+            this::getReturnType shouldBe returning
+
     }
     return this
 }
@@ -132,15 +147,18 @@ fun InvocationNode.shouldUseUncheckedConversion() {
 }
 
 fun JTypeMirror.shouldBeCaptureOf(wild: JWildcardType) =
-    this.shouldBeA<JTypeVar> {
-        it.isCaptured shouldBe true
-        if (wild.isLowerBound) it.lowerBound shouldBe wild.asLowerBound()
-        else it.upperBound shouldBe wild.asUpperBound()
-    }
+        this.shouldBeA<JTypeVar> {
+            it.isCaptured shouldBe true
+            if (wild.isLowerBound)
+                it.lowerBound shouldBe wild.asLowerBound()
+            else
+                it.upperBound shouldBe wild.asUpperBound()
+        }
+
 
 /**
- * assertSubtypeOrdering(a, b, c) asserts that a >: b >: c In other words, the supertypes are on the
- * left, subtypes on the right
+ * assertSubtypeOrdering(a, b, c) asserts that a >: b >: c
+ * In other words, the supertypes are on the left, subtypes on the right
  */
 fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
     for ((a, b) in ts.zip(ts.asList().drop(1))) {
@@ -148,17 +166,13 @@ fun assertSubtypeOrdering(vararg ts: JTypeMirror) {
     }
 }
 
-fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType =
-    withTypeArguments(listOf(m1, *mirror))
+fun JClassType.parameterize(m1: JTypeMirror, vararg mirror: JTypeMirror): JClassType = withTypeArguments(listOf(m1, *mirror))
 
-fun assertSubtype(
-    t: JTypeMirror,
-    s: JTypeMirror,
-    capture: Boolean = true,
-    passes: Convertibility.() -> Boolean,
-) {
+fun assertSubtype(t: JTypeMirror, s: JTypeMirror, capture: Boolean = true, passes: Convertibility.() -> Boolean) {
     val res = if (capture) TypeOps.isConvertiblePure(t, s) else TypeOps.isConvertibleNoCapture(t, s)
-    assertTrue("$t \n\t\t<: $s") { res.passes() }
+    assertTrue("$t \n\t\t<: $s") {
+        res.passes()
+    }
 }
 
 infix fun JTypeMirror.shouldSubtypeNoCapture(s: JTypeMirror) {
@@ -170,16 +184,16 @@ infix fun JTypeMirror.shouldNotSubtypeNoCapture(s: JTypeMirror) {
 }
 
 infix fun JTypeMirror.shouldBeSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other) { bySubtyping() }
+    assertSubtype(this, other)  { bySubtyping() }
     // assertSubtype(other, this, SubtypeResult.definitely(this == other))
 }
 
 infix fun JTypeMirror.shouldNotBeSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other) { never() }
+    assertSubtype(this, other)  { never() }
 }
 
 infix fun JTypeMirror.shouldBeUncheckedSubtypeOf(other: JTypeMirror) {
-    assertSubtype(this, other) { withUncheckedWarning() }
+    assertSubtype(this, other)  { withUncheckedWarning() }
 }
 
 infix fun JTypeMirror.shouldBeUnrelatedTo(other: JTypeMirror) {
@@ -189,7 +203,9 @@ infix fun JTypeMirror.shouldBeUnrelatedTo(other: JTypeMirror) {
 }
 
 /** A type that binds to a capture variable for the given wildcard. */
-fun captureMatcher(wild: JWildcardType): JTypeVar = CaptureMatcher(wild)
+fun captureMatcher(wild: JWildcardType): JTypeVar =
+        CaptureMatcher(wild)
+
 
 fun JTypeMirror.shouldBePrimitive(kind: JPrimitiveType.PrimitiveTypeKind) {
     this shouldBe typeSystem.getPrimitive(kind)
@@ -197,15 +213,19 @@ fun JTypeMirror.shouldBePrimitive(kind: JPrimitiveType.PrimitiveTypeKind) {
 
 fun canIntersect(t: JTypeMirror, s: JTypeMirror, vararg others: JTypeMirror): Boolean {
     val comps = listOf(t, s, *others)
-    return comps.filter { it.isExlusiveIntersectionBound }.size <= 1 &&
-        comps.none { it.isPrimitive || it.isGenericTypeDeclaration }
+    return comps.filter { it.isExlusiveIntersectionBound }.size <= 1
+            && comps.none { it.isPrimitive || it.isGenericTypeDeclaration }
 }
 
 /** If so, there can only be one in a well formed intersection. */
 val JTypeMirror.isExlusiveIntersectionBound
-    get() = this is JArrayType || this is JClassType && this.symbol.isClass || this is JTypeVar
+    get() = this is JArrayType
+            || this is JClassType && this.symbol.isClass
+            || this is JTypeVar
 
-/** Was added in java 12. */
+/**
+ * Was added in java 12.
+ */
 @Suppress("UNCHECKED_CAST")
 val <T> Class<T>.arrayType: Class<Array<T>>
     get() {

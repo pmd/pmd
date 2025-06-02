@@ -2,6 +2,7 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
+
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.annotation.ElementType;
@@ -27,45 +28,43 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
+
 /**
- * Abstraction over a {@link Class} instance. This is not a type, it's the
- * *declaration* of a type. For example, a class symbol representing a generic
- * class can provide access to the formal type parameters, but the symbol does
- * not represent a specific parametrization of a type.
+ * Abstraction over a {@link Class} instance. This is not a type, it's
+ * the *declaration* of a type. For example, a class symbol representing
+ * a generic class can provide access to the formal type parameters, but
+ * the symbol does not represent a specific parametrization of a type.
  *
- * <p>
- * Class symbols represent the full range of types represented by {@link Class}:
+ * <p>Class symbols represent the full range of types represented by {@link Class}:
  * classes, interfaces, arrays, and primitives. This excludes type variables,
  * intersection types, parameterized types, wildcard types, etc., which are only
  * compile-time constructs.
  *
- * <p>
- * Class symbols are used to back {@link JClassType}, {@link JArrayType}, and
- * {@link JPrimitiveType}. See {@link JTypeMirror#getSymbol()}.
+ * <p>Class symbols are used to back {@link JClassType}, {@link JArrayType},
+ * and {@link JPrimitiveType}. See {@link JTypeMirror#getSymbol()}.
  *
  * @since 7.0.0
  */
-public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol, BoundToNode<ASTTypeDeclaration> {
+public interface JClassSymbol extends JTypeDeclSymbol,
+                                      JTypeParameterOwnerSymbol,
+                                      BoundToNode<ASTTypeDeclaration> {
+
 
     /**
-     * Returns the binary name of this type, as specified by the JLS: <a href=
-     * "https://docs.oracle.com/javase/specs/jls/se7/html/jls-13.html#jls-13.1">the
-     * JLS</a>. For array types this returns the binary name of the component
-     * followed by "[]". This differs from {@link Class#getName()}, which for array
-     * types outputs an <i>internal name</i>.
+     * Returns the binary name of this type, as specified by the JLS:
+     * <a href="https://docs.oracle.com/javase/specs/jls/se7/html/jls-13.html#jls-13.1">the JLS</a>.
+     * For array types this returns the binary name of the component followed by "[]".
+     * This differs from {@link Class#getName()}, which for array types outputs an
+     * <i>internal name</i>.
      *
-     * <p>
-     * For example:
-     * 
+     * <p>For example:
      * <pre>{@code
      * int.class.getName() == "int"
      * int[].class.getName() == "[I"
      * String.class.getName() == "java.lang.String"
      * String[].class.getName() == "[Ljava.lang.String;"
      * }</pre>
-     * 
      * whereas
-     * 
      * <pre>{@code
      * symbolOf(int.class).getBinaryName() == "int"
      * symbolOf(int[].class).getBinaryName() == "int[]"
@@ -76,6 +75,7 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
     @NonNull
     String getBinaryName();
 
+
     /**
      * Returns the simple name of this class, as specified by
      * {@link Class#getCanonicalName()}.
@@ -83,20 +83,19 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
     @Nullable
     String getCanonicalName();
 
+
     /**
-     * Returns the method or constructor this symbol is declared in, if it
-     * represents a {@linkplain #isLocalClass() local class declaration} or an
-     * anonymous class declaration.
+     * Returns the method or constructor this symbol is declared in, if
+     * it represents a {@linkplain #isLocalClass() local class declaration}
+     * or an anonymous class declaration.
      *
-     * <p>
-     * Notice, that this returns null also if this class is local to a class or
-     * instance initializer, a field initializer, and some other special
-     * circumstances.
+     * <p>Notice, that this returns null also if this class is local to
+     * a class or instance initializer, a field initializer, and some other
+     * special circumstances.
      *
      * @see Class#getEnclosingMethod()
      */
-    @Nullable
-    JExecutableSymbol getEnclosingMethod();
+    @Nullable JExecutableSymbol getEnclosingMethod();
 
     @Override
     default JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
@@ -104,12 +103,14 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
         return enclosingMethod != null ? enclosingMethod : getEnclosingClass();
     }
 
+
     /**
      * Returns the member classes declared directly in this class.
      *
      * @see Class#getDeclaredClasses()
      */
     List<JClassSymbol> getDeclaredClasses();
+
 
     /** Returns a class with the given name defined in this class. */
     @Nullable
@@ -122,43 +123,46 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
         return null;
     }
 
+
     /**
-     * Returns the methods declared directly in this class. <i>This excludes bridges
-     * and other synthetic methods.</i>
+     * Returns the methods declared directly in this class.
+     * <i>This excludes bridges and other synthetic methods.</i>
      *
-     * <p>
-     * For an array type T[], to the difference of {@link Class}, this method
-     * returns a one-element list with the {@link Object#clone()} method, as if
-     * declared like so: {@code public final T[] clone() {...}}.
+     * <p>For an array type T[], to the difference of {@link Class},
+     * this method returns a one-element list with the {@link Object#clone()}
+     * method, as if declared like so: {@code public final T[] clone() {...}}.
      *
      * @see Class#getDeclaredMethods()
      */
     List<JMethodSymbol> getDeclaredMethods();
 
+
     /**
-     * Returns the constructors declared by this class. <i>This excludes synthetic
-     * constructors.</i>
+     * Returns the constructors declared by this class.
+     * <i>This excludes synthetic constructors.</i>
      *
-     * <p>
-     * For an array type T[], and to the difference of {@link Class}, this should
-     * return a one-element list with a constructor having the same modifiers as the
-     * array type, and a single {@code int} parameter.
+     * <p>For an array type T[], and to the difference of {@link Class},
+     * this should return a one-element list with a constructor
+     * having the same modifiers as the array type, and a single
+     * {@code int} parameter.
      *
      * @see Class#getDeclaredConstructors()
      */
     List<JConstructorSymbol> getConstructors();
 
+
     /**
-     * Returns the fields declared directly in this class. <i>This excludes
-     * synthetic fields.</i>
+     * Returns the fields declared directly in this class.
+     * <i>This excludes synthetic fields.</i>
      *
-     * <p>
-     * For arrays, and to the difference of {@link Class}, this should return a
-     * one-element list with the {@code public final int length} field.
+     * <p>For arrays, and to the difference of {@link Class},
+     * this should return a one-element list with the
+     * {@code public final int length} field.
      *
      * @see Class#getDeclaredFields()
      */
     List<JFieldSymbol> getDeclaredFields();
+
 
     /** Returns a field with the given name defined in this class. */
     @Nullable
@@ -172,49 +176,56 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
     }
 
     /**
-     * Returns a list with all enum constants. If this symbol does not represent an
-     * enum, returns an empty list. The returned list is a subset of
-     * {@link #getDeclaredFields()}. The order of fields denotes the normal order of
-     * enum constants.
+     * Returns a list with all enum constants. If this symbol does
+     * not represent an enum, returns an empty list. The returned list
+     * is a subset of {@link #getDeclaredFields()}. The order of fields
+     * denotes the normal order of enum constants.
      */
     default @NonNull List<JFieldSymbol> getEnumConstants() {
         return Collections.emptyList();
     }
 
+
     /**
-     * Returns a list with all record components. If this symbol does not represent
-     * a record, returns an empty list. The order of values denotes the normal order
-     * of components.
+     * Returns a list with all record components. If this symbol does
+     * not represent a record, returns an empty list. The order of values
+     * denotes the normal order of components.
      */
     default @NonNull List<JRecordComponentSymbol> getRecordComponents() {
         return Collections.emptyList();
     }
 
+
     /** Returns the list of super interface types, under the given substitution. */
     List<JClassType> getSuperInterfaceTypes(Substitution substitution);
 
+
     /** Returns the superclass type, under the given substitution. */
-    @Nullable
-    JClassType getSuperclassType(Substitution substitution);
+    @Nullable JClassType getSuperclassType(Substitution substitution);
+
 
     /**
-     * Returns the superclass symbol if it exists. Returns null if this class
-     * represents the class {@link Object}, or a primitive type. If this symbol is
-     * an interface, returns the symbol for {@link Object}.
+     * Returns the superclass symbol if it exists. Returns null if this
+     * class represents the class {@link Object}, or a primitive type.
+     * If this symbol is an interface, returns the symbol for {@link Object}.
      */
     @Nullable
     JClassSymbol getSuperclass();
 
+
     /** Returns the direct super-interfaces of this class or interface symbol. */
     List<JClassSymbol> getSuperInterfaces();
+
 
     default boolean isAbstract() {
         return Modifier.isAbstract(getModifiers());
     }
 
+
     /** Returns the component symbol, returns null if this is not an array. */
     @Nullable
     JTypeDeclSymbol getArrayComponent();
+
 
     boolean isArray();
 
@@ -232,17 +243,14 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
 
     /**
      * Return the list of permitted subclasses or subinterfaces, as defined in the
-     * {@code permits} clause of a sealed class or interface. If this class is
-     * sealed but has no permits clause, the permitted subtypes are inferred from
-     * the types in the compilation unit. If the class is not sealed, returns an
-     * empty list.
+     * {@code permits} clause of a sealed class or interface. If this class is sealed
+     * but has no permits clause, the permitted subtypes are inferred from the types
+     * in the compilation unit. If the class is not sealed, returns an empty list.
      *
-     * <p>
-     * Note that an enum class for which some constants declare a body is
-     * technically implicitly sealed, and implicitly permits only the anonymous
-     * classes for those enum constants. For consistency, this method will return
-     * only symbols that have a canonical name, and therefore always return an empty
-     * list for enums.
+     * <p>Note that an enum class for which some constants declare a body is technically
+     * implicitly sealed, and implicitly permits only the anonymous classes for those enum
+     * constants. For consistency, this method will return only symbols that have a canonical
+     * name, and therefore always return an empty list for enums.
      *
      * @see #isSealed()
      */
@@ -252,16 +260,14 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
 
     /**
      * Return true if this type is sealed. Then it has a non-empty list of permitted
-     * subclasses (or it is a compile-time error). Note that there is no trace of
-     * the non-sealed modifier in class files. A class must have the
-     * {@code non-sealed} modifier if it is not sealed, not final, and has a sealed
-     * supertype.
+     * subclasses (or it is a compile-time error). Note that there is no trace of the
+     * non-sealed modifier in class files. A class must have the {@code non-sealed}
+     * modifier if it is not sealed, not final, and has a sealed supertype.
      *
-     * <p>
-     * Note that an enum class for which some constants declare a body is
-     * technically implicitly sealed, and implicitly permits only the anonymous
-     * classes for those enum constants. For consistency with
-     * {@link #getPermittedSubtypes()}, we treat such enums as not sealed.
+     * <p>Note that an enum class for which some constants declare a body is technically
+     * implicitly sealed, and implicitly permits only the anonymous classes for those enum
+     * constants. For consistency with {@link #getPermittedSubtypes()}, we treat such enums
+     * as not sealed.
      *
      * @see #getPermittedSubtypes()
      */
@@ -270,33 +276,31 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
     }
 
     /**
-     * Return true if this type is final, that is, does not admit subtypes. Note
-     * that array types have both modifiers final and abstract. Note also that enum
-     * classes may be non-final if they have constants that declare an anonymous
-     * body.
+     * Return true if this type is final, that is, does not admit subtypes. Note that
+     * array types have both modifiers final and abstract. Note also that enum classes
+     * may be non-final if they have constants that declare an anonymous body.
      */
     default boolean isFinal() {
         return Modifier.isFinal(getModifiers());
     }
 
     /**
-     * Return the simple names of all annotation attributes. If this is not an
-     * annotation type, return an empty set.
+     * Return the simple names of all annotation attributes. If this
+     * is not an annotation type, return an empty set.
      */
     default PSet<String> getAnnotationAttributeNames() {
         return HashTreePSet.empty();
     }
 
     /**
-     * Return the default value of the attribute if this is an annotation type with
-     * a default. Return null if this is not an annotation type, if there is no such
-     * attribute, or the attribute has no default value. If the name is in the
-     * {@linkplain #getAnnotationAttributeNames() attribute name set}, then the null
-     * return value can only mean that the attribute exists but has no default
-     * value.
+     * Return the default value of the attribute if this is an annotation type
+     * with a default. Return null if this is not an annotation type, if there
+     * is no such attribute, or the attribute has no default value. If the name
+     * is in the {@linkplain  #getAnnotationAttributeNames() attribute name set},
+     * then the null return value can only mean that the attribute exists but has
+     * no default value.
      *
-     * @param attrName
-     *            Attribute name
+     * @param attrName Attribute name
      */
     default @Nullable SymbolicValue getDefaultAnnotationAttributeValue(String attrName) {
         if (!isAnnotation()) {
@@ -311,22 +315,24 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
     }
 
     /**
-     * Returns the retention policy of this annotation, if this is an annotation
-     * symbol. Otherwise returns null.
+     * Returns the retention policy of this annotation, if this is an
+     * annotation symbol. Otherwise returns null.
      */
     default @Nullable RetentionPolicy getAnnotationRetention() {
         if (!isAnnotation()) {
             return null;
         }
-        return Optional.ofNullable(getDeclaredAnnotation(Retention.class)).map(annot -> annot.getAttribute("value"))
-                .filter(value -> value instanceof SymEnum).map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))
-                .orElse(RetentionPolicy.CLASS);
+        return Optional.ofNullable(getDeclaredAnnotation(Retention.class))
+                       .map(annot -> annot.getAttribute("value"))
+                       .filter(value -> value instanceof SymEnum)
+                       .map(value -> ((SymEnum) value).toEnum(RetentionPolicy.class))
+                       .orElse(RetentionPolicy.CLASS);
     }
 
     /**
-     * Return whether annotations of this annotation type apply to the given
-     * construct, as per the {@link Target} annotation. Return false if this is not
-     * an annotation.
+     * Return whether annotations of this annotation type apply to the
+     * given construct, as per the {@link Target} annotation. Return
+     * false if this is not an annotation.
      */
     default boolean annotationAppliesTo(ElementType elementType) {
         if (!isAnnotation()) {
@@ -343,16 +349,17 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
     }
 
     /**
-     * This returns true if this is not an interface, primitive or array. Note that
-     * this includes in particular records and enums.
+     * This returns true if this is not an interface, primitive or array.
+     * Note that this includes in particular records and enums.
      */
     default boolean isClass() {
         return !isInterface() && !isArray() && !isPrimitive();
     }
 
+
     /**
-     * Returns the toplevel class containing this class. If this is a toplevel
-     * class, returns this.
+     * Returns the toplevel class containing this class. If this is a
+     * toplevel class, returns this.
      */
     default @NonNull JClassSymbol getNestRoot() {
         JClassSymbol e = this;
@@ -361,6 +368,7 @@ public interface JClassSymbol extends JTypeDeclSymbol, JTypeParameterOwnerSymbol
         }
         return e;
     }
+
 
     @Override
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
