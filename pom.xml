@@ -476,40 +476,6 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>${checkstyle.plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <id>checkstyle-check</id>
-                            <phase>verify</phase>
-                            <goals>
-<!--                                <goal>check</goal>-->
-                            </goals>
-                        </execution>
-                    </executions>
-                    <dependencies>
-                        <dependency>
-                            <groupId>com.puppycrawl.tools</groupId>
-                            <artifactId>checkstyle</artifactId>
-                            <version>${checkstyle.version}</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>net.sourceforge.pmd</groupId>
-                            <artifactId>pmd-build-tools-config</artifactId>
-                            <version>${pmd.build-tools.version}</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <configLocation>/net/sourceforge/pmd/pmd-checkstyle-config.xml</configLocation>
-                        <suppressionsLocation>/net/sourceforge/pmd/pmd-checkstyle-suppressions.xml</suppressionsLocation>
-                        <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                        <excludeGeneratedSources>true</excludeGeneratedSources>
-                        <includes>**/*.java,**/*.kt</includes>
-                        <resourceIncludes>**/*.properties,**/*.less</resourceIncludes>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>3.5.0</version>
                 </plugin>
