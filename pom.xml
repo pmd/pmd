@@ -719,12 +719,14 @@
                             </format>
                         </formats>
                         <java>
+<!--                            <googleJavaFormat/>-->
+<!--                            <palantirJavaFormat/>-->
                             <removeUnusedImports/>
                             <eclipse>
-                                <file>${maven.multiModuleProjectDirectory}.config/pmd-eclipse-code-formatter.xml</file>
+<!--                                <file>${maven.multiModuleProjectDirectory}.config/pmd-eclipse-code-formatter.xml</file>-->
                             </eclipse>
                             <importOrder>
-                                <file>${maven.multiModuleProjectDirectory}.config/pmd-eclipse-imports.importorder</file>
+<!--                                <file>${maven.multiModuleProjectDirectory}.config/pmd-eclipse-imports.importorder</file>-->
                             </importOrder>
                         </java>
                         <kotlin>
