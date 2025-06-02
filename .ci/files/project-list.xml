@@ -3,34 +3,6 @@
 <projectlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:noNamespaceSchemaLocation="projectlist_1_1_0.xsd">
   <description>Standard Projects</description>
-
-  <project>
-    <name>checkstyle</name>
-    <type>git</type>
-    <connection>https://github.com/checkstyle/checkstyle</connection>
-    <tag>checkstyle-9.1</tag>
-
-    <exclude-pattern>.*/target/test-classes/com/puppycrawl/tools/checkstyle/.*</exclude-pattern>
-    <exclude-pattern>.*/target/generated-sources/.*</exclude-pattern>
-    <exclude-pattern>.*/src/test/resources-noncompilable/com/puppycrawl/tools/checkstyle/javaparser/InputJavaParserNoFreezeOnDeeplyNestedLambdas.java</exclude-pattern>
-
-    <build-command><![CDATA[#!/usr/bin/env bash
-if test -e classpath.txt; then
-  exit
-fi
-
-set -e
-
-# Make sure to use java11. This is already installed by build.sh
-export JAVA_HOME=${HOME}/openjdk11
-export PATH=$JAVA_HOME/bin:$PATH
-
-mvn test-compile -B
-mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.txt -B
-]]></build-command>
-    <auxclasspath-command>echo -n "$(pwd)/target/classes:$(pwd)/target/test-classes:"; cat classpath.txt</auxclasspath-command>
-  </project>
-
   <project>
     <name>spring-framework</name>
     <type>git</type>
