@@ -688,4 +688,27 @@ public class OtherSubclass extends BaseClass {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod doesn't play well with UnnecessarySuppressWarning #5804</description>
+        <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="10">@SuppressWarnings</suppressor>
+        </expected-suppressions>
+        <code><![CDATA[
+class BaseClass {
+  void method() {
+    System.out.println("base class");
+  }
+}
+
+class SubClass extends BaseClass {
+    @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
+    void method() {
+        super.method();
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
