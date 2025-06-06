@@ -8140,6 +8140,15 @@
       "contributions": [
         "financial"
       ]
+    },
+    {
+      "login": "cybozu",
+      "name": "Cybozu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2433152?v=4",
+      "profile": "https://www.kintone.com/",
+      "contributions": [
+        "financial"
+      ]
     }
   ],
   "contributorsPerLine": 7,
