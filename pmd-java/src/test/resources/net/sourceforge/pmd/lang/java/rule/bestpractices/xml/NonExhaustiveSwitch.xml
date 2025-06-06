@@ -442,4 +442,34 @@ class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] NonExhaustiveSwitch fails on exhaustive switch with sealed class #5793</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class BugSealedClassTest {
+
+    sealed interface SealedInterface permits SealedClass1, SealedClass2 {
+    }
+
+    static final class SealedClass1 implements SealedInterface {
+        void method1() {
+        }
+    }
+
+    static final class SealedClass2 implements SealedInterface {
+        void method2() {
+        }
+    }
+
+    void testSealedClass(SealedInterface sealedInterface) {
+        switch (sealedInterface) {
+            case SealedClass1 sealedClass1 -> sealedClass1.method1();
+            case SealedClass2 sealedClass2 -> sealedClass2.method2();
+            case null -> throw new IllegalStateException("Unexpected value: " + sealedInterface);
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
