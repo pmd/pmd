@@ -19,6 +19,9 @@ public class Foo {
     <test-code>
         <description>Debug statements with a purpose</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="4">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 @SuppressWarnings('PMD.AvoidDebugStatements') //logging classes may need the debugs
 public class LoggingManager {

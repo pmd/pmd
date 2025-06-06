@@ -442,6 +442,9 @@ public class Test {
             <message>Ensure that resources like this Connection object are closed after use</message>
             <message>Ensure that resources like this Statement object are closed after use</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="12">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 import java.sql.Connection;
 import java.sql.DriverManager;
