@@ -118,7 +118,7 @@ public class CppCpdLexer extends JavaccCpdLexer {
             if (ignoreLiteralSequences || ignoreIdentifierAndLiteralSeqences) {
                 final int kind = currentToken.getKind();
                 if (isDiscardingToken()) {
-                    if (currentToken == discardingTokensUntil) { // NOPMD - intentional check for reference equality
+                    if (currentToken == discardingTokensUntil) {
                         discardingTokensUntil = null;
                         discardCurrent = true;
                     }

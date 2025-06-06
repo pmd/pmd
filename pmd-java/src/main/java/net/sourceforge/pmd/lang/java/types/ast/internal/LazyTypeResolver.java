@@ -439,7 +439,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
                 JTypeMirror resolved = isUnresolved(lhs) ? rhs : lhs;
                 return resolved.isNumeric() ? unaryNumericPromotion(resolved)
-                                            : resolved == ts.BOOLEAN ? resolved  // NOPMD #3205
+                                            : resolved == ts.BOOLEAN ? resolved
                                                                      : ts.ERROR;
             } else {
                 // anything else, including error types & such: ERROR
@@ -474,11 +474,11 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
     }
 
     private boolean isUnresolved(JTypeMirror t) {
-        return t == ts.UNKNOWN;  // NOPMD CompareObjectsWithEquals
+        return t == ts.UNKNOWN;
     }
 
     private boolean isUnresolved(JMethodSig m) {
-        return m == null || m == ts.UNRESOLVED_METHOD;  // NOPMD CompareObjectsWithEquals
+        return m == null || m == ts.UNRESOLVED_METHOD;
     }
 
     @Override

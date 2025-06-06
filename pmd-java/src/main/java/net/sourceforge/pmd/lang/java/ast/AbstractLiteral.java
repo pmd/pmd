@@ -29,7 +29,7 @@ abstract class AbstractLiteral extends AbstractJavaExpr {
         // its parentheses have not yet been set yet so the text is
         // just the literal.
         assert getParenthesisDepth() == 0;
-        assert getFirstToken() == getLastToken(); // NOPMD
+        assert getFirstToken() == getLastToken();
         literalToken = getFirstToken();
     }
 
