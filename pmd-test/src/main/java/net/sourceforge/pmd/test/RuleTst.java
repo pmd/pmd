@@ -244,6 +244,10 @@ public abstract class RuleTst {
         if (!test.getExpectedEndLineNumbers().isEmpty()) {
             System.out.println(" -> Expected   end line numbers: " + test.getExpectedEndLineNumbers());
         }
+        if (test.hasExpectedSuppressions()) {
+            System.out.println(" -> Expected " + test.getExpectedSuppressions().size() + " suppression(s), "
+                    + report.getSuppressedViolations().size() + " found.");
+        }
         System.out.println();
         StringWriter reportOutput = new StringWriter();
         TextRenderer renderer = new TextRenderer();
