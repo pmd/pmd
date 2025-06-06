@@ -4,7 +4,10 @@
 
 package net.sourceforge.pmd.test.schema;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -27,6 +30,7 @@ public class RuleTestDescriptor {
     private List<Integer> expectedLineNumbers;
     private List<Integer> expectedEndLineNumbers;
     private List<String> expectedMessages;
+    private final List<Map.Entry<Integer, String>> expectedSuppressions = new ArrayList<>();
     private int lineNumber;
 
     public RuleTestDescriptor(int index, Rule rule) {
@@ -134,5 +138,13 @@ public class RuleTestDescriptor {
 
     public void setLineNumber(int lineNumber) {
         this.lineNumber = lineNumber;
+    }
+
+    public void recordExpectedSuppression(String line, String suppressor) {
+        this.expectedSuppressions.add(new AbstractMap.SimpleEntry<>(Integer.valueOf(line), suppressor));
+    }
+
+    public List<Map.Entry<Integer, String>> getExpectedSuppressions() {
+        return expectedSuppressions;
     }
 }

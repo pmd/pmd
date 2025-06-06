@@ -100,9 +100,9 @@ public abstract class RuleTst {
         rule = reinitializeRule(rule);
 
         Map<PropertyDescriptor<?>, Object> oldProperties = rule.getPropertiesByPropertyDescriptor();
+        Report report = null;
         try {
             int res;
-            Report report;
             try {
                 // Set test specific properties onto the Rule
                 if (test.getProperties() != null) {
@@ -130,18 +130,32 @@ public abstract class RuleTst {
                 e.printStackTrace();
                 throw new RuntimeException('"' + test.getDescription() + "\" failed", e);
             }
-            if (test.getExpectedProblems() != res) {
-                printReport(test, report);
-            }
             assertEquals(test.getExpectedProblems(), res,
-                         '"' + test.getDescription() + "\" resulted in wrong number of failures,");
+                    '"' + test.getDescription() + "\" resulted in wrong number of failures,");
             assertMessages(report, test);
             assertLineNumbers(report, test);
+            assertSuppressions(report, test);
+        } catch (AssertionError e) {
+            if (report != null) {
+                printReport(test, report);
+            }
+            throw e;
         } finally {
             // Restore old properties
             for (Map.Entry<PropertyDescriptor<?>, Object> entry : oldProperties.entrySet()) {
                 rule.setProperty((PropertyDescriptor) entry.getKey(), entry.getValue());
             }
+        }
+    }
+
+    private void assertSuppressions(Report report, RuleTestDescriptor test) {
+        List<Map.Entry<Integer, String>> expectedSuppressions = test.getExpectedSuppressions();
+        assertEquals(expectedSuppressions.size(), report.getSuppressedViolations().size(), "wrong number of suppressed violations");
+        for (int i = 0; i < expectedSuppressions.size(); i++) {
+            Map.Entry<Integer, String> expectedSuppression = expectedSuppressions.get(i);
+            Report.SuppressedViolation actualSuppression = report.getSuppressedViolations().get(i);
+            assertEquals(expectedSuppression.getKey(), actualSuppression.getRuleViolation().getBeginLine(), "wrong line for suppression");
+            assertEquals(expectedSuppression.getValue(), actualSuppression.getSuppressor().getId(), "wrong suppressor id");
         }
     }
 
@@ -230,6 +244,8 @@ public abstract class RuleTst {
         if (!test.getExpectedEndLineNumbers().isEmpty()) {
             System.out.println(" -> Expected   end line numbers: " + test.getExpectedEndLineNumbers());
         }
+        System.out.println(" -> Expected " + test.getExpectedSuppressions().size() + " suppression(s), "
+                + report.getSuppressedViolations().size() + " found.");
         System.out.println();
         StringWriter reportOutput = new StringWriter();
         TextRenderer renderer = new TextRenderer();
