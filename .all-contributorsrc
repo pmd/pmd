@@ -8131,6 +8131,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "pkernevez",
+      "name": "Kernevez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/338699?v=4",
+      "profile": "https://github.com/pkernevez",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
