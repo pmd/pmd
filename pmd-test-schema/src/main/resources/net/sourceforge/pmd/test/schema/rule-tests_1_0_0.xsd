@@ -52,7 +52,7 @@
                             <complexType>
                                 <simpleContent>
                                     <extension base="string">
-                                        <attribute name="line" type="positiveInteger"/>
+                                        <attribute name="line" type="positiveInteger" use="required"/>
                                     </extension>
                                 </simpleContent>
                             </complexType>
