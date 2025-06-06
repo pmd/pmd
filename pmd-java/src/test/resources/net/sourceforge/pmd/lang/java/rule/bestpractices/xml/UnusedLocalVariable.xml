@@ -308,6 +308,9 @@ public class Foo {
     <test-code>
         <description>unused local with assignment - Suppressed</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="4">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 @SuppressWarnings("unused")
 public class Foo {

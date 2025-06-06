@@ -3,7 +3,7 @@ title: Testing your rules
 tags: [extending, userdocs]
 summary: "Learn how to use PMD's simple test framework for unit testing rules."
 permalink: pmd_userdocs_extending_testing.html
-last_updated: March 2025 (7.12.0)
+last_updated: June 2025 (7.15.0)
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
@@ -165,6 +165,16 @@ The `<test-code>` elements understands the following optional attributes:
 *   **`<expected-messages>`**: Optional element, with `<message>` elements as children.
     Can be used to validate the correct error message, e.g. if the error message references a variable name.
 
+*   **`<expected-suppressions>`**: Optional element, with `<suppressor>` elements as children.
+    Each `<suppressor>` element has an attribute `line`, where the suppression violation occurred and
+    the suppressor's id as the text content. Example:
+    ```xml
+    <expected-suppressions>
+        <suppressor line="5">@SuppressWarnings</suppressor>
+    </expected-suppressions>
+    ```  
+    This is available since PMD 7.15.0.
+
 *   **`<code>`**: Either the `<code>` element or the `<code-ref>` element is required. It provides the actual code
     snippet on which the rule is executed. The code itself is usually wrapped in a "CDATA" section, so that no
     further XML escapes (entity references such as &amp;lt;) are necessary.
@@ -185,7 +195,7 @@ in a "CDATA" section, so that no further XML escapes (entity references such as 
 
 ### Complete XML example
 
-``` xml
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
@@ -201,6 +211,9 @@ in a "CDATA" section, so that no further XML escapes (entity references such as 
             <message>Violation message 1</message>
             <message>Violation message 2</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="20">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class ConsistentReturn {
     public Boolean foo() {
