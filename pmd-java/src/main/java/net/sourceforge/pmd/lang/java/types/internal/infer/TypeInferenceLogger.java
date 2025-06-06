@@ -234,7 +234,7 @@ public interface TypeInferenceLogger {
 
         @Override
         public void logResolutionFail(ResolutionFailure exception) {
-            if (exception.getCallSite() instanceof MethodCallSite && exception != ResolutionFailure.UNKNOWN) { // NOPMD CompareObjectsWithEquals
+            if (exception.getCallSite() instanceof MethodCallSite && exception != ResolutionFailure.UNKNOWN) {
                 ((MethodCallSite) exception.getCallSite()).acceptFailure(exception);
             }
         }

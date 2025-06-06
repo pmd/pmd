@@ -147,7 +147,7 @@ public final class JIntersectionType implements JTypeMirror {
         JTypeMirror newPrimary = primaryBound.subst(subst);
         List<JClassType> myItfs = getInterfaces();
         List<JClassType> newBounds = TypeOps.substClasses(myItfs, subst);
-        return newPrimary == getPrimaryBound() && newBounds == myItfs // NOPMD UseEqualsToCompareObjectReferences
+        return newPrimary == getPrimaryBound() && newBounds == myItfs
                ? this
                : new JIntersectionType(ts, newPrimary, newBounds);
     }

@@ -196,7 +196,7 @@ public final class CpdAnalysis implements AutoCloseable {
             LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
             MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize());
             List<Match> matches = matchAlgorithm.findMatches(listener, sourceManager);
-            tokens = null; // NOPMD null it out before rendering
+            tokens = null; // null it out before rendering, might help gc
             LOGGER.debug("Finished: {} duplicates found", matches.size());
 
             CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile, processingErrors);

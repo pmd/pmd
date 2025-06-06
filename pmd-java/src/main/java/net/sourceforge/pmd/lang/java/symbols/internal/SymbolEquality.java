@@ -29,7 +29,6 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
  * synthetic stuff (eg implicit formal parameters, bridge methods),
  * which we must either filter-out or replicate in AST symbols. This is TODO
  */
-@SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class SymbolEquality {
 
     private SymbolEquality() {
