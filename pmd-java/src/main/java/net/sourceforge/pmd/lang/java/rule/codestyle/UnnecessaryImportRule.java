@@ -217,6 +217,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         if (fullname != null) {
                             for (String param : fullname.split("\\s*,\\s*")) {
                                 removeReferenceSingleImport(param);
+                                removeReferenceOnDemandImport(param);
                             }
                         }
                     }
