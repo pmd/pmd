@@ -1357,4 +1357,32 @@ public class C {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#2304: [java] static on-demand import in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.lang.Math.*;
+public class Foo {
+    /**
+     * {@see PI}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] on-demand import in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    /**
+     * {@link  ArrayList  arraylist}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
