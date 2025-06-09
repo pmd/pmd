@@ -877,4 +877,32 @@ public class Board {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateField doesn't play well with UnnecessaryWarningSuppression #5785 - case 1</description>
+        <expected-problems>0</expected-problems>
+<!--        <expected-suppressions>-->
+<!--            <suppressor line="3">@SuppressWarnings</suppressor>-->
+<!--        </expected-suppressions>-->
+        <code><![CDATA[
+@SuppressWarnings("unused")
+public class Foo {
+    private String foo;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateField doesn't play well with UnnecessaryWarningSuppression #5785 - case 2</description>
+        <expected-problems>0</expected-problems>
+<!--        <expected-suppressions>-->
+<!--            <suppressor line="3">@SuppressWarnings</suppressor>-->
+<!--        </expected-suppressions>-->
+        <code><![CDATA[
+public class Foo {
+    @SuppressWarnings("unused")
+    private String foo;
+}
+]]></code>
+    </test-code>
 </test-data>
