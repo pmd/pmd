@@ -488,4 +488,49 @@ public class Person {
         </example>
     </rule>
 
+
+    <rule name="AvoidBooleanMethodParameters"
+          language="apex"
+          since="7.15.0"
+          message="Avoid Boolean method parameters"
+          class="net.sourceforge.pmd.lang.apex.rule.design.AvoidBooleanMethodParametersRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#avoidbooleanmethodparameters">
+        <description>
+Boolean parameters in a system's API can make method calls difficult to understand and
+maintain. They often indicate that a method is doing more than one thing and
+could benefit from being split into separate methods with more descriptive
+names.
+
+This rule flags any boolean parameters found in public or global methods,
+encouraging developers to use more expressive alternatives such as enums,
+separate methods, or configuration objects.
+        </description>
+        <priority>2</priority>
+        <example>
+<![CDATA[
+// Violates the rule: Uses a Boolean parameter
+public class MyClass {
+  public static void doSomething(Boolean isSomething) {
+    if (isSomething == true) {
+      // Do something
+    } else { 
+      // Do something else, or maybe do nothing if isSomething is null? 
+    }
+  }
+}
+
+// Compliant code: Two separate methods
+public class MyClass {
+  public static void doSomething() {
+    // Do something
+  }
+
+  public static void doSomethingElse() {
+    // Do something else
+  }
+}
+]]>
+        </example>
+    </rule>
+
 </ruleset>
