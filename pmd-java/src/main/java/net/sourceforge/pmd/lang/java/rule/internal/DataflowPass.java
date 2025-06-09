@@ -1032,7 +1032,7 @@ public final class DataflowPass {
                 && enclosingClassScope.equals(((JFieldSymbol) var).getEnclosingClass());
         }
 
-        private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) { // NOPMD UnusedPrivateMethod
+        private static JVariableSymbol getVarIfUnaryAssignment(ASTUnaryExpression node) {
             ASTExpression operand = node.getOperand();
             if (!node.getOperator().isPure() && operand instanceof ASTNamedReferenceExpr) {
                 return ((ASTNamedReferenceExpr) operand).getReferencedSym();

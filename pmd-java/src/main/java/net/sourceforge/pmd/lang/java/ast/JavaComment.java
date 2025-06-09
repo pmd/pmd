@@ -94,7 +94,6 @@ public class JavaComment implements Reportable {
      * True if this is a comment delimiter or an asterisk. This
      * tests the whole parameter and not a prefix/suffix.
      */
-    @SuppressWarnings("PMD.LiteralsFirstInComparisons") // a fp
     public static boolean isMarkupWord(Chars word) {
         return word.length() <= 3
             && (word.contentEquals("*")

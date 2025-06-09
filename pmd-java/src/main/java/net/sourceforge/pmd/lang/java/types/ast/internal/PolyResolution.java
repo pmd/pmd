@@ -576,7 +576,7 @@ public final class PolyResolution {
             case OR:
             case XOR:
             case AND:
-                return ctxType == ts.BOOLEAN ? booleanCtx : getNumericContext(ctxType); // NOPMD CompareObjectsWithEquals
+                return ctxType == ts.BOOLEAN ? booleanCtx : getNumericContext(ctxType);
             case LEFT_SHIFT:
             case RIGHT_SHIFT:
             case UNSIGNED_RIGHT_SHIFT:

@@ -132,7 +132,7 @@ enum ReductionStep {
     }
 
     protected boolean acceptsBound(JTypeMirror bound, InferenceContext infCtx) {
-        return infCtx.isGround(bound) && bound != infCtx.ts.NULL_TYPE; // NOPMD CompareObjectsWithEquals
+        return infCtx.isGround(bound) && bound != infCtx.ts.NULL_TYPE;
     }
 
     /**

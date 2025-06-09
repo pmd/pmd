@@ -439,7 +439,7 @@ final class InferenceContext {
     void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isPrimary) {
         // guard against α <: Object
         // all variables have it, it's useless to propagate it
-        if (kind != BoundKind.UPPER || bound != ts.OBJECT) { // NOPMD CompareObjectsWithEquals
+        if (kind != BoundKind.UPPER || bound != ts.OBJECT) {
             if (parent != null) {
                 parent.onBoundAdded(ivar, kind, bound, isPrimary);
                 return;

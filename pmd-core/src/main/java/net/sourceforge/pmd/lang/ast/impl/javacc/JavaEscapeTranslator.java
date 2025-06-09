@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.document.TextDocument;
  * An implementation of {@link EscapeTranslator} that translates Java
  * unicode escapes.
  */
-@SuppressWarnings("PMD.AssignmentInOperand")
 public final class JavaEscapeTranslator extends BackslashEscapeTranslator {
 
     public JavaEscapeTranslator(TextDocument input) {

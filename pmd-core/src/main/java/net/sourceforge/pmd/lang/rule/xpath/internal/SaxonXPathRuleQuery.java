@@ -63,7 +63,6 @@ public class SaxonXPathRuleQuery {
     private static final SimpleDataKey<AstTreeInfo> SAXON_TREE_CACHE_KEY = DataMap.simpleDataKey("saxon.tree");
 
     private final String xpathExpr;
-    @SuppressWarnings("PMD") // may be useful later, idk
     private final XPathVersion version;
     private final Map<PropertyDescriptor<?>, Object> properties;
     private final XPathHandler xPathHandler;
