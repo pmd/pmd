@@ -75,6 +75,9 @@ public class Foo {
     <test-code>
         <description>[apex] AvoidHardcodingId false positives #776</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class Foo {
     void foo() {
