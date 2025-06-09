@@ -303,5 +303,45 @@ public class Example {
         ]]></code>
     </test-code>
 
+    <test-code>
+    <description>Booleans should not cause a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  private static void doSomething() {
+    Boolean apexIsCool = true;
+    Boolean apexCanBeFun = true;
+    Boolean apexCanBeChallenging = true;
+  }
+}
+        ]]></code>
+    </test-code>
 
+    <test-code>
+    <description>Blobs should not cause a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  private static final String BLOB_VALUE = 'Hello, World!';
+  private static void doSomething() {
+    Blob blob1 = Blob.valueOf(BLOB_VALUE);
+    Blob blob2 = Blob.valueOf(BLOB_VALUE);
+  }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+    <description>Objects should not cause a violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+  private static final String VALUE = 'Hello, World!';
+  private static void doSomething() {
+    Object object1 = VALUE;
+    Object object2 = VALUE;
+  }
+}
+        ]]></code>
+    </test-code>
 </test-data>
