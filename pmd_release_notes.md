@@ -24,6 +24,7 @@ This is a minor release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5738](https://github.com/pmd/pmd/pull/5738): chore: Remove unused private methods in test classes - [Pankraz76](https://github.com/Pankraz76) (@Pankraz76)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
