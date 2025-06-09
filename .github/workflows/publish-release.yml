@@ -81,24 +81,24 @@ jobs:
 
   deploy-to-maven-central:
     needs: [check-version]
-    # use environment maven-central, where secrets are configured for OSSRH_*
+    # use environment maven-central, where secrets are configured for MAVEN_CENTRAL_PORTAL_*
     environment:
       name: maven-central
-      url: https://oss.sonatype.org/content/repositories/snapshots/net/sourceforge/pmd/
+      url: https://repo.maven.apache.org/maven2/net/sourceforge/pmd/
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     defaults:
       run:
         shell: bash
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: ${{ github.event.workflow_run.head_branch }}
       - uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '11'
-          server-id: ossrh
+          server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
@@ -110,8 +110,8 @@ jobs:
           run-id: ${{ github.event.workflow_run.id }}
       - name: Build and publish
         env:
-          MAVEN_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_PORTAL_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PORTAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
           BUILD_CLI_DIST_ONLY: ${{ inputs.build_cli_dist_only }}
         # note: we can't use artifact staging-repository, as the jars are unsigned and javadoc+sources are missing.
@@ -127,12 +127,16 @@ jobs:
             # b) only pmd-cli and pmd-dist
             BUILD_CLI_DIST_MAVEN_OPTION="-pl pmd-cli,pmd-dist"
           fi
+          echo "BUILD_CLI_DIST_MAVEN_OPTION=${BUILD_CLI_DIST_MAVEN_OPTION}"
           
           ./mvnw --show-version --errors --batch-mode \
             deploy \
             -DskipTests \
             ${BUILD_CLI_DIST_MAVEN_OPTION} \
-            -PfastSkip,sign,pmd-release -Dcyclonedx.skip=false
+            -PfastSkip,sign,pmd-release \
+            -Dcyclonedx.skip=false \
+            -Dmaven.javadoc.skip=false \
+            -Dmaven.source.skip=false
 
   deploy-to-sourceforge-files:
     needs: [check-version, deploy-to-maven-central]
