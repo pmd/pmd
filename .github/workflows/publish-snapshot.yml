@@ -110,7 +110,10 @@ jobs:
             -Dmaven.repo.local=.m2/repository \
             deploy \
             -DskipTests \
-            -PfastSkip,sign,pmd-release -Dcyclonedx.skip=false
+            -PfastSkip,sign,pmd-release \
+            -Dcyclonedx.skip=false \
+            -Dmaven.javadoc.skip=false \
+            -Dmaven.source.skip=false
 
   deploy-to-sourceforge-files:
     needs: check-version
