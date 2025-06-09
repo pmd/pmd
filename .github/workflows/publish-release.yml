@@ -449,6 +449,20 @@ jobs:
           # shellcheck disable=SC2029
           ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
                 rm -rf apidocs/*/\"${PMD_VERSION}-SNAPSHOT\""
+          
+          # create a symlink from SNAPSHOT to released version
+          # shellcheck disable=SC2029
+          ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                for i in apidocs/*/\"${PMD_VERSION}\"; do \
+                  ln -s \"${PMD_VERSION}\" \"\$i-SNAPSHOT\"; \
+                done"
+          
+          # (re)create a symlink from latest to released version
+          # shellcheck disable=SC2029
+          ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                for i in apidocs/*/\"${PMD_VERSION}\"; do \
+                  ln -snf \"${PMD_VERSION}\" \"\${i%%${PMD_VERSION}}latest\"; \
+                done"
 
           echo "(Re)creating .htaccess"
           # make sure https://docs.pmd-code.org/apidocs/ shows directory index
