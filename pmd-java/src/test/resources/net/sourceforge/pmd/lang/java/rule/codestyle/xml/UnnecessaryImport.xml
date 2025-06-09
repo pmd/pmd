@@ -1429,4 +1429,20 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#2304: [java] static on-demand import in javadoc method param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Map.*;
+
+public class Foo {
+    /**
+     * {@see Foo#someMethod(String, Entry)}
+     */
+    public void test() {}
+
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
