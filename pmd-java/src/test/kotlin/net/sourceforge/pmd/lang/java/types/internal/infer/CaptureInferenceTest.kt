@@ -5,10 +5,10 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.util.*
 import java.util.function.Supplier
 import java.util.function.ToIntFunction
@@ -424,7 +424,7 @@ class CompletableFuture<T> {
                 """
 import java.lang.annotation.*;
 interface Iterator<Q> { Q next(); }
-interface Function<U,V> { 
+interface Function<U,V> {
     V apply(U u);
 }
 @Target(ElementType.TYPE_USE)
@@ -480,6 +480,123 @@ public class SubClass<T> {
                 returning = boolean
             )
             call.overloadSelectionInfo::isFailed shouldBe false
+        }
+    }
+
+
+    parserTest("Capture of variable with capturable bound #5493") {
+        val acu = parser.parse(
+            """
+
+                    interface ObservableList<T> {
+                    }
+
+                    interface EventStream<T> {
+                        Subscription subscribe(Consumer<? super T> observer);
+                    }
+
+                    interface BiFunction<A, B, C> {
+                        C apply(A a, B b);
+                    }
+
+                    interface Subscription {
+                    }
+
+                    interface Function<A, B> {
+                        B apply(A a);
+                    }
+
+                    interface Supplier<A> {
+                        A get();
+                    }
+
+                    interface Consumer<A> {
+                        void accept(A a);
+                    }
+
+                    class Ext {
+
+                        static <T> ObservableList<T> emptyList() {
+                        }
+
+                        public static <T> Subscription dynamic(
+                            ObservableList<? extends T> elems,
+                            BiFunction<? super T, Integer, ? extends Subscription> f) {
+
+                        }
+                    }
+
+                    public class Something<E> {
+
+                        ObservableList<E> base;
+                        Function<? super E, ? extends EventStream<?>> ticks;
+
+                        void notifyObservers(Supplier<? extends ObservableList<E>> f) {
+                        }
+
+                        protected Subscription observeInputs() {
+                            // ticks: Function<capt#1 of ? super E, capt#2 of ? extends EventStream<?>>
+                            // ticks.apply(e): capt#2 of ? extends EventStream<?>
+                            // capture(capt#2 of ...) should not return capt#2 unchanged,
+                            // but should return a capture var with its upper bound captured: EventStream<capt#3 of ?>
+                            return Ext.dynamic(base, (e, i) -> ticks.apply(e).subscribe(k -> this.notifyObservers(Ext::emptyList)));
+                        }
+                    }
+                """.trimIndent()
+        )
+
+        val subscribe = acu.firstMethodCall("subscribe")
+        subscribe.overloadSelectionInfo.isFailed shouldBe false
+        acu.varId("k") shouldHaveType acu.typeSystem.OBJECT
+    }
+
+    parserTest("Problem with capture of type parametr that has wildcard parameterized bound") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class AJjtN<Q, B> {}
+            public final class JjtreeBuilder<N extends AJjtN<N, ?>> {
+
+                public void closeNodeScope(N n, boolean condition) {
+                    closeImpl(n, condition);
+                }
+
+                private void closeImpl(N n, boolean condition) {}
+            }
+                """.trimIndent()
+        )
+
+        val tvar = acu.typeVar("N")
+
+        spy.shouldBeOk {
+            val call = acu.firstMethodCall()
+
+            call.methodType.shouldMatchMethod(
+                named = "closeImpl",
+                withFormals = listOf(tvar, boolean),
+            )
+            call.overloadSelectionInfo::isFailed shouldBe false
+        }
+    }
+    parserTest("Problem with capture of type parametr that has wildcard parameterized bound (field access)") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            class AJjtN<Q, B> {
+             B field;
+            }
+            public final class JjtreeBuilder<N extends AJjtN<N, ?>> {
+                public void closeNodeScope(N n, boolean condition) {
+                    var v = n.field;
+                }
+            }
+
+                """.trimIndent()
+        )
+
+        spy.shouldBeOk {
+            val access = acu.descendants(ASTFieldAccess::class.java).firstOrThrow()
+            access shouldHaveType captureMatcher(`?`)
+            val varV = acu.varId("v")
+            varV shouldHaveType ts.OBJECT
         }
     }
 })

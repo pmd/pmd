@@ -4,32 +4,32 @@
          xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
-
+  
+  <description>
+    Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+  </description>
+  
+  <rule name="ApexCSRF"
+        language="apex"
+        since="5.5.3"
+        message="Avoid making DML operations in Apex class constructor or initializers"
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.ApexCSRFRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#apexcsrf">
     <description>
-Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.
+      Having DML operations in Apex class constructor or initializers can have unexpected side effects:
+      By just accessing a page, the DML statements would be executed and the database would be modified.
+      Just querying the database is permitted.
+      
+      In addition to constructors and initializers, any method called `init` is checked as well.
+      
+      Salesforce Apex already protects against this scenario and raises a runtime exception.
+      
+      Note: This rule has been moved from category "Security" to "Error Prone" with PMD 6.21.0, since
+      using DML in constructors is not a security problem, but crashes the application.
     </description>
-
-    <rule name="ApexCSRF"
-          language="apex"
-          since="5.5.3"
-          message="Avoid making DML operations in Apex class constructor or initializers"
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.ApexCSRFRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#apexcsrf">
-        <description>
-Having DML operations in Apex class constructor or initializers can have unexpected side effects:
-By just accessing a page, the DML statements would be executed and the database would be modified.
-Just querying the database is permitted.
-
-In addition to constructors and initializers, any method called `init` is checked as well.
-
-Salesforce Apex already protects against this scenario and raises a runtime exception.
-
-Note: This rule has been moved from category "Security" to "Error Prone" with PMD 6.21.0, since
-using DML in constructors is not a security problem, but crashes the application.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
+    <priority>3</priority>
+    <example>
+      <![CDATA[
 public class Foo {
     // initializer
     {
@@ -47,30 +47,30 @@ public class Foo {
     }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidDirectAccessTriggerMap"
-          language="apex"
-          since="6.0.0"
-          message="Avoid directly accessing Trigger.old and Trigger.new"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap">
-        <description>
-Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
-        </description>
-        <priority>3</priority>
-            <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="AvoidDirectAccessTriggerMap"
+        language="apex"
+        since="6.0.0"
+        message="Avoid directly accessing Trigger.old and Trigger.new"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoiddirectaccesstriggermap">
+    <description>
+      Avoid directly accessing Trigger.old and Trigger.new as it can lead to a bug. Triggers should be bulkified and iterate through the map to handle the actions for each item separately.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
 //ArrayLoadExpression[TriggerVariableExpression and LiteralExpression]
 ]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
 trigger AccountTrigger on Account (before insert, before update) {
    Account a = Trigger.new[0]; //Bad: Accessing the trigger array directly is not recommended.
 
@@ -79,23 +79,23 @@ trigger AccountTrigger on Account (before insert, before update) {
    }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidHardcodingId"
-          language="apex"
-          since="6.0.0"
-          message="Hardcoding Id's is bound to break when changing environments."
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidHardcodingIdRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidhardcodingid">
-        <description>
-When deploying Apex code between sandbox and production environments, or installing Force.com AppExchange packages,
-it is essential to avoid hardcoding IDs in the Apex code. By doing so, if the record IDs change between environments,
-the logic can dynamically identify the proper data to operate against and not fail.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="AvoidHardcodingId"
+        language="apex"
+        since="6.0.0"
+        message="Hardcoding Id's is bound to break when changing environments."
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidHardcodingIdRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidhardcodingid">
+    <description>
+      When deploying Apex code between sandbox and production environments, or installing Force.com AppExchange packages,
+      it is essential to avoid hardcoding IDs in the Apex code. By doing so, if the record IDs change between environments,
+      the logic can dynamically identify the proper data to operate against and not fail.
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
 public without sharing class Foo {
     void foo() {
         //Error - hardcoded the record type id
@@ -107,60 +107,148 @@ public without sharing class Foo {
     }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidNonExistentAnnotations"
-          language="apex"
-          since="6.5.0"
-          message="Use of non existent annotations will lead to broken Apex code which will not compile in the future."
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidnonexistentannotations">
-        <description>
-            Apex supported non existent annotations for legacy reasons.
-            In the future, use of such non-existent annotations could result in broken apex code that will not compile.
-            This will prevent users of garbage annotations from being able to use legitimate annotations added to Apex in the future.
-            A full list of supported annotations can be found at https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="AvoidNonExistentAnnotations"
+        language="apex"
+        since="6.5.0"
+        message="Use of non existent annotations will lead to broken Apex code which will not compile in the future."
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidNonExistentAnnotationsRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidnonexistentannotations">
+    <description>
+      Apex supported non existent annotations for legacy reasons.
+      In the future, use of such non-existent annotations could result in broken apex code that will not compile.
+      This will prevent users of garbage annotations from being able to use legitimate annotations added to Apex in the future.
+      A full list of supported annotations can be found at https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation.htm
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
 @NonExistentAnnotation public class ClassWithNonexistentAnnotation {
     @NonExistentAnnotation public void methodWithNonExistentAnnotation() {
         // ...
     }
 }
 ]]>
-        </example>
-    </rule>
+    </example>
+  </rule>
 
-    <rule name="EmptyCatchBlock"
-          language="apex"
-          since="6.0.0"
-          message="Avoid empty catch blocks"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptycatchblock">
-        <description>
-Empty Catch Block finds instances where an exception is caught, but nothing is done.
-In most circumstances, this swallows an exception which should either be acted on
-or reported.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
-            <property name="allowExceptionNameRegex" type="Regex" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^(ignored|expected)$"/>
-            <property name="xpath">
-                <value>
-<![CDATA[
+  <rule name="AvoidStatefulDatabaseResult"
+        language="apex"
+        since="7.11.0"
+        message="Using stateful `Database.[x]Result` instance variables can cause serialization errors between successive batch iterations."
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidStatefulDatabaseResultRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidstatefuldatabaseresult">
+    <description>
+      Using instance variables of the following types (or collections of these types) within a stateful batch class can cause serialization errors between batch iterations:
+
+      - `Database.DeleteResult`
+      - `Database.EmptyRecycleBinResult`
+      - `Database.MergeResult`
+      - `Database.SaveResult`
+      - `Database.UndeleteResult`
+      - `Database.UpsertResult`
+
+      This error occurs inconsistently and asynchronously with an obscure error message - making it particularly challenging to troubleshoot.
+      See [this issue](https://issues.salesforce.com/issue/a028c00000qPwlqAAC/stateful-batch-job-that-stores-databasesaveresult-failed-after-validation-errors-throws-error-during-deserialization) for more details.
+
+      These errors can be avoided by marking the variable as static, transient, or using a different
+      data type that is safe to serialize.
+    </description>
+    <priority>2</priority>
+    <example>
+      <![CDATA[// Violating
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  List<Database.SaveResult> results = new List<Database.SaveResult>(); // This can cause failures
+
+  public Database.Querylocator start(Database.BatchableContext context) {
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
+    Database.SaveResult[] saveResults = Database.update(scope, false);
+    results.addAll(saveResults);
+  }
+
+  public void finish(database.BatchableContext context) {
+  }
+}
+
+// Compliant
+public class Example implements Database.Batchable<SObject>, Database.Stateful {
+  List<StatefulResult> results = new List<StatefulResult>(); // Use a different custom type to persist state
+
+  public Database.Querylocator start(Database.BatchableContext context) {
+    return Database.getQueryLocator('SELECT Id FROM Account');
+  }
+
+  public void execute(Database.BatchableContext context, List<SObject> scope) {
+    Database.SaveResult[] saveResults = Database.update(scope, false);
+    for (Database.SaveResult result : saveResults) {
+      results.add(new StatefulResult(result));
+    }
+  }
+
+  public void finish(database.BatchableContext context) {
+  }
+
+}
+
+public class StatefulResult {
+  private Boolean isSuccess;
+  private Id id;
+  private Database.Error[] errors;
+
+  public StatefulResult(Database.SaveResult result) {
+    isSuccess = result.isSuccess();
+    id = result.getId();
+    errors = result.getErrors();
+  }
+
+  public Boolean isSuccess() {
+    return isSuccess;
+  }
+
+  public Id getId() {
+    return id;
+  }
+
+  public Database.Error[] getErrors() {
+    return errors;
+  }
+}
+]]>
+    </example>
+  </rule>
+
+  <rule name="EmptyCatchBlock"
+        language="apex"
+        since="6.0.0"
+        message="Avoid empty catch blocks"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptycatchblock">
+    <description>
+      Empty Catch Block finds instances where an exception is caught, but nothing is done.
+      In most circumstances, this swallows an exception which should either be acted on
+      or reported.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="allowCommentedBlocks" type="Boolean" description="Empty blocks containing comments will be skipped" value="false"/>
+      <property name="allowExceptionNameRegex" type="Regex" description="Empty blocks catching exceptions with names matching this regular expression will be skipped" value="^(ignored|expected)$"/>
+      <property name="xpath">
+        <value>
+          <![CDATA[
 //CatchBlockStatement[./BlockStatement[count(*) = 0] and
     not(matches(@VariableName, $allowExceptionNameRegex)) and
     ($allowCommentedBlocks = false() or @ContainsComment = false())]
 ]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
 public void doSomething() {
     ...
     try {
@@ -170,31 +258,31 @@ public void doSomething() {
     }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="EmptyIfStmt"
-          language="apex"
-          since="6.0.0"
-          message="Avoid empty 'if' statements"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptyifstmt">
-        <description>
-Empty If Statement finds instances where a condition is checked but nothing is done about it.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//IfBlockStatement
- [BlockStatement[count(*) = 0]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="EmptyIfStmt"
+        language="apex"
+        since="6.0.0"
+        message="Avoid empty 'if' statements"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptyifstmt">
+    <description>
+      Empty If Statement finds instances where a condition is checked but nothing is done about it.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+          //IfBlockStatement
+          [BlockStatement[count(*) = 0]]
+          ]]>
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
 public class Foo {
     public void bar(Integer x) {
         if (x == 0) {
@@ -203,25 +291,25 @@ public class Foo {
     }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="EmptyStatementBlock"
-          language="apex"
-          since="6.0.0"
-          message="Avoid empty block statements."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptystatementblock">
-        <description>
-Empty block statements serve no purpose and should be removed.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="reportEmptyPrivateNoArgConstructor" type="Boolean" value="true" description="If false, empty private no-arg constructors are not flagged. This supports a common idiom used by singleton pattern implementations, utility classes, etc."/>
-            <property name="reportEmptyVirtualMethod" type="Boolean" value="true" description="If false, empty virtual methods are not flagged. This supports abstract base classes with default no-op implementations."/>
-            <property name="xpath">
-                <value>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="EmptyStatementBlock"
+        language="apex"
+        since="6.0.0"
+        message="Avoid empty block statements."
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptystatementblock">
+    <description>
+      Empty block statements serve no purpose and should be removed.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="reportEmptyPrivateNoArgConstructor" type="Boolean" value="true" description="If false, empty private no-arg constructors are not flagged. This supports a common idiom used by singleton pattern implementations, utility classes, etc."/>
+      <property name="reportEmptyVirtualMethod" type="Boolean" value="true" description="If false, empty virtual methods are not flagged. This supports abstract base classes with default no-op implementations."/>
+      <property name="xpath">
+        <value>
+          <![CDATA[
 //Method[$reportEmptyPrivateNoArgConstructor = true()
     or (@Constructor != true()
     or ./ModifierNode[@Private != true()]
@@ -234,11 +322,11 @@ Empty block statements serve no purpose and should be removed.
     [count(*) = 0]
     [@RealLoc = true()]
 ]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
 public class Foo {
 
    private Integer _bar;
@@ -249,30 +337,30 @@ public class Foo {
 
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="EmptyTryOrFinallyBlock"
-          language="apex"
-          since="6.0.0"
-          message="Avoid empty try or finally blocks"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptytryorfinallyblock">
-        <description>
-Avoid empty try or finally blocks - what's the point?
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//TryCatchFinallyBlockStatement[./BlockStatement[count(*) = 0]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="EmptyTryOrFinallyBlock"
+        language="apex"
+        since="6.0.0"
+        message="Avoid empty try or finally blocks"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptytryorfinallyblock">
+    <description>
+      Avoid empty try or finally blocks - what's the point?
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+          //TryCatchFinallyBlockStatement[./BlockStatement[count(*) = 0]]
+          ]]>
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
 public class Foo {
     public void bar() {
         try {
@@ -293,55 +381,55 @@ public class Foo {
     }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="EmptyWhileStmt"
-          language="apex"
-          since="6.0.0"
-          message="Avoid empty 'while' statements"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptywhilestmt">
-        <description>
-Empty While Statement finds all instances where a while statement does nothing.
-If it is a timing loop, then you should use Thread.sleep() for it; if it is
-a while loop that does a lot in the exit expression, rewrite it to make it clearer.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//WhileLoopStatement[./BlockStatement[count(*) = 0]]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="EmptyWhileStmt"
+        language="apex"
+        since="6.0.0"
+        message="Avoid empty 'while' statements"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#emptywhilestmt">
+    <description>
+      Empty While Statement finds all instances where a while statement does nothing.
+      If it is a timing loop, then you should use Thread.sleep() for it; if it is
+      a while loop that does a lot in the exit expression, rewrite it to make it clearer.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
+          //WhileLoopStatement[./BlockStatement[count(*) = 0]]
+          ]]>
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[
 public void bar(Integer a, Integer b) {
   while (a == b) {
     // empty!
   }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="InaccessibleAuraEnabledGetter"
-          language="apex"
-          since="6.36.0"
-          message="AuraEnabled getter must be public or global if is referenced in Lightning components"
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.InaccessibleAuraEnabledGetterRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter">
-        <description>
-In the Summer '21 release, a mandatory security update enforces access modifiers on Apex properties in
-Lightning component markup. The update prevents access to private or protected Apex getters from Aura
-and Lightning Web Components.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="InaccessibleAuraEnabledGetter"
+        language="apex"
+        since="6.36.0"
+        message="AuraEnabled getter must be public or global if is referenced in Lightning components"
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.InaccessibleAuraEnabledGetterRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#inaccessibleauraenabledgetter">
+    <description>
+      In the Summer '21 release, a mandatory security update enforces access modifiers on Apex properties in
+      Lightning component markup. The update prevents access to private or protected Apex getters from Aura
+      and Lightning Web Components.
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
 public class Foo {
     @AuraEnabled
     public Integer counter { private get; set; } // Violating - Private getter is inaccessible to Lightning components
@@ -355,9 +443,9 @@ public class Foo {
     }
 }
 ]]>
-        </example>
-        <example>
-<![CDATA[
+    </example>
+    <example>
+      <![CDATA[
 public class Foo {
     @AuraEnabled
     public Integer counter { protected get; set; } // Violating - Protected getter is inaccessible to Lightning components
@@ -371,9 +459,9 @@ public class Foo {
     }
 }
 ]]>
-        </example>
-        <example>
-<![CDATA[
+    </example>
+    <example>
+      <![CDATA[
 public class Foo {
     @AuraEnabled
     public Integer counter { get; set; } // Compliant - Public getter is accessible to Lightning components
@@ -387,21 +475,21 @@ public class Foo {
     }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="MethodWithSameNameAsEnclosingClass"
-          language="apex"
-          since="5.5.0"
-          message="Classes should not have non-constructor methods with the same name as the class"
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass">
-        <description>
-Non-constructor methods should not have the same name as the enclosing class.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="MethodWithSameNameAsEnclosingClass"
+        language="apex"
+        since="5.5.0"
+        message="Classes should not have non-constructor methods with the same name as the class"
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.MethodWithSameNameAsEnclosingClassRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#methodwithsamenameasenclosingclass">
+    <description>
+      Non-constructor methods should not have the same name as the enclosing class.
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
 public class MyClass {
     // this is OK because it is a constructor
     public MyClass() {}
@@ -409,25 +497,25 @@ public class MyClass {
     public void MyClass() {}
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="OverrideBothEqualsAndHashcode"
-          language="apex"
-          since="6.31.0"
-          message="Ensure you override both equals() and hashCode()"
-          class="net.sourceforge.pmd.lang.apex.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#overridebothequalsandhashcode">
-        <description>
-Override both `public Boolean equals(Object obj)`, and `public Integer hashCode()`, or override neither.
-Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly
-delegating to your superclass.
-
-This is especially important when [Using Custom Types in Map Keys and Sets](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_collections_maps_keys_userdefined.htm).
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="OverrideBothEqualsAndHashcode"
+        language="apex"
+        since="6.31.0"
+        message="Ensure you override both equals() and hashCode()"
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#overridebothequalsandhashcode">
+    <description>
+      Override both `public Boolean equals(Object obj)`, and `public Integer hashCode()`, or override neither.
+      Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly
+      delegating to your superclass.
+      
+      This is especially important when [Using Custom Types in Map Keys and Sets](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/langCon_apex_collections_maps_keys_userdefined.htm).
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
 public class Bar {        // poor, missing a hashCode() method
     public Boolean equals(Object o) {
       // do some comparison
@@ -447,29 +535,29 @@ public class Foo {        // perfect, both methods provided
     }
 }
 ]]>
-        </example>
-    </rule>
-
-    <rule name="TestMethodsMustBeInTestClasses"
-          language="apex"
-          since="6.22.0"
-          message="Test methods must be in test classes"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses">
-       <description>
-          Test methods marked as a testMethod or annotated with @IsTest,
-          but not residing in a test class should be moved to a proper
-          class or have the @IsTest annotation added to the class.
-
-          Support for tests inside functional classes was removed in Spring-13 (API Version 27.0),
-          making classes that violate this rule fail compile-time. This rule is mostly usable when
-          dealing with legacy code.
-       </description>
-       <priority>3</priority>
-       <properties>
-          <property name="xpath">
-             <value>
-    <![CDATA[
+    </example>
+  </rule>
+  
+  <rule name="TestMethodsMustBeInTestClasses"
+        language="apex"
+        since="6.22.0"
+        message="Test methods must be in test classes"
+        class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#testmethodsmustbeintestclasses">
+    <description>
+      Test methods marked as a testMethod or annotated with @IsTest,
+      but not residing in a test class should be moved to a proper
+      class or have the @IsTest annotation added to the class.
+      
+      Support for tests inside functional classes was removed in Spring-13 (API Version 27.0),
+      making classes that violate this rule fail compile-time. This rule is mostly usable when
+      dealing with legacy code.
+    </description>
+    <priority>3</priority>
+    <properties>
+      <property name="xpath">
+        <value>
+          <![CDATA[
     //UserClass[
       not(./ModifierNode/Annotation[lower-case(@Name) = 'istest']) and
       (
@@ -479,11 +567,11 @@ public class Foo {        // perfect, both methods provided
     ]
 
     ]]>
-             </value>
-          </property>
-       </properties>
-       <example>
-           <![CDATA[// Violating
+        </value>
+      </property>
+    </properties>
+    <example>
+      <![CDATA[// Violating
 private class TestClass {
   @IsTest static void myTest() {
     // Code here
@@ -512,5 +600,39 @@ private class TestClass {
 }
 ]]>
        </example>
+    </rule>
+
+    <rule name="TypeShadowsBuiltInNamespace"
+          language="apex"
+          since="7.13.0"
+          message="This name causes a collision with a class, enum, or interface used in the `{0}` namespace. Please choose a different name."
+          class="net.sourceforge.pmd.lang.apex.rule.errorprone.TypeShadowsBuiltInNamespaceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#typeshadowsbuiltinnamespace">
+        <description>
+            This rule finds Apex classes, enums, and interfaces that have the same name as a class, enum, or interface in the `System`
+            or `Schema` namespace.
+            Shadowing these namespaces in this way can lead to confusion and unexpected behavior.
+            Code that intends to reference a `System` or `Schema` class, enum, or interface may inadvertently reference the locally defined type instead.
+            This can result in ambiguous code and unexpected runtime behavior.
+            It is best to avoid naming your types the same as those in the `System` or `Schema` namespace to prevent these issues.
+
+            Note that the list of classes, enums, and interfaces in the `System` and `Schema` namespaces are determined through
+            [io.github.apex-dev-tools:standard-types](https://github.com/apex-dev-tools/standard-types). It is based on the contents of
+            Salesforce's [Apex Reference Guide / System Namespace](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_namespace_System.htm)
+            and [Apex Reference Guide / Schema Namespace](https://developer.salesforce.com/docs/atlas.en-us.apexref.meta/apexref/apex_namespace_Schema.htm).
+            As Salesforce introduces new types into the `System` and `Schema` namespaces, the rule might not always recognize
+            the new types and produce false-negatives und the standard types are updated.
+        </description>
+        <priority>1</priority>
+        <example>
+            <![CDATA[
+// Violation: Causes a collision with the `System.Database` class.
+public class Database {
+    public static String query() {
+        return 'Hello World';
+    }
+}
+]]>
+        </example>
     </rule>
 </ruleset>

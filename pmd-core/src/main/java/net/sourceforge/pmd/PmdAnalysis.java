@@ -49,8 +49,10 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
+import net.sourceforge.pmd.renderers.AbstractAccumulatingRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.reporting.ConfigurableFileNameRenderer;
+import net.sourceforge.pmd.reporting.DeterministicOutputListenerWrapper;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.ListenerInitializer;
@@ -59,6 +61,7 @@ import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
@@ -381,6 +384,10 @@ public final class PmdAnalysis implements AutoCloseable {
     }
 
     void performAnalysisImpl(List<? extends GlobalReportBuilderListener> extraListeners, List<TextFile> textFiles) {
+        if (textFiles.isEmpty()) {
+            reporter.warn("No files to analyze. Check input paths and exclude parameters, use --debug to see file collection traces.");
+        }
+
         RuleSets rulesets = new RuleSets(this.ruleSets);
 
         GlobalAnalysisListener listener;
@@ -398,6 +405,7 @@ public final class PmdAnalysis implements AutoCloseable {
             // Initialize listeners
             try (ListenerInitializer initializer = listener.initializer()) {
                 initializer.setNumberOfFilesToAnalyze(textFiles.size());
+                initializer.setFilesToAnalyze(CollectionUtil.map(textFiles, TextFile::getFileId));
                 initializer.setFileNameRenderer(fileNameRenderer());
             }
         } catch (Exception e) {
@@ -467,8 +475,12 @@ public final class PmdAnalysis implements AutoCloseable {
             return GlobalAnalysisListener.noop();
         }
 
+        boolean isAnyIncremental = false;
+
         List<GlobalAnalysisListener> rendererListeners = new ArrayList<>(renderers.size());
         for (Renderer renderer : renderers) {
+            isAnyIncremental |= !(renderer instanceof AbstractAccumulatingRenderer);
+
             try {
                 @SuppressWarnings("PMD.CloseResource")
                 GlobalAnalysisListener listener =
@@ -480,7 +492,13 @@ public final class PmdAnalysis implements AutoCloseable {
                 throw AssertionUtil.shouldNotReachHere("ensureClosed should have thrown", ioe);
             }
         }
-        return GlobalAnalysisListener.tee(rendererListeners);
+        GlobalAnalysisListener rendererListener = GlobalAnalysisListener.tee(rendererListeners);
+        // If all are non-incremental then they do their own buffering and should sort the events.
+        // If any is incremental then we need to reorder the events for deterministic output.
+        if (isAnyIncremental) {
+            rendererListener = new DeterministicOutputListenerWrapper(rendererListener);
+        }
+        return rendererListener;
     }
 
     private Set<Language> getApplicableLanguages(boolean quiet) {
@@ -523,6 +541,20 @@ public final class PmdAnalysis implements AutoCloseable {
                 }
             }
         } while (changed);
+
+        // include all available dialects of applicable languages - ie: if we have XML rules, all XML dialects are applicable
+        do {
+            changed = false;
+            for (Language lang : reg) {
+                if (lang.getBaseLanguageId() != null) {
+                    Language baseLang = reg.getLanguageById(lang.getBaseLanguageId());
+                    if (baseLang != null && languages.contains(baseLang)) {
+                        changed |= languages.add(lang);
+                    }
+                }
+            }
+        } while (changed);
+
         return languages;
     }
 

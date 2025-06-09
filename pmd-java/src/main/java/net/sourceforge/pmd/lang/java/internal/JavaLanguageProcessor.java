@@ -43,6 +43,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final LanguageMetricsProvider myMetricsProvider = new JavaMetricsProvider();
     private final JavaParser parser;
     private final JavaParser parserWithoutProcessing;
+    private final boolean firstClassLombok;
     private TypeSystem typeSystem;
 
     public JavaLanguageProcessor(JavaLanguageProperties properties, TypeSystem typeSystem) {
@@ -52,6 +53,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
         this.parserWithoutProcessing = new JavaParser(suppressMarker, this, false);
+        this.firstClassLombok = properties.getProperty(JavaLanguageProperties.FIRST_CLASS_LOMBOK);
     }
 
     public JavaLanguageProcessor(JavaLanguageProperties properties) {
@@ -77,6 +79,10 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         return typeSystem;
     }
 
+    public boolean hasFirstClassLombokSupport() {
+        return firstClassLombok;
+    }
+
     TypeInferenceLogger newTypeInfLogger() {
         InferenceLoggingVerbosity verbosity = getProperties().getProperty(JavaLanguageProperties.INTERNAL_INFERENCE_LOGGING_VERBOSITY);
         if (verbosity == InferenceLoggingVerbosity.VERBOSE) {
@@ -100,7 +106,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
 
     @Override
     public List<ViolationSuppressor> getExtraViolationSuppressors() {
-        return AnnotationSuppressionUtil.ALL_JAVA_SUPPRESSORS;
+        return JavaAnnotationSuppressor.ALL_JAVA_SUPPRESSORS;
     }
 
     @Override

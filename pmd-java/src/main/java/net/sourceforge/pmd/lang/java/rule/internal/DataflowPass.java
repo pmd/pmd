@@ -61,7 +61,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -91,7 +90,9 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.bestpractices.UnusedAssignmentRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
@@ -744,7 +745,6 @@ public final class DataflowPass {
                                     ASTStatement body,
                                     boolean checkFirstIter,
                                     ASTVariableId foreachVar) {
-            final GlobalAlgoState globalState = before.global;
 
             //todo while(true) and do {}while(true); are special-cased
             // by the compiler and there is no fork
@@ -774,6 +774,9 @@ public final class DataflowPass {
             // including itself
             SpanInfo iter = acceptOpt(body, before.fork());
 
+            // Make assignments that reached a continue reach the condition block before next iteration
+            iter.absorb(continueTarget);
+
             if (foreachVar != null && iter.hasVar(foreachVar)) {
                 // in foreach loops, the loop variable is reassigned on each update
                 iter.assign(foreachVar.getSymbol(), foreachVar);
@@ -782,19 +785,8 @@ public final class DataflowPass {
             }
 
             linkConditional(iter, cond, iter, breakTarget, true);
+            // do a second round to make sure assignments can reach themselves.
             iter = acceptOpt(body, iter);
-
-
-            breakTarget = globalState.breakTargets.peek();
-            continueTarget = globalState.continueTargets.peek();
-            if (!continueTarget.symtable.isEmpty()) {
-                // make assignments before a continue reach the other parts of the loop
-
-                linkConditional(continueTarget, cond, continueTarget, breakTarget, true);
-
-                continueTarget = acceptOpt(body, continueTarget);
-                continueTarget = acceptOpt(update, continueTarget);
-            }
 
             SpanInfo result = popTargets(loop, breakTarget, continueTarget);
             result.absorb(iter);
@@ -949,16 +941,22 @@ public final class DataflowPass {
 
         @Override
         public SpanInfo visit(ASTCompactConstructorDeclaration node, SpanInfo data) {
-            super.visit(node, data);
+            // Visiting a method/ctor declaration declares formal parameters.
+            // In the compact ctor decl there is no formal parameter nodes, so
+            // we need to declare these explicitly
+            JConstructorSymbol ctorSym = node.getSymbol();
+            for (JFormalParamSymbol formal : ctorSym.getFormalParameters()) {
+                ASTVariableId varId = formal.tryGetNode();
+                assert varId != null && varId.isRecordComponent();
+                data.assign(formal, varId);
+            }
+            // visit the body
+            data = super.visit(node, data);
 
-            // mark any write to a variable that is named like a record component as usage
-            // record compact constructors do an implicit assignment at the end.
-            for (ASTRecordComponent component : node.getEnclosingType().getRecordComponents()) {
-                node.descendants(ASTAssignmentExpression.class)
-                        .descendants(ASTVariableAccess.class)
-                        .filter(v -> v.getAccessType() == AccessType.WRITE)
-                        .filter(v -> v.getName().equals(component.getVarId().getName()))
-                        .forEach(varAccess -> data.use(varAccess.getReferencedSym(), null));
+            // At the end of the ctor, the formals are each used to assign to their respective
+            // fields.
+            for (JFormalParamSymbol formal : ctorSym.getFormalParameters()) {
+                data.use(formal, null);
             }
 
             return data;

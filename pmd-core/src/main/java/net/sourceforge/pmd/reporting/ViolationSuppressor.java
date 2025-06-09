@@ -4,21 +4,31 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.AbstractSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.internal.DeprecatedAttrLogger;
 import net.sourceforge.pmd.lang.rule.xpath.internal.SaxonXPathRuleQuery;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
+import net.sourceforge.pmd.util.DataMap;
+import net.sourceforge.pmd.util.DataMap.SimpleDataKey;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  * An object that suppresses rule violations. Suppressors are used by
@@ -86,9 +96,13 @@ public interface ViolationSuppressor {
      * Suppressor for regular NOPMD comments.
      *
      * @implNote This requires special support from the language, namely,
-     *     the parser must fill-in {@link AstInfo#getSuppressionComments()}.
+     *     the parser must fill in suppression comments through
+     *     {@link AstInfo#withSuppressionComments(Collection)}.
      */
     ViolationSuppressor NOPMD_COMMENT_SUPPRESSOR = new ViolationSuppressor() {
+        private final SimpleDataKey<Set<SuppressionCommentWrapper>> usedSuppressionComments =
+            DataMap.simpleDataKey("pmd.core.comment.suppressor");
+
         @Override
         public String getId() {
             return "//NOPMD";
@@ -96,11 +110,44 @@ public interface ViolationSuppressor {
 
         @Override
         public @Nullable SuppressedViolation suppressOrNull(RuleViolation rv, @NonNull Node node) {
-            Map<Integer, String> noPmd = node.getAstInfo().getSuppressionComments();
-            if (noPmd.containsKey(rv.getBeginLine())) {
-                return new SuppressedViolation(rv, this, noPmd.get(rv.getBeginLine()));
+            AstInfo<? extends RootNode> astInfo = node.getAstInfo();
+            SuppressionCommentWrapper wrapper = astInfo.getSuppressionComment(rv.getBeginLine());
+            if (wrapper != null) {
+                astInfo.getUserMap().computeIfAbsent(usedSuppressionComments, HashSet::new).add(wrapper);
+                return new SuppressedViolation(rv, this, wrapper.getUserMessage());
             }
             return null;
+        }
+
+        @Override
+        public Set<UnusedSuppressorNode> getUnusedSuppressors(RootNode tree) {
+            Set<SuppressionCommentWrapper> usedSuppressors = tree.getAstInfo().getUserMap().getOrDefault(usedSuppressionComments, Collections.emptySet());
+            Set<SuppressionCommentWrapper> allSuppressors = new HashSet<>(tree.getAstInfo().getAllSuppressionComments());
+            allSuppressors.removeAll(usedSuppressors);
+            return new AbstractSet<UnusedSuppressorNode>() {
+                @Override
+                public @NonNull Iterator<UnusedSuppressorNode> iterator() {
+                    return IteratorUtil.map(
+                        allSuppressors.iterator(),
+                        comment -> new UnusedSuppressorNode() {
+                            @Override
+                            public Reportable getLocation() {
+                                return comment.getLocation();
+                            }
+
+                            @Override
+                            public String unusedReason() {
+                                return "Unnecessary PMD suppression comment";
+                            }
+                        }
+                    );
+                }
+
+                @Override
+                public int size() {
+                    return allSuppressors.size();
+                }
+            };
         }
     };
 
@@ -121,6 +168,25 @@ public interface ViolationSuppressor {
 
 
     /**
+     * Return the set of suppressor nodes related to this suppressor
+     * that were not used during the analysis.
+     * For instance, for an annotation suppressor, the set contains
+     * suppressor nodes wrapping annotations.
+     * This must be implemented if this suppressor wants to play well
+     * with the unused PMD suppression rule.
+     *
+     * @param tree Root node of a file
+     *
+     * @return A set
+     *
+     * @since 7.14.0
+     */
+    default Set<UnusedSuppressorNode> getUnusedSuppressors(RootNode tree) {
+        return Collections.emptySet();
+    }
+
+
+    /**
      * Apply a list of suppressors on the violation. Returns the violation
      * of the first suppressor that matches the input violation. If no
      * suppressor matches, then returns null.
@@ -135,5 +201,35 @@ public interface ViolationSuppressor {
             }
         }
         return null;
+    }
+
+
+    /**
+     * Represents an instance of a "suppressor" that didn't suppress anything.
+     * This could be a suppression annotation, or part of an annotation, a
+     * comment, etc.
+     *
+     * @since 7.14.0
+     */
+    interface UnusedSuppressorNode {
+
+        Reportable getLocation();
+
+        String unusedReason();
+    }
+
+    /**
+     * Wrapper around a suppression comment.
+     *
+     * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
+     */
+    @Experimental
+    interface SuppressionCommentWrapper {
+        /** Message attached to the comment. */
+        String getUserMessage();
+
+        /** Location of the comment, maybe the location of the comment token for instance. */
+        Reportable getLocation();
+
     }
 }

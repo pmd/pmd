@@ -30,7 +30,7 @@ USER_JSON="$(curl "${CURL_API_HEADER[@]}" "${CURL_AUTH_HEADER[@]}" -s "https://a
 #DEBUG ONLY
 #USER_JSON="{\"login\": \"$USER\", \"name\": \"foo $USER\"}"
 #DEBUG_ONLY
-USER_NAME="$(echo "$USER_JSON" | jq --raw-output .name)"
+USER_NAME="$(echo "$USER_JSON" | jq --raw-output ".name // \"$USER\"")"
 search=" - \@$USER"
 replacement=" - [$USER_NAME](https://github.com/$USER) (@$USER)"
 PULL_ITEM="${PULL_ITEM//${search}/${replacement}}"

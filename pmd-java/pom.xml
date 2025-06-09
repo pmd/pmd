@@ -7,12 +7,12 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.10.0-SNAPSHOT</version>
+        <version>7.15.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
-        <log4j.version>2.24.2</log4j.version>
+        <log4j.version>2.24.3</log4j.version>
     </properties>
 
     <build>
@@ -138,6 +138,13 @@
                             <exclude>net.sourceforge.pmd.lang.java.symbols.table.internal</exclude>
                             <exclude>net.sourceforge.pmd.lang.java.types.internal</exclude>
                             <exclude>net.sourceforge.pmd.lang.java.types.ast.internal</exclude>
+                            <!-- Template, TemplateExpression, TemplateFragment have been Experimental and
+                                 now removed with 7.10.0. These were part of String Templates, introduced with Java 21/22 Preview
+                                 but removed with Java 23.
+                             -->
+                            <exclude>net.sourceforge.pmd.lang.java.ast.JavaVisitor#visit(net.sourceforge.pmd.lang.java.ast.ASTTemplate,java.lang.Object)</exclude>
+                            <exclude>net.sourceforge.pmd.lang.java.ast.JavaVisitor#visit(net.sourceforge.pmd.lang.java.ast.ASTTemplateExpression,java.lang.Object)</exclude>
+                            <exclude>net.sourceforge.pmd.lang.java.ast.JavaVisitor#visit(net.sourceforge.pmd.lang.java.ast.ASTTemplateFragment,java.lang.Object)</exclude>
                         </excludes>
                     </parameter>
                 </configuration>
@@ -273,13 +280,13 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.25.3</version>
+            <version>3.27.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-            <version>1.3.4</version>
+            <version>1.3.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>

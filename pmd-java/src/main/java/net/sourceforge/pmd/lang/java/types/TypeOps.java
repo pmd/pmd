@@ -163,6 +163,7 @@ public final class TypeOps {
         return true;
     }
 
+
     // note that this does not take type annotations into account
     private static final class SameTypeVisitor implements JTypeVisitor<Boolean, JTypeMirror> {
 
@@ -801,7 +802,10 @@ public final class TypeOps {
         public Convertibility visitTypeVar(JTypeVar t, JTypeMirror s) {
             if (s instanceof JTypeVar && t.getSymbol() != null && Objects.equals(t.getSymbol(), s.getSymbol())) {
                 return Convertibility.SUBTYPING;
+            } else if (s instanceof SentinelType) {
+                return Convertibility.SUBTYPING;
             }
+
             if (isTypeRange(s)) {
                 return isConvertible(t, lowerBoundRec(s));
             }
@@ -1935,6 +1939,18 @@ public final class TypeOps {
         return CollectionUtil.mapNotNull(visible, m -> isAccessible(m.getSymbol(), accessSite) ? m : null);
     }
 
+    /**
+     * Methods and fields of a type variable come from its upper bound, which must be captured.
+     * Capturing a type var does NOT capture its upper bound, so we must treat this
+     * case here.
+     */
+    public static JTypeMirror getMemberSource(JTypeMirror t) {
+        if (t instanceof JTypeVar) {
+            JTypeVar tv = (JTypeVar) t;
+            return capture(tv.getUpperBound());
+        }
+        return capture(t);
+    }
 
     public static List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly, @NonNull JClassSymbol enclosing) {
         if (staticOnly && type.isInterface()) {
@@ -2164,9 +2180,21 @@ public final class TypeOps {
      * means its return type is influenced by the surrounding
      * context during type inference. Generic constructors
      * are always context dependent.
+     *
+     * @deprecated Since 7.11.0. Use {@link #isContextDependent(JExecutableSymbol)} instead which is more flexible.
      */
+    @Deprecated
     public static boolean isContextDependent(JMethodSig sig) {
-        JExecutableSymbol symbol = sig.getSymbol();
+        return isContextDependent(sig.getSymbol());
+    }
+
+    /**
+     * Return true if the method is context dependent. That
+     * means its return type is influenced by the surrounding
+     * context during type inference. Generic constructors
+     * are always context dependent.
+     */
+    public static boolean isContextDependent(JExecutableSymbol symbol) {
         if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {
             if (symbol instanceof JMethodSymbol) {
                 JTypeMirror returnType = ((JMethodSymbol) symbol).getReturnType(EMPTY);

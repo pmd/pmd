@@ -28,6 +28,7 @@ function regression_tester_setup_ci() {
     fi
 
     rm -f .bundle/config
+    bundle config set --local gemfile .ci/files/Gemfile
     bundle config set --local path vendor/bundle
     bundle config set --local with release_notes_preprocessing
     bundle install
@@ -44,7 +45,8 @@ function regression_tester_uploadBaseline() {
     pmd_ci_log_info "Generating and uploading baseline for pmdtester (${baseline_branch})..."
     pushd ..
     rm -f .bundle/config
-    bundle config set --local gemfile pmd/Gemfile
+    bundle config set --local gemfile pmd/.ci/files/Gemfile
+    bundle config set --local path vendor/bundle
     bundle exec pmdtester \
         --mode single \
         --local-git-repo ./pmd \

@@ -41,11 +41,15 @@ public abstract class AbstractConfiguration {
     private PmdReporter reporter;
     private final LanguageVersionDiscoverer languageVersionDiscoverer;
     private LanguageVersion forceLanguageVersion;
+
     private @NonNull List<Path> inputPaths = new ArrayList<>();
     private Path inputFilePath;
     private Path ignoreFilePath;
     private List<Path> excludes = new ArrayList<>();
     private boolean collectRecursive = true;
+
+    private Path reportFile;
+
     private boolean failOnViolation = true;
     private boolean failOnError = true;
 
@@ -176,7 +180,7 @@ public abstract class AbstractConfiguration {
     }
 
     /**
-     * Set the given LanguageVersion as the current default for it's Language.
+     * Set the given LanguageVersion as the current default for its Language.
      *
      * @param languageVersion the LanguageVersion
      */
@@ -253,7 +257,7 @@ public abstract class AbstractConfiguration {
      */
     public void addRelativizeRoot(Path path) {
         // Note: the given path is not further modified or resolved. E.g. there is no special handling for symlinks.
-        // The goal is, that if the user inputs a path, PMD should output in terms of that path, not it's resolution.
+        // The goal is, that if the user inputs a path, PMD should output in terms of that path, not its resolution.
         this.relativizeRoots.add(Objects.requireNonNull(path));
 
         if (Files.isRegularFile(path)) {
@@ -379,6 +383,29 @@ public abstract class AbstractConfiguration {
     public void collectFilesRecursively(boolean collectRecursive) {
         this.collectRecursive = collectRecursive;
     }
+
+
+    /**
+     * Get the file to which the report should render. If null, the
+     * report is rendered on stdout.
+     *
+     * @return The file to which to render.
+     * @since 7.14.0 (was previously only available on {@link PMDConfiguration})
+     */
+    public @Nullable Path getReportFilePath() {
+        return reportFile;
+    }
+
+    /**
+     * Set the file to which the report should render.
+     *
+     * @param reportFile the file to set
+     * @since 7.14.0 (was previously only available on {@link PMDConfiguration})
+     */
+    public void setReportFile(@Nullable Path reportFile) {
+        this.reportFile = reportFile;
+    }
+
 
     /**
      * Whether PMD should exit with status 4 (the default behavior, true) if

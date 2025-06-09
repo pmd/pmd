@@ -20,13 +20,14 @@ import net.sourceforge.pmd.lang.java.types.TypeConversion.capture
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility.UNCHECKED_NO_WARNING
 import net.sourceforge.pmd.lang.java.types.testdata.ComparableList
 import net.sourceforge.pmd.lang.java.types.testdata.SomeEnum
+import net.sourceforge.pmd.lang.test.ast.IntelliMarker
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import kotlin.test.assertTrue
 
 /**
  * @author Clément Fournier
  */
-class SubtypingTest : FunSpec({
+class SubtypingTest : IntelliMarker, FunSpec({
 
     val ts = testTypeSystem
     with(TypeDslOf(ts)) {
@@ -327,6 +328,30 @@ class SubtypingTest : FunSpec({
                 sym[t_String] shouldBeSubtypeOf sym[`?` extends t_String] // containment
             }
         }
+    }
+
+    test("Capture of recursive types #5505 stackoverflow") {
+        javaParser.parse(
+            """
+                package org.example;
+
+                import java.util.Collection;
+                import java.util.Collections;
+                import java.util.Optional;
+
+                public class Main {
+
+                    public static <T extends Comparable<? super T>> Optional<T> getMaxElementCausesStackoverflow(Collection<? extends T> collection) {
+                        return collection == null || collection.isEmpty() ? Optional.empty() : Optional.of(Collections.max(collection));
+                    }
+
+                    public static <T extends Comparable<? super T>> Optional<T> getMaxElementIsFine(Collection<? extends T> collection) {
+                        return Optional.ofNullable(collection).filter(c -> !c.isEmpty()).map(Collections::max);
+                    }
+                }
+            """.trimIndent()
+        )
+
     }
 
 

@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageModuleBase.LanguageMetadata.LangVersionMetadata;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -40,6 +41,7 @@ public abstract class LanguageModuleBase implements Language {
     private final Map<String, LanguageVersion> byName;
     private final LanguageVersion defaultVersion;
     private final Set<String> dependencies;
+    private final @Nullable String baseLanguageId;
 
 
     /**
@@ -49,9 +51,23 @@ public abstract class LanguageModuleBase implements Language {
      * @throws IllegalStateException If the metadata is invalid (eg missing extensions or name or no versions)
      */
     protected LanguageModuleBase(LanguageMetadata metadata) {
+        this(metadata, null);
+    }
+
+    /**
+     * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+     */
+    @Experimental
+    protected LanguageModuleBase(DialectLanguageMetadata metadata) {
+        this(metadata.metadata, metadata.baseLanguageId);
+    }
+
+    private LanguageModuleBase(LanguageMetadata metadata, String baseLanguageId) {
         this.meta = metadata;
         metadata.validate();
         this.dependencies = Collections.unmodifiableSet(metadata.dependencies);
+        this.baseLanguageId = baseLanguageId;
+
         List<LanguageVersion> versions = new ArrayList<>();
         Map<String, LanguageVersion> byName = new HashMap<>();
         LanguageVersion defaultVersion = null;
@@ -92,14 +108,17 @@ public abstract class LanguageModuleBase implements Language {
         this.byName = Collections.unmodifiableMap(byName);
         this.distinctVersions = Collections.unmodifiableList(versions);
         this.defaultVersion = Objects.requireNonNull(defaultVersion, "No default version for " + getId());
-
     }
-
 
     private static void checkNotPresent(Map<String, ?> map, String alias) {
         if (map.containsKey(alias)) {
             throw new IllegalArgumentException("Version key '" + alias + "' is duplicated");
         }
+    }
+
+    @Override
+    public @Nullable String getBaseLanguageId() {
+        return baseLanguageId;
     }
 
     @Override
@@ -187,7 +206,6 @@ public abstract class LanguageModuleBase implements Language {
      * <li>The display name ({@link #name(String)})
      * <li>The file extensions ({@link #extensions(String, String...)}
      * </ul>
-     *
      */
     public static final class LanguageMetadata {
 
@@ -204,10 +222,7 @@ public abstract class LanguageModuleBase implements Language {
 
         private LanguageMetadata(@NonNull String id) {
             this.id = id;
-            if (!VALID_LANG_ID.matcher(id).matches()) {
-                throw new IllegalArgumentException(
-                    "ID '" + id + "' is not a valid language ID (should match " + VALID_LANG_ID + ").");
-            }
+            checkValidLangId(id);
         }
 
         void validate() {
@@ -356,6 +371,27 @@ public abstract class LanguageModuleBase implements Language {
         }
 
         /**
+         * Defines the language as a dialect of another language.
+         *
+         * @param baseLanguageId The id of the base language this is a dialect of.
+         * @return A new dialect language metadata model.
+         * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+         */
+        @Experimental
+        public DialectLanguageMetadata asDialectOf(String baseLanguageId) {
+            checkValidLangId(baseLanguageId);
+            dependsOnLanguage(baseLanguageId); // a dialect automatically depends on it's base language at runtime
+            return new DialectLanguageMetadata(this, baseLanguageId);
+        }
+
+        private static void checkValidLangId(String id) {
+            if (!VALID_LANG_ID.matcher(id).matches()) {
+                throw new IllegalArgumentException(
+                    "ID '" + id + "' is not a valid language ID (should match " + VALID_LANG_ID + ").");
+            }
+        }
+
+        /**
          * Record that this language depends on another language, identified
          * by its id. This means any {@link LanguageProcessorRegistry} that
          * contains a processor for this language is asserted upon construction
@@ -368,10 +404,7 @@ public abstract class LanguageModuleBase implements Language {
          */
 
         public LanguageMetadata dependsOnLanguage(String id) {
-            if (!VALID_LANG_ID.matcher(id).matches()) {
-                throw new IllegalArgumentException(
-                    "ID '" + id + "' is not a valid language ID (should match " + VALID_LANG_ID + ").");
-            }
+            checkValidLangId(id);
             dependencies.add(id);
             return this;
         }
@@ -404,6 +437,21 @@ public abstract class LanguageModuleBase implements Language {
                     throw new IllegalArgumentException("Invalid version name: " + StringUtil.inSingleQuotes(name));
                 }
             }
+        }
+    }
+
+    /**
+     * Expresses the language as a dialect of another language.
+     * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+     */
+    @Experimental
+    public static final class DialectLanguageMetadata {
+        private final @NonNull LanguageMetadata metadata;
+        private final @NonNull String baseLanguageId;
+
+        private DialectLanguageMetadata(LanguageMetadata metadata, String baseLanguageId) {
+            this.metadata = metadata;
+            this.baseLanguageId = baseLanguageId;
         }
     }
 }

@@ -540,4 +540,75 @@ public class UnusedLocalVarsMultiple {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Issues 5061/5081: Compound assignment used in another expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int read = 0;
+        consume(read += 1);
+    }
+
+    void consume(int val) {
+        System.out.println(val);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5061/5081: Compound assignment used in another expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int read = 0;
+        consume(read += 1);
+    }
+    void consume(int val) {
+        System.out.println(val);
+    }
+
+    void readUpTo(java.nio.channels.ReadableByteChannel channel, java.nio.ByteBuffer buffer, int length) {
+        int read = 0;
+        while ((read += channel.read(buffer)) < length) {
+        }
+
+        int totalBytesRead = 0;
+        read = 0;
+        while ((read = channel.read(buffer)) >= 0 && totalBytesRead < length) {
+            totalBytesRead += read;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedLocalVariable false positive with try-with-resource #5747 - workaround</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+import java.nio.*;
+import java.nio.channels.*;
+
+class Foo {
+    long workaround() {
+        try (FileOutputStream fos = new FileOutputStream(file);
+                FileChannel out = fos.getChannel();
+                FileLock ignored = out.lock()) {
+            final int buffsize = 4096;
+            long position = 0;
+            long read;
+            while ((read = out.transferFrom(channel, position, buffsize)) > 0) {
+                position += read;
+            }
+            return position;
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

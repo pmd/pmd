@@ -60,7 +60,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 8064, current threshold is 200</message>
+            <message>The method 'bar()' has an NPath complexity of 5064, current threshold is 200</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -70,7 +70,7 @@ public class Foo {
         <rule-property name="reportLevel">1</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 200, current threshold is 1</message>
+            <message>The method 'bar()' has an NPath complexity of 288, current threshold is 1</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -95,7 +95,10 @@ public class Foo {
 
     <test-code>
         <description>Test default report level - ignore 199</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method 'bar()' has an NPath complexity of 588, current threshold is 200</message>
+        </expected-messages>
         <code><![CDATA[
 class Foo {
     void bar() {
@@ -132,7 +135,7 @@ class Foo {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 4, current threshold is 2</message>
+            <message>The method 'bar()' has an NPath complexity of 5, current threshold is 2</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
@@ -148,7 +151,7 @@ class Foo {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The method 'bar()' has an NPath complexity of 9, current threshold is 2</message>
+            <message>The method 'bar()' has an NPath complexity of 10, current threshold is 2</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
@@ -267,6 +270,29 @@ public class Product {
     void setMagicNumber(int s) {}
     enum Language {FR,IT,EN}
     static class Description { static class Fr{ Fr(String s){} } static class En{ En(String s){} }}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expressions (#5568)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Product {
+    static byte toByte(final Register8 r) {
+        return switch (r) {
+            case AL, R8B -> (byte) 0x00;
+            case CL, R9B -> (byte) 0x01;
+            case DL, R10B -> (byte) 0x02;
+            case BL, R11B -> (byte) 0x03;
+            case AH, SPL, R12B -> (byte) 0x04;
+            case CH, BPL, R13B -> (byte) 0x05;
+            case DH, SIL, R14B -> (byte) 0x06;
+            case BH, DIL, R15B -> (byte) 0x07;
+        };
+    }
+    enum Register8 {
+    AL, R8B, CL, R9B, DL, R10B, BL, R11B, AH, SPL, R12B, CH, BPL, R13B, DH, SIL, R14B, BH, DIL, R15B
+    }
 }
         ]]></code>
     </test-code>

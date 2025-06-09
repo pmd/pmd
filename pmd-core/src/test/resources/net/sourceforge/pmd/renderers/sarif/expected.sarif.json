@@ -26,6 +26,9 @@
                 "tags": [
                   "RuleSet"
                 ]
+              },
+              "defaultConfiguration": {
+                "level": "note"
               }
             }
           ]
@@ -38,6 +41,7 @@
           "message": {
             "text": "blah"
           },
+          "level": "note",
           "locations": [
             {
               "physicalLocation": {

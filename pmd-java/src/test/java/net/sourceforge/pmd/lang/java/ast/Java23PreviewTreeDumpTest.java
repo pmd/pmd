@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -27,7 +28,7 @@ import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     private final JavaParsingHelper java23p =
             JavaParsingHelper.DEFAULT.withDefaultVersion("23-preview")
-                    .withResourceContext(Java22PreviewTreeDumpTest.class, "jdkversiontests/java23p/");
+                    .withResourceContext(Java23PreviewTreeDumpTest.class, "jdkversiontests/java23p/");
     private final JavaParsingHelper java23 = java23p.withDefaultVersion("23");
 
     @Override
@@ -71,7 +72,7 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep477ImplicitlyDeclaredClassesAndInstanceMainMethods1BeforeJava23Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java23.parseResource("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods1.java"));
-        assertThat(thrown.getMessage(), containsString("Implicitly declared classes and instance main methods is a preview feature of JDK 23, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Simple source files and instance main methods is a preview feature of JDK 23, you should select your language version accordingly"));
     }
 
     @Test
@@ -114,9 +115,9 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
 
     @Test
     void stringTemplatesAreNotSupportedAnymore() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java23p.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
-        assertThat(thrown.getMessage(), containsString("String templates is a preview feature of JDK 22, you should select your language version accordingly"));
-        ParseException thrown2 = assertThrows(ParseException.class, () -> java23.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
-        assertThat(thrown2.getMessage(), containsString("String templates is a preview feature of JDK 22, you should select your language version accordingly"));
+        LexException thrown = assertThrows(LexException.class, () -> java23p.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
+        assertThat(thrown.getMessage(), containsString("Lexical error in file"));
+        LexException thrown2 = assertThrows(LexException.class, () -> java23.parseResource("StringTemplatesAreNotSupportedAnymore.java"));
+        assertThat(thrown2.getMessage(), containsString("Lexical error in file"));
     }
 }

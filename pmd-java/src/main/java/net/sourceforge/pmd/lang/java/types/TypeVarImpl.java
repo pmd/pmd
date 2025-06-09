@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
-
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -62,58 +60,6 @@ abstract class TypeVarImpl implements JTypeVar {
      */
     static TypeVarImpl.CapturedTypeVar freshCapture(@NonNull JWildcardType wildcard) {
         return new CapturedTypeVar(wildcard, wildcard.getTypeAnnotations());
-    }
-
-    /**
-     * Capture a type variable, that is, capture its bounds if needed.
-     * This is necessary because those bounds contributes to the methods
-     * of the type variable.
-     * Eg in {@code <C extends Collection<? super X>>} the methods available
-     * in C may mention the type parameter of Collection. But this is a
-     * wildcard `? super X` that needs to be replaced by a capture variable.
-     *
-     * @param tv a type var
-     */
-    static JTypeVar tvarCapture(@NonNull JTypeVar tv) {
-        if (tv.isCaptured()) {
-            return tv;
-        }
-        // Need to capture the bounds because those bounds contributes the methods of the tvar.
-        // Eg in `<C extends Collection<? super X>>` the methods available in C may mention the type
-        // parameter of collection. But this is a wildcard `? super X` that needs to be captured.
-        JTypeMirror upperBoundCap = capture(tv.getUpperBound());
-        JTypeMirror lowerBoundCap = capture(tv.getLowerBound());
-        if (upperBoundCap == tv.getUpperBound() && lowerBoundCap == tv.getLowerBound()) {
-            // no change
-            return tv;
-        }
-        // We will return a new var.
-        CapturedTypeVar newTv = new CapturedTypeVar(tv, upperBoundCap, lowerBoundCap, tv.getTypeAnnotations());
-
-        // We have to update the bounds again, to uphold recursive bounds. Eg if you have the following:
-        //    class C<T extends C<? extends T>>
-        // then capturing T in the body of the class C should produce a new capture var, call it T2,
-        // which has captured bounds. The upper bound of T2 should be
-        //  capture(C<? extends T2>)
-        // and notice that here it's T2 and not T, otherwise the recursive bound is
-        // not preserved by capture. So this last update is there to map T to T2 (ie, tv to newTv).
-        newTv.upperBound = upperBoundCap.subst(sv -> updateBounds(tv, sv, newTv));
-        newTv.lowerBound = lowerBoundCap.subst(sv -> updateBounds(tv, sv, newTv));
-        return newTv;
-    }
-
-    private static SubstVar updateBounds(JTypeVar tv, SubstVar sv, CapturedTypeVar newTv) {
-        if (sv == tv) {
-            return newTv;
-        } else if (sv instanceof JTypeVar) {
-            return ((JTypeVar) sv).substInBounds(sv2 -> {
-                if (sv2 == tv) {
-                    return newTv;
-                }
-                return sv2;
-            });
-        }
-        return sv;
     }
 
     static final class RegularTypeVar extends TypeVarImpl {
@@ -245,22 +191,10 @@ abstract class TypeVarImpl implements JTypeVar {
         }
 
         private CapturedTypeVar(@Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
-            super(lower.getTypeSystem(), typeAnnots);
-            this.upperBound = upper;
-            this.lowerBound = lower;
-            this.wildcard = wild;
-            this.tvar = null;
+            this(null, wild, lower, upper, typeAnnots);
         }
 
-        private CapturedTypeVar(@Nullable JTypeVar tvar, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
-            super(lower.getTypeSystem(), typeAnnots);
-            this.upperBound = upper;
-            this.lowerBound = lower;
-            this.tvar = tvar;
-            this.wildcard = null;
-        }
-
-        private CapturedTypeVar(@Nullable JTypeVar tvar, JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
+        private CapturedTypeVar(@Nullable JTypeVar tvar, @Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
             super(lower.getTypeSystem(), typeAnnots);
             this.upperBound = upper;
             this.lowerBound = lower;
@@ -310,7 +244,7 @@ abstract class TypeVarImpl implements JTypeVar {
             if (wild == this.wildcard && lower == this.lowerBound && upper == this.lowerBound) {
                 return this;
             } else if (wild == null) {
-                return new CapturedTypeVar(tvar, lower, upper, typeAnnots);
+                return new CapturedTypeVar(tvar, null, lower, upper, typeAnnots);
             }
             return new CapturedTypeVar(wild, lower, upper, getTypeAnnotations());
         }
@@ -331,7 +265,7 @@ abstract class TypeVarImpl implements JTypeVar {
 
         @Override
         public JTypeVar withUpperBound(@NonNull JTypeMirror newUB) {
-            throw new UnsupportedOperationException("This only needs to be implemented on regular type variables");
+            return cloneWithBounds(upperBound, newUB);
         }
 
         @Override
@@ -353,6 +287,7 @@ abstract class TypeVarImpl implements JTypeVar {
         public @NonNull String getName() {
             Object captureOrigin = wildcard == null ? tvar : wildcard;
             return "capture#" + hashCode() % PRIME + " of " + captureOrigin;
+            // + "[" + lowerBound + ".." + upperBound + "]";
         }
     }
 }

@@ -541,6 +541,50 @@ return a;
         </example>
     </rule>
 
+    <rule name="ExhaustiveSwitchHasDefault"
+          language="java"
+          since="7.10.0"
+          message="The switch block is exhaustive even without the default case"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#exhaustiveswitchhasdefault">
+        <description>
+When switching over an enum or sealed class, the compiler will ensure that all possible cases are covered.
+If a case is missing, this will result in a compilation error. But if a default case is added, this compiler
+check is not performed anymore, leading to difficulties in noticing bugs at runtime.
+
+Not using a default case makes sure, a compiler error is introduced whenever a new enum constant or a
+new subclass to the sealed class hierarchy is added. We will discover this problem at compile time
+rather than at runtime (if at all).
+
+Note: The fix it not necessarily just removing the default case. Maybe a case is missing which needs to be implemented.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //(SwitchStatement | SwitchExpression)
+                      [@Exhaustive = true()]
+                      [@DefaultCase = true()]
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Foo {
+    enum MyEnum { A, B };
+
+    void doSomething(MyEnum e) {
+        switch(e) {
+            case A -> System.out.println("a");
+            case B -> System.out.println("b");
+            default -> System.out.println("unnecessary default");
+        };
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ForLoopCanBeForeach"
           language="java"
           since="6.0.0"
@@ -637,6 +681,42 @@ log.debug("log something expensive: {}", this::calculateExpensiveLoggingText);
 ]]>
         </example>
     </rule>
+
+    <rule name="ImplicitFunctionalInterface"
+          language="java"
+          since="7.12.0"
+          message="Annotate this interface with @FunctionalInterface or with @SuppressWarnings(&quot;PMD.ImplicitFunctionalInterface&quot;) to clarify your intent."
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.ImplicitFunctionalInterfaceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#implicitfunctionalinterface">
+        <description>
+            Reports functional interfaces that were not explicitly declared as such with
+            the annotation `@FunctionalInterface`. If an interface is accidentally a functional
+            interface, then it should bear a `@SuppressWarnings(&quot;PMD.ImplicitFunctionalInterface&quot;)`
+            annotation to make this clear.
+        </description>
+        <priority>2</priority>
+        <example>
+            <![CDATA[
+            // The intent on this declaration is unclear, and the rule will report it.
+            public interface MyInterface {
+                void doSomething();
+            }
+
+            // This is clearly intended as a functional interface.
+            @FunctionalInterface
+            public interface MyInterface {
+                void doSomething();
+            }
+
+            // This is clearly NOT intended as a functional interface.
+            @SuppressWarnings("PMD.ImplicitFunctionalInterface")
+            public interface MyInterface {
+                void doSomething();
+            }
+            ]]>
+        </example>
+    </rule>
+
 
     <rule name="JUnit4SuitesShouldUseSuiteAnnotation"
           language="java"
@@ -795,6 +875,9 @@ public class MyTest {
             Position literals first in all String comparisons, if the second argument is null then NullPointerExceptions
             can be avoided, they will just return false. Note that switching literal positions for compareTo and
             compareToIgnoreCase may change the result, see examples.
+
+            Note that compile-time constant strings are treated like literals. This is because they are inlined into
+            the class file, are necessarily non-null, and therefore cannot cause an NPE at runtime.
         </description>
         <priority>3</priority>
         <example>
@@ -814,6 +897,11 @@ class Foo {
     }
     boolean bar(String x) {
         return x.contentEquals("bar"); // should be "bar".contentEquals(x)
+    }
+
+    static final String CONSTANT = "const";
+    {
+        CONSTANT.equals("literal"); // not reported, this is effectively the same as writing "const".equals("foo")
     }
 }
 ]]>
@@ -1546,6 +1634,36 @@ class C {
             ]]></example>
     </rule>
 
+    <rule name="UnnecessaryWarningSuppression"
+          language="java"
+          since="7.14.0"
+          message="Unused suppression {0}."
+          class="net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessarywarningsuppression">
+        <description>
+            This rule reports suppression comments and annotations that did not suppress any PMD violation.
+            Note that violations of this rule cannot be suppressed.
+
+            Please note:
+            - The rule will report those suppressions comments/annotations that did not suppress a violation
+            _during the current run_. That means you cannot run this rule separately from other rules, it must
+            always be run with all the rules that could produce a warning. This is most likely not a problem, as
+            you can just include this rule in your regular ruleset.
+            - The rule for now only reports annotations specific to PMD, like `@SuppressWarnings("PMD")`. For instance
+            `@SuppressWarnings("all")` is never reported as we cannot know if another tool is producing a
+            warning there that must be suppressed. In the future we might be able to check for other common ones
+            like `@SuppressWarnings("unchecked")` or `"fallthrough"`.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+            public class Something {
+                // Unless some rule triggered on the following line, this rule will report the comment:
+                private void foo() {} // NOPMD
+            }
+            ]]>
+        </example>
+    </rule>
 
     <rule name="UnusedAssignment"
           language="java"

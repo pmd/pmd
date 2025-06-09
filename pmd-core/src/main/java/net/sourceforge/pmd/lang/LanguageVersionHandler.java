@@ -54,7 +54,6 @@ public interface LanguageVersionHandler {
         return Collections.emptyList();
     }
 
-
     /**
      * Returns the metrics provider for this language version,
      * or null if it has none.

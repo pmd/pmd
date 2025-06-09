@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.A
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.ANNOT_B;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasAnnots;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.assertHasTypeAnnots;
+import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getCtorType;
 import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.getMethodType;
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -168,6 +169,36 @@ class TypeAnnotReflectionOnMethodsTest {
             JMethodSig t = getMethodType(sym, "abOnReceiver");
             assertThat(t.getFormalParameters(), Matchers.empty());
             assertHasTypeAnnots(t.getAnnotatedReceiverType(), ANNOTS_A_B);
+        }
+    }
+
+    @ParameterizedTest
+    @EnumSource
+    void testTypeAnnotOnCtor(SymImplementation impl) {
+        JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.CtorOwner.class);
+
+        /*
+            CtorOwner(@A @B int i) { }
+
+            @A CtorOwner() { }
+
+            CtorOwner(String i, int x) throws @A Exception {}
+         */
+
+        {
+            JMethodSig t = getCtorType(sym, 1);
+            assertHasTypeAnnots(t.getFormalParameters().get(0), ANNOTS_A_B);
+            assertHasTypeAnnots(t.getReturnType(), emptyList());
+        }
+        {
+            JMethodSig t = getCtorType(sym, 0);
+            assertHasTypeAnnots(t.getReturnType(), ANNOT_A);
+        }
+        {
+            JMethodSig t = getCtorType(sym, 2);
+            assertHasTypeAnnots(t.getFormalParameters().get(0), emptyList());
+            assertHasTypeAnnots(t.getFormalParameters().get(0), emptyList());
+            assertHasTypeAnnots(t.getThrownExceptions().get(0), ANNOT_A);
         }
     }
 

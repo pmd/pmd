@@ -12,7 +12,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.createUnresolvedAsmSymbol
 import net.sourceforge.pmd.lang.java.types.TypeConversion.capture
 import net.sourceforge.pmd.lang.test.ast.IntelliMarker
-import net.sourceforge.pmd.lang.test.ast.shouldBeA
 
 /**
  * @author Clément Fournier
@@ -109,17 +108,7 @@ class CaptureTest : IntelliMarker, FunSpec({
 
                 parm shouldHaveType child.typeArgs[0]
                 val captured = capture(parm.typeMirror)
-                captured.shouldBeA<JTypeVar> {
-                    it.isCaptured shouldBe true // its bounds are captured
-
-                    it.upperBound.shouldBeA<JClassType> {
-                        it.symbol shouldBe child.symbol
-                        it.typeArgs[0].shouldBeA<JTypeVar> { cvar ->
-                            cvar.isCaptured shouldBe true
-                            cvar.upperBound.shouldBeSameInstanceAs(captured)
-                        }
-                    }
-                }
+                captured shouldBeSameInstanceAs parm.typeMirror
             }
 
 
