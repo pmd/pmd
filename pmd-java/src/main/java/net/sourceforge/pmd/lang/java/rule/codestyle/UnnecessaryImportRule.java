@@ -445,12 +445,11 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             return importNode.isImportOnDemand()
                     && TypesFromReflection.loadSymbol(importNode.getTypeSystem(), importNode.getPackageName() + "." + referenceName) != null;
         });
-
         staticImportsOnDemand.removeIf(it -> {
             final ASTImportDeclaration importNode = it.node;
             if (importNode.isImportOnDemand()) {
                 final JClassSymbol symbol = TypesFromReflection.loadSymbol(importNode.getTypeSystem(), importNode.getImportedName());
-                return symbol != null && (symbol.getDeclaredField(referenceName) != null || symbol.getDeclaredClass(referenceName) != null);
+                return symbol != null && (symbol.getSimpleName().equals(referenceName) || symbol.getDeclaredField(referenceName) != null || symbol.getDeclaredClass(referenceName) != null);
             }
 
             return false;

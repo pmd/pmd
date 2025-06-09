@@ -1358,13 +1358,41 @@ public class C {
     </test-code>
 
     <test-code>
-        <description>#2304: [java] static on-demand import in javadoc</description>
+        <description>#2304: [java] static on-demand field import in javadoc</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import static java.lang.Math.*;
+import static java.nio.charset.StandardCharsets.*;
 public class Foo {
     /**
-     * {@see PI}
+     * {@link UTF_8}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand method import in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.function.Predicate.*;
+public class Foo {
+    /**
+     * {@link Predicate#isEqual(Object)}}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand class import in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Map.*;
+public class Foo {
+    /**
+     * {@link Entry}
      */
     public void test() {}
 }
