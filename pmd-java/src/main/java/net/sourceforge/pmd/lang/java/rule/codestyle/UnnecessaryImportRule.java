@@ -440,6 +440,10 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     private void removeReferenceOnDemandImport(String referenceName) {
+        if (referenceName.isEmpty()) {
+            return;
+        }
+
         typeImportsOnDemand.removeIf(it -> {
             final ASTImportDeclaration importNode = it.node;
             return importNode.isImportOnDemand()
