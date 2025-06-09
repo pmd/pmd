@@ -490,7 +490,7 @@ public class Person {
 
     <rule name="RepeatedPrimitiveValue"
           language="apex"
-          since="7.10.0"
+          since="7.15.0"
           message="This value has been repeated more than one time in this class. Please define the value as a static constant."
           class="net.sourceforge.pmd.lang.apex.rule.design.RepeatedPrimitiveValueRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#repeatedprimitivevalue">
@@ -500,7 +500,7 @@ When a value is used repeatedly in its literal form, it becomes harder to unders
 If the value needs to be changed, it must be updated in multiple places, increasing the risk of errors.
 Defining these repeated values as constants improves code readability by assigning a meaningful name to the value and centralizes the definition of the value, making it easier to maintain and refactor.
         </description>
-        <priority>2</priority>
+        <priority>5</priority>
         <example>
 <![CDATA[
 public class Example {
