@@ -84,8 +84,8 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.9.24</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit5.version>5.13.0</junit5.version>
-        <junit5.platform.version>1.13.0</junit5.platform.version>
+        <junit5.version>5.13.1</junit5.version>
+        <junit5.platform.version>1.13.1</junit5.platform.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
@@ -205,7 +205,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.6.1</version>
                     <executions>
                         <execution>
                             <id>add-kotlin-source-dir</id>
@@ -874,7 +874,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.49.3</version>
+                <version>3.49.4</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
