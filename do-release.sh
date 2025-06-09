@@ -296,7 +296,7 @@ EOF
 echo "Committing current changes on branch ${CURRENT_BRANCH}"
 # note: using [skip ci] as only the first stage is done and the full build
 # requires pmd-designer to be present, which might not be the case yet...
-git commit -a -m "[release] Prepare next development version [skip ci]"
+git commit -a -m "[release] Prepare next development version"
 echo "Push branch ${CURRENT_BRANCH}"
 git push origin "${CURRENT_BRANCH}"
 
