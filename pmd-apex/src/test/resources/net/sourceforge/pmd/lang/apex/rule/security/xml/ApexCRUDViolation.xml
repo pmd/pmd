@@ -1880,4 +1880,22 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[apex] ApexCRUDViolation unable to detect insecure SOQL if it is a direct input argument #5788</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public with sharing class Dummy {
+    public void test() {
+        Map<ID, Account> mapOfAccounts;
+        mapOfAccounts = new Map<ID, Account>([ // line 4
+            SELECT Id, Name
+            FROM Account
+            WHERE Id IN :setOfAccountId
+        ]);
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
