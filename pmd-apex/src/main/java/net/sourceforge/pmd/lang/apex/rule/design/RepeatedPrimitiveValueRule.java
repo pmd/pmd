@@ -22,31 +22,41 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import com.google.common.collect.ImmutableSet;
 
 /**
- * Detects repeated primitive values (strings and numbers) within an Apex class that could 
- * be extracted into named constants to improve code maintainability and reduce magic numbers/strings.
+ * Detects repeated primitive values (strings and numbers) within an Apex class
+ * that could be extracted into named constants to improve code maintainability
+ * and reduce magic numbers/strings.
  * 
- * <p>This rule identifies primitive literals that appear multiple times in the same class and flags
- * them as potential candidates for constant extraction. The rule excludes certain common values
- * (0, 1, -1, empty string) and boolean literals as these are typically acceptable to repeat.</p>
+ * <p>
+ * This rule identifies primitive literals that appear multiple times in the
+ * same class and flags them as potential candidates for constant extraction.
+ * The rule excludes certain common values (0, 1, -1, empty string) and boolean
+ * literals as these are typically acceptable to repeat.
+ * </p>
  * 
- * <p>Examples of violations:</p>
+ * <p>
+ * Examples of violations:
+ * </p>
+ * 
  * <pre>
  * public class Example {
  *     public void method1() {
  *         Integer timeout = 30; // violation: 30 appears multiple times
  *     }
+ * 
  *     public void method2() {
- *         Integer delay = 30;   // violation: same value repeated
+ *         Integer delay = 30; // violation: same value repeated
  *     }
  * }
  * </pre>
  * 
- * <p>The rule also provides special handling for:</p>
+ * <p>
+ * The rule also provides special handling for:
+ * </p>
  * <ul>
- *   <li>Numbers used in Date/DateTime construction (newInstance calls)</li>
- *   <li>Constants already defined as static final fields</li>
- *   <li>Boolean literals (always ignored)</li>
- *   <li>Null values and common numeric constants</li>
+ * <li>Numbers used in Date/DateTime construction (newInstance calls)</li>
+ * <li>Constants already defined as static final fields</li>
+ * <li>Boolean literals (always ignored)</li>
+ * <li>Null values and common numeric constants</li>
  * </ul>
  * 
  * @see <a href="https://github.com/pmd/pmd/issues/5323">GitHub Issue #5323</a>
@@ -62,16 +72,23 @@ public class RepeatedPrimitiveValueRule extends AbstractApexRule {
     private Set<String> constantNumbers = new HashSet<>();
 
     /**
-     * Main entry point for analyzing an Apex class for repeated primitive values.
+     * Main entry point for analyzing an Apex class for repeated primitive
+     * values.
      * 
-     * <p>This method performs a two-pass analysis:</p>
+     * <p>
+     * This method performs a two-pass analysis:
+     * </p>
      * <ol>
-     *   <li>First pass: Count all occurrences of primitive literals in the class</li>
-     *   <li>Second pass: Mark violations for literals that appear more than once</li>
+     * <li>First pass: Count all occurrences of primitive literals in the
+     * class</li>
+     * <li>Second pass: Mark violations for literals that appear more than
+     * once</li>
      * </ol>
      * 
-     * @param topLevelClass the Apex class to analyze
-     * @param data the rule context data
+     * @param topLevelClass
+     *            the Apex class to analyze
+     * @param data
+     *            the rule context data
      * @return the rule context data with any violations added
      */
     @Override
