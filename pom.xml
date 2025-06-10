@@ -453,11 +453,11 @@
                         <externalDocumentationLinks>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-core/${project.version}/</url>
-                                <packageListUrl>file://${project.basedir}/../pmd-core/target/apidocs/element-list</packageListUrl>
+                                <packageListUrl>file://${project.basedir}/../pmd-core/target/reports/apidocs/element-list</packageListUrl>
                             </link>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-test/${project.version}/</url>
-                                <packageListUrl>file://${project.basedir}/../pmd-test/target/apidocs/element-list</packageListUrl>
+                                <packageListUrl>file://${project.basedir}/../pmd-test/target/reports/apidocs/element-list</packageListUrl>
                             </link>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-lang-test/${project.version}/</url>
