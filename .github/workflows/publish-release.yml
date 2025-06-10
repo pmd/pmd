@@ -690,10 +690,55 @@ jobs:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
         run: |
           cd ../target/reports
-          baseline_branch="pmd_releases/${PMD_VERSION}"
-          BRANCH_FILENAME="${baseline_branch/\//_}"
-          zip -q -r "${BRANCH_FILENAME}-baseline.zip" "${BRANCH_FILENAME}/"
-          scp "${BRANCH_FILENAME}-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
+          baseline_name="pmd_releases_${PMD_VERSION}"
+          zip -q -r "${baseline_name}-baseline.zip" "${baseline_name}/"
+          scp "${baseline_name}-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: regression-tester-baseline
+          path: ${{ format('pmd_releases_{0}-baseline.zip', needs.check-version.outputs.PMD_VERSION) }}
+      - name: Cleanup ssh
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.ssh"
+
+  upload-regression-tester-baseline-sourceforge:
+    needs: [check-version, deploy-to-maven-central, create-regression-tester-baseline]
+    if: ${{ inputs.build_cli_dist_only == true }}
+    # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+    # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS and PMD_SF_APIKEY
+    environment:
+      name: sourceforge
+      url: https://sourceforge.net/projects/pmd/files/pmd-regression-tester/
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Setup ssh key for sourceforge
+        env:
+          WEB_SF_DEPLOY_KEY: ${{ secrets.PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY }}
+          WEB_SF_KNOWN_HOSTS: ${{ vars.PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS }}
+        run: |
+          mkdir -p "${HOME}/.ssh"
+          chmod 700 "${HOME}/.ssh"
+          printenv WEB_SF_DEPLOY_KEY > "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+          chmod 600 "${HOME}/.ssh/web.sourceforge.net_deploy_key"
+          echo "
+          Host web.sourceforge.net
+              IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
+          " > "$HOME/.ssh/config"
+          echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
+      - uses: actions/download-artifact@v4
+        with:
+          name: regression-tester-baseline
+      - name: Upload to sourceforge
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+        run: |
+          uploadUrl="adangel@web.sourceforge.net:/home/frs/project/pmd/pmd-regression-tester/"
+          rsync -avh "pmd_releases_${PMD_VERSION}-baseline.zip" "${uploadUrl}"
       - name: Cleanup ssh
         if: ${{ always() }}
         run: |
