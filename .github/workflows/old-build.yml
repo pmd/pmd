@@ -1,9 +1,6 @@
 name: old-build
 
 on:
-  push:
-    tags:
-      - '**'
   workflow_dispatch:
     inputs:
       build_cli_dist_only:

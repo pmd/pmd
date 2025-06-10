@@ -787,7 +787,7 @@
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                     <waitUntil>published</waitUntil>
-                    <deploymentName>${project.artifactId}</deploymentName>
+                    <deploymentName>PMD ${project.version}</deploymentName>
                 </configuration>
             </plugin>
             <plugin>
