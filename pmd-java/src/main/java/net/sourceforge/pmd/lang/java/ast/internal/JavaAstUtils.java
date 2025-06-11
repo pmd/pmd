@@ -99,17 +99,14 @@ import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
- * Common utility functions to work with the Java AST. See also
- * {@link TypeTestUtil}. Only add here things that are not specific to
- * rules (use {@link JavaRuleUtil} for that). This API may be eventually
- * published.
+ * Common utility functions to work with the Java AST. See also {@link TypeTestUtil}. Only add here things that are not
+ * specific to rules (use {@link JavaRuleUtil} for that). This API may be eventually published.
  */
 public final class JavaAstUtils {
 
     private JavaAstUtils() {
         // utility class
     }
-
 
     public static boolean isConditional(JavaNode ifx) {
         return isInfixExprWithOperator(ifx, BinaryOp.CONDITIONAL_OPS);
@@ -120,12 +117,10 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns true if this is a numeric literal with the given int value.
-     * This also considers long literals.
+     * Returns true if this is a numeric literal with the given int value. This also considers long literals.
      */
     public static boolean isLiteralInt(JavaNode e, int value) {
-        return e instanceof ASTNumericLiteral
-                && ((ASTNumericLiteral) e).isIntegral()
+        return e instanceof ASTNumericLiteral && ((ASTNumericLiteral) e).isIntegral()
                 && ((ASTNumericLiteral) e).getValueAsInt() == value;
     }
 
@@ -139,8 +134,7 @@ public final class JavaAstUtils {
     }
 
     /**
-     * If the parameter is an operand of a binary infix expression,
-     * returns the other operand. Otherwise returns null.
+     * If the parameter is an operand of a binary infix expression, returns the other operand. Otherwise returns null.
      */
     public static @Nullable ASTExpression getOtherOperandIfInInfixExpr(@Nullable JavaNode e) {
         if (e != null && e.getParent() instanceof ASTInfixExpression) {
@@ -157,12 +151,10 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns true if the node is a {@link ASTMethodDeclaration} that
-     * is a main method.
+     * Returns true if the node is a {@link ASTMethodDeclaration} that is a main method.
      */
     public static boolean isMainMethod(JavaNode node) {
-        return node instanceof ASTMethodDeclaration
-                && ((ASTMethodDeclaration) node).isMainMethod();
+        return node instanceof ASTMethodDeclaration && ((ASTMethodDeclaration) node).isMainMethod();
     }
 
     public static boolean hasField(ASTTypeDeclaration node, String name) {
@@ -183,15 +175,17 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns true if the formal parameters of the method or constructor
-     * match the given types exactly. Note that for varargs methods, the
-     * last param must have an array type (but it is not checked to be varargs).
-     * This will return false if we're not sure.
+     * Returns true if the formal parameters of the method or constructor match the given types exactly. Note that for
+     * varargs methods, the last param must have an array type (but it is not checked to be varargs). This will return
+     * false if we're not sure.
      *
-     * @param node  Method or ctor
-     * @param types List of types to match (may be empty)
+     * @param node
+     *            Method or ctor
+     * @param types
+     *            List of types to match (may be empty)
      *
-     * @throws NullPointerException If any of the classes is null, or the node is null
+     * @throws NullPointerException
+     *             If any of the classes is null, or the node is null
      * @see TypeTestUtil#isExactlyA(Class, TypeNode)
      */
     public static boolean hasParameters(ASTExecutableDeclaration node, Class<?>... types) {
@@ -209,18 +203,21 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns true if the {@code throws} declaration of the method or constructor
-     * matches the given types exactly.
+     * Returns true if the {@code throws} declaration of the method or constructor matches the given types exactly.
      *
-     * @param node  Method or ctor
-     * @param types List of exception types to match (may be empty)
+     * @param node
+     *            Method or ctor
+     * @param types
+     *            List of exception types to match (may be empty)
      *
-     * @throws NullPointerException If any of the classes is null, or the node is null
+     * @throws NullPointerException
+     *             If any of the classes is null, or the node is null
      * @see TypeTestUtil#isExactlyA(Class, TypeNode)
      */
     @SafeVarargs
     public static boolean hasExceptionList(ASTExecutableDeclaration node, Class<? extends Throwable>... types) {
-        @NonNull List<ASTClassType> formals = ASTList.orEmpty(node.getThrowsList());
+        @NonNull
+        List<ASTClassType> formals = ASTList.orEmpty(node.getThrowsList());
         if (formals.size() != types.length) {
             return false;
         }
@@ -234,9 +231,8 @@ public final class JavaAstUtils {
     }
 
     /**
-     * True if the variable is never used. Note that the visibility of
-     * the variable must be less than {@link Visibility#V_PRIVATE} for
-     * us to be sure of it.
+     * True if the variable is never used. Note that the visibility of the variable must be less than
+     * {@link Visibility#V_PRIVATE} for us to be sure of it.
      */
     public static boolean isNeverUsed(ASTVariableId varId) {
         return CollectionUtil.none(varId.getLocalUsages(), JavaAstUtils::isReadUsage);
@@ -244,34 +240,34 @@ public final class JavaAstUtils {
 
     private static boolean isReadUsage(ASTNamedReferenceExpr expr) {
         return expr.getAccessType() == AccessType.READ
-            // x++ as a method argument or used in other expression
-            || ((expr.getParent() instanceof ASTUnaryExpression
-            // compound assignments like '+=' have AccessType.WRITE, but can also be used in another expression
-            || isCompoundAssignment(expr))
-            && !(expr.getParent().getParent() instanceof ASTExpressionStatement));
+                // x++ as a method argument or used in other expression
+                || ((expr.getParent() instanceof ASTUnaryExpression
+                        // compound assignments like '+=' have AccessType.WRITE, but can also be used in another
+                        // expression
+                        || isCompoundAssignment(expr))
+                        && !(expr.getParent().getParent() instanceof ASTExpressionStatement));
     }
 
     private static boolean isCompoundAssignment(ASTNamedReferenceExpr expr) {
-        return expr.getParent() instanceof ASTAssignmentExpression && ((ASTAssignmentExpression) expr.getParent()).isCompound();
+        return expr.getParent() instanceof ASTAssignmentExpression
+                && ((ASTAssignmentExpression) expr.getParent()).isCompound();
     }
 
     /**
-     * True if the variable is incremented or decremented via a compound
-     * assignment operator, or a unary increment/decrement expression.
+     * True if the variable is incremented or decremented via a compound assignment operator, or a unary
+     * increment/decrement expression.
      */
     public static boolean isVarAccessReadAndWrite(ASTNamedReferenceExpr expr) {
-        return expr.getAccessType() == AccessType.WRITE
-            && (!(expr.getParent() instanceof ASTAssignmentExpression)
-            || ((ASTAssignmentExpression) expr.getParent()).getOperator().isCompound());
+        return expr.getAccessType() == AccessType.WRITE && (!(expr.getParent() instanceof ASTAssignmentExpression)
+                || ((ASTAssignmentExpression) expr.getParent()).getOperator().isCompound());
     }
 
     /**
      * True if the variable access is a non-compound assignment.
      */
     public static boolean isVarAccessStrictlyWrite(ASTNamedReferenceExpr expr) {
-        return expr.getParent() instanceof ASTAssignmentExpression
-            && expr.getIndexInParent() == 0
-            && !((ASTAssignmentExpression) expr.getParent()).getOperator().isCompound();
+        return expr.getParent() instanceof ASTAssignmentExpression && expr.getIndexInParent() == 0
+                && !((ASTAssignmentExpression) expr.getParent()).getOperator().isCompound();
     }
 
     /**
@@ -282,50 +278,43 @@ public final class JavaAstUtils {
             return Collections.emptySet();
         }
 
-        return node.ancestors().takeWhile(it -> it instanceof ASTLabeledStatement)
-                   .toStream()
-                   .map(it -> ((ASTLabeledStatement) it).getLabel())
-                   .collect(Collectors.toSet());
+        return node.ancestors().takeWhile(it -> it instanceof ASTLabeledStatement).toStream()
+                .map(it -> ((ASTLabeledStatement) it).getLabel()).collect(Collectors.toSet());
     }
 
     public static boolean isAnonymousClassCreation(@Nullable ASTExpression expression) {
-        return expression instanceof ASTConstructorCall
-                && ((ASTConstructorCall) expression).isAnonymousClass();
+        return expression instanceof ASTConstructorCall && ((ASTConstructorCall) expression).isAnonymousClass();
     }
 
     /**
-     * Will cut through argument lists, except those of enum constants
-     * and explicit invocation nodes.
+     * Will cut through argument lists, except those of enum constants and explicit invocation nodes.
      */
     public static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
-        JavaNode last = expr.ancestorsOrSelf()
-                            .takeWhile(it -> it instanceof ASTExpression
-                                || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression)
-                            .last();
+        JavaNode last = expr.ancestorsOrSelf().takeWhile(it -> it instanceof ASTExpression
+                || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression).last();
         return (ASTExpression) Objects.requireNonNull(last);
     }
 
     /**
-     * Returns the variable IDS corresponding to variables declared in
-     * the init clause of the loop.
+     * Returns the variable IDS corresponding to variables declared in the init clause of the loop.
      */
     public static NodeStream<ASTVariableId> getLoopVariables(ASTForStatement loop) {
-        return NodeStream.of(loop.getInit())
-                         .filterIs(ASTLocalVariableDeclaration.class)
-                         .flatMap(ASTLocalVariableDeclaration::getVarIds);
+        return NodeStream.of(loop.getInit()).filterIs(ASTLocalVariableDeclaration.class)
+                .flatMap(ASTLocalVariableDeclaration::getVarIds);
     }
 
     /**
-     * Whether one expression is the boolean negation of the other. Many
-     * forms are not yet supported. This method is symmetric so only needs
-     * to be called once.
+     * Whether one expression is the boolean negation of the other. Many forms are not yet supported. This method is
+     * symmetric so only needs to be called once.
      */
     public static boolean areComplements(ASTExpression e1, ASTExpression e2) {
         if (isBooleanNegation(e1)) {
             return areEqual(unaryOperand(e1), e2);
-        } else if (isBooleanNegation(e2)) {
+        }
+        else if (isBooleanNegation(e2)) {
             return areEqual(e1, unaryOperand(e2));
-        } else if (e1 instanceof ASTInfixExpression && e2 instanceof ASTInfixExpression) {
+        }
+        else if (e1 instanceof ASTInfixExpression && e2 instanceof ASTInfixExpression) {
             ASTInfixExpression ifx1 = (ASTInfixExpression) e1;
             ASTInfixExpression ifx2 = (ASTInfixExpression) e2;
             if (ifx1.getOperator().getComplement() != ifx2.getOperator()) {
@@ -335,9 +324,9 @@ public final class JavaAstUtils {
                 // NOT(a == b, a != b)
                 // NOT(a == b, b != a)
                 return areEqual(ifx1.getLeftOperand(), ifx2.getLeftOperand())
-                    && areEqual(ifx1.getRightOperand(), ifx2.getRightOperand())
-                    || areEqual(ifx2.getLeftOperand(), ifx1.getLeftOperand())
-                    && areEqual(ifx2.getRightOperand(), ifx1.getRightOperand());
+                        && areEqual(ifx1.getRightOperand(), ifx2.getRightOperand())
+                        || areEqual(ifx2.getLeftOperand(), ifx1.getLeftOperand())
+                                && areEqual(ifx2.getRightOperand(), ifx1.getRightOperand());
             }
             // todo we could continue with de Morgan and such
         }
@@ -351,28 +340,30 @@ public final class JavaAstUtils {
     /**
      * Returns true if both nodes have exactly the same tokens.
      *
-     * @param node First node
-     * @param that Other node
+     * @param node
+     *            First node
+     * @param that
+     *            Other node
      */
     public static boolean tokenEquals(JavaNode node, JavaNode that) {
         return tokenEquals(node, that, null);
     }
 
     /**
-     * Returns true if both nodes have the same tokens, modulo some renaming
-     * function. The renaming function maps unqualified variables and type
-     * identifiers of the first node to the other. This should be used
-     * in nodes living in the same lexical scope, so that unqualified
-     * names mean the same thing.
+     * Returns true if both nodes have the same tokens, modulo some renaming function. The renaming function maps
+     * unqualified variables and type identifiers of the first node to the other. This should be used in nodes living in
+     * the same lexical scope, so that unqualified names mean the same thing.
      *
-     * @param node       First node
-     * @param other      Other node
-     * @param varRenamer A renaming function. If null, no renaming is applied.
-     *                   Must not return null, if no renaming occurs, returns its argument.
+     * @param node
+     *            First node
+     * @param other
+     *            Other node
+     * @param varRenamer
+     *            A renaming function. If null, no renaming is applied. Must not return null, if no renaming occurs,
+     *            returns its argument.
      */
-    public static boolean tokenEquals(@NonNull JavaNode node,
-                                      @NonNull JavaNode other,
-                                      @Nullable Function<String, @NonNull String> varRenamer) {
+    public static boolean tokenEquals(@NonNull JavaNode node, @NonNull JavaNode other,
+            @Nullable Function<String, @NonNull String> varRenamer) {
         // Since type and variable names obscure one another,
         // it's ok to use a single renaming function.
 
@@ -390,12 +381,10 @@ public final class JavaAstUtils {
             }
 
             String mappedImage = o1.getImage();
-            if (varRenamer != null
-                && o1.kind == JavaTokenKinds.IDENTIFIER
-                && lastKind != JavaTokenKinds.DOT
-                && lastKind != JavaTokenKinds.METHOD_REF
-                //method name
-                && o1.getNext() != null && o1.getNext().kind != JavaTokenKinds.LPAREN) {
+            if (varRenamer != null && o1.kind == JavaTokenKinds.IDENTIFIER && lastKind != JavaTokenKinds.DOT
+                    && lastKind != JavaTokenKinds.METHOD_REF
+                    // method name
+                    && o1.getNext() != null && o1.getNext().kind != JavaTokenKinds.LPAREN) {
                 mappedImage = varRenamer.apply(mappedImage);
             }
 
@@ -427,36 +416,31 @@ public final class JavaAstUtils {
     }
 
     /**
-     * If the argument is a unary expression, returns its operand, otherwise
-     * returns null.
+     * If the argument is a unary expression, returns its operand, otherwise returns null.
      */
     public static @Nullable ASTExpression unaryOperand(@Nullable ASTExpression e) {
-        return e instanceof ASTUnaryExpression ? ((ASTUnaryExpression) e).getOperand()
-                                               : null;
+        return e instanceof ASTUnaryExpression ? ((ASTUnaryExpression) e).getOperand() : null;
     }
 
     /**
-     * Whether the expression is an access to a field of this instance,
-     * not inherited, qualified or not ({@code this.field} or just {@code field}).
+     * Whether the expression is an access to a field of this instance, not inherited, qualified or not
+     * ({@code this.field} or just {@code field}).
      */
     public static boolean isThisFieldAccess(ASTExpression e) {
         if (!(e instanceof ASTNamedReferenceExpr)) {
             return false;
         }
         JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
-        return sym instanceof JFieldSymbol
-                && !((JFieldSymbol) sym).isStatic()
-                // not inherited
+        return sym instanceof JFieldSymbol && !((JFieldSymbol) sym).isStatic()
+        // not inherited
                 && ((JFieldSymbol) sym).getEnclosingClass().equals(e.getEnclosingType().getSymbol())
                 // correct syntactic form
                 && (e instanceof ASTVariableAccess || isSyntacticThisFieldAccess(e));
     }
 
     /**
-     * Whether the expression is a {@code this.field}, with no outer
-     * instance qualifier ({@code Outer.this.field}). The field symbol
-     * is not checked to resolve to a field declared in this class (it
-     * may be inherited)
+     * Whether the expression is a {@code this.field}, with no outer instance qualifier ({@code Outer.this.field}). The
+     * field symbol is not checked to resolve to a field declared in this class (it may be inherited)
      */
     public static boolean isSyntacticThisFieldAccess(ASTExpression e) {
         if (e instanceof ASTFieldAccess) {
@@ -474,30 +458,30 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns true if the expression is the default field value for
-     * the given type.
+     * Returns true if the expression is the default field value for the given type.
      */
     public static boolean isDefaultValue(JTypeMirror type, ASTExpression expr) {
         if (type.isPrimitive()) {
             if (type.isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
                 return expr instanceof ASTBooleanLiteral && !((ASTBooleanLiteral) expr).isTrue();
-            } else {
+            }
+            else {
                 Object constValue = expr.getConstValue();
                 return constValue instanceof Number && ((Number) constValue).doubleValue() == 0d
-                    || constValue instanceof Character && constValue.equals('\u0000');
+                        || constValue instanceof Character && constValue.equals('\u0000');
             }
-        } else {
+        }
+        else {
             return expr instanceof ASTNullLiteral;
         }
     }
 
     /**
-     * Returns true if the expression is a {@link ASTNamedReferenceExpr}
-     * that references the symbol.
+     * Returns true if the expression is a {@link ASTNamedReferenceExpr} that references the symbol.
      */
     public static boolean isReferenceToVar(@Nullable ASTExpression expression, @NonNull JVariableSymbol symbol) {
         return expression instanceof ASTNamedReferenceExpr
-            && symbol.equals(((ASTNamedReferenceExpr) expression).getReferencedSym());
+                && symbol.equals(((ASTNamedReferenceExpr) expression).getReferencedSym());
     }
 
     public static boolean isUnqualifiedThis(ASTExpression e) {
@@ -513,24 +497,22 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns true if the expression is a {@link ASTNamedReferenceExpr}
-     * that references any of the symbol in the set.
+     * Returns true if the expression is a {@link ASTNamedReferenceExpr} that references any of the symbol in the set.
      */
-    public static boolean isReferenceToVar(@Nullable ASTExpression expression, @NonNull Set<? extends JVariableSymbol> symbols) {
+    public static boolean isReferenceToVar(@Nullable ASTExpression expression,
+            @NonNull Set<? extends JVariableSymbol> symbols) {
         return expression instanceof ASTNamedReferenceExpr
-            && symbols.contains(((ASTNamedReferenceExpr) expression).getReferencedSym());
+                && symbols.contains(((ASTNamedReferenceExpr) expression).getReferencedSym());
     }
 
     /**
-     * Returns true if both expressions refer to the same variable.
-     * A "variable" here can also means a field path, eg, {@code this.field.a}.
-     * This method unifies {@code this.field} and {@code field} if possible,
-     * and also considers {@code this}.
+     * Returns true if both expressions refer to the same variable. A "variable" here can also means a field path, eg,
+     * {@code this.field.a}. This method unifies {@code this.field} and {@code field} if possible, and also considers
+     * {@code this}.
      *
-     * <p>Note that while this is more useful than just checking whether
-     * both expressions access the same symbol, it still does not mean that
-     * they both access the same <i>value</i>. The actual value is data-flow
-     * dependent.
+     * <p>
+     * Note that while this is more useful than just checking whether both expressions access the same symbol, it still
+     * does not mean that they both access the same <i>value</i>. The actual value is data-flow dependent.
      */
     public static boolean isReferenceToSameVar(ASTExpression e1, ASTExpression e2) {
         if (e1 instanceof ASTNamedReferenceExpr && e2 instanceof ASTNamedReferenceExpr) {
@@ -542,12 +524,13 @@ public final class JavaAstUtils {
                 // unify `this.f` and `f`
                 // note, we already know that the symbol is the same so there's no scoping problem
                 return isSyntacticThisFieldAccess(e1) || isSyntacticThisFieldAccess(e2);
-            } else if (e1 instanceof ASTFieldAccess && e2 instanceof ASTFieldAccess) {
-                return isReferenceToSameVar(((ASTFieldAccess) e1).getQualifier(),
-                                            ((ASTFieldAccess) e2).getQualifier());
+            }
+            else if (e1 instanceof ASTFieldAccess && e2 instanceof ASTFieldAccess) {
+                return isReferenceToSameVar(((ASTFieldAccess) e1).getQualifier(), ((ASTFieldAccess) e2).getQualifier());
             }
             return e1 instanceof ASTVariableAccess && e2 instanceof ASTVariableAccess;
-        } else if (e1 instanceof ASTThisExpression || e2 instanceof ASTThisExpression) {
+        }
+        else if (e1 instanceof ASTThisExpression || e2 instanceof ASTThisExpression) {
             return e1.getClass() == e2.getClass();
         }
         return false;
@@ -574,9 +557,8 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns true if the expression has the form `field`, or `this.field`,
-     * where `field` is a field declared in the enclosing class. Considers
-     * inherited fields. Assumes we're not in a static context.
+     * Returns true if the expression has the form `field`, or `this.field`, where `field` is a field declared in the
+     * enclosing class. Considers inherited fields. Assumes we're not in a static context.
      */
     public static boolean isRefToFieldOfThisInstance(ASTExpression usage) {
         if (!(usage instanceof ASTNamedReferenceExpr)) {
@@ -589,15 +571,16 @@ public final class JavaAstUtils {
 
         if (usage instanceof ASTVariableAccess) {
             return !Modifier.isStatic(((JFieldSymbol) symbol).getModifiers());
-        } else if (usage instanceof ASTFieldAccess) {
+        }
+        else if (usage instanceof ASTFieldAccess) {
             return isUnqualifiedThisOrSuper(((ASTFieldAccess) usage).getQualifier());
         }
         return false;
     }
 
     /**
-     * Returns true if the expression is a reference to a field declared
-     * in this class (not a superclass), on any instance (not just `this`).
+     * Returns true if the expression is a reference to a field declared in this class (not a superclass), on any
+     * instance (not just `this`).
      */
     public static boolean isRefToFieldOfThisClass(ASTExpression usage) {
         if (!(usage instanceof ASTNamedReferenceExpr)) {
@@ -610,7 +593,8 @@ public final class JavaAstUtils {
 
         if (usage instanceof ASTVariableAccess) {
             return !Modifier.isStatic(((JFieldSymbol) symbol).getModifiers());
-        } else if (usage instanceof ASTFieldAccess) {
+        }
+        else if (usage instanceof ASTFieldAccess) {
             if (usage.getEnclosingType() != null) {
                 return Objects.equals(((JFieldSymbol) symbol).getEnclosingClass(),
                         usage.getEnclosingType().getSymbol());
@@ -620,10 +604,9 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Return whether the method call is a call whose receiver is the
-     * {@code this} object. This is the case also if the method is called
-     * with a {@code super} qualifier, or if it is not syntactically
-     * qualified but refers to a non-static method of the enclosing class.
+     * Return whether the method call is a call whose receiver is the {@code this} object. This is the case also if the
+     * method is called with a {@code super} qualifier, or if it is not syntactically qualified but refers to a
+     * non-static method of the enclosing class.
      */
     public static OptionalBool isCallOnThisInstance(ASTMethodCall call) {
         // syntactic approach.
@@ -638,15 +621,14 @@ public final class JavaAstUtils {
             return OptionalBool.UNKNOWN;
         }
         return OptionalBool.definitely(
-            !methodSym.isStatic()
-                && methodSym.getEnclosingClass().equals(call.getEnclosingType().getSymbol())
-        );
+                !methodSym.isStatic() && methodSym.getEnclosingClass().equals(call.getEnclosingType().getSymbol()));
     }
 
     public static ASTClassType getThisOrSuperQualifier(ASTExpression expr) {
         if (expr instanceof ASTThisExpression) {
             return ((ASTThisExpression) expr).getQualifier();
-        } else if (expr instanceof ASTSuperExpression) {
+        }
+        else if (expr instanceof ASTSuperExpression) {
             return ((ASTSuperExpression) expr).getQualifier();
         }
         return null;
@@ -657,12 +639,11 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Return a node stream containing all the operands of an addition expression.
-     * For instance, {@code a+b+c} will be parsed as a tree with two levels.
-     * This method will return a flat node stream containing {@code a, b, c}.
+     * Return a node stream containing all the operands of an addition expression. For instance, {@code a+b+c} will be
+     * parsed as a tree with two levels. This method will return a flat node stream containing {@code a, b, c}.
      *
-     * @param e An expression, if it is not a string concatenation expression,
-     *          then returns an empty node stream.
+     * @param e
+     *            An expression, if it is not a string concatenation expression, then returns an empty node stream.
      */
     public static NodeStream<ASTExpression> flattenOperands(ASTExpression e) {
         List<ASTExpression> result = new ArrayList<>();
@@ -675,14 +656,14 @@ public final class JavaAstUtils {
             ASTInfixExpression infix = (ASTInfixExpression) e;
             flattenOperandsRec(infix.getLeftOperand(), result);
             flattenOperandsRec(infix.getRightOperand(), result);
-        } else {
+        }
+        else {
             result.add(e);
         }
     }
 
     /**
-     * Returns true if the node is the last child of its parent. Returns
-     * false if this is the root node.
+     * Returns true if the node is the last child of its parent. Returns false if this is the root node.
      */
     public static boolean isLastChild(Node it) {
         Node parent = it.getParent();
@@ -690,11 +671,10 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Returns a node stream of enclosing expressions in the same call chain.
-     * For instance in {@code a.b().c().d()}, called on {@code a}, this will
-     * yield {@code a.b()}, and {@code a.b().c()}.
+     * Returns a node stream of enclosing expressions in the same call chain. For instance in {@code a.b().c().d()},
+     * called on {@code a}, this will yield {@code a.b()}, and {@code a.b().c()}.
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public static NodeStream<QualifiableExpression> followingCallChain(ASTExpression expr) {
         return (NodeStream) expr.ancestors().takeWhile(it -> it instanceof QualifiableExpression);
     }
@@ -713,29 +693,22 @@ public final class JavaAstUtils {
     public static boolean isCloneMethod(ASTMethodDeclaration node) {
         // this is enough as in valid code, this signature overrides Object#clone
         // and the other things like visibility are checked by the compiler
-        return "clone".equals(node.getName())
-            && node.getArity() == 0
-            && !node.isStatic();
+        return "clone".equals(node.getName()) && node.getArity() == 0 && !node.isStatic();
     }
 
     public static boolean isEqualsMethod(ASTMethodDeclaration node) {
-        return "equals".equals(node.getName())
-            && node.getArity() == 1
-            && node.getFormalParameters().get(0).getTypeMirror().isTop()
-            && !node.isStatic();
+        return "equals".equals(node.getName()) && node.getArity() == 1
+                && node.getFormalParameters().get(0).getTypeMirror().isTop() && !node.isStatic();
     }
 
     public static boolean isHashCodeMethod(ASTMethodDeclaration node) {
-        return "hashCode".equals(node.getName())
-            && node.getArity() == 0
-            && !node.isStatic();
+        return "hashCode".equals(node.getName()) && node.getArity() == 0 && !node.isStatic();
     }
 
     public static boolean isArrayLengthFieldAccess(ASTExpression node) {
         if (node instanceof ASTFieldAccess) {
             ASTFieldAccess field = (ASTFieldAccess) node;
-            return "length".equals(field.getName())
-                && field.getQualifier().getTypeMirror().isArray();
+            return "length".equals(field.getName()) && field.getQualifier().getTypeMirror().isArray();
         }
         return false;
     }
@@ -744,9 +717,7 @@ public final class JavaAstUtils {
      * @see ASTBreakStatement#getTarget()
      */
     public static boolean mayBeBreakTarget(JavaNode it) {
-        return it instanceof ASTLoopStatement
-            || it instanceof ASTSwitchStatement
-            || it instanceof ASTLabeledStatement;
+        return it instanceof ASTLoopStatement || it instanceof ASTSwitchStatement || it instanceof ASTLabeledStatement;
     }
 
     /**
@@ -771,7 +742,6 @@ public final class JavaAstUtils {
         return false;
     }
 
-
     /**
      * Tests if the node is an {@link ASTAssignmentExpression} with the given operator.
      */
@@ -788,12 +758,12 @@ public final class JavaAstUtils {
      */
     public static boolean isComment(JavaccToken t) {
         switch (t.kind) {
-        case FORMAL_COMMENT:
-        case MULTI_LINE_COMMENT:
-        case SINGLE_LINE_COMMENT:
-            return true;
-        default:
-            return false;
+            case FORMAL_COMMENT:
+            case MULTI_LINE_COMMENT:
+            case SINGLE_LINE_COMMENT:
+                return true;
+            default:
+                return false;
         }
     }
 
@@ -802,16 +772,14 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Return true if the catch clause just rethrows the caught exception
-     * immediately.
+     * Return true if the catch clause just rethrows the caught exception immediately.
      */
     public static boolean isJustRethrowException(ASTCatchClause clause) {
         ASTBlock body = clause.getBody();
         if (body.size() == 1) {
             ASTStatement stmt = body.get(0);
-            return stmt instanceof ASTThrowStatement
-                && isReferenceToVar(((ASTThrowStatement) stmt).getExpr(),
-                                    clause.getParameter().getVarId().getSymbol());
+            return stmt instanceof ASTThrowStatement && isReferenceToVar(((ASTThrowStatement) stmt).getExpr(),
+                    clause.getParameter().getVarId().getSymbol());
         }
         return false;
     }
@@ -821,14 +789,11 @@ public final class JavaAstUtils {
      */
     public static boolean isInStaticCtx(JavaNode node) {
         return node.ancestorsOrSelf()
-                   .map(NodeStream.asInstanceOf(ASTBodyDeclaration.class, ASTExplicitConstructorInvocation.class))
-                   .take(1)
-                   .any(it -> it instanceof ASTExecutableDeclaration && ((ASTExecutableDeclaration) it).isStatic()
-                       || it instanceof ASTFieldDeclaration && ((ASTFieldDeclaration) it).isStatic()
-                       || it instanceof ASTInitializer && ((ASTInitializer) it).isStatic()
-                       || it instanceof ASTEnumConstant
-                       || it instanceof ASTExplicitConstructorInvocation
-                   );
+                .map(NodeStream.asInstanceOf(ASTBodyDeclaration.class, ASTExplicitConstructorInvocation.class)).take(1)
+                .any(it -> it instanceof ASTExecutableDeclaration && ((ASTExecutableDeclaration) it).isStatic()
+                        || it instanceof ASTFieldDeclaration && ((ASTFieldDeclaration) it).isStatic()
+                        || it instanceof ASTInitializer && ((ASTInitializer) it).isStatic()
+                        || it instanceof ASTEnumConstant || it instanceof ASTExplicitConstructorInvocation);
     }
 
     /**
@@ -838,10 +803,8 @@ public final class JavaAstUtils {
         return stmt.ancestors().first(ReturnScopeNode.class);
     }
 
-
     /**
-     * Return true if the variable is effectively final. This means
-     * the variable is never reassigned.
+     * Return true if the variable is effectively final. This means the variable is never reassigned.
      */
     public static boolean isEffectivelyFinal(ASTVariableId var) {
         if (var.getInitializer() == null && var.isLocalVariable()) {
@@ -873,11 +836,9 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Return true if this switch is total with respect to the scrutinee
-     * type. This means, one of the branches will always be taken, and the
-     * switch will never "not match". A switch with a default case is always
-     * total. A switch expression is checked by the compiler for exhaustivity,
-     * and we assume it is correct.
+     * Return true if this switch is total with respect to the scrutinee type. This means, one of the branches will
+     * always be taken, and the switch will never "not match". A switch with a default case is always total. A switch
+     * expression is checked by the compiler for exhaustivity, and we assume it is correct.
      */
     public static boolean isTotalSwitch(ASTSwitchLike switchLike) {
         if (switchLike instanceof ASTSwitchExpression || switchLike.hasDefaultCase()) {

@@ -33,12 +33,10 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefiniti
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 /**
- * A singular field is a field that may be converted to a local variable.
- * This means, that in every method the field is used, there is no path
- * that uses the value that the field has before the method is called.
- * In other words, the field is overwritten before any read.
+ * A singular field is a field that may be converted to a local variable. This means, that in every method the field is
+ * used, there is no path that uses the value that the field has before the method is called. In other words, the field
+ * is overwritten before any read.
  *
  * @author Eric Olander
  * @author Wouter Zelle
@@ -47,23 +45,12 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class SingularFieldRule extends AbstractJavaRulechainRule {
 
-    private static final Set<String> INVALIDATING_CLASS_ANNOT = setOf(
-        "lombok.Builder",
-        "lombok.EqualsAndHashCode",
-        "lombok.Getter",
-        "lombok.Setter",
-        "lombok.Data",
-        "lombok.Value"
-    );
+    private static final Set<String> INVALIDATING_CLASS_ANNOT = setOf("lombok.Builder", "lombok.EqualsAndHashCode",
+            "lombok.Getter", "lombok.Setter", "lombok.Data", "lombok.Value");
 
     private static final PropertyDescriptor<List<String>> IGNORED_FIELD_ANNOTATIONS =
-        JavaPropertyUtil.ignoredAnnotationsDescriptor(
-            "lombok.Setter",
-            "lombok.Getter",
-            "java.lang.Deprecated",
-            "lombok.experimental.Delegate",
-            "javafx.fxml.FXML"
-        );
+            JavaPropertyUtil.ignoredAnnotationsDescriptor("lombok.Setter", "lombok.Getter", "java.lang.Deprecated",
+                    "lombok.experimental.Delegate", "javafx.fxml.FXML");
 
     public SingularFieldRule() {
         super(ASTTypeDeclaration.class);
@@ -80,11 +67,11 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         DataflowResult dataflow = null;
         for (ASTFieldDeclaration fieldDecl : enclosingType.getDeclarations(ASTFieldDeclaration.class)) {
             if (!isPrivateNotFinal(fieldDecl)
-                || JavaAstUtils.hasAnyAnnotation(fieldDecl, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
+                    || JavaAstUtils.hasAnyAnnotation(fieldDecl, getProperty(IGNORED_FIELD_ANNOTATIONS))) {
                 continue;
             }
             for (ASTVariableId varId : fieldDecl.getVarIds()) {
-                if (dataflow == null) { //compute lazily
+                if (dataflow == null) { // compute lazily
                     dataflow = DataflowPass.getDataflowResult(node.getRoot());
                 }
                 if (isSingularField(enclosingType, varId, dataflow)) {
@@ -100,7 +87,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
      *
      * @deprecated This method will be removed. Don't use it.
      */
-    @Deprecated //(since = "7.1.0", forRemoval = true)
+    @Deprecated // (since = "7.1.0", forRemoval = true)
     public static boolean mayBeSingular(ModifierOwner varId) {
         return isPrivateNotFinal(varId);
     }
@@ -120,12 +107,11 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         }
 
         boolean isStaticField = varId.isStatic();
-        //Check usages for validity & group them by scope
-        //They're valid if they don't escape the scope of their method, eg by being in a nested class or lambda
+        // Check usages for validity & group them by scope
+        // They're valid if they don't escape the scope of their method, eg by being in a nested class or lambda
         Map<ASTBodyDeclaration, List<ASTNamedReferenceExpr>> usagesByScope = new HashMap<>();
         for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
-            if (usage.getEnclosingType() != fieldOwner
-                || !isStaticField && !JavaAstUtils.isThisFieldAccess(usage)) {
+            if (usage.getEnclosingType() != fieldOwner || !isStaticField && !JavaAstUtils.isThisFieldAccess(usage)) {
                 return false; // give up
             }
             ASTBodyDeclaration enclosing = getEnclosingBodyDecl(fieldOwner, usage);
@@ -145,12 +131,11 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         return true;
     }
 
-    private @Nullable ASTBodyDeclaration getEnclosingBodyDecl(ASTTypeDeclaration enclosingType, ASTNamedReferenceExpr usage) {
-        ASTBodyDeclaration decl = usage.ancestors()
-                                       .takeWhile(it -> it != enclosingType)
-                                       .first(ASTBodyDeclaration.class);
-        if (decl instanceof ASTFieldDeclaration
-            || decl instanceof ASTInitializer) {
+    private @Nullable ASTBodyDeclaration getEnclosingBodyDecl(ASTTypeDeclaration enclosingType,
+            ASTNamedReferenceExpr usage) {
+        ASTBodyDeclaration decl =
+                usage.ancestors().takeWhile(it -> it != enclosingType).first(ASTBodyDeclaration.class);
+        if (decl instanceof ASTFieldDeclaration || decl instanceof ASTInitializer) {
             // then the usage is logically part of the ctors.
             return enclosingType;
         }
@@ -158,9 +143,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
     }
 
     private boolean hasEnclosingLambda(JavaNode stop, ASTNamedReferenceExpr usage) {
-        return usage.ancestors()
-                    .takeWhile(it -> it != stop)
-                    .any(it -> it instanceof ASTLambdaExpression);
+        return usage.ancestors().takeWhile(it -> it != stop).any(it -> it instanceof ASTLambdaExpression);
     }
 
     private boolean usagesObserveValueBeforeMethodCall(List<ASTNamedReferenceExpr> usages, DataflowResult dataflow) {

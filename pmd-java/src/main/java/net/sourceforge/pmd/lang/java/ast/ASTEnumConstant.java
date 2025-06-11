@@ -18,19 +18,14 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
  *
  * </pre>
  */
-public final class ASTEnumConstant extends AbstractJavaTypeNode
-    implements InvocationNode,
-               ModifierOwner,
-               ASTBodyDeclaration,
-               InternalInterfaces.VariableIdOwner,
-               JavadocCommentOwner {
+public final class ASTEnumConstant extends AbstractJavaTypeNode implements InvocationNode, ModifierOwner,
+        ASTBodyDeclaration, InternalInterfaces.VariableIdOwner, JavadocCommentOwner {
 
     private OverloadSelectionResult result;
 
     ASTEnumConstant(int id) {
         super(id);
     }
-
 
     @Override
     public FileLocation getReportLocation() {
@@ -41,7 +36,6 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     @Override
     public ASTVariableId getVarId() {
@@ -67,16 +61,14 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
     }
 
     /**
-     * Returns true if this enum constant defines a body,
-     * which is compiled like an anonymous class.
+     * Returns true if this enum constant defines a body, which is compiled like an anonymous class.
      */
     public boolean isAnonymousClass() {
         return getLastChild() instanceof ASTAnonymousClassDeclaration;
     }
 
     /**
-     * Returns the anonymous class declaration, or null if
-     * there is none.
+     * Returns the anonymous class declaration, or null if there is none.
      */
     public ASTAnonymousClassDeclaration getAnonymousClass() {
         return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTAnonymousClassDeclaration.class);

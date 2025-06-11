@@ -18,7 +18,8 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule {
 
-    private static final InvocationMatcher BOOLEAN_VALUEOF_MATCHER = InvocationMatcher.parse("java.lang.Boolean#valueOf(_)");
+    private static final InvocationMatcher BOOLEAN_VALUEOF_MATCHER =
+            InvocationMatcher.parse("java.lang.Boolean#valueOf(_)");
 
     public PrimitiveWrapperInstantiationRule() {
         super(ASTConstructorCall.class, ASTMethodCall.class);
@@ -31,15 +32,13 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
             return data;
         }
 
-        if (TypeTestUtil.isA(Double.class, type)
-                || TypeTestUtil.isA(Float.class, type)
-                || TypeTestUtil.isA(Long.class, type)
-                || TypeTestUtil.isA(Integer.class, type)
-                || TypeTestUtil.isA(Short.class, type)
-                || TypeTestUtil.isA(Byte.class, type)
+        if (TypeTestUtil.isA(Double.class, type) || TypeTestUtil.isA(Float.class, type)
+                || TypeTestUtil.isA(Long.class, type) || TypeTestUtil.isA(Integer.class, type)
+                || TypeTestUtil.isA(Short.class, type) || TypeTestUtil.isA(Byte.class, type)
                 || TypeTestUtil.isA(Character.class, type)) {
             asCtx(data).addViolation(node, type.getSimpleName());
-        } else if (TypeTestUtil.isA(Boolean.class, type)) {
+        }
+        else if (TypeTestUtil.isA(Boolean.class, type)) {
             checkArguments(node.getArguments(), node, data);
         }
 
@@ -63,26 +62,29 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
             return;
         }
         boolean isNewBoolean = node instanceof ASTConstructorCall;
-        String messagePart = isNewBoolean
-                ? "Do not use `new Boolean"
-                : "Do not use `Boolean.valueOf";
+        String messagePart = isNewBoolean ? "Do not use `new Boolean" : "Do not use `Boolean.valueOf";
         ASTStringLiteral stringLiteral = getFirstArgStringLiteralOrNull(arguments);
         ASTBooleanLiteral boolLiteral = getFirstArgBooleanLiteralOrNull(arguments);
         if (stringLiteral != null) {
             if ("\"true\"".equals(stringLiteral.getImage())) {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(\"true\")`, prefer `Boolean.TRUE`");
-            } else if ("\"false\"".equals(stringLiteral.getImage())) {
+            }
+            else if ("\"false\"".equals(stringLiteral.getImage())) {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(\"false\")`, prefer `Boolean.FALSE`");
-            } else {
+            }
+            else {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(\"...\")`, prefer `Boolean.valueOf`");
             }
-        } else if (boolLiteral != null) {
+        }
+        else if (boolLiteral != null) {
             if (boolLiteral.isTrue()) {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(true)`, prefer `Boolean.TRUE`");
-            } else {
+            }
+            else {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(false)`, prefer `Boolean.FALSE`");
             }
-        } else if (isNewBoolean) {
+        }
+        else if (isNewBoolean) {
             // any argument with "new Boolean", might be a variable access
             asCtx(data).addViolationWithMessage(node, messagePart + "(...)`, prefer `Boolean.valueOf`");
         }

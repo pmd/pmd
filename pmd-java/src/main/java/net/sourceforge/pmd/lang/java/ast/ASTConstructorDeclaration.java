@@ -9,8 +9,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 
 /**
- * A constructor of a {@linkplain ASTConstructorDeclaration class} or
- * {@linkplain ASTEnumDeclaration enum} declaration.
+ * A constructor of a {@linkplain ASTConstructorDeclaration class} or {@linkplain ASTEnumDeclaration enum} declaration.
  *
  * <pre class="grammar">
  *
@@ -34,12 +33,10 @@ public final class ASTConstructorDeclaration extends AbstractExecutableDeclarati
         return visitor.visit(this, data);
     }
 
-
     @Override
     public String getImage() {
         return getName();
     }
-
 
     public boolean containsComment() {
         return getBody().containsComment();

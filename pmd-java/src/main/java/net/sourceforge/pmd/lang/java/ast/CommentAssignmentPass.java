@@ -40,11 +40,8 @@ final class CommentAssignmentPass {
     }
 
     public static void assignCommentsToDeclarations(ASTCompilationUnit root) {
-        final List<JavadocComment> comments = root.getComments()
-                .stream()
-                .filter(JavadocComment.class::isInstance)
-                .map(JavadocComment.class::cast)
-                .collect(Collectors.toList());
+        final List<JavadocComment> comments = root.getComments().stream().filter(JavadocComment.class::isInstance)
+                .map(JavadocComment.class::cast).collect(Collectors.toList());
         if (comments.isEmpty()) {
             return;
         }
@@ -61,7 +58,8 @@ final class CommentAssignmentPass {
 
                 JavadocComment searcher = new JavadocComment(maybeComment);
                 // we only search for the start of the first token of the comment
-                int index = Collections.binarySearch(comments, searcher, Comparator.comparing(JavaComment::getReportLocation, Comparator.comparing(FileLocation::getStartPos)));
+                int index = Collections.binarySearch(comments, searcher, Comparator
+                        .comparing(JavaComment::getReportLocation, Comparator.comparing(FileLocation::getStartPos)));
                 if (index >= 0) {
                     setComment(commentableNode, comments.get(index));
                     break;

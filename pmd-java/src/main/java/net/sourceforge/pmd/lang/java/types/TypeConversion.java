@@ -22,7 +22,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Utility class for type conversions, as defined in <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html">JLS§5</a>.
+ * Utility class for type conversions, as defined in
+ * <a href="https://docs.oracle.com/javase/specs/jls/se10/html/jls-5.html">JLS§5</a>.
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class TypeConversion {
@@ -34,7 +35,8 @@ public final class TypeConversion {
     /**
      * Performs <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-5.html#jls-5.6.1">Unary numeric promotion
      * (JLS§5.6.1)</a>.
-     * <p>This occurs in the following situations:
+     * <p>
+     * This occurs in the following situations:
      * <ul>
      * <li>Each dimension expression in an array creation expression (§15.10.1)
      * <li>The index expression in an array access expression (§15.10.3)
@@ -44,8 +46,8 @@ public final class TypeConversion {
      * <li>Each operand, separately, of a shift operator &lt;&lt;, &gt;&gt;, or &gt;&gt;&gt; (§15.19).
      * </ul>
      *
-     * <p>Returns {@link TypeSystem#ERROR} if the given type is
-     * not a numeric type, {@link TypeSystem#UNKNOWN} if the type
+     * <p>
+     * Returns {@link TypeSystem#ERROR} if the given type is not a numeric type, {@link TypeSystem#UNKNOWN} if the type
      * is unresolved.
      */
     public static JTypeMirror unaryNumericPromotion(JTypeMirror t) {
@@ -61,8 +63,7 @@ public final class TypeConversion {
     }
 
     /**
-     * JLS§5.6.2
-     * https://docs.oracle.com/javase/specs/jls/se9/html/jls-5.html#jls-5.6.2
+     * JLS§5.6.2 https://docs.oracle.com/javase/specs/jls/se9/html/jls-5.html#jls-5.6.2
      *
      * Binary numeric promotion is performed on the operands of certain operators:
      * <ul>
@@ -73,8 +74,9 @@ public final class TypeConversion {
      * <li>The integer bitwise operators &amp;, ^, and | (§15.22.1)
      * <li>In certain cases, the conditional operator ? : (§15.25)
      * </ul>
-     * <p>Returns {@link TypeSystem#ERROR} if either of the parameters
-     * is not numeric. This DOES NOT care for unresolved types.
+     * <p>
+     * Returns {@link TypeSystem#ERROR} if either of the parameters is not numeric. This DOES NOT care for unresolved
+     * types.
      */
     public static JTypeMirror binaryNumericPromotion(JTypeMirror t, JTypeMirror s) {
         JTypeMirror t1 = t.unbox();
@@ -84,29 +86,31 @@ public final class TypeConversion {
 
         if (t1.isPrimitive(DOUBLE) || s1.isPrimitive(DOUBLE)) {
             return ts.DOUBLE;
-        } else if (t1.isPrimitive(FLOAT) || s1.isPrimitive(FLOAT)) {
+        }
+        else if (t1.isPrimitive(FLOAT) || s1.isPrimitive(FLOAT)) {
             return ts.FLOAT;
-        } else if (t1.isPrimitive(LONG) || s1.isPrimitive(LONG)) {
+        }
+        else if (t1.isPrimitive(LONG) || s1.isPrimitive(LONG)) {
             return ts.LONG;
-        } else if (t1.isNumeric() && s1.isNumeric()) {
+        }
+        else if (t1.isNumeric() && s1.isNumeric()) {
             return ts.INT;
-        } else {
+        }
+        else {
             // this is a typing error, both types should be referring to a numeric type
             return ts.ERROR;
         }
     }
 
     /**
-     * Is t convertible to s by boxing/unboxing/widening conversion?
-     * Only t can undergo conversion.
+     * Is t convertible to s by boxing/unboxing/widening conversion? Only t can undergo conversion.
      */
     public static boolean isConvertibleUsingBoxing(JTypeMirror t, JTypeMirror s) {
         return isConvertibleCommon(t, s, false);
     }
 
     /**
-     * Is t convertible to s by boxing/unboxing conversion?
-     * Only t can undergo conversion.
+     * Is t convertible to s by boxing/unboxing conversion? Only t can undergo conversion.
      */
     public static boolean isConvertibleInCastContext(JTypeMirror t, JTypeMirror s) {
         return isConvertibleCommon(t, s, true);
@@ -128,19 +132,17 @@ public final class TypeConversion {
 
         if (isCastContext) {
             return t.isPrimitive() ? t.box().isConvertibleTo(s).bySubtyping()
-                                   : t.isConvertibleTo(s.box()).bySubtyping();
-        } else {
-            return t.isPrimitive() ? t.box().isConvertibleTo(s).somehow()
-                                   : t.unbox().isConvertibleTo(s).somehow();
+                    : t.isConvertibleTo(s.box()).bySubtyping();
+        }
+        else {
+            return t.isPrimitive() ? t.box().isConvertibleTo(s).somehow() : t.unbox().isConvertibleTo(s).somehow();
         }
     }
 
-
     /**
-     * Perform capture conversion on the type t. This replaces wildcards
-     * with fresh type variables. Capture conversion is not applied recursively.
-     * Capture conversion on any type other than a parameterized type (§4.5) acts
-     * as an identity conversion (§5.1.1).
+     * Perform capture conversion on the type t. This replaces wildcards with fresh type variables. Capture conversion
+     * is not applied recursively. Capture conversion on any type other than a parameterized type (§4.5) acts as an
+     * identity conversion (§5.1.1).
      *
      * @return The capture conversion of t
      */
@@ -148,12 +150,10 @@ public final class TypeConversion {
         return t instanceof JClassType ? capture((JClassType) t) : t;
     }
 
-
     /**
-     * Perform capture conversion on the type t. This replaces wildcards
-     * with fresh type variables. Capture conversion is not applied recursively.
-     * Capture conversion on any type other than a parameterized type (§4.5) acts
-     * as an identity conversion (§5.1.1).
+     * Perform capture conversion on the type t. This replaces wildcards with fresh type variables. Capture conversion
+     * is not applied recursively. Capture conversion on any type other than a parameterized type (§4.5) acts as an
+     * identity conversion (§5.1.1).
      *
      * @return The capture conversion of t
      */
@@ -194,14 +194,14 @@ public final class TypeConversion {
         Substitution subst = wellFormed ? Substitution.mapping(typeParams, freshVars) : Substitution.EMPTY;
 
         for (int i = 0; i < typeArgs.size(); i++) {
-            JTypeMirror fresh = freshVars.get(i);       // Si
-            JTypeMirror arg = typeArgs.get(i);          // Ti
+            JTypeMirror fresh = freshVars.get(i); // Si
+            JTypeMirror arg = typeArgs.get(i); // Ti
 
             // we mutate the bounds to preserve the correct instance in
             // the substitutions
 
             if (arg instanceof JWildcardType) {
-                JWildcardType w = (JWildcardType) arg;        // Ti alias
+                JWildcardType w = (JWildcardType) arg; // Ti alias
                 CapturedTypeVar freshVar = (CapturedTypeVar) fresh; // Si alias
 
                 JTypeMirror prevUpper = wellFormed ? typeParams.get(i).getUpperBound() : ts.OBJECT; // Ui
@@ -215,14 +215,16 @@ public final class TypeConversion {
                     freshVar.setUpperBound(substituted);
                     freshVar.setLowerBound(ts.NULL_TYPE);
 
-                } else if (w.isUpperBound()) {
+                }
+                else if (w.isUpperBound()) {
                     // If Ti is a wildcard type argument of the form ? extends Bi,
                     // then Si is a fresh type variable whose upper bound is glb(Bi, Ui[A1:=S1,...,An:=Sn])
                     // and whose lower bound is the null type.
                     freshVar.setUpperBound(ts.glb(asList(substituted, w.getBound())));
                     freshVar.setLowerBound(ts.NULL_TYPE);
 
-                } else {
+                }
+                else {
                     // If Ti is a wildcard type argument of the form ? super Bi,
                     // then Si is a fresh type variable whose upper bound is Ui[A1:=S1,...,An:=Sn]
                     // and whose lower bound is Bi.
@@ -234,27 +236,28 @@ public final class TypeConversion {
 
         if (enclosing != null) {
             return enclosing.selectInner(type.getSymbol(), freshVars);
-        } else {
+        }
+        else {
             return type.withTypeArguments(freshVars);
         }
     }
 
     /**
-     * Returns true if the type is a parameterized class type, which has
-     * wildcards as type arguments. Capture variables don't count.
+     * Returns true if the type is a parameterized class type, which has wildcards as type arguments. Capture variables
+     * don't count.
      */
     public static boolean isWilcardParameterized(JTypeMirror t) {
         return t instanceof JClassType
                 && CollectionUtil.any(((JClassType) t).getTypeArgs(), it -> it instanceof JWildcardType);
     }
 
-
     private static List<JTypeMirror> makeFreshVars(JClassType type) {
         List<JTypeMirror> freshVars = new ArrayList<>(type.getTypeArgs().size());
         for (JTypeMirror typeArg : type.getTypeArgs()) {
             if (typeArg instanceof JWildcardType) {
                 freshVars.add(TypeVarImpl.freshCapture((JWildcardType) typeArg));
-            } else {
+            }
+            else {
                 freshVars.add(typeArg);
             }
         }

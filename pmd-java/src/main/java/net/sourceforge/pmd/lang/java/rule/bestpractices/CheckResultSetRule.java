@@ -17,8 +17,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
- * Rule that verifies, that the return values of next(), first(), last(), etc.
- * calls to a java.sql.ResultSet are actually verified.
+ * Rule that verifies, that the return values of next(), first(), last(), etc. calls to a java.sql.ResultSet are
+ * actually verified.
  */
 public class CheckResultSetRule extends AbstractJavaRule {
 
@@ -49,6 +49,6 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     private boolean isResultSetMethod(ASTMethodCall node) {
         return METHODS.contains(node.getMethodName())
-            && TypeTestUtil.isDeclaredInClass(ResultSet.class, node.getMethodType());
+                && TypeTestUtil.isDeclaredInClass(ResultSet.class, node.getMethodType());
     }
 }

@@ -26,7 +26,6 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
     // BigDecimal.ZERO, ONE, TEN: since 1.5
     private static final Set<String> BIGDECIMAL_CONSTANTS = CollectionUtil.setOf("0", "0.", "1", "10");
 
-
     public BigIntegerInstantiationRule() {
         super(ASTConstructorCall.class);
     }
@@ -62,7 +61,8 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
             if (java9 && "2".equals(constValue)) {
                 asCtx(data).addViolation(node);
             }
-        } else if (TypeTestUtil.isA(BigDecimal.class, node)) {
+        }
+        else if (TypeTestUtil.isA(BigDecimal.class, node)) {
             // BigDecimal.ZERO, ONE, TEN: since 1.5
             if (java5 && BIGDECIMAL_CONSTANTS.contains(String.valueOf(constValue))) {
                 asCtx(data).addViolation(node);

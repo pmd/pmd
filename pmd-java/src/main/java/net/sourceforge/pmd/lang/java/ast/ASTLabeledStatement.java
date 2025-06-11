@@ -19,7 +19,6 @@ public final class ASTLabeledStatement extends AbstractStatement {
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);

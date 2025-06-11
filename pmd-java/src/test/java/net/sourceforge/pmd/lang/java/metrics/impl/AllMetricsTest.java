@@ -18,7 +18,6 @@ import net.sourceforge.pmd.test.SimpleAggregatorTst;
  */
 class AllMetricsTest extends SimpleAggregatorTst {
 
-
     private static final String RULESET = "rulesets/java/metrics_test.xml";
 
     @Override
@@ -37,17 +36,19 @@ class AllMetricsTest extends SimpleAggregatorTst {
         addRule(RULESET, "CfoTest");
     }
 
-
     static String formatJavaMessage(Node node, Object result) {
         String qname;
         if (node instanceof ASTTypeDeclaration) {
             qname = ((ASTTypeDeclaration) node).getBinaryName();
-        } else if (node instanceof ASTExecutableDeclaration) {
+        }
+        else if (node instanceof ASTExecutableDeclaration) {
             String enclosing = ((ASTExecutableDeclaration) node).getEnclosingType().getBinaryName();
             qname = enclosing + "#" + PrettyPrintingUtil.displaySignature((ASTExecutableDeclaration) node);
-        } else if (node instanceof ASTLambdaExpression) {
+        }
+        else if (node instanceof ASTLambdaExpression) {
             qname = "(lambda) on line " + node.getBeginLine();
-        } else {
+        }
+        else {
             qname = node.getXPathNodeName() + " at line " + node.getBeginLine();
         }
 

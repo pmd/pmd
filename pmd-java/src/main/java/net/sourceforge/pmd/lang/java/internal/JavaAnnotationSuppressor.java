@@ -43,37 +43,39 @@ import net.sourceforge.pmd.util.OptionalBool;
 /**
  * Helper methods to suppress violations based on annotations.
  *
- * An annotation suppresses a rule if the annotation is a {@link SuppressWarnings},
- * and if the set of suppressed warnings ({@link SuppressWarnings#value()})
- * contains at least one of those:
+ * An annotation suppresses a rule if the annotation is a {@link SuppressWarnings}, and if the set of suppressed
+ * warnings ({@link SuppressWarnings#value()}) contains at least one of those:
  * <ul>
  * <li>"PMD" (suppresses all rules);
  * <li>"PMD.rulename", where rulename is the name of the given rule;
  * <li>"all" (conventional value to suppress all warnings).
  * </ul>
  *
- * <p>Additionally, the following values suppress a specific set of rules:
+ * <p>
+ * Additionally, the following values suppress a specific set of rules:
  * <ul>
  * <li>{@code "unused"}: suppresses rules like UnusedLocalVariable or UnusedPrivateField;
  * <li>{@code "serial"}: suppresses BeanMembersShouldSerialize, NonSerializableClass and MissingSerialVersionUID;
  * <li>{@code "fallthrough"}: suppresses ImplicitSwitchFallthrough #1899
  * </ul>
  *
- * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.6.4.5">JLS 9.6.4.5. @SuppressWarnings</a>
+ * @see <a href="https://docs.oracle.com/javase/specs/jls/se21/html/jls-9.html#jls-9.6.4.5">JLS
+ *      9.6.4.5. @SuppressWarnings</a>
  * @since 7.14.0
  */
 final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnnotation> {
 
-    private static final Set<String> UNUSED_RULES = new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod", "UnusedFormalParameter", "UnusedAssignment", "SingularField"));
-    private static final Set<String> SERIAL_RULES = new HashSet<>(Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
-
+    private static final Set<String> UNUSED_RULES =
+            new HashSet<>(Arrays.asList("UnusedPrivateField", "UnusedLocalVariable", "UnusedPrivateMethod",
+                    "UnusedFormalParameter", "UnusedAssignment", "SingularField"));
+    private static final Set<String> SERIAL_RULES = new HashSet<>(
+            Arrays.asList("BeanMembersShouldSerialize", "NonSerializableClass", "MissingSerialVersionUID"));
 
     static final List<ViolationSuppressor> ALL_JAVA_SUPPRESSORS = listOf(new JavaAnnotationSuppressor());
 
     private JavaAnnotationSuppressor() {
         super(ASTAnnotation.class);
     }
-
 
     @Override
     protected NodeStream<ASTAnnotation> getAnnotations(Node n) {
@@ -86,9 +88,9 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
     @Override
     protected boolean annotationParamSuppresses(String stringVal, Rule rule) {
         return super.annotationParamSuppresses(stringVal, rule)
-            || "serial".equals(stringVal) && SERIAL_RULES.contains(rule.getName())
-            || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
-            || "fallthrough".equals(stringVal) && rule instanceof ImplicitSwitchFallThroughRule;
+                || "serial".equals(stringVal) && SERIAL_RULES.contains(rule.getName())
+                || "unused".equals(stringVal) && UNUSED_RULES.contains(rule.getName())
+                || "fallthrough".equals(stringVal) && rule instanceof ImplicitSwitchFallThroughRule;
     }
 
     @Override
@@ -131,9 +133,11 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
 
         if (hasUnusedVariables(node)) {
             return OptionalBool.YES;
-        } else if (hasUnusedTypeParam(node)) {
+        }
+        else if (hasUnusedTypeParam(node)) {
             return OptionalBool.YES;
-        } else if (hasUnusedMethod(node)) {
+        }
+        else if (hasUnusedMethod(node)) {
             return OptionalBool.YES;
         }
 
@@ -146,11 +150,8 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
             ASTClassDeclaration classDecl = (ASTClassDeclaration) node;
             if (classDecl.getEffectiveVisibility() == Visibility.V_PRIVATE) {
                 // is this private class is used in this compilation unit?
-                boolean used = node.getRoot().descendants(ASTClassType.class)
-                        .toStream()
-                        .map(ASTClassType::getTypeMirror)
-                        .map(JTypeMirror::getSymbol)
-                        .filter(Objects::nonNull)
+                boolean used = node.getRoot().descendants(ASTClassType.class).toStream()
+                        .map(ASTClassType::getTypeMirror).map(JTypeMirror::getSymbol).filter(Objects::nonNull)
                         .anyMatch(s -> s.equals(classDecl.getSymbol()));
                 if (used) {
                     return OptionalBool.NO;
@@ -165,13 +166,10 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
      * Searches for local variables, fields, formal parameters.
      */
     private static boolean hasUnusedVariables(JavaNode node) {
-        return node.descendants(ASTVariableId.class)
-                .crossFindBoundaries()
-                .any(it -> {
-                    return it.getLocalUsages().isEmpty() || it.getLocalUsages().stream()
-                            .map(ASTAssignableExpr::getAccessType)
-                            .noneMatch(a -> a == ASTAssignableExpr.AccessType.READ);
-                });
+        return node.descendants(ASTVariableId.class).crossFindBoundaries().any(it -> {
+            return it.getLocalUsages().isEmpty() || it.getLocalUsages().stream().map(ASTAssignableExpr::getAccessType)
+                    .noneMatch(a -> a == ASTAssignableExpr.AccessType.READ);
+        });
 
     }
 
@@ -210,13 +208,13 @@ final class JavaAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
 
     private static boolean hasUnusedMethod(JavaNode node) {
         Set<JExecutableSymbol> privateMethods = new HashSet<>();
-        for (ASTExecutableDeclaration decl : node.descendantsOrSelf()
-                .crossFindBoundaries()
+        for (ASTExecutableDeclaration decl : node.descendantsOrSelf().crossFindBoundaries()
                 .filterIs(ASTExecutableDeclaration.class)) {
             Visibility visibility = decl.getEffectiveVisibility();
             if (visibility.isAtMost(Visibility.V_PRIVATE)) {
                 privateMethods.add(decl.getSymbol());
-            } else {
+            }
+            else {
                 // We cannot know if non-private (package-private, protected, public) method is effectively used
                 return false;
             }

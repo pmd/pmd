@@ -25,8 +25,11 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
 
     /**
      * This method is used to check whether user appends string directly instead of using StringBuffer or StringBuilder
-     * @param node This is the expression of part of java code to be checked.
-     * @param data This is the data to return.
+     * 
+     * @param node
+     *            This is the expression of part of java code to be checked.
+     * @param data
+     *            This is the data to return.
      * @return Object This returns the data passed in. If violation happens, violation is added to data.
      */
     @Override
@@ -41,8 +44,7 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
         List<ASTNamedReferenceExpr> possibleViolations = new ArrayList<>();
 
         for (ASTNamedReferenceExpr usage : node.getLocalUsages()) {
-            if ((node.isField() || node.isFormalParameter())
-                && isNotWithinLoop(usage)) {
+            if ((node.isField() || node.isFormalParameter()) && isNotWithinLoop(usage)) {
                 // ignore if the field or formal parameter is *not* used within loops
                 continue;
             }
@@ -56,10 +58,8 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                 }
 
                 int usageOnRightHandSide =
-                    JavaAstUtils.flattenOperands(assignment.getRightOperand())
-                                .filterIs(ASTNamedReferenceExpr.class)
-                                .filterMatching(ASTNamedReferenceExpr::getReferencedSym, node.getSymbol())
-                                .count();
+                        JavaAstUtils.flattenOperands(assignment.getRightOperand()).filterIs(ASTNamedReferenceExpr.class)
+                                .filterMatching(ASTNamedReferenceExpr::getReferencedSym, node.getSymbol()).count();
 
                 // or maybe a append in some way (a = a + x)
                 // or a combination (a += a + x)
@@ -72,7 +72,8 @@ public class UseStringBufferForStringAppendsRule extends AbstractJavaRulechainRu
                 if (isWithinLoop(usage)) {
                     // always report appends within a loop
                     asCtx(data).addViolation(usage);
-                } else {
+                }
+                else {
                     possibleViolations.add(usage);
                 }
             }

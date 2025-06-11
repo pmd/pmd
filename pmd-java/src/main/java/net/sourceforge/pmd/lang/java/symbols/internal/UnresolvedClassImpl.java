@@ -45,8 +45,7 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
     }
 
     /**
-     * Set the number of type parameters of this type. Does nothing if
-     * it is already set.
+     * Set the number of type parameters of this type. Does nothing if it is already set.
      */
     abstract void setTypeParameterCount(int newArity);
 
@@ -61,7 +60,6 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
     public boolean isUnresolved() {
         return true;
     }
-
 
     @Override
     public @Nullable JExecutableSymbol getEnclosingMethod() {
@@ -84,7 +82,8 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
         int idx = canonicalName.lastIndexOf('.');
         if (idx < 0) {
             return canonicalName;
-        } else {
+        }
+        else {
             return canonicalName.substring(idx + 1);
         }
     }
@@ -99,11 +98,11 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
         int idx = canonicalName.lastIndexOf('.');
         if (idx < 0) {
             return canonicalName;
-        } else {
+        }
+        else {
             return canonicalName.substring(0, idx);
         }
     }
-
 
     @Nullable
     @Override
@@ -116,18 +115,15 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
         return Collections.emptyList();
     }
 
-
     @Override
     public List<JClassSymbol> getSuperInterfaces() {
         return Collections.emptyList();
     }
 
-
     @Override
     public @Nullable JClassType getSuperclassType(Substitution substitution) {
         return getTypeSystem().OBJECT;
     }
-
 
     @Override
     public List<JClassSymbol> getDeclaredClasses() {
@@ -178,7 +174,6 @@ abstract class UnresolvedClassImpl implements JClassSymbol {
     public int getModifiers() {
         return Modifier.PUBLIC;
     }
-
 
     @Nullable
     @Override

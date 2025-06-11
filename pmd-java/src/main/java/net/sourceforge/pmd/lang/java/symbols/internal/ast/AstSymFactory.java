@@ -16,13 +16,10 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
-
 final class AstSymFactory {
-
 
     private final TypeSystem ts;
     private final JavaAstProcessor processor;
-
 
     AstSymFactory(JavaAstProcessor processor) {
         this.ts = processor.getTypeSystem();
@@ -35,7 +32,7 @@ final class AstSymFactory {
 
     JClassType enumSuperclass(JClassSymbol enumT) {
         return (JClassType) ts.parameterise(processor.findSymbolCannotFail("java.lang.Enum"),
-                                            listOf(ts.declaration(enumT)));
+                listOf(ts.declaration(enumT)));
     }
 
     JClassSymbol annotationSym() {
@@ -57,9 +54,8 @@ final class AstSymFactory {
      */
     void setLocalVarSymbol(ASTVariableId id) {
         assert !id.isField() && !id.isEnumConstant() : "Local var symbol is not appropriate for fields";
-        assert !id.isFormalParameter()
-            || id.isLambdaParameter()
-            || id.isExceptionBlockParameter() : "Local var symbol is not appropriate for method parameters";
+        assert !id.isFormalParameter() || id.isLambdaParameter() || id.isExceptionBlockParameter()
+                : "Local var symbol is not appropriate for method parameters";
 
         new AstLocalVarSym(id, this);
     }

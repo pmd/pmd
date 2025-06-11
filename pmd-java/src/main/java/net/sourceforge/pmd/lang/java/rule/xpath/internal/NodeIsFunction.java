@@ -19,7 +19,8 @@ public final class NodeIsFunction extends BaseRewrittenFunction<Class<?>, JavaNo
     protected Class<?> parseArgument(String arg) throws XPathFunctionException {
         try {
             return Class.forName("net.sourceforge.pmd.lang.java.ast.AST" + arg);
-        } catch (ClassNotFoundException e) {
+        }
+        catch (ClassNotFoundException e) {
             throw new XPathFunctionException("No class named AST" + arg, e);
         }
     }

@@ -19,9 +19,7 @@ class LazyTypeSig {
     private JTypeMirror parsed;
     private TypeAnnotationSet typeAnnots;
 
-    LazyTypeSig(ClassStub ctx,
-                String descriptor,
-                @Nullable String signature) {
+    LazyTypeSig(ClassStub ctx, String descriptor, @Nullable String signature) {
         this.ctx = ctx;
         this.sig = signature == null ? descriptor : signature;
     }
@@ -37,14 +35,12 @@ class LazyTypeSig {
         return parsed;
     }
 
-
     JTypeMirror get(Substitution subst) {
         if (Substitution.isEmptySubst(subst)) {
             return get();
         }
         return get().subst(subst);
     }
-
 
     @Override
     public String toString() {
@@ -60,6 +56,5 @@ class LazyTypeSig {
         }
         typeAnnots.add(path, annot);
     }
-
 
 }

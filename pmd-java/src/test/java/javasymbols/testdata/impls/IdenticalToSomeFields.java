@@ -4,14 +4,11 @@
 
 package javasymbols.testdata.impls;
 
-
 public class IdenticalToSomeFields {
-
 
     public final String foo = "";
     protected volatile int bb;
     private int a;
-
 
     public final String foo() {
         return "";

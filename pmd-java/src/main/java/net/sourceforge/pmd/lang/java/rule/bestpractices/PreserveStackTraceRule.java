@@ -40,14 +40,15 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     // todo dfa
 
     private static final InvocationMatcher INIT_CAUSE = InvocationMatcher.parse("java.lang.Throwable#initCause(_)");
-    private static final CompoundInvocationMatcher ALLOWED_GETTERS = InvocationMatcher.parseAll(
-        "java.lang.Throwable#fillInStackTrace()", // returns this
-        "java.lang.reflect.InvocationTargetException#getTargetException()", // allowed, to unwrap reflection frames
-        "java.lang.reflect.InvocationTargetException#getCause()", // this is equivalent to getTargetException, see javadoc
-        // same rationale as for InvocationTargetException
-        "java.security.PrivilegedActionException#getException()",
-        "java.security.PrivilegedActionException#getCause()"
-    );
+    private static final CompoundInvocationMatcher ALLOWED_GETTERS =
+            InvocationMatcher.parseAll("java.lang.Throwable#fillInStackTrace()", // returns this
+                    "java.lang.reflect.InvocationTargetException#getTargetException()", // allowed, to unwrap reflection
+                                                                                        // frames
+                    "java.lang.reflect.InvocationTargetException#getCause()", // this is equivalent to
+                                                                              // getTargetException, see javadoc
+                    // same rationale as for InvocationTargetException
+                    "java.security.PrivilegedActionException#getException()",
+                    "java.security.PrivilegedActionException#getCause()");
 
     private final Set<ASTVariableId> recursingOnVars = new HashSet<>();
 
@@ -80,36 +81,35 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
             // new Exception(e)
             return ctorConsumesException(exceptionParams, (ASTConstructorCall) expr);
 
-        } else if (expr instanceof ASTMethodCall) {
+        }
+        else if (expr instanceof ASTMethodCall) {
 
             return methodConsumesException(exceptionParams, (ASTMethodCall) expr);
 
-        } else if (expr instanceof ASTCastExpression) {
+        }
+        else if (expr instanceof ASTCastExpression) {
 
             ASTExpression innermost = JavaAstUtils.peelCasts(expr);
             return exprConsumesException(exceptionParams, innermost, mayBeSelf);
 
-        } else if (expr instanceof ASTConditionalExpression) {
+        }
+        else if (expr instanceof ASTConditionalExpression) {
 
             ASTConditionalExpression ternary = (ASTConditionalExpression) expr;
             Set<ASTVariableId> possibleExceptionParams = new HashSet<>(exceptionParams);
 
             // Peel out a type pattern variable in case this conditional is an instanceof pattern
-            NodeStream.of(ternary.getCondition())
-                    .filterIs(ASTInfixExpression.class)
+            NodeStream.of(ternary.getCondition()).filterIs(ASTInfixExpression.class)
                     .filterMatching(ASTInfixExpression::getOperator, BinaryOp.INSTANCEOF)
-                    .map(ASTInfixExpression::getRightOperand)
-                    .filterIs(ASTPatternExpression.class)
-                    .map(ASTPatternExpression::getPattern)
-                    .filterIs(ASTTypePattern.class)
-                    .map(ASTTypePattern::getVarId)
-                    .firstOpt()
-                    .ifPresent(possibleExceptionParams::add);
+                    .map(ASTInfixExpression::getRightOperand).filterIs(ASTPatternExpression.class)
+                    .map(ASTPatternExpression::getPattern).filterIs(ASTTypePattern.class).map(ASTTypePattern::getVarId)
+                    .firstOpt().ifPresent(possibleExceptionParams::add);
 
             return exprConsumesException(possibleExceptionParams, ternary.getThenBranch(), mayBeSelf)
-                && exprConsumesException(possibleExceptionParams, ternary.getElseBranch(), mayBeSelf);
+                    && exprConsumesException(possibleExceptionParams, ternary.getElseBranch(), mayBeSelf);
 
-        } else if (expr instanceof ASTVariableAccess) {
+        }
+        else if (expr instanceof ASTVariableAccess) {
             JVariableSymbol referencedSym = ((ASTVariableAccess) expr).getReferencedSym();
             if (referencedSym == null) {
                 return true; // invalid code, avoid FP
@@ -118,7 +118,8 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
             if (exceptionParams.contains(decl)) {
                 return mayBeSelf;
-            } else if (decl == null || decl.isFormalParameter() || decl.isField()) {
+            }
+            else if (decl == null || decl.isFormalParameter() || decl.isField()) {
                 return false;
             }
 
@@ -139,26 +140,27 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
                     return true;
                 }
 
-                if (JavaAstUtils.followingCallChain(usage).any(it -> consumesExceptionNonRecursive(exceptionParams, it))) {
+                if (JavaAstUtils.followingCallChain(usage)
+                        .any(it -> consumesExceptionNonRecursive(exceptionParams, it))) {
                     return true;
                 }
             }
 
             return false;
-        } else {
+        }
+        else {
             // assume it doesn't
             return false;
         }
     }
 
-    private boolean assignmentRhsConsumesException(Set<ASTVariableId> exceptionParams, ASTVariableId lhsVariable, ASTNamedReferenceExpr usage) {
+    private boolean assignmentRhsConsumesException(Set<ASTVariableId> exceptionParams, ASTVariableId lhsVariable,
+            ASTNamedReferenceExpr usage) {
         if (usage.getIndexInParent() == 0) {
             ASTExpression assignmentRhs = JavaAstUtils.getOtherOperandIfInAssignmentExpr(usage);
             boolean rhsIsSelfReferential =
-                NodeStream.of(assignmentRhs)
-                          .descendantsOrSelf()
-                          .filterIs(ASTVariableAccess.class)
-                          .any(it -> JavaAstUtils.isReferenceToVar(it, lhsVariable.getSymbol()));
+                    NodeStream.of(assignmentRhs).descendantsOrSelf().filterIs(ASTVariableAccess.class)
+                            .any(it -> JavaAstUtils.isReferenceToVar(it, lhsVariable.getSymbol()));
             return !rhsIsSelfReferential && exprConsumesException(exceptionParams, assignmentRhs, true);
         }
         return false;
@@ -166,7 +168,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
 
     private boolean ctorConsumesException(Set<ASTVariableId> exceptionParams, ASTConstructorCall ctorCall) {
         return ctorCall.isAnonymousClass() && callsInitCauseInAnonInitializer(exceptionParams, ctorCall)
-            || anArgumentConsumesException(exceptionParams, ctorCall);
+                || anArgumentConsumesException(exceptionParams, ctorCall);
     }
 
     private boolean consumesExceptionNonRecursive(Set<ASTVariableId> exceptionParam, ASTExpression expr) {
@@ -189,11 +191,9 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     }
 
     private boolean callsInitCauseInAnonInitializer(Set<ASTVariableId> exceptionParams, ASTConstructorCall ctorCall) {
-        return NodeStream.of(ctorCall.getAnonymousClassDeclaration())
-                         .flatMap(ASTTypeDeclaration::getDeclarations)
-                         .map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class))
-                         .descendants().filterIs(ASTMethodCall.class)
-                         .any(it -> isInitCauseWithTargetInArg(exceptionParams, it));
+        return NodeStream.of(ctorCall.getAnonymousClassDeclaration()).flatMap(ASTTypeDeclaration::getDeclarations)
+                .map(NodeStream.asInstanceOf(ASTFieldDeclaration.class, ASTInitializer.class)).descendants()
+                .filterIs(ASTMethodCall.class).any(it -> isInitCauseWithTargetInArg(exceptionParams, it));
     }
 
     private boolean isInitCauseWithTargetInArg(Set<ASTVariableId> exceptionParams, JavaNode expr) {

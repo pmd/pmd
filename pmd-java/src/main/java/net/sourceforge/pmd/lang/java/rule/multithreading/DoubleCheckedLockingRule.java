@@ -40,15 +40,18 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  * }
  * </pre>
  *
- * <p>The error is when one uses the value assigned within a synchronized
- * section, outside of a synchronized section.</p>
+ * <p>
+ * The error is when one uses the value assigned within a synchronized section, outside of a synchronized section.
+ * </p>
  *
  * <pre>
  * if (x == null) // is outside of synchronized section
  *   x = new | method();
  * </pre>
  *
- * <p>Very very specific check for double checked locking.</p>
+ * <p>
+ * Very very specific check for double checked locking.
+ * </p>
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
@@ -79,7 +82,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         JVariableSymbol returnVariable = ((ASTNamedReferenceExpr) returnExpr).getReferencedSym();
         // With Java5 and volatile keyword, DCL is no longer an issue
         if (returnVariable instanceof JFieldSymbol
-            && Modifier.isVolatile(((JFieldSymbol) returnVariable).getModifiers())) {
+                && Modifier.isVolatile(((JFieldSymbol) returnVariable).getModifiers())) {
             return data;
         }
 
@@ -98,9 +101,10 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
                     ASTIfStatement is2 = isl.get(1);
                     if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
-                        List<ASTAssignmentExpression> assignments = is2.descendants(ASTAssignmentExpression.class).toList();
+                        List<ASTAssignmentExpression> assignments =
+                                is2.descendants(ASTAssignmentExpression.class).toList();
                         if (assignments.size() == 1
-                            && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
+                                && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
                             asCtx(data).addViolation(node);
 
                         }
@@ -119,22 +123,24 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                 return false;
             }
             initializer = id.getInitializer();
-        } else {
+        }
+        else {
             // the return variable name doesn't seem to be a local variable
             return false;
         }
 
         return (initializer == null || isVolatileFieldReference(initializer))
-            && method.descendants(ASTAssignmentExpression.class)
-                     .filter(it -> JavaAstUtils.isReferenceToVar(it.getLeftOperand(), local))
-                     .all(it -> isVolatileFieldReference(it.getRightOperand()));
+                && method.descendants(ASTAssignmentExpression.class)
+                        .filter(it -> JavaAstUtils.isReferenceToVar(it.getLeftOperand(), local))
+                        .all(it -> isVolatileFieldReference(it.getRightOperand()));
     }
 
     private boolean isVolatileFieldReference(@Nullable ASTExpression initializer) {
         if (initializer instanceof ASTNamedReferenceExpr) {
             JVariableSymbol fieldSym = ((ASTNamedReferenceExpr) initializer).getReferencedSym();
             return fieldSym instanceof JFieldSymbol && Modifier.isVolatile(((JFieldSymbol) fieldSym).getModifiers());
-        } else {
+        }
+        else {
             return false;
         }
     }

@@ -27,14 +27,12 @@ import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 
 /**
- * Generic implementation for array symbols, which does not rely on
- * reflection.
+ * Generic implementation for array symbols, which does not rely on reflection.
  */
 class ArraySymbolImpl implements JClassSymbol {
 
     // Like Class::getModifiers, we preserve the public/private/protected flag
-    private static final int COMPONENT_MOD_MASK =
-        Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_PUBLIC;
+    private static final int COMPONENT_MOD_MASK = Opcodes.ACC_PRIVATE | Opcodes.ACC_PROTECTED | Opcodes.ACC_PUBLIC;
 
     private final TypeSystem ts;
     private final JTypeDeclSymbol component;

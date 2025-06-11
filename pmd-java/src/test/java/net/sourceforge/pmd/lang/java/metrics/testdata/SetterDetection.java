@@ -15,7 +15,6 @@ public class SetterDetection {
     private MutableInt mutX;
     private boolean bool;
 
-
     public void setValue(int x) {
         value = x;
     }

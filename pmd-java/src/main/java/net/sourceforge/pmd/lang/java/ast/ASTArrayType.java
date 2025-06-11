@@ -21,7 +21,6 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
         super(id);
     }
 
-
     @Override
     public NodeStream<ASTAnnotation> getDeclaredAnnotations() {
         return getDimensions().getFirstChild().getDeclaredAnnotations();
@@ -30,7 +29,6 @@ public final class ASTArrayType extends AbstractJavaTypeNode implements ASTRefer
     public ASTArrayDimensions getDimensions() {
         return (ASTArrayDimensions) getChild(1);
     }
-
 
     public ASTType getElementType() {
         return (ASTType) getChild(0);

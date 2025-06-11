@@ -6,8 +6,7 @@
 package lombok;
 
 /**
- * Needed for test case for UnusedPrivateMethod.
- * See #5369.
+ * Needed for test case for UnusedPrivateMethod. See #5369.
  */
 public @interface val {
 }

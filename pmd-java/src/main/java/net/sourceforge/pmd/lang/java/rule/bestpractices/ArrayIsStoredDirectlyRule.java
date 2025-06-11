@@ -20,17 +20,13 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
- * If a method or constructor receives an array as an argument, the array should
- * be cloned instead of directly stored. This prevents future changes from the
- * user from affecting the original array.
+ * If a method or constructor receives an array as an argument, the array should be cloned instead of directly stored.
+ * This prevents future changes from the user from affecting the original array.
  */
 public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> ALLOW_PRIVATE =
-        PropertyFactory.booleanProperty("allowPrivate")
-                       .defaultValue(true)
-                       .desc("If true, allow private methods/constructors to store arrays directly")
-                       .build();
+    private static final PropertyDescriptor<Boolean> ALLOW_PRIVATE = PropertyFactory.booleanProperty("allowPrivate")
+            .defaultValue(true).desc("If true, allow private methods/constructors to store arrays directly").build();
 
     public ArrayIsStoredDirectlyRule() {
         super(ASTMethodDeclaration.class, ASTConstructorDeclaration.class);
@@ -50,13 +46,11 @@ public class ArrayIsStoredDirectlyRule extends AbstractJavaRulechainRule {
     }
 
     private void checkAssignments(RuleContext context, ASTExecutableDeclaration method) {
-        if (method.getVisibility() == Visibility.V_PRIVATE && getProperty(ALLOW_PRIVATE)
-            || method.getBody() == null) {
+        if (method.getVisibility() == Visibility.V_PRIVATE && getProperty(ALLOW_PRIVATE) || method.getBody() == null) {
             return;
         }
 
-        nextFormal:
-        for (ASTFormalParameter formal : method.getFormalParameters()) {
+        nextFormal: for (ASTFormalParameter formal : method.getFormalParameters()) {
             if (formal.getTypeMirror().isArray()) {
                 for (ASTNamedReferenceExpr usage : formal.getVarId().getLocalUsages()) {
                     // We assume usages order corresponds to control-flow order

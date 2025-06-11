@@ -11,8 +11,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 
 /**
- * PRIVATE FOR NOW, find out what is useful to move to the interface
- * (probably everything).
+ * PRIVATE FOR NOW, find out what is useful to move to the interface (probably everything).
  *
  * @author Clément Fournier
  */
@@ -39,19 +38,18 @@ final class TokenUtils {
     }
 
     /**
-     * This is why we need to doubly link tokens... otherwise we need a
-     * start hint.
+     * This is why we need to doubly link tokens... otherwise we need a start hint.
      *
-     * @param startHint Token from which to start iterating,
-     *                  needed because tokens are not linked to their
-     *                  previous token. Must be strictly before the anchor
-     *                  and as close as possible to the expected position of
-     *                  the anchor.
-     * @param anchor    Anchor from which to apply the shift. The n-th previous
-     *                  token will be returned
-     * @param n         An int > 0
+     * @param startHint
+     *            Token from which to start iterating, needed because tokens are not linked to their previous token.
+     *            Must be strictly before the anchor and as close as possible to the expected position of the anchor.
+     * @param anchor
+     *            Anchor from which to apply the shift. The n-th previous token will be returned
+     * @param n
+     *            An int > 0
      *
-     * @throws NoSuchElementException If there's less than n tokens to the left of the anchor.
+     * @throws NoSuchElementException
+     *             If there's less than n tokens to the left of the anchor.
      */
     // test only
     public static <T extends GenericToken<T>> T nthPrevious(T startHint, T anchor, int n) {
@@ -71,13 +69,15 @@ final class TokenUtils {
             // "n" tokens to the left
             if (numAway == n) {
                 target = target.getNext();
-            } else {
+            }
+            else {
                 numAway++;
             }
         }
         if (!Objects.equals(current, anchor)) {
             throw new IllegalStateException("Wrong left hint, possibly not left enough");
-        } else if (numAway != n) {
+        }
+        else if (numAway != n) {
             // We're not "n" tokens away from the anchor
             throw new NoSuchElementException("No such token");
         }

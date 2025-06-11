@@ -27,14 +27,11 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefiniti
  */
 class DataflowPassTest extends BaseParserTest {
 
-
     @Test
     void testSimple() {
 
-        ASTCompilationUnit ast = java.parseResource(
-            "/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java21/RecordPatterns.java",
-            "21"
-        );
+        ASTCompilationUnit ast = java
+                .parseResource("/net/sourceforge/pmd/lang/java/ast/jdkversiontests/java21/RecordPatterns.java", "21");
 
         DataflowResult dataflow = DataflowPass.getDataflowResult(ast);
         assertThat(dataflow.getUnusedAssignments(), hasSize(0));
@@ -43,11 +40,7 @@ class DataflowPassTest extends BaseParserTest {
 
     @Test
     void testBlankLocals() {
-        ASTCompilationUnit ast = java.parse(
-            "class A { static {"
-                + "  int a;"
-                + "  a = 0;"
-                + " } }");
+        ASTCompilationUnit ast = java.parse("class A { static {" + "  int a;" + "  a = 0;" + " } }");
         DataflowResult df = DataflowPass.getDataflowResult(ast);
         List<ASTVariableId> list = ast.descendants(ASTVariableId.class).toList();
         ASTVariableId a = list.get(0);
@@ -58,11 +51,8 @@ class DataflowPassTest extends BaseParserTest {
 
     @Test
     void testBlankFinalField() {
-        ASTCompilationUnit ast = java.parse(
-            "class A { final int field; int nonFinal; A() { field = 2; } {"
-                + "  use(field);"
-                + "  use(nonFinal);"
-                + " } }");
+        ASTCompilationUnit ast = java.parse("class A { final int field; int nonFinal; A() { field = 2; } {"
+                + "  use(field);" + "  use(nonFinal);" + " } }");
         DataflowResult df = DataflowPass.getDataflowResult(ast);
         List<ASTVariableId> list = ast.descendants(ASTVariableId.class).toList();
         ASTVariableId field = list.get(0);

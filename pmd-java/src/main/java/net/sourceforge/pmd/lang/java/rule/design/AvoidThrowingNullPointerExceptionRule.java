@@ -17,8 +17,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
- * Finds <code>throw</code> statements containing <code>NullPointerException</code>
- * instances as thrown values
+ * Finds <code>throw</code> statements containing <code>NullPointerException</code> instances as thrown values
  *
  * @author <a href="mailto:michaeller.2012@gmail.com">Mykhailo Palahuta</a>
  */
@@ -33,7 +32,8 @@ public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRulechain
         ASTExpression thrown = throwStmt.getExpr();
         if (TypeTestUtil.isA(NullPointerException.class, thrown)) {
             asCtx(data).addViolation(throwStmt);
-        } else if (thrown instanceof ASTVariableAccess) {
+        }
+        else if (thrown instanceof ASTVariableAccess) {
             JVariableSymbol sym = ((ASTVariableAccess) thrown).getReferencedSym();
             if (sym instanceof JLocalVariableSymbol && hasNpeValue((ASTVariableAccess) thrown)) {
                 asCtx(data).addViolation(throwStmt);

@@ -17,9 +17,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
- * An operation on an Immutable object (String, BigDecimal or BigInteger) won't
- * change the object itself. The result of the operation is a new object.
- * Therefore, ignoring the operation result is an error.
+ * An operation on an Immutable object (String, BigDecimal or BigInteger) won't change the object itself. The result of
+ * the operation is a new object. Therefore, ignoring the operation result is an error.
  */
 public class UselessOperationOnImmutableRule extends AbstractJavaRulechainRule {
 
@@ -39,12 +38,12 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRulechainRule {
                 if (!"getChars".equals(node.getMethodName())) {
                     asCtx(data).addViolation(node);
                 }
-            } else if (TypeTestUtil.isA(BigDecimal.class, qualifier)
-                || TypeTestUtil.isA(BigInteger.class, qualifier)) {
+            }
+            else if (TypeTestUtil.isA(BigDecimal.class, qualifier) || TypeTestUtil.isA(BigInteger.class, qualifier)) {
                 asCtx(data).addViolation(node);
-            } else if (TypeTestUtil.isA(Temporal.class, qualifier)
-                || TypeTestUtil.isA(Duration.class, qualifier)
-                || TypeTestUtil.isA(Period.class, qualifier)) {
+            }
+            else if (TypeTestUtil.isA(Temporal.class, qualifier) || TypeTestUtil.isA(Duration.class, qualifier)
+                    || TypeTestUtil.isA(Period.class, qualifier)) {
                 asCtx(data).addViolation(node);
             }
         }

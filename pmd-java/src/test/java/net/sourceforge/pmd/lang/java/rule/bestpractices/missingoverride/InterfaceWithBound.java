@@ -9,7 +9,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
  */
 public interface InterfaceWithBound<K extends Cloneable> {
 
-
     void handle(K k);
 
 }

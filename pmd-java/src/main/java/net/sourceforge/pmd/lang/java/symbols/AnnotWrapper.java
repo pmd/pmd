@@ -25,7 +25,6 @@ final class AnnotWrapper implements SymAnnot {
     private final Class<? extends Annotation> annotationClass;
     private final JClassSymbol annotationClassSymbol;
 
-
     private AnnotWrapper(JClassSymbol annotationClassSymbol, @NonNull Annotation annotation) {
         this.annotationClassSymbol = annotationClassSymbol;
         this.annotation = annotation;
@@ -48,17 +47,15 @@ final class AnnotWrapper implements SymAnnot {
     @Override
     public @Nullable SymbolicValue getAttribute(String attrName) {
         return Arrays.stream(annotationClass.getDeclaredMethods())
-                     .filter(it -> it.getName().equals(attrName) && it.getParameterCount() == 0)
-                     .map(it -> {
-                         try {
-                             Object result = it.invoke(annotation);
-                             return SymbolicValue.of(annotationClassSymbol.getTypeSystem(), result);
-                         } catch (Exception ignored) {
-                             return null;
-                         }
-                     })
-                     .filter(Objects::nonNull)
-                     .findAny().orElse(null);
+                .filter(it -> it.getName().equals(attrName) && it.getParameterCount() == 0).map(it -> {
+                    try {
+                        Object result = it.invoke(annotation);
+                        return SymbolicValue.of(annotationClassSymbol.getTypeSystem(), result);
+                    }
+                    catch (Exception ignored) {
+                        return null;
+                    }
+                }).filter(Objects::nonNull).findAny().orElse(null);
     }
 
     @Override

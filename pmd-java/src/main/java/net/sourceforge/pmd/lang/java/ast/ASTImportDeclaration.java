@@ -29,7 +29,6 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         super(id);
     }
 
-
     void setImportOnDemand() {
         isImportOnDemand = true;
     }
@@ -51,30 +50,25 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         return isImportOnDemand;
     }
 
-
     void setStatic() {
         isStatic = true;
     }
 
-
     /**
-     * Returns true if this is a static import. If this import is not on-demand,
-     * {@link #getImportedSimpleName()} returns the name of the imported member.
+     * Returns true if this is a static import. If this import is not on-demand, {@link #getImportedSimpleName()}
+     * returns the name of the imported member.
      */
     public boolean isStatic() {
         return isStatic;
     }
 
-
     /**
-     * Returns the full name of the import. For on-demand imports, this is the name without
-     * the final dot and asterisk. For {@link #isModuleImport() module declaration imports},
-     * this is the name of the module.
+     * Returns the full name of the import. For on-demand imports, this is the name without the final dot and asterisk.
+     * For {@link #isModuleImport() module declaration imports}, this is the name of the module.
      */
     public @NonNull String getImportedName() {
         return super.getImage();
     }
-
 
     @Override
     public String getImage() {
@@ -83,11 +77,12 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
     }
 
     /**
-     * Returns the simple name of the type or method imported by this declaration.
-     * For on-demand imports, returns {@code null}.
+     * Returns the simple name of the type or method imported by this declaration. For on-demand imports, returns
+     * {@code null}.
      *
-     * <p>For {@link #isModuleImport() module import declarations}, this returns {@code null}.
-     * Use {@link #getImportedName()} for the module name of a module import declaration.
+     * <p>
+     * For {@link #isModuleImport() module import declarations}, this returns {@code null}. Use
+     * {@link #getImportedName()} for the module name of a module import declaration.
      */
     public String getImportedSimpleName() {
         if (isImportOnDemand || moduleImport) {
@@ -98,14 +93,14 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
         return importName.substring(importName.lastIndexOf('.') + 1);
     }
 
-
     /**
-     * Returns the "package" prefix of the imported name. For type imports, including on-demand
-     * imports, this is really the package name of the imported type(s). For static imports,
-     * this is actually the qualified name of the enclosing type, including the type name.
+     * Returns the "package" prefix of the imported name. For type imports, including on-demand imports, this is really
+     * the package name of the imported type(s). For static imports, this is actually the qualified name of the
+     * enclosing type, including the type name.
      *
-     * <p>For {@link #isModuleImport() module import declarations}, this returns {@code null}.
-     * Use {@link #getImportedName()} for the module name of a module import declaration.
+     * <p>
+     * For {@link #isModuleImport() module import declarations}, this returns {@code null}. Use
+     * {@link #getImportedName()} for the module name of a module import declaration.
      */
     public String getPackageName() {
         if (moduleImport) {
@@ -133,8 +128,7 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
     }
 
     /**
-     * If this import declaration imports all the public top-level classes and interfaces
-     * of a module.
+     * If this import declaration imports all the public top-level classes and interfaces of a module.
      *
      * @return {@code true} if this is a module declaration import
      * @since 7.5.0

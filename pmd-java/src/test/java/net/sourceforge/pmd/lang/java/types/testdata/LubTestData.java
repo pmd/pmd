@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.types.testdata;
 
 public class LubTestData {
 
-
     public interface I1 {
     }
 
@@ -18,7 +17,6 @@ public class LubTestData {
 
     public interface I4 {
     }
-
 
     public static class Sub1 implements Comparable<Sub1>, I1, I3 {
 
@@ -35,7 +33,6 @@ public class LubTestData {
             return 0;
         }
     }
-
 
     public static class GenericSuper<T> implements I3 {
     }

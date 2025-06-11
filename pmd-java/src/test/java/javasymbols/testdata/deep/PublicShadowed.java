@@ -4,6 +4,5 @@
 
 package javasymbols.testdata.deep;
 
-
 public class PublicShadowed {
 }

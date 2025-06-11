@@ -14,13 +14,12 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
- * 1. Note all private constructors. 2. Note all instantiations from outside of
- * the class by way of the private constructor. 3. Flag instantiations.
+ * 1. Note all private constructors. 2. Note all instantiations from outside of the class by way of the private
+ * constructor. 3. Flag instantiations.
  *
  * <p>
- * Parameter types can not be matched because they can come as exposed members
- * of classes. In this case we have no way to know what the type is. We can make
- * a best effort though which can filter some?
+ * Parameter types can not be matched because they can come as exposed members of classes. In this case we have no way
+ * to know what the type is. We can make a best effort though which can filter some?
  * </p>
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
@@ -45,7 +44,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         if (!node.isAnonymousClass()) {
-            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(),
+                    this.reportedNodes);
         }
         return null;
     }
@@ -53,7 +53,8 @@ public class AccessorClassGenerationRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTExplicitConstructorInvocation node, Object data) {
         if (node.isSuper()) {
-            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(), this.reportedNodes);
+            AccessorMethodGenerationRule.checkMemberAccess((RuleContext) data, node, node.getMethodType().getSymbol(),
+                    this.reportedNodes);
         }
         return null;
     }

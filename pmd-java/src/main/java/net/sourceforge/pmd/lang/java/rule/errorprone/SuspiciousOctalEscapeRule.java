@@ -21,8 +21,8 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
 
         // process escape sequences
         int offset = 0;
-        for (int slash = s.indexOf('\\', offset); slash != -1
-                && slash < s.length() - 1; slash = s.indexOf('\\', offset)) {
+        for (int slash = s.indexOf('\\', offset); slash != -1 && slash < s.length() - 1; slash =
+                s.indexOf('\\', offset)) {
             String escapeSequence = s.substring(slash + 1);
             char first = escapeSequence.charAt(0);
             offset = slash + 1; // next offset - after slash
@@ -47,7 +47,8 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                     // an octal digit -- legal but very
                                     // confusing!
                                     asCtx(data).addViolation(node, "\\" + first + second + " + " + third);
-                                } else {
+                                }
+                                else {
                                     // if there is a 4th decimal digit, it
                                     // could never be part of
                                     // the escape sequence, which is
@@ -55,26 +56,30 @@ public class SuspiciousOctalEscapeRule extends AbstractJavaRulechainRule {
                                     if (escapeSequence.length() > 3) {
                                         char fourth = escapeSequence.charAt(3);
                                         if (isDecimal(fourth)) {
-                                            asCtx(data).addViolation(node, "\\" + first + second + third + " + " + fourth);
+                                            asCtx(data).addViolation(node,
+                                                    "\\" + first + second + third + " + " + fourth);
                                         }
                                     }
                                 }
 
-                            } else if (isDecimal(third)) {
+                            }
+                            else if (isDecimal(third)) {
                                 // this is a two-digit octal escape followed
                                 // by a decimal digit
                                 // legal but very confusing
                                 asCtx(data).addViolation(node, "\\" + first + second + " + " + third);
                             }
                         }
-                    } else if (isDecimal(second)) {
+                    }
+                    else if (isDecimal(second)) {
                         // this is a one-digit octal escape followed by a
                         // decimal digit
                         // legal but very confusing
                         asCtx(data).addViolation(node, "\\" + first + " + " + second);
                     }
                 }
-            } else if (first == '\\') {
+            }
+            else if (first == '\\') {
                 offset++;
             }
         }

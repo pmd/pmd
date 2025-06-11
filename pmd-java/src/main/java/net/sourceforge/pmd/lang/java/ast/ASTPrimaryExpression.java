@@ -5,8 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Tags those {@link ASTExpression expressions} that are categorised as primary
- * by the JLS.
+ * Tags those {@link ASTExpression expressions} that are categorised as primary by the JLS.
  *
  * <pre class="grammar">
  *

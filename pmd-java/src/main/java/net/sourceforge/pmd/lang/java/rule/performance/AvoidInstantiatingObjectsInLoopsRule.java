@@ -47,18 +47,15 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
             return;
         }
 
-        if (notAThrowStatement(node)
-                && notAReturnStatement(node)
-                && notBreakFollowing(node)
-                && notArrayAssignment(node)
+        if (notAThrowStatement(node) && notAReturnStatement(node) && notBreakFollowing(node) && notArrayAssignment(node)
                 && notCollectionAccess(node)) {
             asCtx(data).addViolation(node);
         }
     }
 
     private boolean notArrayAssignment(JavaNode node) {
-        JavaNode childOfAssignment = node.ancestorsOrSelf()
-                .filter(n -> n.getParent() instanceof ASTAssignmentExpression).first();
+        JavaNode childOfAssignment =
+                node.ancestorsOrSelf().filter(n -> n.getParent() instanceof ASTAssignmentExpression).first();
 
         if (childOfAssignment != null && childOfAssignment.getIndexInParent() == 1) {
             Node assignee = childOfAssignment.getParent().getFirstChild();
@@ -70,10 +67,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
     private boolean notCollectionAccess(JavaNode node) {
         // checks whether the given ConstructorCall/ArrayAllocation is
         // part of a MethodCall on a Collection.
-        return node.ancestors(ASTArgumentList.class)
-            .filter(n -> n.getParent() instanceof ASTMethodCall)
-            .filter(n -> TypeTestUtil.isA(Collection.class, ((ASTMethodCall) n.getParent()).getQualifier()))
-            .isEmpty();
+        return node.ancestors(ASTArgumentList.class).filter(n -> n.getParent() instanceof ASTMethodCall)
+                .filter(n -> TypeTestUtil.isA(Collection.class, ((ASTMethodCall) n.getParent()).getQualifier()))
+                .isEmpty();
     }
 
     private boolean notBreakFollowing(JavaNode node) {
@@ -83,7 +79,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
 
     /**
      * This method is used to check whether this expression is a throw statement.
-     * @param node This is the expression of part of java code to be checked.
+     * 
+     * @param node
+     *            This is the expression of part of java code to be checked.
      * @return boolean This returns whether the given constructor call is part of a throw statement
      */
     private boolean notAThrowStatement(JavaNode node) {
@@ -92,7 +90,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
 
     /**
      * This method is used to check whether this expression is a return statement.
-     * @param node This is the expression of part of java code to be checked.
+     * 
+     * @param node
+     *            This is the expression of part of java code to be checked.
      * @return boolean This returns whether the given constructor call is part of a return statement
      */
     private boolean notAReturnStatement(JavaNode node) {
@@ -101,7 +101,9 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
 
     /**
      * This method is used to check whether this expression is not in a loop.
-     * @param node This is the expression of part of java code to be checked.
+     * 
+     * @param node
+     *            This is the expression of part of java code to be checked.
      * @return boolean <code>false</code> if the given node is inside a loop, <code>true</code> otherwise
      */
     private boolean notInsideLoop(Node node) {
@@ -109,13 +111,15 @@ public class AvoidInstantiatingObjectsInLoopsRule extends AbstractJavaRulechainR
         while (n != null) {
             if (n instanceof ASTLoopStatement) {
                 return false;
-            } else if (n instanceof ASTForInit) {
+            }
+            else if (n instanceof ASTForInit) {
                 /*
-                 * init part is not technically inside the loop. Skip parent
-                 * ASTForStatement but continue higher up to detect nested loops
+                 * init part is not technically inside the loop. Skip parent ASTForStatement but continue higher up to
+                 * detect nested loops
                  */
                 n = n.getParent();
-            } else if (n.getParent() instanceof ASTForeachStatement && n.getParent().getNumChildren() > 1
+            }
+            else if (n.getParent() instanceof ASTForeachStatement && n.getParent().getNumChildren() > 1
                     && n == n.getParent().getChild(1)) {
                 // it is the second child of a ForeachStatement.
                 // In that case, we can ignore this allocation expression, as

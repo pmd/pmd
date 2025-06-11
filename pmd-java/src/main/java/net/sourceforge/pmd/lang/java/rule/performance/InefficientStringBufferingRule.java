@@ -16,9 +16,8 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
- * How this rule works: find additive expressions: + check that the addition is
- * between anything other than two literals if true and also the parent is
- * StringBuffer constructor or append, report a violation.
+ * How this rule works: find additive expressions: + check that the addition is between anything other than two literals
+ * if true and also the parent is StringBuffer constructor or append, report a violation.
  *
  * @author mgriffa
  */
@@ -48,8 +47,8 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         ASTExpression arg = ASTList.singleOrNull(argList);
 
         if (JavaAstUtils.isStringConcatExpr(arg)
-            // ignore concatenations that produce constants
-            && !arg.getConstFoldingResult().hasValue()) {
+                // ignore concatenations that produce constants
+                && !arg.getConstFoldingResult().hasValue()) {
             ctx.addViolation(arg);
         }
     }
@@ -62,7 +61,6 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
         }
         Node parent = node.getParent();
 
-        return parent instanceof ASTMethodCall
-            && JavaRuleUtil.isStringBuilderCtorOrAppend((ASTMethodCall) parent);
+        return parent instanceof ASTMethodCall && JavaRuleUtil.isStringBuilderCtorOrAppend((ASTMethodCall) parent);
     }
 }

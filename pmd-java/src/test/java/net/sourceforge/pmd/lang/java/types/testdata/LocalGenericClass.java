@@ -16,7 +16,8 @@ public class LocalGenericClass {
             private T state;
 
             @Override
-            public void accept(T t) { }
+            public void accept(T t) {
+            }
 
             @Override
             public Optional<T> get() {

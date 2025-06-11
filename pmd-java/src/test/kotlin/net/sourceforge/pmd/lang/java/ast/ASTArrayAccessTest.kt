@@ -12,27 +12,28 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  * @author Clément Fournier
  * @since 7.0.0
  */
-class ASTArrayAccessTest : ParserTestSpec({
+class ASTArrayAccessTest :
+    ParserTestSpec({
+        parserTestContainer("Array access auto disambiguation") {
+            inContext(ExpressionParsingCtx) {
+                "a.b[0]" should
+                    parseAs {
+                        arrayAccess {
+                            it::getQualifier shouldBe
+                                fieldAccess("b") { it::getQualifier shouldBe ambiguousName("a") }
 
-    parserTestContainer("Array access auto disambiguation") {
-        inContext(ExpressionParsingCtx) {
-            "a.b[0]" should parseAs {
-                arrayAccess {
-                    it::getQualifier shouldBe fieldAccess("b") {
-                        it::getQualifier shouldBe ambiguousName("a")
+                            it::getIndexExpression shouldBe int(0)
+                        }
                     }
 
-                    it::getIndexExpression shouldBe int(0)
-                }
-            }
+                "b[0]" should
+                    parseAs {
+                        arrayAccess {
+                            it::getQualifier shouldBe variableAccess("b")
 
-            "b[0]" should parseAs {
-                arrayAccess {
-                    it::getQualifier shouldBe variableAccess("b")
-
-                    it::getIndexExpression shouldBe int(0)
-                }
+                            it::getIndexExpression shouldBe int(0)
+                        }
+                    }
             }
         }
-    }
-})
+    })

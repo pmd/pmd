@@ -14,10 +14,8 @@ public abstract class AbstractClass {
         return new Object();
     }
 
-
     public void arrayParams(String dflt, int[] keys, StringBuilder[] labels) {
     }
-
 
     public <T, R> R generic(T t, R r) {
         return r;

@@ -25,7 +25,8 @@ public final class MatchesSignatureFunction extends BaseRewrittenFunction<Invoca
     protected InvocationMatcher parseArgument(String arg) throws XPathFunctionException {
         try {
             return InvocationMatcher.parse(arg);
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e) {
             throw new XPathFunctionException("Could not parse arg " + arg, e);
         }
     }

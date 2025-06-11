@@ -23,12 +23,10 @@ public class StringInstantiationRule extends AbstractJavaRule {
     @Override
     public Object visit(ASTConstructorCall node, Object data) {
         ASTArgumentList args = node.getArguments();
-        if (args.size() <= 1
-            && TypeTestUtil.isExactlyA(String.class, node.getTypeNode())) {
-            if (args.size() == 1 && (
-                    TypeTestUtil.isExactlyA(byte[].class, args.get(0))
-                        || TypeTestUtil.isExactlyA(char[].class, args.get(0))
-                        || TypeOps.isUnresolved(args.get(0).getTypeMirror()))) {
+        if (args.size() <= 1 && TypeTestUtil.isExactlyA(String.class, node.getTypeNode())) {
+            if (args.size() == 1 && (TypeTestUtil.isExactlyA(byte[].class, args.get(0))
+                    || TypeTestUtil.isExactlyA(char[].class, args.get(0))
+                    || TypeOps.isUnresolved(args.get(0).getTypeMirror()))) {
                 // byte/char array ctor is ok
                 return data;
             }

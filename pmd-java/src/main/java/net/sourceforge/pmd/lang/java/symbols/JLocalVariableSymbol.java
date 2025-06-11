@@ -2,15 +2,13 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.symbols;
 
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 
-
 /**
- * Represents all use cases of {@link ASTVariableId} except field declarations.
- * Method formal parameter symbols extend this interface.
+ * Represents all use cases of {@link ASTVariableId} except field declarations. Method formal parameter symbols extend
+ * this interface.
  *
  * @since 7.0.0
  */

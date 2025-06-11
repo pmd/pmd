@@ -24,10 +24,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.Mi
 
 class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
 
-
-    MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call,
-                      boolean isStandalone,
-                      @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+    MethodInvocMirror(JavaExprMirrors mirrors, ASTMethodCall call, boolean isStandalone, @Nullable ExprMirror parent,
+            MirrorMaker subexprMaker) {
         super(mirrors, call, isStandalone, parent, subexprMaker);
     }
 
@@ -53,17 +51,22 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
         if (lhs == null) {
             // already filters accessibility
             return myNode.getSymbolTable().methods().resolve(getName());
-        } else if (myNode.getEnclosingType() == null) {
+        }
+        else if (myNode.getEnclosingType() == null) {
             return Collections.emptyList();
-        } else {
+        }
+        else {
             JTypeMirror lhsType;
             if (lhs instanceof ASTConstructorCall) {
                 ASTConstructorCall ctor = (ASTConstructorCall) lhs;
                 ASTAnonymousClassDeclaration anon = ctor.getAnonymousClassDeclaration();
                 // put methods declared in the anonymous class in scope
-                lhsType = anon != null ? anon.getTypeMirror(getTypingContext())
-                                       : ctor.getTypeMirror(getTypingContext()); // may resolve diamonds
-            } else {
+                lhsType =
+                        anon != null ? anon.getTypeMirror(getTypingContext()) : ctor.getTypeMirror(getTypingContext()); // may
+                                                                                                                        // resolve
+                                                                                                                        // diamonds
+            }
+            else {
                 lhsType = lhs.getTypeMirror(getTypingContext());
             }
             lhsType = TypeOps.getMemberSource(lhsType);
@@ -72,7 +75,6 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
             return TypeOps.getMethodsOf(lhsType, getName(), staticOnly, myNode.getEnclosingType().getSymbol());
         }
     }
-
 
     @Override
     public JTypeMirror getErasedReceiverType() {
@@ -84,7 +86,8 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
         ASTExpression qualifier = myNode.getQualifier();
         if (qualifier != null) {
             return qualifier.getTypeMirror(getTypingContext());
-        } else {
+        }
+        else {
             return myNode.getEnclosingType().getTypeMirror();
         }
     }
@@ -93,6 +96,5 @@ class MethodInvocMirror extends BaseInvocMirror<ASTMethodCall> {
     public String getName() {
         return myNode.getMethodName();
     }
-
 
 }

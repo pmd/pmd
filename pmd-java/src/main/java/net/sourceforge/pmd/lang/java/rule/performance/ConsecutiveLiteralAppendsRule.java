@@ -38,13 +38,13 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
-
 /**
- * This rule finds concurrent calls to StringBuffer/Builder.append where String
- * literals are used. It would be much better to make these calls using one call
- * to <code>.append</code>.
+ * This rule finds concurrent calls to StringBuffer/Builder.append where String literals are used. It would be much
+ * better to make these calls using one call to <code>.append</code>.
  *
- * <p>Example:</p>
+ * <p>
+ * Example:
+ * </p>
  *
  * <pre>
  * StringBuilder buf = new StringBuilder();
@@ -52,15 +52,19 @@ import net.sourceforge.pmd.properties.PropertyFactory;
  * buf.append(&quot; &quot;).append(&quot;World&quot;);
  * </pre>
  *
- * <p>This would be more eloquently put as:</p>
+ * <p>
+ * This would be more eloquently put as:
+ * </p>
  *
  * <pre>
  * StringBuilder buf = new StringBuilder();
  * buf.append(&quot;Hello World&quot;);
  * </pre>
  *
- * <p>The rule takes one parameter, threshold, which defines the lower limit of
- * consecutive appends before a violation is created. The default is 1.</p>
+ * <p>
+ * The rule takes one parameter, threshold, which defines the lower limit of consecutive appends before a violation is
+ * created. The default is 1.
+ * </p>
  */
 public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
 
@@ -82,10 +86,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
         BLOCK_PARENTS.add(ASTSwitchFallthroughBranch.class);
     }
 
-    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR
-            = PropertyFactory.intProperty("threshold")
-                             .desc("Max consecutive appends")
-                             .require(inRange(1, 10)).defaultValue(1).build();
+    private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR = PropertyFactory.intProperty("threshold")
+            .desc("Max consecutive appends").require(inRange(1, 10)).defaultValue(1).build();
 
     private ConsecutiveCounter counter = new ConsecutiveCounter();
 
@@ -116,7 +118,6 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
                 ASTMethodCall methodCall = (ASTMethodCall) current.getParent();
                 current = methodCall;
 
-
                 if (JavaRuleUtil.isStringBuilderCtorOrAppend(methodCall)) {
                     // append method call detected
 
@@ -129,7 +130,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
 
                     analyzeInvocation(data, methodCall);
                     lastBlock = currentBlock;
-                } else {
+                }
+                else {
                     // other method calls the stringbuilder variable, e.g. calling delete, toString, etc.
                     checkForViolation(data);
                     counter.reset();
@@ -147,8 +149,8 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Determine if the constructor contains (or ends with) a String Literal.
-     * Also analyzes a possible method call chain for append calls.
+     * Determine if the constructor contains (or ends with) a String Literal. Also analyzes a possible method call chain
+     * for append calls.
      *
      * @param node
      */
@@ -183,10 +185,12 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
 
         if (isAdditive(invocation)) {
             processAdditive(data, invocation);
-        } else if (isAppendingVariablesOrFields(invocation) || isAppendingInvocationResult(invocation)) {
+        }
+        else if (isAppendingVariablesOrFields(invocation) || isAppendingInvocationResult(invocation)) {
             checkForViolation(data);
             counter.reset();
-        } else if (invocation.getArguments().getFirstChild() instanceof ASTStringLiteral
+        }
+        else if (invocation.getArguments().getFirstChild() instanceof ASTStringLiteral
                 || invocation instanceof ASTMethodCall) {
             counter.count(invocation.getArguments().getFirstChild());
         }
@@ -204,11 +208,13 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
                     // argument ends with ... + "some string"
                     counter.count(rightOperand);
                 }
-            } else {
+            }
+            else {
                 // continue with a fresh round
                 counter.reset();
             }
-        } else {
+        }
+        else {
             // no variables appended, compiler will take care of merging all the
             // string concats, we really only have 1 then
             counter.count(invocation.getArguments().getFirstChild());
@@ -218,23 +224,22 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     /**
      * Checks to see if there is string concatenation in the node.
      *
-     * This method checks if it's additive with respect to the append method
-     * only.
+     * This method checks if it's additive with respect to the append method only.
      *
      * @param n
      *            Node to check
-     * @return true if the node has an additive expression (i.e. "Hello " +
-     *         Const.WORLD)
+     * @return true if the node has an additive expression (i.e. "Hello " + Const.WORLD)
      */
     private boolean isAdditive(InvocationNode n) {
         return JavaAstUtils.isStringConcatExpr(n.getArguments().getFirstChild());
     }
 
     /**
-     * Get the first parent. Keep track of the last node though. For If
-     * statements it's the only way we can differentiate between if's and else's
+     * Get the first parent. Keep track of the last node though. For If statements it's the only way we can
+     * differentiate between if's and else's
      *
-     * @param node The node to check
+     * @param node
+     *            The node to check
      * @return The first parent block
      */
     private Node getFirstParentBlock(Node node) {
@@ -252,8 +257,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Helper method checks to see if a violation occurred, and adds a
-     * RuleViolation if it did
+     * Helper method checks to see if a violation occurred, and adds a RuleViolation if it did
      */
     private void checkForViolation(Object data) {
         if (counter.isViolation()) {
@@ -272,8 +276,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     }
 
     static boolean isStringBuilderOrBuffer(TypeNode node) {
-        return TypeTestUtil.isA(StringBuffer.class, node)
-            || TypeTestUtil.isA(StringBuilder.class, node);
+        return TypeTestUtil.isA(StringBuffer.class, node) || TypeTestUtil.isA(StringBuilder.class, node);
     }
 
     private static final class ConsecutiveCounter {

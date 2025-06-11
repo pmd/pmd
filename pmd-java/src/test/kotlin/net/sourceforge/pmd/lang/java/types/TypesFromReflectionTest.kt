@@ -6,60 +6,59 @@ package net.sourceforge.pmd.lang.java.types
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import java.lang.NullPointerException
 import net.sourceforge.pmd.lang.java.JavaParsingHelper
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
 import org.apache.commons.lang3.reflect.TypeLiteral
 import org.junit.jupiter.api.Assertions.*
-import java.lang.NullPointerException
 
-class TypesFromReflectionTest : FunSpec({
+class TypesFromReflectionTest :
+    FunSpec({
+        test("Test reflect parsing") {
 
+            // on the left this uses fromReflect, on the right the manual construction methods
 
-    test("Test reflect parsing") {
-
-        // on the left this uses fromReflect, on the right the manual construction methods
-
-        with(TypeDslOf(testTypeSystem)) {
-            mirrorOf<String>()                                   shouldBe String::class.raw
-            mirrorOf<GenericKlass<String>>()                     shouldBe GenericKlass::class[String::class]
-            mirrorOf<Array<GenericKlass<String>>>()              shouldBe GenericKlass::class[String::class].toArray(1)
-            mirrorOf<Array<Array<GenericKlass<in String>>>>()    shouldBe GenericKlass::class[`?` `super` String::class].toArray(2)
+            with(TypeDslOf(testTypeSystem)) {
+                mirrorOf<String>() shouldBe String::class.raw
+                mirrorOf<GenericKlass<String>>() shouldBe GenericKlass::class[String::class]
+                mirrorOf<Array<GenericKlass<String>>>() shouldBe
+                    GenericKlass::class[String::class].toArray(1)
+                mirrorOf<Array<Array<GenericKlass<in String>>>>() shouldBe
+                    GenericKlass::class[`?` `super` String::class].toArray(2)
+            }
         }
-    }
 
-    test("test nested class") {
-        assertReflects(MutableMap.MutableEntry::class.java, "java.util.Map.Entry")
-    }
-
-    test("testPrimitiveArray") {
-        assertReflects(IntArray::class.java, "int[ ]")
-    }
-
-    test("testNestedClassArray") {
-        val c = TypesFromReflection.loadSymbol(LOADER, "java.util.Map.Entry[ ]")
-        // since java 12: Class#arrayType
-        val klass = java.lang.reflect.Array.newInstance(MutableMap.MutableEntry::class.java, 0)::class.java
-        assertReflects(klass, c)
-    }
-
-    test("testInvalidName") {
-        shouldThrow<java.lang.IllegalArgumentException> {
-            TypesFromReflection.loadSymbol(LOADER, "java.util.Map ]")
+        test("test nested class") {
+            assertReflects(MutableMap.MutableEntry::class.java, "java.util.Map.Entry")
         }
-    }
 
-    test("testInvalidName2") {
-        shouldThrow<java.lang.IllegalArgumentException> {
-            TypesFromReflection.loadSymbol(LOADER, "[]")
-        }
-    }
+        test("testPrimitiveArray") { assertReflects(IntArray::class.java, "int[ ]") }
 
-    test("testNullName") {
-        shouldThrow<NullPointerException> {
-            TypesFromReflection.loadSymbol(LOADER, null)
+        test("testNestedClassArray") {
+            val c = TypesFromReflection.loadSymbol(LOADER, "java.util.Map.Entry[ ]")
+            // since java 12: Class#arrayType
+            val klass =
+                java.lang.reflect.Array.newInstance(MutableMap.MutableEntry::class.java, 0)::class
+                    .java
+            assertReflects(klass, c)
         }
-    }
-}) {
+
+        test("testInvalidName") {
+            shouldThrow<java.lang.IllegalArgumentException> {
+                TypesFromReflection.loadSymbol(LOADER, "java.util.Map ]")
+            }
+        }
+
+        test("testInvalidName2") {
+            shouldThrow<java.lang.IllegalArgumentException> {
+                TypesFromReflection.loadSymbol(LOADER, "[]")
+            }
+        }
+
+        test("testNullName") {
+            shouldThrow<NullPointerException> { TypesFromReflection.loadSymbol(LOADER, null) }
+        }
+    }) {
 
     companion object {
         private val LOADER = JavaParsingHelper.TEST_TYPE_SYSTEM
@@ -89,19 +88,15 @@ class TypesFromReflectionTest : FunSpec({
             assertReflects(expected.enclosingClass, actual.enclosingClass)
         }
 
+        @Suppress("unused") private class GenericKlass<T>
 
-        @Suppress("unused")
-        private class GenericKlass<T>
-
-        /**
-         * Note: [T] must not contain type variables.
-         */
+        /** Note: [T] must not contain type variables. */
         private inline fun <reified T> mirrorOf(): JTypeMirror =
             TypesFromReflection.fromReflect(
                 testTypeSystem,
                 object : TypeLiteral<T>() {}.type,
                 LexicalScope.EMPTY,
-                Substitution.EMPTY
+                Substitution.EMPTY,
             )!!
     }
 }

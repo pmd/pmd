@@ -23,12 +23,10 @@ public final class ASTInitializer extends AbstractJavaNode implements ASTBodyDec
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     public boolean isStatic() {
         return isStatic;

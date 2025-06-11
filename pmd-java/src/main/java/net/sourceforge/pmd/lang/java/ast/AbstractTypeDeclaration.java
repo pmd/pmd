@@ -12,12 +12,12 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 
-
 /**
- * Abstract class for type declarations nodes.
- * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
+ * Abstract class for type declarations nodes. This is a {@linkplain Node#isFindBoundary() find boundary} for tree
+ * traversal methods.
  */
-abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol> implements ASTTypeDeclaration, LeftRecursiveNode {
+abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol>
+        implements ASTTypeDeclaration, LeftRecursiveNode {
 
     private String binaryName;
     private @Nullable String canonicalName;
@@ -31,7 +31,8 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
     public FileLocation getReportLocation() {
         if (isAnonymous()) {
             return super.getReportLocation();
-        } else {
+        }
+        else {
             // report on the identifier, not the entire class.
             return getModifiers().getLastToken().getNext().getReportLocation();
         }
@@ -81,4 +82,3 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
         return isNested();
     }
 }
-

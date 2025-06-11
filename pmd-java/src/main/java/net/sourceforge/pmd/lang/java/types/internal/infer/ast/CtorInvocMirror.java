@@ -2,7 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.lazyFilterAccessible;
@@ -29,8 +28,8 @@ import net.sourceforge.pmd.util.IteratorUtil;
 
 class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements CtorInvocationMirror {
 
-    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call,
-                    boolean mustBeStandalone, ExprMirror parent, MirrorMaker subexprMaker) {
+    CtorInvocMirror(JavaExprMirrors mirrors, ASTConstructorCall call, boolean mustBeStandalone, ExprMirror parent,
+            MirrorMaker subexprMaker) {
         super(mirrors, call, mustBeStandalone, parent, subexprMaker);
     }
 
@@ -81,18 +80,17 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
             if (newT instanceof JClassType) {
                 JClassType classt = (JClassType) newT;
                 // eg new Foo<>() -> Foo</*error*/>
-                List<JTypeMirror> fakeTypeArgs = Collections.nCopies(classt.getSymbol().getTypeParameterCount(), factory.ts.ERROR);
+                List<JTypeMirror> fakeTypeArgs =
+                        Collections.nCopies(classt.getSymbol().getTypeParameterCount(), factory.ts.ERROR);
                 newT = classt.withTypeArguments(fakeTypeArgs);
             }
         }
         return newT;
     }
 
-
     private List<JMethodSig> getVisibleCandidates(@NonNull JTypeMirror newType) {
         if (myNode.isAnonymousClass()) {
-            return newType.isInterface() ? myNode.getTypeSystem().OBJECT.getConstructors()
-                                         : newType.getConstructors();
+            return newType.isInterface() ? myNode.getTypeSystem().OBJECT.getConstructors() : newType.getConstructors();
         }
         return newType.getConstructors();
     }
@@ -112,7 +110,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
                 classTypeMirror = classTypeMirror.getGenericTypeDeclaration();
             }
             return classTypeMirror;
-        } else {
+        }
+        else {
             // this might happen if the type is not known (e.g. ts.UNKNOWN)
             // or invalid (eg new T()), where T is a type variable
             return typeMirror;
@@ -131,8 +130,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
 
     static class EnumCtorInvocMirror extends BaseInvocMirror<ASTEnumConstant> implements CtorInvocationMirror {
 
-
-        EnumCtorInvocMirror(JavaExprMirrors mirrors, ASTEnumConstant call, ExprMirror parent, MirrorMaker subexprMaker) {
+        EnumCtorInvocMirror(JavaExprMirrors mirrors, ASTEnumConstant call, ExprMirror parent,
+                MirrorMaker subexprMaker) {
             super(mirrors, call, false, parent, subexprMaker);
         }
 
@@ -162,10 +161,11 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         }
     }
 
-    static class ExplicitCtorInvocMirror extends BaseInvocMirror<ASTExplicitConstructorInvocation> implements CtorInvocationMirror {
+    static class ExplicitCtorInvocMirror extends BaseInvocMirror<ASTExplicitConstructorInvocation>
+            implements CtorInvocationMirror {
 
-
-        ExplicitCtorInvocMirror(JavaExprMirrors mirrors, ASTExplicitConstructorInvocation call, ExprMirror parent, MirrorMaker subexprMaker) {
+        ExplicitCtorInvocMirror(JavaExprMirrors mirrors, ASTExplicitConstructorInvocation call, ExprMirror parent,
+                MirrorMaker subexprMaker) {
             super(mirrors, call, false, parent, subexprMaker);
         }
 
@@ -174,10 +174,9 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
             if (myNode.isThis()) {
                 return getEnclosingType().getConstructors();
             }
-            return IteratorUtil.mapIterator(
-                newType.getConstructors(),
-                iter -> IteratorUtil.filter(iter, ctor -> JavaResolvers.isAccessibleIn(getEnclosingType().getSymbol().getNestRoot(), ctor.getSymbol(), true))
-            );
+            return IteratorUtil.mapIterator(newType.getConstructors(),
+                    iter -> IteratorUtil.filter(iter, ctor -> JavaResolvers
+                            .isAccessibleIn(getEnclosingType().getSymbol().getNestRoot(), ctor.getSymbol(), true)));
         }
 
         @Override
@@ -194,7 +193,8 @@ class CtorInvocMirror extends BaseInvocMirror<ASTConstructorCall> implements Cto
         public @Nullable JTypeMirror unresolvedType() {
             if (myNode.isThis()) {
                 return myNode.getEnclosingType().getTypeMirror();
-            } else {
+            }
+            else {
                 return myNode.getEnclosingType().getTypeMirror().getSuperClass();
             }
         }

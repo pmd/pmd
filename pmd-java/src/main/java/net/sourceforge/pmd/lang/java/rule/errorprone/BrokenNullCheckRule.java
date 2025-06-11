@@ -36,8 +36,9 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
         BinaryOp op = ((ASTInfixExpression) left).getOperator();
         if (op != BinaryOp.EQ && op != BinaryOp.NE) {
             return;
-        } else if (op == BinaryOp.NE && enclosingConditional.getOperator() == BinaryOp.CONDITIONAL_AND
-            || op == BinaryOp.EQ && enclosingConditional.getOperator() == BinaryOp.CONDITIONAL_OR) {
+        }
+        else if (op == BinaryOp.NE && enclosingConditional.getOperator() == BinaryOp.CONDITIONAL_AND
+                || op == BinaryOp.EQ && enclosingConditional.getOperator() == BinaryOp.CONDITIONAL_OR) {
             return; // not problematic
         }
 
@@ -53,9 +54,8 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
             return;
         }
 
-        NodeStream<ASTExpression> exprsToCheck = enclosingConditional.getRightOperand()
-                                                                     .descendantsOrSelf()
-                                                                     .filterIs(ASTExpression.class);
+        NodeStream<ASTExpression> exprsToCheck =
+                enclosingConditional.getRightOperand().descendantsOrSelf().filterIs(ASTExpression.class);
 
         for (ASTExpression subexpr : exprsToCheck) {
             NpeReason npeReason = willNpeWithReason(subexpr, pathToNullVar);
@@ -94,7 +94,8 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
         boolean rightIsPrimitive = infix.getRightOperand().getTypeMirror().isPrimitive();
         if (leftIsPrimitive != rightIsPrimitive) {
             return true;
-        } else {
+        }
+        else {
             assert !leftIsPrimitive || !rightIsPrimitive : "We know at least one of the operands is null";
             // So both are reference types
             // With these ops, in this case no unboxing takes place
@@ -103,8 +104,8 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
     }
 
     enum NpeReason {
-        DEREFERENCE("Dereferencing the qualifier of this expression will throw a NullPointerException"),
-        UNBOXING("Unboxing this operand will throw a NullPointerException");
+        DEREFERENCE("Dereferencing the qualifier of this expression will throw a NullPointerException"), UNBOXING(
+                "Unboxing this operand will throw a NullPointerException");
 
         private final String formatMessage;
 

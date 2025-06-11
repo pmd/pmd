@@ -42,8 +42,7 @@ class JavaLanguageModuleTest {
         for (int i = 1; i < versions.size(); i++) {
             LanguageVersion previous = versions.get(i - 1);
             LanguageVersion current = versions.get(i);
-            assertTrue(previous.compareTo(current) < 0,
-                    "Version " + previous + " should be smaller than " + current);
+            assertTrue(previous.compareTo(current) < 0, "Version " + previous + " should be smaller than " + current);
         }
     }
 }

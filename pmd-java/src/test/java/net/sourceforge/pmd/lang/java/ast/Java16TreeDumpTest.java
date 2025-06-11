@@ -25,11 +25,9 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
-    private final JavaParsingHelper java16 =
-            JavaParsingHelper.DEFAULT.withDefaultVersion("16")
-                                     .withResourceContext(Java16TreeDumpTest.class, "jdkversiontests/java16/");
+    private final JavaParsingHelper java16 = JavaParsingHelper.DEFAULT.withDefaultVersion("16")
+            .withResourceContext(Java16TreeDumpTest.class, "jdkversiontests/java16/");
     private final JavaParsingHelper java15 = java16.withDefaultVersion("15");
-
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
@@ -68,7 +66,8 @@ class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
 
     @Test
     void localAnnotationsAreNotAllowed() {
-        assertThrows(ParseException.class, () -> java16.parse("public class Foo { { @interface MyLocalAnnotation {} } }"));
+        assertThrows(ParseException.class,
+                () -> java16.parse("public class Foo { { @interface MyLocalAnnotation {} } }"));
     }
 
     @Test
@@ -83,8 +82,8 @@ class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
         // extended tests for type resolution etc.
         ASTCompilationUnit compilationUnit = java16.parseResource("Point.java");
         ASTRecordDeclaration recordDecl = compilationUnit.descendants(ASTRecordDeclaration.class).first();
-        List<ASTRecordComponent> components = recordDecl.descendants(ASTRecordComponentList.class)
-                .children(ASTRecordComponent.class).toList();
+        List<ASTRecordComponent> components =
+                recordDecl.descendants(ASTRecordComponentList.class).children(ASTRecordComponent.class).toList();
 
         ASTVariableId varId = components.get(0).getVarId();
         JElementSymbol symbol = varId.getSymbol();
@@ -99,9 +98,7 @@ class Java16TreeDumpTest extends BaseJavaTreeDumpTest {
 
     @Test
     void recordCtorWithThrowsShouldFail() {
-        assertThrows(ParseException.class, () -> java16.parse("  record R {"
-                + "   R throws IOException {}"
-                + "  }"));
+        assertThrows(ParseException.class, () -> java16.parse("  record R {" + "   R throws IOException {}" + "  }"));
     }
 
     @Test

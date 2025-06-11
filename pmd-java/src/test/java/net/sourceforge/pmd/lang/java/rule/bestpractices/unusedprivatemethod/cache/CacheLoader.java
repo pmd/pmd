@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.cac
 import java.util.function.Function;
 
 public class CacheLoader<K, V> {
-    private CacheLoader() {}
+    private CacheLoader() {
+    }
 
     public static <K, V> CacheLoader<K, V> from(Function<K, V> r) {
         return null;

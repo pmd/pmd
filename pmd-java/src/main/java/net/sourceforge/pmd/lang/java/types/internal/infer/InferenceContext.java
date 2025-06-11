@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
-
 import static net.sourceforge.pmd.lang.java.types.TypeOps.asList;
 import static net.sourceforge.pmd.util.CollectionUtil.intersect;
 
@@ -43,9 +42,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphW
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Context of a type inference process. This object maintains a set of
- * unique inference variables. Inference variables maintain the set of
- * bounds that apply to them.
+ * Context of a type inference process. This object maintains a set of unique inference variables. Inference variables
+ * maintain the set of bounds that apply to them.
  */
 final class InferenceContext {
 
@@ -75,44 +73,51 @@ final class InferenceContext {
     private final int id;
 
     /**
-     * Create an inference context from a set of type variables to instantiate.
-     * This creates inference vars and adds the initial bounds as described in
+     * Create an inference context from a set of type variables to instantiate. This creates inference vars and adds the
+     * initial bounds as described in
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.1.3
      *
      * under the purple rectangle.
      *
-     * @param ts                  The global type system
-     * @param supertypeCheckCache Super type check cache, shared by all
-     *                            inference runs in the same compilation unit
-     *                            (stored in {@link Infer}).
-     * @param tvars               Initial tvars which will be turned
-     *                            into ivars
-     * @param logger              Logger for events related to ivar bounds
+     * @param ts
+     *            The global type system
+     * @param supertypeCheckCache
+     *            Super type check cache, shared by all inference runs in the same compilation unit (stored in
+     *            {@link Infer}).
+     * @param tvars
+     *            Initial tvars which will be turned into ivars
+     * @param logger
+     *            Logger for events related to ivar bounds
      */
-    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger) {
+    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars,
+            TypeInferenceLogger logger) {
         this(ts, supertypeCheckCache, tvars, logger, true);
     }
 
     /**
-     * Create an inference context from a set of type variables to instantiate.
-     * This creates inference vars and may add the initial bounds as described in
+     * Create an inference context from a set of type variables to instantiate. This creates inference vars and may add
+     * the initial bounds as described in
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-18.html#jls-18.1.3
      *
      * under the purple rectangle.
      *
-     * @param ts                  The global type system
-     * @param supertypeCheckCache Super type check cache, shared by all
-     *                            inference runs in the same compilation unit
-     *                            (stored in {@link Infer}).
-     * @param tvars               Initial tvars which will be turned
-     *                            into ivars
-     * @param logger              Logger for events related to ivar bounds
-     * @param addPrimaryBound     Whether to add the primary bound of the vars.
+     * @param ts
+     *            The global type system
+     * @param supertypeCheckCache
+     *            Super type check cache, shared by all inference runs in the same compilation unit (stored in
+     *            {@link Infer}).
+     * @param tvars
+     *            Initial tvars which will be turned into ivars
+     * @param logger
+     *            Logger for events related to ivar bounds
+     * @param addPrimaryBound
+     *            Whether to add the primary bound of the vars.
      */
     @SuppressWarnings("PMD.AssignmentToNonFinalStatic") // ctxId
-    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars, TypeInferenceLogger logger, boolean addPrimaryBound) {
+    InferenceContext(TypeSystem ts, SupertypeCheckCache supertypeCheckCache, List<JTypeVar> tvars,
+            TypeInferenceLogger logger, boolean addPrimaryBound) {
         this.ts = ts;
         this.supertypeCheckCache = supertypeCheckCache;
         this.logger = logger;
@@ -138,9 +143,8 @@ final class InferenceContext {
     }
 
     /**
-     * Performs a shallow copy of this context, which would allow solving
-     * the variables without executing listeners. Instantiation listeners
-     * are not copied, and parent contexts are not copied.
+     * Performs a shallow copy of this context, which would allow solving the variables without executing listeners.
+     * Instantiation listeners are not copied, and parent contexts are not copied.
      */
     public InferenceContext shallowCopy() {
         final InferenceContext copy = new InferenceContext(ts, supertypeCheckCache, Collections.emptyList(), logger);
@@ -189,24 +193,21 @@ final class InferenceContext {
     }
 
     /**
-     * Replace all type variables in the given type with corresponding
-     * inference vars.
+     * Replace all type variables in the given type with corresponding inference vars.
      */
     JTypeMirror mapToIVars(JTypeMirror t) {
         return TypeOps.subst(t, mapping);
     }
 
     /**
-     * Replace all type variables in the given type with corresponding
-     * inference vars.
+     * Replace all type variables in the given type with corresponding inference vars.
      */
     JMethodSig mapToIVars(JMethodSig t) {
         return t.subst(mapping);
     }
 
     /**
-     * Returns true if the type mentions no free inference variables.
-     * This is what the JLS calls a "proper type".
+     * Returns true if the type mentions no free inference variables. This is what the JLS calls a "proper type".
      */
     boolean isGround(JTypeVisitable t) {
         return !TypeOps.mentionsAny(t, freeVars);
@@ -263,8 +264,8 @@ final class InferenceContext {
     }
 
     /**
-     * Whether incorporation/solving required an unchecked conversion.
-     * This means the invocation type of the overload must be erased.
+     * Whether incorporation/solving required an unchecked conversion. This means the invocation type of the overload
+     * must be erased.
      *
      * @see MethodCtDecl#needsUncheckedConversion()
      */
@@ -287,30 +288,31 @@ final class InferenceContext {
     }
 
     /**
-     * Replace instantiated inference vars with their instantiation in the given type,
-     * or else replace them with a failed type.
+     * Replace instantiated inference vars with their instantiation in the given type, or else replace them with a
+     * failed type.
      */
     static JMethodSig finalGround(JMethodSig t) {
         return t.subst(s -> {
             if (!(s instanceof InferenceVar)) {
                 return s;
-            } else {
+            }
+            else {
                 InferenceVar ivar = (InferenceVar) s;
                 return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().ERROR;
             }
         });
     }
 
-
     /**
-     * Replace instantiated inference vars with their instantiation in the given type,
-     * or else replace them with a wildcard.
+     * Replace instantiated inference vars with their instantiation in the given type, or else replace them with a
+     * wildcard.
      */
     static JTypeMirror groundOrWildcard(JTypeMirror t) {
         return t.subst(s -> {
             if (!(s instanceof InferenceVar)) {
                 return s;
-            } else {
+            }
+            else {
                 InferenceVar ivar = (InferenceVar) s;
                 return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().UNBOUNDED_WILD;
             }
@@ -321,20 +323,16 @@ final class InferenceContext {
      * Copy variable in this inference context to the given context
      */
     void duplicateInto(final InferenceContext that) {
-        boolean changedGraph = !that.freeVars.containsAll(this.freeVars)
-            || !this.instantiationConstraints.isEmpty();
+        boolean changedGraph = !that.freeVars.containsAll(this.freeVars) || !this.instantiationConstraints.isEmpty();
         that.graphWasChanged |= changedGraph;
         that.inferenceVars.addAll(this.inferenceVars);
         that.freeVars.addAll(this.freeVars);
         that.incorporationActions.addAll(this.incorporationActions);
         that.instantiationListeners.putAll(this.instantiationListeners);
-        CollectionUtil.mergeMaps(
-            that.instantiationConstraints,
-            this.instantiationConstraints,
-            (set1, set2) -> {
-                set1.addAll(set2);
-                return set1;
-            });
+        CollectionUtil.mergeMaps(that.instantiationConstraints, this.instantiationConstraints, (set1, set2) -> {
+            set1.addAll(set2);
+            return set1;
+        });
 
         this.parent = that;
 
@@ -343,7 +341,6 @@ final class InferenceContext {
             that.incorporationActions.add(new PropagateAllBounds(freeVar));
         }
     }
-
 
     // The `from` ivars depend on the `dependencies` ivars for resolution.
     void addInstantiationDependencies(Set<? extends InferenceVar> from, Set<? extends InferenceVar> dependencies) {
@@ -379,9 +376,8 @@ final class InferenceContext {
     }
 
     /**
-     * Call the listeners registered with {@link #addInstantiationListener(Set, InstantiationListener)}.
-     * Listeners are used to perform deferred checks, like checking
-     * compatibility of a formal parameter with an expression when the
+     * Call the listeners registered with {@link #addInstantiationListener(Set, InstantiationListener)}. Listeners are
+     * used to perform deferred checks, like checking compatibility of a formal parameter with an expression when the
      * formal parameter is not ground.
      */
     void callListeners() {
@@ -391,12 +387,13 @@ final class InferenceContext {
         Set<InferenceVar> solved = new LinkedHashSet<>(inferenceVars);
         solved.removeAll(freeVars);
 
-
-        for (Entry<InstantiationListener, Set<InferenceVar>> entry : new LinkedHashSet<>(instantiationListeners.entrySet())) {
+        for (Entry<InstantiationListener, Set<InferenceVar>> entry : new LinkedHashSet<>(
+                instantiationListeners.entrySet())) {
             if (solved.containsAll(entry.getValue())) {
                 try {
                     entry.getKey().onInstantiation(this);
-                } catch (ResolutionFailedException ignored) {
+                }
+                catch (ResolutionFailedException ignored) {
                     // that is a compile-time error, but that
                     // shouldn't affect PMD
 
@@ -405,9 +402,11 @@ final class InferenceContext {
                     // for more inference to happen
 
                     // TODO investigate
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     e.printStackTrace();
-                } finally {
+                }
+                finally {
                     instantiationListeners.remove(entry.getKey());
                 }
             }
@@ -434,7 +433,6 @@ final class InferenceContext {
             }
         });
     }
-
 
     void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isPrimary) {
         // guard against α <: Object
@@ -467,7 +465,8 @@ final class InferenceContext {
     /**
      * Runs the incorporation hooks registered for the free vars.
      *
-     * @throws ResolutionFailedException If some propagated bounds are incompatible
+     * @throws ResolutionFailedException
+     *             If some propagated bounds are incompatible
      */
     void incorporate() {
         if (incorporationActions.isEmpty()) {
@@ -486,7 +485,8 @@ final class InferenceContext {
     }
 
     /**
-     * @throws ResolutionFailedException Because it calls {@link #incorporate()}
+     * @throws ResolutionFailedException
+     *             Because it calls {@link #incorporate()}
      */
     void solve() {
         solve(false);
@@ -497,13 +497,12 @@ final class InferenceContext {
     }
 
     /**
-     * Solve a single var, this does not solve its dependencies, so that
-     * if some bounds are not ground, instantiation will be wrong.
+     * Solve a single var, this does not solve its dependencies, so that if some bounds are not ground, instantiation
+     * will be wrong.
      */
     void solve(InferenceVar var) {
         solve(new GraphWalk(var));
     }
-
 
     private boolean solve(Supplier<VarWalkStrategy> newWalker) {
         VarWalkStrategy strategy = newWalker.get();
@@ -516,13 +515,10 @@ final class InferenceContext {
         return freeVars.isEmpty();
     }
 
-
     /**
-     * This returns true if solving the VarWalkStrategy succeeded entirely.
-     * Resolution can be interrupted early to account for new ivars and dependencies,
-     * which may change the graph dependencies. In this case this method returns
-     * false, we recompute the graph with the new ivars and dependencies, and
-     * we try again to make progress.
+     * This returns true if solving the VarWalkStrategy succeeded entirely. Resolution can be interrupted early to
+     * account for new ivars and dependencies, which may change the graph dependencies. In this case this method returns
+     * false, we recompute the graph with the new ivars and dependencies, and we try again to make progress.
      */
     private boolean solve(VarWalkStrategy walker) {
         graphWasChanged = false;
@@ -533,9 +529,8 @@ final class InferenceContext {
             Set<InferenceVar> varsToSolve = walker.next();
 
             boolean progress = true;
-            //repeat until all variables are solved
-            outer:
-            while (!intersect(freeVars, varsToSolve).isEmpty() && progress) {
+            // repeat until all variables are solved
+            outer: while (!intersect(freeVars, varsToSolve).isEmpty() && progress) {
                 if (graphWasChanged) {
                     graphWasChanged = false;
                     logger.contextDependenciesChanged(this);
@@ -557,8 +552,8 @@ final class InferenceContext {
     }
 
     /**
-     * Tries to solve as much of varsToSolve as possible using some reduction steps.
-     * Returns the set of solved variables during this step.
+     * Tries to solve as much of varsToSolve as possible using some reduction steps. Returns the set of solved variables
+     * during this step.
      */
     private boolean solveBatchProgressed(Set<InferenceVar> varsToSolve, List<ReductionStep> wave) {
         for (InferenceVar ivar : intersect(varsToSolve, freeVars)) {
@@ -585,7 +580,8 @@ final class InferenceContext {
             sb.append(ivar);
             if (ivar.getInst() != null) {
                 sb.append(" := ").append(ivar.getInst()).append('\n');
-            } else {
+            }
+            else {
                 ivar.formatBounds(sb).append('\n');
             }
         }
@@ -598,11 +594,9 @@ final class InferenceContext {
 
         /**
          * Called when the set of dependencies provided to {@link #addInstantiationListener(Set, InstantiationListener)}
-         * have been solved. The parameter is not necessarily the context
-         * on which this has been registered, because contexts adopt the
-         * inference variables of their children in some cases, to solve
-         * them together. Use {@link #ground(JClassType)} with the context
-         * parameter, not the context on which the callback was registered.
+         * have been solved. The parameter is not necessarily the context on which this has been registered, because
+         * contexts adopt the inference variables of their children in some cases, to solve them together. Use
+         * {@link #ground(JClassType)} with the context parameter, not the context on which the callback was registered.
          */
         void onInstantiation(InferenceContext solvedCtx);
 

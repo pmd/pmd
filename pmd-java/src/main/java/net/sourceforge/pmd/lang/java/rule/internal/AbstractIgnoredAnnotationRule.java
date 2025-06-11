@@ -15,15 +15,13 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
- * @apiNote  Internal API
+ * @apiNote Internal API
  */
 public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
 
-    private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor
-        = stringListProperty("ignoredAnnotations")
-        .desc(defaultIgnoredAnnotationsDescription())
-        .defaultValue(defaultSuppressionAnnotations())
-        .build();
+    private final PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor =
+            stringListProperty("ignoredAnnotations").desc(defaultIgnoredAnnotationsDescription())
+                    .defaultValue(defaultSuppressionAnnotations()).build();
 
     protected Collection<String> defaultSuppressionAnnotations() {
         return Collections.emptyList();
@@ -36,7 +34,6 @@ public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
     protected AbstractIgnoredAnnotationRule() {
         definePropertyDescriptor(ignoredAnnotationsDescriptor);
     }
-
 
     /**
      * Checks whether any annotation in ignoredAnnotationsDescriptor is present on the node.

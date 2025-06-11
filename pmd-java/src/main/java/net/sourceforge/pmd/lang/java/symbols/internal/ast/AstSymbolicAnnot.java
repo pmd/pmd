@@ -95,20 +95,21 @@ class AstSymbolicAnnot implements SymbolicValue.SymAnnot {
                 elements.add(symElt);
             }
             return SymArray.forElements(elements);
-        } else if (valueNode instanceof ASTClassLiteral) {
+        }
+        else if (valueNode instanceof ASTClassLiteral) {
             // class
             JTypeDeclSymbol symbol = ((ASTClassLiteral) valueNode).getTypeNode().getTypeMirror().getSymbol();
             if (symbol instanceof JClassSymbol) {
                 return SymClass.ofBinaryName(symbol.getTypeSystem(), ((JClassSymbol) symbol).getBinaryName());
             }
-        } else if (valueNode instanceof ASTNamedReferenceExpr) {
+        }
+        else if (valueNode instanceof ASTNamedReferenceExpr) {
             // enum constants
             ASTNamedReferenceExpr refExpr = (ASTNamedReferenceExpr) valueNode;
             JTypeMirror t = refExpr.getTypeMirror();
             if (t instanceof JClassType && ((JClassType) t).getSymbol().isEnum()) {
-                return SymEnum.fromBinaryName(t.getTypeSystem(),
-                                              ((JClassType) t).getSymbol().getBinaryName(),
-                                              refExpr.getName());
+                return SymEnum.fromBinaryName(t.getTypeSystem(), ((JClassType) t).getSymbol().getBinaryName(),
+                        refExpr.getName());
             }
         }
         return null;

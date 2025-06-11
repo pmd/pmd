@@ -13,9 +13,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
-final class AstTypeParamSym
-    extends AbstractAstAnnotableSym<ASTTypeParameter>
-    implements JTypeParameterSymbol {
+final class AstTypeParamSym extends AbstractAstAnnotableSym<ASTTypeParameter> implements JTypeParameterSymbol {
 
     private final JTypeVar tvar;
     private final AbstractAstTParamOwner<?> owner;
@@ -34,8 +32,7 @@ final class AstTypeParamSym
     @Override
     public JTypeMirror computeUpperBound() {
         ASTType bound = node.getTypeBoundNode();
-        return bound == null ? node.getTypeSystem().OBJECT
-                             : bound.getTypeMirror();
+        return bound == null ? node.getTypeSystem().OBJECT : bound.getTypeMirror();
     }
 
     @Override

@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -13,17 +12,16 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 abstract class Loader {
 
-
     @Nullable
     abstract InputStream getInputStream() throws IOException;
-
 
     static class FailedLoader extends Loader {
 
         static final FailedLoader INSTANCE = new FailedLoader();
 
         @Override
-        @Nullable InputStream getInputStream() {
+        @Nullable
+        InputStream getInputStream() {
             return null;
         }
 
@@ -44,7 +42,8 @@ abstract class Loader {
         }
 
         @Override
-        @NonNull InputStream getInputStream() {
+        @NonNull
+        InputStream getInputStream() {
             return stream;
         }
 

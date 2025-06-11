@@ -35,7 +35,8 @@ class PMDCoverageTest {
 
     @Test
     void runAllJavaPmdOnSourceTree() {
-        runPmd("src/main/java", conf -> {});
+        runPmd("src/main/java", conf -> {
+        });
     }
 
     @Test
@@ -83,13 +84,16 @@ class PMDCoverageTest {
             // these examples of parsing errors need to be excluded in rulesets/internal/all-java.xml via
             // exclude-patterns.
             assertThat(report.toString(), not(containsString("Error while parsing")));
-        } catch (IOException ioe) {
+        }
+        catch (IOException ioe) {
             fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
-        } catch (AssertionError ae) {
+        }
+        catch (AssertionError ae) {
             System.out.println("\nReport:\n");
             System.out.println(report);
             throw ae;
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

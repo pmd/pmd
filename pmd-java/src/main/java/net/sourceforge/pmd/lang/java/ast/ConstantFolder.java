@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -49,13 +48,16 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         if (node.isIntegral()) {
             if (node.isIntLiteral()) {
                 result = node.getValueAsInt();
-            } else {
+            }
+            else {
                 result = node.getValueAsLong();
             }
-        } else {
+        }
+        else {
             if (node.isFloatLiteral()) {
                 result = node.getValueAsFloat();
-            } else {
+            }
+            else {
                 result = node.getValueAsDouble();
             }
         }
@@ -72,7 +74,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         String result;
         if (node.isTextBlock()) {
             result = ASTStringLiteral.determineTextBlockContent(node.getLiteralText());
-        } else {
+        }
+        else {
             result = ASTStringLiteral.determineStringContent(node.getLiteralText());
         }
         return ConstResult.ctConst(result);
@@ -99,7 +102,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         }
 
         if (symbol instanceof JFieldSymbol) {
-            @Nullable Object cv = ((JFieldSymbol) symbol).getConstValue();
+            @Nullable
+            Object cv = ((JFieldSymbol) symbol).getConstValue();
             if (cv != null) {
                 return ConstResult.ctConst(cv);
             }
@@ -112,8 +116,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
             if (initializer != null) {
                 ConstResult initRes = initializer.getConstFoldingResult();
                 if (initRes.hasValue()) {
-                    boolean isCompileTimeConstant = symbol instanceof JFieldSymbol
-                        && ((JFieldSymbol) symbol).isStatic();
+                    boolean isCompileTimeConstant =
+                            symbol instanceof JFieldSymbol && ((JFieldSymbol) symbol).isStatic();
                     return new ConstResult(isCompileTimeConstant, initRes.getValue());
                 }
                 return initRes;
@@ -156,15 +160,15 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         if (condition.hasValue()) {
             ConstResult thenValue = node.getThenBranch().getConstFoldingResult();
             ConstResult elseValue = node.getElseBranch().getConstFoldingResult();
-            boolean ctConst = condition.isCompileTimeConstant()
-                && thenValue.isCompileTimeConstant()
-                && elseValue.isCompileTimeConstant();
+            boolean ctConst = condition.isCompileTimeConstant() && thenValue.isCompileTimeConstant()
+                    && elseValue.isCompileTimeConstant();
             if (!thenValue.hasValue() || !elseValue.hasValue()) {
                 return ConstResult.NO_CONST_VALUE; // not a constexpr
             }
             if (condition.getValue() instanceof Boolean && (boolean) condition.getValue()) {
                 return new ConstResult(ctConst, thenValue.getValue());
-            } else {
+            }
+            else {
                 return new ConstResult(ctConst, elseValue.getValue());
             }
         }
@@ -181,9 +185,11 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         Object res;
         if (t.isNumeric()) {
             res = numericCoercion(castValue.getValue(), t);
-        } else if (TypeTestUtil.isExactlyA(String.class, node.getCastType())) {
+        }
+        else if (TypeTestUtil.isExactlyA(String.class, node.getCastType())) {
             res = stringCoercion(castValue.getValue());
-        } else {
+        }
+        else {
             return ConstResult.NO_CONST_VALUE;
         }
 
@@ -209,39 +215,45 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
     private @Nullable Object computeUnary(Object operandValue, ASTUnaryExpression node) {
 
         switch (node.getOperator()) {
-        case UNARY_PLUS:
-            return unaryPromotion(operandValue);
-        case UNARY_MINUS: {
-            Number promoted = unaryPromotion(operandValue);
-            if (promoted == null) {
-                return null; // compile-time error
-            } else if (promoted instanceof Integer) {
-                return -promoted.intValue();
-            } else if (promoted instanceof Long) {
-                return -promoted.longValue();
-            } else if (promoted instanceof Float) {
-                return -promoted.floatValue();
-            } else {
-                assert promoted instanceof Double;
-                return -promoted.doubleValue();
+            case UNARY_PLUS:
+                return unaryPromotion(operandValue);
+            case UNARY_MINUS: {
+                Number promoted = unaryPromotion(operandValue);
+                if (promoted == null) {
+                    return null; // compile-time error
+                }
+                else if (promoted instanceof Integer) {
+                    return -promoted.intValue();
+                }
+                else if (promoted instanceof Long) {
+                    return -promoted.longValue();
+                }
+                else if (promoted instanceof Float) {
+                    return -promoted.floatValue();
+                }
+                else {
+                    assert promoted instanceof Double;
+                    return -promoted.doubleValue();
+                }
             }
-        }
-        case COMPLEMENT: {
-            Number promoted = unaryPromotion(operandValue);
-            if (promoted instanceof Integer) {
-                return ~promoted.intValue();
-            } else if (promoted instanceof Long) {
-                return ~promoted.longValue();
-            } else {
-                return null; // compile-time error
+            case COMPLEMENT: {
+                Number promoted = unaryPromotion(operandValue);
+                if (promoted instanceof Integer) {
+                    return ~promoted.intValue();
+                }
+                else if (promoted instanceof Long) {
+                    return ~promoted.longValue();
+                }
+                else {
+                    return null; // compile-time error
+                }
             }
-        }
-        case NEGATION: {
-            return booleanInvert(operandValue);
-        }
+            case NEGATION: {
+                return booleanInvert(operandValue);
+            }
 
-        default: // increment ops
-            throw new AssertionError("unreachable");
+            default: // increment ops
+                throw new AssertionError("unreachable");
         }
     }
 
@@ -263,226 +275,252 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
     private strictfp @Nullable Object computeInfix(Object left, Object right, ASTInfixExpression node) {
         switch (node.getOperator()) {
-        case CONDITIONAL_OR: {
-            if (left instanceof Boolean && right instanceof Boolean) {
-                return (Boolean) left || (Boolean) right;
-            }
-            return null;
-        }
-
-        case CONDITIONAL_AND: {
-            if (left instanceof Boolean && right instanceof Boolean) {
-                return (Boolean) left && (Boolean) right;
-            }
-            return null;
-        }
-
-        case OR: {
-            Pair<Object, Object> promoted = booleanAwareBinaryPromotion(left, right);
-            left = promoted.getLeft();
-            right = promoted.getRight();
-
-            if (left instanceof Integer) {
-                return intValue(left) | intValue(right);
-            } else if (left instanceof Long) {
-                return longValue(left) | longValue(right);
-            } else if (left instanceof Boolean) {
-                return booleanValue(left) | booleanValue(right);
-            }
-            return null;
-        }
-        case XOR: {
-            Pair<Object, Object> promoted = booleanAwareBinaryPromotion(left, right);
-            left = promoted.getLeft();
-            right = promoted.getRight();
-
-            if (left instanceof Integer) {
-                return intValue(left) ^ intValue(right);
-            } else if (left instanceof Long) {
-                return longValue(left) ^ longValue(right);
-            } else if (left instanceof Boolean) {
-                return booleanValue(left) ^ booleanValue(right);
-            }
-            return null;
-        }
-        case AND: {
-            Pair<Object, Object> promoted = booleanAwareBinaryPromotion(left, right);
-            left = promoted.getLeft();
-            right = promoted.getRight();
-
-            if (left instanceof Integer) {
-                return intValue(left) & intValue(right);
-            } else if (left instanceof Long) {
-                return longValue(left) & longValue(right);
-            } else if (left instanceof Boolean) {
-                return booleanValue(left) & booleanValue(right);
-            }
-            return null;
-        }
-
-        case EQ:
-            return eqResult(left, right);
-        case NE:
-            return booleanInvert(eqResult(left, right));
-
-        case LE:
-            return compLE(left, right);
-        case GT:
-            return booleanInvert(compLE(left, right));
-        case LT:
-            return compLT(left, right);
-        case GE:
-            return booleanInvert(compLT(left, right));
-
-        case INSTANCEOF:
-            // disallowed, actually dead code because the
-            // right operand is the type, which is no constexpr
-            return null;
-
-        // for shift operators, unary promotion is performed on operators separately
-        case LEFT_SHIFT: {
-            left = unaryPromotion(left);
-            right = unaryPromotion(right);
-            if (!(right instanceof Integer) && !(right instanceof Long)) {
-                return null; // shift distance must be integral
+            case CONDITIONAL_OR: {
+                if (left instanceof Boolean && right instanceof Boolean) {
+                    return (Boolean) left || (Boolean) right;
+                }
+                return null;
             }
 
-            // only use intValue for the left operand
-            if (left instanceof Integer) {
-                return intValue(left) << intValue(right);
-            } else if (left instanceof Long) {
-                return longValue(left) << intValue(right);
-            }
-            return null;
-        }
-        case RIGHT_SHIFT: {
-            left = unaryPromotion(left);
-            right = unaryPromotion(right);
-            if (!(right instanceof Integer) && !(right instanceof Long)) {
-                return null; // shift distance must be integral
+            case CONDITIONAL_AND: {
+                if (left instanceof Boolean && right instanceof Boolean) {
+                    return (Boolean) left && (Boolean) right;
+                }
+                return null;
             }
 
-            // only use intValue for the left operand
-            if (left instanceof Integer) {
-                return intValue(left) >> intValue(right);
-            } else if (left instanceof Long) {
-                return longValue(left) >> intValue(right);
-            }
-            return null;
-        }
-        case UNSIGNED_RIGHT_SHIFT: {
-            left = unaryPromotion(left);
-            right = unaryPromotion(right);
-            if (!(right instanceof Integer) && !(right instanceof Long)) {
-                return null; // shift distance must be integral
-            }
-
-            // only use intValue for the left operand
-            if (left instanceof Integer) {
-                return intValue(left) >>> intValue(right);
-            } else if (left instanceof Long) {
-                return longValue(left) >>> intValue(right);
-            }
-            return null;
-        }
-        case ADD: {
-            if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
-                Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
+            case OR: {
+                Pair<Object, Object> promoted = booleanAwareBinaryPromotion(left, right);
                 left = promoted.getLeft();
                 right = promoted.getRight();
 
                 if (left instanceof Integer) {
-                    return intValue(left) + intValue(right);
-                } else if (left instanceof Long) {
-                    return longValue(left) + longValue(right);
-                } else if (left instanceof Float) {
-                    return floatValue(left) + floatValue(right);
-                } else {
-                    return doubleValue(left) + doubleValue(right);
+                    return intValue(left) | intValue(right);
                 }
-            } else if (left instanceof String) {
-                // string concat
-                return (String) left + right;
-            } else if (right instanceof String) {
-                // string concat
-                return left + (String) right;
+                else if (left instanceof Long) {
+                    return longValue(left) | longValue(right);
+                }
+                else if (left instanceof Boolean) {
+                    return booleanValue(left) | booleanValue(right);
+                }
+                return null;
             }
-            return null;
-        }
-        case SUB: {
-            if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
-                Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
+            case XOR: {
+                Pair<Object, Object> promoted = booleanAwareBinaryPromotion(left, right);
                 left = promoted.getLeft();
                 right = promoted.getRight();
 
                 if (left instanceof Integer) {
-                    return intValue(left) - intValue(right);
-                } else if (left instanceof Long) {
-                    return longValue(left) - longValue(right);
-                } else if (left instanceof Float) {
-                    return floatValue(left) - floatValue(right);
-                } else {
-                    return doubleValue(left) - doubleValue(right);
+                    return intValue(left) ^ intValue(right);
                 }
+                else if (left instanceof Long) {
+                    return longValue(left) ^ longValue(right);
+                }
+                else if (left instanceof Boolean) {
+                    return booleanValue(left) ^ booleanValue(right);
+                }
+                return null;
             }
-            return null;
-        }
-        case MUL: {
-            if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
-                Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
+            case AND: {
+                Pair<Object, Object> promoted = booleanAwareBinaryPromotion(left, right);
                 left = promoted.getLeft();
                 right = promoted.getRight();
 
                 if (left instanceof Integer) {
-                    return intValue(left) * intValue(right);
-                } else if (left instanceof Long) {
-                    return longValue(left) * longValue(right);
-                } else if (left instanceof Float) {
-                    return floatValue(left) * floatValue(right);
-                } else {
-                    return doubleValue(left) * doubleValue(right);
+                    return intValue(left) & intValue(right);
                 }
+                else if (left instanceof Long) {
+                    return longValue(left) & longValue(right);
+                }
+                else if (left instanceof Boolean) {
+                    return booleanValue(left) & booleanValue(right);
+                }
+                return null;
             }
-            return null;
-        }
-        case DIV: {
-            if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
-                Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
-                left = promoted.getLeft();
-                right = promoted.getRight();
 
-                if (left instanceof Integer) {
-                    return intValue(left) / intValue(right);
-                } else if (left instanceof Long) {
-                    return longValue(left) / longValue(right);
-                } else if (left instanceof Float) {
-                    return floatValue(left) / floatValue(right);
-                } else {
-                    return doubleValue(left) / doubleValue(right);
-                }
-            }
-            return null;
-        }
-        case MOD: {
-            if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
-                Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
-                left = promoted.getLeft();
-                right = promoted.getRight();
+            case EQ:
+                return eqResult(left, right);
+            case NE:
+                return booleanInvert(eqResult(left, right));
 
-                if (left instanceof Integer) {
-                    return intValue(left) % intValue(right);
-                } else if (left instanceof Long) {
-                    return longValue(left) % longValue(right);
-                } else if (left instanceof Float) {
-                    return floatValue(left) % floatValue(right);
-                } else {
-                    return doubleValue(left) % doubleValue(right);
+            case LE:
+                return compLE(left, right);
+            case GT:
+                return booleanInvert(compLE(left, right));
+            case LT:
+                return compLT(left, right);
+            case GE:
+                return booleanInvert(compLT(left, right));
+
+            case INSTANCEOF:
+                // disallowed, actually dead code because the
+                // right operand is the type, which is no constexpr
+                return null;
+
+            // for shift operators, unary promotion is performed on operators separately
+            case LEFT_SHIFT: {
+                left = unaryPromotion(left);
+                right = unaryPromotion(right);
+                if (!(right instanceof Integer) && !(right instanceof Long)) {
+                    return null; // shift distance must be integral
                 }
+
+                // only use intValue for the left operand
+                if (left instanceof Integer) {
+                    return intValue(left) << intValue(right);
+                }
+                else if (left instanceof Long) {
+                    return longValue(left) << intValue(right);
+                }
+                return null;
             }
-            return null;
-        }
-        default:
-            throw AssertionUtil.shouldNotReachHere("Unknown operator '" + node.getOperator() + "' in " + node);
+            case RIGHT_SHIFT: {
+                left = unaryPromotion(left);
+                right = unaryPromotion(right);
+                if (!(right instanceof Integer) && !(right instanceof Long)) {
+                    return null; // shift distance must be integral
+                }
+
+                // only use intValue for the left operand
+                if (left instanceof Integer) {
+                    return intValue(left) >> intValue(right);
+                }
+                else if (left instanceof Long) {
+                    return longValue(left) >> intValue(right);
+                }
+                return null;
+            }
+            case UNSIGNED_RIGHT_SHIFT: {
+                left = unaryPromotion(left);
+                right = unaryPromotion(right);
+                if (!(right instanceof Integer) && !(right instanceof Long)) {
+                    return null; // shift distance must be integral
+                }
+
+                // only use intValue for the left operand
+                if (left instanceof Integer) {
+                    return intValue(left) >>> intValue(right);
+                }
+                else if (left instanceof Long) {
+                    return longValue(left) >>> intValue(right);
+                }
+                return null;
+            }
+            case ADD: {
+                if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
+                    Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
+                    left = promoted.getLeft();
+                    right = promoted.getRight();
+
+                    if (left instanceof Integer) {
+                        return intValue(left) + intValue(right);
+                    }
+                    else if (left instanceof Long) {
+                        return longValue(left) + longValue(right);
+                    }
+                    else if (left instanceof Float) {
+                        return floatValue(left) + floatValue(right);
+                    }
+                    else {
+                        return doubleValue(left) + doubleValue(right);
+                    }
+                }
+                else if (left instanceof String) {
+                    // string concat
+                    return (String) left + right;
+                }
+                else if (right instanceof String) {
+                    // string concat
+                    return left + (String) right;
+                }
+                return null;
+            }
+            case SUB: {
+                if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
+                    Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
+                    left = promoted.getLeft();
+                    right = promoted.getRight();
+
+                    if (left instanceof Integer) {
+                        return intValue(left) - intValue(right);
+                    }
+                    else if (left instanceof Long) {
+                        return longValue(left) - longValue(right);
+                    }
+                    else if (left instanceof Float) {
+                        return floatValue(left) - floatValue(right);
+                    }
+                    else {
+                        return doubleValue(left) - doubleValue(right);
+                    }
+                }
+                return null;
+            }
+            case MUL: {
+                if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
+                    Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
+                    left = promoted.getLeft();
+                    right = promoted.getRight();
+
+                    if (left instanceof Integer) {
+                        return intValue(left) * intValue(right);
+                    }
+                    else if (left instanceof Long) {
+                        return longValue(left) * longValue(right);
+                    }
+                    else if (left instanceof Float) {
+                        return floatValue(left) * floatValue(right);
+                    }
+                    else {
+                        return doubleValue(left) * doubleValue(right);
+                    }
+                }
+                return null;
+            }
+            case DIV: {
+                if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
+                    Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
+                    left = promoted.getLeft();
+                    right = promoted.getRight();
+
+                    if (left instanceof Integer) {
+                        return intValue(left) / intValue(right);
+                    }
+                    else if (left instanceof Long) {
+                        return longValue(left) / longValue(right);
+                    }
+                    else if (left instanceof Float) {
+                        return floatValue(left) / floatValue(right);
+                    }
+                    else {
+                        return doubleValue(left) / doubleValue(right);
+                    }
+                }
+                return null;
+            }
+            case MOD: {
+                if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
+                    Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
+                    left = promoted.getLeft();
+                    right = promoted.getRight();
+
+                    if (left instanceof Integer) {
+                        return intValue(left) % intValue(right);
+                    }
+                    else if (left instanceof Long) {
+                        return longValue(left) % longValue(right);
+                    }
+                    else if (left instanceof Float) {
+                        return floatValue(left) % floatValue(right);
+                    }
+                    else {
+                        return doubleValue(left) % doubleValue(right);
+                    }
+                }
+                return null;
+            }
+            default:
+                throw AssertionUtil.shouldNotReachHere("Unknown operator '" + node.getOperator() + "' in " + node);
         }
     }
 
@@ -494,11 +532,14 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
             if (left instanceof Integer) {
                 return intValue(left) <= intValue(right);
-            } else if (left instanceof Long) {
+            }
+            else if (left instanceof Long) {
                 return longValue(left) <= longValue(right);
-            } else if (left instanceof Float) {
+            }
+            else if (left instanceof Float) {
                 return floatValue(left) <= floatValue(right);
-            } else if (left instanceof Double) {
+            }
+            else if (left instanceof Double) {
                 return doubleValue(left) <= doubleValue(right);
             }
         }
@@ -513,11 +554,14 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
             if (left instanceof Integer) {
                 return intValue(left) < intValue(right);
-            } else if (left instanceof Long) {
+            }
+            else if (left instanceof Long) {
                 return longValue(left) < longValue(right);
-            } else if (left instanceof Float) {
+            }
+            else if (left instanceof Float) {
                 return floatValue(left) < floatValue(right);
-            } else if (left instanceof Double) {
+            }
+            else if (left instanceof Double) {
                 return doubleValue(left) < doubleValue(right);
             }
         }
@@ -535,7 +579,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
             Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
             return promoted.getLeft().equals(promoted.getRight()); // fixme Double.NaN
-        } else {
+        }
+        else {
             return null; // not a constant expr on reference types
         }
     }
@@ -544,14 +589,15 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         return o instanceof Number || o instanceof Character;
     }
 
-
     private static @Nullable Number unaryPromotion(Object t) {
         if (t instanceof Character) {
             return (int) (Character) t;
-        } else if (t instanceof Number) {
+        }
+        else if (t instanceof Number) {
             if (t instanceof Byte || t instanceof Short) {
                 return intValue(t);
-            } else {
+            }
+            else {
                 return (Number) t;
             }
         }
@@ -559,20 +605,22 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
     }
 
     /**
-     * This returns a pair in which both numbers have the dynamic type.
-     * Both right and left need to be {@link #isConvertibleToNumber(Object)},
-     * otherwise fails with ClassCastException.
+     * This returns a pair in which both numbers have the dynamic type. Both right and left need to be
+     * {@link #isConvertibleToNumber(Object)}, otherwise fails with ClassCastException.
      */
     private static Pair<Object, Object> binaryNumericPromotion(Object left, Object right) {
         left = projectCharOntoInt(left);
         right = projectCharOntoInt(right);
         if (left instanceof Double || right instanceof Double) {
             return Pair.of(doubleValue(left), doubleValue(right));
-        } else if (left instanceof Float || right instanceof Float) {
+        }
+        else if (left instanceof Float || right instanceof Float) {
             return Pair.of(floatValue(left), floatValue(right));
-        } else if (left instanceof Long || right instanceof Long) {
+        }
+        else if (left instanceof Long || right instanceof Long) {
             return Pair.of(longValue(left), longValue(right));
-        } else {
+        }
+        else {
             return Pair.of(intValue(left), intValue(right));
         }
     }
@@ -583,9 +631,11 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 return Pair.of(left, right);
             }
             return FAILED_BIN_PROMOTION;
-        } else if (!isConvertibleToNumber(left) || !isConvertibleToNumber(right)) {
+        }
+        else if (!isConvertibleToNumber(left) || !isConvertibleToNumber(right)) {
             return FAILED_BIN_PROMOTION;
-        } else {
+        }
+        else {
             return binaryNumericPromotion(left, right);
         }
     }
@@ -602,24 +652,24 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
         if (target.isNumeric() && v instanceof Number) {
             switch (((JPrimitiveType) target).getKind()) {
-            case BOOLEAN:
-                throw new AssertionError("unreachable");
-            case CHAR:
-                return (char) intValue(v);
-            case BYTE:
-                return (byte) intValue(v);
-            case SHORT:
-                return (short) intValue(v);
-            case INT:
-                return intValue(v);
-            case LONG:
-                return longValue(v);
-            case FLOAT:
-                return floatValue(v);
-            case DOUBLE:
-                return doubleValue(v);
-            default:
-                throw AssertionUtil.shouldNotReachHere("exhaustive enum: " + target);
+                case BOOLEAN:
+                    throw new AssertionError("unreachable");
+                case CHAR:
+                    return (char) intValue(v);
+                case BYTE:
+                    return (byte) intValue(v);
+                case SHORT:
+                    return (short) intValue(v);
+                case INT:
+                    return intValue(v);
+                case LONG:
+                    return longValue(v);
+                case FLOAT:
+                    return floatValue(v);
+                case DOUBLE:
+                    return doubleValue(v);
+                default:
+                    throw AssertionUtil.shouldNotReachHere("exhaustive enum: " + target);
             }
         }
         return null;

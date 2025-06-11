@@ -39,11 +39,11 @@ import net.sourceforge.pmd.util.AssertionUtil;
 /**
  * Internal API.
  *
- * <p>Acts as a bridge between outer parts of PMD and the restricted access
- * internal API of this package.
+ * <p>
+ * Acts as a bridge between outer parts of PMD and the restricted access internal API of this package.
  *
- * <p><b>None of this is published API, and compatibility can be broken anytime!</b>
- * Use this only at your own risk.
+ * <p>
+ * <b>None of this is published API, and compatibility can be broken anytime!</b> Use this only at your own risk.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -51,24 +51,32 @@ import net.sourceforge.pmd.util.AssertionUtil;
  */
 @InternalApi
 public final class InternalApiBridge {
-    private InternalApiBridge() {}
+    private InternalApiBridge() {
+    }
 
     public static void setSymbol(SymbolDeclaratorNode node, JElementSymbol symbol) {
         if (node instanceof ASTMethodDeclaration) {
             ((ASTMethodDeclaration) node).setSymbol((JMethodSymbol) symbol);
-        } else if (node instanceof ASTConstructorDeclaration) {
+        }
+        else if (node instanceof ASTConstructorDeclaration) {
             ((ASTConstructorDeclaration) node).setSymbol((JConstructorSymbol) symbol);
-        } else if (node instanceof ASTTypeDeclaration) {
+        }
+        else if (node instanceof ASTTypeDeclaration) {
             ((AbstractTypeDeclaration) node).setSymbol((JClassSymbol) symbol);
-        } else if (node instanceof ASTVariableId) {
+        }
+        else if (node instanceof ASTVariableId) {
             ((ASTVariableId) node).setSymbol((JVariableSymbol) symbol);
-        } else if (node instanceof ASTTypeParameter) {
+        }
+        else if (node instanceof ASTTypeParameter) {
             ((ASTTypeParameter) node).setSymbol((JTypeParameterSymbol) symbol);
-        } else if (node instanceof ASTRecordComponentList) {
+        }
+        else if (node instanceof ASTRecordComponentList) {
             ((ASTRecordComponentList) node).setSymbol((JConstructorSymbol) symbol);
-        } else if (node instanceof ASTRecordComponent) {
+        }
+        else if (node instanceof ASTRecordComponent) {
             ((ASTRecordComponent) node).setSymbol((JRecordComponentSymbol) symbol);
-        } else {
+        }
+        else {
             throw new AssertionError("Cannot set symbol " + symbol + " on node " + node);
         }
     }
@@ -78,42 +86,37 @@ public final class InternalApiBridge {
     }
 
     /**
-     * Forcing type resolution allows us to report errors more cleanly
-     * than if it was done completely lazy. Failures (other than semantic exceptions)
-     * are thrown, because they are bugs in the typeres framework.
-     * Semantic exceptions cause execution to abort too, but only right before
-     * rules are applied, so several semantic exceptions may be collected.
+     * Forcing type resolution allows us to report errors more cleanly than if it was done completely lazy. Failures
+     * (other than semantic exceptions) are thrown, because they are bugs in the typeres framework. Semantic exceptions
+     * cause execution to abort too, but only right before rules are applied, so several semantic exceptions may be
+     * collected.
      */
     public static void forceTypeResolutionPhase(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants(TypeNode.class)
-            .crossFindBoundaries()
-            .forEach(typeNode -> {
-                try {
-                    typeNode.getTypeMirror();
-                } catch (SemanticException e) {
-                    processor.getLogger().acceptError(e);
-                }
-            });
+        root.descendants(TypeNode.class).crossFindBoundaries().forEach(typeNode -> {
+            try {
+                typeNode.getTypeMirror();
+            }
+            catch (SemanticException e) {
+                processor.getLogger().acceptError(e);
+            }
+        });
     }
 
     public static void usageResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants(ASTNamedReferenceExpr.class)
-            .crossFindBoundaries()
-            .forEach(node -> {
-                JVariableSymbol sym = node.getReferencedSym();
-                if (sym != null) {
-                    ASTVariableId reffed = sym.tryGetNode();
-                    if (reffed != null) { // declared in this file
-                        reffed.addUsage(node);
-                    }
+        root.descendants(ASTNamedReferenceExpr.class).crossFindBoundaries().forEach(node -> {
+            JVariableSymbol sym = node.getReferencedSym();
+            if (sym != null) {
+                ASTVariableId reffed = sym.tryGetNode();
+                if (reffed != null) { // declared in this file
+                    reffed.addUsage(node);
                 }
-            });
+            }
+        });
     }
 
     public static void overrideResolution(JavaAstProcessor processor, ASTCompilationUnit root) {
-        root.descendants(ASTTypeDeclaration.class)
-            .crossFindBoundaries()
-            .forEach(OverrideResolutionPass::resolveOverrides);
+        root.descendants(ASTTypeDeclaration.class).crossFindBoundaries()
+                .forEach(OverrideResolutionPass::resolveOverrides);
     }
 
     public static @Nullable JTypeMirror getTypeMirrorInternal(TypeNode node) {
@@ -135,9 +138,11 @@ public final class InternalApiBridge {
     public static void setFunctionalMethod(FunctionalExpression node, JMethodSig methodType) {
         if (node instanceof ASTMethodReference) {
             ((ASTMethodReference) node).setFunctionalMethod(methodType);
-        } else if (node instanceof ASTLambdaExpression) {
+        }
+        else if (node instanceof ASTLambdaExpression) {
             ((ASTLambdaExpression) node).setFunctionalMethod(methodType);
-        } else {
+        }
+        else {
             throw AssertionUtil.shouldNotReachHere("FunctionalExpression is not handled: " + node);
         }
     }
@@ -146,18 +151,22 @@ public final class InternalApiBridge {
         methodReference.setCompileTimeDecl(methodType);
     }
 
-    public static void initTypeResolver(ASTCompilationUnit acu, JavaAstProcessor processor, TypeInferenceLogger logger) {
+    public static void initTypeResolver(ASTCompilationUnit acu, JavaAstProcessor processor,
+            TypeInferenceLogger logger) {
         acu.setTypeResolver(new LazyTypeResolver(processor, logger));
     }
 
     public static void setOverload(InvocationNode expression, OverloadSelectionResult result) {
         if (expression instanceof AbstractInvocationExpr) {
             ((AbstractInvocationExpr) expression).setOverload(result);
-        } else if (expression instanceof ASTExplicitConstructorInvocation) {
+        }
+        else if (expression instanceof ASTExplicitConstructorInvocation) {
             ((ASTExplicitConstructorInvocation) expression).setOverload(result);
-        } else if (expression instanceof ASTEnumConstant) {
+        }
+        else if (expression instanceof ASTEnumConstant) {
             ((ASTEnumConstant) expression).setOverload(result);
-        } else {
+        }
+        else {
             throw new IllegalArgumentException("Wrong type: " + expression);
         }
     }

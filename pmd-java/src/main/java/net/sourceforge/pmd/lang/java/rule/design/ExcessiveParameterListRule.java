@@ -11,9 +11,8 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 /**
- * This rule detects an abnormally long parameter list. Note: This counts Nodes,
- * and not necessarily parameters, so the numbers may not match up. (But
- * topcount and sigma should work.)
+ * This rule detects an abnormally long parameter list. Note: This counts Nodes, and not necessarily parameters, so the
+ * numbers may not match up. (But topcount and sigma should work.)
  */
 public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<ASTFormalParameters> {
 

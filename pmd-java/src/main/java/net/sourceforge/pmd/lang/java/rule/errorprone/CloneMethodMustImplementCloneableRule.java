@@ -14,11 +14,9 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
- * The method clone() should only be implemented if the class implements the
- * Cloneable interface with the exception of a final method that only throws
- * CloneNotSupportedException. This version uses PMD's type resolution
- * facilities, and can detect if the class implements or extends a Cloneable
- * class
+ * The method clone() should only be implemented if the class implements the Cloneable interface with the exception of a
+ * final method that only throws CloneNotSupportedException. This version uses PMD's type resolution facilities, and can
+ * detect if the class implements or extends a Cloneable class
  *
  * @author acaplan
  */
@@ -48,12 +46,8 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
 
     private static boolean justThrowsCloneNotSupported(ASTBlock body) {
         return body.size() == 1
-                && body.getChild(0)
-                   .asStream()
-                   .filterIs(ASTThrowStatement.class)
-                   .map(ASTThrowStatement::getExpr)
-                   .filter(it -> TypeTestUtil.isA(CloneNotSupportedException.class, it))
-                   .nonEmpty();
+                && body.getChild(0).asStream().filterIs(ASTThrowStatement.class).map(ASTThrowStatement::getExpr)
+                        .filter(it -> TypeTestUtil.isA(CloneNotSupportedException.class, it)).nonEmpty();
     }
 
 }

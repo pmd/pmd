@@ -30,7 +30,8 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     SymbolicAnnotationImpl(AsmSymbolResolver resolver, boolean runtimeVisible, String descriptor) {
         this.runtimeVisible = runtimeVisible;
-        this.typeStub = resolver.resolveFromInternalNameCannotFail(ClassNamesUtil.classDescriptorToInternalName(descriptor));
+        this.typeStub =
+                resolver.resolveFromInternalNameCannotFail(ClassNamesUtil.classDescriptorToInternalName(descriptor));
     }
 
     void addAttribute(String name, SymbolicValue value) {
@@ -51,8 +52,7 @@ final class SymbolicAnnotationImpl implements SymAnnot {
 
     @Override
     public RetentionPolicy getRetention() {
-        return runtimeVisible ? RetentionPolicy.RUNTIME
-                              : RetentionPolicy.CLASS;
+        return runtimeVisible ? RetentionPolicy.RUNTIME : RetentionPolicy.CLASS;
     }
 
     @Override

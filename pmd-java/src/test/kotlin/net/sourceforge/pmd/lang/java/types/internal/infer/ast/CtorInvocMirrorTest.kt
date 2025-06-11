@@ -10,10 +10,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall
 import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.types.shouldBeUnresolvedClass
 
-class CtorInvocMirrorTest : ProcessorTestSpec({
-    parserTest("Qualified constructor invocation with unresolved types") {
-        val acu = parser.parse(
-            """
+class CtorInvocMirrorTest :
+    ProcessorTestSpec({
+        parserTest("Qualified constructor invocation with unresolved types") {
+            val acu =
+                parser.parse(
+                    """
             class Foo {
                 void bar() {
                     Foo myObject = new Foo();
@@ -23,15 +25,16 @@ class CtorInvocMirrorTest : ProcessorTestSpec({
                 class Nested {}
             }
             """
-        )
-        val invocation = acu.descendants(ASTConstructorCall::class.java).get(1)!!
-        invocation.typeMirror shouldNotBe null
-        invocation.typeMirror.shouldBeUnresolvedClass("Foo.Nested")
-    }
+                )
+            val invocation = acu.descendants(ASTConstructorCall::class.java).get(1)!!
+            invocation.typeMirror shouldNotBe null
+            invocation.typeMirror.shouldBeUnresolvedClass("Foo.Nested")
+        }
 
-    parserTest("Qualified constructor invocation with unresolved types uncompilable") {
-        val acu = parser.parse(
-            """
+        parserTest("Qualified constructor invocation with unresolved types uncompilable") {
+            val acu =
+                parser.parse(
+                    """
             class Foo {
                 void bar() {
                     Foo myObject = new Foo();
@@ -43,9 +46,9 @@ class CtorInvocMirrorTest : ProcessorTestSpec({
                 //class Nested {}
             }
             """
-        )
-        val invocation = acu.descendants(ASTConstructorCall::class.java).get(1)!!
-        invocation.typeMirror shouldNotBe null
-        invocation.typeMirror.shouldBeSameInstanceAs(invocation.typeSystem.UNKNOWN)
-    }
-})
+                )
+            val invocation = acu.descendants(ASTConstructorCall::class.java).get(1)!!
+            invocation.typeMirror shouldNotBe null
+            invocation.typeMirror.shouldBeSameInstanceAs(invocation.typeSystem.UNKNOWN)
+        }
+    })

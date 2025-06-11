@@ -16,8 +16,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
- * Reduction steps on a variable. If its bounds match a certain pattern,
- * it will be instantiated by one of these reductions.
+ * Reduction steps on a variable. If its bounds match a certain pattern, it will be instantiated by one of these
+ * reductions.
  */
 enum ReductionStep {
 
@@ -32,8 +32,7 @@ enum ReductionStep {
     },
 
     /**
-     * Instantiate an inference variables using its (ground) lower bounds. Such
-     * bounds are merged together using lub().
+     * Instantiate an inference variables using its (ground) lower bounds. Such bounds are merged together using lub().
      */
     LOWER(BoundKind.LOWER) {
         @Override
@@ -43,8 +42,7 @@ enum ReductionStep {
     },
 
     /**
-     * Instantiate an inference variables using its (ground) upper bounds. Such
-     * bounds are merged together using glb().
+     * Instantiate an inference variables using its (ground) upper bounds. Such bounds are merged together using glb().
      */
     UPPER(BoundKind.UPPER) {
         @Override
@@ -53,40 +51,32 @@ enum ReductionStep {
         }
     },
     /**
-     * Like the former; the only difference is that this step can only be applied
-     * if all upper/lower bounds are ground.
+     * Like the former; the only difference is that this step can only be applied if all upper/lower bounds are ground.
      */
     CAPTURED(BoundKind.UPPER) {
         @Override
         public boolean accepts(InferenceVar t, InferenceContext inferenceContext) {
-            return t.isCaptured()
-                && inferenceContext.areAllGround(t.getBounds(BoundKind.LOWER))
-                && inferenceContext.areAllGround(t.getBounds(BoundKind.UPPER));
+            return t.isCaptured() && inferenceContext.areAllGround(t.getBounds(BoundKind.LOWER))
+                    && inferenceContext.areAllGround(t.getBounds(BoundKind.UPPER));
         }
 
         @Override
         JTypeMirror solve(InferenceVar uv, InferenceContext infCtx) {
-            JTypeMirror upper = !UPPER.filterBounds(uv, infCtx).isEmpty()
-                                ? UPPER.solve(uv, infCtx)
-                                : infCtx.ts.OBJECT;
+            JTypeMirror upper = !UPPER.filterBounds(uv, infCtx).isEmpty() ? UPPER.solve(uv, infCtx) : infCtx.ts.OBJECT;
 
-            JTypeMirror lower = !LOWER.filterBounds(uv, infCtx).isEmpty()
-                                ? LOWER.solve(uv, infCtx)
-                                : infCtx.ts.NULL_TYPE;
+            JTypeMirror lower =
+                    !LOWER.filterBounds(uv, infCtx).isEmpty() ? LOWER.solve(uv, infCtx) : infCtx.ts.NULL_TYPE;
 
             return uv.getBaseVar().cloneWithBounds(lower, upper);
         }
     },
 
     /**
-     * Special case of {@link #UPPER}, that applies to f-bounds.
-     * This is just spitballing, Javac doesn't do this.
+     * Special case of {@link #UPPER}, that applies to f-bounds. This is just spitballing, Javac doesn't do this.
      *
-     * I use this for fbounds, like a context that has stuff like this
-     * {@code β { β <: java.lang.Enum<β> } }. These usually get more bounds
-     * via arguments, but unchecked casts may deny a more specific bound.
-     * This should probably only apply when the call site doesn't need unchecked
-     * conversions. This is a
+     * I use this for fbounds, like a context that has stuff like this {@code β { β <: java.lang.Enum<β> } }. These
+     * usually get more bounds via arguments, but unchecked casts may deny a more specific bound. This should probably
+     * only apply when the call site doesn't need unchecked conversions. This is a
      */
     FBOUND(BoundKind.UPPER) {
 
@@ -107,10 +97,8 @@ enum ReductionStep {
      * Sequence of steps to use in order when solving.
      */
     static final List<List<ReductionStep>> WAVES =
-        listOf(
-            listOf(EQ, LOWER, UPPER, CAPTURED),
-            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED));
-    //                        ^^^^^^
+            listOf(listOf(EQ, LOWER, UPPER, CAPTURED), listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED));
+    // ^^^^^^
 
     final BoundKind kind;
 
@@ -119,8 +107,7 @@ enum ReductionStep {
     }
 
     /**
-     * Find an instantiated type for a given inference variable within
-     * a given inference context
+     * Find an instantiated type for a given inference variable within a given inference context
      */
     abstract JTypeMirror solve(InferenceVar uv, InferenceContext infCtx);
 
@@ -148,6 +135,5 @@ enum ReductionStep {
         }
         return res;
     }
-
 
 }

@@ -52,11 +52,8 @@ final class ExprCheckHelper {
     private final Infer infer;
     private final TypeSystem ts;
 
-    ExprCheckHelper(InferenceContext infCtx,
-                    MethodResolutionPhase phase,
-                    ExprChecker checker,
-                    @Nullable MethodCallSite site,
-                    Infer infer) {
+    ExprCheckHelper(InferenceContext infCtx, MethodResolutionPhase phase, ExprChecker checker,
+            @Nullable MethodCallSite site, Infer infer) {
 
         this.infCtx = infCtx;
         this.phase = phase;
@@ -67,31 +64,28 @@ final class ExprCheckHelper {
     }
 
     /**
-     * Recurse on all relevant subexpressions to add constraints.
-     * E.g when a parameter must be a {@code Supplier<T>},
-     * then for the lambda {@code () -> "string"} we add a constraint
-     * that {@code T} must be a subtype of string.
+     * Recurse on all relevant subexpressions to add constraints. E.g when a parameter must be a {@code Supplier<T>},
+     * then for the lambda {@code () -> "string"} we add a constraint that {@code T} must be a subtype of string.
      *
-     * <p>Instead of gathering expressions explicitly into a bound set,
-     * we explore the structure of the expression and:
-     * 1. if it's standalone, we immediately add a constraint {@code type(<arg>) <: formalType}
-     * 2. otherwise, it depends on the form of the expression
-     *  i) if it's a method or constructor invocation:
-     *     i.i) we instantiate it. If that method is generic, we add its
-     *     inference variables in this context and solve them globally.
-     *     i.ii) we add a constraint linking the return type of the invocation and the formal type
-     *  ii) if it's a lambda:
-     *     ii.i) we ensure that the formalType is a functional interface
-     *     ii.ii) we find the lambda's return expressions and add constraints
-     *     on each one recursively with this algorithm.
+     * <p>
+     * Instead of gathering expressions explicitly into a bound set, we explore the structure of the expression and: 1.
+     * if it's standalone, we immediately add a constraint {@code type(<arg>) <: formalType} 2. otherwise, it depends on
+     * the form of the expression i) if it's a method or constructor invocation: i.i) we instantiate it. If that method
+     * is generic, we add its inference variables in this context and solve them globally. i.ii) we add a constraint
+     * linking the return type of the invocation and the formal type ii) if it's a lambda: ii.i) we ensure that the
+     * formalType is a functional interface ii.ii) we find the lambda's return expressions and add constraints on each
+     * one recursively with this algorithm.
      *
      *
-     * @param targetType Target, not necessarily ground
-     * @param expr       Expression
+     * @param targetType
+     *            Target, not necessarily ground
+     * @param expr
+     *            Expression
      *
      * @return true if it's compatible (or we don't have enough info, and the check is deferred)
      *
-     * @throws ResolutionFailedException If the expr is not compatible, and we want to add a message for the reason
+     * @throws ResolutionFailedException
+     *             If the expr is not compatible, and we want to add a message for the reason
      */
     boolean isCompatible(JTypeMirror targetType, ExprMirror expr) {
         final boolean isStandalone;
@@ -111,7 +105,8 @@ final class ExprCheckHelper {
                 }
                 // otherwise fallthrough, we potentially need to finish
                 // inferring some things on the polys
-            } else {
+            }
+            else {
                 isStandalone = false;
             }
         }
@@ -127,7 +122,8 @@ final class ExprCheckHelper {
                 LambdaExprMirror lambda = (LambdaExprMirror) expr;
                 try {
                     return isLambdaCompatible(funType, lambda);
-                } catch (ResolutionFailedException e) {
+                }
+                catch (ResolutionFailedException e) {
                     // need to cleanup the partial data
                     if (mayMutateExpr()) {
                         lambda.setInferredType(null);
@@ -139,21 +135,23 @@ final class ExprCheckHelper {
                     }
                     throw e;
                 }
-            } else {
+            }
+            else {
                 return isMethodRefCompatible(funType, (MethodRefMirror) expr);
             }
 
-        } else if (expr instanceof InvocationMirror) {
+        }
+        else if (expr instanceof InvocationMirror) {
             // then the argument is a poly invoc expression itself
             // in that case we need to infer that as well
             return isInvocationCompatible(targetType, (InvocationMirror) expr, isStandalone);
-        } else if (expr instanceof BranchingMirror) {
+        }
+        else if (expr instanceof BranchingMirror) {
             return ((BranchingMirror) expr).branchesMatch(it -> isCompatible(targetType, it));
         }
 
         return false;
     }
-
 
     private boolean isInvocationCompatible(JTypeMirror targetType, InvocationMirror invoc, boolean isStandalone) {
         MethodCallSite nestedSite = infer.newCallSite(invoc, targetType, this.site, this.infCtx, isSpecificityCheck());
@@ -165,7 +163,8 @@ final class ExprCheckHelper {
 
         if (argCtDecl == infer.FAILED_INVOCATION) {
             throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR, targetType);
-        } else if (argCtDecl == infer.getMissingCtDecl()) {
+        }
+        else if (argCtDecl == infer.getMissingCtDecl()) {
             JTypeMirror fallback = invoc.unresolvedType();
             if (fallback != null) {
                 actualType = fallback;
@@ -193,14 +192,11 @@ final class ExprCheckHelper {
         }
 
         if (!argCtDecl.isFailed() && mayMutateExpr()) {
-            infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(mostSpecific),
-                solved -> {
-                    JMethodSig ground = solved.ground(mostSpecific);
-                    invoc.setInferredType(ground.getReturnType());
-                    invoc.setCompileTimeDecl(argCtDecl.withMethod(ground));
-                }
-            );
+            infCtx.addInstantiationListener(infCtx.freeVarsIn(mostSpecific), solved -> {
+                JMethodSig ground = solved.ground(mostSpecific);
+                invoc.setInferredType(ground.getReturnType());
+                invoc.setCompileTimeDecl(argCtDecl.withMethod(ground));
+            });
         }
         return true;
     }
@@ -210,24 +206,24 @@ final class ExprCheckHelper {
         if (targetType instanceof InferenceVar && site != null) {
             if (site.isInFinalInvocation()) {
                 asClass = asClassType(softSolve(targetType)); // null if not funct itf
-            } else {
+            }
+            else {
                 /*
-                 * The functional expression has an inference variable as a target type,
-                 * and that ivar does not have enough bounds to be resolved to a functional interface type yet.
+                 * The functional expression has an inference variable as a target type, and that ivar does not have
+                 * enough bounds to be resolved to a functional interface type yet.
                  *
-                 * <p>This should not prevent ctdecl resolution to proceed. The additional
-                 * bounds may be contributed by the invocation constraints of an enclosing
-                 * inference process.
+                 * <p>This should not prevent ctdecl resolution to proceed. The additional bounds may be contributed by
+                 * the invocation constraints of an enclosing inference process.
                  */
                 infer.LOG.functionalExprNeedsInvocationCtx(targetType, expr);
                 return null; // defer
             }
-        } else {
+        }
+        else {
             asClass = asClassType(targetType);
         }
 
-        if (asClass == null && TypeOps.isUnresolved(targetType)
-            || asClass != null && TypeOps.isUnresolved(asClass)) {
+        if (asClass == null && TypeOps.isUnresolved(targetType) || asClass != null && TypeOps.isUnresolved(asClass)) {
             // The type is unresolved, meaning classpath is incomplete.
             // We will treat the lambda/mref as if it is compatible with this
             // unresolved type. This is usually the right thing to do but
@@ -248,8 +244,7 @@ final class ExprCheckHelper {
             LambdaExprMirror lambda = (LambdaExprMirror) expr;
             List<JTypeMirror> paramTypes;
             List<JTypeMirror> explicit = lambda.getExplicitParameterTypes();
-            paramTypes = explicit != null
-                         ? explicit : Collections.nCopies(lambda.getParamCount(), ts.UNKNOWN);
+            paramTypes = explicit != null ? explicit : Collections.nCopies(lambda.getParamCount(), ts.UNKNOWN);
             // we need to set the parameter types
             lambda.updateTypingContext(paramTypes);
             // And add a constraint on the free variables in the target type.
@@ -261,9 +256,8 @@ final class ExprCheckHelper {
             checker.checkExprConstraint(infCtx, ts.UNKNOWN, targetType);
         }
         if (mayMutateExpr()) {
-            infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(targetType),
-                ctx -> expr.finishFailedInference(ctx.ground(targetType)));
+            infCtx.addInstantiationListener(infCtx.freeVarsIn(targetType),
+                    ctx -> expr.finishFailedInference(ctx.ground(targetType)));
         }
     }
 
@@ -317,9 +311,9 @@ final class ExprCheckHelper {
 
         JMethodSig exactMethod = ExprOps.getExactMethod(mref);
         if (exactMethod != null) {
-            //  if the method reference is exact (§15.13.1), then let P1, ..., Pn be the parameter
-            //  types of the function type of T, and let F1, ..., Fk be
-            //  the parameter types of the potentially applicable method
+            // if the method reference is exact (§15.13.1), then let P1, ..., Pn be the parameter
+            // types of the function type of T, and let F1, ..., Fk be
+            // the parameter types of the potentially applicable method
             List<JTypeMirror> ps = fun.getFormalParameters();
             List<JTypeMirror> fs = exactMethod.getFormalParameters();
 
@@ -347,41 +341,45 @@ final class ExprCheckHelper {
                 for (int i = 1; i < n; i++) {
                     checker.checkExprConstraint(infCtx, ps.get(i), fs.get(i - 1));
                 }
-            } else if (n != k) {
+            }
+            else if (n != k) {
                 throw ResolutionFailedException.incompatibleArity(infer.LOG, k, n, mref);
-            } else {
+            }
+            else {
                 // n == k
                 for (int i = 0; i < n; i++) {
                     checker.checkExprConstraint(infCtx, ps.get(i), fs.get(i));
                 }
             }
 
-            //  If the function type's result is not void, let R be its
-            //  return type.
+            // If the function type's result is not void, let R be its
+            // return type.
             //
             JTypeMirror r = fun.getReturnType();
             if (r != ts.NO_TYPE) {
-                //  Then, if the result of the potentially applicable
-                //  compile-time declaration is void, the constraint reduces to false.
+                // Then, if the result of the potentially applicable
+                // compile-time declaration is void, the constraint reduces to false.
                 JTypeMirror r2 = exactMethod.getReturnType();
                 if (r2 == ts.NO_TYPE) {
                     return false;
                 }
 
-                //  Otherwise, the constraint reduces to ‹R' → R›, where R' is the
-                //  result of applying capture conversion (§5.1.10) to the return
-                //  type of the potentially applicable compile-time declaration.
+                // Otherwise, the constraint reduces to ‹R' → R›, where R' is the
+                // result of applying capture conversion (§5.1.10) to the return
+                // type of the potentially applicable compile-time declaration.
                 checker.checkExprConstraint(infCtx, capture(r2), r);
             }
             completeMethodRefInference(mref, nonWildcard, fun, mrefSigAsCtDecl(exactMethod), true);
-        } else if (TypeOps.isUnresolved(mref.getTypeToSearch())) {
+        }
+        else if (TypeOps.isUnresolved(mref.getTypeToSearch())) {
             // Then this is neither an exact nor inexact method ref,
             // we just don't know what it is.
 
             // The return values of the mref are assimilated to an (*unknown*) type.
             checker.checkExprConstraint(infCtx, ts.UNKNOWN, fun.getReturnType());
             completeMethodRefInference(mref, nonWildcard, fun, infer.getMissingCtDecl(), false);
-        } else {
+        }
+        else {
             // Otherwise, the method reference is inexact, and:
 
             // (If one or more of the function's formal parameter types
@@ -392,17 +390,17 @@ final class ExprCheckHelper {
             // https://docs.oracle.com/javase/specs/jls/se12/html/jls-18.html#jls-18.5.2.2
 
             // here we defer the check until the variables are ground
-            infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(fun.getFormalParameters()),
-                solvedCtx -> solveInexactMethodRefCompatibility(mref, solvedCtx.ground(nonWildcard), solvedCtx.ground(fun))
-            );
+            infCtx.addInstantiationListener(infCtx.freeVarsIn(fun.getFormalParameters()),
+                    solvedCtx -> solveInexactMethodRefCompatibility(mref, solvedCtx.ground(nonWildcard),
+                            solvedCtx.ground(fun)));
         }
         return true;
     }
 
     private void solveInexactMethodRefCompatibility(MethodRefMirror mref, JClassType nonWildcard, JMethodSig fun) {
         // Otherwise, a search for a compile-time declaration is performed, as specified in §15.13.1.
-        @Nullable MethodCtDecl ctdecl0 = infer.exprOps.findInexactMethodRefCompileTimeDecl(mref, fun);
+        @Nullable
+        MethodCtDecl ctdecl0 = infer.exprOps.findInexactMethodRefCompileTimeDecl(mref, fun);
 
         // If there is no compile-time declaration for the method reference, the constraint reduces to false.
         if (ctdecl0 == null) {
@@ -441,7 +439,8 @@ final class ExprCheckHelper {
                 if (!TypeOps.haveSameTypeParams(ctdecl, fun)) {
                     // then we really can't do anything
                     throw ResolutionFailedException.unsolvableDependency(infer.LOG);
-                } else {
+                }
+                else {
                     fixInstantiation = true;
                 }
             }
@@ -459,36 +458,38 @@ final class ExprCheckHelper {
                     // We know that fun & sig have the same type params
                     // We need to fix those that are out-of-scope
                     JMethodSig inferred = sig.getMethodType();
-                    inferred = inferred.subst(Substitution.mapping(fun.getTypeParameters(), inferred.getTypeParameters()));
+                    inferred =
+                            inferred.subst(Substitution.mapping(fun.getTypeParameters(), inferred.getTypeParameters()));
                     sig = sig.withMethod(inferred);
                 }
                 completeMethodRefInference(mref, nonWildcard, fun, sig, false);
             }
-        } else {
+        }
+        else {
             // Otherwise, let R' be the result of applying capture conversion (§5.1.10) to the return
             // type of the invocation type (§15.12.2.6) of the compile-time declaration. If R' is void,
             // the constraint reduces to false; otherwise, the constraint reduces to ‹R' → R›.
             if (ctdecl.getReturnType() == ts.NO_TYPE) {
                 throw ResolutionFailedException.incompatibleReturn(infer.LOG, mref, ctdecl.getReturnType(), r);
-            } else {
+            }
+            else {
                 checker.checkExprConstraint(infCtx, capture(ctdecl.getReturnType()), r);
                 completeMethodRefInference(mref, nonWildcard, fun, mrefSigAsCtDecl(ctdecl), false);
             }
         }
     }
 
-    private void completeMethodRefInference(MethodRefMirror mref, JClassType groundTargetType, JMethodSig functionalMethod, MethodCtDecl ctDecl, boolean isExactMethod) {
+    private void completeMethodRefInference(MethodRefMirror mref, JClassType groundTargetType,
+            JMethodSig functionalMethod, MethodCtDecl ctDecl, boolean isExactMethod) {
         if ((phase.isInvocation() || isExactMethod) && mayMutateExpr()) {
             // if exact, then the arg is relevant to applicability and there
             // may not be an invocation round
-            infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(groundTargetType),
-                solved -> {
-                    mref.setInferredType(solved.ground(groundTargetType));
-                    mref.setFunctionalMethod(cast(solved.ground(functionalMethod)).withOwner(solved.ground(functionalMethod.getDeclaringType())));
-                    mref.setCompileTimeDecl(ctDecl.withMethod(solved.ground(ctDecl.getMethodType())));
-                }
-            );
+            infCtx.addInstantiationListener(infCtx.freeVarsIn(groundTargetType), solved -> {
+                mref.setInferredType(solved.ground(groundTargetType));
+                mref.setFunctionalMethod(cast(solved.ground(functionalMethod))
+                        .withOwner(solved.ground(functionalMethod.getDeclaringType())));
+                mref.setCompileTimeDecl(ctDecl.withMethod(solved.ground(ctDecl.getMethodType())));
+            });
         }
     }
 
@@ -499,13 +500,14 @@ final class ExprCheckHelper {
     MethodCtDecl inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl) {
         InvocationMirror wrapper = methodRefAsInvocation(mref, targetType, false);
         wrapper.setCompileTimeDecl(ctdecl);
-        MethodCallSite mockSite = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), site, infCtx, isSpecificityCheck());
+        MethodCallSite mockSite = infer.newCallSite(wrapper, /* expected */ targetType.getReturnType(), site, infCtx,
+                isSpecificityCheck());
         return infer.determineInvocationTypeOrFail(mockSite);
     }
 
     /**
-     * Only executed if {@link MethodResolutionPhase#isInvocation()},
-     * as per {@link ExprOps#isPertinentToApplicability(ExprMirror, JMethodSig, JTypeMirror, InvocationMirror)}.
+     * Only executed if {@link MethodResolutionPhase#isInvocation()}, as per
+     * {@link ExprOps#isPertinentToApplicability(ExprMirror, JMethodSig, JTypeMirror, InvocationMirror)}.
      */
     private boolean isLambdaCompatible(@NonNull JClassType functionalItf, LambdaExprMirror lambda) {
 
@@ -519,7 +521,6 @@ final class ExprCheckHelper {
             throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, lambda);
         }
 
-
         // might be partial, whatever
         // We use that, so that the parameters may at least have a type
         // in the body of the lambda, to infer its return type
@@ -532,14 +533,12 @@ final class ExprCheckHelper {
 
             // set the final type when done
             if (phase.isInvocation()) {
-                infCtx.addInstantiationListener(
-                    infCtx.freeVarsIn(groundTargetType),
-                    solved -> {
-                        JClassType solvedGround = solved.ground(groundTargetType);
-                        lambda.setInferredType(solvedGround);
-                        lambda.setFunctionalMethod(cast(solved.ground(groundFun)).withOwner(solved.ground(groundFun.getDeclaringType())));
-                    }
-                );
+                infCtx.addInstantiationListener(infCtx.freeVarsIn(groundTargetType), solved -> {
+                    JClassType solvedGround = solved.ground(groundTargetType);
+                    lambda.setInferredType(solvedGround);
+                    lambda.setFunctionalMethod(
+                            cast(solved.ground(groundFun)).withOwner(solved.ground(groundFun.getDeclaringType())));
+                });
             }
         }
 
@@ -554,23 +553,22 @@ final class ExprCheckHelper {
         return site != null && site.isSpecificityCheck();
     }
 
-    // functionalItf    = T
+    // functionalItf = T
     // groundTargetType = T'
     @SuppressWarnings("PMD.UnusedFormalParameter")
-    private boolean isLambdaCongruent(@NonNull JClassType functionalItf,
-                                      @NonNull JClassType groundTargetType,
-                                      @NonNull JMethodSig groundFun,
-                                      LambdaExprMirror lambda) {
+    private boolean isLambdaCongruent(@NonNull JClassType functionalItf, @NonNull JClassType groundTargetType,
+            @NonNull JMethodSig groundFun, LambdaExprMirror lambda) {
 
         if (groundFun.isGeneric()) {
             throw ResolutionFailedException.lambdaCannotTargetGenericFunction(infer.LOG, groundFun, lambda);
         }
 
-        //  If the number of lambda parameters differs from the number
-        //  of parameter types of the function type, the constraint
-        //  reduces to false.
+        // If the number of lambda parameters differs from the number
+        // of parameter types of the function type, the constraint
+        // reduces to false.
         if (groundFun.getArity() != lambda.getParamCount()) {
-            throw ResolutionFailedException.incompatibleArity(infer.LOG, lambda.getParamCount(), groundFun.getArity(), lambda);
+            throw ResolutionFailedException.incompatibleArity(infer.LOG, lambda.getParamCount(), groundFun.getArity(),
+                    lambda);
         }
 
         // If the function type's result is void and the lambda body is
@@ -592,13 +590,14 @@ final class ExprCheckHelper {
         // and the function type has parameter types G1, ..., Gn, then
         // i) for all i (1 ≤ i ≤ n), ‹Fi = Gi›
         if (lambda.isExplicitlyTyped()
-            && !areSameTypesInInference(groundFun.getFormalParameters(), lambda.getExplicitParameterTypes())) {
-            throw ResolutionFailedException.mismatchedLambdaParameters(infer.LOG, groundFun, lambda.getExplicitParameterTypes(), lambda);
+                && !areSameTypesInInference(groundFun.getFormalParameters(), lambda.getExplicitParameterTypes())) {
+            throw ResolutionFailedException.mismatchedLambdaParameters(infer.LOG, groundFun,
+                    lambda.getExplicitParameterTypes(), lambda);
         }
 
         // and ii) ‹T' <: T›.
         // if (!groundTargetType.isSubtypeOf(functionalItf)) {
-        //     return false;
+        // return false;
         // }
 
         // finally, add bounds
@@ -610,29 +609,27 @@ final class ExprCheckHelper {
             // mentioned in the return type may be further constrained by adding the return constraints
             // below (in the listener), which is only triggered when the input ivars have been instantiated.
             infCtx.addInstantiationDependencies(infCtx.freeVarsIn(groundFun.getReturnType()), inputIvars);
-            infCtx.addInstantiationListener(
-                inputIvars,
-                solvedCtx -> {
-                    if (mayMutateExpr()) {
-                        lambda.setInferredType(solvedCtx.ground(groundTargetType));
-                        JMethodSig solvedGroundFun = solvedCtx.ground(groundFun);
-                        lambda.setFunctionalMethod(solvedGroundFun);
-                        lambda.updateTypingContext(solvedGroundFun.getFormalParameters());
+            infCtx.addInstantiationListener(inputIvars, solvedCtx -> {
+                if (mayMutateExpr()) {
+                    lambda.setInferredType(solvedCtx.ground(groundTargetType));
+                    JMethodSig solvedGroundFun = solvedCtx.ground(groundFun);
+                    lambda.setFunctionalMethod(solvedGroundFun);
+                    lambda.updateTypingContext(solvedGroundFun.getFormalParameters());
+                }
+                JTypeMirror groundResult = solvedCtx.ground(result);
+                // We need to build another checker that uses the solved context.
+                // This is because the free vars may have been adopted by a parent
+                // context, so the solvedCtx may be that parent context. The checks
+                // must use that context so that constraints and listeners are added
+                // to the parent context, since that one is responsible for solving
+                // the variables.
+                ExprCheckHelper newChecker = new ExprCheckHelper(solvedCtx, phase, this.checker, site, infer);
+                for (ExprMirror expr : lambda.getResultExpressions()) {
+                    if (!newChecker.isCompatible(groundResult, expr)) {
+                        return;
                     }
-                    JTypeMirror groundResult = solvedCtx.ground(result);
-                    // We need to build another checker that uses the solved context.
-                    // This is because the free vars may have been adopted by a parent
-                    // context, so the solvedCtx may be that parent context. The checks
-                    // must use that context so that constraints and listeners are added
-                    // to the parent context, since that one is responsible for solving
-                    // the variables.
-                    ExprCheckHelper newChecker = new ExprCheckHelper(solvedCtx, phase, this.checker, site, infer);
-                    for (ExprMirror expr : lambda.getResultExpressions()) {
-                        if (!newChecker.isCompatible(groundResult, expr)) {
-                            return;
-                        }
-                    }
-                });
+                }
+            });
         }
 
         if (mayMutateExpr()) { // we know that the lambda matches now
@@ -643,7 +640,6 @@ final class ExprCheckHelper {
 
     private @Nullable JClassType groundTargetType(JClassType type, LambdaExprMirror lambda) {
 
-
         List<JTypeMirror> targs = type.getTypeArgs();
         if (CollectionUtil.none(targs, it -> it instanceof JWildcardType)) {
             return type;
@@ -651,17 +647,19 @@ final class ExprCheckHelper {
 
         if (lambda.isExplicitlyTyped() && lambda.getParamCount() > 0) {
             return inferGroundTargetTypeForExplicitlyTypedLambda(type, lambda);
-        } else {
+        }
+        else {
             return nonWildcardParameterization(type);
         }
     }
 
-    private @Nullable JClassType inferGroundTargetTypeForExplicitlyTypedLambda(JClassType targetType, LambdaExprMirror lambda) {
+    private @Nullable JClassType inferGroundTargetTypeForExplicitlyTypedLambda(JClassType targetType,
+            LambdaExprMirror lambda) {
         List<JTypeMirror> explicitParamTypes = lambda.getExplicitParameterTypes();
         assert explicitParamTypes != null : "Expecting explicitly typed lambda";
         // https://docs.oracle.com/javase/specs/jls/se22/html/jls-18.html#jls-18.5.3
         // > For example:
-        // >     Predicate<? super Integer> p = (Number n) -> n.equals(23);
+        // > Predicate<? super Integer> p = (Number n) -> n.equals(23);
         // > The lambda expression is a Predicate<Number>, which is a subtype of Predicate<? super Integer> but not
         // > Predicate<Integer>. The analysis in this section is used to infer that Number is an appropriate choice
         // > for the type argument to Predicate.
@@ -702,7 +700,8 @@ final class ExprCheckHelper {
             InferenceVar ivarI = (InferenceVar) ctx.mapToIVars(formalTypeParams.get(i));
             if (ivarI.getInst() != null) {
                 newTyArgs.add(ivarI.getInst());
-            } else {
+            }
+            else {
                 newTyArgs.add(typeArgs.get(i));
             }
         }
@@ -716,20 +715,18 @@ final class ExprCheckHelper {
         return nonWildcardParameterization(inferredTy);
     }
 
-
     @FunctionalInterface
     interface ExprChecker {
 
         /**
          * In JLS terms, adds a constraint formula {@code < exprType -> formalType >}.
          *
-         * <p>This method throws ResolutionFailedException if the constraint
-         * can be asserted as false immediately. Otherwise the check is
-         * deferred until both types have been inferred (but bounds on the
-         * type vars are added).
+         * <p>
+         * This method throws ResolutionFailedException if the constraint can be asserted as false immediately.
+         * Otherwise the check is deferred until both types have been inferred (but bounds on the type vars are added).
          */
-        void checkExprConstraint(InferenceContext infCtx, JTypeMirror exprType, JTypeMirror formalType) throws ResolutionFailedException;
+        void checkExprConstraint(InferenceContext infCtx, JTypeMirror exprType, JTypeMirror formalType)
+                throws ResolutionFailedException;
     }
-
 
 }

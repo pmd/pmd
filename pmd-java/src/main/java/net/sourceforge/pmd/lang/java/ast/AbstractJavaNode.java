@@ -21,7 +21,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super(id);
     }
 
-
     @Override
     public void jjtClose() {
         super.jjtClose();
@@ -64,7 +63,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         super.setImage(image);
     }
 
-
     @Override
     protected void setFirstToken(JavaccToken token) {
         super.setFirstToken(token);
@@ -106,8 +104,6 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         return getRoot().getTypeSystem();
     }
 
-
-
     @Override
     public final @NonNull ASTCompilationUnit getRoot() {
         // storing a reference on each node ensures that each path is roamed
@@ -118,11 +114,11 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
         return root;
     }
 
-
     /**
      * Shift the start and end tokens by the given offsets.
-     * @throws IllegalStateException if the right shift identifies
-     * a token that is left of this node
+     * 
+     * @throws IllegalStateException
+     *             if the right shift identifies a token that is left of this node
      */
     void shiftTokens(int leftShift, int rightShift) {
         if (leftShift != 0) {
@@ -136,14 +132,15 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     private JavaccToken findTokenSiblingInThisNode(JavaccToken token, int shift) {
         if (shift == 0) {
             return token;
-        } else if (shift < 0) {
+        }
+        else if (shift < 0) {
             // expects a positive shift
             return TokenUtils.nthPrevious(getFirstToken(), token, -shift);
-        } else {
+        }
+        else {
             return TokenUtils.nthFollower(token, shift);
         }
     }
-
 
     void copyTextCoordinates(AbstractJavaNode copy) {
         setFirstToken(copy.getFirstToken());

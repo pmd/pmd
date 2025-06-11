@@ -12,22 +12,26 @@ import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
- * XPath function {@code pmd-java:typeIs(typeName as xs:string) as xs:boolean}
- * and {@code typeIsExactly}.
+ * XPath function {@code pmd-java:typeIs(typeName as xs:string) as xs:boolean} and {@code typeIsExactly}.
  *
- * <p>Example XPath 2.0: {@code //ClassType[pmd-java:typeIs('java.lang.String')]}
+ * <p>
+ * Example XPath 2.0: {@code //ClassType[pmd-java:typeIs('java.lang.String')]}
  *
- * <p>Returns true if the type of the node matches, false otherwise.
+ * <p>
+ * Returns true if the type of the node matches, false otherwise.
  */
 public class BaseContextNodeTestFun<T extends JavaNode> extends BaseJavaXPathFunction {
 
-    static final Type[] SINGLE_STRING_SEQ = {Type.SINGLE_STRING};
+    static final Type[] SINGLE_STRING_SEQ = { Type.SINGLE_STRING };
     private final Class<T> klass;
     private final BiPredicate<String, T> checker;
 
-    public static final BaseJavaXPathFunction TYPE_IS_EXACTLY = new BaseContextNodeTestFun<>(TypeNode.class, "typeIsExactly", TypeTestUtil::isExactlyA);
-    public static final BaseJavaXPathFunction TYPE_IS = new BaseContextNodeTestFun<>(TypeNode.class, "typeIs", TypeTestUtil::isA);
-    public static final BaseJavaXPathFunction HAS_ANNOTATION = new BaseContextNodeTestFun<>(Annotatable.class, "hasAnnotation", (name, node) -> node.isAnnotationPresent(name));
+    public static final BaseJavaXPathFunction TYPE_IS_EXACTLY =
+            new BaseContextNodeTestFun<>(TypeNode.class, "typeIsExactly", TypeTestUtil::isExactlyA);
+    public static final BaseJavaXPathFunction TYPE_IS =
+            new BaseContextNodeTestFun<>(TypeNode.class, "typeIs", TypeTestUtil::isA);
+    public static final BaseJavaXPathFunction HAS_ANNOTATION = new BaseContextNodeTestFun<>(Annotatable.class,
+            "hasAnnotation", (name, node) -> node.isAnnotationPresent(name));
 
     protected BaseContextNodeTestFun(Class<T> klass, String localName, BiPredicate<String, T> checker) {
         super(localName);

@@ -33,9 +33,11 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     public Object visit(ASTExpressionStatement node, Object data) {
         Node nextSibling = node.asStream().followingSiblings().first();
         if (nextSibling instanceof ASTExpressionStatement) {
-            @Nullable JVariableSymbol variable = getVariableAppended(node);
+            @Nullable
+            JVariableSymbol variable = getVariableAppended(node);
             if (variable != null) {
-                @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
+                @Nullable
+                JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
                 if (nextVariable != null && nextVariable.equals(variable)) {
                     asCtx(data).addViolation(node);
                 }
@@ -48,11 +50,12 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         Node nextSibling = node.asStream().followingSiblings().first();
         if (nextSibling instanceof ASTExpressionStatement) {
-            @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
+            @Nullable
+            JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
             if (nextVariable != null) {
                 ASTVariableId varDecl = nextVariable.tryGetNode();
                 if (varDecl != null && node.getVarIds().any(it -> it == varDecl)
-                    && isStringBuilderAppend(varDecl.getInitializer())) {
+                        && isStringBuilderAppend(varDecl.getInitializer())) {
                     asCtx(data).addViolation(node);
                 }
             }
@@ -60,12 +63,12 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         return data;
     }
 
-
     private @Nullable JVariableSymbol getVariableAppended(ASTExpressionStatement node) {
         ASTExpression expr = node.getExpr();
         if (expr instanceof ASTMethodCall) {
             return getAsVarAccess(getAppendChainQualifier(expr));
-        } else if (expr instanceof ASTAssignmentExpression) {
+        }
+        else if (expr instanceof ASTAssignmentExpression) {
             ASTExpression rhs = ((ASTAssignmentExpression) expr).getRightOperand();
             return getAppendChainQualifier(rhs) != null ? getAssignmentLhsAsVar(expr) : null;
         }
@@ -97,8 +100,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     private boolean isStringBuilderAppend(@Nullable ASTExpression e) {
         if (e instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) e;
-            return "append".equals(call.getMethodName())
-                && isStringBuilderAppend(call.getOverloadSelectionInfo());
+            return "append".equals(call.getMethodName()) && isStringBuilderAppend(call.getOverloadSelectionInfo());
         }
         return false;
     }
@@ -110,7 +112,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
 
         JExecutableSymbol symbol = result.getMethodType().getSymbol();
         return TypeTestUtil.isExactlyA(StringBuffer.class, symbol.getEnclosingClass())
-            || TypeTestUtil.isExactlyA(StringBuilder.class, symbol.getEnclosingClass());
+                || TypeTestUtil.isExactlyA(StringBuilder.class, symbol.getEnclosingClass());
     }
 
 }

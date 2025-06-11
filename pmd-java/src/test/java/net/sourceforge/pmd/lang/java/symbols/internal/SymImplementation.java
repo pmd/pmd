@@ -36,9 +36,8 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 
 /**
- * Abstracts over which symbol implementation to use. Allows running
- * the same tests with different implementations of the symbol.
- * Use with {@link ParameterizedTest} and {@link EnumSource}.
+ * Abstracts over which symbol implementation to use. Allows running the same tests with different implementations of
+ * the symbol. Use with {@link ParameterizedTest} and {@link EnumSource}.
  */
 public enum SymImplementation {
     ASM {
@@ -63,8 +62,7 @@ public enum SymImplementation {
                 @Override
                 public @NotNull JClassSymbol getByBinaryName(String binaryName) {
                     return ast.descendants(ASTTypeDeclaration.class).crossFindBoundaries()
-                              .filter(it -> it.getBinaryName().equals(binaryName))
-                              .firstOrThrow().getSymbol();
+                            .filter(it -> it.getBinaryName().equals(binaryName)).firstOrThrow().getSymbol();
                 }
 
             };
@@ -93,15 +91,15 @@ public enum SymImplementation {
         return findClass(aClass.getName()).getDeclaration(aClass);
     }
 
-
     public void assertAllFieldsMatch(Class<?> actualClass, JClassSymbol sym) {
         List<JFieldSymbol> fs = sym.getDeclaredFields();
-        Set<Field> actualFields = Arrays.stream(actualClass.getDeclaredFields()).filter(f -> !f.isSynthetic()).collect(Collectors.toSet());
+        Set<Field> actualFields = Arrays.stream(actualClass.getDeclaredFields()).filter(f -> !f.isSynthetic())
+                .collect(Collectors.toSet());
         assertEquals(actualFields.size(), fs.size());
 
         for (final Field f : actualFields) {
-            JFieldSymbol fSym = fs.stream().filter(it -> it.getSimpleName().equals(f.getName()))
-                                  .findFirst().orElseThrow(AssertionError::new);
+            JFieldSymbol fSym = fs.stream().filter(it -> it.getSimpleName().equals(f.getName())).findFirst()
+                    .orElseThrow(AssertionError::new);
 
             // Type matches
             final JTypeMirror expectedType = typeMirrorOf(sym.getTypeSystem(), f.getType());
@@ -117,12 +115,13 @@ public enum SymImplementation {
 
     public void assertAllMethodsMatch(Class<?> actualClass, JClassSymbol sym) {
         List<JMethodSymbol> ms = sym.getDeclaredMethods();
-        Set<Method> actualMethods = Arrays.stream(actualClass.getDeclaredMethods()).filter(m -> !m.isSynthetic()).collect(Collectors.toSet());
+        Set<Method> actualMethods = Arrays.stream(actualClass.getDeclaredMethods()).filter(m -> !m.isSynthetic())
+                .collect(Collectors.toSet());
         assertEquals(actualMethods.size(), ms.size());
 
         for (final Method m : actualMethods) {
-            JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName()))
-                                   .findFirst().orElseThrow(AssertionError::new);
+            JMethodSymbol mSym = ms.stream().filter(it -> it.getSimpleName().equals(m.getName())).findFirst()
+                    .orElseThrow(AssertionError::new);
 
             assertMethodMatch(m, mSym);
         }
@@ -147,10 +146,13 @@ public enum SymImplementation {
             if (p.isNamePresent()) {
                 assertEquals(p.getName(), pSym.getSimpleName());
                 assertEquals(Modifier.isFinal(p.getModifiers()), pSym.isFinal());
-            } else {
-                System.out.println("WARN: test classes were not compiled with -parameters, parameters not fully checked");
             }
-        } else {
+            else {
+                System.out
+                        .println("WARN: test classes were not compiled with -parameters, parameters not fully checked");
+            }
+        }
+        else {
             // note that this asserts, that the param names are unavailable
             assertEquals("", pSym.getSimpleName());
             assertFalse(pSym.isFinal());
@@ -163,10 +165,9 @@ public enum SymImplementation {
     }
 
     /**
-     * In order to test simultaneously types defined in the same compilation unit,
-     * we must store them somewhere. The fixture stores the parsed AST and allows
-     * convenient access to the parsed types. This makes sure that we don't parse
-     * the file once per lookup.
+     * In order to test simultaneously types defined in the same compilation unit, we must store them somewhere. The
+     * fixture stores the parsed AST and allows convenient access to the parsed types. This makes sure that we don't
+     * parse the file once per lookup.
      */
     public abstract static class Fixture {
         private final String packageName;
@@ -196,6 +197,5 @@ public enum SymImplementation {
             return (JClassType) symbol.getTypeSystem().declaration(symbol);
         }
     }
-
 
 }

@@ -22,7 +22,7 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
         }
 
         NodeStream<ASTReturnStatement> returnsExceptLast =
-            node.getBody().descendants(ASTReturnStatement.class).dropLast(1);
+                node.getBody().descendants(ASTReturnStatement.class).dropLast(1);
 
         for (ASTReturnStatement returnStmt : returnsExceptLast) {
             asCtx(data).addViolation(returnStmt);

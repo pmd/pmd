@@ -22,12 +22,10 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
         super(id);
     }
 
-
     @Override
     protected <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 
     @Override
     public ASTExpression getCondition() {
@@ -35,9 +33,9 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
     }
 
     /**
-     * Returns the statement nested within the {@linkplain ASTForInit init clause}, if it exists.
-     * This is either a {@linkplain ASTLocalVariableDeclaration local variable declaration} or a
-     * {@linkplain ASTStatementExpressionList statement expression list}.
+     * Returns the statement nested within the {@linkplain ASTForInit init clause}, if it exists. This is either a
+     * {@linkplain ASTLocalVariableDeclaration local variable declaration} or a {@linkplain ASTStatementExpressionList
+     * statement expression list}.
      */
     public @Nullable ASTStatement getInit() {
         ASTForInit init = AstImplUtil.getChildAs(this, 0, ASTForInit.class);
@@ -51,6 +49,5 @@ public final class ASTForStatement extends AbstractStatement implements ASTLoopS
         ASTForUpdate update = firstChild(ASTForUpdate.class);
         return update == null ? null : update.getExprList();
     }
-
 
 }

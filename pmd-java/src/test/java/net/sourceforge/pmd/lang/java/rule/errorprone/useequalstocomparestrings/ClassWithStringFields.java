@@ -8,5 +8,6 @@ public class ClassWithStringFields {
     private String string1 = "a";
     private String string2 = "a";
 
-    public void bar() { }
+    public void bar() {
+    }
 }

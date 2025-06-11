@@ -23,12 +23,8 @@ class CachingShadowChainNode<S, I> extends ShadowChainNodeBase<S, I> {
     // that knew results
     private final Map<String, OptionalBool> keysThatIKnow = new HashMap<>();
 
-    protected CachingShadowChainNode(@NonNull ShadowChainNode<S, I> parent,
-                                     Map<String, List<S>> known,
-                                     NameResolver<? extends S> resolver,
-                                     boolean shadowBarrier,
-                                     I scopeTag,
-                                     BinaryOperator<List<S>> merger) {
+    protected CachingShadowChainNode(@NonNull ShadowChainNode<S, I> parent, Map<String, List<S>> known,
+            NameResolver<? extends S> resolver, boolean shadowBarrier, I scopeTag, BinaryOperator<List<S>> merger) {
         super(parent, shadowBarrier, scopeTag, resolver, merger);
         this.cache = known;
     }
@@ -58,7 +54,8 @@ class CachingShadowChainNode<S, I> extends ShadowChainNodeBase<S, I> {
         S first = super.resolveFirst(name);
         if (first == null) {
             cache.put(name, Collections.emptyList());
-        } else if (resolver instanceof NameResolver.SingleNameResolver && isShadowBarrier()) {
+        }
+        else if (resolver instanceof NameResolver.SingleNameResolver && isShadowBarrier()) {
             // the search is complete
             cache.put(name, Collections.singletonList(first));
         }
@@ -70,16 +67,14 @@ class CachingShadowChainNode<S, I> extends ShadowChainNodeBase<S, I> {
         OptionalBool resolverKnows = resolver.knows(simpleName);
         if (resolverKnows.isKnown()) {
             return resolverKnows;
-        } else {
+        }
+        else {
             return keysThatIKnow.getOrDefault(simpleName, OptionalBool.UNKNOWN);
         }
     }
 
     @Override
     public String toString() {
-        return "Cached("
-            + "cache size=" + cache.size() + ", "
-            + "resolver=" + super.toString()
-            + ')';
+        return "Cached(" + "cache size=" + cache.size() + ", " + "resolver=" + super.toString() + ')';
     }
 }

@@ -22,10 +22,9 @@ import net.sourceforge.pmd.util.GraphUtil;
 import net.sourceforge.pmd.util.GraphUtil.DotColor;
 
 /**
- * A graph to walk over ivar dependencies in an efficient way.
- * This is not a general purpose implementation, there's no cleanup
- * of the vertices whatsoever, meaning each algo ({@link #mergeCycles()}
- * and {@link #topologicalSort()}) can only be done once reliably.
+ * A graph to walk over ivar dependencies in an efficient way. This is not a general purpose implementation, there's no
+ * cleanup of the vertices whatsoever, meaning each algo ({@link #mergeCycles()} and {@link #topologicalSort()}) can
+ * only be done once reliably.
  */
 class Graph<T> {
 
@@ -43,8 +42,7 @@ class Graph<T> {
     }
 
     /**
-     * Implicitly add both nodes to the graph and record a directed
-     * edge between the first and the second.
+     * Implicitly add both nodes to the graph and record a directed edge between the first and the second.
      */
     void addEdge(Vertex<T> start, Vertex<T> end) {
         Objects.requireNonNull(end);
@@ -70,8 +68,7 @@ class Graph<T> {
     }
 
     /**
-     * Returns a list in which the vertices of this graph are sorted
-     * in the following way:
+     * Returns a list in which the vertices of this graph are sorted in the following way:
      *
      * if there exists an edge u -> v, then u comes AFTER v in the list.
      */
@@ -97,9 +94,8 @@ class Graph<T> {
     }
 
     /**
-     * Merge strongly connected components into a single node each.
-     * This turns the graph into a DAG. This modifies the graph in
-     * place, no cleanup of the vertices is performed.
+     * Merge strongly connected components into a single node each. This turns the graph into a DAG. This modifies the
+     * graph in place, no cleanup of the vertices is performed.
      */
     void mergeCycles() {
         // https://en.wikipedia.org/wiki/Tarjan's_strongly_connected_components_algorithm
@@ -124,7 +120,8 @@ class Graph<T> {
                 // Successor has not yet been visited; recurse on it
                 strongConnect(state, w);
                 v.lowLink = min(w.lowLink, v.lowLink);
-            } else if (w.onStack) {
+            }
+            else if (w.onStack) {
                 // Successor w is in stack S and hence in the current SCC
                 // If w is not on stack, then (v, w) is a cross-edge in the DFS tree and must be ignored
                 // Note: The next line may look odd - but is correct.
@@ -141,7 +138,8 @@ class Graph<T> {
                 w.onStack = false;
                 // merge w into v
                 v.absorb(w);
-            } while (w != v); // NOPMD CompareObjectsWithEquals
+            }
+            while (w != v); // NOPMD CompareObjectsWithEquals
         }
     }
 
@@ -157,12 +155,7 @@ class Graph<T> {
 
     @Override
     public String toString() {
-        return GraphUtil.toDot(
-            vertices,
-            this::successorsOf,
-            v -> DotColor.BLACK,
-            v -> v.data.toString()
-        );
+        return GraphUtil.toDot(vertices, this::successorsOf, v -> DotColor.BLACK, v -> v.data.toString());
     }
 
     private static final class TarjanState<T> {
@@ -206,7 +199,6 @@ class Graph<T> {
             return data.toString();
         }
     }
-
 
     /** Maintains uniqueness of nodes wrt data. */
     static class UniqueGraph<T> extends Graph<T> {

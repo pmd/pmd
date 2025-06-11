@@ -52,15 +52,12 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     public static final PropertyDescriptor<List<String>> CHECK_CONTINUE_LOOP_TYPES = propertyFor("continue");
     public static final PropertyDescriptor<List<String>> CHECK_RETURN_LOOP_TYPES = propertyFor("return");
 
-
-
     public AvoidBranchingStatementAsLastInLoopRule() {
         super(ASTBreakStatement.class, ASTContinueStatement.class, ASTReturnStatement.class);
         definePropertyDescriptor(CHECK_BREAK_LOOP_TYPES);
         definePropertyDescriptor(CHECK_CONTINUE_LOOP_TYPES);
         definePropertyDescriptor(CHECK_RETURN_LOOP_TYPES);
     }
-
 
     @Override
     public Object visit(ASTBreakStatement node, Object data) {
@@ -70,7 +67,6 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
         }
         return check(CHECK_BREAK_LOOP_TYPES, node, data);
     }
-
 
     protected Object check(PropertyDescriptor<List<String>> property, Node node, Object data) {
         Node parent = node.getParent();
@@ -86,11 +82,13 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
             if (hasPropertyValue(property, CHECK_FOR)) {
                 asCtx(data).addViolation(node);
             }
-        } else if (parent instanceof ASTWhileStatement) {
+        }
+        else if (parent instanceof ASTWhileStatement) {
             if (hasPropertyValue(property, CHECK_WHILE)) {
                 asCtx(data).addViolation(node);
             }
-        } else if (parent instanceof ASTDoStatement) {
+        }
+        else if (parent instanceof ASTDoStatement) {
             if (hasPropertyValue(property, CHECK_DO)) {
                 asCtx(data).addViolation(node);
             }
@@ -98,23 +96,19 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
         return data;
     }
 
-
     protected boolean hasPropertyValue(PropertyDescriptor<List<String>> property, String value) {
         return getProperty(property).contains(value);
     }
-
 
     @Override
     public Object visit(ASTContinueStatement node, Object data) {
         return check(CHECK_CONTINUE_LOOP_TYPES, node, data);
     }
 
-
     @Override
     public Object visit(ASTReturnStatement node, Object data) {
         return check(CHECK_RETURN_LOOP_TYPES, node, data);
     }
-
 
     @Override
     public String dysfunctionReason() {
@@ -122,15 +116,15 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     }
 
     private static PropertyDescriptor<List<String>> propertyFor(String stmtName) {
-        return PropertyFactory.enumListProperty("check" + StringUtils.capitalize(stmtName) + "LoopTypes", LOOP_TYPES_MAPPINGS)
-                .desc("List of loop types in which " + stmtName + " statements will be checked")
-                .defaultValue(DEFAULTS)
+        return PropertyFactory
+                .enumListProperty("check" + StringUtils.capitalize(stmtName) + "LoopTypes", LOOP_TYPES_MAPPINGS)
+                .desc("List of loop types in which " + stmtName + " statements will be checked").defaultValue(DEFAULTS)
                 .build();
     }
 
     public boolean checksNothing() {
 
         return getProperty(CHECK_BREAK_LOOP_TYPES).isEmpty() && getProperty(CHECK_CONTINUE_LOOP_TYPES).isEmpty()
-            && getProperty(CHECK_RETURN_LOOP_TYPES).isEmpty();
+                && getProperty(CHECK_RETURN_LOOP_TYPES).isEmpty();
     }
 }

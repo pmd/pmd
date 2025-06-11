@@ -38,9 +38,11 @@ final class TypeSigParser {
             do {
                 cur = classType(cur, b);
                 superItfs.add(b.pop());
-            } while (b.charAt(cur) == 'L');
+            }
+            while (b.charAt(cur) == 'L');
             b.pushList(superItfs);
-        } else {
+        }
+        else {
             b.pushList(emptyList());
         }
         b.push(superClass);
@@ -61,12 +63,14 @@ final class TypeSigParser {
         int cur = b.consumeChar(start, '(', "parameter types");
         if (b.charAt(cur) == ')') {
             b.pushList(emptyList()); // empty parameters
-        } else {
+        }
+        else {
             List<JTypeMirror> params = new ArrayList<>(1);
             do {
                 cur = typeSignature(cur, b);
                 params.add(b.pop());
-            } while (b.charAt(cur) != ')');
+            }
+            while (b.charAt(cur) != ')');
             b.pushList(params);
         }
         cur = b.consumeChar(cur, ')');
@@ -86,9 +90,11 @@ final class TypeSigParser {
                 }
                 cur = typeSignature(cur, b);
                 thrown.add(b.pop());
-            } while (b.charAt(cur) == '^');
+            }
+            while (b.charAt(cur) == '^');
             b.pushList(thrown);
-        } else {
+        }
+        else {
             b.pushList(emptyList());
         }
         return cur;
@@ -114,7 +120,8 @@ final class TypeSigParser {
 
         if (bounds.isEmpty()) {
             b.push(b.ts.OBJECT);
-        } else {
+        }
+        else {
             b.push(b.ts.glb(bounds));
         }
         return cur;
@@ -127,29 +134,29 @@ final class TypeSigParser {
     private static int typeSignature(final int start, TypeScanner b, boolean acceptVoid) {
         char firstChar = b.charAt(start);
         switch (firstChar) {
-        case 'V':
-            if (!acceptVoid) {
-                throw b.expected("a type, got void", start);
-            }
-            // intentional fallthrough
-        case 'Z':
-        case 'C':
-        case 'B':
-        case 'S':
-        case 'I':
-        case 'F':
-        case 'J':
-        case 'D':
-            b.push(b.getBaseType(firstChar));
-            return start + 1;
-        case '[':
-            return arrayType(start, b);
-        case 'L':
-            return classType(start, b);
-        case 'T':
-            return typeVar(start, b);
-        default:
-            throw b.expected("type", start);
+            case 'V':
+                if (!acceptVoid) {
+                    throw b.expected("a type, got void", start);
+                }
+                // intentional fallthrough
+            case 'Z':
+            case 'C':
+            case 'B':
+            case 'S':
+            case 'I':
+            case 'F':
+            case 'J':
+            case 'D':
+                b.push(b.getBaseType(firstChar));
+                return start + 1;
+            case '[':
+                return arrayType(start, b);
+            case 'L':
+                return classType(start, b);
+            case 'T':
+                return typeVar(start, b);
+            default:
+                throw b.expected("type", start);
         }
     }
 
@@ -187,7 +194,8 @@ final class TypeSigParser {
             cur = b.consumeChar(cur, '>');
             b.pushList(l);
             return cur;
-        } else {
+        }
+        else {
             b.pushList(emptyList());
             return start;
         }
@@ -197,19 +205,18 @@ final class TypeSigParser {
         int cur = start;
         char firstChar = b.charAt(cur);
         switch (firstChar) {
-        case '*':
-            b.push(b.ts.UNBOUNDED_WILD);
-            return cur + 1;
-        case '+':
-        case '-':
-            cur = typeSignature(cur + 1, b);
-            b.push(b.ts.wildcard(firstChar == '+', b.pop()));
-            return cur;
-        default:
-            return typeSignature(cur, b);
+            case '*':
+                b.push(b.ts.UNBOUNDED_WILD);
+                return cur + 1;
+            case '+':
+            case '-':
+                cur = typeSignature(cur + 1, b);
+                b.push(b.ts.wildcard(firstChar == '+', b.pop()));
+                return cur;
+            default:
+                return typeSignature(cur, b);
         }
     }
-
 
     private static int arrayType(final int start, TypeScanner b) {
         int cur = b.consumeChar(start, '[', "array type");
@@ -217,7 +224,6 @@ final class TypeSigParser {
         b.push(b.ts.arrayType(b.pop()));
         return cur;
     }
-
 
     private static int typeVar(final int start, TypeScanner b) {
         int cur = b.consumeChar(start, 'T', "type variable");
@@ -229,7 +235,6 @@ final class TypeSigParser {
         b.push(b.lookupTvar(nameBuilder.toString()));
         return cur;
     }
-
 
     private static int classId(final int start, SignatureScanner b, StringBuilder internalName) {
         int cur = start;
@@ -249,7 +254,8 @@ final class TypeSigParser {
         }
         do {
             cur++;
-        } while (isIdentifierChar(b.charAt(cur)));
+        }
+        while (isIdentifierChar(b.charAt(cur)));
 
         if (sb != null) {
             b.dumpChars(start, cur, sb);
@@ -257,20 +263,19 @@ final class TypeSigParser {
         return cur;
     }
 
-
     private static boolean isIdentifierChar(char c) {
         switch (c) {
-        case '.':
-        case ';':
-        case ':':
-        case '[':
-        case '/':
-        case '<':
-        case '>':
-        case 0:
-            return false;
-        default:
-            return true;
+            case '.':
+            case ';':
+            case ':':
+            case '[':
+            case '/':
+            case '<':
+            case '>':
+            case 0:
+                return false;
+            default:
+                return true;
         }
     }
 
@@ -327,35 +332,43 @@ final class TypeSigParser {
         }
 
         /**
-         * Makes a class symbol from its internal name. This should return
-         * non-null, if the symbol is not found (linkage error) then return
-         * an unresolved symbol.
+         * Makes a class symbol from its internal name. This should return non-null, if the symbol is not found (linkage
+         * error) then return an unresolved symbol.
          */
         @NonNull
         public abstract JClassSymbol makeClassSymbol(String internalName, int observedArity);
 
-
         public JTypeMirror getBaseType(char baseType) {
             switch (baseType) {
-            case 'V': return ts.NO_TYPE;
-            case 'Z': return ts.BOOLEAN;
-            case 'C': return ts.CHAR;
-            case 'B': return ts.BYTE;
-            case 'S': return ts.SHORT;
-            case 'I': return ts.INT;
-            case 'F': return ts.FLOAT;
-            case 'J': return ts.LONG;
-            case 'D': return ts.DOUBLE;
-            default: throw new IllegalArgumentException("'" + baseType + "' is not a valid base type descriptor");
+                case 'V':
+                    return ts.NO_TYPE;
+                case 'Z':
+                    return ts.BOOLEAN;
+                case 'C':
+                    return ts.CHAR;
+                case 'B':
+                    return ts.BYTE;
+                case 'S':
+                    return ts.SHORT;
+                case 'I':
+                    return ts.INT;
+                case 'F':
+                    return ts.FLOAT;
+                case 'J':
+                    return ts.LONG;
+                case 'D':
+                    return ts.DOUBLE;
+                default:
+                    throw new IllegalArgumentException("'" + baseType + "' is not a valid base type descriptor");
             }
         }
 
         public JTypeMirror lookupTvar(String name) {
-            @Nullable SubstVar mapped = lexicalScope.apply(name);
+            @Nullable
+            SubstVar mapped = lexicalScope.apply(name);
             if (mapped == null) {
                 throw new IllegalArgumentException(
-                    "The lexical scope " + lexicalScope + " does not contain an entry for type variable " + name
-                );
+                        "The lexical scope " + lexicalScope + " does not contain an entry for type variable " + name);
             }
             return mapped;
         }

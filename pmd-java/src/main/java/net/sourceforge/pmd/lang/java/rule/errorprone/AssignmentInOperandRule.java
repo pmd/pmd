@@ -25,26 +25,20 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> ALLOW_IF_DESCRIPTOR =
-        booleanProperty("allowIf")
-            .desc("Allow assignment within the conditional expression of an if statement")
+    private static final PropertyDescriptor<Boolean> ALLOW_IF_DESCRIPTOR = booleanProperty("allowIf")
+            .desc("Allow assignment within the conditional expression of an if statement").defaultValue(false).build();
+
+    private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR = booleanProperty("allowFor")
+            .desc("Allow assignment within the conditional expression of a for statement").defaultValue(false).build();
+
+    private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR = booleanProperty("allowWhile")
+            .desc("Allow assignment within the conditional expression of a while statement").defaultValue(false)
+            .build();
+
+    private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR = booleanProperty(
+            "allowIncrementDecrement")
+            .desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement")
             .defaultValue(false).build();
-
-    private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR =
-        booleanProperty("allowFor")
-            .desc("Allow assignment within the conditional expression of a for statement")
-            .defaultValue(false).build();
-
-    private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR =
-            booleanProperty("allowWhile")
-                    .desc("Allow assignment within the conditional expression of a while statement")
-                    .defaultValue(false).build();
-
-    private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR =
-            booleanProperty("allowIncrementDecrement")
-                    .desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement")
-                    .defaultValue(false).build();
-
 
     public AssignmentInOperandRule() {
         super(ASTAssignmentExpression.class, ASTUnaryExpression.class);
@@ -76,8 +70,9 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
             return;
         }
         if (parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR)
-            || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
-            || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel && !getProperty(ALLOW_FOR_DESCRIPTOR)) {
+                || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
+                || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel
+                        && !getProperty(ALLOW_FOR_DESCRIPTOR)) {
 
             ctx.addViolation(impureExpr);
         }

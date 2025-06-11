@@ -6,15 +6,20 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeSameInstanceAs
-import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBeA
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.JClassType
 import net.sourceforge.pmd.lang.java.types.JTypeVar
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldBeA
 
-class TypeParamScopingTest : ParserTestSpec({
-    parserTestContainer("Scoping of type parameters") {
-        val acu = parser.withProcessing().parse("""
+class TypeParamScopingTest :
+    ParserTestSpec({
+        parserTestContainer("Scoping of type parameters") {
+            val acu =
+                parser
+                    .withProcessing()
+                    .parse(
+                        """
             package myTest;
 
             import somewhere.T;
@@ -35,85 +40,103 @@ class TypeParamScopingTest : ParserTestSpec({
             class Other {
                 T i; // the import
             }
-        """)
+        """
+                    )
 
-        val (fooT, inner2T) =
-                acu.descendants(ASTTypeParameter::class.java)
-                   .crossFindBoundaries().toList()
+            val (fooT, inner2T) =
+                acu.descendants(ASTTypeParameter::class.java).crossFindBoundaries().toList()
 
-        val (insideFoo, insideInner, insideInner2, insideOther) =
-                acu.descendants(ASTFieldDeclaration::class.java)
-                   .crossFindBoundaries().toList()
+            val (insideFoo, insideInner, insideInner2, insideOther) =
+                acu.descendants(ASTFieldDeclaration::class.java).crossFindBoundaries().toList()
 
-        doTest("Inside Foo: T is Foo#T") {
-            insideFoo.symbolTable.shouldResolveTypeTo("T", fooT.typeMirror)
-        }
+            doTest("Inside Foo: T is Foo#T") {
+                insideFoo.symbolTable.shouldResolveTypeTo("T", fooT.typeMirror)
+            }
 
-        doTest("Inside Inner: T is Foo#T") {
-            insideInner.symbolTable.shouldResolveTypeTo("T", fooT.typeMirror)
-        }
+            doTest("Inside Inner: T is Foo#T") {
+                insideInner.symbolTable.shouldResolveTypeTo("T", fooT.typeMirror)
+            }
 
-        doTest("Inside Inner2: T is Inner2#T, shadowed") {
-            insideInner2.symbolTable.shouldResolveTypeTo("T", inner2T.typeMirror)
-        }
+            doTest("Inside Inner2: T is Inner2#T, shadowed") {
+                insideInner2.symbolTable.shouldResolveTypeTo("T", inner2T.typeMirror)
+            }
 
-        doTest("Inside Other: T is imported, type params are not in scope") {
-            insideOther.symbolTable.shouldResolveTypeTo<JClassType>("T").let {
-                it.symbol::getCanonicalName shouldBe "somewhere.T"
-                it.symbol::isUnresolved shouldBe true
+            doTest("Inside Other: T is imported, type params are not in scope") {
+                insideOther.symbolTable.shouldResolveTypeTo<JClassType>("T").let {
+                    it.symbol::getCanonicalName shouldBe "somewhere.T"
+                    it.symbol::isUnresolved shouldBe true
+                }
             }
         }
-    }
 
-    parserTestContainer("Scoping inside a type param section") {
-        doTest("Bounded by a param to the right") {
-            val acu = parser.withProcessing().parse("""
+        parserTestContainer("Scoping inside a type param section") {
+            doTest("Bounded by a param to the right") {
+                val acu =
+                    parser
+                        .withProcessing()
+                        .parse(
+                            """
             package myTest;
 
             class Foo<T extends X, X> {}
 
-            """)
+            """
+                        )
 
-            val (t, x) = acu.descendants(ASTTypeParameter::class.java).toList()
+                val (t, x) = acu.descendants(ASTTypeParameter::class.java).toList()
 
-            t.typeBoundNode.shouldBeA<ASTClassType> {
-                it.symbolTable.shouldResolveTypeTo<JTypeVar>("X", x.typeMirror)
+                t.typeBoundNode.shouldBeA<ASTClassType> {
+                    it.symbolTable.shouldResolveTypeTo<JTypeVar>("X", x.typeMirror)
+                }
             }
-        }
 
-        doTest("Bounded by a param to the left") {
-            val acu = parser.withProcessing().parse("""
+            doTest("Bounded by a param to the left") {
+                val acu =
+                    parser
+                        .withProcessing()
+                        .parse(
+                            """
             package myTest;
 
             class Foo<X, T extends X> {}
 
-            """)
+            """
+                        )
 
-            val (x, t) = acu.descendants(ASTTypeParameter::class.java).toList()
+                val (x, t) = acu.descendants(ASTTypeParameter::class.java).toList()
 
-            t.typeBoundNode.shouldBeA<ASTClassType> {
-                it.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
+                t.typeBoundNode.shouldBeA<ASTClassType> {
+                    it.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
+                }
             }
-        }
 
-        doTest("Bounded by itself") {
-            val acu = parser.withProcessing().parse("""
+            doTest("Bounded by itself") {
+                val acu =
+                    parser
+                        .withProcessing()
+                        .parse(
+                            """
             package myTest;
 
             class Foo<T extends Foo<T>> {}
 
-            """)
+            """
+                        )
 
-            val (t) = acu.descendants(ASTTypeParameter::class.java).toList()
+                val (t) = acu.descendants(ASTTypeParameter::class.java).toList()
 
-            t.typeBoundNode.shouldBeA<ASTClassType> {
-                it.symbolTable.shouldResolveTypeTo("T", t.typeMirror)
+                t.typeBoundNode.shouldBeA<ASTClassType> {
+                    it.symbolTable.shouldResolveTypeTo("T", t.typeMirror)
+                }
             }
         }
-    }
 
-    parserTestContainer("Type params of methods") {
-        val acu = parser.withProcessing().parse("""
+        parserTestContainer("Type params of methods") {
+            val acu =
+                parser
+                    .withProcessing()
+                    .parse(
+                        """
 
             package myTest;
 
@@ -134,54 +157,65 @@ class TypeParamScopingTest : ParserTestSpec({
                 @interface Y { }
             }
 
-            """)
+            """
+                    )
 
-        // type parameters
-        val (x, _, t2, _) = acu.descendants(ASTTypeParameter::class.java).toList()
+            // type parameters
+            val (x, _, t2, _) = acu.descendants(ASTTypeParameter::class.java).toList()
 
-        // parameters
-        val (pt, px) = acu.descendants(ASTFormalParameter::class.java).map { it.typeNode }.toList()
+            // parameters
+            val (pt, px) =
+                acu.descendants(ASTFormalParameter::class.java).map { it.typeNode }.toList()
 
-        // variables
-        val (vt, vx, vx2) = acu.descendants(ASTLocalVariableDeclaration::class.java).map { it.typeNode }.toList()
+            // variables
+            val (vt, vx, vx2) =
+                acu.descendants(ASTLocalVariableDeclaration::class.java)
+                    .map { it.typeNode }
+                    .toList()
 
-        // classes
-        val (_, localX, annotY) = acu.descendants(ASTTypeDeclaration::class.java).crossFindBoundaries().toList()
+            // classes
+            val (_, localX, annotY) =
+                acu.descendants(ASTTypeDeclaration::class.java).crossFindBoundaries().toList()
 
-        doTest("TParams of class are in scope inside method tparam declaration") {
-            t2.typeBoundNode.shouldBeA<ASTClassType> {
-                it.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
+            doTest("TParams of class are in scope inside method tparam declaration") {
+                t2.typeBoundNode.shouldBeA<ASTClassType> {
+                    it.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
+                }
             }
 
-        }
+            doTest("TParams of method are in scope in formal parameter section") {
+                pt.symbolTable shouldBe px.symbolTable
+                pt.symbolTable.shouldResolveTypeTo("T", t2.typeMirror)
+                px.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
+            }
 
-        doTest("TParams of method are in scope in formal parameter section") {
-            pt.symbolTable shouldBe px.symbolTable
-            pt.symbolTable.shouldResolveTypeTo("T", t2.typeMirror)
-            px.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
-        }
+            doTest("TParams of method are in scope in method body") {
+                for (node in listOf(vt, vx)) {
+                    node.symbolTable.shouldResolveTypeTo("T", t2.typeMirror)
+                    node.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
+                }
+            }
 
-        doTest("TParams of method are in scope in method body") {
-            for (node in listOf(vt, vx)) {
-                node.symbolTable.shouldResolveTypeTo("T", t2.typeMirror)
-                node.symbolTable.shouldResolveTypeTo("X", x.typeMirror)
+            doTest("TParams of method are *not* in scope in modifier list") {
+                val annot = acu.descendants(ASTAnnotation::class.java).first()!!
+                annot.symbolTable.shouldResolveTypeTo(
+                    "Y",
+                    annotY.typeMirror,
+                ) // not the Y of the method
+                annot.typeMirror.symbol.shouldBeSameInstanceAs(annotY.symbol)
+            }
+
+            doTest("Local class shadows type param") {
+                vx2.symbolTable.shouldResolveTypeTo("X", localX.typeMirror)
             }
         }
 
-        doTest("TParams of method are *not* in scope in modifier list") {
-            val annot = acu.descendants(ASTAnnotation::class.java).first()!!
-            annot.symbolTable.shouldResolveTypeTo("Y", annotY.typeMirror) // not the Y of the method
-            annot.typeMirror.symbol.shouldBeSameInstanceAs(annotY.symbol)
-        }
-
-        doTest("Local class shadows type param") {
-            vx2.symbolTable.shouldResolveTypeTo("X", localX.typeMirror)
-        }
-    }
-
-
-    parserTestContainer("Type parameters shadow member types") {
-        val acu = parser.withProcessing().parse("""
+        parserTestContainer("Type parameters shadow member types") {
+            val acu =
+                parser
+                    .withProcessing()
+                    .parse(
+                        """
 
             package myTest;
 
@@ -191,23 +225,22 @@ class TypeParamScopingTest : ParserTestSpec({
                     void m(T t) {} // the class
                 }
             }
-        """)
+        """
+                    )
 
-        val (fooClass, innerTClass) =
-                acu.descendants(ASTClassDeclaration::class.java).toList()
+            val (fooClass, innerTClass) = acu.descendants(ASTClassDeclaration::class.java).toList()
 
-        val (tparam) = fooClass.symbol.typeParameters
+            val (tparam) = fooClass.symbol.typeParameters
 
-        val (insideFoo, insideT) =
-                acu.descendants(ASTFormalParameter::class.java)
-                   .crossFindBoundaries().toList()
+            val (insideFoo, insideT) =
+                acu.descendants(ASTFormalParameter::class.java).crossFindBoundaries().toList()
 
-        doTest("Inside Foo: T is Foo#T") {
-            insideFoo.symbolTable.shouldResolveTypeTo("T", tparam)
+            doTest("Inside Foo: T is Foo#T") {
+                insideFoo.symbolTable.shouldResolveTypeTo("T", tparam)
+            }
+
+            doTest("Inside Foo.T: T is Foo.T") {
+                insideT.symbolTable.shouldResolveTypeTo("T", innerTClass.typeMirror)
+            }
         }
-
-        doTest("Inside Foo.T: T is Foo.T") {
-            insideT.symbolTable.shouldResolveTypeTo("T", innerTClass.typeMirror)
-        }
-    }
-})
+    })

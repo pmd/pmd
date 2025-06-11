@@ -14,18 +14,15 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
 import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
- * Strategy to walk the set of remaining free variables. Interdependent
- * variables must be solved together.
+ * Strategy to walk the set of remaining free variables. Interdependent variables must be solved together.
  */
 interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
 
     /**
-     * Picks the next batch of inference vars to resolve.
-     * Interdependent variables must be solved together.
+     * Picks the next batch of inference vars to resolve. Interdependent variables must be solved together.
      */
     @Override
     Set<InferenceVar> next();
-
 
     /**
      * Returns true if there is no more batch to process.
@@ -33,10 +30,9 @@ interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
     @Override
     boolean hasNext();
 
-
     /**
-     * Walk a DAG of the dependencies. Building the model is
-     * is linear instead of exponential like for the other strategy.
+     * Walk a DAG of the dependencies. Building the model is is linear instead of exponential like for the other
+     * strategy.
      */
     class GraphWalk implements VarWalkStrategy {
 
@@ -65,7 +61,8 @@ interface VarWalkStrategy extends Iterator<Set<InferenceVar>> {
             Set<InferenceVar> freeVars = ctx.getFreeVars();
             if (freeVars.isEmpty()) {
                 return Collections.emptyIterator();
-            } else if (freeVars.size() == 1) {
+            }
+            else if (freeVars.size() == 1) {
                 if (onlyBoundedVars && freeVars.iterator().next().hasOnlyPrimaryBound()) {
                     return Collections.emptyIterator();
                 }

@@ -31,19 +31,17 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
     private List<JTypeVar> tparams = Collections.emptyList();
     private List<UnresolvedClassImpl> childClasses = Collections.emptyList();
 
-    FlexibleUnresolvedClassImpl(TypeSystem ts,
-                                @Nullable JClassSymbol enclosing,
-                                String canonicalName) {
+    FlexibleUnresolvedClassImpl(TypeSystem ts, @Nullable JClassSymbol enclosing, String canonicalName) {
         super(ts, enclosing, canonicalName);
     }
 
     /**
-     * Set the number of type parameters of this type. If the arity was
-     * already set to a value different from {@value #UNKNOWN_ARITY},
-     * this does nothing: the unresolved type appears several times with
-     * inconsistent arities, which must be reported later.
+     * Set the number of type parameters of this type. If the arity was already set to a value different from
+     * {@value #UNKNOWN_ARITY}, this does nothing: the unresolved type appears several times with inconsistent arities,
+     * which must be reported later.
      *
-     * @param newArity New number of type parameters
+     * @param newArity
+     *            New number of type parameters
      */
     @Override
     void setTypeParameterCount(int newArity) {
@@ -68,7 +66,7 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
             }
         }
         FlexibleUnresolvedClassImpl newChild =
-            new FlexibleUnresolvedClassImpl(getTypeSystem(), this, getCanonicalName() + '.' + simpleName);
+                new FlexibleUnresolvedClassImpl(getTypeSystem(), this, getCanonicalName() + '.' + simpleName);
         childClasses.add(newChild);
         return newChild;
     }

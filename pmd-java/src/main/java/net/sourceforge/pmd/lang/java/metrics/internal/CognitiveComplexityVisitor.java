@@ -31,7 +31,6 @@ import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
-
 /**
  * Visitor for the Cognitive Complexity metric.
  *
@@ -43,10 +42,11 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     /** Instance. */
     public static final CognitiveComplexityVisitor INSTANCE = new CognitiveComplexityVisitor();
 
-    public enum BooleanOp { AND, OR }
+    public enum BooleanOp {
+        AND, OR
+    }
 
     public static class State {
-
 
         private int complexity = 0;
         private int nestingLevel = 0;
@@ -58,9 +58,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
             this.methodStack = new ArrayDeque<>();
             // push enclosing methods on the stack
             // so that the stack is independent of where we started the visitor;
-            topNode.ancestors()
-                   .filterIs(ASTMethodDeclaration.class)
-                   .forEach(methodStack::addLast);
+            topNode.ancestors().filterIs(ASTMethodDeclaration.class).forEach(methodStack::addLast);
 
         }
 
@@ -117,13 +115,13 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
                 // This is an arbitrary decision that may cause FPs...
                 // Specifically it matters when anonymous classes are involved.
                 // void outer() {
-                //     Runnable r = new Runnable(){
-                //       public void run(){
-                //         outer();
-                //       }
-                //     };
+                // Runnable r = new Runnable(){
+                // public void run(){
+                // outer();
+                // }
+                // };
                 //
-                //     r = () -> outer();
+                // r = () -> outer();
                 // }
                 //
                 // If we only consider the top of the stack, then within the anonymous class, `outer()`
@@ -140,9 +138,8 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
 
         @Override
         public String toString() {
-            return "State{complexity=" + complexity
-                + ", nestingLevel=" + nestingLevel
-                + ", currentBooleanOperation=" + currentBooleanOperation + '}';
+            return "State{complexity=" + complexity + ", nestingLevel=" + nestingLevel + ", currentBooleanOperation="
+                    + currentBooleanOperation + '}';
         }
     }
 
@@ -199,7 +196,8 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
         BinaryOp op = node.getOperator();
         if (op == BinaryOp.CONDITIONAL_AND) {
             state.booleanOperation(BooleanOp.AND);
-        } else if (op == BinaryOp.CONDITIONAL_OR) {
+        }
+        else if (op == BinaryOp.CONDITIONAL_OR) {
             state.booleanOperation(BooleanOp.OR);
         }
         return visitChildren(node, state);
@@ -274,7 +272,6 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
         return nonStructural(node, state);
     }
 
-
     @Override
     public Void visit(ASTWhileStatement node, State state) {
         return structural(node, state);
@@ -294,7 +291,6 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     public Void visit(ASTConditionalExpression node, State state) {
         return structural(node, state);
     }
-
 
     private Void nonStructural(JavaNode node, State state) {
         state.increaseNestingLevel();

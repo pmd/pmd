@@ -11,9 +11,14 @@ import net.sourceforge.pmd.lang.java.types.shouldHaveType
 import net.sourceforge.pmd.lang.java.types.typeDsl
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
-class LocalTypeScopesTest : ParserTestSpec({
-    parserTestContainer("Scoping of types in a compilation unit") {
-        val acu = parser.withProcessing().parse("""
+class LocalTypeScopesTest :
+    ParserTestSpec({
+        parserTestContainer("Scoping of types in a compilation unit") {
+            val acu =
+                parser
+                    .withProcessing()
+                    .parse(
+                        """
             package myTest;
 
             import java.util.List;
@@ -29,29 +34,34 @@ class LocalTypeScopesTest : ParserTestSpec({
             class Other {
                 Inner i;
             }
-        """)
+        """
+                    )
 
-        val (foo, inner, other) =
+            val (foo, inner, other) =
                 acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-        val (insideFoo, _, insideOther) =
+            val (insideFoo, _, insideOther) =
                 acu.descendants(ASTFieldDeclaration::class.java).crossFindBoundaries().toList()
 
-        doTest("Inside a type: other toplevel types and inner classes are in scope") {
-            insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("Foo", foo)
-            insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("Inner", inner)
-            insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("Other", other)
+            doTest("Inside a type: other toplevel types and inner classes are in scope") {
+                insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("Foo", foo)
+                insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("Inner", inner)
+                insideFoo.symbolTable.shouldResolveTypeTo<JClassType>("Other", other)
+            }
+
+            doTest("Inside a sibling: inner classes are not in scope") {
+                insideOther.symbolTable.shouldResolveTypeTo<JClassType>("Foo", foo)
+                insideOther.symbolTable.types().resolveFirst("Inner") shouldBe null
+                insideOther.symbolTable.shouldResolveTypeTo<JClassType>("Other", other)
+            }
         }
 
-        doTest("Inside a sibling: inner classes are not in scope") {
-            insideOther.symbolTable.shouldResolveTypeTo<JClassType>("Foo", foo)
-            insideOther.symbolTable.types().resolveFirst("Inner") shouldBe null
-            insideOther.symbolTable.shouldResolveTypeTo<JClassType>("Other", other)
-        }
-    }
-
-    parserTestContainer("Scoping of local classes") {
-        val acu = parser.withProcessing().parse("""
+        parserTestContainer("Scoping of local classes") {
+            val acu =
+                parser
+                    .withProcessing()
+                    .parse(
+                        """
             package myTest;
 
             class Foo {
@@ -62,24 +72,32 @@ class LocalTypeScopesTest : ParserTestSpec({
                     Inner i2 = new Inner(); // this is a new instance of the local class
                 }
             }
-        """)
+        """
+                    )
 
-        val (_, inner, localInner) = acu.descendants(ASTTypeDeclaration::class.java).crossFindBoundaries().toList { it.typeMirror }
+            val (_, inner, localInner) =
+                acu.descendants(ASTTypeDeclaration::class.java).crossFindBoundaries().toList {
+                    it.typeMirror
+                }
 
-        val (_/*the block*/, iVar, localClass, i2Var) =
+            val (_ /*the block*/, iVar, localClass, i2Var) =
                 acu.descendants(ASTStatement::class.java).toList()
 
-        doTest("Before the local type declaration, only the nested class is in scope") {
-            iVar.symbolTable.shouldResolveTypeTo<JClassType>("Inner", inner)
+            doTest("Before the local type declaration, only the nested class is in scope") {
+                iVar.symbolTable.shouldResolveTypeTo<JClassType>("Inner", inner)
 
-            listOf(i2Var, localClass).forEach {
-                it.symbolTable.shouldResolveTypeTo<JClassType>("Inner", localInner)
+                listOf(i2Var, localClass).forEach {
+                    it.symbolTable.shouldResolveTypeTo<JClassType>("Inner", localInner)
+                }
             }
         }
-    }
 
-    parserTestContainer("Scoping of types w.r.t. imports") {
-        val acu = parser.withProcessing().parse("""
+        parserTestContainer("Scoping of types w.r.t. imports") {
+            val acu =
+                parser
+                    .withProcessing()
+                    .parse(
+                        """
             package myTest;
 
             import somewhere.Inner;
@@ -95,40 +113,42 @@ class LocalTypeScopesTest : ParserTestSpec({
             class Other {
                 Inner i;
             }
-        """)
+        """
+                    )
 
-        val (foo, inner, _) =
-                acu.descendants(ASTClassDeclaration::class.java).toList()
+            val (foo, inner, _) = acu.descendants(ASTClassDeclaration::class.java).toList()
 
-        val (insideFoo, insideInner, insideOther) =
+            val (insideFoo, insideInner, insideOther) =
                 acu.descendants(ASTFieldDeclaration::class.java).crossFindBoundaries().toList()
 
-        doTest("Inside Foo/Inner: Inner is the inner class") {
-            insideFoo.symbolTable.shouldResolveTypeTo("Inner", inner.typeMirror)
+            doTest("Inside Foo/Inner: Inner is the inner class") {
+                insideFoo.symbolTable.shouldResolveTypeTo("Inner", inner.typeMirror)
 
-            insideInner.symbolTable.shouldResolveTypeTo<JClassType>("Inner").let {
-                it.symbol::getCanonicalName shouldBe "myTest.Foo.Inner"
+                insideInner.symbolTable.shouldResolveTypeTo<JClassType>("Inner").let {
+                    it.symbol::getCanonicalName shouldBe "myTest.Foo.Inner"
+                }
+            }
+
+            doTest("Inside extends clause: Inner is the import") {
+                foo.superClassTypeNode!!.symbolTable.shouldResolveTypeTo<JClassType>("Inner").let {
+                    it.symbol::getCanonicalName shouldBe "somewhere.Inner"
+                }
+            }
+
+            doTest("Inside Other: Inner is imported") {
+                insideOther.symbolTable.shouldResolveTypeTo<JClassType>("Inner").let {
+                    it.symbol::getCanonicalName shouldBe "somewhere.Inner"
+                    it.symbol::isUnresolved shouldBe true
+                }
             }
         }
 
-        doTest("Inside extends clause: Inner is the import") {
-            foo.superClassTypeNode!!.symbolTable.shouldResolveTypeTo<JClassType>("Inner").let {
-                it.symbol::getCanonicalName shouldBe "somewhere.Inner"
-            }
-        }
-
-        doTest("Inside Other: Inner is imported") {
-            insideOther.symbolTable.shouldResolveTypeTo<JClassType>("Inner").let {
-                it.symbol::getCanonicalName shouldBe "somewhere.Inner"
-                it.symbol::isUnresolved shouldBe true
-            }
-        }
-    }
-
-
-    parserTest("Inner class creation expressions should have inner classes in scope") {
-        val acu = parser.withProcessing().parse(
-                """
+        parserTest("Inner class creation expressions should have inner classes in scope") {
+            val acu =
+                parser
+                    .withProcessing()
+                    .parse(
+                        """
             package scratch;
 
             import java.util.Map.Entry;
@@ -154,20 +174,21 @@ class LocalTypeScopesTest : ParserTestSpec({
                 static class I4 {}
             }
         """
-        )
+                    )
 
-        val (n2, mapEntry, kkEntry, n2i2, i4) =
-            acu.descendants(ASTClassType::class.java).toList()
+            val (n2, mapEntry, kkEntry, n2i2, i4) =
+                acu.descendants(ASTClassType::class.java).toList()
 
-        val (_, cKK, cKkEntry, cN2, cN2i2) =
-            acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
+            val (_, cKK, cKkEntry, cN2, cN2i2) =
+                acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-        // setup
-        n2.typeMirror.symbol shouldBe cN2.symbol
-        mapEntry shouldHaveType with(acu.typeDsl) { java.util.Map.Entry::class.raw }
-        kkEntry shouldHaveType cKkEntry
-        (kkEntry.typeMirror as JClassType).enclosingType shouldBe cKK // not cN2! this calls getAsSuper
-        n2i2 shouldHaveType cN2i2
-        i4.typeMirror.symbol?.isUnresolved shouldBe true
-    }
-})
+            // setup
+            n2.typeMirror.symbol shouldBe cN2.symbol
+            mapEntry shouldHaveType with(acu.typeDsl) { java.util.Map.Entry::class.raw }
+            kkEntry shouldHaveType cKkEntry
+            (kkEntry.typeMirror as JClassType).enclosingType shouldBe
+                cKK // not cN2! this calls getAsSuper
+            n2i2 shouldHaveType cN2i2
+            i4.typeMirror.symbol?.isUnresolved shouldBe true
+        }
+    })

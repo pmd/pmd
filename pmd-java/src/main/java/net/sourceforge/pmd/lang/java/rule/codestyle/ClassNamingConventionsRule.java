@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 /**
  * Configurable naming conventions for type declarations.
  */
@@ -28,16 +27,13 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     private final PropertyDescriptor<Pattern> enumerationRegex = defaultProp("enum").build();
     private final PropertyDescriptor<Pattern> annotationRegex = defaultProp("annotation").build();
     private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").build();
-    private final PropertyDescriptor<Pattern> testClassRegex = defaultProp("test class")
-            .desc("Regex which applies to test class names. Since PMD 6.52.0.")
-            .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$").build();
-
+    private final PropertyDescriptor<Pattern> testClassRegex =
+            defaultProp("test class").desc("Regex which applies to test class names. Since PMD 6.52.0.")
+                    .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$").build();
 
     public ClassNamingConventionsRule() {
-        super(ASTClassDeclaration.class,
-              ASTEnumDeclaration.class,
-              ASTAnnotationTypeDeclaration.class,
-              ASTRecordDeclaration.class);
+        super(ASTClassDeclaration.class, ASTEnumDeclaration.class, ASTAnnotationTypeDeclaration.class,
+                ASTRecordDeclaration.class);
         definePropertyDescriptor(classRegex);
         definePropertyDescriptor(abstractClassRegex);
         definePropertyDescriptor(interfaceRegex);
@@ -46,7 +42,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         definePropertyDescriptor(utilityClassRegex);
         definePropertyDescriptor(testClassRegex);
     }
-
 
     private boolean isTestClass(ASTClassDeclaration node) {
         return !node.isNested() && TestFrameworksUtil.isTestClass(node);
@@ -57,22 +52,25 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         if (isTestClass(node)) {
             checkMatches(node, testClassRegex, data);
-        } else if (JavaRuleUtil.isUtilityClass(node)) {
+        }
+        else if (JavaRuleUtil.isUtilityClass(node)) {
             checkMatches(node, utilityClassRegex, data);
-        } else if (node.isInterface()) {
+        }
+        else if (node.isInterface()) {
             checkMatches(node, interfaceRegex, data);
-        } else {
+        }
+        else {
             // at this point, node must be a class and cannot be an interface anymore
             if (node.isAbstract()) {
                 checkMatches(node, abstractClassRegex, data);
-            } else {
+            }
+            else {
                 checkMatches(node, classRegex, data);
             }
         }
 
         return data;
     }
-
 
     @Override
     public Object visit(ASTEnumDeclaration node, Object data) {
@@ -92,7 +90,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
         return data;
     }
 
-
     @Override
     String defaultConvention() {
         return PASCAL_CASE;
@@ -102,7 +99,6 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     String nameExtractor(ASTTypeDeclaration node) {
         return node.getSimpleName();
     }
-
 
     @Override
     String kindDisplayName(ASTTypeDeclaration node, PropertyDescriptor<Pattern> descriptor) {

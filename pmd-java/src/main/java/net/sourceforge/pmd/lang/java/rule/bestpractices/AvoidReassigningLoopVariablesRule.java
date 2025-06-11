@@ -36,17 +36,15 @@ import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
 public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
-        = enumProperty("foreachReassign", ForeachReassignOption.class, ForeachReassignOption::getDisplayName)
-        .defaultValue(ForeachReassignOption.DENY)
-        .desc("how/if foreach control variables may be reassigned")
-        .build();
+    private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN =
+            enumProperty("foreachReassign", ForeachReassignOption.class, ForeachReassignOption::getDisplayName)
+                    .defaultValue(ForeachReassignOption.DENY).desc("how/if foreach control variables may be reassigned")
+                    .build();
 
-    private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
-        = enumProperty("forReassign", ForReassignOption.class, ForReassignOption::getDisplayName)
-        .defaultValue(ForReassignOption.DENY)
-        .desc("how/if for control variables may be reassigned")
-        .build();
+    private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN =
+            enumProperty("forReassign", ForReassignOption.class, ForReassignOption::getDisplayName)
+                    .defaultValue(ForReassignOption.DENY).desc("how/if for control variables may be reassigned")
+                    .build();
 
     public AvoidReassigningLoopVariablesRule() {
         super(ASTForStatement.class, ASTForeachStatement.class);
@@ -69,7 +67,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     continue;
                 }
                 asCtx(data).addViolation(usage, loopVar.getName());
-            } else {
+            }
+            else {
                 ignoreNext = false;
             }
         }
@@ -95,10 +94,12 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     }
                 }
             }
-        } else {
+        }
+        else {
             Set<String> loopVarNames = loopVars.collect(Collectors.mapping(ASTVariableId::getName, Collectors.toSet()));
             Set<String> labels = JavaAstUtils.getStatementLabels(loopStmt);
-            new ControlFlowCtx(false, loopVarNames, (RuleContext) data, labels, false, false).roamStatementsForExit(loopStmt.getBody());
+            new ControlFlowCtx(false, loopVarNames, (RuleContext) data, labels, false, false)
+                    .roamStatementsForExit(loopStmt.getBody());
         }
         return null;
     }
@@ -114,7 +115,8 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         private final boolean breakHidden;
         private final boolean continueHidden;
 
-        ControlFlowCtx(boolean guarded, Set<String> loopVarNames, RuleContext ctx, Set<String> outerLoopNames, boolean breakHidden, boolean continueHidden) {
+        ControlFlowCtx(boolean guarded, Set<String> loopVarNames, RuleContext ctx, Set<String> outerLoopNames,
+                boolean breakHidden, boolean continueHidden) {
             this.guarded = guarded;
             this.loopVarNames = loopVarNames;
             this.ruleCtx = ctx;
@@ -131,16 +133,13 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
             return new ControlFlowCtx(isGuarded, loopVarNames, ruleCtx, outerLoopNames, breakHidden, continueHidden);
         }
 
-
         private boolean roamStatementsForExit(JavaNode node) {
             if (node == null) {
                 return false;
             }
 
             NodeStream<? extends JavaNode> unwrappedBlock =
-                node instanceof ASTBlock
-                ? ((ASTBlock) node).toStream()
-                : NodeStream.of(node);
+                    node instanceof ASTBlock ? ((ASTBlock) node).toStream() : NodeStream.of(node);
 
             return roamStatementsForExit(unwrappedBlock);
         }
@@ -149,13 +148,14 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         // This way increments of variables are allowed if they are guarded by a conditional
         private boolean roamStatementsForExit(NodeStream<? extends JavaNode> stmts) {
             for (JavaNode stmt : stmts) {
-                if (stmt instanceof ASTThrowStatement
-                    || stmt instanceof ASTReturnStatement) {
+                if (stmt instanceof ASTThrowStatement || stmt instanceof ASTReturnStatement) {
                     return true;
-                } else if (stmt instanceof ASTBreakStatement) {
+                }
+                else if (stmt instanceof ASTBreakStatement) {
                     String label = ((ASTBreakStatement) stmt).getLabel();
                     return label != null && outerLoopNames.contains(label) || !breakHidden;
-                } else if (stmt instanceof ASTContinueStatement) {
+                }
+                else if (stmt instanceof ASTContinueStatement) {
                     String label = ((ASTContinueStatement) stmt).getLabel();
                     return label != null && outerLoopNames.contains(label) || !continueHidden;
                 }
@@ -173,22 +173,27 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
 
                     mayExit |= copy(true, true, true).roamStatementsForExit(body);
 
-                } else if (stmt instanceof ASTSwitchStatement) {
+                }
+                else if (stmt instanceof ASTSwitchStatement) {
 
                     ASTSwitchStatement switchStmt = (ASTSwitchStatement) stmt;
                     checkVorViolations(switchStmt.getTestedExpression());
 
                     mayExit |= copy(true, true, false).roamStatementsForExit(switchStmt.getBranches());
 
-                } else if (stmt instanceof ASTIfStatement) {
+                }
+                else if (stmt instanceof ASTIfStatement) {
 
                     ASTIfStatement ifStmt = (ASTIfStatement) stmt;
                     checkVorViolations(ifStmt.getCondition());
                     mayExit |= withGuard(true).roamStatementsForExit(ifStmt.getThenBranch());
                     mayExit |= withGuard(this.guarded).roamStatementsForExit(ifStmt.getElseBranch());
-                } else if (stmt instanceof ASTExpression) { // these two catch-all clauses implement other statements & eg switch branches
+                }
+                else if (stmt instanceof ASTExpression) { // these two catch-all clauses implement other statements & eg
+                                                          // switch branches
                     checkVorViolations(stmt);
-                } else if (!(stmt instanceof ASTLocalClassStatement)) {
+                }
+                else if (!(stmt instanceof ASTLocalClassStatement)) {
                     mayExit |= roamStatementsForExit(stmt.children());
                 }
             }
@@ -200,11 +205,10 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                 return;
             }
             final boolean onlyConsiderWrite = guarded || mayExit;
-            node.descendants(ASTNamedReferenceExpr.class)
-                .filter(it -> loopVarNames.contains(it.getName()))
-                .filter(it -> onlyConsiderWrite ? JavaAstUtils.isVarAccessStrictlyWrite(it)
-                                                : JavaAstUtils.isVarAccessReadAndWrite(it))
-                .forEach(it -> asCtx(ruleCtx).addViolation(it, it.getName()));
+            node.descendants(ASTNamedReferenceExpr.class).filter(it -> loopVarNames.contains(it.getName()))
+                    .filter(it -> onlyConsiderWrite ? JavaAstUtils.isVarAccessStrictlyWrite(it)
+                            : JavaAstUtils.isVarAccessReadAndWrite(it))
+                    .forEach(it -> asCtx(ruleCtx).addViolation(it, it.getName()));
         }
     }
 

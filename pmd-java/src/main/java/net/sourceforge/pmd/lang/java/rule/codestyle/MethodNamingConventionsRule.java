@@ -14,7 +14,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
 public class MethodNamingConventionsRule extends AbstractNamingConventionRule<ASTMethodDeclaration> {
 
     private final Map<String, String> descriptorToDisplayName = new HashMap<>();
@@ -22,10 +21,10 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
     private final PropertyDescriptor<Pattern> instanceRegex = defaultProp("", "instance").build();
     private final PropertyDescriptor<Pattern> staticRegex = defaultProp("static").build();
     private final PropertyDescriptor<Pattern> nativeRegex = defaultProp("native").build();
-    private final PropertyDescriptor<Pattern> junit3Regex = defaultProp("JUnit 3 test").defaultValue("test[A-Z0-9][a-zA-Z0-9]*").build();
+    private final PropertyDescriptor<Pattern> junit3Regex =
+            defaultProp("JUnit 3 test").defaultValue("test[A-Z0-9][a-zA-Z0-9]*").build();
     private final PropertyDescriptor<Pattern> junit4Regex = defaultProp("JUnit 4 test").build();
     private final PropertyDescriptor<Pattern> junit5Regex = defaultProp("JUnit 5 test").build();
-
 
     public MethodNamingConventionsRule() {
         super(ASTMethodDeclaration.class);
@@ -46,27 +45,30 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
         if (node.hasModifiers(JModifier.NATIVE)) {
             checkMatches(node, nativeRegex, data);
-        } else if (node.isStatic()) {
+        }
+        else if (node.isStatic()) {
             checkMatches(node, staticRegex, data);
-        } else if (TestFrameworksUtil.isJUnit5Method(node)) {
+        }
+        else if (TestFrameworksUtil.isJUnit5Method(node)) {
             checkMatches(node, junit5Regex, data);
-        } else if (TestFrameworksUtil.isJUnit4Method(node)) {
+        }
+        else if (TestFrameworksUtil.isJUnit4Method(node)) {
             checkMatches(node, junit4Regex, data);
-        } else if (TestFrameworksUtil.isJUnit3Method(node)) {
+        }
+        else if (TestFrameworksUtil.isJUnit3Method(node)) {
             checkMatches(node, junit3Regex, data);
-        } else {
+        }
+        else {
             checkMatches(node, instanceRegex, data);
         }
 
         return data;
     }
 
-
     @Override
     String defaultConvention() {
         return CAMEL_CASE;
     }
-
 
     @Override
     String nameExtractor(ASTMethodDeclaration node) {
@@ -82,7 +84,6 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
 
         return prop;
     }
-
 
     @Override
     String kindDisplayName(ASTMethodDeclaration node, PropertyDescriptor<Pattern> descriptor) {

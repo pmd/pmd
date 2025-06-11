@@ -5,54 +5,54 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.ast.*
-import net.sourceforge.pmd.lang.java.types.*
-import net.sourceforge.pmd.lang.test.ast.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 import java.util.*
 import java.util.function.Supplier
 import java.util.function.ToIntFunction
 import java.util.stream.Collector
 import java.util.stream.Collectors
+import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
+import net.sourceforge.pmd.lang.test.ast.shouldMatchN
 
-/**
- * @author Clément Fournier
- */
-class CaptureInferenceTest : ProcessorTestSpec({
-
-    parserTest("Test capture incompatibility recovery") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+/** @author Clément Fournier */
+class CaptureInferenceTest :
+    ProcessorTestSpec({
+        parserTest("Test capture incompatibility recovery") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
             class Archive {
                 void something(java.util.List<?> l) {
                     l.set(1, l.get(0)); // captured, fails
                 }
             }
-            """.trimIndent()
-        )
+            """
+                        .trimIndent()
+                )
 
-        val setCall = acu.firstMethodCall()
-        val getCall = setCall.arguments[1] as ASTMethodCall
+            val setCall = acu.firstMethodCall()
+            val getCall = setCall.arguments[1] as ASTMethodCall
 
-        spy.shouldHaveMissingCtDecl(setCall)
+            spy.shouldHaveMissingCtDecl(setCall)
 
-        acu.withTypeDsl {
-            val capture1 = captureMatcher(`?`)
-            getCall.methodType.shouldMatchMethod(
-                named = "get",
-                declaredIn = gen.t_List[capture1],
-                withFormals = listOf(int),
-                returning = capture1
-            )
+            acu.withTypeDsl {
+                val capture1 = captureMatcher(`?`)
+                getCall.methodType.shouldMatchMethod(
+                    named = "get",
+                    declaredIn = gen.t_List[capture1],
+                    withFormals = listOf(int),
+                    returning = capture1,
+                )
 
-            setCall.methodType shouldBe ts.UNRESOLVED_METHOD
+                setCall.methodType shouldBe ts.UNRESOLVED_METHOD
+            }
         }
-    }
 
-
-    parserTest("Test lower wildcard compatibility") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-           """
+        parserTest("Test lower wildcard compatibility") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
            package java.lang;
 
            import java.util.Iterator;
@@ -68,21 +68,23 @@ class CaptureInferenceTest : ProcessorTestSpec({
                }
            }
 
-           """.trimIndent()
-        )
-
-        val tVar = acu.typeVar("T")
-        val call = acu.firstMethodCall()
-
-        spy.shouldBeOk {
-            call shouldHaveType void
-            call.arguments[0] shouldHaveType tVar
-        }
-    }
-
-    parserTest("Test method ref on captured thing") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
            """
+                        .trimIndent()
+                )
+
+            val tVar = acu.typeVar("T")
+            val call = acu.firstMethodCall()
+
+            spy.shouldBeOk {
+                call shouldHaveType void
+                call.arguments[0] shouldHaveType tVar
+            }
+        }
+
+        parserTest("Test method ref on captured thing") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
            import java.util.List;
            import java.util.ArrayList;
            import java.util.Comparator;
@@ -95,40 +97,45 @@ class CaptureInferenceTest : ProcessorTestSpec({
                }
            }
 
-           """.trimIndent()
-        )
+           """
+                        .trimIndent()
+                )
 
-        val call = acu.firstMethodCall()
+            val call = acu.firstMethodCall()
 
-        spy.shouldBeOk {
-            call.shouldMatchN {
-                methodCall("sort") {
-                    it shouldHaveType void
+            spy.shouldBeOk {
+                call.shouldMatchN {
+                    methodCall("sort") {
+                        it shouldHaveType void
 
-                    variableAccess("statList") {}
-                    argList {
-                        methodCall("comparingInt") {
-                            // eg. java.util.Comparator<capture#45 of ? extends java.lang.String>
+                        variableAccess("statList") {}
+                        argList {
+                            methodCall("comparingInt") {
+                                // eg. java.util.Comparator<capture#45 of ? extends
+                                // java.lang.String>
 
-                            val captureOfString = captureMatcher(`?` extends gen.t_String)
+                                val captureOfString = captureMatcher(`?` extends gen.t_String)
 
-                            it shouldHaveType gen.t_Comparator[captureOfString]
+                                it shouldHaveType gen.t_Comparator[captureOfString]
 
-                            it.methodType.shouldMatchMethod(
-                                named = "comparingInt",
-                                declaredIn = gen.t_Comparator,
-                                withFormals = listOf(ToIntFunction::class[`?` `super` captureOfString]),
-                                returning = gen.t_Comparator[captureOfString]
-                            )
+                                it.methodType.shouldMatchMethod(
+                                    named = "comparingInt",
+                                    declaredIn = gen.t_Comparator,
+                                    withFormals =
+                                        listOf(ToIntFunction::class[`?` `super` captureOfString]),
+                                    returning = gen.t_Comparator[captureOfString],
+                                )
 
-                            unspecifiedChild()
+                                unspecifiedChild()
 
-                            argList {
-                                methodRef("hashCode") {
-                                    unspecifiedChild()
+                                argList {
+                                    methodRef("hashCode") {
+                                        unspecifiedChild()
 
-                                    it.referencedMethod shouldBe ts.OBJECT.getMethodsByName("hashCode").single()
-                                    it shouldHaveType ToIntFunction::class[captureOfString]
+                                        it.referencedMethod shouldBe
+                                            ts.OBJECT.getMethodsByName("hashCode").single()
+                                        it shouldHaveType ToIntFunction::class[captureOfString]
+                                    }
                                 }
                             }
                         }
@@ -136,11 +143,11 @@ class CaptureInferenceTest : ProcessorTestSpec({
                 }
             }
         }
-    }
 
-    parserTest("Test independent captures merging") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-           """
+        parserTest("Test independent captures merging") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
            import java.util.*;
 
            class Scratch {
@@ -155,31 +162,36 @@ class CaptureInferenceTest : ProcessorTestSpec({
                }
            }
 
-           """.trimIndent()
-        )
+           """
+                        .trimIndent()
+                )
 
-        val tvar = acu.typeVar("T")
-        val call = acu.firstMethodCall()
-        val reqnonnull = call.arguments[0] as ASTMethodCall
+            val tvar = acu.typeVar("T")
+            val call = acu.firstMethodCall()
+            val reqnonnull = call.arguments[0] as ASTMethodCall
 
-        spy.shouldBeOk {
-            call.methodType.shouldMatchMethod(
-                named = "spliterator0",
-                withFormals = listOf(gen.t_Collection[`?` extends tvar], int),
-                returning = Spliterator::class[tvar]
-            )
+            spy.shouldBeOk {
+                call.methodType.shouldMatchMethod(
+                    named = "spliterator0",
+                    withFormals = listOf(gen.t_Collection[`?` extends tvar], int),
+                    returning = Spliterator::class[tvar],
+                )
 
-            val capture = captureMatcher(`?` extends tvar)
-            reqnonnull shouldHaveType gen.t_Collection[capture]
-            reqnonnull.methodType.shouldMatchMethod(named = "requireNonNull", declaredIn = Objects::class.raw)
+                val capture = captureMatcher(`?` extends tvar)
+                reqnonnull shouldHaveType gen.t_Collection[capture]
+                reqnonnull.methodType.shouldMatchMethod(
+                    named = "requireNonNull",
+                    declaredIn = Objects::class.raw,
+                )
 
-            reqnonnull.arguments[0] shouldHaveType gen.t_Collection[capture]
+                reqnonnull.arguments[0] shouldHaveType gen.t_Collection[capture]
+            }
         }
-    }
 
-    parserTest("Problem with GLB of several capture variables") {
-        val acu = parser.parse(
-            """
+        parserTest("Problem with GLB of several capture variables") {
+            val acu =
+                parser.parse(
+                    """
             import java.util.HashMap;
             import java.util.Map;
             import java.util.function.Function;
@@ -196,110 +208,112 @@ class CaptureInferenceTest : ProcessorTestSpec({
             }
 
 
-            """.trimIndent()
-        )
+            """
+                        .trimIndent()
+                )
 
-        /* Signature of the other groupingBy:
+            /* Signature of the other groupingBy:
 
-    public static <T, K, D, A, M extends Map<K, D>>
+            public static <T, K, D, A, M extends Map<K, D>>
 
-        Collector<T, ?, M> groupingBy(Function<? super T, ? extends K> classifier,
-                                      Supplier<M> mapFactory,
-                                      Collector<? super T, A, D> downstream)
-     */
+                Collector<T, ?, M> groupingBy(Function<? super T, ? extends K> classifier,
+                                              Supplier<M> mapFactory,
+                                              Collector<? super T, A, D> downstream)
+             */
 
-        val (tvar, kvar, avar, dvar) = acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
-        val call = acu.descendants(ASTMethodCall::class.java).first()!!
+            val (tvar, kvar, avar, dvar) =
+                acu.descendants(ASTTypeParameter::class.java).toList { it.typeMirror }
+            val call = acu.descendants(ASTMethodCall::class.java).first()!!
 
-        call.shouldMatchN {
-            methodCall("groupingBy") {
-                with(it.typeDsl) {
-                    it.methodType.shouldMatchMethod(
-                        named = "groupingBy",
-                        declaredIn = Collectors::class.raw,
-                        withFormals = listOf(
-                            gen.t_Function[`?` `super` tvar, `?` extends kvar],
-                            Supplier::class[gen.t_Map[kvar, dvar]],
-                            Collector::class[`?` `super` tvar, avar, dvar]
-                        ),
-                        returning = Collector::class[tvar, `?`, gen.t_Map[kvar, dvar]]
-                    )
-                }
-
-                skipQualifier()
-
-                argList {
-                    variableAccess("classifier")
-
-                    constructorRef {
-                        // HMM this should be HashMap<K, D>
-                        typeExpr {
-                            classType("HashMap")
-                        }
+            call.shouldMatchN {
+                methodCall("groupingBy") {
+                    with(it.typeDsl) {
+                        it.methodType.shouldMatchMethod(
+                            named = "groupingBy",
+                            declaredIn = Collectors::class.raw,
+                            withFormals =
+                                listOf(
+                                    gen.t_Function[`?` `super` tvar, `?` extends kvar],
+                                    Supplier::class[gen.t_Map[kvar, dvar]],
+                                    Collector::class[`?` `super` tvar, avar, dvar],
+                                ),
+                            returning = Collector::class[tvar, `?`, gen.t_Map[kvar, dvar]],
+                        )
                     }
 
-                    variableAccess("downstream")
+                    skipQualifier()
+
+                    argList {
+                        variableAccess("classifier")
+
+                        constructorRef {
+                            // HMM this should be HashMap<K, D>
+                            typeExpr { classType("HashMap") }
+                        }
+
+                        variableAccess("downstream")
+                    }
                 }
             }
         }
-    }
 
-    parserTest("Capture vars should be exploded in typeArgsContains") {
-        /*
-        Phase STRICT, NodeStream<T>.<T> union(java.lang.Iterable<? extends NodeStream<? extends T>>) -> NodeStream<T>
-            Context 4,          union(java.lang.Iterable<? extends NodeStream<? extends δ>>) -> NodeStream<δ>
-            ARGUMENTS
-                Checking arg 0 against java.lang.Iterable<? extends NodeStream<? extends δ>>
-                    At:   /*unknown*/:7 :22..7:44
-                    Expr: Arrays.asList(streams)
-                    Phase INVOC_STRICT, java.util.Arrays.<T> asList(T...) -> java.util.List<T>
-                        Context 5,          asList(ε...) -> java.util.List<ε>
-                        RETURN
-                            New bound           (ctx 5):   ε <: NodeStream<? extends δ>
+        parserTest("Capture vars should be exploded in typeArgsContains") {
+            /*
+            Phase STRICT, NodeStream<T>.<T> union(java.lang.Iterable<? extends NodeStream<? extends T>>) -> NodeStream<T>
+                Context 4,          union(java.lang.Iterable<? extends NodeStream<? extends δ>>) -> NodeStream<δ>
+                ARGUMENTS
+                    Checking arg 0 against java.lang.Iterable<? extends NodeStream<? extends δ>>
+                        At:   /*unknown*/:7 :22..7:44
+                        Expr: Arrays.asList(streams)
+                        Phase INVOC_STRICT, java.util.Arrays.<T> asList(T...) -> java.util.List<T>
+                            Context 5,          asList(ε...) -> java.util.List<ε>
+                            RETURN
+                                New bound           (ctx 5):   ε <: NodeStream<? extends δ>
 
-                        ARGUMENTS
-                            Checking arg 0 against ε[]
-                                At:   /*unknown*/:7 :36..7:43
-                                Expr: streams
-                                New bound           (ctx 5):   ε >: NodeStream<? extends T>
-
-
-                        New bound           (ctx 4):   δ >: capture#103 of ? extends T
-                        Ctx 4 adopts [ε] from ctx 5
-                    Success: asList(ε...) -> java.util.List<ε>
+                            ARGUMENTS
+                                Checking arg 0 against ε[]
+                                    At:   /*unknown*/:7 :36..7:43
+                                    Expr: streams
+                                    New bound           (ctx 5):   ε >: NodeStream<? extends T>
 
 
-            Ivar instantiated   (ctx 4):   δ := capture#103 of ? extends T
-            Ivar instantiated   (ctx 4):   δ := capture#103 of ? extends T
-            New bound           (ctx 4):   ε <: NodeStream<? extends capture#103 of ? extends T>
-            Failed: Incompatible bounds: ε <: NodeStream<? extends capture#103 of ? extends T> and ε >: NodeStream<? extends T>
-        FAILED! SAD!
+                            New bound           (ctx 4):   δ >: capture#103 of ? extends T
+                            Ctx 4 adopts [ε] from ctx 5
+                        Success: asList(ε...) -> java.util.List<ε>
 
-        The problem here is that we have
 
-        ε <: NodeStream<? extends δ>
-        ε >: NodeStream<? extends T>
+                Ivar instantiated   (ctx 4):   δ := capture#103 of ? extends T
+                Ivar instantiated   (ctx 4):   δ := capture#103 of ? extends T
+                New bound           (ctx 4):   ε <: NodeStream<? extends capture#103 of ? extends T>
+                Failed: Incompatible bounds: ε <: NodeStream<? extends capture#103 of ? extends T> and ε >: NodeStream<? extends T>
+            FAILED! SAD!
 
-        For these bounds to be compatible, we must have
+            The problem here is that we have
 
-        NodeStream<? extends T> <: NodeStream<? extends δ>
+            ε <: NodeStream<? extends δ>
+            ε >: NodeStream<? extends T>
 
-        The LHS is captured, so we'd actually test
+            For these bounds to be compatible, we must have
 
-        NodeStream<capture#103 of ? extends T> <: NodeStream<? extends δ>
+            NodeStream<? extends T> <: NodeStream<? extends δ>
 
-        This reduces to
+            The LHS is captured, so we'd actually test
 
-        capture#103 of ? extends T <= ? extends δ
-        T <: δ
+            NodeStream<capture#103 of ? extends T> <: NodeStream<? extends δ>
 
-        This means we must crack the cvar in TypeOps::typeArgContains.
+            This reduces to
 
-        Possibly, this could be recursive and lead to stackoverflow? Idk
-        */
+            capture#103 of ? extends T <= ? extends δ
+            T <: δ
 
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-                """
+            This means we must crack the cvar in TypeOps::typeArgContains.
+
+            Possibly, this could be recursive and lead to stackoverflow? Idk
+            */
+
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
 
 import java.util.Arrays;
 
@@ -315,19 +329,21 @@ interface NodeStream<T> {
 
 }
 
-                """.trimIndent()
-        )
-
-        val (_, unionOfIter) = acu.methodDeclarations().toList { it.genericSignature }
-
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(unionOfIter)
-        }
-    }
-
-    parserTest("Ivar should be instantiated with lower not upper bound") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
+                        .trimIndent()
+                )
+
+            val (_, unionOfIter) = acu.methodDeclarations().toList { it.genericSignature }
+
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(unionOfIter)
+            }
+        }
+
+        parserTest("Ivar should be instantiated with lower not upper bound") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
 
 interface MostlySingularMultimap<K, V> {
 
@@ -352,19 +368,21 @@ interface MostlySingularMultimap<K, V> {
 
 }
 
-                """.trimIndent()
-        )
-
-        val (_, _, lastGroupBy) = acu.methodDeclarations().toList { it.genericSignature }
-
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(lastGroupBy)
-        }
-    }
-
-    parserTest("Unbounded wild has bound of its underlying tvar") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
+                        .trimIndent()
+                )
+
+            val (_, _, lastGroupBy) = acu.methodDeclarations().toList { it.genericSignature }
+
+            spy.shouldBeOk {
+                acu.firstMethodCall().methodType.shouldBeSomeInstantiationOf(lastGroupBy)
+            }
+        }
+
+        parserTest("Unbounded wild has bound of its underlying tvar") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
 import java.util.List;
 
 class Scratch<S extends Scratch<S>> {
@@ -377,17 +395,17 @@ class Scratch<S extends Scratch<S>> {
         l.addAll(unbounded.getS());
     }
 }
-                """.trimIndent()
-        )
-
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType
-        }
-    }
-
-    parserTest("Array access should be captured") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
+                        .trimIndent()
+                )
+
+            spy.shouldBeOk { acu.firstMethodCall().methodType }
+        }
+
+        parserTest("Array access should be captured") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
 class CompletableFuture<T> {
 
     private static <U, T extends U> CompletableFuture<U> uniCopyStage(CompletableFuture<T> src) {return null;}
@@ -399,29 +417,33 @@ class CompletableFuture<T> {
     }
 }
 
-                """.trimIndent()
-        )
-
-        val t_CompletableFuture = acu.firstTypeSignature()
-
-        spy.shouldBeOk {
-            val captureMatcher = captureMatcher(`?`)
-
-            val arrType = acu.descendants(ASTArrayAccess::class.java).firstOrThrow().typeMirror
-
-            arrType shouldBe t_CompletableFuture[captureMatcher]
-
-            acu.firstMethodCall().methodType.shouldMatchMethod(
-                named = "uniCopyStage",
-                withFormals = listOf(t_CompletableFuture[captureMatcher]),
-                returning = t_CompletableFuture[ts.OBJECT]
-            )
-        }
-    }
-
-    parserTest("Capture with type annotation") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
+                        .trimIndent()
+                )
+
+            val t_CompletableFuture = acu.firstTypeSignature()
+
+            spy.shouldBeOk {
+                val captureMatcher = captureMatcher(`?`)
+
+                val arrType = acu.descendants(ASTArrayAccess::class.java).firstOrThrow().typeMirror
+
+                arrType shouldBe t_CompletableFuture[captureMatcher]
+
+                acu.firstMethodCall()
+                    .methodType
+                    .shouldMatchMethod(
+                        named = "uniCopyStage",
+                        withFormals = listOf(t_CompletableFuture[captureMatcher]),
+                        returning = t_CompletableFuture[ts.OBJECT],
+                    )
+            }
+        }
+
+        parserTest("Capture with type annotation") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
 import java.lang.annotation.*;
 interface Iterator<Q> { Q next(); }
 interface Function<U,V> {
@@ -435,26 +457,33 @@ class Foo {
     }
 }
 
-                """.trimIndent()
-        )
-
-        val (t_Iterator, _, t_Nullable) = acu.declaredTypeSignatures()
-        val rvar = acu.typeVar("R")
-        val tvar = acu.typeVar("T")
-
-        spy.shouldBeOk {
-            acu.firstMethodCall().methodType.shouldMatchMethod(
-                named = "apply",
-                withFormals = listOf(captureMatcher(`?` `super` tvar)),
-                returning = captureMatcher(`?` extends (`@`(t_Nullable.symbol) on t_Iterator[`?` extends rvar]))
-            )
-            acu.firstMethodCall().overloadSelectionInfo::isFailed shouldBe false
-        }
-    }
-
-    parserTest("PMD crashes while using generics and wildcards #4753") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
                 """
+                        .trimIndent()
+                )
+
+            val (t_Iterator, _, t_Nullable) = acu.declaredTypeSignatures()
+            val rvar = acu.typeVar("R")
+            val tvar = acu.typeVar("T")
+
+            spy.shouldBeOk {
+                acu.firstMethodCall()
+                    .methodType
+                    .shouldMatchMethod(
+                        named = "apply",
+                        withFormals = listOf(captureMatcher(`?` `super` tvar)),
+                        returning =
+                            captureMatcher(
+                                `?` extends (`@`(t_Nullable.symbol) on t_Iterator[`?` extends rvar])
+                            ),
+                    )
+                acu.firstMethodCall().overloadSelectionInfo::isFailed shouldBe false
+            }
+        }
+
+        parserTest("PMD crashes while using generics and wildcards #4753") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
 import java.util.Collection;
 import java.util.List;
 import java.util.Arrays;
@@ -466,27 +495,32 @@ public class SubClass<T> {
        return collection;
    }
 }
-                """.trimIndent()
-        )
+                """
+                        .trimIndent()
+                )
 
-        val tvar = acu.typeVar("T")
+            val tvar = acu.typeVar("T")
 
-        spy.shouldBeOk {
-            val call = acu.firstMethodCall()
+            spy.shouldBeOk {
+                val call = acu.firstMethodCall()
 
-            call.methodType.shouldMatchMethod(
-                named = "addAll",
-                withFormals = listOf(java.util.Collection::class[`?` extends captureMatcher(`?` `super` tvar)]),
-                returning = boolean
-            )
-            call.overloadSelectionInfo::isFailed shouldBe false
+                call.methodType.shouldMatchMethod(
+                    named = "addAll",
+                    withFormals =
+                        listOf(
+                            java.util.Collection::class[
+                                `?` extends captureMatcher(`?` `super` tvar)]
+                        ),
+                    returning = boolean,
+                )
+                call.overloadSelectionInfo::isFailed shouldBe false
+            }
         }
-    }
 
-
-    parserTest("Capture of variable with capturable bound #5493") {
-        val acu = parser.parse(
-            """
+        parserTest("Capture of variable with capturable bound #5493") {
+            val acu =
+                parser.parse(
+                    """
 
                     interface ObservableList<T> {
                     }
@@ -542,17 +576,19 @@ public class SubClass<T> {
                             return Ext.dynamic(base, (e, i) -> ticks.apply(e).subscribe(k -> this.notifyObservers(Ext::emptyList)));
                         }
                     }
-                """.trimIndent()
-        )
+                """
+                        .trimIndent()
+                )
 
-        val subscribe = acu.firstMethodCall("subscribe")
-        subscribe.overloadSelectionInfo.isFailed shouldBe false
-        acu.varId("k") shouldHaveType acu.typeSystem.OBJECT
-    }
+            val subscribe = acu.firstMethodCall("subscribe")
+            subscribe.overloadSelectionInfo.isFailed shouldBe false
+            acu.varId("k") shouldHaveType acu.typeSystem.OBJECT
+        }
 
-    parserTest("Problem with capture of type parametr that has wildcard parameterized bound") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+        parserTest("Problem with capture of type parametr that has wildcard parameterized bound") {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
             class AJjtN<Q, B> {}
             public final class JjtreeBuilder<N extends AJjtN<N, ?>> {
 
@@ -562,24 +598,28 @@ public class SubClass<T> {
 
                 private void closeImpl(N n, boolean condition) {}
             }
-                """.trimIndent()
-        )
+                """
+                        .trimIndent()
+                )
 
-        val tvar = acu.typeVar("N")
+            val tvar = acu.typeVar("N")
 
-        spy.shouldBeOk {
-            val call = acu.firstMethodCall()
+            spy.shouldBeOk {
+                val call = acu.firstMethodCall()
 
-            call.methodType.shouldMatchMethod(
-                named = "closeImpl",
-                withFormals = listOf(tvar, boolean),
-            )
-            call.overloadSelectionInfo::isFailed shouldBe false
+                call.methodType.shouldMatchMethod(
+                    named = "closeImpl",
+                    withFormals = listOf(tvar, boolean),
+                )
+                call.overloadSelectionInfo::isFailed shouldBe false
+            }
         }
-    }
-    parserTest("Problem with capture of type parametr that has wildcard parameterized bound (field access)") {
-        val (acu, spy) = parser.parseWithTypeInferenceSpy(
-            """
+        parserTest(
+            "Problem with capture of type parametr that has wildcard parameterized bound (field access)"
+        ) {
+            val (acu, spy) =
+                parser.parseWithTypeInferenceSpy(
+                    """
             class AJjtN<Q, B> {
              B field;
             }
@@ -589,14 +629,15 @@ public class SubClass<T> {
                 }
             }
 
-                """.trimIndent()
-        )
+                """
+                        .trimIndent()
+                )
 
-        spy.shouldBeOk {
-            val access = acu.descendants(ASTFieldAccess::class.java).firstOrThrow()
-            access shouldHaveType captureMatcher(`?`)
-            val varV = acu.varId("v")
-            varV shouldHaveType ts.OBJECT
+            spy.shouldBeOk {
+                val access = acu.descendants(ASTFieldAccess::class.java).firstOrThrow()
+                access shouldHaveType captureMatcher(`?`)
+                val varV = acu.varId("v")
+                varV shouldHaveType ts.OBJECT
+            }
         }
-    }
-})
+    })

@@ -4,13 +4,11 @@
 
 package javasymbols.testdata.impls;
 
-
 public class SomeMethodsNoOverloads {
 
     public final String foo() {
         return "";
     }
-
 
     public interface Other {
 

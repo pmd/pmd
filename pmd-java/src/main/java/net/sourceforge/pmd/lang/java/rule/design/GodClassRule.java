@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
-
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ACCESS_TO_FOREIGN_DATA;
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.TIGHT_CLASS_COHESION;
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.WEIGHED_METHOD_COUNT;
@@ -14,13 +13,13 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.util.StringUtil;
 
-
 /**
  * The God Class Rule detects the God Class design flaw using metrics. A god class does too many things, is very big and
  * complex. It should be split apart to be more object-oriented. The rule uses the detection strategy described in [1].
  * The violations are reported against the entire class.
  *
- * <p>[1] Lanza. Object-Oriented Metrics in Practice. Page 80.
+ * <p>
+ * [1] Lanza. Object-Oriented Metrics in Practice. Page 80.
  *
  * @since 5.0
  */
@@ -41,11 +40,9 @@ public class GodClassRule extends AbstractJavaRulechainRule {
      */
     private static final double TCC_THRESHOLD = 1.0 / 3.0;
 
-
     public GodClassRule() {
         super(ASTClassDeclaration.class);
     }
-
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
@@ -59,9 +56,7 @@ public class GodClassRule extends AbstractJavaRulechainRule {
 
         if (wmc >= WMC_VERY_HIGH && atfd > FEW_ATFD_THRESHOLD && tcc < TCC_THRESHOLD) {
 
-            asCtx(data).addViolation(node, wmc,
-                                     StringUtil.percentageString(tcc, 3),
-                                     atfd);
+            asCtx(data).addViolation(node, wmc, StringUtil.percentageString(tcc, 3), atfd);
         }
         return data;
     }

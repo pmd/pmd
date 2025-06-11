@@ -8,11 +8,9 @@ import java.util.Iterator;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
-
 /**
- * Represents either a {@code case} or {@code default} label inside
- * a {@linkplain ASTSwitchStatement switch statement} or {@linkplain ASTSwitchExpression expression}.
- * Since Java 14, labels may have several expressions.
+ * Represents either a {@code case} or {@code default} label inside a {@linkplain ASTSwitchStatement switch statement}
+ * or {@linkplain ASTSwitchExpression expression}. Since Java 14, labels may have several expressions.
  *
  * <pre class="grammar">
  *
@@ -23,7 +21,9 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * </pre>
  *
- * <p>Note: case null and the case patterns are a Java 21 language feature</p>
+ * <p>
+ * Note: case null and the case patterns are a Java 21 language feature
+ * </p>
  *
  * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a>
  * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
@@ -32,11 +32,9 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
 
     private boolean isDefault;
 
-
     ASTSwitchLabel(int id) {
         super(id);
     }
-
 
     void setDefault() {
         isDefault = true;
@@ -49,10 +47,9 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
     }
 
     /**
-     * Returns the expressions of this label, or an empty list if this
-     * is the default label. This does neither contain {@linkplain  ASTTypePattern TypePatterns}
-     * nor {@linkplain ASTRecordPattern RecordPatterns}. To check for this,
-     * use {@link #isPatternLabel()}.
+     * Returns the expressions of this label, or an empty list if this is the default label. This does neither contain
+     * {@linkplain ASTTypePattern TypePatterns} nor {@linkplain ASTRecordPattern RecordPatterns}. To check for this, use
+     * {@link #isPatternLabel()}.
      */
     public NodeStream<ASTExpression> getExprList() {
         return children(ASTExpression.class);
@@ -70,6 +67,7 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
 
     /**
      * Checks whether this label tests a {@link ASTTypePattern} or a {@link ASTRecordPattern}.
+     * 
      * @since 7.7.0
      */
     public boolean isPatternLabel() {

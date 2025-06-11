@@ -30,8 +30,7 @@ public final class ASTModuleOpensDirective extends AbstractPackageNameModuleDire
     }
 
     /**
-     * Returns a stream of the module names that are found after the "to" keyword.
-     * May be empty
+     * Returns a stream of the module names that are found after the "to" keyword. May be empty
      */
     public NodeStream<ASTModuleName> getTargetModules() {
         return children(ASTModuleName.class);

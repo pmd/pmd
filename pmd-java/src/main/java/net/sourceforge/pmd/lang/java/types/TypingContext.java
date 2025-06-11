@@ -20,8 +20,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
 public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable JTypeMirror> {
 
     /**
-     * Empty context. Corresponds to defaulting all lambda param types
-     * to their value in the AST.
+     * Empty context. Corresponds to defaulting all lambda param types to their value in the AST.
      */
     public static final TypingContext DEFAULT = new TypingContext(null, Collections.emptyMap());
 
@@ -54,7 +53,8 @@ public final class TypingContext extends MapFunction<JVariableSymbol, @Nullable 
         AssertionUtil.requireParamNotNull("types", types);
         if (symbols.size() != types.size()) {
             throw new IllegalArgumentException("Wrong size");
-        } else if (symbols.isEmpty()) {
+        }
+        else if (symbols.isEmpty()) {
             return this;
         }
 

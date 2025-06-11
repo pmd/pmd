@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
 
-
 /**
  * Visitor for the ClassFanOut metric.
  *
@@ -36,7 +35,8 @@ public final class ClassFanOutVisitor extends JavaVisitorBase<Set<JClassSymbol>,
     public static ClassFanOutVisitor getInstance(MetricOptions options) {
         if (options.getOptions().contains(ClassFanOutOption.INCLUDE_JAVA_LANG)) {
             return INCLUDE_JLANG;
-        } else {
+        }
+        else {
             return EXCLUDE_JLANG;
         }
     }

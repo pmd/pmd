@@ -17,13 +17,12 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 abstract class TypeVarImpl implements JTypeVar {
 
-
     final TypeSystem ts;
     JTypeMirror upperBound;
 
     /**
-     * These are only the type annotations on a usage of the variable.
-     * Annotations on the declaration of the tparam are not considered.
+     * These are only the type annotations on a usage of the variable. Annotations on the declaration of the tparam are
+     * not considered.
      */
     final PSet<SymAnnot> typeAnnots;
 
@@ -54,9 +53,8 @@ abstract class TypeVarImpl implements JTypeVar {
     }
 
     /**
-     * Returns a fresh type variable, whose bounds will be initialised by
-     * the capture conversion algo in {@link TypeConversion#capture(JTypeMirror)}.
-     * Captured variables use reference identity as equality relation.
+     * Returns a fresh type variable, whose bounds will be initialised by the capture conversion algo in
+     * {@link TypeConversion#capture(JTypeMirror)}. Captured variables use reference identity as equality relation.
      */
     static TypeVarImpl.CapturedTypeVar freshCapture(@NonNull JWildcardType wildcard) {
         return new CapturedTypeVar(wildcard, wildcard.getTypeAnnotations());
@@ -110,7 +108,6 @@ abstract class TypeVarImpl implements JTypeVar {
             tv.upperBound = newUB;
             return tv;
         }
-
 
         @Override
         public JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots) {
@@ -178,7 +175,7 @@ abstract class TypeVarImpl implements JTypeVar {
 
     static final class CapturedTypeVar extends TypeVarImpl {
 
-        private static final int PRIME = 997;  // largest prime less than 1000
+        private static final int PRIME = 997; // largest prime less than 1000
 
         private final @Nullable JWildcardType wildcard;
         private final @Nullable JTypeVar tvar;
@@ -190,11 +187,13 @@ abstract class TypeVarImpl implements JTypeVar {
             this(wild, wild.asLowerBound(), wild.asUpperBound(), typeAnnots);
         }
 
-        private CapturedTypeVar(@Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
+        private CapturedTypeVar(@Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper,
+                PSet<SymAnnot> typeAnnots) {
             this(null, wild, lower, upper, typeAnnots);
         }
 
-        private CapturedTypeVar(@Nullable JTypeVar tvar, @Nullable JWildcardType wild, @NonNull JTypeMirror lower, @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
+        private CapturedTypeVar(@Nullable JTypeVar tvar, @Nullable JWildcardType wild, @NonNull JTypeMirror lower,
+                @NonNull JTypeMirror upper, PSet<SymAnnot> typeAnnots) {
             super(lower.getTypeSystem(), typeAnnots);
             this.upperBound = upper;
             this.lowerBound = lower;
@@ -205,7 +204,6 @@ abstract class TypeVarImpl implements JTypeVar {
         void setUpperBound(@NonNull JTypeMirror upperBound) {
             this.upperBound = upperBound;
         }
-
 
         void setLowerBound(@NonNull JTypeMirror lowerBound) {
             this.lowerBound = lowerBound;
@@ -243,7 +241,8 @@ abstract class TypeVarImpl implements JTypeVar {
             JTypeMirror upper = getUpperBound().subst(substitution);
             if (wild == this.wildcard && lower == this.lowerBound && upper == this.lowerBound) {
                 return this;
-            } else if (wild == null) {
+            }
+            else if (wild == null) {
                 return new CapturedTypeVar(tvar, null, lower, upper, typeAnnots);
             }
             return new CapturedTypeVar(wild, lower, upper, getTypeAnnotations());
@@ -253,7 +252,6 @@ abstract class TypeVarImpl implements JTypeVar {
         public JTypeVar cloneWithBounds(JTypeMirror lower, JTypeMirror upper) {
             return new CapturedTypeVar(wildcard, lower, upper, getTypeAnnotations());
         }
-
 
         @Override
         public JTypeVar withAnnotations(PSet<SymAnnot> newTypeAnnots) {

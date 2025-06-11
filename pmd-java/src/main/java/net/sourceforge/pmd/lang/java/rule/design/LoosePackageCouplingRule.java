@@ -17,11 +17,11 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
- * The loose package coupling Rule can be used to ensure coupling outside of a
- * package hierarchy is minimized to all but an allowed set of classes from
- * within the package hierarchy.
+ * The loose package coupling Rule can be used to ensure coupling outside of a package hierarchy is minimized to all but
+ * an allowed set of classes from within the package hierarchy.
  *
- * <p>For example, supposed you have the following package hierarchy:
+ * <p>
+ * For example, supposed you have the following package hierarchy:
  * <ul>
  * <li><code>org.sample</code></li>
  * <li><code>org.sample.impl</code></li>
@@ -29,11 +29,10 @@ import net.sourceforge.pmd.properties.PropertySource;
  * </ul>
  * And the allowed class <code>org.sample.SampleInterface</code>.
  *
- * <p>This rule can be used to ensure that all classes within the
- * <code>org.sample</code> package and its sub-packages are not used outside of
- * the <code>org.sample</code> package hierarchy. Further, the only allowed
- * usage outside of a class in the <code>org.sample</code> hierarchy would be
- * via <code>org.sample.SampleInterface</code>.
+ * <p>
+ * This rule can be used to ensure that all classes within the <code>org.sample</code> package and its sub-packages are
+ * not used outside of the <code>org.sample</code> package hierarchy. Further, the only allowed usage outside of a class
+ * in the <code>org.sample</code> hierarchy would be via <code>org.sample.SampleInterface</code>.
  */
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
@@ -82,13 +81,15 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
                 if (pkg.equals(thisPackage) || isContainingPackage(pkg, thisPackage)) {
                     // Valid usage
                     break;
-                } else {
+                }
+                else {
                     // On demand imports automatically fail because they include
                     // everything
                     if (node.isImportOnDemand()) {
                         asCtx(data).addViolation(node, node.getImportedName(), pkg);
                         break;
-                    } else {
+                    }
+                    else {
                         if (!isAllowedClass(node)) {
                             asCtx(data).addViolation(node, node.getImportedName(), pkg);
                             break;
