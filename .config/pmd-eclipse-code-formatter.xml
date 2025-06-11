@@ -151,11 +151,8 @@
         <setting id="org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_enum_constant" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_method_declaration" value="do not insert"/>
         <setting id="org.eclipse.jdt.core.formatter.insert_space_between_empty_parens_in_method_invocation" value="do not insert"/>
-        <setting id="org.eclipse.jdt.core.formatter.keep_else_statement_on_same_line" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.keep_else_statement_on_same_line" value="true"/>
         <setting id="org.eclipse.jdt.core.formatter.keep_simple_if_on_one_line" value="false"/>
-        <setting id="org.eclipse.jdt.core.formatter.keep_simple_if_on_one_line" value="false"/>
-        <setting id="org.eclipse.jdt.core.formatter.keep_then_statement_on_same_line" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.keep_then_statement_on_same_line" value="false"/>
         <setting id="org.eclipse.jdt.core.formatter.lineSplit" value="120"/>
         <setting id="org.eclipse.jdt.core.formatter.number_of_blank_lines_at_beginning_of_method_body" value="0"/>
