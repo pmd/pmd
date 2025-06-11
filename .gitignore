@@ -24,3 +24,15 @@ node_modules
 # rule docs are generated
 docs/pages/pmd/rules
 .history/*
+# Gradle artifacts
+.gradle
+.gradletasknamecache
+build
+buildSrc/build
+buildSrc/build/
+**/build/
+/buildSrc
+/buildSrc/**
+/**/buildSrc/**
+/**/build
+/**/test-output
