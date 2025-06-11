@@ -9,16 +9,9 @@ package net.sourceforge.pmd.lang.java.types.testdata;
  */
 public class GenericFbound<T extends GenericFbound<T>> {
 
-    public class Inst extends GenericFbound<Inst> {
+    public class Inst extends GenericFbound<Inst> {}
 
-    }
+    public class InstRaw extends GenericFbound {}
 
-    public class InstRaw extends GenericFbound {
-
-    }
-
-    public class InstRec extends GenericFbound<T> {
-
-    }
-
+    public class InstRec extends GenericFbound<T> {}
 }

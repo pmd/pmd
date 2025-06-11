@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -22,21 +21,24 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
     }
 
     /**
-     * Returns the node that represents the guard of this conditional. That is the expression before the '?'.
+     * Returns the node that represents the guard of this conditional.
+     * That is the expression before the '?'.
      */
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(0);
     }
 
     /**
-     * Returns the node that represents the expression that will be evaluated if the guard evaluates to true.
+     * Returns the node that represents the expression that will be evaluated
+     * if the guard evaluates to true.
      */
     public ASTExpression getThenBranch() {
         return (ASTExpression) getChild(1);
     }
 
     /**
-     * Returns the node that represents the expression that will be evaluated if the guard evaluates to false.
+     * Returns the node that represents the expression that will be evaluated
+     * if the guard evaluates to false.
      */
     public ASTExpression getElseBranch() {
         return (ASTExpression) getChild(2);
@@ -48,8 +50,9 @@ public final class ASTConditionalExpression extends AbstractJavaExpr {
     }
 
     /**
-     * Note: this method is not used at all in pre-Java 8 analysis, because standalone/poly exprs weren't formalized
-     * before java 8. Calling this method then is undefined.
+     * Note: this method is not used at all in pre-Java 8 analysis,
+     * because standalone/poly exprs weren't formalized before java 8.
+     * Calling this method then is undefined.
      */
     // very internal
     boolean isStandalone() {

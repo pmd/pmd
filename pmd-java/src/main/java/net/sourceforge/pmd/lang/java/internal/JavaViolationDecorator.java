@@ -6,10 +6,6 @@ package net.sourceforge.pmd.lang.java.internal;
 
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
@@ -26,6 +22,8 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.IteratorUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class JavaViolationDecorator implements ViolationDecorator {
 
@@ -50,7 +48,8 @@ final class JavaViolationDecorator implements ViolationDecorator {
             enclosing = javaNode.getEnclosingType();
         }
         if (enclosing == null) {
-            enclosing = javaNode.getRoot().getTypeDeclarations()
+            enclosing = javaNode.getRoot()
+                    .getTypeDeclarations()
                     .first(it -> it.hasVisibility(ModifierOwner.Visibility.V_PUBLIC));
         }
         if (enclosing == null) {
@@ -70,38 +69,35 @@ final class JavaViolationDecorator implements ViolationDecorator {
 
     private static @Nullable String getMethodName(@NonNull JavaNode javaNode) {
         @Nullable
-        ASTBodyDeclaration enclosingDecl = javaNode.ancestorsOrSelf().filterIs(ASTBodyDeclaration.class).first();
+        ASTBodyDeclaration enclosingDecl =
+                javaNode.ancestorsOrSelf().filterIs(ASTBodyDeclaration.class).first();
 
         if (enclosingDecl instanceof ASTExecutableDeclaration) {
             return ((ASTExecutableDeclaration) enclosingDecl).getName();
-        }
-        else if (enclosingDecl instanceof ASTInitializer) {
+        } else if (enclosingDecl instanceof ASTInitializer) {
             return ((ASTInitializer) enclosingDecl).isStatic() ? "<clinit>" : "<init>";
         }
         return null;
     }
 
     private static String getVariableNames(Iterable<ASTVariableId> iterable) {
-        return IteratorUtil.toStream(iterable.iterator()).map(ASTVariableId::getName).collect(Collectors.joining(", "));
+        return IteratorUtil.toStream(iterable.iterator())
+                .map(ASTVariableId::getName)
+                .collect(Collectors.joining(", "));
     }
 
     private static @Nullable String getVariableNameIfExists(JavaNode node) {
         if (node instanceof ASTFieldDeclaration) {
             return getVariableNames((ASTFieldDeclaration) node);
-        }
-        else if (node instanceof ASTLocalVariableDeclaration) {
+        } else if (node instanceof ASTLocalVariableDeclaration) {
             return getVariableNames((ASTLocalVariableDeclaration) node);
-        }
-        else if (node instanceof ASTVariableDeclarator) {
+        } else if (node instanceof ASTVariableDeclarator) {
             return ((ASTVariableDeclarator) node).getVarId().getName();
-        }
-        else if (node instanceof ASTVariableId) {
+        } else if (node instanceof ASTVariableId) {
             return ((ASTVariableId) node).getName();
-        }
-        else if (node instanceof ASTFormalParameter) {
+        } else if (node instanceof ASTFormalParameter) {
             return getVariableNameIfExists(node.firstChild(ASTVariableId.class));
-        }
-        else if (node instanceof ASTExpression) {
+        } else if (node instanceof ASTExpression) {
             return getVariableNameIfExists(node.getParent());
         }
         return null;

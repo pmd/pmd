@@ -1,20 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A method declaration, in a class or interface declaration. Since 7.0, this also represents annotation methods.
- * Annotation methods have a much more restricted grammar though, in particular:
+ * A method declaration, in a class or interface declaration. Since 7.0,
+ * this also represents annotation methods. Annotation methods have a
+ * much more restricted grammar though, in particular:
  * <ul>
  * <li>They can't declare a {@linkplain #getThrowsList() throws clause}
  * <li>They can't declare {@linkplain #getTypeParameters() type parameters}
@@ -61,12 +60,13 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /**
-     * Returns the signature of the method this method overrides in a supertype. Note that this method may be
-     * implementing several methods of super-interfaces at once, in that case, an arbitrary one is returned.
+     * Returns the signature of the method this method overrides in a
+     * supertype. Note that this method may be implementing several methods
+     * of super-interfaces at once, in that case, an arbitrary one is returned.
      *
-     * <p>
-     * If the method has an {@link Override} annotation, but we couldn't resolve any method that is actually
-     * implemented, this will return {@link TypeSystem#UNRESOLVED_METHOD}.
+     * <p>If the method has an {@link Override} annotation, but we couldn't
+     * resolve any method that is actually implemented, this will return
+     * {@link TypeSystem#UNRESOLVED_METHOD}.
      */
     public JMethodSig getOverriddenMethod() {
         return overriddenMethod;
@@ -77,8 +77,8 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /**
-     * If this method declaration is an explicit record component accessor, returns the corresponding record component.
-     * Otherwise returns null.
+     * If this method declaration is an explicit record component accessor,
+     * returns the corresponding record component. Otherwise returns null.
      */
     public @Nullable ASTRecordComponent getAccessedRecordComponent() {
         if (getArity() != 0) {
@@ -100,8 +100,8 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /**
-     * Returns the default clause, if this is an annotation method declaration that features one. Otherwise returns
-     * null.
+     * Returns the default clause, if this is an annotation method declaration
+     * that features one. Otherwise returns null.
      */
     @Nullable
     public ASTDefaultValue getDefaultClause() {
@@ -116,7 +116,8 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /**
-     * Returns the extra array dimensions that may be after the formal parameters.
+     * Returns the extra array dimensions that may be after the
+     * formal parameters.
      */
     @Nullable
     public ASTArrayDimensions getExtraDimensions() {
@@ -127,19 +128,28 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
      * Returns whether this is a main method declaration.
      */
     public boolean isMainMethod() {
-        return this.hasModifiers(JModifier.PUBLIC, JModifier.STATIC) && "main".equals(this.getName()) && this.isVoid()
-                && this.getArity() == 1 && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0))
+        return this.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
+                        && "main".equals(this.getName())
+                        && this.isVoid()
+                        && this.getArity() == 1
+                        && TypeTestUtil.isExactlyA(
+                                String[].class, this.getFormalParameters().get(0))
                 || isLaunchableMainMethod();
     }
 
     /**
-     * With JEP 445/463/477/495 (Java 23/24 Preview) the main method does not need to be static anymore and does not
-     * need to be public or have a formal parameter.
+     * With JEP 445/463/477/495 (Java 23/24 Preview) the main method does not need to be static anymore and
+     * does not need to be public or have a formal parameter.
      */
     private boolean isLaunchableMainMethod() {
-        return this.getRoot().isSimpleCompilationUnit() && "main".equals(this.getName())
-                && !this.hasModifiers(JModifier.PRIVATE) && this.isVoid()
-                && (this.getArity() == 0 || this.getArity() == 1
-                        && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0)));
+        return this.getRoot().isSimpleCompilationUnit()
+                && "main".equals(this.getName())
+                && !this.hasModifiers(JModifier.PRIVATE)
+                && this.isVoid()
+                && (this.getArity() == 0
+                        || this.getArity() == 1
+                                && TypeTestUtil.isExactlyA(
+                                        String[].class,
+                                        this.getFormalParameters().get(0)));
     }
 }

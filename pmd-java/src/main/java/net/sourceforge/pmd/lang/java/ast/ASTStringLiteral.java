@@ -1,23 +1,20 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.util.StringUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Represents a string literal. The image of this node is the literal as it appeared in the source
- * ({@link #getLiteralText()}). {@link #getConstValue()} allows to recover the actual runtime value, by processing
- * escapes.
+ * Represents a string literal. The image of this node is the literal as it appeared
+ * in the source ({@link #getLiteralText()}). {@link #getConstValue()} allows to recover
+ * the actual runtime value, by processing escapes.
  */
 public final class ASTStringLiteral extends AbstractLiteral implements ASTLiteral {
 
@@ -54,8 +51,7 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     public boolean isEmpty() {
         if (isTextBlock) {
             return getConstValue().isEmpty(); // could be a bunch of ignorable indents?
-        }
-        else {
+        } else {
             return getLiteralText().length() == 2; // ""
         }
     }
@@ -66,10 +62,10 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
     /**
-     * Returns a string where non-printable characters have been escaped using Java-like escape codes (eg \n, \t,
-     * \u005cu00a0).
+     * Returns a string where non-printable characters have been escaped
+     * using Java-like escape codes (eg \n, \t, \u005cu00a0).
      */
-    // ^^^^^^
+    //                                          ^^^^^^
     // this is a backslash, it's printed as \u00a0
     @NoAttribute
     public @NonNull String toPrintableString() {
@@ -143,19 +139,20 @@ public final class ASTStringLiteral extends AbstractLiteral implements ASTLitera
     }
 
     /**
-     * Interpret escape sequences. This appends the interpreted contents of 'line' into the StringBuilder. The line does
-     * not contain any line terminators, instead, an implicit line terminator may be at the end (parameter
-     * {@code isEndANewLine}), to interpret line continuations.
+     * Interpret escape sequences. This appends the interpreted contents
+     * of 'line' into the StringBuilder. The line does not contain any
+     * line terminators, instead, an implicit line terminator may be at
+     * the end (parameter {@code isEndANewLine}), to interpret line
+     * continuations.
      *
-     * @param line
-     *            Source line
-     * @param out
-     *            Output
-     * @param isEndANewLine
-     *            Whether the end of the line is a newline, as in text blocks
+     * @param line          Source line
+     * @param out           Output
+     * @param isEndANewLine Whether the end of the line is a newline,
+     *                      as in text blocks
      *
-     * @return Whether a newline should be appended at the end. Returns false if {@code isEndANewLine} and the line ends
-     *         with a backslash, as this is a line continuation.
+     * @return Whether a newline should be appended at the end. Returns
+     *     false if {@code isEndANewLine} and the line ends with a backslash,
+     *     as this is a line continuation.
      */
     // See https://docs.oracle.com/javase/specs/jls/se17/html/jls-3.html#jls-EscapeSequence
     private static boolean interpretEscapeSequences(Chars line, StringBuilder out, boolean isEndANewLine) {

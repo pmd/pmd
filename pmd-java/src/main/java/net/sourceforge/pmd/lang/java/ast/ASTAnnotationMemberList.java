@@ -1,13 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 
 /**
- * Represents the list of {@link ASTMemberValuePair member-value pairs} in an {@link ASTAnnotation annotation}.
+ * Represents the list of {@link ASTMemberValuePair member-value pairs}
+ * in an {@link ASTAnnotation annotation}.
  *
  * <pre class="grammar">
  *
@@ -24,13 +24,16 @@ public final class ASTAnnotationMemberList extends ASTMaybeEmptyListOf<ASTMember
     }
 
     /**
-     * Returns the value of the attribute with the given name, returns null if no such attribute was mentioned.
+     * Returns the value of the attribute with the given name, returns
+     * null if no such attribute was mentioned.
      *
-     * @param attrName
-     *            Name of an attribute
+     * @param attrName Name of an attribute
      */
     public ASTMemberValue getAttribute(String attrName) {
-        return toStream().filter(it -> it.getName().equals(attrName)).map(ASTMemberValuePair::getValue).first();
+        return toStream()
+                .filter(it -> it.getName().equals(attrName))
+                .map(ASTMemberValuePair::getValue)
+                .first();
     }
 
     @Override

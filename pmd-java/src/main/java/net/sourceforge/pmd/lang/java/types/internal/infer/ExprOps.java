@@ -14,10 +14,6 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
@@ -37,6 +33,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class ExprOps {
@@ -51,16 +49,14 @@ public final class ExprOps {
     }
 
     /**
-     * Returns true if the argument expression is potentially compatible with type t, as specified by JLS§15.12.2.1:
+     * Returns true if the argument expression is potentially
+     * compatible with type t, as specified by JLS§15.12.2.1:
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.12.1
      *
-     * @param m
-     *            Method for which the potential applicability is being tested
-     * @param e
-     *            Argument expression
-     * @param t
-     *            Formal parameter type
+     * @param m Method for which the potential applicability is being tested
+     * @param e Argument expression
+     * @param t Formal parameter type
      */
     boolean isPotentiallyCompatible(JMethodSig m, ExprMirror e, JTypeMirror t) {
         if (e instanceof BranchingMirror) {
@@ -69,15 +65,14 @@ public final class ExprOps {
 
             BranchingMirror cond = (BranchingMirror) e;
             return cond.branchesMatch(branch -> isPotentiallyCompatible(m, branch, t));
-
         }
 
         boolean isLambdaOrRef = e instanceof FunctionalExprMirror;
 
         if (isLambdaOrRef) {
             if (t instanceof JTypeVar) {
-                // A lambda expression or a method reference expression is potentially compatible with
-                // a type variable if the type variable is a type parameter of the candidate method.
+                //  A lambda expression or a method reference expression is potentially compatible with
+                //  a type variable if the type variable is a type parameter of the candidate method.
                 return m.getTypeParameters().contains(t);
             }
             if (TypeOps.isUnresolved(t)) {
@@ -101,8 +96,7 @@ public final class ExprOps {
 
                 return expectsVoid && lambda.isVoidCompatible() || lambda.isValueCompatible();
 
-            }
-            else {
+            } else {
                 // is method reference
 
                 // TODO need to look for potentially applicable methods
@@ -117,22 +111,19 @@ public final class ExprOps {
     }
 
     /**
-     * Returns true if the the argument expression is pertinent to applicability for the potentially applicable method
-     * m, called at site 'invoc', as specified by JLS§15.12.2.2:
+     * Returns true if the the argument expression is pertinent
+     * to applicability for the potentially applicable method m,
+     * called at site 'invoc', as specified by JLS§15.12.2.2:
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-15.html#jls-15.12.2.2
      *
-     * @param arg
-     *            Argument expression
-     * @param m
-     *            Method type
-     * @param formalType
-     *            Type of the formal parameter
-     * @param invoc
-     *            Invocation expression
+     * @param arg        Argument expression
+     * @param m          Method type
+     * @param formalType Type of the formal parameter
+     * @param invoc      Invocation expression
      */
-    static boolean isPertinentToApplicability(ExprMirror arg, JMethodSig m, JTypeMirror formalType,
-            InvocationMirror invoc) {
+    static boolean isPertinentToApplicability(
+            ExprMirror arg, JMethodSig m, JTypeMirror formalType, InvocationMirror invoc) {
         // An argument expression is considered pertinent to applicability
         // for a potentially applicable method m unless it has one of the following forms:
 
@@ -152,20 +143,20 @@ public final class ExprOps {
                 }
             }
 
-            // If m is a generic method and the method invocation does
-            // not provide explicit type arguments, an explicitly typed
-            // lambda expression for which the corresponding target type
-            // (as derived from the signature of m) is a type parameter of m.
+            //  If m is a generic method and the method invocation does
+            //  not provide explicit type arguments, an explicitly typed
+            //  lambda expression for which the corresponding target type
+            //  (as derived from the signature of m) is a type parameter of m.
             return !m.isGeneric() || !invoc.getExplicitTypeArguments().isEmpty() || !formalType.isTypeVariable();
         }
 
         if (arg instanceof MethodRefMirror) {
             // An inexact method reference expression(§ 15.13 .1).
             return getExactMethod((MethodRefMirror) arg) != null
-                    // If m is a generic method and the method invocation does
-                    // not provide explicit type arguments, an exact method
-                    // reference expression for which the corresponding target type
-                    // (as derived from the signature of m) is a type parameter of m.
+                    //  If m is a generic method and the method invocation does
+                    //  not provide explicit type arguments, an exact method
+                    //  reference expression for which the corresponding target type
+                    //  (as derived from the signature of m) is a type parameter of m.
                     && (!m.isGeneric() || !invoc.getExplicitTypeArguments().isEmpty() || !formalType.isTypeVariable());
         }
 
@@ -208,10 +199,9 @@ public final class ExprOps {
             if (lhs == null) {
                 // ct error, already reported as a missing symbol in our system
                 return null;
-            }
-            else if (lhs.isArray()) {
+            } else if (lhs.isArray()) {
                 // A method reference expression of the form ArrayType :: new is always exact.
-                // But: If a method reference expression has the form ArrayType :: new, then ArrayType
+                // But:  If a method reference expression has the form ArrayType :: new, then ArrayType
                 // must denote a type that is reifiable (§4.7), or a compile-time error occurs.
                 if (lhs.isReifiable()) {
                     JTypeDeclSymbol symbol = lhs.getSymbol();
@@ -220,21 +210,19 @@ public final class ExprOps {
                             : "Reifiable array should present a symbol! " + lhs;
 
                     return lhs.getConstructors().get(0);
-                }
-                else {
+                } else {
                     // todo compile time error
                     return null;
                 }
-            }
-            else {
+            } else {
                 if (lhs.isRaw() || !(lhs instanceof JClassType)) {
                     return null;
                 }
 
-                accessible = TypeOps.filterAccessible(lhs.getConstructors(), mref.getEnclosingType().getSymbol());
+                accessible = TypeOps.filterAccessible(
+                        lhs.getConstructors(), mref.getEnclosingType().getSymbol());
             }
-        }
-        else {
+        } else {
             JClassType enclosing = mref.getEnclosingType();
             accessible = mref.getTypeToSearch()
                     .streamMethods(TypeOps.accessibleMethodFilter(mref.getMethodName(), enclosing.getSymbol()))
@@ -243,20 +231,21 @@ public final class ExprOps {
 
         if (accessible.size() == 1) {
             JMethodSig candidate = accessible.get(0);
-            if (candidate.isVarargs() || candidate.isGeneric() && mref.getExplicitTypeArguments().isEmpty()) {
+            if (candidate.isVarargs()
+                    || candidate.isGeneric() && mref.getExplicitTypeArguments().isEmpty()) {
                 return null;
             }
 
-            candidate = candidate
-                    .subst(Substitution.mapping(candidate.getTypeParameters(), mref.getExplicitTypeArguments()));
+            candidate = candidate.subst(
+                    Substitution.mapping(candidate.getTypeParameters(), mref.getExplicitTypeArguments()));
 
             if (lhs != null && lhs.isRaw()) {
                 // can be raw if the method doesn't mention type vars
                 // of the original owner, ie the erased method is the
                 // same as the generic method.
                 JClassType lhsClass = (JClassType) candidate.getDeclaringType();
-                JMethodSig unerased =
-                        cast(cast(candidate).withOwner(lhsClass.getGenericTypeDeclaration())).originalMethod();
+                JMethodSig unerased = cast(cast(candidate).withOwner(lhsClass.getGenericTypeDeclaration()))
+                        .originalMethod();
                 if (TypeOps.mentionsAny(unerased, lhsClass.getFormalTypeParams())) {
                     return null;
                 }
@@ -265,8 +254,7 @@ public final class ExprOps {
             // For exact method references, the return type is Class<? extends T> (no erasure).
             // So it's mref::getTypeToSearch and not mref.getTypeToSearch()::getErasure
             return adaptGetClass(candidate, mref::getTypeToSearch);
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -293,14 +281,13 @@ public final class ExprOps {
             MethodCtDecl ctd2 = infer.determineInvocationTypeOrFail(site2);
             JMethodSig m2 = ctd2.getMethodType();
 
-            // If the first search produces a most specific method that is static,
-            // and the set of applicable methods produced by the second search
-            // contains no non-static methods, then the compile-time declaration
-            // is the most specific method of the first search.
+            //  If the first search produces a most specific method that is static,
+            //  and the set of applicable methods produced by the second search
+            //  contains no non-static methods, then the compile-time declaration
+            //  is the most specific method of the first search.
             if (m1 != ts.UNRESOLVED_METHOD && m1.isStatic() && (m2 == ts.UNRESOLVED_METHOD || m2.isStatic())) {
                 return ctd1;
-            }
-            else if (m2 != ts.UNRESOLVED_METHOD && !m2.isStatic() && (m1 == ts.UNRESOLVED_METHOD || !m1.isStatic())) {
+            } else if (m2 != ts.UNRESOLVED_METHOD && !m2.isStatic() && (m1 == ts.UNRESOLVED_METHOD || !m1.isStatic())) {
                 // Otherwise, if the set of applicable methods produced by the
                 // first search contains no static methods, and the second search
                 // produces a most specific method that is non-static, then the
@@ -308,21 +295,19 @@ public final class ExprOps {
                 return ctd2;
             }
 
-            // Otherwise, there is no compile-time declaration.
+            //  Otherwise, there is no compile-time declaration.
             return null;
-        }
-        else if (m1 == ts.UNRESOLVED_METHOD || m1.isStatic()) {
+        } else if (m1 == ts.UNRESOLVED_METHOD || m1.isStatic()) {
             // if the most specific applicable method is static, there is no compile-time declaration.
             return null;
-        }
-        else {
+        } else {
             // Otherwise, the compile-time declaration is the most specific applicable method.
             return ctd1;
         }
     }
 
-    static InvocationMirror methodRefAsInvocation(final MethodRefMirror mref, JMethodSig targetType,
-            boolean asInstanceMethod) {
+    static InvocationMirror methodRefAsInvocation(
+            final MethodRefMirror mref, JMethodSig targetType, boolean asInstanceMethod) {
         // the arguments are treated as if they were of the type
         // of the formal parameters of the candidate
         List<JTypeMirror> formals = targetType.getFormalParameters();
@@ -466,38 +451,39 @@ public final class ExprOps {
         };
     }
 
-    private static Iterable<JMethodSig> getAccessibleCandidates(MethodRefMirror mref, boolean asInstanceMethod,
-            JMethodSig targetType) {
+    private static Iterable<JMethodSig> getAccessibleCandidates(
+            MethodRefMirror mref, boolean asInstanceMethod, JMethodSig targetType) {
         JMethodSig exactMethod = getExactMethod(mref);
         if (exactMethod != null) {
             return Collections.singletonList(exactMethod);
-        }
-        else {
+        } else {
             final JTypeMirror actualTypeToSearch;
             {
                 JTypeMirror typeToSearch = mref.getTypeToSearch();
                 if (typeToSearch.isArray() && mref.isConstructorRef()) {
                     // ArrayType :: new
                     return typeToSearch.getConstructors();
-                }
-                else if (typeToSearch instanceof JClassType && mref.isConstructorRef()) {
+                } else if (typeToSearch instanceof JClassType && mref.isConstructorRef()) {
                     // ClassType :: [TypeArguments] new
                     // TODO treatment of raw constructors is whacky
-                    return TypeOps.lazyFilterAccessible(typeToSearch.getConstructors(),
+                    return TypeOps.lazyFilterAccessible(
+                            typeToSearch.getConstructors(),
                             mref.getEnclosingType().getSymbol());
                 }
 
-                if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType
+                if (asInstanceMethod
+                        && typeToSearch.isRaw()
+                        && typeToSearch instanceof JClassType
                         && targetType.getArity() > 0) {
-                    // In the second search, if P1, ..., Pn is not empty
-                    // and P1 is a subtype of ReferenceType, then the
-                    // method reference expression is treated as if it were
-                    // a method invocation expression with argument expressions
-                    // of types P2, ..., Pn. If ReferenceType is a raw type,
-                    // and there exists a parameterization of this type, G<...>,
-                    // that is a supertype of P1, the type to search is the result
-                    // of capture conversion (§5.1.10) applied to G<...>; otherwise,
-                    // the type to search is the same as the type of the first search.
+                    //  In the second search, if P1, ..., Pn is not empty
+                    //  and P1 is a subtype of ReferenceType, then the
+                    //  method reference expression is treated as if it were
+                    //  a method invocation expression with argument expressions
+                    //  of types P2, ..., Pn. If ReferenceType is a raw type,
+                    //  and there exists a parameterization of this type, G<...>,
+                    //  that is a supertype of P1, the type to search is the result
+                    //  of capture conversion (§5.1.10) applied to G<...>; otherwise,
+                    //  the type to search is the same as the type of the first search.
 
                     JClassType type = (JClassType) typeToSearch;
                     JTypeMirror p1 = targetType.getFormalParameters().get(0);
@@ -517,9 +503,9 @@ public final class ExprOps {
 
             boolean acceptsInstanceMethods = canUseInstanceMethods(actualTypeToSearch, targetType, mref);
 
-            Predicate<JMethodSymbol> prefilter =
-                    TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol())
-                            .and(m -> Modifier.isStatic(m.getModifiers()) || acceptsInstanceMethods);
+            Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(
+                            mref.getMethodName(), mref.getEnclosingType().getSymbol())
+                    .and(m -> Modifier.isStatic(m.getModifiers()) || acceptsInstanceMethods);
             return actualTypeToSearch.streamMethods(prefilter).collect(Collectors.toList());
         }
     }
@@ -540,23 +526,22 @@ public final class ExprOps {
     }
 
     /**
-     * Calls to {@link Object#getClass()} on a type {@code T} have type {@code Class<? extends |T|>}. If the selected
-     * method is that method, then we need to replace its return type (the symbol has return type {@link Object}).
+     * Calls to {@link Object#getClass()} on a type {@code T} have type
+     * {@code Class<? extends |T|>}. If the selected method is that method, then
+     * we need to replace its return type (the symbol has return type {@link Object}).
      *
-     * <p>
-     * For exact method reference expressions, the type is {@code <? extends T>} (no erasure).
+     * <p>For exact method reference expressions, the type is {@code <? extends T>} (no erasure).
      *
-     * @param sig
-     *            Selected signature
-     * @param replacementReturnType
-     *            Lazily created, because in many cases it's not necessary
+     * @param sig                   Selected signature
+     * @param replacementReturnType Lazily created, because in many cases it's not necessary
      *
      * @return Signature, adapted if it is {@link Object#getClass()}
      */
     static JMethodSig adaptGetClass(JMethodSig sig, Supplier<JTypeMirror> replacementReturnType) {
         TypeSystem ts = sig.getTypeSystem();
         if ("getClass".equals(sig.getName()) && sig.getDeclaringType().equals(ts.OBJECT)) {
-            return cast(cast(sig).withReturnType(getClassReturn(replacementReturnType.get(), ts))).markAsAdapted();
+            return cast(cast(sig).withReturnType(getClassReturn(replacementReturnType.get(), ts)))
+                    .markAsAdapted();
         }
         return sig;
     }

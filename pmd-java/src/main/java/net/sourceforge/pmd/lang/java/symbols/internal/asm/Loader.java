@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.io.IOException;
 import java.io.InputStream;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -29,7 +28,6 @@ abstract class Loader {
         public String toString() {
             return "(failed loader)";
         }
-
     }
 
     static class StreamLoader extends Loader {

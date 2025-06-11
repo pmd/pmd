@@ -4,11 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression.ConstResult;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -17,6 +12,10 @@ import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Computes constant expression values.
@@ -27,9 +26,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
     static final ConstantFolder INSTANCE = new ConstantFolder();
     private static final Pair<Object, Object> FAILED_BIN_PROMOTION = Pair.of(null, null);
 
-    private ConstantFolder() {
-
-    }
+    private ConstantFolder() {}
 
     @Override
     public @NonNull ConstResult visitJavaNode(JavaNode node, Void data) {
@@ -48,16 +45,13 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         if (node.isIntegral()) {
             if (node.isIntLiteral()) {
                 result = node.getValueAsInt();
-            }
-            else {
+            } else {
                 result = node.getValueAsLong();
             }
-        }
-        else {
+        } else {
             if (node.isFloatLiteral()) {
                 result = node.getValueAsFloat();
-            }
-            else {
+            } else {
                 result = node.getValueAsDouble();
             }
         }
@@ -74,8 +68,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         String result;
         if (node.isTextBlock()) {
             result = ASTStringLiteral.determineTextBlockContent(node.getLiteralText());
-        }
-        else {
+        } else {
             result = ASTStringLiteral.determineStringContent(node.getLiteralText());
         }
         return ConstResult.ctConst(result);
@@ -102,15 +95,13 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         }
 
         if (symbol instanceof JFieldSymbol) {
-            @Nullable
-            Object cv = ((JFieldSymbol) symbol).getConstValue();
+            @Nullable Object cv = ((JFieldSymbol) symbol).getConstValue();
             if (cv != null) {
                 return ConstResult.ctConst(cv);
             }
         }
 
-        @Nullable
-        ASTVariableId declaratorId = symbol.tryGetNode();
+        @Nullable ASTVariableId declaratorId = symbol.tryGetNode();
         if (declaratorId != null) {
             ASTExpression initializer = declaratorId.getInitializer();
             if (initializer != null) {
@@ -160,15 +151,15 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         if (condition.hasValue()) {
             ConstResult thenValue = node.getThenBranch().getConstFoldingResult();
             ConstResult elseValue = node.getElseBranch().getConstFoldingResult();
-            boolean ctConst = condition.isCompileTimeConstant() && thenValue.isCompileTimeConstant()
+            boolean ctConst = condition.isCompileTimeConstant()
+                    && thenValue.isCompileTimeConstant()
                     && elseValue.isCompileTimeConstant();
             if (!thenValue.hasValue() || !elseValue.hasValue()) {
                 return ConstResult.NO_CONST_VALUE; // not a constexpr
             }
             if (condition.getValue() instanceof Boolean && (boolean) condition.getValue()) {
                 return new ConstResult(ctConst, thenValue.getValue());
-            }
-            else {
+            } else {
                 return new ConstResult(ctConst, elseValue.getValue());
             }
         }
@@ -185,11 +176,9 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         Object res;
         if (t.isNumeric()) {
             res = numericCoercion(castValue.getValue(), t);
-        }
-        else if (TypeTestUtil.isExactlyA(String.class, node.getCastType())) {
+        } else if (TypeTestUtil.isExactlyA(String.class, node.getCastType())) {
             res = stringCoercion(castValue.getValue());
-        }
-        else {
+        } else {
             return ConstResult.NO_CONST_VALUE;
         }
 
@@ -221,17 +210,13 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 Number promoted = unaryPromotion(operandValue);
                 if (promoted == null) {
                     return null; // compile-time error
-                }
-                else if (promoted instanceof Integer) {
+                } else if (promoted instanceof Integer) {
                     return -promoted.intValue();
-                }
-                else if (promoted instanceof Long) {
+                } else if (promoted instanceof Long) {
                     return -promoted.longValue();
-                }
-                else if (promoted instanceof Float) {
+                } else if (promoted instanceof Float) {
                     return -promoted.floatValue();
-                }
-                else {
+                } else {
                     assert promoted instanceof Double;
                     return -promoted.doubleValue();
                 }
@@ -240,11 +225,9 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 Number promoted = unaryPromotion(operandValue);
                 if (promoted instanceof Integer) {
                     return ~promoted.intValue();
-                }
-                else if (promoted instanceof Long) {
+                } else if (promoted instanceof Long) {
                     return ~promoted.longValue();
-                }
-                else {
+                } else {
                     return null; // compile-time error
                 }
             }
@@ -296,11 +279,9 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
                 if (left instanceof Integer) {
                     return intValue(left) | intValue(right);
-                }
-                else if (left instanceof Long) {
+                } else if (left instanceof Long) {
                     return longValue(left) | longValue(right);
-                }
-                else if (left instanceof Boolean) {
+                } else if (left instanceof Boolean) {
                     return booleanValue(left) | booleanValue(right);
                 }
                 return null;
@@ -312,11 +293,9 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
                 if (left instanceof Integer) {
                     return intValue(left) ^ intValue(right);
-                }
-                else if (left instanceof Long) {
+                } else if (left instanceof Long) {
                     return longValue(left) ^ longValue(right);
-                }
-                else if (left instanceof Boolean) {
+                } else if (left instanceof Boolean) {
                     return booleanValue(left) ^ booleanValue(right);
                 }
                 return null;
@@ -328,11 +307,9 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
                 if (left instanceof Integer) {
                     return intValue(left) & intValue(right);
-                }
-                else if (left instanceof Long) {
+                } else if (left instanceof Long) {
                     return longValue(left) & longValue(right);
-                }
-                else if (left instanceof Boolean) {
+                } else if (left instanceof Boolean) {
                     return booleanValue(left) & booleanValue(right);
                 }
                 return null;
@@ -368,8 +345,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 // only use intValue for the left operand
                 if (left instanceof Integer) {
                     return intValue(left) << intValue(right);
-                }
-                else if (left instanceof Long) {
+                } else if (left instanceof Long) {
                     return longValue(left) << intValue(right);
                 }
                 return null;
@@ -384,8 +360,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 // only use intValue for the left operand
                 if (left instanceof Integer) {
                     return intValue(left) >> intValue(right);
-                }
-                else if (left instanceof Long) {
+                } else if (left instanceof Long) {
                     return longValue(left) >> intValue(right);
                 }
                 return null;
@@ -400,8 +375,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 // only use intValue for the left operand
                 if (left instanceof Integer) {
                     return intValue(left) >>> intValue(right);
-                }
-                else if (left instanceof Long) {
+                } else if (left instanceof Long) {
                     return longValue(left) >>> intValue(right);
                 }
                 return null;
@@ -414,22 +388,17 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
                     if (left instanceof Integer) {
                         return intValue(left) + intValue(right);
-                    }
-                    else if (left instanceof Long) {
+                    } else if (left instanceof Long) {
                         return longValue(left) + longValue(right);
-                    }
-                    else if (left instanceof Float) {
+                    } else if (left instanceof Float) {
                         return floatValue(left) + floatValue(right);
-                    }
-                    else {
+                    } else {
                         return doubleValue(left) + doubleValue(right);
                     }
-                }
-                else if (left instanceof String) {
+                } else if (left instanceof String) {
                     // string concat
                     return (String) left + right;
-                }
-                else if (right instanceof String) {
+                } else if (right instanceof String) {
                     // string concat
                     return left + (String) right;
                 }
@@ -443,14 +412,11 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
                     if (left instanceof Integer) {
                         return intValue(left) - intValue(right);
-                    }
-                    else if (left instanceof Long) {
+                    } else if (left instanceof Long) {
                         return longValue(left) - longValue(right);
-                    }
-                    else if (left instanceof Float) {
+                    } else if (left instanceof Float) {
                         return floatValue(left) - floatValue(right);
-                    }
-                    else {
+                    } else {
                         return doubleValue(left) - doubleValue(right);
                     }
                 }
@@ -464,14 +430,11 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
                     if (left instanceof Integer) {
                         return intValue(left) * intValue(right);
-                    }
-                    else if (left instanceof Long) {
+                    } else if (left instanceof Long) {
                         return longValue(left) * longValue(right);
-                    }
-                    else if (left instanceof Float) {
+                    } else if (left instanceof Float) {
                         return floatValue(left) * floatValue(right);
-                    }
-                    else {
+                    } else {
                         return doubleValue(left) * doubleValue(right);
                     }
                 }
@@ -485,14 +448,11 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
                     if (left instanceof Integer) {
                         return intValue(left) / intValue(right);
-                    }
-                    else if (left instanceof Long) {
+                    } else if (left instanceof Long) {
                         return longValue(left) / longValue(right);
-                    }
-                    else if (left instanceof Float) {
+                    } else if (left instanceof Float) {
                         return floatValue(left) / floatValue(right);
-                    }
-                    else {
+                    } else {
                         return doubleValue(left) / doubleValue(right);
                     }
                 }
@@ -506,14 +466,11 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
                     if (left instanceof Integer) {
                         return intValue(left) % intValue(right);
-                    }
-                    else if (left instanceof Long) {
+                    } else if (left instanceof Long) {
                         return longValue(left) % longValue(right);
-                    }
-                    else if (left instanceof Float) {
+                    } else if (left instanceof Float) {
                         return floatValue(left) % floatValue(right);
-                    }
-                    else {
+                    } else {
                         return doubleValue(left) % doubleValue(right);
                     }
                 }
@@ -532,14 +489,11 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
             if (left instanceof Integer) {
                 return intValue(left) <= intValue(right);
-            }
-            else if (left instanceof Long) {
+            } else if (left instanceof Long) {
                 return longValue(left) <= longValue(right);
-            }
-            else if (left instanceof Float) {
+            } else if (left instanceof Float) {
                 return floatValue(left) <= floatValue(right);
-            }
-            else if (left instanceof Double) {
+            } else if (left instanceof Double) {
                 return doubleValue(left) <= doubleValue(right);
             }
         }
@@ -554,14 +508,11 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
 
             if (left instanceof Integer) {
                 return intValue(left) < intValue(right);
-            }
-            else if (left instanceof Long) {
+            } else if (left instanceof Long) {
                 return longValue(left) < longValue(right);
-            }
-            else if (left instanceof Float) {
+            } else if (left instanceof Float) {
                 return floatValue(left) < floatValue(right);
-            }
-            else if (left instanceof Double) {
+            } else if (left instanceof Double) {
                 return doubleValue(left) < doubleValue(right);
             }
         }
@@ -579,8 +530,7 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
         if (isConvertibleToNumber(left) && isConvertibleToNumber(right)) {
             Pair<Object, Object> promoted = binaryNumericPromotion(left, right);
             return promoted.getLeft().equals(promoted.getRight()); // fixme Double.NaN
-        }
-        else {
+        } else {
             return null; // not a constant expr on reference types
         }
     }
@@ -592,12 +542,10 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
     private static @Nullable Number unaryPromotion(Object t) {
         if (t instanceof Character) {
             return (int) (Character) t;
-        }
-        else if (t instanceof Number) {
+        } else if (t instanceof Number) {
             if (t instanceof Byte || t instanceof Short) {
                 return intValue(t);
-            }
-            else {
+            } else {
                 return (Number) t;
             }
         }
@@ -605,22 +553,20 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
     }
 
     /**
-     * This returns a pair in which both numbers have the dynamic type. Both right and left need to be
-     * {@link #isConvertibleToNumber(Object)}, otherwise fails with ClassCastException.
+     * This returns a pair in which both numbers have the dynamic type.
+     * Both right and left need to be {@link #isConvertibleToNumber(Object)},
+     * otherwise fails with ClassCastException.
      */
     private static Pair<Object, Object> binaryNumericPromotion(Object left, Object right) {
         left = projectCharOntoInt(left);
         right = projectCharOntoInt(right);
         if (left instanceof Double || right instanceof Double) {
             return Pair.of(doubleValue(left), doubleValue(right));
-        }
-        else if (left instanceof Float || right instanceof Float) {
+        } else if (left instanceof Float || right instanceof Float) {
             return Pair.of(floatValue(left), floatValue(right));
-        }
-        else if (left instanceof Long || right instanceof Long) {
+        } else if (left instanceof Long || right instanceof Long) {
             return Pair.of(longValue(left), longValue(right));
-        }
-        else {
+        } else {
             return Pair.of(intValue(left), intValue(right));
         }
     }
@@ -631,11 +577,9 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 return Pair.of(left, right);
             }
             return FAILED_BIN_PROMOTION;
-        }
-        else if (!isConvertibleToNumber(left) || !isConvertibleToNumber(right)) {
+        } else if (!isConvertibleToNumber(left) || !isConvertibleToNumber(right)) {
             return FAILED_BIN_PROMOTION;
-        }
-        else {
+        } else {
             return binaryNumericPromotion(left, right);
         }
     }
@@ -701,5 +645,4 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
     private static double doubleValue(Object x) {
         return ((Number) x).doubleValue();
     }
-
 }

@@ -10,9 +10,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -32,6 +29,7 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 
 public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     private static final String LOMBOK_PACKAGE = "lombok";
@@ -39,13 +37,16 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     private static final String LOMBOK_GETTER = "Getter";
     private static final String LOMBOK_SETTER = "Setter";
 
-    private static final PropertyDescriptor<Boolean> ENSURE_SERIALIZATION =
-            PropertyFactory.booleanProperty("ensureSerialization")
-                    .desc("Require that beans implement java.io.Serializable.").defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> ENSURE_SERIALIZATION = PropertyFactory.booleanProperty(
+                    "ensureSerialization")
+            .desc("Require that beans implement java.io.Serializable.")
+            .defaultValue(false)
+            .build();
 
     private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR = stringListProperty("packages")
             .desc("Consider classes in only these package to be beans. Set to an empty value to check all classes.")
-            .defaultValues("org.example.beans").build();
+            .defaultValues("org.example.beans")
+            .build();
 
     private Map<String, PropertyInfo> properties;
 
@@ -71,8 +72,9 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         String beanName = node.getSimpleName();
 
         if (getProperty(ENSURE_SERIALIZATION) && !TypeTestUtil.isA(Serializable.class, node)) {
-            asCtx(data).addViolationWithMessage(node, "The bean ''{0}'' does not implement java.io.Serializable.",
-                    beanName);
+            asCtx(data)
+                    .addViolationWithMessage(
+                            node, "The bean ''{0}'' does not implement java.io.Serializable.", beanName);
         }
 
         if (!hasNoArgConstructor(node)) {
@@ -89,47 +91,74 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         collectMethods(node);
 
         for (PropertyInfo propertyInfo : properties.values()) {
-            if (!hasLombokGetterAnnotation(node) && !hasLombokSetterAnnotation(node) && propertyInfo.hasMissingGetter()
+            if (!hasLombokGetterAnnotation(node)
+                    && !hasLombokSetterAnnotation(node)
+                    && propertyInfo.hasMissingGetter()
                     && propertyInfo.hasMissingSetter()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
-                        "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.", beanName,
-                        propertyInfo.getName());
-            }
-            else if (!hasLombokGetterAnnotation(node) && propertyInfo.hasMissingGetter()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
-                        "The bean ''{0}'' is missing a getter for property ''{1}''.", beanName, propertyInfo.getName());
+                asCtx(data)
+                        .addViolationWithMessage(
+                                propertyInfo.getDeclaratorId(),
+                                "The bean ''{0}'' is missing a getter and a setter for property ''{1}''.",
+                                beanName,
+                                propertyInfo.getName());
+            } else if (!hasLombokGetterAnnotation(node) && propertyInfo.hasMissingGetter()) {
+                asCtx(data)
+                        .addViolationWithMessage(
+                                propertyInfo.getDeclaratorId(),
+                                "The bean ''{0}'' is missing a getter for property ''{1}''.",
+                                beanName,
+                                propertyInfo.getName());
 
-            }
-            else if (!hasLombokSetterAnnotation(node) && propertyInfo.hasMissingSetter()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getDeclaratorId(),
-                        "The bean ''{0}'' is missing a setter for property ''{1}''.", beanName, propertyInfo.getName());
-
+            } else if (!hasLombokSetterAnnotation(node) && propertyInfo.hasMissingSetter()) {
+                asCtx(data)
+                        .addViolationWithMessage(
+                                propertyInfo.getDeclaratorId(),
+                                "The bean ''{0}'' is missing a setter for property ''{1}''.",
+                                beanName,
+                                propertyInfo.getName());
             }
 
             if (propertyInfo.hasWrongGetterType()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
-                        "The bean ''{0}'' should return a ''{1}'' in getter of property ''{2}''.", beanName,
-                        propertyInfo.getTypeName(), propertyInfo.getName());
+                asCtx(data)
+                        .addViolationWithMessage(
+                                propertyInfo.getGetter(),
+                                "The bean ''{0}'' should return a ''{1}'' in getter of property ''{2}''.",
+                                beanName,
+                                propertyInfo.getTypeName(),
+                                propertyInfo.getName());
             }
             if (propertyInfo.hasWrongBooleanGetterName()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
-                        "The bean ''{0}'' should use the method name ''is{1}'' for the getter of property ''{2}''.",
-                        beanName, propertyInfo.getName(), propertyInfo.getName());
+                asCtx(data)
+                        .addViolationWithMessage(
+                                propertyInfo.getGetter(),
+                                "The bean ''{0}'' should use the method name ''is{1}'' for the getter of property ''{2}''.",
+                                beanName,
+                                propertyInfo.getName(),
+                                propertyInfo.getName());
             }
             if (propertyInfo.hasWrongTypeGetterAndSetter()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.getGetter(),
-                        "The bean ''{0}'' has a property ''{1}'' with getter and setter that don''t have the same type.",
-                        beanName, propertyInfo.getName());
+                asCtx(data)
+                        .addViolationWithMessage(
+                                propertyInfo.getGetter(),
+                                "The bean ''{0}'' has a property ''{1}'' with getter and setter that don''t have the same type.",
+                                beanName,
+                                propertyInfo.getName());
             }
             if (propertyInfo.hasWrongIndexedGetterType()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.indexedGetter,
-                        "The bean ''{0}'' has a property ''{1}'' with an indexed getter using the wrong type.",
-                        beanName, propertyInfo.getName());
+                asCtx(data)
+                        .addViolationWithMessage(
+                                propertyInfo.indexedGetter,
+                                "The bean ''{0}'' has a property ''{1}'' with an indexed getter using the wrong type.",
+                                beanName,
+                                propertyInfo.getName());
             }
             if (propertyInfo.hasWrongIndexedSetterType()) {
-                asCtx(data).addViolationWithMessage(propertyInfo.indexedSetter,
-                        "The bean ''{0}'' has a property ''{1}'' with an indexed setter using the wrong type.",
-                        beanName, propertyInfo.getName());
+                asCtx(data)
+                        .addViolationWithMessage(
+                                propertyInfo.indexedSetter,
+                                "The bean ''{0}'' has a property ''{1}'' with an indexed setter using the wrong type.",
+                                beanName,
+                                propertyInfo.getName());
             }
         }
 
@@ -137,7 +166,8 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     }
 
     private void collectFields(ASTClassDeclaration node) {
-        for (ASTFieldDeclaration fieldDeclaration : node.getDeclarations(ASTFieldDeclaration.class).toList()) {
+        for (ASTFieldDeclaration fieldDeclaration :
+                node.getDeclarations(ASTFieldDeclaration.class).toList()) {
             for (ASTVariableId variableId : fieldDeclaration) {
                 String propertyName = StringUtils.capitalize(variableId.getName());
                 if (!fieldDeclaration.hasModifiers(JModifier.STATIC)
@@ -160,7 +190,8 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     }
 
     private void collectMethods(ASTClassDeclaration node) {
-        for (ASTMethodDeclaration methodDeclaration : node.getDeclarations(ASTMethodDeclaration.class).toList()) {
+        for (ASTMethodDeclaration methodDeclaration :
+                node.getDeclarations(ASTMethodDeclaration.class).toList()) {
             String methodName = methodDeclaration.getName();
             int parameterCount = methodDeclaration.getArity();
             String propertyName = StringUtil.withoutPrefixes(methodName, "get", "set", "is");
@@ -168,19 +199,16 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
                 if (parameterCount == 0) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setGetter(methodDeclaration);
-                }
-                else if (parameterCount == 1
+                } else if (parameterCount == 1
                         && getFirstParameterType(methodDeclaration).isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setIndexedGetter(methodDeclaration);
                 }
-            }
-            else if (methodName.startsWith("set")) {
+            } else if (methodName.startsWith("set")) {
                 if (parameterCount == 1) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setSetter(methodDeclaration);
-                }
-                else if (parameterCount == 2
+                } else if (parameterCount == 2
                         && getFirstParameterType(methodDeclaration).isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)) {
                     PropertyInfo propertyInfo = getOrCreatePropertyInfo(propertyName);
                     propertyInfo.setIndexedSetter(methodDeclaration);
@@ -195,8 +223,10 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
 
     private static JTypeMirror getParameterType(ASTMethodDeclaration declaration, int i) {
         if (declaration.getArity() >= i + 1) {
-            ASTFormalParameter firstParameter =
-                    declaration.getFormalParameters().children(ASTFormalParameter.class).get(i);
+            ASTFormalParameter firstParameter = declaration
+                    .getFormalParameters()
+                    .children(ASTFormalParameter.class)
+                    .get(i);
             return firstParameter.getTypeMirror();
         }
         return null;
@@ -220,8 +250,11 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean hasLombokImport(Annotatable node) {
-        return node.getRoot().descendants(ASTImportDeclaration.class).filter(ASTImportDeclaration::isImportOnDemand)
-                .filterNot(ASTImportDeclaration::isStatic).any(i -> LOMBOK_PACKAGE.equals(i.getImportedName()));
+        return node.getRoot()
+                .descendants(ASTImportDeclaration.class)
+                .filter(ASTImportDeclaration::isImportOnDemand)
+                .filterNot(ASTImportDeclaration::isStatic)
+                .any(i -> LOMBOK_PACKAGE.equals(i.getImportedName()));
     }
 
     private static boolean hasLombokDataAnnotation(Annotatable node) {
@@ -316,11 +349,9 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
             JTypeMirror type = null;
             if (declaratorId != null) {
                 type = declaratorId.getTypeMirror();
-            }
-            else if (getter != null) {
+            } else if (getter != null) {
                 type = getResultType(getter);
-            }
-            else if (setter != null) {
+            } else if (setter != null) {
                 type = getFirstParameterType(setter);
             }
             if (type != null) {
@@ -330,13 +361,16 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         }
 
         private boolean hasWrongGetterType() {
-            return declaratorId != null && getter != null && !getter.getResultTypeNode().isVoid()
+            return declaratorId != null
+                    && getter != null
+                    && !getter.getResultTypeNode().isVoid()
                     && !declaratorId.getTypeMirror().equals(getResultType(getter));
         }
 
         private boolean hasWrongBooleanGetterName() {
-            if (getter != null && (TypeTestUtil.isA(Boolean.class, declaratorId)
-                    || TypeTestUtil.isA(Boolean.TYPE, declaratorId))) {
+            if (getter != null
+                    && (TypeTestUtil.isA(Boolean.class, declaratorId)
+                            || TypeTestUtil.isA(Boolean.TYPE, declaratorId))) {
                 return !getter.getName().startsWith("is");
             }
             return false;
@@ -375,14 +409,16 @@ public class InvalidJavaBeanRule extends AbstractJavaRulechainRule {
         }
 
         private boolean hasFieldLombokGetter() {
-            ASTFieldDeclaration fieldDeclaration =
-                    declaratorId != null ? declaratorId.ancestors(ASTFieldDeclaration.class).first() : null;
+            ASTFieldDeclaration fieldDeclaration = declaratorId != null
+                    ? declaratorId.ancestors(ASTFieldDeclaration.class).first()
+                    : null;
             return fieldDeclaration != null && hasLombokGetterAnnotation(fieldDeclaration);
         }
 
         private boolean hasFieldLombokSetter() {
-            ASTFieldDeclaration fieldDeclaration =
-                    declaratorId != null ? declaratorId.ancestors(ASTFieldDeclaration.class).first() : null;
+            ASTFieldDeclaration fieldDeclaration = declaratorId != null
+                    ? declaratorId.ancestors(ASTFieldDeclaration.class).first()
+                    : null;
             return fieldDeclaration != null && hasLombokSetterAnnotation(fieldDeclaration);
         }
     }

@@ -1,11 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -21,6 +17,8 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
 
@@ -33,11 +31,9 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     public Object visit(ASTExpressionStatement node, Object data) {
         Node nextSibling = node.asStream().followingSiblings().first();
         if (nextSibling instanceof ASTExpressionStatement) {
-            @Nullable
-            JVariableSymbol variable = getVariableAppended(node);
+            @Nullable JVariableSymbol variable = getVariableAppended(node);
             if (variable != null) {
-                @Nullable
-                JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
+                @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
                 if (nextVariable != null && nextVariable.equals(variable)) {
                     asCtx(data).addViolation(node);
                 }
@@ -50,11 +46,11 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
     public Object visit(ASTLocalVariableDeclaration node, Object data) {
         Node nextSibling = node.asStream().followingSiblings().first();
         if (nextSibling instanceof ASTExpressionStatement) {
-            @Nullable
-            JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
+            @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
             if (nextVariable != null) {
                 ASTVariableId varDecl = nextVariable.tryGetNode();
-                if (varDecl != null && node.getVarIds().any(it -> it == varDecl)
+                if (varDecl != null
+                        && node.getVarIds().any(it -> it == varDecl)
                         && isStringBuilderAppend(varDecl.getInitializer())) {
                     asCtx(data).addViolation(node);
                 }
@@ -67,8 +63,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         ASTExpression expr = node.getExpr();
         if (expr instanceof ASTMethodCall) {
             return getAsVarAccess(getAppendChainQualifier(expr));
-        }
-        else if (expr instanceof ASTAssignmentExpression) {
+        } else if (expr instanceof ASTAssignmentExpression) {
             ASTExpression rhs = ((ASTAssignmentExpression) expr).getRightOperand();
             return getAppendChainQualifier(rhs) != null ? getAssignmentLhsAsVar(expr) : null;
         }
@@ -114,5 +109,4 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         return TypeTestUtil.isExactlyA(StringBuffer.class, symbol.getEnclosingClass())
                 || TypeTestUtil.isExactlyA(StringBuilder.class, symbol.getEnclosingClass());
     }
-
 }

@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.rule.internal;
 
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -15,9 +12,12 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * This is just a toy rule that counts the proportion of resolved types in a codebase, not meant as a real rule.
+ * This is just a toy rule that counts the proportion of resolved types
+ * in a codebase, not meant as a real rule.
  */
 @SuppressWarnings("PMD")
 public class TypeResTestRule extends AbstractJavaRule {
@@ -46,7 +46,6 @@ public class TypeResTestRule extends AbstractJavaRule {
 
             return fileId;
         }
-
     }
 
     private static final State STATIC = new State();
@@ -56,8 +55,9 @@ public class TypeResTestRule extends AbstractJavaRule {
     private static final boolean PRINT_ALL_UNRESOLVED;
 
     static {
-        PRINT_ALL_UNRESOLVED =
-                Boolean.parseBoolean(System.getProperties().getOrDefault("PRINT_ALL_UNRESOLVED", "true").toString());
+        PRINT_ALL_UNRESOLVED = Boolean.parseBoolean(System.getProperties()
+                .getOrDefault("PRINT_ALL_UNRESOLVED", "true")
+                .toString());
     }
 
     @Override
@@ -81,12 +81,10 @@ public class TypeResTestRule extends AbstractJavaRule {
                                 + StringUtil.escapeJava(StringUtils.truncate(node.toString(), 100)));
                     }
                     state.numUnresolved++;
-                }
-                else {
+                } else {
                     state.numResolved++;
                 }
-            }
-            catch (Throwable e) {
+            } catch (Throwable e) {
                 System.err.println(position(node));
                 e.printStackTrace();
                 state.numerrors++;

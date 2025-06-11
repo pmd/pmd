@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.TypePath;
-
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSet;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.TypePath;
 
 class LazyTypeSig {
 
@@ -56,5 +55,4 @@ class LazyTypeSig {
         }
         typeAnnots.add(path, annot);
     }
-
 }

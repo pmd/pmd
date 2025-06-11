@@ -4,6 +4,4 @@
 
 package net.sourceforge.pmd.lang.java.symbols.testdata;
 
-public @interface AnnotationWithNoRetention {
-
-}
+public @interface AnnotationWithNoRetention {}

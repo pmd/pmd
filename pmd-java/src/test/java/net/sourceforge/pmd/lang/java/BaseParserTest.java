@@ -8,7 +8,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 
 /**
- * Base class for tests that usually need processing stages to run when parsing code.
+ * Base class for tests that usually need processing stages to run when parsing
+ * code.
  */
 public abstract class BaseParserTest {
 

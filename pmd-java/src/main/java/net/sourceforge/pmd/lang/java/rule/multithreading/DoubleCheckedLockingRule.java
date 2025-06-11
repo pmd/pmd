@@ -1,15 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.multithreading;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -26,6 +21,8 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * <pre>
@@ -40,18 +37,15 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  * }
  * </pre>
  *
- * <p>
- * The error is when one uses the value assigned within a synchronized section, outside of a synchronized section.
- * </p>
+ * <p>The error is when one uses the value assigned within a synchronized
+ * section, outside of a synchronized section.</p>
  *
  * <pre>
  * if (x == null) // is outside of synchronized section
  *   x = new | method();
  * </pre>
  *
- * <p>
- * Very very specific check for double checked locking.
- * </p>
+ * <p>Very very specific check for double checked locking.</p>
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  */
@@ -68,7 +62,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             return data;
         }
 
-        List<ASTReturnStatement> rsl = node.descendants(ASTReturnStatement.class).toList();
+        List<ASTReturnStatement> rsl =
+                node.descendants(ASTReturnStatement.class).toList();
         if (rsl.size() != 1) {
             return data;
         }
@@ -97,16 +92,17 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             ASTIfStatement outerIf = isl.get(0);
             if (JavaRuleUtil.isNullCheck(outerIf.getCondition(), returnVariable)) {
                 // find synchronized
-                List<ASTSynchronizedStatement> ssl = outerIf.descendants(ASTSynchronizedStatement.class).toList();
+                List<ASTSynchronizedStatement> ssl =
+                        outerIf.descendants(ASTSynchronizedStatement.class).toList();
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
                     ASTIfStatement is2 = isl.get(1);
                     if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
                         List<ASTAssignmentExpression> assignments =
                                 is2.descendants(ASTAssignmentExpression.class).toList();
                         if (assignments.size() == 1
-                                && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
+                                && JavaAstUtils.isReferenceToVar(
+                                        assignments.get(0).getLeftOperand(), returnVariable)) {
                             asCtx(data).addViolation(node);
-
                         }
                     }
                 }
@@ -123,8 +119,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                 return false;
             }
             initializer = id.getInitializer();
-        }
-        else {
+        } else {
             // the return variable name doesn't seem to be a local variable
             return false;
         }
@@ -139,10 +134,8 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
         if (initializer instanceof ASTNamedReferenceExpr) {
             JVariableSymbol fieldSym = ((ASTNamedReferenceExpr) initializer).getReferencedSym();
             return fieldSym instanceof JFieldSymbol && Modifier.isVolatile(((JFieldSymbol) fieldSym).getModifiers());
-        }
-        else {
+        } else {
             return false;
         }
     }
-
 }

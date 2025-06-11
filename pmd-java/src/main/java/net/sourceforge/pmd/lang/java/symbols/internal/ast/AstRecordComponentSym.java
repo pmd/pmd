@@ -6,14 +6,13 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolVisitor;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * @author Clément Fournier

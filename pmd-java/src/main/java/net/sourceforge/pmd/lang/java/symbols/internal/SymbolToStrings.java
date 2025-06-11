@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.internal;
 
 import java.util.stream.Collectors;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -40,9 +39,9 @@ public class SymbolToStrings {
         String attrs;
         if (annot.getAttributeNames().isEmpty()) {
             attrs = "";
-        }
-        else {
-            attrs = annot.getAttributeNames().stream().map(name -> name + "=" + annot.getAttribute(name))
+        } else {
+            attrs = annot.getAttributeNames().stream()
+                    .map(name -> name + "=" + annot.getAttribute(name))
                     .collect(Collectors.joining(", ", "(", ")"));
         }
         return "@" + annot.getBinaryName() + attrs;
@@ -77,17 +76,13 @@ public class SymbolToStrings {
             String kind;
             if (sym.isUnresolved()) {
                 kind = "unresolved";
-            }
-            else if (sym.isEnum()) {
+            } else if (sym.isEnum()) {
                 kind = "enum";
-            }
-            else if (sym.isAnnotation()) {
+            } else if (sym.isAnnotation()) {
                 kind = "annot";
-            }
-            else if (sym.isRecord()) {
+            } else if (sym.isRecord()) {
                 kind = "record";
-            }
-            else {
+            } else {
                 kind = "class";
             }
 
@@ -135,5 +130,4 @@ public class SymbolToStrings {
             return withImpl(param, "formal", sym.getSimpleName());
         }
     }
-
 }

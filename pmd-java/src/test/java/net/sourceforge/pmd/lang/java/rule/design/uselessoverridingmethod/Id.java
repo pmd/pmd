@@ -4,5 +4,4 @@
 
 package net.sourceforge.pmd.lang.java.rule.design.uselessoverridingmethod;
 
-public @interface Id {
-}
+public @interface Id {}

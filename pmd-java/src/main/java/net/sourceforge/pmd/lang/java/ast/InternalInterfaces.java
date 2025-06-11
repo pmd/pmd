@@ -5,15 +5,14 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.ast.NodeStream;
-
 /**
- * Those are some interfaces that are not published, but are used to keep uniform names on related concepts. Maybe it
- * makes sense to publish some of them at some point.
+ * Those are some interfaces that are not published, but are used to keep
+ * uniform names on related concepts. Maybe it makes sense to publish some of
+ * them at some point.
  */
 @SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 final class InternalInterfaces {
@@ -25,10 +24,10 @@ final class InternalInterfaces {
     interface OperatorLike {
 
         /**
-         * Returns the token used to represent the type in source code, e.g. {@code "+"} or {@code "*"}.
+         * Returns the token used to represent the type in source
+         * code, e.g. {@code "+"} or {@code "*"}.
          */
         String getToken();
-
     }
 
     /** Just to share the method names. */
@@ -52,7 +51,8 @@ final class InternalInterfaces {
     }
 
     /**
-     * Tags a node that has at least one child, then some methods never return null.
+     * Tags a node that has at least one child, then some methods never
+     * return null.
      */
     interface AtLeastOneChild extends JavaNode {
 
@@ -95,7 +95,8 @@ final class InternalInterfaces {
     }
 
     /**
-     * Tags a node that has at least one child, then some methods never return null.
+     * Tags a node that has at least one child, then some methods never
+     * return null.
      */
     interface AtLeastOneChildOfType<T extends JavaNode> extends AllChildrenAreOfType<T> {
 
@@ -125,7 +126,8 @@ final class InternalInterfaces {
     interface MultiVariableIdOwner extends Iterable<ASTVariableId>, ModifierOwner {
 
         /**
-         * Returns a stream of the variable ids declared by this node.
+         * Returns a stream of the variable ids declared
+         * by this node.
          */
         default NodeStream<ASTVariableId> getVarIds() {
             return children(ASTVariableDeclarator.class).children(ASTVariableId.class);
@@ -138,5 +140,4 @@ final class InternalInterfaces {
 
         ASTType getTypeNode();
     }
-
 }

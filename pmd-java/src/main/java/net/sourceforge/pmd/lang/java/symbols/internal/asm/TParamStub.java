@@ -6,14 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.TypePath;
-import org.objectweb.asm.TypeReference;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
@@ -24,6 +16,12 @@ import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.TypeReference;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 class TParamStub implements JTypeParameterSymbol {
 
@@ -69,8 +67,8 @@ class TParamStub implements JTypeParameterSymbol {
         });
     }
 
-    private static JTypeMirror applyTypeAnnotationToBound(@Nullable TypePath path, SymAnnot annot, int boundIdx,
-            JTypeMirror ub) {
+    private static JTypeMirror applyTypeAnnotationToBound(
+            @Nullable TypePath path, SymAnnot annot, int boundIdx, JTypeMirror ub) {
         if (ub instanceof JIntersectionType) {
             JIntersectionType intersection = (JIntersectionType) ub;
 
@@ -82,15 +80,15 @@ class TParamStub implements JTypeParameterSymbol {
             JTypeMirror newBound = TypeAnnotationHelper.applySinglePath(bound, path, annot);
             components.set(boundIdx, newBound);
             return intersection.getTypeSystem().glb(components);
-        }
-        else {
+        } else {
             return TypeAnnotationHelper.applySinglePath(ub, path, annot);
         }
     }
 
     /**
-     * The bound cannot be computed before we have collected type annotations for the bound. These may come from the
-     * parsing of the type annotations for the enclosing declaration (method or class) so come relatively late.
+     * The bound cannot be computed before we have collected type annotations
+     * for the bound. These may come from the parsing of the type annotations
+     * for the enclosing declaration (method or class) so come relatively late.
      */
     void setCanComputeBound() {
         this.canComputeBound = true;

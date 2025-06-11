@@ -10,12 +10,9 @@ package net.sourceforge.pmd.lang.java.rule.codestyle.unnecessaryimport;
  */
 public class ConcFlow {
 
-    public interface Subscription {
-    }
+    public interface Subscription {}
 
-    public interface Subscriber<T> {
-    }
+    public interface Subscriber<T> {}
 
-    public interface Publisher<T> {
-    }
+    public interface Publisher<T> {}
 }

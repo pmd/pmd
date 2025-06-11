@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -36,14 +35,16 @@ public final class ASTIfStatement extends AbstractStatement {
     }
 
     /**
-     * Returns the node that represents the guard of this conditional. This may be any expression of type boolean.
+     * Returns the node that represents the guard of this conditional.
+     * This may be any expression of type boolean.
      */
     public ASTExpression getCondition() {
         return (ASTExpression) getChild(0);
     }
 
     /**
-     * Returns the statement that will be run if the guard evaluates to true.
+     * Returns the statement that will be run if the guard evaluates
+     * to true.
      */
     public ASTStatement getThenBranch() {
         return (ASTStatement) getChild(1);

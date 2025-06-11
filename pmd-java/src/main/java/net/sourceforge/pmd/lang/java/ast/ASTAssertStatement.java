@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -32,19 +31,19 @@ public final class ASTAssertStatement extends AbstractStatement {
     }
 
     /**
-     * Returns true if this assert statement has a "detail message" expression. In that case,
-     * {@link #getDetailMessageNode()} doesn't return null.
+     * Returns true if this assert statement has a "detail message"
+     * expression. In that case, {@link #getDetailMessageNode()} doesn't
+     * return null.
      */
     public boolean hasDetailMessage() {
         return getNumChildren() == 2;
     }
 
     /**
-     * Returns the expression that corresponds to the detail message, i.e. the expression after the colon, if it's
-     * present.
+     * Returns the expression that corresponds to the detail message,
+     * i.e. the expression after the colon, if it's present.
      */
     public ASTExpression getDetailMessageNode() {
         return hasDetailMessage() ? (ASTExpression) getChild(1) : null;
     }
-
 }

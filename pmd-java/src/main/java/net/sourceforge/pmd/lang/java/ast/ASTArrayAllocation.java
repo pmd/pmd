@@ -1,14 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An array creation expression. The dimensions of the array type may be initialized with a length expression (in which
- * case they're {@link ASTArrayDimExpr ArrayDimExpr} nodes).
+ * An array creation expression. The dimensions of the array type may
+ * be initialized with a length expression (in which case they're
+ * {@link ASTArrayDimExpr ArrayDimExpr} nodes).
  *
  * <pre class="grammar">
  *
@@ -46,5 +46,4 @@ public final class ASTArrayAllocation extends AbstractJavaExpr implements ASTPri
     public int getArrayDepth() {
         return getTypeNode().getArrayDepth();
     }
-
 }

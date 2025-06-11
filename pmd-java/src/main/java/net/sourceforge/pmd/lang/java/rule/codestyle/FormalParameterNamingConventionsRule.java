@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -26,8 +24,9 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
     private final PropertyDescriptor<Pattern> lambdaParamRegex =
             defaultProp("lambdaParameter", "inferred-type lambda parameter").build();
-    private final PropertyDescriptor<Pattern> explicitLambdaParamRegex =
-            defaultProp("explicitLambdaParameter", "explicitly-typed lambda parameter").build();
+    private final PropertyDescriptor<Pattern> explicitLambdaParamRegex = defaultProp(
+                    "explicitLambdaParameter", "explicitly-typed lambda parameter")
+            .build();
 
     public FormalParameterNamingConventionsRule() {
         super(ASTVariableId.class);
@@ -46,8 +45,7 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
 
         if (node.isLambdaParameter()) {
             checkMatches(node, node.isTypeInferred() ? lambdaParamRegex : explicitLambdaParamRegex, data);
-        }
-        else if (node.isFormalParameter()) {
+        } else if (node.isFormalParameter()) {
             checkMatches(node, node.isFinal() ? finalFormalParamRegex : formalParamRegex, data);
         }
 
@@ -68,8 +66,7 @@ public final class FormalParameterNamingConventionsRule extends AbstractNamingCo
     String kindDisplayName(ASTVariableId node, PropertyDescriptor<Pattern> descriptor) {
         if (node.isLambdaParameter()) {
             return node.isTypeInferred() ? "lambda parameter" : "explicitly-typed lambda parameter";
-        }
-        else if (node.isFormalParameter()) { // necessarily a method parameter here
+        } else if (node.isFormalParameter()) { // necessarily a method parameter here
             return node.isFinal() ? "final method parameter" : "method parameter";
         }
 

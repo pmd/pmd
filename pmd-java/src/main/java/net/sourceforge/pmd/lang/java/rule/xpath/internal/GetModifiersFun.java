@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.Collections;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;

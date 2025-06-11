@@ -10,9 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A simple double-checked initializer, that parses something (a class, or a type signature).
+ * A simple double-checked initializer, that parses something (a class,
+ * or a type signature).
  */
-@SuppressWarnings({ "PMD.AvoidUsingVolatile", "PMD.AvoidCatchingThrowable" })
+@SuppressWarnings({"PMD.AvoidUsingVolatile", "PMD.AvoidCatchingThrowable"})
 abstract class ParseLock {
 
     private static final Logger LOG = LoggerFactory.getLogger(ParseLock.class);
@@ -59,8 +60,7 @@ abstract class ParseLock {
                             boolean success = doParse();
                             status = success ? ParseStatus.FULL : ParseStatus.FAILED;
                             finishParse(!success);
-                        }
-                        catch (Throwable t) {
+                        } catch (Throwable t) {
                             status = ParseStatus.FAILED;
                             LOG.error("Parsing failed in ParseLock#doParse() of {}", name, t);
                             finishParse(true);
@@ -73,13 +73,11 @@ abstract class ParseLock {
 
                         assert status.isFinished : "Inconsistent status " + status;
                         assert postCondition() : "Post condition not satisfied after parsing sig " + this;
-                    }
-                    else if (status == ParseStatus.BEING_PARSED) {
+                    } else if (status == ParseStatus.BEING_PARSED) {
                         throw new IllegalStateException("Thread is reentering the parse lock " + this);
                     }
                 }
-            }
-            finally {
+            } finally {
                 logParseLockTrace("released");
                 releaseLock();
             }
@@ -114,7 +112,10 @@ abstract class ParseLock {
     }
 
     private enum ParseStatus {
-        NOT_PARSED(false), BEING_PARSED(false), FULL(true), FAILED(true);
+        NOT_PARSED(false),
+        BEING_PARSED(false),
+        FULL(true),
+        FAILED(true);
 
         final boolean isFinished;
 
@@ -125,9 +126,9 @@ abstract class ParseLock {
 
     /**
      * Subclasses of this assert that any thread can hold at most one lock at a time. Threads cannot even reenter in the
-     * lock they currently own. This prevents deadlocks while parsing ClassStub. However, all the instances of all
-     * derived subclasses are mutually exclusive. This is meant for the parse lock of ClassStub, and should therefore
-     * only be extended by that one.
+     * lock they currently own. This prevents deadlocks while parsing ClassStub. However, all the instances of all derived
+     * subclasses are mutually exclusive. This is meant for the parse lock of ClassStub, and should therefore only be extended
+     * by that one.
      */
     abstract static class CheckedParseLock extends ParseLock {
         private static final ThreadLocal<ParseLock> CURRENT_LOCK = new ThreadLocal<>();
@@ -151,8 +152,9 @@ abstract class ParseLock {
         final void releaseLock() {
             if (isAssertEnabled()) {
                 ParseLock lock = CURRENT_LOCK.get();
-                assert lock == this : "Tried to release different parse lock " + lock + " from " + this; // NOPMD
-                                                                                                         // CompareObjectsWithEquals
+                assert lock == this
+                        : "Tried to release different parse lock " + lock + " from "
+                                + this; // NOPMD CompareObjectsWithEquals
                 CURRENT_LOCK.remove();
             }
         }

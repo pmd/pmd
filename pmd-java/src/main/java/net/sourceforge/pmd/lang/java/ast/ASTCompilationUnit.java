@@ -1,15 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -18,6 +13,8 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * The root node of all Java ASTs.
@@ -77,8 +74,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
             if (JavaAstUtils.isMarkdownComment(comment.getToken())) {
                 if (currentMarkdownBlock == null) {
                     currentMarkdownBlock = new ArrayList<>();
-                }
-                else {
+                } else {
                     JavaComment lastComment = currentMarkdownBlock.get(currentMarkdownBlock.size() - 1);
                     int lastCommentLine = lastComment.getReportLocation().getStartLine();
                     if (comment.getReportLocation().getStartLine() - lastCommentLine > 1) {
@@ -87,8 +83,7 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
                     }
                 }
                 currentMarkdownBlock.add(comment);
-            }
-            else {
+            } else {
                 if (currentMarkdownBlock != null) {
                     result.add(new JavadocComment(currentMarkdownBlock));
                     currentMarkdownBlock = null;
@@ -116,8 +111,8 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
     }
 
     /**
-     * Returns the package name of this compilation unit. If there is no package declaration, then returns the empty
-     * string.
+     * Returns the package name of this compilation unit. If there is no
+     * package declaration, then returns the empty string.
      */
     public @NonNull String getPackageName() {
         ASTPackageDeclaration pack = getPackageDeclaration();
@@ -125,8 +120,9 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
     }
 
     /**
-     * Returns the top-level type declarations declared in this compilation unit. This may be empty, eg if this a
-     * package-info.java, or a modular compilation unit (but ordinary compilation units may also be empty).
+     * Returns the top-level type declarations declared in this compilation
+     * unit. This may be empty, eg if this a package-info.java, or a modular
+     * compilation unit (but ordinary compilation units may also be empty).
      */
     public NodeStream<ASTTypeDeclaration> getTypeDeclarations() {
         return children(ASTTypeDeclaration.class);

@@ -4,17 +4,18 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import org.pcollections.PSet;
 
 /**
- * Special primitive wrappers, these are the only ones for which {@link #unbox()} is not the identity conversion.
+ * Special primitive wrappers, these are the only ones for which
+ * {@link #unbox()} is not the identity conversion.
  *
- * <p>
- * Order of initialization is tricky since there is a circular dependency between JPrimitiveType constants and their
- * PrimitiveWrapper. The current solution is to leak the 'this' instance in the enum constructor.
+ * <p>Order of initialization is tricky since there is a circular
+ * dependency between JPrimitiveType constants and their PrimitiveWrapper.
+ * The current solution is to leak the 'this' instance in the enum
+ * constructor.
  */
 final class BoxedPrimitive extends ClassTypeImpl {
 

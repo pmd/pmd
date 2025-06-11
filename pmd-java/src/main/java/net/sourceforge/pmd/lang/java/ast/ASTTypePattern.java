@@ -5,12 +5,12 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A type pattern (JDK16). This can be found on the right-hand side of an {@link ASTInfixExpression
- * InstanceOfExpression}, in a {@link ASTPatternExpression PatternExpression}.
+ * A type pattern (JDK16). This can be found on
+ * the right-hand side of an {@link ASTInfixExpression InstanceOfExpression},
+ * in a {@link ASTPatternExpression PatternExpression}.
  *
  * <pre class="grammar">
  *

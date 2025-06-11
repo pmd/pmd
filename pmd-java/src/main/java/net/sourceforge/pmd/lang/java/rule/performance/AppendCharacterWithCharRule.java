@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -18,16 +17,11 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * StringBuffer.append(&quot;c&quot;); // appends a single character
  * </pre>
  *
- * <p>
- * It is preferable to use
- * </p>
+ * <p>It is preferable to use</p>
  *
- * <pre>
- * StringBuffer.append('c'); // appends a single character
- * </pre>
+ * <pre>StringBuffer.append('c'); // appends a single character</pre>
  *
- * @see <a href="https://sourceforge.net/p/pmd/feature-requests/381/">feature request #381 Single character
- *      StringBuffer.append </a>
+ * @see <a href="https://sourceforge.net/p/pmd/feature-requests/381/">feature request #381 Single character StringBuffer.append </a>
  */
 public class AppendCharacterWithCharRule extends AbstractJavaRulechainRule {
 
@@ -37,7 +31,8 @@ public class AppendCharacterWithCharRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTStringLiteral node, Object data) {
-        if (node.getParent() instanceof ASTArgumentList && node.length() == 1
+        if (node.getParent() instanceof ASTArgumentList
+                && node.length() == 1
                 && ((ASTArgumentList) node.getParent()).size() == 1) {
             JavaNode callParent = node.getParent().getParent();
             if (callParent instanceof ASTMethodCall) {

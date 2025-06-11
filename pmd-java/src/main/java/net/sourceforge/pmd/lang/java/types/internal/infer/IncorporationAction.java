@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 
 import java.util.ArrayList;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
@@ -18,8 +17,10 @@ import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 
 /**
- * An action to execute during the incorporation phase. Actions are targeted on a specific ivar (or bound), so that the
- * whole set is not reviewed if there are no changes.
+ * An action to execute during the incorporation phase.
+ * Actions are targeted on a specific ivar (or bound),
+ * so that the whole set is not reviewed if there are
+ * no changes.
  */
 abstract class IncorporationAction {
 
@@ -38,7 +39,8 @@ abstract class IncorporationAction {
     abstract void apply(InferenceContext ctx);
 
     /**
-     * Check that a bound is compatible with the other current bounds of an ivar.
+     * Check that a bound is compatible with the other current bounds
+     * of an ivar.
      */
     static class CheckBound extends IncorporationAction {
 
@@ -57,9 +59,10 @@ abstract class IncorporationAction {
         }
 
         /**
-         * The list of bound kinds to be checked. If the new bound is equality, then all other bounds need to be
-         * checked. Otherwise, if eg the bound is {@code alpha <: T}, then we must check that {@code S <: T} holds for
-         * all bounds {@code S <: alpha}.
+         * The list of bound kinds to be checked. If the new bound is
+         * equality, then all other bounds need to be checked. Otherwise,
+         * if eg the bound is {@code alpha <: T}, then we must check
+         * that {@code S <: T} holds for all bounds {@code S <: alpha}.
          */
         Set<BoundKind> boundsToCheck() {
             return myKind.complementSet(true);
@@ -82,12 +85,14 @@ abstract class IncorporationAction {
                     if (otherBound != myBound && isClassType(otherBound)) { // NOPMD CompareObjectsWithEquals
                         // Since we are testing both directions we cannot let those tests add bounds on the ivars,
                         // because they could be contradictory.
-                        boolean areRelated = TypeOps.isConvertiblePure(myBound, otherBound).somehow()
-                                || TypeOps.isConvertiblePure(otherBound, myBound).somehow();
+                        boolean areRelated =
+                                TypeOps.isConvertiblePure(myBound, otherBound).somehow()
+                                        || TypeOps.isConvertiblePure(otherBound, myBound)
+                                                .somehow();
 
                         if (!areRelated) {
-                            throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound,
-                                    BoundKind.UPPER, otherBound);
+                            throw ResolutionFailedException.incompatibleBound(
+                                    ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
                         }
                     }
                 }
@@ -108,12 +113,10 @@ abstract class IncorporationAction {
             if (compare > 0) {
                 // myBound <: alpha, alpha <: otherBound
                 return checkBound(false, myBound, otherBound, ctx);
-            }
-            else if (compare < 0) {
+            } else if (compare < 0) {
                 // otherBound <: alpha, alpha <: myBound
                 return checkBound(false, otherBound, myBound, ctx);
-            }
-            else {
+            } else {
                 return checkBound(true, myBound, otherBound, ctx);
             }
         }
@@ -151,11 +154,11 @@ abstract class IncorporationAction {
         public String toString() {
             return "Check " + myKind.format(ivar, myBound);
         }
-
     }
 
     /**
-     * Replace a free vars in bounds with its instantiation, and check that the inferred type conforms to all bounds.
+     * Replace a free vars in bounds with its instantiation, and check
+     * that the inferred type conforms to all bounds.
      */
     static class SubstituteInst extends IncorporationAction {
 
@@ -206,7 +209,8 @@ abstract class IncorporationAction {
     }
 
     /**
-     * Propagates the bounds of an ivar to the ivars already appearing in its bounds.
+     * Propagates the bounds of an ivar to the ivars already appearing
+     * in its bounds.
      */
     static class PropagateBounds extends IncorporationAction {
 
@@ -225,12 +229,12 @@ abstract class IncorporationAction {
 
             // forward propagation
             // alpha <: T
-            // && alpha >: beta ~> beta <: T | beta <: alpha <: T
-            // && alpha = beta ~> beta <: T | beta = alpha <: T
+            //   && alpha >: beta ~> beta <: T      |  beta <: alpha <: T
+            //   && alpha = beta  ~> beta <: T      |  beta =  alpha <: T
 
             // alpha >: T
-            // && alpha <: beta ~> beta >: T | T <: alpha <: beta
-            // && alpha = beta ~> beta >: T | T <: alpha = beta
+            //   && alpha <: beta ~> beta >: T      |  T <: alpha <: beta
+            //   && alpha = beta  ~> beta >: T      |  T <: alpha =  beta
 
             for (JTypeMirror b : alpha.getBounds(kind.complement())) {
                 if (b instanceof InferenceVar) {
@@ -255,12 +259,12 @@ abstract class IncorporationAction {
 
                 // backwards propagation
                 // alpha <: beta
-                // && beta = T ~> alpha <: T
-                // && beta <: T ~> alpha <: T
+                //   && beta = T  ~> alpha <: T
+                //   && beta <: T ~> alpha <: T
 
                 // alpha >: beta
-                // && beta = T ~> alpha >: T
-                // && beta >: T ~> alpha >: T
+                //   && beta = T  ~> alpha >: T
+                //   && beta >: T ~> alpha >: T
 
                 for (JTypeMirror b : beta.getBounds(kind)) {
                     alpha.addBound(kind, b);
@@ -273,5 +277,4 @@ abstract class IncorporationAction {
             return "Propagate bound " + kind.format(ivar, bound);
         }
     }
-
 }

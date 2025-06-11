@@ -67,5 +67,4 @@ public interface SymbolVisitor<R, P> {
     default R visitFormal(JFormalParamSymbol sym, P param) {
         return visitLocal(sym, param);
     }
-
 }

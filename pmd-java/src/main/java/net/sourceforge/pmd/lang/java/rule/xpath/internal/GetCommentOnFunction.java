@@ -6,14 +6,14 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.List;
 import java.util.Optional;
-
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
 
 /**
- * The XPath query "//VariableDeclarator[contains(getCommentOn(), '//password')]" will find all variables declared that
- * are annotated with the password comment.
+ * The XPath query "//VariableDeclarator[contains(getCommentOn(),
+ * '//password')]" will find all variables declared that are annotated with the
+ * password comment.
  *
  * @author Andy Throgmorton
  */
@@ -41,8 +41,11 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
             int codeBeginLine = contextNode.getBeginLine();
             int codeEndLine = contextNode.getEndLine();
 
-            List<JavaComment> commentList =
-                    contextNode.ancestorsOrSelf().filterIs(ASTCompilationUnit.class).first().getComments();
+            List<JavaComment> commentList = contextNode
+                    .ancestorsOrSelf()
+                    .filterIs(ASTCompilationUnit.class)
+                    .first()
+                    .getComments();
             for (JavaComment comment : commentList) {
                 FileLocation location = comment.getReportLocation();
                 if (location.getStartLine() == codeBeginLine || location.getEndLine() == codeEndLine) {

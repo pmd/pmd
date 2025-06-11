@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
 
 /**
- * Wraps a {@link ASTPattern} node but presents the interface of {@link ASTExpression}. This is only used in the
- * following contexts:
+ * Wraps a {@link ASTPattern} node but presents the interface of {@link ASTExpression}.
+ * This is only used in the following contexts:
  * <ul>
  * <li>As the right-hand side of {@link BinaryOp#INSTANCEOF instanceof expressions}.
  * </ul>
@@ -53,5 +53,4 @@ public final class ASTPatternExpression extends AbstractJavaTypeNode
     public boolean isParenthesized() {
         return false;
     }
-
 }

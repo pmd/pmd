@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -30,7 +29,8 @@ public interface JFieldSymbol extends JVariableSymbol, JAccessibleElementSymbol 
     }
 
     /**
-     * Returns the compile-time value of this field if this is a compile-time constant. Otherwise returns null.
+     * Returns the compile-time value of this field if this is a compile-time constant.
+     * Otherwise returns null.
      */
     default @Nullable Object getConstValue() {
         return null;

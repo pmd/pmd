@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -21,7 +20,8 @@ public final class ASTDoStatement extends AbstractStatement implements ASTLoopSt
     }
 
     /**
-     * Returns the node that represents the guard of this loop. This may be any expression of type boolean.
+     * Returns the node that represents the guard of this loop.
+     * This may be any expression of type boolean.
      */
     @Override
     public ASTExpression getCondition() {
@@ -29,7 +29,8 @@ public final class ASTDoStatement extends AbstractStatement implements ASTLoopSt
     }
 
     /**
-     * Returns the statement that will be run while the guard evaluates to true.
+     * Returns the statement that will be run while the guard
+     * evaluates to true.
      */
     @Override
     public ASTStatement getBody() {

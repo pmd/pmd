@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.Arrays;
@@ -9,9 +8,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -26,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import org.apache.commons.lang3.StringUtils;
 
 public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulechainRule {
 
@@ -82,13 +79,11 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
             if (hasPropertyValue(property, CHECK_FOR)) {
                 asCtx(data).addViolation(node);
             }
-        }
-        else if (parent instanceof ASTWhileStatement) {
+        } else if (parent instanceof ASTWhileStatement) {
             if (hasPropertyValue(property, CHECK_WHILE)) {
                 asCtx(data).addViolation(node);
             }
-        }
-        else if (parent instanceof ASTDoStatement) {
+        } else if (parent instanceof ASTDoStatement) {
             if (hasPropertyValue(property, CHECK_DO)) {
                 asCtx(data).addViolation(node);
             }
@@ -116,15 +111,17 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     }
 
     private static PropertyDescriptor<List<String>> propertyFor(String stmtName) {
-        return PropertyFactory
-                .enumListProperty("check" + StringUtils.capitalize(stmtName) + "LoopTypes", LOOP_TYPES_MAPPINGS)
-                .desc("List of loop types in which " + stmtName + " statements will be checked").defaultValue(DEFAULTS)
+        return PropertyFactory.enumListProperty(
+                        "check" + StringUtils.capitalize(stmtName) + "LoopTypes", LOOP_TYPES_MAPPINGS)
+                .desc("List of loop types in which " + stmtName + " statements will be checked")
+                .defaultValue(DEFAULTS)
                 .build();
     }
 
     public boolean checksNothing() {
 
-        return getProperty(CHECK_BREAK_LOOP_TYPES).isEmpty() && getProperty(CHECK_CONTINUE_LOOP_TYPES).isEmpty()
+        return getProperty(CHECK_BREAK_LOOP_TYPES).isEmpty()
+                && getProperty(CHECK_CONTINUE_LOOP_TYPES).isEmpty()
                 && getProperty(CHECK_RETURN_LOOP_TYPES).isEmpty();
     }
 }

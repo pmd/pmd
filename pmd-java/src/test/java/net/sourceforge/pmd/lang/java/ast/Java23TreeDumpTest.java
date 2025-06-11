@@ -14,15 +14,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
+import org.junit.jupiter.api.Test;
 
 class Java23TreeDumpTest extends BaseJavaTreeDumpTest {
-    private final JavaParsingHelper java23 = JavaParsingHelper.DEFAULT.withDefaultVersion("23")
+    private final JavaParsingHelper java23 = JavaParsingHelper.DEFAULT
+            .withDefaultVersion("23")
             .withResourceContext(Java21TreeDumpTest.class, "jdkversiontests/java23/");
 
     @Override
@@ -56,8 +55,11 @@ class Java23TreeDumpTest extends BaseJavaTreeDumpTest {
         assertThat(classComment.getText().toString(), containsString("JEP 467: Markdown Documentation Comments</a>"));
         assertFalse(classComment.isSingleLine());
 
-        List<JavadocComment> methodComments = unit.descendants(ASTMethodDeclaration.class).toStream()
-                .map(ASTMethodDeclaration::getJavadocComment).filter(Objects::nonNull).collect(Collectors.toList());
+        List<JavadocComment> methodComments = unit.descendants(ASTMethodDeclaration.class)
+                .toStream()
+                .map(ASTMethodDeclaration::getJavadocComment)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
         assertEquals(2, methodComments.size());
         assertThat(methodComments.get(0).getText().toString(), containsString("@param prefix the prefix"));
         assertFalse(methodComments.get(0).isSingleLine());

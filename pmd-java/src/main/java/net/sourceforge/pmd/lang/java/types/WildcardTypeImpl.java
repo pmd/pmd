@@ -6,12 +6,10 @@ package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Objects;
 import java.util.function.Function;
-
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
-
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 
 final class WildcardTypeImpl implements JWildcardType {
 
@@ -30,8 +28,9 @@ final class WildcardTypeImpl implements JWildcardType {
     @Override
     public JWildcardType subst(Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         JTypeMirror newBound = getBound().subst(subst);
-        return newBound == getBound() ? this : ts.wildcard(isUpperBound(), newBound).withAnnotations(typeAnnots); // NOPMD
-                                                                                                                  // CompareObjectsWithEquals
+        return newBound == getBound()
+                ? this
+                : ts.wildcard(isUpperBound(), newBound).withAnnotations(typeAnnots); // NOPMD CompareObjectsWithEquals
     }
 
     @Override
@@ -43,8 +42,7 @@ final class WildcardTypeImpl implements JWildcardType {
     public JWildcardType withAnnotations(PSet<SymAnnot> newTypeAnnots) {
         if (newTypeAnnots.isEmpty() && !typeAnnots.isEmpty()) {
             return ts.wildcard(isUpperBound, bound);
-        }
-        else if (!newTypeAnnots.isEmpty()) {
+        } else if (!newTypeAnnots.isEmpty()) {
             return new WildcardTypeImpl(ts, isUpperBound(), bound, newTypeAnnots);
         }
         return this;

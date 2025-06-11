@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 import java.util.Comparator;
@@ -19,5 +18,4 @@ public class AmbiguousOverload implements Comparator<StringBuilder> {
     public int compare(String s, String s2) {
         return 0;
     }
-
 }

@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Map;
-
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ClassFanOutOption;
 import net.sourceforge.pmd.lang.metrics.MetricOption;

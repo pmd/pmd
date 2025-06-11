@@ -41,11 +41,9 @@ abstract class BaseExprMirror<T extends JavaNode> implements ExprMirror {
     public TypingContext getTypingContext() {
         if (typingContext != null) {
             return typingContext;
-        }
-        else if (parent != null) {
+        } else if (parent != null) {
             return parent.getTypingContext();
-        }
-        else {
+        } else {
             return TypingContext.DEFAULT;
         }
     }
@@ -55,8 +53,9 @@ abstract class BaseExprMirror<T extends JavaNode> implements ExprMirror {
     }
 
     /**
-     * TODO get the type mirror like LazyTypeResolver does, but with a contextual mapping of symbol -> type. Lambda
-     * parameters may have a different type in this mirror hierarchy as they have in the AST.
+     * TODO get the type mirror like LazyTypeResolver does, but with a
+     * contextual mapping of symbol -> type. Lambda parameters may have
+     * a different type in this mirror hierarchy as they have in the AST.
      */
     protected JTypeMirror typeOf(ASTExpression e) {
         return e.getTypeMirror();

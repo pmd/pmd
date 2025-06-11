@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.annotation.Experimental;
@@ -9,18 +8,20 @@ import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 
 /**
- * Base implementation of {@link JavaVisitor}. This adds delegation logic which the interface doesn't have.
+ * Base implementation of {@link JavaVisitor}. This adds delegation logic
+ * which the interface doesn't have.
  *
- * <p>
- * Contrary to the old visitor, which used Object as both parameter and return type, this visitor uses separate type
- * parameters for those. This means you can't just return the parameter, unless your visitor has equal parameter and
- * return type. This type signature subsumes many possible signatures. The old one is {@code <Object, Object>}, still
- * implemented by {@link JavaVisitor} when using raw types for backwards compatibility. If you don't want to return a
- * value, or don't want a parameter, use {@link Void}.
+ * <p>Contrary to the old visitor, which used Object as both parameter and
+ * return type, this visitor uses separate type parameters for those. This
+ * means you can't just return the parameter, unless your visitor has equal
+ * parameter and return type. This type signature subsumes many possible
+ * signatures. The old one is {@code <Object, Object>}, still implemented
+ * by {@link JavaVisitor} when using raw types for backwards compatibility. If you don't
+ * want to return a value, or don't want a parameter, use {@link Void}.
  *
- * <p>
- * Since 7.0.0 we use default methods on the interface, which removes code duplication. However, it's still recommended
- * to extend a base class, for forward compatibility.
+ * <p>Since 7.0.0 we use default methods on the interface, which removes
+ * code duplication. However, it's still recommended to extend a base class,
+ * for forward compatibility.
  */
 public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaVisitor<P, R> {
 
@@ -166,8 +167,8 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
     /*
-     * Primaries
-     */
+       Primaries
+    */
 
     public R visitPrimaryExpr(ASTPrimaryExpression node, P data) {
         return visitExpression(node, data);
@@ -228,8 +229,8 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
     /*
-     * Literals
-     */
+       Literals
+    */
 
     public R visitLiteral(ASTLiteral node, P data) {
         return visitPrimaryExpr(node, data);

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -17,5 +16,4 @@ public interface GenericInterfaceWithOverloads<T, R extends Number> {
     T multi(ASTImportDeclaration node, T data, R r);
 
     T multi(ASTPackageDeclaration node, T data, R r);
-
 }

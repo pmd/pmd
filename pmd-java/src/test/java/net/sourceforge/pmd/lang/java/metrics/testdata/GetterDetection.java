@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.metrics.testdata;
 
 import org.apache.commons.lang3.mutable.MutableInt;
@@ -30,13 +29,15 @@ public class GetterDetection {
 
     /*
      * public double speedModified() { return speed * 12 + 1; }
-     * 
+     *
      * public int mutableInt() { return mutX.getValue(); }
-     * 
+     *
      * public MutableInt theMutable() { return mutX; }
-     * 
-     * public int mutableIntIf() { if (mutX == null) { return 0; } else { return mutX.getValue(); } }
-     * 
-     * public int mutableIntConditional() { return mutX == null ? 0 : mutX.getValue(); }
+     *
+     * public int mutableIntIf() { if (mutX == null) { return 0; } else { return
+     * mutX.getValue(); } }
+     *
+     * public int mutableIntConditional() { return mutX == null ? 0 :
+     * mutX.getValue(); }
      */
 }

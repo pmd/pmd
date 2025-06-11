@@ -5,15 +5,13 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import java.util.Map;
-
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 
 /**
  * A symbol resolver that knows about a few hand-picked symbols.
@@ -46,7 +44,9 @@ final class MapSymResolver implements SymbolResolver {
 
     @Override
     public void logStats() {
-        LOG.trace("Used {} classes by canonical name and {} classes by binary name", byCanonicalName.size(),
+        LOG.trace(
+                "Used {} classes by canonical name and {} classes by binary name",
+                byCanonicalName.size(),
                 byBinaryName.size());
     }
 }

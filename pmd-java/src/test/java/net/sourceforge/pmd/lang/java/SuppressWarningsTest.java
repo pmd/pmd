@@ -1,18 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
 
 import static net.sourceforge.pmd.lang.test.ast.TestUtilsKt.assertSize;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.reporting.Report;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
 
 class SuppressWarningsTest {
 
@@ -211,9 +209,13 @@ class SuppressWarningsTest {
     private static final String TEST13 = "@SuppressWarnings(\"PMD.NoBar\")\npublic class Bar {\n}";
 
     private static @NonNull String constExprTest(boolean withAnnot) {
-        return "public class NewClass {\n" + "    private final static String SUPPRESS_PMD = \"PMD.\";\n" + "\n"
+        return "public class NewClass {\n"
+                + "    private final static String SUPPRESS_PMD = \"PMD.\";\n"
+                + "\n"
                 + (withAnnot ? "    @SuppressWarnings(SUPPRESS_PMD + \"NoFoo\")\n" : "")
-                + "    public void someMethod1(Object Foo) {\n" + "        System.out.println(\"someMethod1\");\n"
-                + "    }\n" + "}";
+                + "    public void someMethod1(Object Foo) {\n"
+                + "        System.out.println(\"someMethod1\");\n"
+                + "    }\n"
+                + "}";
     }
 }

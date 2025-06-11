@@ -7,9 +7,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.util.function.Predicate;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -19,6 +16,7 @@ import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.BranchingMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> implements BranchingMirror {
 
@@ -26,8 +24,12 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     ExprMirror elseBranch;
     private final boolean mayBePoly;
 
-    ConditionalMirrorImpl(JavaExprMirrors mirrors, ASTConditionalExpression expr, boolean isStandalone,
-            @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
+    ConditionalMirrorImpl(
+            JavaExprMirrors mirrors,
+            ASTConditionalExpression expr,
+            boolean isStandalone,
+            @Nullable ExprMirror parent,
+            MirrorMaker subexprMaker) {
         super(mirrors, expr, parent, subexprMaker);
         thenBranch = mirrors.getBranchMirrorSubexpression(myNode.getThenBranch(), isStandalone, this, subexprMaker);
         elseBranch = mirrors.getBranchMirrorSubexpression(myNode.getElseBranch(), isStandalone, this, subexprMaker);
@@ -63,21 +65,20 @@ class ConditionalMirrorImpl extends BasePolyMirror<ASTConditionalExpression> imp
     }
 
     /**
-     * Conditional expressions are standalone iff both their branches are of a primitive type (or a primitive wrapper
-     * type), or they appear in a cast context. This may involve inferring the compile-time declaration of a method
-     * call.
+     * Conditional expressions are standalone iff both their branches
+     * are of a primitive type (or a primitive wrapper type), or they
+     * appear in a cast context. This may involve inferring the compile-time
+     * declaration of a method call.
      *
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.25
      */
     private JTypeMirror getConditionalStandaloneType(ConditionalMirrorImpl mirror, ASTConditionalExpression cond) {
-        @Nullable
-        JTypeMirror thenType = standaloneExprTypeInConditional(mirror.thenBranch, cond.getThenBranch());
+        @Nullable JTypeMirror thenType = standaloneExprTypeInConditional(mirror.thenBranch, cond.getThenBranch());
         if (mayBePoly && (thenType == null || !thenType.unbox().isPrimitive())) {
             return null; // then it's a poly
         }
 
-        @Nullable
-        JTypeMirror elseType = standaloneExprTypeInConditional(mirror.elseBranch, cond.getElseBranch());
+        @Nullable JTypeMirror elseType = standaloneExprTypeInConditional(mirror.elseBranch, cond.getElseBranch());
 
         if (mayBePoly && (elseType == null || !elseType.unbox().isPrimitive())) {
             return null; // then it's a poly

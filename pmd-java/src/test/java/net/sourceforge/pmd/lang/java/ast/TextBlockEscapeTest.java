@@ -1,17 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.ASTStringLiteral.determineTextBlockContent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.util.StringUtil;
+import org.junit.jupiter.api.Test;
 
 class TextBlockEscapeTest extends BaseParserTest {
 
@@ -48,11 +46,15 @@ class TextBlockEscapeTest extends BaseParserTest {
 
     @Test
     void testTextBlockContent() {
-        assertEquals("winter", determineTextBlockContent("\"\"\"\n                winter\"\"\""),
-                "single line text block");
-        assertEquals("winter\n", determineTextBlockContent("\"\"\"\n" + "   winter\n" + "   \"\"\""),
+        assertEquals(
+                "winter", determineTextBlockContent("\"\"\"\n                winter\"\"\""), "single line text block");
+        assertEquals(
+                "winter\n",
+                determineTextBlockContent("\"\"\"\n" + "   winter\n" + "   \"\"\""),
                 "single line text block with LF");
-        assertEquals(" winter\n", determineTextBlockContent("\"\"\"\n" + "   winter\n" + "  \"\"\""),
+        assertEquals(
+                " winter\n",
+                determineTextBlockContent("\"\"\"\n" + "   winter\n" + "  \"\"\""),
                 "single line text block with LF, some indent preserved");
     }
 
@@ -63,7 +65,8 @@ class TextBlockEscapeTest extends BaseParserTest {
 
     @Test
     void testEscapeBlockDelimiter() {
-        assertEquals("String text = \"\"\"\n" + "    A text block inside a text block\n" + "\"\"\";\n",
+        assertEquals(
+                "String text = \"\"\"\n" + "    A text block inside a text block\n" + "\"\"\";\n",
                 determineTextBlockContent("\"\"\"\n" + "  String text = \\\"\"\"\n"
                         + "      A text block inside a text block\n" + "  \\\"\"\";\n" + "  \"\"\""),
                 "escaped text block in inside text block");
@@ -83,7 +86,8 @@ class TextBlockEscapeTest extends BaseParserTest {
 
     @Test
     void testBasicHtmlBlock() {
-        assertEquals("<html>\n" + "    <body>\n" + "        <p>Hello, world</p>\n" + "    </body>\n" + "</html>\n",
+        assertEquals(
+                "<html>\n" + "    <body>\n" + "        <p>Hello, world</p>\n" + "    </body>\n" + "</html>\n",
                 determineTextBlockContent(
                         "\"\"\"\n" + "                      <html>   \n" + "                          <body>\n"
                                 + "                              <p>Hello, world</p>    \n"
@@ -105,7 +109,8 @@ class TextBlockEscapeTest extends BaseParserTest {
 
     @Test
     void testEscapeSpace() {
-        assertEquals("red   \n" + "green \n" + "blue  \n",
+        assertEquals(
+                "red   \n" + "green \n" + "blue  \n",
                 determineTextBlockContent(
                         "\"\"\"\n" + "                        red  \\s\n" + "                        green\\s\n"
                                 + "                        blue \\s\n" + "                        \"\"\""),
@@ -114,14 +119,16 @@ class TextBlockEscapeTest extends BaseParserTest {
 
     @Test
     void testLineEndingNormalization() {
-        assertEquals("<html>\n" + "    <body>\n" + "        <p>Hello, world</p>\n" + "    </body>\n" + "</html>\n",
+        assertEquals(
+                "<html>\n" + "    <body>\n" + "        <p>Hello, world</p>\n" + "    </body>\n" + "</html>\n",
                 determineTextBlockContent(
                         "\"\"\"\r\n" + "                      <html>   \r\n" + "                          <body>\r\n"
                                 + "                              <p>Hello, world</p>    \r\n"
                                 + "                          </body> \r\n" + "                      </html>   \r\n"
                                 + "                      \"\"\""),
                 "with crlf line endings");
-        assertEquals("<html>\n" + "    <body>\n" + "        <p>Hello, world</p>\n" + "    </body>\n" + "</html>\n",
+        assertEquals(
+                "<html>\n" + "    <body>\n" + "        <p>Hello, world</p>\n" + "    </body>\n" + "</html>\n",
                 determineTextBlockContent(
                         "\"\"\"\r" + "                      <html>   \r" + "                          <body>\r"
                                 + "                              <p>Hello, world</p>    \r"
@@ -133,21 +140,29 @@ class TextBlockEscapeTest extends BaseParserTest {
     @Test
     void testEmptyLines() {
 
-        assertEquals("\ntest\n", determineTextBlockContent("\"\"\"\n" + "    \n" + "    test\n" + "    \"\"\""),
+        assertEquals(
+                "\ntest\n",
+                determineTextBlockContent("\"\"\"\n" + "    \n" + "    test\n" + "    \"\"\""),
                 "empty line directly after opening");
-        assertEquals("\ntest\n", determineTextBlockContent("\"\"\"\r\n" + "    \r\n" + "    test\r\n" + "    \"\"\""),
+        assertEquals(
+                "\ntest\n",
+                determineTextBlockContent("\"\"\"\r\n" + "    \r\n" + "    test\r\n" + "    \"\"\""),
                 "empty crlf line directly after opening");
-        assertEquals("\ntest\n", determineTextBlockContent("\"\"\"\n" + "\n" + "test\n" + "\"\"\""),
+        assertEquals(
+                "\ntest\n",
+                determineTextBlockContent("\"\"\"\n" + "\n" + "test\n" + "\"\"\""),
                 "empty line directly after opening without indentation");
-        assertEquals("\ntest\n", determineTextBlockContent("\"\"\"\r\n" + "\r\n" + "test\r\n" + "\"\"\""),
+        assertEquals(
+                "\ntest\n",
+                determineTextBlockContent("\"\"\"\r\n" + "\r\n" + "test\r\n" + "\"\"\""),
                 "empty crlf line directly after opening without indentation");
-
     }
 
     @Test
     void testTextBlockWithBackslashEscape() {
-        assertEquals("\\test\n", determineTextBlockContent("\"\"\"\n                \\\\test\n                \"\"\""),
+        assertEquals(
+                "\\test\n",
+                determineTextBlockContent("\"\"\"\n                \\\\test\n                \"\"\""),
                 "text block with backslash escape");
     }
-
 }

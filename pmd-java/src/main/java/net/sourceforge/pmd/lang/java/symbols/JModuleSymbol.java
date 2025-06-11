@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 
 /**

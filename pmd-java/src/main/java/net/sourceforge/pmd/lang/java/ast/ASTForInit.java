@@ -1,12 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * The initialization clause of a {@linkplain ASTForStatement for loop}. Note: ForInit nodes are necessary in the tree
- * to differentiate them from the update clause. They just confer a contextual role to their child.
+ * The initialization clause of a {@linkplain ASTForStatement for loop}.
+ * Note: ForInit nodes are necessary in the tree to differentiate them
+ * from the update clause. They just confer a contextual role to their
+ * child.
  *
  * <pre class="grammar">
  *
@@ -30,5 +31,4 @@ public final class ASTForInit extends AbstractJavaNode {
     public ASTStatement getStatement() {
         return (ASTStatement) getFirstChild();
     }
-
 }

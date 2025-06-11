@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.lang.java.metrics.JavaMetrics.ACCESS_TO_FOREIGN_DATA;
@@ -18,8 +17,7 @@ import net.sourceforge.pmd.util.StringUtil;
  * complex. It should be split apart to be more object-oriented. The rule uses the detection strategy described in [1].
  * The violations are reported against the entire class.
  *
- * <p>
- * [1] Lanza. Object-Oriented Metrics in Practice. Page 80.
+ * <p>[1] Lanza. Object-Oriented Metrics in Practice. Page 80.
  *
  * @since 5.0
  */
@@ -60,5 +58,4 @@ public class GodClassRule extends AbstractJavaRulechainRule {
         }
         return data;
     }
-
 }

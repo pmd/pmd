@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Try statement node.
@@ -33,14 +31,16 @@ public final class ASTTryStatement extends AbstractStatement {
     }
 
     /**
-     * Returns true if this node is a try-with-resources, in which case it has a ResourceSpecification child node.
+     * Returns true if this node is a try-with-resources, in which case it
+     * has a ResourceSpecification child node.
      */
     public boolean isTryWithResources() {
         return getChild(0) instanceof ASTResourceList;
     }
 
     /**
-     * Returns the node for the resource list. This is null if this is not a try-with-resources.
+     * Returns the node for the resource list. This is null if this is
+     * not a try-with-resources.
      */
     @Nullable
     public ASTResourceList getResources() {
@@ -55,7 +55,8 @@ public final class ASTTryStatement extends AbstractStatement {
     }
 
     /**
-     * Returns the catch statement nodes of this try statement. If there are none, returns an empty list.
+     * Returns the catch statement nodes of this try statement.
+     * If there are none, returns an empty list.
      */
     public NodeStream<ASTCatchClause> getCatchClauses() {
         return children(ASTCatchClause.class);
@@ -70,5 +71,4 @@ public final class ASTTryStatement extends AbstractStatement {
     public ASTFinallyClause getFinallyClause() {
         return firstChild(ASTFinallyClause.class);
     }
-
 }

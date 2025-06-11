@@ -1,15 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import net.sourceforge.pmd.lang.java.BaseParserTest;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.Test;
-
-import net.sourceforge.pmd.lang.java.BaseParserTest;
 
 class CommentTest extends BaseParserTest {
     @Test

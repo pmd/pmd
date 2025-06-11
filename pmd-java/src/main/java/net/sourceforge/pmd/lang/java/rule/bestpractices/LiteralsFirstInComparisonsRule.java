@@ -8,15 +8,13 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
@@ -29,11 +27,12 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
-        if ("equals".equals(call.getMethodName()) && call.getArguments().size() == 1
+        if ("equals".equals(call.getMethodName())
+                && call.getArguments().size() == 1
                 && isEqualsObjectAndNotAnOverload(call)) {
             checkArgs((RuleContext) data, call);
-        }
-        else if (STRING_COMPARISONS.contains(call.getMethodName()) && call.getArguments().size() == 1
+        } else if (STRING_COMPARISONS.contains(call.getMethodName())
+                && call.getArguments().size() == 1
                 && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
             checkArgs((RuleContext) data, call);
         }
@@ -51,8 +50,7 @@ public class LiteralsFirstInComparisonsRule extends AbstractJavaRulechainRule {
 
     private void checkArgs(RuleContext ctx, ASTMethodCall call) {
         ASTExpression arg = call.getArguments().get(0);
-        @Nullable
-        ASTExpression qualifier = call.getQualifier();
+        @Nullable ASTExpression qualifier = call.getQualifier();
         if (qualifier != null && !isConstantString(qualifier) && isConstantString(arg)) {
             ctx.addViolation(call);
         }

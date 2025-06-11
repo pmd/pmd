@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -14,6 +12,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * @author Clément Fournier

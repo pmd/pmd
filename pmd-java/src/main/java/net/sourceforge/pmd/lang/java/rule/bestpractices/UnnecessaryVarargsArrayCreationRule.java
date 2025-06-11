@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;

@@ -18,10 +18,8 @@ final class SymbolicValueHelper {
     static boolean equalsModuloWrapper(SymbolicValue sv, Object other) {
         if (other instanceof SymbolicValue) {
             return sv.equals(other);
-        }
-        else {
+        } else {
             return sv.valueEquals(other);
         }
     }
-
 }

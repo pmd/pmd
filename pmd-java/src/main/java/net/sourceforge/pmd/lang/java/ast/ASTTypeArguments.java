@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
@@ -27,11 +26,11 @@ public final class ASTTypeArguments extends ASTMaybeEmptyListOf<ASTType> {
     }
 
     /**
-     * Returns true if this is a diamond, that is, the actual type arguments are inferred. In this case this list has no
-     * children.
+     * Returns true if this is a diamond, that is, the
+     * actual type arguments are inferred. In this case
+     * this list has no children.
      */
     public boolean isDiamond() {
         return size() == 0;
     }
-
 }

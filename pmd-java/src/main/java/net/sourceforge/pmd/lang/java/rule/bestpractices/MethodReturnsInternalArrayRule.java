@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.lang.reflect.Modifier;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayDimExpr;
@@ -23,8 +21,8 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
 /**
- * Implementation note: this rule currently ignores return types of y.x.z, currently it handles only local type fields.
- * Created on Jan 17, 2005
+ * Implementation note: this rule currently ignores return types of y.x.z,
+ * currently it handles only local type fields. Created on Jan 17, 2005
  */
 public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
 
@@ -45,8 +43,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
 
                 if (JavaAstUtils.isRefToFieldOfThisInstance(reference)) {
                     asCtx(data).addViolation(returnStmt, reference.getName());
-                }
-                else {
+                } else {
                     // considers static, non-final fields
                     JVariableSymbol symbol = reference.getReferencedSym();
                     if (symbol instanceof JFieldSymbol) {
@@ -67,24 +64,28 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isZeroLengthArrayConstant(JFieldSymbol sym) {
-        return sym.isFinal() && NodeStream.of(sym.tryGetNode()).map(ASTVariableId::getInitializer)
-                .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr).nonEmpty();
+        return sym.isFinal()
+                && NodeStream.of(sym.tryGetNode())
+                        .map(ASTVariableId::getInitializer)
+                        .filter(MethodReturnsInternalArrayRule::isZeroLengthArrayExpr)
+                        .nonEmpty();
     }
 
     private static boolean isZeroLengthArrayExpr(ASTExpression expr) {
         if (expr instanceof ASTArrayInitializer) {
             // {}
             return ((ASTArrayInitializer) expr).length() == 0;
-        }
-        else if (expr instanceof ASTArrayAllocation) {
+        } else if (expr instanceof ASTArrayAllocation) {
             ASTArrayInitializer init = ((ASTArrayAllocation) expr).getArrayInitializer();
             if (init != null) {
                 // new int[] {}
                 return init.length() == 0;
-            }
-            else {
+            } else {
                 // new int[0]
-                ASTArrayTypeDim lastChild = ((ASTArrayAllocation) expr).getTypeNode().getDimensions().getLastChild();
+                ASTArrayTypeDim lastChild = ((ASTArrayAllocation) expr)
+                        .getTypeNode()
+                        .getDimensions()
+                        .getLastChild();
                 if (lastChild instanceof ASTArrayDimExpr) {
                     return JavaAstUtils.isLiteralInt(((ASTArrayDimExpr) lastChild).getLengthExpression(), 0);
                 }

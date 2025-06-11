@@ -1,15 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
-
 /**
- * A constructor of a {@linkplain ASTConstructorDeclaration class} or {@linkplain ASTEnumDeclaration enum} declaration.
+ * A constructor of a {@linkplain ASTConstructorDeclaration class} or
+ * {@linkplain ASTEnumDeclaration enum} declaration.
  *
  * <pre class="grammar">
  *
@@ -46,5 +45,4 @@ public final class ASTConstructorDeclaration extends AbstractExecutableDeclarati
     public @NonNull ASTBlock getBody() {
         return (ASTBlock) getLastChild();
     }
-
 }

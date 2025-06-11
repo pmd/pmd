@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,11 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
@@ -119,8 +116,15 @@ class JavaQualifiedNameTest {
 
     @Test
     void testLocalClassDeepNesting() {
-        final String TEST = "class Bzaz{ void foo() { " + "  class Local { " + "    class Nested {" + "      {"
-                + "        class InnerLocal{}" + "      }" + "    }" + "  }" + "}}";
+        final String TEST = "class Bzaz{ void foo() { "
+                + "  class Local { "
+                + "    class Nested {"
+                + "      {"
+                + "        class InnerLocal{}"
+                + "      }"
+                + "    }"
+                + "  }"
+                + "}}";
 
         List<ASTClassDeclaration> classes = getNodes(ASTClassDeclaration.class, TEST);
 
@@ -153,8 +157,14 @@ class JavaQualifiedNameTest {
 
     @Test
     void testMultipleAnonymousClasses() {
-        final String TEST = "class Bzaz{ void foo() { " + "  new Runnable() {" + "      public void run() {}" + "  };"
-                + "  new Runnable() {" + "      public void run() {}" + "  };" + "}}";
+        final String TEST = "class Bzaz{ void foo() { "
+                + "  new Runnable() {"
+                + "      public void run() {}"
+                + "  };"
+                + "  new Runnable() {"
+                + "      public void run() {}"
+                + "  };"
+                + "}}";
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
@@ -165,8 +175,15 @@ class JavaQualifiedNameTest {
 
     @Test
     void testNestedAnonymousClass() {
-        final String TEST = "class Bzaz{ void foo() {" + "  new Runnable() {" + "    public void run() {"
-                + "      new Runnable() {" + "        public void run() {}" + "      };" + "    }" + "  };" + "}}";
+        final String TEST = "class Bzaz{ void foo() {"
+                + "  new Runnable() {"
+                + "    public void run() {"
+                + "      new Runnable() {"
+                + "        public void run() {}"
+                + "      };"
+                + "    }"
+                + "  };"
+                + "}}";
 
         List<ASTAnonymousClassDeclaration> classes = getNodes(ASTAnonymousClassDeclaration.class, TEST);
 
@@ -177,13 +194,17 @@ class JavaQualifiedNameTest {
 
     @Test
     void testLocalInAnonymousClass() {
-        final String TEST = "class Bzaz{ void foo() {" + "  new Runnable() {" + "    public void run() {"
-                + "      class FooRunnable {}" + "    }" + "  };" + "}}";
+        final String TEST = "class Bzaz{ void foo() {"
+                + "  new Runnable() {"
+                + "    public void run() {"
+                + "      class FooRunnable {}"
+                + "    }"
+                + "  };"
+                + "}}";
 
         List<ASTClassDeclaration> classes = getNodes(ASTClassDeclaration.class, TEST);
 
         assertTrue(classes.get(1).isLocal());
         assertEquals("Bzaz$1$1FooRunnable", classes.get(1).getBinaryName());
     }
-
 }

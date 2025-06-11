@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyClassSignature;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType;
@@ -20,10 +17,12 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Parses type signatures. This is basically convenience wrappers for the different signature parsers
- * ({@link TypeParamsParser}, {@link TypeSigParser}).
+ * Parses type signatures. This is basically convenience wrappers for
+ * the different signature parsers ({@link TypeParamsParser},
+ * {@link TypeSigParser}).
  */
 class SignatureParser {
 
@@ -63,12 +62,14 @@ class SignatureParser {
     }
 
     /**
-     * Parses the (optional) type parameters prefixing the given signature, and set the resulting type params on the
-     * owner. Returns a type scanner positioned at the start of the rest of the signature, with a full lexical scope.
+     * Parses the (optional) type parameters prefixing the given signature,
+     * and set the resulting type params on the owner. Returns a type scanner
+     * positioned at the start of the rest of the signature, with a
+     * full lexical scope.
      *
-     * <p>
-     * Type var bounds are parsed lazily, since they may refer to type parameters that are further right in the
-     * signature. So we build first a lexical scope, then the type var bound can
+     * <p>Type var bounds are parsed lazily, since they may refer to type
+     * parameters that are further right in the signature. So we build
+     * first a lexical scope, then the type var bound can
      */
     private TypeScanner typeParamsWrapper(GenericSigBase<?> owner, String sig) {
         if (TypeParamsParser.hasTypeParams(sig)) {
@@ -83,8 +84,7 @@ class SignatureParser {
 
             // the new type builder has the owner's type parameters in scope
             return new MyTypeBuilder(lexScope, b.chars, tparamsEnd, b.end);
-        }
-        else {
+        } else {
             owner.setTypeParams(CollectionUtil.emptyList());
             return new MyTypeBuilder(owner.getEnclosingTypeParams(), sig);
         }

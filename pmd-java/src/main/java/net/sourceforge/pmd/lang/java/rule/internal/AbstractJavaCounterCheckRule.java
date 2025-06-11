@@ -19,9 +19,11 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends AbstractJavaRulechainRule {
 
-    private final PropertyDescriptor<Integer> reportLevel =
-            CommonPropertyDescriptors.reportLevelProperty().desc("Threshold above which a node is reported")
-                    .require(positive()).defaultValue(defaultReportLevel()).build();
+    private final PropertyDescriptor<Integer> reportLevel = CommonPropertyDescriptors.reportLevelProperty()
+            .desc("Threshold above which a node is reported")
+            .require(positive())
+            .defaultValue(defaultReportLevel())
+            .build();
 
     public AbstractJavaCounterCheckRule(Class<T> nodeType) {
         super(nodeType);

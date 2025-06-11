@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
@@ -41,17 +40,20 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
     // Maybe in a second pass we can check that the overload resolution would succeed
     // with the method reference, similar to what UnnecessaryCastRule is doing.
 
-    private static final PropertyDescriptor<Boolean> IGNORE_IF_MAY_NPE = PropertyFactory
-            .booleanProperty("ignoreIfMayNPE")
-            .desc("Ignore lambdas that may throw a null pointer exception (NPE) when converted to a method reference. "
-                    + "Those expressions will NPE at mref creation time, while the equivalent lambda would NPE only when invoked (which may be never).")
-            .defaultValue(false).build();
+    private static final PropertyDescriptor<Boolean> IGNORE_IF_MAY_NPE = PropertyFactory.booleanProperty(
+                    "ignoreIfMayNPE")
+            .desc(
+                    "Ignore lambdas that may throw a null pointer exception (NPE) when converted to a method reference. "
+                            + "Those expressions will NPE at mref creation time, while the equivalent lambda would NPE only when invoked (which may be never).")
+            .defaultValue(false)
+            .build();
 
-    private static final PropertyDescriptor<Boolean> IGNORE_IF_RECEIVER_IS_METHOD = PropertyFactory
-            .booleanProperty("ignoreIfReceiverIsMethod")
+    private static final PropertyDescriptor<Boolean> IGNORE_IF_RECEIVER_IS_METHOD = PropertyFactory.booleanProperty(
+                    "ignoreIfReceiverIsMethod")
             .desc("Ignore if the receiver of the method reference is a method call. "
                     + "These may cause side effects that often should prevent the conversion to a method reference.")
-            .defaultValue(true).build();
+            .defaultValue(true)
+            .build();
 
     public LambdaCanBeMethodReferenceRule() {
         super(ASTLambdaExpression.class);
@@ -64,8 +66,7 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
         if (node.isExpressionBody()) {
             ASTExpression expression = node.getExpressionBody();
             processLambdaWithBody(node, asCtx(data), expression);
-        }
-        else {
+        } else {
             ASTStatement onlyStmt = ASTList.singleOrNull(node.getBlockBody());
             if (onlyStmt instanceof ASTReturnStatement) {
                 processLambdaWithBody(node, asCtx(data), ((ASTReturnStatement) onlyStmt).getExpr());
@@ -75,7 +76,8 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
     }
 
     private void processLambdaWithBody(ASTLambdaExpression lambda, RuleContext data, ASTExpression expression) {
-        if (lambda.getParameters().toStream().any(it -> it.getDeclaredAnnotations().nonEmpty())) {
+        if (lambda.getParameters().toStream().any(it -> it.getDeclaredAnnotations()
+                .nonEmpty())) {
             return;
         }
         if (expression instanceof ASTMethodCall) {
@@ -100,8 +102,7 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
             // this second condition corresponds to the case the first lambda
             // param is the receiver of the method call
             sb.append(classSym.getSimpleName());
-        }
-        else if (qualifier == null) {
+        } else if (qualifier == null) {
             // non-static method with null qualifier
             ASTTypeDeclaration enclosing = call.getEnclosingType();
             JClassType receiver = TypeOps.getReceiverType(enclosing.getTypeMirror(), (JClassSymbol) classSym);
@@ -109,12 +110,10 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
                 // method is declared in an enclosing type and receiver
                 // needs qualification
                 sb.append(receiver.getSymbol().getSimpleName()).append(".this");
-            }
-            else {
+            } else {
                 sb.append("this");
             }
-        }
-        else {
+        } else {
             boolean needsParentheses = !(qualifier instanceof ASTPrimaryExpression);
             if (needsParentheses) {
                 sb.append('(');
@@ -138,11 +137,9 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
             if (!JavaAstUtils.isReferenceToVar(call.getQualifier(), firstParam)) {
                 return false;
             }
-        }
-        else if (args.size() == params.size()) {
+        } else if (args.size() == params.size()) {
             start = 0;
-        }
-        else {
+        } else {
             return false;
         }
 
@@ -167,10 +164,12 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
             // ctors may not be transformed because that would change semantics,
             // with only one instance being created
             return false;
-        }
-        else if (qualifier instanceof ASTTypeExpression || qualifier instanceof ASTSuperExpression
-                || qualifier instanceof ASTThisExpression || qualifier instanceof ASTClassLiteral
-                || qualifier instanceof ASTLiteral || qualifier == null) {
+        } else if (qualifier instanceof ASTTypeExpression
+                || qualifier instanceof ASTSuperExpression
+                || qualifier instanceof ASTThisExpression
+                || qualifier instanceof ASTClassLiteral
+                || qualifier instanceof ASTLiteral
+                || qualifier == null) {
             // these are always transformable
             return true;
         }
@@ -182,7 +181,5 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
         boolean mayNPE = lambda.getParameters().size() == call.getArguments().size();
         boolean isIgnoredBecauseOfNPE = mayNPE && getProperty(IGNORE_IF_MAY_NPE);
         return !isIgnoredBecauseOfNPE && !isIgnoredBecauseOfMethodCall;
-
     }
-
 }

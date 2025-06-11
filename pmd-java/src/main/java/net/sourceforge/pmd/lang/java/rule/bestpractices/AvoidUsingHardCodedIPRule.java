@@ -11,19 +11,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.apache.commons.lang3.StringUtils;
 
 public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
 
     private enum AddressKinds {
-        IPV4("IPv4"), IPV6("IPv6"), IPV4_MAPPED_IPV6("IPv4 mapped IPv6");
+        IPV4("IPv4"),
+        IPV6("IPv6"),
+        IPV4_MAPPED_IPV6("IPv4 mapped IPv6");
 
         private final String label;
 
@@ -34,7 +34,9 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<List<AddressKinds>> CHECK_ADDRESS_TYPES_DESCRIPTOR =
             PropertyFactory.enumListProperty("checkAddressTypes", AddressKinds.class, k -> k.label)
-                    .desc("Check for IP address types.").defaultValue(asList(AddressKinds.values())).build();
+                    .desc("Check for IP address types.")
+                    .defaultValue(asList(AddressKinds.values()))
+                    .build();
 
     // Provides 4 capture groups that can be used for additional validation
     private static final String IPV4_REGEXP = "([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})\\.([0-9]{1,3})";
@@ -107,8 +109,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
                 }
             }
             return true;
-        }
-        else {
+        } else {
             return false;
         }
     }
@@ -118,7 +119,8 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
         // 1) At least 3 characters
         // 2) 1st must be a Hex number or a : (colon)
         // 3) Must contain at least 2 colons (:)
-        if (s.length() < 3 || !(isHexCharacter(firstChar) || firstChar == ':')
+        if (s.length() < 3
+                || !(isHexCharacter(firstChar) || firstChar == ':')
                 || StringUtils.countMatches(s, ':') < 2) {
             return false;
         }
@@ -130,8 +132,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
             if (s.startsWith("::")) {
                 s = s.substring(2);
                 zeroSubstitution = true;
-            }
-            else if (s.endsWith("::")) {
+            } else if (s.endsWith("::")) {
                 s = s.substring(0, s.length() - 2);
                 zeroSubstitution = true;
             }
@@ -153,13 +154,11 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
                 if (part.length() == 0) {
                     if (zeroSubstitution) {
                         return false;
-                    }
-                    else {
+                    } else {
                         zeroSubstitution = true;
                     }
                     continue;
-                }
-                else {
+                } else {
                     count++;
                 }
                 // Should be a hexadecimal number in range [0, 65535]
@@ -168,8 +167,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
                     if (value < 0 || value > 65535) {
                         return false;
                     }
-                }
-                catch (NumberFormatException e) {
+                } catch (NumberFormatException e) {
                     // The last part can be a standard IPv4 address.
                     if (i != parts.length - 1 || !isIPv4(part.charAt(0), part)) {
                         return false;
@@ -182,21 +180,17 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
             if (zeroSubstitution) {
                 if (ipv4Mapped) {
                     return checkIPv4MappedIPv6 && 1 <= count && count <= 6;
-                }
-                else {
+                } else {
                     return checkIPv6 && 1 <= count && count <= 7;
                 }
-            }
-            else {
+            } else {
                 if (ipv4Mapped) {
                     return checkIPv4MappedIPv6 && count == 7;
-                }
-                else {
+                } else {
                     return checkIPv6 && count == 8;
                 }
             }
-        }
-        else {
+        } else {
             return false;
         }
     }

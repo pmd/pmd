@@ -6,7 +6,11 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.types.JArrayType;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -14,12 +18,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.TypeReference;
 import org.pcollections.ConsPStack;
-
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-import net.sourceforge.pmd.lang.java.types.JArrayType;
-import net.sourceforge.pmd.lang.java.types.JClassType;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JWildcardType;
 
 /**
  * @author Clément Fournier
@@ -40,8 +38,8 @@ final class TypeAnnotationHelper {
         }
 
         /**
-         * Transform the given type to apply type annotations. Returns the type decorated with type annotations in the
-         * right places.
+         * Transform the given type to apply type annotations. Returns
+         * the type decorated with type annotations in the right places.
          */
         JTypeMirror decorate(@NonNull JTypeMirror base) {
             for (Pair<@Nullable TypePath, SymAnnot> pair : pathAndAnnot) {
@@ -49,12 +47,11 @@ final class TypeAnnotationHelper {
             }
             return base;
         }
-
     }
 
     /**
-     * Accumulate type annotations to be applied on a more complex signature than just a field. This includes method
-     * signatures and class signatures.
+     * Accumulate type annotations to be applied on a more complex signature than just a field.
+     * This includes method signatures and class signatures.
      */
     static final class TypeAnnotationSetWithReferences {
 
@@ -101,7 +98,8 @@ final class TypeAnnotationHelper {
     }
 
     /**
-     * Add one type annotation into the given type at the location given by the given path.
+     * Add one type annotation into the given type at the location given
+     * by the given path.
      */
     static JTypeMirror applySinglePath(@NonNull JTypeMirror base, @Nullable TypePath path, SymAnnot annot) {
         return resolvePathStep(base, path, 0, annot);
@@ -144,7 +142,8 @@ final class TypeAnnotationHelper {
                 if (t instanceof JWildcardType) {
                     JWildcardType wild = (JWildcardType) t;
                     JTypeMirror newBound = resolvePathStep(wild.getBound(), path, i + 1, annot);
-                    return wild.getTypeSystem().wildcard(wild.isUpperBound(), newBound)
+                    return wild.getTypeSystem()
+                            .wildcard(wild.isUpperBound(), newBound)
                             .withAnnotations(wild.getTypeAnnotations());
                 }
                 throw new IllegalArgumentException("Expected wilcard type: " + t);
@@ -173,8 +172,8 @@ final class TypeAnnotationHelper {
         // Then, we may need to rebuild the type by adding the remaining segments.
         for (int j = selectedTypeIndex - 1; j >= 0; j--) {
             JClassType nextInner = enclosingTypes.get(j);
-            rebuiltType = rebuiltType.selectInner(nextInner.getSymbol(), nextInner.getTypeArgs(),
-                    nextInner.getTypeAnnotations());
+            rebuiltType = rebuiltType.selectInner(
+                    nextInner.getSymbol(), nextInner.getTypeArgs(), nextInner.getTypeAnnotations());
         }
         return rebuiltType;
     }
@@ -185,8 +184,7 @@ final class TypeAnnotationHelper {
         do {
             enclosing.add(t);
             t = t.getEnclosingType();
-        }
-        while (t != null);
+        } while (t != null);
         return enclosing;
     }
 

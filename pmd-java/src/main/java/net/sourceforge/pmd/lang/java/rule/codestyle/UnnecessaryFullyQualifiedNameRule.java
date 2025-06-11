@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
@@ -9,10 +8,6 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -38,16 +33,22 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Boolean> REPORT_METHODS = booleanProperty("reportStaticMethods").desc(
-            "Report unnecessary static method qualifiers like in `Collections.emptyList()`, if the method is imported or inherited.")
-            .defaultValue(true).build();
+    private static final PropertyDescriptor<Boolean> REPORT_METHODS = booleanProperty("reportStaticMethods")
+            .desc(
+                    "Report unnecessary static method qualifiers like in `Collections.emptyList()`, if the method is imported or inherited.")
+            .defaultValue(true)
+            .build();
 
-    private static final PropertyDescriptor<Boolean> REPORT_FIELDS = booleanProperty("reportStaticFields").desc(
-            "Report unnecessary static field qualifiers like in `Math.PI`, if the field is imported or inherited.")
-            .defaultValue(true).build();
+    private static final PropertyDescriptor<Boolean> REPORT_FIELDS = booleanProperty("reportStaticFields")
+            .desc(
+                    "Report unnecessary static field qualifiers like in `Math.PI`, if the field is imported or inherited.")
+            .defaultValue(true)
+            .build();
 
     public UnnecessaryFullyQualifiedNameRule() {
         super(ASTClassType.class);
@@ -74,8 +75,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             ScopeInfo newBestReason = typeMeansSame(nextParent);
             if (newBestReason == null) {
                 break;
-            }
-            else {
+            } else {
                 bestReason = newBestReason;
                 next = nextParent;
             }
@@ -89,13 +89,13 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                 ASTMethodCall methodCall = (ASTMethodCall) opa;
                 if (methodCall.getExplicitTypeArguments() == null && methodProbablyMeansSame(methodCall)) {
                     // we don't actually know where the method came from
-                    String simpleName = formatMemberName(next, methodCall.getMethodType().getSymbol());
+                    String simpleName =
+                            formatMemberName(next, methodCall.getMethodType().getSymbol());
                     String unnecessary = produceQualifier(deepest, next, true);
                     asCtx(data).addViolation(next, unnecessary, simpleName, "");
                     return null;
                 }
-            }
-            else if (getProperty(REPORT_FIELDS) && opa instanceof ASTFieldAccess) {
+            } else if (getProperty(REPORT_FIELDS) && opa instanceof ASTFieldAccess) {
                 ASTFieldAccess fieldAccess = (ASTFieldAccess) opa;
                 ScopeInfo reasonForFieldInScope = fieldMeansSame(fieldAccess);
                 if (reasonForFieldInScope != null && !isForwardReference(fieldAccess)) {
@@ -141,9 +141,10 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
     }
 
     /**
-     * Checks that the type name can be referred to by simple name in the given scope, which means, that the
-     * qualification can be dropped. If the symbol table for types yields the same symbol when referred to by simple
-     * name, then this is true.
+     * Checks that the type name can be referred to by simple name in the
+     * given scope, which means, that the qualification can be dropped.
+     * If the symbol table for types yields the same symbol when referred
+     * to by simple name, then this is true.
      *
      * @return The reason why the type is in scope. Null if it's not in scope.
      */
@@ -158,15 +159,15 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             return null; // name is obscured: https://docs.oracle.com/javase/specs/jls/se15/html/jls-6.html#jls-6.4.2
         }
 
-        return fieldOrTypeMeansSame(sym, typeNode.getSymbolTable(), JSymbolTable::types,
-                (s, t) -> s.equals(t.getSymbol()));
+        return fieldOrTypeMeansSame(
+                sym, typeNode.getSymbolTable(), JSymbolTable::types, (s, t) -> s.equals(t.getSymbol()));
     }
 
     private static boolean methodProbablyMeansSame(ASTMethodCall call) {
 
         // todo at least filter by potential applicability
-        // (ideally, do a complete inference run)
-        // this may have false negatives
+        //  (ideally, do a complete inference run)
+        //  this may have false negatives
         List<JMethodSig> accessibleMethods = call.getSymbolTable().methods().resolve(call.getMethodName());
         if (accessibleMethods.isEmpty() || call.getOverloadSelectionInfo().isFailed()) {
             return false;
@@ -188,12 +189,14 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             return null;
         }
 
-        return fieldOrTypeMeansSame(sym, field.getSymbolTable(), JSymbolTable::variables,
-                (s, t) -> s.equals(t.getSymbol()));
+        return fieldOrTypeMeansSame(
+                sym, field.getSymbolTable(), JSymbolTable::variables, (s, t) -> s.equals(t.getSymbol()));
     }
 
-    private static <S extends JElementSymbol, T> ScopeInfo fieldOrTypeMeansSame(@NonNull S originalSym,
-            JSymbolTable symTable, Function<JSymbolTable, ShadowChain<T, ScopeInfo>> shadowChainGetter,
+    private static <S extends JElementSymbol, T> ScopeInfo fieldOrTypeMeansSame(
+            @NonNull S originalSym,
+            JSymbolTable symTable,
+            Function<JSymbolTable, ShadowChain<T, ScopeInfo>> shadowChainGetter,
             BiPredicate<S, T> areEqual) {
 
         ShadowChainIterator<T, ScopeInfo> iter =
@@ -253,13 +256,14 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
     }
 
     /**
-     * Return true if removing the qualification from this field access would produce an "Illegal forward reference"
-     * compiler error. This would happen if the referenced field is defined after the reference, in the same class. Note
-     * that the java compiler uses definite assignment to find forward references. Here we over-approximate this, to
-     * avoid depending on the dataflow pass. We could fix this later though.
+     * Return true if removing the qualification from this field access
+     * would produce an "Illegal forward reference" compiler error. This
+     * would happen if the referenced field is defined after the reference,
+     * in the same class. Note that the java compiler uses definite assignment
+     * to find forward references. Here we over-approximate this, to avoid
+     * depending on the dataflow pass. We could fix this later though.
      *
-     * @param fieldAccess
-     *            A field access
+     * @param fieldAccess A field access
      */
     private static boolean isForwardReference(ASTFieldAccess fieldAccess) {
         JFieldSymbol referencedSym = fieldAccess.getReferencedSym();
@@ -272,7 +276,8 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
         if (fieldDecl == null || !fieldDecl.isStatic()) {
             return false;
         }
-        ASTBodyDeclaration enclosing = fieldAccess.ancestors(ASTBodyDeclaration.class).first();
+        ASTBodyDeclaration enclosing =
+                fieldAccess.ancestors(ASTBodyDeclaration.class).first();
         if (isPartOfStaticInitialization(enclosing)
                 && enclosing.getParent().getParent() == fieldDecl.getEnclosingType()) {
             // the access is made in the same class
@@ -282,7 +287,10 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                 return false;
             }
             // else compare position: if access is before definition, we have a problem
-            int declIndex = fieldDecl.ancestors().filter(it -> it.getParent() instanceof ASTTypeBody).firstOrThrow()
+            int declIndex = fieldDecl
+                    .ancestors()
+                    .filter(it -> it.getParent() instanceof ASTTypeBody)
+                    .firstOrThrow()
                     .getIndexInParent();
             int accessIndex = enclosing.getIndexInParent();
             return accessIndex <= declIndex;

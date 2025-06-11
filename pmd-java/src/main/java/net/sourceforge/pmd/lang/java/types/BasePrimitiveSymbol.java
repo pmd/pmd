@@ -5,14 +5,12 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.lang.reflect.Modifier;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.internal.EmptyClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolEquality;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymbolToStrings;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 abstract class BasePrimitiveSymbol extends EmptyClassSymbol {
 
@@ -40,7 +38,6 @@ abstract class BasePrimitiveSymbol extends EmptyClassSymbol {
         public @NonNull String getSimpleName() {
             return "void";
         }
-
     }
 
     static final class RealPrimitiveSymbol extends BasePrimitiveSymbol {
@@ -66,7 +63,6 @@ abstract class BasePrimitiveSymbol extends EmptyClassSymbol {
         public @NonNull String getSimpleName() {
             return kind.getSimpleName();
         }
-
     }
 
     @Override

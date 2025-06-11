@@ -6,10 +6,6 @@ package net.sourceforge.pmd.lang.java.ast.internal;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
@@ -60,13 +56,14 @@ import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.util.IteratorUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Checks that an AST conforms to some language level. The reporting behaviour is parameterized with a
- * {@link ReportingStrategy}.
+ * Checks that an AST conforms to some language level. The reporting
+ * behaviour is parameterized with a {@link ReportingStrategy}.
  *
- * @param <T>
- *            Type of object accumulating violations
+ * @param <T> Type of object accumulating violations
  */
 public class LanguageLevelChecker<T> {
 
@@ -93,7 +90,9 @@ public class LanguageLevelChecker<T> {
 
     public void check(JavaNode node) {
         T accumulator = reportingStrategy.createAccumulator();
-        node.descendantsOrSelf().crossFindBoundaries().filterIs(JavaNode.class)
+        node.descendantsOrSelf()
+                .crossFindBoundaries()
+                .filterIs(JavaNode.class)
                 .forEach(n -> n.acceptVisitor(visitor, accumulator));
         reportingStrategy.done(accumulator);
     }
@@ -114,61 +113,47 @@ public class LanguageLevelChecker<T> {
     private static String versionDisplayName(int jdk) {
         if (jdk < 8) {
             return "Java 1." + jdk;
-        }
-        else {
+        } else {
             return "Java " + jdk;
         }
     }
 
     /**
-     * Those are just for the preview features. They are implemented in at least one preview language version. They
-     * might be also be standardized.
+     * Those are just for the preview features.
+     * They are implemented in at least one preview language version.
+     * They might be also be standardized.
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
          * Unnamed Classes and Instance Main Methods
-         * 
-         * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a>
-         *      (Java 21)
-         * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods
-         *      (Second Preview)</a> (Java 22)
-         * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods
-         *      (Third Preview)</a> (Java 23)
-         * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth
-         *      Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
+         * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
+         * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)
          */
         SIMPLE_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(22, 24, false),
 
         /**
          * Statements before super
-         * 
          * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
-         * @see <a href="https://openjdk.org/jeps/482">JEP 482: Flexible Constructor Bodies (Second Preview)</a> (Java
-         *      23)
-         * @see <a href="https://openjdk.org/jeps/492">JEP 492: Flexible Constructor Bodies (Third Preview)</a> (Java
-         *      24)
+         * @see <a href="https://openjdk.org/jeps/482">JEP 482: Flexible Constructor Bodies (Second Preview)</a> (Java 23)
+         * @see <a href="https://openjdk.org/jeps/492">JEP 492: Flexible Constructor Bodies (Third Preview)</a> (Java 24)
          */
         FLEXIBLE_CONSTRUCTOR_BODIES(22, 24, false),
 
         /**
          * Module import declarations
-         * 
          * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
-         * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java
-         *      24)
+         * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java 24)
          */
         MODULE_IMPORT_DECLARATIONS(23, 24, false),
 
         /**
          * Primitive types in patterns, instanceof, and switch
-         * 
-         * @see <a href="https://openjdk.org/jeps/455">JEP 455: Primitive Types in Patterns, instanceof, and switch
-         *      (Preview)</a> (Java 23)
-         * @see <a href="https://openjdk.org/jeps/488">JEP 488: Primitive Types in Patterns, instanceof, and switch
-         *      (Second Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/455">JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)</a> (Java 23)
+         * @see <a href="https://openjdk.org/jeps/488">JEP 488: Primitive Types in Patterns, instanceof, and switch (Second Preview)</a> (Java 24)
          */
         PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 24, false),
-
         ; // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minPreviewVersion;
@@ -194,14 +179,11 @@ public class LanguageLevelChecker<T> {
             String message = StringUtils.capitalize(displayNameLower(name()));
             if (wasStandardized) {
                 message += " was only standardized in Java " + (maxPreviewVersion + 1);
-            }
-            else if (canBePreview) {
+            } else if (canBePreview) {
                 message += " is a preview feature of JDK " + jdk;
-            }
-            else if (minPreviewVersion == maxPreviewVersion) {
+            } else if (minPreviewVersion == maxPreviewVersion) {
                 message += " is a preview feature of JDK " + minPreviewVersion;
-            }
-            else {
+            } else {
                 message += " is a preview feature of JDKs " + minPreviewVersion + " to " + maxPreviewVersion;
             }
             return message + ", you should select your language version accordingly";
@@ -211,9 +193,7 @@ public class LanguageLevelChecker<T> {
     /**
      * Those use a max valid version.
      *
-     * @see <a href=
-     *      "http://cr.openjdk.java.net/~gbierman/jep397/jep397-20201204/specs/contextual-keywords-jls.html">Contextual
-     *      Keywords</a>
+     * @see <a href="http://cr.openjdk.java.net/~gbierman/jep397/jep397-20201204/specs/contextual-keywords-jls.html">Contextual Keywords</a>
      */
     private enum Keywords implements LanguageFeature {
         /**
@@ -252,7 +232,6 @@ public class LanguageLevelChecker<T> {
          * ContextualKeyword since Java 15 Preview.
          */
         PERMITS_AS_A_TYPE_NAME(15, "permits"),
-
         ; // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int maxJdkVersion;
@@ -277,20 +256,33 @@ public class LanguageLevelChecker<T> {
 
     /** Those use a min valid version. */
     private enum RegularLanguageFeature implements LanguageFeature {
-
         ASSERT_STATEMENTS(4),
 
-        STATIC_IMPORT(5), ENUMS(5), GENERICS(5), ANNOTATIONS(5), FOREACH_LOOPS(5), VARARGS_PARAMETERS(
-                5), HEXADECIMAL_FLOATING_POINT_LITERALS(5),
+        STATIC_IMPORT(5),
+        ENUMS(5),
+        GENERICS(5),
+        ANNOTATIONS(5),
+        FOREACH_LOOPS(5),
+        VARARGS_PARAMETERS(5),
+        HEXADECIMAL_FLOATING_POINT_LITERALS(5),
 
-        UNDERSCORES_IN_NUMERIC_LITERALS(7), BINARY_NUMERIC_LITERALS(7), TRY_WITH_RESOURCES(7), COMPOSITE_CATCH_CLAUSES(
-                7), DIAMOND_TYPE_ARGUMENTS(7),
+        UNDERSCORES_IN_NUMERIC_LITERALS(7),
+        BINARY_NUMERIC_LITERALS(7),
+        TRY_WITH_RESOURCES(7),
+        COMPOSITE_CATCH_CLAUSES(7),
+        DIAMOND_TYPE_ARGUMENTS(7),
 
-        DEFAULT_METHODS(8), RECEIVER_PARAMETERS(8), TYPE_ANNOTATIONS(8), INTERSECTION_TYPES_IN_CASTS(
-                8), LAMBDA_EXPRESSIONS(8), METHOD_REFERENCES(8),
+        DEFAULT_METHODS(8),
+        RECEIVER_PARAMETERS(8),
+        TYPE_ANNOTATIONS(8),
+        INTERSECTION_TYPES_IN_CASTS(8),
+        LAMBDA_EXPRESSIONS(8),
+        METHOD_REFERENCES(8),
 
-        MODULE_DECLARATIONS(9), DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES(9), PRIVATE_METHODS_IN_INTERFACES(
-                9), CONCISE_RESOURCE_SYNTAX(9),
+        MODULE_DECLARATIONS(9),
+        DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES(9),
+        PRIVATE_METHODS_IN_INTERFACES(9),
+        CONCISE_RESOURCE_SYNTAX(9),
 
         /**
          * @see <a href="https://openjdk.org/jeps/361">JEP 361: Switch Expressions</a>
@@ -331,18 +323,15 @@ public class LanguageLevelChecker<T> {
 
         /**
          * @see <a href="https://openjdk.org/jeps/305">JEP 305: Pattern Matching for instanceof (Preview)</a> (Java 14)
-         * @see <a href="https://openjdk.org/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a>
-         *      (Java 15)
+         * @see <a href="https://openjdk.org/jeps/375">JEP 375: Pattern Matching for instanceof (Second Preview)</a> (Java 15)
          * @see <a href="https://openjdk.org/jeps/394">JEP 394: Pattern Matching for instanceof</a> (Java 16)
          */
         TYPE_PATTERNS_IN_INSTANCEOF(16),
 
         /**
          * Part of the records JEP 394.
-         * 
          * @see #RECORD_DECLARATIONS
-         * @see <a href="https://bugs.openjdk.org/browse/JDK-8253374">JLS changes for Static Members of Inner
-         *      Classes</a> (Java 16)
+         * @see <a href="https://bugs.openjdk.org/browse/JDK-8253374">JLS changes for Static Members of Inner Classes</a> (Java 16)
          */
         STATIC_LOCAL_TYPE_DECLARATIONS(16),
 
@@ -355,48 +344,36 @@ public class LanguageLevelChecker<T> {
 
         /**
          * Pattern matching for switch
-         * 
          * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java
-         *      18)
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java
-         *      19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java
-         *      20)
+         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
         PATTERNS_IN_SWITCH_STATEMENTS(21),
 
         /**
          * Part of pattern matching for switch
-         * 
          * @see #PATTERNS_IN_SWITCH_STATEMENTS
          * @see <a href="https://openjdk.org/jeps/406">JEP 406: Pattern Matching for switch (Preview)</a> (Java 17)
-         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java
-         *      18)
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java
-         *      19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java
-         *      20)
+         * @see <a href="https://openjdk.org/jeps/420">JEP 420: Pattern Matching for switch (Second Preview)</a> (Java 18)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
         NULL_IN_SWITCH_CASES(21),
 
         /**
          * Part of pattern matching for switch: Case refinement using "when"
-         * 
          * @see #PATTERNS_IN_SWITCH_STATEMENTS
-         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java
-         *      19)
-         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java
-         *      20)
+         * @see <a href="https://openjdk.org/jeps/427">JEP 427: Pattern Matching for switch (Third Preview)</a> (Java 19)
+         * @see <a href="https://openjdk.org/jeps/433">JEP 433: Pattern Matching for switch (Fourth Preview)</a> (Java 20)
          * @see <a href="https://openjdk.org/jeps/441">JEP 441: Pattern Matching for switch</a> (Java 21)
          */
         CASE_REFINEMENT(21),
 
         /**
          * Record patterns
-         * 
          * @see <a href="https://openjdk.org/jeps/405">JEP 405: Record Patterns (Preview)</a> (Java 19)
          * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a> (Java 20)
          * @see <a href="https://openjdk.org/jeps/440">JEP 440: Record Patterns</a> (Java 21)
@@ -405,12 +382,10 @@ public class LanguageLevelChecker<T> {
 
         /**
          * Unnamed variables and patterns.
-         * 
          * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed patterns and variables (Preview)</a> (Java 21)
          * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
          */
         UNNAMED_VARIABLES_AND_PATTERNS(22),
-
         ; // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
@@ -424,10 +399,10 @@ public class LanguageLevelChecker<T> {
             if (jdk >= this.minJdkLevel) {
                 return null;
             }
-            return StringUtils.capitalize(displayNameLower(name())) + " are a feature of "
-                    + versionDisplayName(minJdkLevel) + ", you should select your language version accordingly";
+            return StringUtils.capitalize(displayNameLower(name()))
+                    + " are a feature of " + versionDisplayName(minJdkLevel)
+                    + ", you should select your language version accordingly";
         }
-
     }
 
     interface LanguageFeature {
@@ -456,7 +431,8 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTStringLiteral node, T data) {
-            if (!node.isTextBlock() && SPACE_ESCAPE_PATTERN.matcher(node.getLiteralText()).find()) {
+            if (!node.isTextBlock()
+                    && SPACE_ESCAPE_PATTERN.matcher(node.getLiteralText()).find()) {
                 check(node, RegularLanguageFeature.SPACE_STRING_ESCAPES, data);
             }
             if (node.isTextBlock()) {
@@ -534,8 +510,7 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTAnnotation node, T data) {
             if (node.getParent() instanceof ASTType) {
                 check(node, RegularLanguageFeature.TYPE_ANNOTATIONS, data);
-            }
-            else {
+            } else {
                 check(node, RegularLanguageFeature.ANNOTATIONS, data);
             }
             return null;
@@ -559,11 +534,9 @@ public class LanguageLevelChecker<T> {
             int base = node.getBase();
             if (base == 16 && !node.isIntegral()) {
                 check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS, data);
-            }
-            else if (base == 2) {
+            } else if (base == 2) {
                 check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS, data);
-            }
-            else if (node.getLiteralText().indexOf('_') >= 0) {
+            } else if (node.getLiteralText().indexOf('_') >= 0) {
                 check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
             }
             return null;
@@ -587,7 +560,8 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.DEFAULT_METHODS, data);
             }
 
-            if (node.hasVisibility(ModifierOwner.Visibility.V_PRIVATE) && node.getEnclosingType() != null
+            if (node.hasVisibility(ModifierOwner.Visibility.V_PRIVATE)
+                    && node.getEnclosingType() != null
                     && node.getEnclosingType().isInterface()) {
                 check(node, RegularLanguageFeature.PRIVATE_METHODS_IN_INTERFACES, data);
             }
@@ -700,24 +674,19 @@ public class LanguageLevelChecker<T> {
         public Void visitTypeDecl(ASTTypeDeclaration node, T data) {
             if (node.getModifiers().hasAnyExplicitly(JModifier.SEALED, JModifier.NON_SEALED)) {
                 check(node, RegularLanguageFeature.SEALED_CLASSES, data);
-            }
-            else if (node.isLocal() && !node.isRegularClass()) {
+            } else if (node.isLocal() && !node.isRegularClass()) {
                 check(node, RegularLanguageFeature.STATIC_LOCAL_TYPE_DECLARATIONS, data);
             }
             String simpleName = node.getSimpleName();
             if ("var".equals(simpleName)) {
                 check(node, Keywords.VAR_AS_A_TYPE_NAME, data);
-            }
-            else if ("yield".equals(simpleName)) {
+            } else if ("yield".equals(simpleName)) {
                 check(node, Keywords.YIELD_AS_A_TYPE_NAME, data);
-            }
-            else if ("record".equals(simpleName)) {
+            } else if ("record".equals(simpleName)) {
                 check(node, Keywords.RECORD_AS_A_TYPE_NAME, data);
-            }
-            else if ("sealed".equals(simpleName)) {
+            } else if ("sealed".equals(simpleName)) {
                 check(node, Keywords.SEALED_AS_A_TYPE_NAME, data);
-            }
-            else if ("permits".equals(simpleName)) {
+            } else if ("permits".equals(simpleName)) {
                 check(node, Keywords.PERMITS_AS_A_TYPE_NAME, data);
             }
             checkIdent(node, simpleName, data);
@@ -727,7 +696,9 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTConstructorDeclaration node, T data) {
             super.visit(node, data);
-            if (node.getBody().descendants(ASTExplicitConstructorInvocation.class).nonEmpty()) {
+            if (node.getBody()
+                    .descendants(ASTExplicitConstructorInvocation.class)
+                    .nonEmpty()) {
                 if (!(node.getBody().getFirstChild() instanceof ASTExplicitConstructorInvocation)) {
                     check(node, PreviewFeature.FLEXIBLE_CONSTRUCTOR_BODIES, data);
                 }
@@ -740,12 +711,12 @@ public class LanguageLevelChecker<T> {
             if (node.getOperator() == BinaryOp.INSTANCEOF) {
                 if (node.getRightOperand() instanceof ASTPatternExpression
                         && node.getRightOperand().getFirstChild() instanceof ASTTypePattern) {
-                    ASTTypePattern typePattern = (ASTTypePattern) node.getRightOperand().getFirstChild();
+                    ASTTypePattern typePattern =
+                            (ASTTypePattern) node.getRightOperand().getFirstChild();
                     if (typePattern.getTypeNode() instanceof ASTPrimitiveType) {
                         check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
                     }
-                }
-                else if (node.getRightOperand() instanceof ASTTypeExpression) {
+                } else if (node.getRightOperand() instanceof ASTTypeExpression) {
                     ASTTypeExpression typeExpression = (ASTTypeExpression) node.getRightOperand();
                     if (typeExpression.getTypeNode() instanceof ASTPrimitiveType) {
                         check(node, PreviewFeature.PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH, data);
@@ -758,11 +729,9 @@ public class LanguageLevelChecker<T> {
         private void checkIdent(JavaNode node, String simpleName, T acc) {
             if ("enum".equals(simpleName)) {
                 check(node, Keywords.ENUM_AS_AN_IDENTIFIER, acc);
-            }
-            else if ("assert".equals(simpleName)) {
+            } else if ("assert".equals(simpleName)) {
                 check(node, Keywords.ASSERT_AS_AN_IDENTIFIER, acc);
-            }
-            else if ("_".equals(simpleName)) {
+            } else if ("_".equals(simpleName)) {
                 // see ASTVariableId#isUnnamed()
                 // java 1-8: "_" is a valid name for an identifier
                 // java 9-21: "_" is a restricted keyword and cannot be used anymore as an identifier
@@ -773,13 +742,10 @@ public class LanguageLevelChecker<T> {
                 // that with java 22+ "_" can be used for unnamed variables
                 if (LanguageLevelChecker.this.jdkVersion >= 21) {
                     check(node, RegularLanguageFeature.UNNAMED_VARIABLES_AND_PATTERNS, acc);
-                }
-                else {
+                } else {
                     check(node, Keywords.UNDERSCORE_AS_AN_IDENTIFIER, acc);
                 }
             }
         }
-
     }
-
 }

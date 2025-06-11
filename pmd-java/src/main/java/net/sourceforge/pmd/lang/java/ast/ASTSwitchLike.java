@@ -1,23 +1,22 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
 /**
- * Common supertype for {@linkplain ASTSwitchStatement switch statements} and {@linkplain ASTSwitchExpression switch
- * expressions}. Their grammar is identical, and is described below. The difference is that switch expressions need to
- * be exhaustive.
+ * Common supertype for {@linkplain ASTSwitchStatement switch statements}
+ * and {@linkplain ASTSwitchExpression switch expressions}. Their grammar
+ * is identical, and is described below. The difference is that switch
+ * expressions need to be exhaustive.
  *
  * <pre class="grammar">
  *
@@ -50,15 +49,18 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
     }
 
     /**
-     * Gets the expression tested by this switch. This is the expression between the parentheses.
+     * Gets the expression tested by this switch.
+     * This is the expression between the parentheses.
      */
     default ASTExpression getTestedExpression() {
         return (ASTExpression) getChild(0);
     }
 
     /**
-     * Returns true if this switch block tests an expression having an enum type and all the constants of this type are
-     * covered by a switch case. Returns false if the type of the tested expression could not be resolved.
+     * Returns true if this switch block tests an expression
+     * having an enum type and all the constants of this type
+     * are covered by a switch case. Returns false if the type of
+     * the tested expression could not be resolved.
      */
     default boolean isExhaustiveEnumSwitch() {
         JTypeDeclSymbol symbol = getTestedExpression().getTypeMirror().getSymbol();
@@ -72,7 +74,8 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
     }
 
     /**
-     * Returns true if this switch block tests an expression having an enum type.
+     * Returns true if this switch block tests an expression
+     * having an enum type.
      */
     default boolean isEnumSwitch() {
         JTypeDeclSymbol type = getTestedExpression().getTypeMirror().getSymbol();
@@ -80,9 +83,11 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
     }
 
     /**
-     * Returns true if this switch block tests an expression having a sealed type or an enum type and all the possible
-     * constants or types are covered by a switch case. Returns false if the type of the tested expression could not be
-     * resolved.
+     * Returns true if this switch block tests an expression
+     * having a sealed type or an enum type and all the possible
+     * constants or types are covered by a switch case.
+     * Returns false if the type of the tested expression could not
+     * be resolved.
      *
      * @see #isExhaustiveEnumSwitch()
      */
@@ -102,17 +107,24 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
 
             // shortcut2 - if we are dealing with a sealed type or a boolean (java 23 preview, JEP 455)
             // and there is no default case then the compiler already checked for exhaustiveness
-            if (classSymbol.isSealed() || classSymbol.equals(getTypeSystem().BOOLEAN.getSymbol())) {
+            if (classSymbol.isSealed()
+                    || classSymbol.equals(getTypeSystem().BOOLEAN.getSymbol())) {
                 if (!hasDefaultCase()) {
                     return true;
                 }
             }
 
             if (classSymbol.isSealed()) {
-                Set<JClassSymbol> checkedSubtypes = getBranches().map(ASTSwitchBranch::getLabel)
-                        .children(ASTTypePattern.class).map(ASTTypePattern::getTypeNode).toStream()
-                        .map(TypeNode::getTypeMirror).map(JTypeMirror::getSymbol).filter(s -> s instanceof JClassSymbol)
-                        .map(s -> (JClassSymbol) s).collect(Collectors.toSet());
+                Set<JClassSymbol> checkedSubtypes = getBranches()
+                        .map(ASTSwitchBranch::getLabel)
+                        .children(ASTTypePattern.class)
+                        .map(ASTTypePattern::getTypeNode)
+                        .toStream()
+                        .map(TypeNode::getTypeMirror)
+                        .map(JTypeMirror::getSymbol)
+                        .filter(s -> s instanceof JClassSymbol)
+                        .map(s -> (JClassSymbol) s)
+                        .collect(Collectors.toSet());
 
                 Set<JClassSymbol> permittedSubtypes = new HashSet<>(classSymbol.getPermittedSubtypes());
                 // for all the switch cases, remove the checked type itself
@@ -145,11 +157,11 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
     }
 
     /**
-     * Returns true if this a switch which uses fallthrough branches (old school {@code case label: break;}) and not
-     * arrow branches. If the switch has no branches, returns false.
+     * Returns true if this a switch which uses fallthrough branches
+     * (old school {@code case label: break;}) and not arrow branches.
+     * If the switch has no branches, returns false.
      */
     default boolean isFallthroughSwitch() {
         return getBranches().filterIs(ASTSwitchFallthroughBranch.class).nonEmpty();
     }
-
 }

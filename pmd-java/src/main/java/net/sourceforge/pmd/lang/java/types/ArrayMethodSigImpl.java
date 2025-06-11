@@ -10,13 +10,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 // for array clone or array constructor
 class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
@@ -48,8 +46,9 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     @Override
     public JMethodSig getErasure() {
         JArrayType erasedOwner = owner.getErasure();
-        return erasedOwner == owner ? this : new ArrayMethodSigImpl(erasedOwner, symbol); // NOPMD
-                                                                                          // CompareObjectsWithEquals
+        return erasedOwner == owner
+                ? this
+                : new ArrayMethodSigImpl(erasedOwner, symbol); // NOPMD CompareObjectsWithEquals
     }
 
     @Override
@@ -106,8 +105,7 @@ class ArrayMethodSigImpl implements JMethodSig, InternalMethodTypeItf {
     public JMethodSig withOwner(JTypeMirror newOwner) {
         if (newOwner instanceof JArrayType) {
             return new ArrayMethodSigImpl((JArrayType) newOwner, symbol);
-        }
-        else {
+        } else {
             throw new IllegalArgumentException(newOwner + " cannot be the owner of " + this);
         }
     }

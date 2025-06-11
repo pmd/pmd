@@ -9,5 +9,4 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 interface AnnotationOwner {
 
     void addAnnotation(SymAnnot annot);
-
 }

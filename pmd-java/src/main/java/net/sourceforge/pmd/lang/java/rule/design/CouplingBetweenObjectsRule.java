@@ -1,14 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -24,9 +22,10 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
 /**
- * CouplingBetweenObjects attempts to capture all unique Class attributes, local variables, and return types to
- * determine how many objects a class is coupled to. This is only a gauge and isn't a hard and fast rule. The threshold
- * value is configurable and should be determined accordingly
+ * CouplingBetweenObjects attempts to capture all unique Class attributes, local
+ * variables, and return types to determine how many objects a class is coupled
+ * to. This is only a gauge and isn't a hard and fast rule. The threshold value
+ * is configurable and should be determined accordingly
  *
  * @author aglover
  * @since Feb 20, 2003
@@ -34,7 +33,10 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 public class CouplingBetweenObjectsRule extends AbstractJavaRule {
 
     private static final PropertyDescriptor<Integer> THRESHOLD_DESCRIPTOR = PropertyFactory.intProperty("threshold")
-            .desc("Unique type reporting threshold").require(positive()).defaultValue(20).build();
+            .desc("Unique type reporting threshold")
+            .require(positive())
+            .defaultValue(20)
+            .build();
 
     private int couplingCount;
     private boolean inInterface;
@@ -96,11 +98,10 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * performs a check on the variable and updates the counter. Counter is instance for a class and is reset upon new
-     * class scan.
+     * performs a check on the variable and updates the counter. Counter is
+     * instance for a class and is reset upon new class scan.
      *
-     * @param typeNode
-     *            The variable type.
+     * @param typeNode The variable type.
      */
     private void checkVariableType(ASTType typeNode) {
         if (inInterface || typeNode == null) {
@@ -115,21 +116,23 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
     }
 
     /**
-     * Filters variable type - we don't want primitives, wrappers, strings, etc. This needs more work. I'd like to
-     * filter out super types and perhaps interfaces
+     * Filters variable type - we don't want primitives, wrappers, strings, etc.
+     * This needs more work. I'd like to filter out super types and perhaps
+     * interfaces
      *
-     * @param t
-     *            The variable type.
+     * @param t The variable type.
      *
      * @return boolean true if variableType is not what we care about
      */
     private boolean ignoreType(ASTType typeNode, JTypeMirror t) {
-        if (typeNode.getEnclosingType() != null && typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
+        if (typeNode.getEnclosingType() != null
+                && typeNode.getEnclosingType().getSymbol().equals(t.getSymbol())) {
             return true;
         }
         JTypeDeclSymbol symbol = t.getSymbol();
-        return symbol == null || JAccessibleElementSymbol.PRIMITIVE_PACKAGE.equals(symbol.getPackageName())
-                || t.isPrimitive() || t.isBoxedPrimitive();
+        return symbol == null
+                || JAccessibleElementSymbol.PRIMITIVE_PACKAGE.equals(symbol.getPackageName())
+                || t.isPrimitive()
+                || t.isBoxedPrimitive();
     }
-
 }

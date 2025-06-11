@@ -8,10 +8,6 @@ import static java.util.Collections.emptyList;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.GenericSigBase.LazyMethodType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -19,6 +15,8 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.LexicalScope;
 import net.sourceforge.pmd.lang.java.types.SubstVar;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Implementation of the signature parser.
@@ -38,11 +36,9 @@ final class TypeSigParser {
             do {
                 cur = classType(cur, b);
                 superItfs.add(b.pop());
-            }
-            while (b.charAt(cur) == 'L');
+            } while (b.charAt(cur) == 'L');
             b.pushList(superItfs);
-        }
-        else {
+        } else {
             b.pushList(emptyList());
         }
         b.push(superClass);
@@ -63,14 +59,12 @@ final class TypeSigParser {
         int cur = b.consumeChar(start, '(', "parameter types");
         if (b.charAt(cur) == ')') {
             b.pushList(emptyList()); // empty parameters
-        }
-        else {
+        } else {
             List<JTypeMirror> params = new ArrayList<>(1);
             do {
                 cur = typeSignature(cur, b);
                 params.add(b.pop());
-            }
-            while (b.charAt(cur) != ')');
+            } while (b.charAt(cur) != ')');
             b.pushList(params);
         }
         cur = b.consumeChar(cur, ')');
@@ -90,11 +84,9 @@ final class TypeSigParser {
                 }
                 cur = typeSignature(cur, b);
                 thrown.add(b.pop());
-            }
-            while (b.charAt(cur) == '^');
+            } while (b.charAt(cur) == '^');
             b.pushList(thrown);
-        }
-        else {
+        } else {
             b.pushList(emptyList());
         }
         return cur;
@@ -120,8 +112,7 @@ final class TypeSigParser {
 
         if (bounds.isEmpty()) {
             b.push(b.ts.OBJECT);
-        }
-        else {
+        } else {
             b.push(b.ts.glb(bounds));
         }
         return cur;
@@ -138,7 +129,7 @@ final class TypeSigParser {
                 if (!acceptVoid) {
                     throw b.expected("a type, got void", start);
                 }
-                // intentional fallthrough
+            // intentional fallthrough
             case 'Z':
             case 'C':
             case 'B':
@@ -194,8 +185,7 @@ final class TypeSigParser {
             cur = b.consumeChar(cur, '>');
             b.pushList(l);
             return cur;
-        }
-        else {
+        } else {
             b.pushList(emptyList());
             return start;
         }
@@ -254,8 +244,7 @@ final class TypeSigParser {
         }
         do {
             cur++;
-        }
-        while (isIdentifierChar(b.charAt(cur)));
+        } while (isIdentifierChar(b.charAt(cur)));
 
         if (sb != null) {
             b.dumpChars(start, cur, sb);
@@ -332,8 +321,9 @@ final class TypeSigParser {
         }
 
         /**
-         * Makes a class symbol from its internal name. This should return non-null, if the symbol is not found (linkage
-         * error) then return an unresolved symbol.
+         * Makes a class symbol from its internal name. This should return
+         * non-null, if the symbol is not found (linkage error) then return
+         * an unresolved symbol.
          */
         @NonNull
         public abstract JClassSymbol makeClassSymbol(String internalName, int observedArity);
@@ -364,8 +354,7 @@ final class TypeSigParser {
         }
 
         public JTypeMirror lookupTvar(String name) {
-            @Nullable
-            SubstVar mapped = lexicalScope.apply(name);
+            @Nullable SubstVar mapped = lexicalScope.apply(name);
             if (mapped == null) {
                 throw new IllegalArgumentException(
                         "The lexical scope " + lexicalScope + " does not contain an entry for type variable " + name);
@@ -380,7 +369,5 @@ final class TypeSigParser {
         public JClassType parameterize(JClassType owner, String internalName, List<JTypeMirror> targs) {
             return owner.selectInner(makeClassSymbol(internalName, targs.size()), targs);
         }
-
     }
-
 }

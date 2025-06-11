@@ -1,12 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a unary operation on a value. The syntactic form may be prefix or postfix, which are represented with the
- * same nodes, even though they have different precedences.
+ * Represents a unary operation on a value. The syntactic form may be
+ * prefix or postfix, which are represented with the same nodes, even
+ * though they have different precedences.
  *
  * <pre class="grammar">
  *
@@ -44,5 +44,4 @@ public final class ASTUnaryExpression extends AbstractJavaExpr {
     void setOp(UnaryOp op) {
         this.operator = op;
     }
-
 }

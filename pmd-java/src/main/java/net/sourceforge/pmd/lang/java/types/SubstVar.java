@@ -5,14 +5,12 @@
 package net.sourceforge.pmd.lang.java.types;
 
 import java.util.function.Function;
-
+import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
-
 /**
- * Common supertype for {@link JTypeVar} and {@link InferenceVar}, the two kinds of types that can be substituted in
- * types.
+ * Common supertype for {@link JTypeVar} and {@link InferenceVar},
+ * the two kinds of types that can be substituted in types.
  *
  * @see TypeOps#subst(JTypeMirror, Function)
  */

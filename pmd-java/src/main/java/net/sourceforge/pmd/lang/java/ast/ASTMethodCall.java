@@ -1,15 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A method invocation expression. This node represents both qualified (with a left-hand side) and unqualified
- * invocation expressions.
+ * A method invocation expression. This node represents both qualified (with a left-hand side)
+ * and unqualified invocation expressions.
  *
  * <pre class="grammar">
  *
@@ -44,7 +43,6 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
         fstChild.shrinkOrDeleteInParentSetImage();
 
         assert getMethodName() != null;
-
     }
 
     @Override

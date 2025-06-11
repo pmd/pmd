@@ -1,13 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
 /**
- * A module declaration. This is found at the top-level of a {@linkplain ASTCompilationUnit modular compilation unit}.
+ * A module declaration. This is found at the top-level of a
+ * {@linkplain ASTCompilationUnit modular compilation unit}.
  *
  * <pre class="grammar">
  *
@@ -31,7 +31,8 @@ public final class ASTModuleDeclaration extends AbstractJavaNode implements Anno
     }
 
     /**
-     * Returns the name of the declared module. Module names look like package names, eg {@code java.base}.
+     * Returns the name of the declared module. Module names look
+     * like package names, eg {@code java.base}.
      */
     public String getName() {
         return firstChild(ASTModuleName.class).getName();

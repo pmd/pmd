@@ -8,12 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
@@ -47,6 +41,10 @@ import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> implements JClassSymbol {
 
@@ -85,8 +83,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
             myCtors.add(canonicalRecordCtor);
             InternalApiBridge.setSymbol(components, canonicalRecordCtor);
 
-        }
-        else {
+        } else {
             recordComponents = Collections.emptyList();
         }
 
@@ -97,8 +94,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
                 enumConstants.add(fieldSym);
                 myFields.add(fieldSym);
             });
-        }
-        else {
+        } else {
             enumConstants = null;
         }
 
@@ -106,18 +102,15 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
             if (dnode instanceof ASTTypeDeclaration) {
                 myClasses.add(new AstClassSym((ASTTypeDeclaration) dnode, factory, this));
-            }
-            else if (dnode instanceof ASTMethodDeclaration) {
+            } else if (dnode instanceof ASTMethodDeclaration) {
                 if (!recordComponents.isEmpty() && ((ASTMethodDeclaration) dnode).getArity() == 0) {
                     // filter out record component, so that the accessor is not generated
                     recordComponents.removeIf(f -> f.nameEquals(((ASTMethodDeclaration) dnode).getName()));
                 }
                 myMethods.add(new AstMethodSym((ASTMethodDeclaration) dnode, factory, this));
-            }
-            else if (dnode instanceof ASTConstructorDeclaration) {
+            } else if (dnode instanceof ASTConstructorDeclaration) {
                 myCtors.add(new AstCtorSym((ASTConstructorDeclaration) dnode, factory, this));
-            }
-            else if (dnode instanceof ASTFieldDeclaration) {
+            } else if (dnode instanceof ASTFieldDeclaration) {
                 for (ASTVariableId varId : ((ASTFieldDeclaration) dnode).getVarIds()) {
                     myFields.add(new AstFieldSym(varId, factory, this));
                 }
@@ -149,8 +142,10 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         this.enumConstants = CollectionUtil.makeUnmodifiableAndNonNull(enumConstants);
         this.recordComponents = CollectionUtil.makeUnmodifiableAndNonNull(recordComponents);
         this.annotAttributes = isAnnotation()
-                ? getDeclaredMethods().stream().filter(JMethodSymbol::isAnnotationAttribute)
-                        .map(JElementSymbol::getSimpleName).collect(CollectionUtil.toPersistentSet())
+                ? getDeclaredMethods().stream()
+                        .filter(JMethodSymbol::isAnnotationAttribute)
+                        .map(JElementSymbol::getSimpleName)
+                        .collect(CollectionUtil.toPersistentSet())
                 : HashTreePSet.empty();
     }
 
@@ -160,8 +155,8 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         }
     }
 
-    private List<JRecordComponentSymbol> mapComponentsToMutableList(AstSymFactory factory,
-            ASTRecordComponentList components, List<JFieldSymbol> fieldSyms) {
+    private List<JRecordComponentSymbol> mapComponentsToMutableList(
+            AstSymFactory factory, ASTRecordComponentList components, List<JFieldSymbol> fieldSyms) {
         List<JRecordComponentSymbol> list = new ArrayList<>();
         for (ASTRecordComponent comp : components) {
             list.add(new AstRecordComponentSym(comp, factory, this));
@@ -194,8 +189,7 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
     public @Nullable JClassSymbol getEnclosingClass() {
         if (enclosing instanceof JClassSymbol) {
             return (JClassSymbol) enclosing;
-        }
-        else if (enclosing instanceof JExecutableSymbol) {
+        } else if (enclosing instanceof JExecutableSymbol) {
             return enclosing.getEnclosingClass();
         }
         assert enclosing == null;
@@ -244,21 +238,21 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         if (permittedSubclasses == null) {
             ASTPermitsList permits = node.getPermitsClause();
             if (permits != null) {
-                this.permittedSubclasses = permits.toList().stream().map(it -> {
-                    JTypeDeclSymbol symbol = it.getTypeMirror().getSymbol();
-                    if (symbol instanceof JClassSymbol) {
-                        return (JClassSymbol) symbol;
-                    }
-                    else {
-                        return null;
-                    }
-                }).filter(Objects::nonNull).collect(CollectionUtil.toUnmodifiableList());
-            }
-            else if (isSealed()) {
+                this.permittedSubclasses = permits.toList().stream()
+                        .map(it -> {
+                            JTypeDeclSymbol symbol = it.getTypeMirror().getSymbol();
+                            if (symbol instanceof JClassSymbol) {
+                                return (JClassSymbol) symbol;
+                            } else {
+                                return null;
+                            }
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(CollectionUtil.toUnmodifiableList());
+            } else if (isSealed()) {
                 // sealed with no permits clause: infer permitted
                 this.permittedSubclasses = inferPermittedSubclasses();
-            }
-            else {
+            } else {
                 this.permittedSubclasses = Collections.emptyList();
             }
         }
@@ -267,32 +261,39 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
     private List<JClassSymbol> inferPermittedSubclasses() {
         /*
-         * If the declaration of a sealed class C lacks a permits clause, then the permitted direct subclasses of C are
-         * as follows:
+         *  If the declaration of a sealed class C lacks a permits clause,
+         * then the permitted direct subclasses of C are as follows:
          *
-         * 1. If C is not an enum class, then its permitted direct subclasses are those classes declared in the same
-         * compilation unit as C (§7.3) which have a canonical name (§6.7) and whose direct superclass is C.
+         *  1. If C is not an enum class, then its permitted direct subclasses
+         *     are those classes declared in the same compilation unit as C (§7.3)
+         *     which have a canonical name (§6.7) and whose direct superclass is C.
          *
-         * That is, the permitted direct subclasses are inferred as the classes in the same compilation unit that
-         * specify C as their direct superclass. The requirement for a canonical name means that no local classes or
-         * anonymous classes will be considered.
+         *     That is, the permitted direct subclasses are inferred as the classes
+         *     in the same compilation unit that specify C as their direct superclass.
+         *     The requirement for a canonical name means that no local classes or
+         *     anonymous classes will be considered.
          *
-         * It is a compile-time error if the declaration of a sealed class C lacks a permits clause and C has no
-         * permitted direct subclasses.
+         *     It is a compile-time error if the declaration of a sealed class C lacks
+         *     a permits clause and C has no permitted direct subclasses.
          *
-         * 2. If C is an enum class, then its permitted direct subclasses, if any, are specified in §8.9.
+         *  2. If C is an enum class, then its permitted direct subclasses, if any,
+         *     are specified in §8.9.
          */
         if (!isEnum()) {
             boolean isInterface = isInterface();
-            List<JClassSymbol> list = node.getRoot().descendants(ASTTypeDeclaration.class).crossFindBoundaries()
-                    .filter(it -> it.getCanonicalName() != null).filter(it -> {
+            List<JClassSymbol> list = node.getRoot()
+                    .descendants(ASTTypeDeclaration.class)
+                    .crossFindBoundaries()
+                    .filter(it -> it.getCanonicalName() != null)
+                    .filter(it -> {
                         if (isInterface) {
                             return it.getSuperInterfaceTypeNodes()
                                     .any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
                         }
                         return NodeStream.of(it.getSuperClassTypeNode())
                                 .any(ty -> Objects.equals(ty.getTypeMirror().getSymbol(), this));
-                    }).toList(ASTTypeDeclaration::getSymbol);
+                    })
+                    .toList(ASTTypeDeclaration::getSymbol);
             return Collections.unmodifiableList(list);
         }
         return Collections.emptyList();
@@ -311,40 +312,34 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
             return factory.enumSuperclass(this);
 
-        }
-        else if (node instanceof ASTClassDeclaration) {
+        } else if (node instanceof ASTClassDeclaration) {
 
             ASTClassType superClass = node.getSuperClassTypeNode();
-            return superClass == null ? ts.OBJECT
+            return superClass == null
+                    ? ts.OBJECT
                     // this cast relies on the fact that the superclass is not a type variable
                     : (JClassType) TypeOps.subst(superClass.getTypeMirror(), substitution);
 
-        }
-        else if (isAnonymousClass()) {
+        } else if (isAnonymousClass()) {
 
             if (node.getParent() instanceof ASTEnumConstant) {
 
                 return node.getEnclosingType().getTypeMirror().subst(substitution);
 
-            }
-            else if (node.getParent() instanceof ASTConstructorCall) {
+            } else if (node.getParent() instanceof ASTConstructorCall) {
 
-                @NonNull
-                JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeMirror();
+                @NonNull JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeMirror();
 
                 return sym instanceof JClassType && !sym.isInterface() ? (JClassType) sym : factory.types().OBJECT;
             }
 
-        }
-        else if (isRecord()) {
+        } else if (isRecord()) {
 
             return factory.recordSuperclass();
 
-        }
-        else if (isAnnotation()) {
+        } else if (isAnnotation()) {
 
             return ts.OBJECT;
-
         }
 
         return null;
@@ -360,11 +355,12 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
         if (isAnonymousClass() && node.getParent() instanceof ASTConstructorCall) {
 
             @NonNull
-            JTypeMirror sym = ((ASTConstructorCall) node.getParent()).getTypeNode().getTypeMirror();
+            JTypeMirror sym =
+                    ((ASTConstructorCall) node.getParent()).getTypeNode().getTypeMirror();
 
-            return sym instanceof JClassType && !sym.isInterface() ? ((JClassType) sym).getSymbol()
+            return sym instanceof JClassType && !sym.isInterface()
+                    ? ((JClassType) sym).getSymbol()
                     : factory.types().OBJECT.getSymbol();
-
         }
 
         JClassType sup = getSuperclassType(Substitution.EMPTY);
@@ -388,8 +384,8 @@ final class AstClassSym extends AbstractAstTParamOwner<ASTTypeDeclaration> imple
 
     @Override
     public List<JClassType> getSuperInterfaceTypes(Substitution subst) {
-        List<JClassType> itfs = CollectionUtil.map(node.getSuperInterfaceTypeNodes(),
-                n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
+        List<JClassType> itfs = CollectionUtil.map(
+                node.getSuperInterfaceTypeNodes(), n -> (JClassType) TypeOps.subst(n.getTypeMirror(), subst));
         if (isAnnotation()) {
             itfs = CollectionUtil.concatView(Collections.singletonList(factory.annotationType()), itfs);
         }

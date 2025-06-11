@@ -1,13 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Represents a wildcard type. Those can only occur when nested in an {@link ASTTypeArguments} node.
+ * Represents a wildcard type. Those can only occur when nested in an
+ * {@link ASTTypeArguments} node.
  *
  * <pre class="grammar">
  *
@@ -28,23 +28,26 @@ public final class ASTWildcardType extends AbstractJavaTypeNode implements ASTRe
     }
 
     /**
-     * Return true if this is an upper type bound, e.g. {@code <? extends Integer>}, or the unbounded wildcard
-     * {@code <?>}.
+     * Return true if this is an upper type bound, e.g.
+     * {@code <? extends Integer>}, or the unbounded
+     * wildcard {@code <?>}.
      */
     public boolean isUpperBound() {
         return !isLowerBound;
     }
 
     /**
-     * Returns true if this is a lower type bound, e.g. in {@code <? super Node>}.
+     * Returns true if this is a lower type bound, e.g.
+     * in {@code <? super Node>}.
      */
     public boolean isLowerBound() {
         return isLowerBound;
     }
 
     /**
-     * Returns the type node representing the bound, e.g. the {@code Node} in {@code <? super Node>}, or null in the
-     * unbounded wildcard {@code <?>}.
+     * Returns the type node representing the bound, e.g.
+     * the {@code Node} in {@code <? super Node>}, or null in
+     * the unbounded wildcard {@code <?>}.
      */
     public @Nullable ASTReferenceType getTypeBoundNode() {
         return firstChild(ASTReferenceType.class);

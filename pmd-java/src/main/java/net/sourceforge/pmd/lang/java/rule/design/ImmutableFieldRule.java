@@ -1,14 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
 import java.util.function.Function;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.AccessType;
@@ -33,8 +31,8 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
             setOf("lombok.Builder", "lombok.Data", "lombok.Setter", "lombok.Value");
 
     private static final Set<String> INVALIDATING_FIELD_ANNOT = setOf("lombok.Setter");
-    private static final Function<Object, JavaNode> INTERESTING_ANCESTOR = NodeStream
-            .asInstanceOf(ASTLambdaExpression.class, ASTTypeDeclaration.class, ASTConstructorDeclaration.class);
+    private static final Function<Object, JavaNode> INTERESTING_ANCESTOR = NodeStream.asInstanceOf(
+            ASTLambdaExpression.class, ASTTypeDeclaration.class, ASTConstructorDeclaration.class);
 
     public ImmutableFieldRule() {
         super(ASTFieldDeclaration.class);
@@ -50,14 +48,16 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
             DataflowResult dataflow = DataflowPass.getDataflowResult(field.getRoot());
 
-            outer: for (ASTVariableId varId : field.getVarIds()) {
+            outer:
+            for (ASTVariableId varId : field.getVarIds()) {
 
                 boolean hasWrite = false;
                 for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
                     if (usage.getAccessType() == AccessType.WRITE) {
                         hasWrite = true;
 
-                        JavaNode enclosing = usage.ancestors().map(INTERESTING_ANCESTOR).first();
+                        JavaNode enclosing =
+                                usage.ancestors().map(INTERESTING_ANCESTOR).first();
                         if (!(enclosing instanceof ASTConstructorDeclaration)
                                 || enclosing.getEnclosingType() != enclosingType) {
                             continue outer; // written-to outside ctor
@@ -73,12 +73,10 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
                 if (!hasWrite && !isBlank) {
                     // todo this case may also handle static fields easily.
                     asCtx(data).addViolation(varId, varId.getName());
-                }
-                else if (hasWrite && defaultValueDoesNotReachEndOfCtor(dataflow, varId)) {
+                } else if (hasWrite && defaultValueDoesNotReachEndOfCtor(dataflow, varId)) {
                     asCtx(data).addViolation(varId, varId.getName());
                 }
             }
-
         }
         return null;
     }
@@ -90,7 +88,8 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
         // no killer isFieldAssignmentAtEndOfCtor => the field is assigned on all code paths
         // no killer isReassignedOnSomeCodePath => the field is assigned at most once
         // => the field is assigned exactly once.
-        return CollectionUtil.none(killers,
+        return CollectionUtil.none(
+                killers,
                 killer -> killer.isFieldAssignmentAtEndOfCtor() || isReassignedOnSomeCodePath(dataflow, killer));
     }
 

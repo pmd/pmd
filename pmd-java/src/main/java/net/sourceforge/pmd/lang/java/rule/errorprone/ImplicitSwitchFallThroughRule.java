@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
@@ -49,12 +48,12 @@ public class ImplicitSwitchFallThroughRule extends AbstractJavaRulechainRule {
             if (branch instanceof ASTSwitchFallthroughBranch && branch != node.getLastChild()) {
                 ASTSwitchFallthroughBranch fallthrough = (ASTSwitchFallthroughBranch) branch;
                 OptionalBool bool = dataflow.switchBranchFallsThrough(branch);
-                if (bool != OptionalBool.NO && fallthrough.getStatements().nonEmpty()
+                if (bool != OptionalBool.NO
+                        && fallthrough.getStatements().nonEmpty()
                         && !nextBranchHasComment(branch)) {
                     ruleContext.addViolation(branch.getNextBranch().getLabel());
                 }
-            }
-            else {
+            } else {
                 return;
             }
         }
@@ -66,7 +65,8 @@ public class ImplicitSwitchFallThroughRule extends AbstractJavaRulechainRule {
             return false;
         }
         for (JavaccToken special : GenericToken.previousSpecials(nextBranch.getFirstToken())) {
-            if (JavaAstUtils.isComment(special) && IGNORED_COMMENT.matcher(special.getImageCs()).find()) {
+            if (JavaAstUtils.isComment(special)
+                    && IGNORED_COMMENT.matcher(special.getImageCs()).find()) {
                 return true;
             }
         }

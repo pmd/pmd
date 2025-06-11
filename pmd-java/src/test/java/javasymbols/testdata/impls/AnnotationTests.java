@@ -12,12 +12,14 @@ public class AnnotationTests {
     public final String foo = "";
 
     @Deprecated
-    private AnnotationTests() {
+    private AnnotationTests() {}
 
-    }
-
-    @AnnotWithDefaults(valueNoDefault = "", stringArrayDefault = {})
-    public void someMethod(@AnnotWithDefaults(valueNoDefault = "", stringArrayDefault = { "oio" }) int formal) {
-
-    }
+    @AnnotWithDefaults(
+            valueNoDefault = "",
+            stringArrayDefault = {})
+    public void someMethod(
+            @AnnotWithDefaults(
+                            valueNoDefault = "",
+                            stringArrayDefault = {"oio"})
+                    int formal) {}
 }

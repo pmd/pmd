@@ -8,17 +8,16 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
-
+import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-
 /**
- * Mirror a primitive types. Even though {@code void.class.isPrimitive()} returns true, we don't treat it as such and
- * represent it with {@link TypeSystem#NO_TYPE} instead.
+ * Mirror a primitive types. Even though {@code void.class.isPrimitive()}
+ * returns true, we don't treat it as such and represent it with
+ * {@link TypeSystem#NO_TYPE} instead.
  */
 public final class JPrimitiveType implements JTypeMirror {
 
@@ -31,10 +30,11 @@ public final class JPrimitiveType implements JTypeMirror {
     private final JClassSymbol type;
     /** Boxed representation. */
     private final JClassType box;
+
     private final PSet<SymAnnot> typeAnnots;
 
-    JPrimitiveType(TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType,
-            PSet<SymAnnot> typeAnnots) {
+    JPrimitiveType(
+            TypeSystem ts, PrimitiveTypeKind kind, JClassSymbol type, JClassSymbol boxType, PSet<SymAnnot> typeAnnots) {
         this.ts = ts;
         this.kind = kind;
         this.type = type;
@@ -81,8 +81,8 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     /**
-     * Returns the type of the primitive class, eg {@link Integer#TYPE}. The returned type {@link Class#isPrimitive()}
-     * is true.
+     * Returns the type of the primitive class, eg {@link Integer#TYPE}.
+     * The returned type {@link Class#isPrimitive()} is true.
      */
     @Override
     public @NonNull JClassSymbol getSymbol() {
@@ -135,7 +135,8 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     /**
-     * Returns the token used to represent the type in source, e.g. "int" or "double".
+     * Returns the token used to represent the type in source,
+     * e.g. "int" or "double".
      */
     public @NonNull String getSimpleName() {
         return kind.name;
@@ -156,8 +157,14 @@ public final class JPrimitiveType implements JTypeMirror {
     }
 
     public enum PrimitiveTypeKind {
-        BOOLEAN(boolean.class), CHAR(char.class), BYTE(byte.class), SHORT(short.class), INT(int.class), LONG(
-                long.class), FLOAT(float.class), DOUBLE(double.class);
+        BOOLEAN(boolean.class),
+        CHAR(char.class),
+        BYTE(byte.class),
+        SHORT(short.class),
+        INT(int.class),
+        LONG(long.class),
+        FLOAT(float.class),
+        DOUBLE(double.class);
 
         final String name = name().toLowerCase(Locale.ROOT);
         private final Class<?> jvm;
@@ -180,13 +187,14 @@ public final class JPrimitiveType implements JTypeMirror {
         }
 
         /**
-         * Gets an enum constant from the token used to represent it in source, e.g. "int" or "double". Note that "void"
-         * is not a valid primitive name in this API, and this would return null in this case.
+         * Gets an enum constant from the token used to represent it in source,
+         * e.g. "int" or "double". Note that "void" is not a valid primitive name
+         * in this API, and this would return null in this case.
          *
-         * @param token
-         *            String token
+         * @param token String token
          *
-         * @return A constant, or null if the string doesn't correspond to a primitive type
+         * @return A constant, or null if the string doesn't correspond
+         *     to a primitive type
          */
         public static @Nullable PrimitiveTypeKind fromName(String token) {
             switch (token) {
@@ -211,5 +219,4 @@ public final class JPrimitiveType implements JTypeMirror {
             }
         }
     }
-
 }

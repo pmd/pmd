@@ -1,22 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 // @formatter:off
 /**
@@ -60,11 +57,12 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Returns an unmodifiable list of the usages of this variable that are made in this file. Note that for a record
-     * component, this returns usages both for the formal parameter symbol and its field counterpart.
+     * Returns an unmodifiable list of the usages of this variable that
+     * are made in this file. Note that for a record component, this returns
+     * usages both for the formal parameter symbol and its field counterpart.
      *
-     * <p>
-     * Note that a variable initializer is not part of the usages (though this should be evident from the return type).
+     * <p>Note that a variable initializer is not part of the usages
+     * (though this should be evident from the return type).
      */
     public List<ASTNamedReferenceExpr> getLocalUsages() {
         return usages;
@@ -78,9 +76,10 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Returns the extra array dimensions associated with this variable. For example in the declaration {@code int a[]},
-     * {@link #getTypeNode()} returns {@code int}, and this method returns the dimensions that follow the variable ID.
-     * Returns null if there are no such dimensions.
+     * Returns the extra array dimensions associated with this variable.
+     * For example in the declaration {@code int a[]}, {@link #getTypeNode()}
+     * returns {@code int}, and this method returns the dimensions that follow
+     * the variable ID. Returns null if there are no such dimensions.
      */
     @Nullable
     public ASTArrayDimensions getExtraDimensions() {
@@ -95,16 +94,16 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Return true if the declared variable is static. There may not be an explicit final modifier, e.g. for enum
-     * constants.
+     * Return true if the declared variable is static.
+     * There may not be an explicit final modifier, e.g. for enum constants.
      */
     public boolean isFinal() {
         return hasModifiers(JModifier.FINAL) || isLombokVal(getTypeNode());
     }
 
     /**
-     * Return true if the declared variable is static. There may not be an explicit static modifier, e.g. for enum
-     * constants.
+     * Return true if the declared variable is static.
+     * There may not be an explicit static modifier, e.g. for enum constants.
      *
      * @since 7.1.0
      */
@@ -114,7 +113,9 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
 
     @Override
     public Visibility getVisibility() {
-        return isPatternBinding() ? Visibility.V_LOCAL : getModifierOwnerParent().getVisibility();
+        return isPatternBinding()
+                ? Visibility.V_LOCAL
+                : getModifierOwnerParent().getVisibility();
     }
 
     private ModifierOwner getModifierOwnerParent() {
@@ -126,10 +127,11 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Return true if this variable has no name. The name is then equal to {@code "_"}. A variable declaration with this
-     * name does not actually declare a variable in the current scope, since Java 22. In Java 9 to 21, the identifier
-     * {@code _} is restricted and cannot be used to name a variable. Before Java 9, it is a regular identifier.
-     * 
+     * Return true if this variable has no name. The name is then equal to {@code "_"}.
+     * A variable declaration with this name does not actually declare a variable in
+     * the current scope, since Java 22. In Java 9 to 21, the identifier {@code _} is
+     * restricted and cannot be used to name a variable. Before Java 9, it is a regular
+     * identifier.
      * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables &amp; Patterns</a> (Java 22)
      */
     public boolean isUnnamed() {
@@ -153,37 +155,43 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Returns true if this nodes declares an exception parameter in a {@code catch} statement.
+     * Returns true if this nodes declares an exception parameter in
+     * a {@code catch} statement.
      */
     public boolean isExceptionBlockParameter() {
         return getParent() instanceof ASTCatchParameter;
     }
 
     /**
-     * Returns true if this node declares a formal parameter for a method declaration or a lambda expression.
+     * Returns true if this node declares a formal parameter for a method
+     * declaration or a lambda expression.
      */
     public boolean isFormalParameter() {
         return getParent() instanceof ASTFormalParameter || isLambdaParameter();
     }
 
     /**
-     * Returns true if this node declares a record component. The symbol born by this node is the symbol of the
-     * corresponding field (not the formal parameter of the record constructor).
+     * Returns true if this node declares a record component. The symbol
+     * born by this node is the symbol of the corresponding field (not the
+     * formal parameter of the record constructor).
      */
     public boolean isRecordComponent() {
         return getParent() instanceof ASTRecordComponent;
     }
 
     /**
-     * Returns true if this node declares a local variable from within a regular {@link ASTLocalVariableDeclaration}.
+     * Returns true if this node declares a local variable from within
+     * a regular {@link ASTLocalVariableDeclaration}.
      */
     public boolean isLocalVariable() {
-        return ancestors().get(1) instanceof ASTLocalVariableDeclaration && !isResourceDeclaration()
+        return ancestors().get(1) instanceof ASTLocalVariableDeclaration
+                && !isResourceDeclaration()
                 && !isForeachVariable();
     }
 
     /**
-     * Returns true if this node is a variable declared in a {@linkplain ASTForeachStatement foreach loop}.
+     * Returns true if this node is a variable declared in a
+     * {@linkplain ASTForeachStatement foreach loop}.
      */
     public boolean isForeachVariable() {
         // Foreach/LocalVarDecl/VarDeclarator/VarDeclId
@@ -191,7 +199,8 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Returns true if this node is a variable declared in the init clause of a {@linkplain ASTForStatement for loop}.
+     * Returns true if this node is a variable declared in the init clause
+     * of a {@linkplain ASTForStatement for loop}.
      */
     public boolean isForLoopVariable() {
         // For/ForInit/LocalVarDecl/VarDeclarator/VarDeclId
@@ -199,16 +208,19 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Returns true if this node declares a formal parameter for a lambda expression. In that case, the type of this
-     * parameter is not necessarily inferred, see {@link #isTypeInferred()}.
+     * Returns true if this node declares a formal parameter for
+     * a lambda expression. In that case, the type of this parameter
+     * is not necessarily inferred, see {@link #isTypeInferred()}.
      */
     public boolean isLambdaParameter() {
         return getParent() instanceof ASTLambdaParameter;
     }
 
     /**
-     * Returns true if this node declares a field from a regular {@link ASTFieldDeclaration}. This returns false for
-     * enum constants (use {@link JVariableSymbol#isField() getSymbol().isField()} if you want that).
+     * Returns true if this node declares a field from a regular
+     * {@link ASTFieldDeclaration}. This returns false for enum
+     * constants (use {@link JVariableSymbol#isField() getSymbol().isField()}
+     * if you want that).
      */
     public boolean isField() {
         return ancestors().get(1) instanceof ASTFieldDeclaration;
@@ -230,13 +242,15 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Returns true if the declared variable's type is inferred by the compiler. In Java 8, this can happen if it's in a
-     * formal parameter of a lambda with an inferred type (e.g. {@code (a, b) -> a + b}). Since Java 10, the type of
-     * local variables can be inferred too, e.g. {@code var i = 2;}.
+     * Returns true if the declared variable's type is inferred by
+     * the compiler. In Java 8, this can happen if it's in a formal
+     * parameter of a lambda with an inferred type (e.g. {@code (a, b) -> a + b}).
+     * Since Java 10, the type of local variables can be inferred
+     * too, e.g. {@code var i = 2;}.
      *
-     * <p>
-     * This method returns true for declarator IDs in those contexts, in which case {@link #getTypeNode()} returns
-     * {@code null}, since the type node is absent.
+     * <p>This method returns true for declarator IDs in those contexts,
+     * in which case {@link #getTypeNode()} returns {@code null},
+     * since the type node is absent.
      */
     public boolean isTypeInferred() {
         ASTType typeNode = getTypeNode();
@@ -257,7 +271,8 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
             return false;
         }
         @SuppressWarnings("PMD.CloseResource")
-        JavaLanguageProcessor javaLanguage = (JavaLanguageProcessor) typeNode.getAstInfo().getLanguageProcessor();
+        JavaLanguageProcessor javaLanguage =
+                (JavaLanguageProcessor) typeNode.getAstInfo().getLanguageProcessor();
         if (!javaLanguage.hasFirstClassLombokSupport()) {
             return false;
         }
@@ -269,7 +284,8 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Returns true if this is a binding variable in a {@linkplain ASTPattern pattern}.
+     * Returns true if this is a binding variable in a
+     * {@linkplain ASTPattern pattern}.
      */
     public boolean isPatternBinding() {
         return getParent() instanceof ASTPattern;
@@ -287,8 +303,9 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Returns the first child of the node returned by {@link #getTypeNode()}. The image of that node can usually be
-     * interpreted as the image of the type.
+     * Returns the first child of the node returned by {@link #getTypeNode()}.
+     * The image of that node can usually be interpreted as the image of the
+     * type.
      */
     // TODO unreliable, not typesafe and not useful, should be deprecated
     @Nullable
@@ -297,15 +314,15 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     }
 
     /**
-     * Determines the type node of this variable id, that is, the type node belonging to the variable declaration of
-     * this node (either a FormalParameter, LocalVariableDeclaration or FieldDeclaration).
+     * Determines the type node of this variable id, that is, the type node
+     * belonging to the variable declaration of this node (either a
+     * FormalParameter, LocalVariableDeclaration or FieldDeclaration).
      *
-     * <p>
-     * The type of the returned node is not necessarily the type of this node. See {@link #getTypeMirror()} for an
-     * explanation.
+     * <p>The type of the returned node is not necessarily the type of this
+     * node. See {@link #getTypeMirror()} for an explanation.
      *
-     * @return the type node, or {@code null} if there is no explicit type, e.g. if {@link #isTypeInferred()} returns
-     *         true.
+     * @return the type node, or {@code null} if there is no explicit type,
+     *     e.g. if {@link #isTypeInferred()} returns true.
      */
     public @Nullable ASTType getTypeNode() {
         ModifierOwner parent = getModifierOwnerParent();

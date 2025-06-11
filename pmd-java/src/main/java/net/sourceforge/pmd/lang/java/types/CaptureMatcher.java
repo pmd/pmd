@@ -6,17 +6,16 @@ package net.sourceforge.pmd.lang.java.types;
 
 import java.util.Objects;
 import java.util.function.Function;
-
+import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-
 /**
- * Test only. This binds to the first capture variable it tests equal with, and keeps the same binding forever.
+ * Test only. This binds to the first capture variable it tests equal
+ * with, and keeps the same binding forever.
  */
 final class CaptureMatcher implements JTypeVar {
 

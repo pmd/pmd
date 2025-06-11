@@ -12,63 +12,33 @@ public class Statics extends StaticsSuper {
     static final int PACKAGE_FIELD = 0;
     private static final int PRIVATE_FIELD = 0;
 
-    public void publicInstanceMethod() {
+    public void publicInstanceMethod() {}
 
-    }
+    private static void privateMethod() {}
 
-    private static void privateMethod() {
-    }
+    protected static void protectedMethod() {}
 
-    protected static void protectedMethod() {
+    static void packageMethod() {}
 
-    }
+    public static void publicMethod() {}
 
-    static void packageMethod() {
+    public static void publicMethod(int i) {}
 
-    }
+    public static void publicMethod2() {}
 
-    public static void publicMethod() {
+    static class PackageStatic {}
 
-    }
+    public static class PublicStatic {}
 
-    public static void publicMethod(int i) {
+    protected static class ProtectedStatic {}
 
-    }
+    private static class PrivateStatic {}
 
-    public static void publicMethod2() {
+    public static class PublicShadowed {}
 
-    }
+    public static class SomeClassA {}
 
-    static class PackageStatic {
+    class PackageInner {}
 
-    }
-
-    public static class PublicStatic {
-
-    }
-
-    protected static class ProtectedStatic {
-
-    }
-
-    private static class PrivateStatic {
-
-    }
-
-    public static class PublicShadowed {
-
-    }
-
-    public static class SomeClassA {
-
-    }
-
-    class PackageInner {
-
-    }
-
-    public class PublicInner {
-
-    }
-
+    public class PublicInner {}
 }

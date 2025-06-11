@@ -1,14 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 
 /**
- * The argument list of a {@linkplain ASTMethodCall method}, {@linkplain ASTConstructorCall constructor call}, or
- * {@linkplain ASTExplicitConstructorInvocation explicit constructor invocation}.
+ * The argument list of a {@linkplain ASTMethodCall method}, {@linkplain ASTConstructorCall constructor call},
+ * or {@linkplain ASTExplicitConstructorInvocation explicit constructor invocation}.
  *
  * <pre class="grammar">
  *

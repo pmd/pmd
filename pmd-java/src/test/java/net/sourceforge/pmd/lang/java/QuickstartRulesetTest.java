@@ -1,19 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
+import org.junit.jupiter.api.Test;
 
 class QuickstartRulesetTest {
     private static final String QUICKSTART_RULESET = "rulesets/java/quickstart.xml";

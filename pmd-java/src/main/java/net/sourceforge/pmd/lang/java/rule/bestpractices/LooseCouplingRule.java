@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
@@ -30,9 +28,11 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class LooseCouplingRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<List<String>> ALLOWED_TYPES =
-            PropertyFactory.stringListProperty("allowedTypes").desc("Exceptions to the rule")
-                    .defaultValues("java.util.Properties").build();
+    private static final PropertyDescriptor<List<String>> ALLOWED_TYPES = PropertyFactory.stringListProperty(
+                    "allowedTypes")
+            .desc("Exceptions to the rule")
+            .defaultValues("java.util.Properties")
+            .build();
 
     public LooseCouplingRule() {
         super(ASTClassType.class);
@@ -41,8 +41,11 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTClassType node, Object data) {
-        if (isConcreteCollectionType(node) && !isInOverriddenMethodSignature(node) && !isInAllowedSyntacticCtx(node)
-                && !isAllowedType(node) && !isTypeParameter(node)) {
+        if (isConcreteCollectionType(node)
+                && !isInOverriddenMethodSignature(node)
+                && !isInAllowedSyntacticCtx(node)
+                && !isAllowedType(node)
+                && !isTypeParameter(node)) {
             asCtx(data).addViolation(node, node.getSimpleName());
         }
         return null;
@@ -77,8 +80,9 @@ public class LooseCouplingRule extends AbstractJavaRulechainRule {
     }
 
     private static boolean isInOverriddenMethodSignature(JavaNode node) {
-        JavaNode ancestor =
-                node.ancestors().map(NodeStream.asInstanceOf(ASTMethodDeclaration.class, ASTBlock.class)).first();
+        JavaNode ancestor = node.ancestors()
+                .map(NodeStream.asInstanceOf(ASTMethodDeclaration.class, ASTBlock.class))
+                .first();
         // when it's in a signature and not the body
         return ancestor instanceof ASTMethodDeclaration && ((ASTMethodDeclaration) ancestor).isOverridden();
     }

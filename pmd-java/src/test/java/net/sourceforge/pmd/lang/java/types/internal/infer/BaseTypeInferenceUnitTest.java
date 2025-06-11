@@ -18,14 +18,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
-import org.hamcrest.SelfDescribing;
-
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -35,6 +27,12 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
+import org.hamcrest.SelfDescribing;
 
 /**
  *
@@ -66,8 +64,9 @@ class BaseTypeInferenceUnitTest {
     }
 
     /**
-     * Note: we systematically incorporate because the order in which constraints are added should not be overly
-     * specified by tests. Eg whether {@code a.isConvertibleTo(b)} creates {@code 'a <: 'b} or {@code 'b >: 'a} is
+     * Note: we systematically incorporate because the order in which constraints
+     * are added should not be overly specified by tests. Eg whether
+     * {@code a.isConvertibleTo(b)} creates {@code 'a <: 'b} or {@code 'b >: 'a} is
      * irrelevant, provided the incorporation phase properly propagates either.
      */
     protected void addSubtypeConstraint(InferenceContext ctx, JTypeMirror t, JTypeMirror s) {
@@ -105,9 +104,7 @@ class BaseTypeInferenceUnitTest {
     static Matcher<InferenceVar> hasBound(BoundKind kind, JTypeMirror t) {
         return new BaseMatcher<InferenceVar>() {
             @Override
-            public void describeTo(Description description) {
-
-            }
+            public void describeTo(Description description) {}
 
             @Override
             public boolean matches(Object actual) {
@@ -141,7 +138,6 @@ class BaseTypeInferenceUnitTest {
                 description.appendText(ivar.getName());
                 description.appendText(" ");
                 Bound.describeList(description, getBoundsObj(ivar));
-
             }
 
             @Override
@@ -164,7 +160,8 @@ class BaseTypeInferenceUnitTest {
                 // may not have top if it has a different default bound
                 boolean hasTop = actualBounds.get(BoundKind.UPPER).contains(top);
 
-                int numToTest = actualBounds.values().stream().mapToInt(Set::size).sum();
+                int numToTest =
+                        actualBounds.values().stream().mapToInt(Set::size).sum();
                 if (!expectTop && hasTop) {
                     numToTest--;
                 }
@@ -173,7 +170,8 @@ class BaseTypeInferenceUnitTest {
                     return false;
                 }
 
-                b: for (Bound bound : bounds) {
+                b:
+                for (Bound bound : bounds) {
                     for (JTypeMirror t : actualBounds.getOrDefault(bound.kind, Collections.emptySet())) {
                         if (t.equals(bound.t)) {
                             numToTest--;
@@ -193,8 +191,7 @@ class BaseTypeInferenceUnitTest {
         for (BoundKind kind : BoundKind.values()) {
             Set<JTypeMirror> bounds = actual.getBounds(kind);
             actualBounds.put(kind, bounds);
-            if (!bounds.isEmpty()) {
-            }
+            if (!bounds.isEmpty()) {}
         }
 
         return actualBounds;
@@ -247,5 +244,4 @@ class BaseTypeInferenceUnitTest {
             return "_" + kind.getSym() + t;
         }
     }
-
 }

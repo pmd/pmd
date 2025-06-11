@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.testdata;
 
 import java.io.Serializable;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.B;
 
@@ -41,15 +40,11 @@ public abstract class ClassWithTypeAnnotationsOnMethods {
 
     public static class CtorOwner {
 
-        CtorOwner(@A @B int i) {
-        }
+        CtorOwner(@A @B int i) {}
 
         @A
-        CtorOwner() {
-        }
+        CtorOwner() {}
 
-        CtorOwner(String i, int x) throws @A Exception {
-        }
+        CtorOwner(String i, int x) throws @A Exception {}
     }
-
 }

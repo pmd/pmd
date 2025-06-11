@@ -10,25 +10,26 @@ import java.lang.annotation.Target;
 /**
  *
  */
-@Target({ ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD})
 public @interface AnnotWithDefaults {
 
     String valueNoDefault();
 
     String valueWithDefault() default "ddd";
 
-    String[] stringArrayDefault() default { "ddd" };
+    String[] stringArrayDefault() default {"ddd"};
 
     String[] stringArrayEmptyDefault() default {};
 
-    MyEnum[] enumArr() default { MyEnum.AA, MyEnum.BB };
+    MyEnum[] enumArr() default {MyEnum.AA, MyEnum.BB};
 
     MyEnum enumSimple() default MyEnum.AA;
 
     Class<?> classAttr() default String.class;
 
     enum MyEnum {
-        AA, BB, CC
+        AA,
+        BB,
+        CC
     }
-
 }

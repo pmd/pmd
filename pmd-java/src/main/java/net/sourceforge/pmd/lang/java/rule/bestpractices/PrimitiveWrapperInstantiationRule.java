@@ -32,13 +32,15 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
             return data;
         }
 
-        if (TypeTestUtil.isA(Double.class, type) || TypeTestUtil.isA(Float.class, type)
-                || TypeTestUtil.isA(Long.class, type) || TypeTestUtil.isA(Integer.class, type)
-                || TypeTestUtil.isA(Short.class, type) || TypeTestUtil.isA(Byte.class, type)
+        if (TypeTestUtil.isA(Double.class, type)
+                || TypeTestUtil.isA(Float.class, type)
+                || TypeTestUtil.isA(Long.class, type)
+                || TypeTestUtil.isA(Integer.class, type)
+                || TypeTestUtil.isA(Short.class, type)
+                || TypeTestUtil.isA(Byte.class, type)
                 || TypeTestUtil.isA(Character.class, type)) {
             asCtx(data).addViolation(node, type.getSimpleName());
-        }
-        else if (TypeTestUtil.isA(Boolean.class, type)) {
+        } else if (TypeTestUtil.isA(Boolean.class, type)) {
             checkArguments(node.getArguments(), node, data);
         }
 
@@ -68,23 +70,18 @@ public class PrimitiveWrapperInstantiationRule extends AbstractJavaRulechainRule
         if (stringLiteral != null) {
             if ("\"true\"".equals(stringLiteral.getImage())) {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(\"true\")`, prefer `Boolean.TRUE`");
-            }
-            else if ("\"false\"".equals(stringLiteral.getImage())) {
+            } else if ("\"false\"".equals(stringLiteral.getImage())) {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(\"false\")`, prefer `Boolean.FALSE`");
-            }
-            else {
+            } else {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(\"...\")`, prefer `Boolean.valueOf`");
             }
-        }
-        else if (boolLiteral != null) {
+        } else if (boolLiteral != null) {
             if (boolLiteral.isTrue()) {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(true)`, prefer `Boolean.TRUE`");
-            }
-            else {
+            } else {
                 asCtx(data).addViolationWithMessage(node, messagePart + "(false)`, prefer `Boolean.FALSE`");
             }
-        }
-        else if (isNewBoolean) {
+        } else if (isNewBoolean) {
             // any argument with "new Boolean", might be a variable access
             asCtx(data).addViolationWithMessage(node, messagePart + "(...)`, prefer `Boolean.valueOf`");
         }

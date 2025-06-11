@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
@@ -26,45 +23,75 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
 
     /*
-     * Detects unused assignments. This performs a reaching definition analysis. This makes the assumption that there is
-     * no dead code.
-     * 
-     * Since we have the reaching definitions at each variable usage, we could also use that to detect other kinds of
-     * bug, eg conditions that are always true, or dereferences that will always NPE. In the general case though, this
-     * is complicated and better left to a DFA library, eg google Z3.
-     * 
-     * This analysis may be used as-is to detect switch labels that fall-through, which could be useful to improve
-     * accuracy of other rules.
-     * 
-     * TODO labels on arbitrary statements (currently only loops) explicit ctor call (hard to impossible without type
-     * res, or at least proper graph algorithms like toposort) -> this is pretty invisible as it causes false negatives,
-     * not FPs test ternary expr more precise exception handling: since we have access to the overload for method &
-     * ctors, we can know where its thrown exceptions may end up in enclosing catches. extract the reaching definition
-     * analysis, to exploit control flow information in rules + symbol table. The following are needed to implement
-     * scoping of pattern variables, and are already computed by this analysis: whether a switch may fall through
-     * whether a statement always completes abruptly whether a statement never completes abruptly because of break
-     * 
-     * 
-     * DONE conditionals loops switch loop labels try/catch/finally lambdas constructors + initializers anon class test
-     * this.field in ctors foreach var should be reassigned from one iter to another test local class/anonymous class
-     * shortcut conditionals have their own control-flow parenthesized expressions conditional exprs in loops ignore
-     * variables that start with 'ignore' ignore params of native methods ignore params of abstract methods
-     * 
-     */
+       Detects unused assignments. This performs a reaching definition
+       analysis. This makes the assumption that there is no dead code.
 
-    private static final PropertyDescriptor<Boolean> CHECK_PREFIX_INCREMENT =
-            PropertyFactory.booleanProperty("checkUnusedPrefixIncrement")
-                    .desc("Report expressions like ++i that may be replaced with (i + 1)").defaultValue(false).build();
+       Since we have the reaching definitions at each variable usage, we
+       could also use that to detect other kinds of bug, eg conditions
+       that are always true, or dereferences that will always NPE. In
+       the general case though, this is complicated and better left to
+       a DFA library, eg google Z3.
 
-    private static final PropertyDescriptor<Boolean> REPORT_UNUSED_VARS =
-            PropertyFactory.booleanProperty("reportUnusedVariables")
-                    .desc("Report variables that are only initialized, and never read at all. "
-                            + "The rule UnusedVariable already cares for that, but you can enable it if needed")
-                    .defaultValue(false).build();
+       This analysis may be used as-is to detect switch labels that
+       fall-through, which could be useful to improve accuracy of other
+       rules.
+
+       TODO
+          * labels on arbitrary statements (currently only loops)
+          * explicit ctor call (hard to impossible without type res,
+            or at least proper graph algorithms like toposort)
+               -> this is pretty invisible as it causes false negatives, not FPs
+          * test ternary expr
+          * more precise exception handling: since we have access to
+            the overload for method & ctors, we can know where its thrown
+            exceptions may end up in enclosing catches.
+          * extract the reaching definition analysis, to exploit control
+          flow information in rules + symbol table. The following are needed
+          to implement scoping of pattern variables, and are already computed
+          by this analysis:
+            * whether a switch may fall through
+            * whether a statement always completes abruptly
+            * whether a statement never completes abruptly because of break
+
+
+       DONE
+          * conditionals
+          * loops
+          * switch
+          * loop labels
+          * try/catch/finally
+          * lambdas
+          * constructors + initializers
+          * anon class
+          * test this.field in ctors
+          * foreach var should be reassigned from one iter to another
+          * test local class/anonymous class
+          * shortcut conditionals have their own control-flow
+          * parenthesized expressions
+          * conditional exprs in loops
+          * ignore variables that start with 'ignore'
+          * ignore params of native methods
+          * ignore params of abstract methods
+
+    */
+
+    private static final PropertyDescriptor<Boolean> CHECK_PREFIX_INCREMENT = PropertyFactory.booleanProperty(
+                    "checkUnusedPrefixIncrement")
+            .desc("Report expressions like ++i that may be replaced with (i + 1)")
+            .defaultValue(false)
+            .build();
+
+    private static final PropertyDescriptor<Boolean> REPORT_UNUSED_VARS = PropertyFactory.booleanProperty(
+                    "reportUnusedVariables")
+            .desc("Report variables that are only initialized, and never read at all. "
+                    + "The rule UnusedVariable already cares for that, but you can enable it if needed")
+            .defaultValue(false)
+            .build();
 
     public UnusedAssignmentRule() {
         super(ASTCompilationUnit.class);
@@ -94,36 +121,31 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
                 if (entry.isField()) {
                     // assignments to fields don't really go out of scope
                     continue;
-                }
-                else if (suppressUnusedVariableRuleOverlap(entry)) {
+                } else if (suppressUnusedVariableRuleOverlap(entry)) {
                     // see REPORT_UNUSED_VARS property
                     continue;
                 }
                 // This is a "DU" anomaly, the others are "DD"
                 reason = null;
-            }
-            else if (killers.size() == 1) {
+            } else if (killers.size() == 1) {
                 AssignmentEntry k = killers.iterator().next();
                 if (k.getLocation().equals(entry.getLocation())) {
                     // assignment reassigns itself, only possible in a loop
                     if (suppressUnusedVariableRuleOverlap(entry)) {
                         continue;
-                    }
-                    else if (entry.isForeachVar()) {
+                    } else if (entry.isForeachVar()) {
                         reason = null;
-                    }
-                    else {
+                    } else {
                         reason = "reassigned every iteration";
                     }
-                }
-                else {
+                } else {
                     reason = "overwritten on line " + k.getLine();
                 }
-            }
-            else {
+            } else {
                 reason = joinLines("overwritten on lines ", killers);
             }
-            if (reason == null && JavaRuleUtil.isExplicitUnusedVarName(entry.getVarId().getName())) {
+            if (reason == null
+                    && JavaRuleUtil.isExplicitUnusedVarName(entry.getVarId().getName())) {
                 // Then the variable is never used (cf UnusedVariable)
                 // We ignore those that start with "ignored", as that is standard
                 // practice for exceptions, and may be useful for resources/foreach vars
@@ -140,17 +162,13 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
     private static String getKind(ASTVariableId id) {
         if (id.isField()) {
             return "field";
-        }
-        else if (id.isResourceDeclaration()) {
+        } else if (id.isResourceDeclaration()) {
             return "resource";
-        }
-        else if (id.isExceptionBlockParameter()) {
+        } else if (id.isExceptionBlockParameter()) {
             return "exception parameter";
-        }
-        else if (id.ancestors().get(2) instanceof ASTForeachStatement) {
+        } else if (id.ancestors().get(2) instanceof ASTForeachStatement) {
             return "loop variable";
-        }
-        else if (id.isFormalParameter()) {
+        } else if (id.isFormalParameter()) {
             return "parameter";
         }
         return "variable";
@@ -161,7 +179,9 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
             // the variable value is used if it was found somewhere else
             // than in statement position
             UnaryOp op = ((ASTUnaryExpression) assignment).getOperator();
-            return !getProperty(CHECK_PREFIX_INCREMENT) && !op.isPure() && op.isPrefix()
+            return !getProperty(CHECK_PREFIX_INCREMENT)
+                    && !op.isPure()
+                    && op.isPrefix()
                     && !(assignment.getParent() instanceof ASTExpressionStatement);
         }
         return false;
@@ -173,18 +193,15 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
         StringBuilder result = new StringBuilder(64);
         if (assignment.isInitializer()) {
             result.append(isField ? "the field initializer for" : "the initializer for variable");
-        }
-        else if (assignment.isBlankDeclaration()) {
+        } else if (assignment.isBlankDeclaration()) {
             if (reason != null) {
                 result.append("the initial value of ");
             }
             result.append(getKind(assignment.getVarId()));
-        }
-        else { // regular assignment
+        } else { // regular assignment
             if (assignment.isUnaryReassign()) {
                 result.append("the updated value of ");
-            }
-            else {
+            } else {
                 result.append("the value assigned to ");
             }
             result.append(isField ? "field" : "variable");
@@ -211,5 +228,4 @@ public class UnusedAssignmentRule extends AbstractJavaRulechainRule {
 
         return sb.toString();
     }
-
 }

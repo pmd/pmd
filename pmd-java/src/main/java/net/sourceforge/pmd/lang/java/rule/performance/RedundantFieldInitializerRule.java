@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -18,7 +16,8 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 /**
- * Detects redundant field initializers, i.e. the field initializer expressions the JVM would assign by default.
+ * Detects redundant field initializers, i.e. the field initializer expressions
+ * the JVM would assign by default.
  *
  * @author lucian.ciufudean@gmail.com
  * @since Apr 10, 2009

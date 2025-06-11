@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import static net.sourceforge.pmd.lang.java.ast.BinaryOp.ADD;
@@ -32,10 +31,18 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see UnaryOp
  */
 public enum AssignmentOp implements OperatorLike {
-    ASSIGN("=", null), AND_ASSIGN("&=", AND), OR_ASSIGN("|=", OR), XOR_ASSIGN("^=", XOR), ADD_ASSIGN("+=",
-            ADD), SUB_ASSIGN("-=", SUB), MUL_ASSIGN("*=", MUL), DIV_ASSIGN("/=", DIV), MOD_ASSIGN("%=",
-                    MOD), LEFT_SHIFT_ASSIGN("<<=", LEFT_SHIFT), RIGHT_SHIFT_ASSIGN(">>=",
-                            RIGHT_SHIFT), UNSIGNED_RIGHT_SHIFT_ASSIGN(">>>=", UNSIGNED_RIGHT_SHIFT);
+    ASSIGN("=", null),
+    AND_ASSIGN("&=", AND),
+    OR_ASSIGN("|=", OR),
+    XOR_ASSIGN("^=", XOR),
+    ADD_ASSIGN("+=", ADD),
+    SUB_ASSIGN("-=", SUB),
+    MUL_ASSIGN("*=", MUL),
+    DIV_ASSIGN("/=", DIV),
+    MOD_ASSIGN("%=", MOD),
+    LEFT_SHIFT_ASSIGN("<<=", LEFT_SHIFT),
+    RIGHT_SHIFT_ASSIGN(">>=", RIGHT_SHIFT),
+    UNSIGNED_RIGHT_SHIFT_ASSIGN(">>>=", UNSIGNED_RIGHT_SHIFT);
 
     private final String code;
     private final BinaryOp binaryOp;
@@ -56,18 +63,20 @@ public enum AssignmentOp implements OperatorLike {
     }
 
     /**
-     * Returns true if this operator combines a binary operator with the assignment.
+     * Returns true if this operator combines
+     * a binary operator with the assignment.
      */
     public boolean isCompound() {
         return this != ASSIGN;
     }
 
     /**
-     * Returns the binary operator this corresponds to if this is a compound operator, otherwise returns null.
+     * Returns the binary operator this corresponds to
+     * if this is a compound operator, otherwise returns
+     * null.
      */
     @Nullable
     public BinaryOp getBinaryOp() {
         return binaryOp;
     }
-
 }

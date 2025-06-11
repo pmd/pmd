@@ -15,15 +15,14 @@ import static net.sourceforge.pmd.util.CollectionUtil.mapOf;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsInside.A;
 import net.sourceforge.pmd.lang.java.types.JArrayType;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JWildcardType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 /**
  *
@@ -56,10 +55,11 @@ class TypeAnnotReflectionTest {
     void testArrayTypeAnnotsOnFields(SymImplementation impl) {
 
         /*
-         * 
-         * @A int[] annotOnArrayComponent; int @A [] annotOnArrayDimension; // this annotates the int[] int[] @A @B []
-         * twoAnnotsOnOuterArrayDim; int @A [][] annotOnInnerArrayDim; int @A(1) [] @A(2) [] annotsOnBothArrayDims;
-         * 
+         *
+         * @A int[] annotOnArrayComponent; int @A [] annotOnArrayDimension; // this
+         * annotates the int[] int[] @A @B [] twoAnnotsOnOuterArrayDim; int @A [][]
+         * annotOnInnerArrayDim; int @A(1) [] @A(2) [] annotsOnBothArrayDims;
+         *
          */
 
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
@@ -104,14 +104,14 @@ class TypeAnnotReflectionTest {
 
         /*
          * Outer. @A Inner1 inner1WithAnnot;
-         * 
+         *
          * @A Outer. @B Inner1 inner1WithAnnotOnOuterToo;
-         * 
+         *
          * @A Outer. @B Inner1.Inner2 inner2WithAnnotOnBothOuter;
-         * 
-         * @A Outer. @A @B Inner1. @B Inner2 inner2WithAnnotOnAll; Outer. @A @B Inner1. @A Inner2
-         * inner2WithAnnotOnAllExceptOuter;
-         * 
+         *
+         * @A Outer. @A @B Inner1. @B Inner2 inner2WithAnnotOnAll; Outer. @A @B
+         * Inner1. @A Inner2 inner2WithAnnotOnAllExceptOuter;
+         *
          */
 
         {
@@ -152,14 +152,15 @@ class TypeAnnotReflectionTest {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         /*
-         * 
-         * OuterG<A, T>.@A Inner5 annotOnInnerWithOuterGeneric; OuterG<@A T, T>.@A Inner5 annotOnOuterGenericArg;
-         * OuterG<A, @A T>.@A Inner5 annotOnOuterGenericArg2;
-         * 
+         *
+         * OuterG<A, T>.@A Inner5 annotOnInnerWithOuterGeneric; OuterG<@A T, T>.@A
+         * Inner5 annotOnOuterGenericArg; OuterG<A, @A T>.@A Inner5
+         * annotOnOuterGenericArg2;
+         *
          * @A OuterG<A, @A T>.Inner5 annotOnOuterGenericArgAndOuter;
-         * 
+         *
          * @A OuterG<A, @A T>.@A InnerG<@A T> annotOnOuterGenericArgAndInner;
-         * 
+         *
          */
 
         {
@@ -205,9 +206,9 @@ class TypeAnnotReflectionTest {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         /*
-         * 
+         *
          * @A OuterG<A, @A T>.@A InnerG<@A T> annotOnOuterGenericArgAndInner;
-         * 
+         *
          */
 
         {
@@ -227,11 +228,11 @@ class TypeAnnotReflectionTest {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsInside.class);
 
         /*
-         * 
+         *
          * OuterG<@A @B ? extends @B String, ? super @A @B T> severalWildcards;
-         * 
+         *
          * @A OuterG<@A @B ? extends @B String, @A List<@A @B Object>> complicatedField;
-         * 
+         *
          */
 
         {
@@ -260,5 +261,4 @@ class TypeAnnotReflectionTest {
             assertHasTypeAnnots(arg1.getTypeArgs().get(0), ANNOTS_A_B);
         }
     }
-
 }

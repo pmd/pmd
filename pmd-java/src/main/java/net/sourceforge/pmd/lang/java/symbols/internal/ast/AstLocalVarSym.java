@@ -24,8 +24,7 @@ public final class AstLocalVarSym extends AbstractAstVariableSym implements JLoc
     public boolean equals(Object o) {
         if (this == o) {
             return true;
-        }
-        else if (!(o instanceof AstLocalVarSym)) {
+        } else if (!(o instanceof AstLocalVarSym)) {
             return false;
         }
         return node.equals(((AstLocalVarSym) o).node);

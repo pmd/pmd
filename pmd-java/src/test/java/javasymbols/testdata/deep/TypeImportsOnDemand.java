@@ -12,5 +12,4 @@ import javasymbols.testdata.*;
 
 public class TypeImportsOnDemand {
     SomeClassA a;
-
 }

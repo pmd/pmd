@@ -13,15 +13,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Function;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A function from {@link SubstVar}s to types. Applying it to a type replaces the occurrences of some variables with
- * other types. This can be done with {@link TypeOps#subst(JTypeMirror, Function)}.
+ * A function from {@link SubstVar}s to types. Applying it to a type
+ * replaces the occurrences of some variables with other types. This
+ * can be done with {@link TypeOps#subst(JTypeMirror, Function)}.
  */
 public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull JTypeMirror> {
 
@@ -43,16 +42,15 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
     }
 
     /**
-     * Returns a composed substitution that first applies this substitution to its input, and then applies the
-     * {@code after} substitution to the result.
+     * Returns a composed substitution that first applies this substitution
+     * to its input, and then applies the {@code after} substitution to the
+     * result.
      *
-     * <p>
-     * Given two substitutions S1, S2 and a type t: <br>
+     * <p>Given two substitutions S1, S2 and a type t:
+     * <br>
      * {@code subst(subst(t, S1), S2) == subst(t, S1.andThen(S2)) }
      *
-     * <p>
-     * For example:
-     * 
+     * <p>For example:
      * <pre>{@code
      *  S1 = [ T -> A<U> ]
      *  S2 = [ U -> B<V> ]
@@ -63,13 +61,11 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
      *  S1.andThen(S2) = [ T -> A<B<V>>, U -> B<V> ]
      * }</pre>
      *
-     * @param other
-     *            the function to apply after this function is applied
+     * @param other the function to apply after this function is applied
      *
      * @return a composed substitution
      *
-     * @throws NullPointerException
-     *             if other is null
+     * @throws NullPointerException if other is null
      */
     public Substitution andThen(Substitution other) {
         AssertionUtil.requireParamNotNull("subst", other);
@@ -88,23 +84,22 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
     }
 
     /**
-     * Maps the given variable to the given type. This does not apply this substitution to the type mirror.
+     * Maps the given variable to the given type. This does not apply
+     * this substitution to the type mirror.
      */
     public Substitution plus(SubstVar from, JTypeMirror to) {
         return new Substitution(CollectionUtil.plus(getMap(), from, to));
     }
 
     /**
-     * Builds a substitution where the mapping from vars to types is defined by the correspondence between the two
-     * lists.
+     * Builds a substitution where the mapping from vars to types is
+     * defined by the correspondence between the two lists.
      * <p>
-     * If there are no vars to be mapped, then no substitution is returned even though some types might have been
-     * supplied.
+     * If there are no vars to be mapped, then no substitution is returned
+     * even though some types might have been supplied.
      *
-     * @throws IllegalArgumentException
-     *             If the two lists are of different lengths
-     * @throws NullPointerException
-     *             If any of the two lists is null
+     * @throws IllegalArgumentException If the two lists are of different lengths
+     * @throws NullPointerException     If any of the two lists is null
      */
     public static Substitution mapping(List<? extends SubstVar> from, List<? extends JTypeMirror> to) {
         AssertionUtil.requireParamNotNull("from", from);
@@ -118,10 +113,10 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
     }
 
     /**
-     * Returns a substitution that replaces the given type variables with their erasure.
+     * Returns a substitution that replaces the given type variables
+     * with their erasure.
      *
-     * @param tparams
-     *            Type variables to erase
+     * @param tparams Type variables to erase
      */
     public static Substitution erasing(List<? extends JTypeVar> tparams) {
         if (tparams.isEmpty()) {
@@ -129,5 +124,4 @@ public final class Substitution extends MapFunction<@NonNull SubstVar, @NonNull 
         }
         return new Substitution(associateWith(tparams, JTypeMirror::getErasure));
     }
-
 }

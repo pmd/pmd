@@ -6,11 +6,6 @@ package net.sourceforge.pmd.lang.java.types;
 
 import java.lang.reflect.Modifier;
 import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -19,6 +14,9 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Public utilities to test the type of nodes.
@@ -32,8 +30,9 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Checks whether the static type of the node is a subtype of the class identified by the given name. This ignores
-     * type arguments, if the type of the node is parameterized. Examples:
+     * Checks whether the static type of the node is a subtype of the
+     * class identified by the given name. This ignores type arguments,
+     * if the type of the node is parameterized. Examples:
      *
      * <pre>{@code
      * isA(List.class, <new ArrayList<String>()>)      = true
@@ -44,23 +43,18 @@ public final class TypeTestUtil {
      * isA(null, _) = NullPointerException
      * }</pre>
      *
-     * <p>
-     * If either type is unresolved, the types are tested for equality, thus giving more useful results than
-     * {@link JTypeMirror#isSubtypeOf(JTypeMirror)}.
+     * <p>If either type is unresolved, the types are tested for equality,
+     * thus giving more useful results than {@link JTypeMirror#isSubtypeOf(JTypeMirror)}.
      *
-     * <p>
-     * Note that primitives are NOT considered subtypes of one another by this method, even though
-     * {@link JTypeMirror#isSubtypeOf(JTypeMirror)} does.
+     * <p>Note that primitives are NOT considered subtypes of one another
+     * by this method, even though {@link JTypeMirror#isSubtypeOf(JTypeMirror)} does.
      *
-     * @param clazz
-     *            a class (non-null)
-     * @param node
-     *            the type node to check
+     * @param clazz a class (non-null)
+     * @param node  the type node to check
      *
      * @return true if the type test matches
      *
-     * @throws NullPointerException
-     *             if the class parameter is null
+     * @throws NullPointerException if the class parameter is null
      */
     public static boolean isA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
@@ -68,18 +62,16 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Checks whether the given type of the node is a subtype of the first argument. See {@link #isA(Class, TypeNode)}
-     * for examples and more info.
+     * Checks whether the given type of the node is a subtype of the
+     * first argument. See {@link #isA(Class, TypeNode)} for examples
+     * and more info.
      *
-     * @param clazz
-     *            a class or array type (without whitespace)
-     * @param type
-     *            the type node to check
+     * @param clazz a class or array type (without whitespace)
+     * @param type  the type node to check
      *
      * @return true if the second argument is not null and the type test matches
      *
-     * @throws NullPointerException
-     *             if the class parameter is null
+     * @throws NullPointerException     if the class parameter is null
      * @see #isA(Class, TypeNode)
      */
     public static boolean isA(@NonNull Class<?> clazz, @Nullable JTypeMirror type) {
@@ -100,20 +92,18 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Checks whether the static type of the node is a subtype of the class identified by the given name. See
-     * {@link #isA(Class, TypeNode)} for examples and more info.
+     * Checks whether the static type of the node is a subtype of the
+     * class identified by the given name. See {@link #isA(Class, TypeNode)}
+     * for examples and more info.
      *
-     * @param canonicalName
-     *            the canonical name of a class or array type (without whitespace)
-     * @param node
-     *            the type node to check
+     * @param canonicalName the canonical name of a class or array type (without whitespace)
+     * @param node          the type node to check
      *
      * @return true if the type test matches
      *
-     * @throws NullPointerException
-     *             if the class name parameter is null
-     * @throws IllegalArgumentException
-     *             if the class name parameter is not a valid java binary name, eg it has type arguments
+     * @throws NullPointerException     if the class name parameter is null
+     * @throws IllegalArgumentException if the class name parameter is not a valid java binary name,
+     *                                  eg it has type arguments
      * @see #isA(Class, TypeNode)
      */
     public static boolean isA(final @NonNull String canonicalName, final @Nullable TypeNode node) {
@@ -123,7 +113,8 @@ public final class TypeTestUtil {
             return false;
         }
 
-        UnresolvedClassStore unresolvedStore = InternalApiBridge.getProcessor(node).getUnresolvedStore();
+        UnresolvedClassStore unresolvedStore =
+                InternalApiBridge.getProcessor(node).getUnresolvedStore();
         return isA(canonicalName, node.getTypeMirror(), unresolvedStore);
     }
 
@@ -137,34 +128,28 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Checks whether the second type is a subtype of the first. This removes some behavior of isSubtypeOf that we don't
-     * want (eg, that unresolved types are subtypes of everything).
+     * Checks whether the second type is a subtype of the first. This
+     * removes some behavior of isSubtypeOf that we don't want (eg, that
+     * unresolved types are subtypes of everything).
      *
-     * @param t1
-     *            A supertype
-     * @param t2
-     *            A type
+     * @param t1 A supertype
+     * @param t2 A type
      *
      * @return Whether t2 is a subtype of t1
      */
     public static boolean isA(@Nullable JTypeMirror t1, @NonNull JTypeMirror t2) {
         if (t1 == null) {
             return false;
-        }
-        else if (t2.isPrimitive() || t1.isPrimitive()) {
+        } else if (t2.isPrimitive() || t1.isPrimitive()) {
             return t2.equals(t1); // isSubtypeOf considers primitive widening like subtyping
-        }
-        else if (TypeOps.isUnresolved(t2)) {
+        } else if (TypeOps.isUnresolved(t2)) {
             // we can't get any useful info from this, isSubtypeOf would return true
             return false;
-        }
-        else if (t1.isClassOrInterface() && ((JClassType) t1).getSymbol().isAnonymousClass()) {
+        } else if (t1.isClassOrInterface() && ((JClassType) t1).getSymbol().isAnonymousClass()) {
             return false; // conventionally
-        }
-        else if (t2 instanceof JTypeVar) {
+        } else if (t2 instanceof JTypeVar) {
             return t1.isTop() || isA(t1, ((JTypeVar) t2).getUpperBound());
-        }
-        else if (t2 instanceof JIntersectionType) {
+        } else if (t2 instanceof JIntersectionType) {
             for (JTypeMirror subt : ((JIntersectionType) t2).getComponents()) {
                 if (isA(t1, subt)) {
                     return true;
@@ -176,7 +161,9 @@ public final class TypeTestUtil {
         return t2.isSubtypeOf(t1);
     }
 
-    private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType,
+    private static boolean isA(
+            @NonNull String canonicalName,
+            @NonNull JTypeMirror thisType,
             @Nullable UnresolvedClassStore unresolvedStore) {
         OptionalBool exactMatch = isExactlyAOrAnon(canonicalName, thisType);
         if (exactMatch != OptionalBool.NO) {
@@ -192,15 +179,15 @@ public final class TypeTestUtil {
         }
 
         TypeSystem ts = thisType.getTypeSystem();
-        @Nullable
-        JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
+        @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
 
         return isA(otherType, thisType);
     }
 
     /**
-     * Checks whether the static type of the node is exactly the type of the class. This ignores strict supertypes, and
-     * type arguments, if the type of the node is parameterized.
+     * Checks whether the static type of the node is exactly the type
+     * of the class. This ignores strict supertypes, and type arguments,
+     * if the type of the node is parameterized.
      *
      * <pre>{@code
      * isExactlyA(List.class, <new ArrayList<String>()>)      = false
@@ -211,15 +198,12 @@ public final class TypeTestUtil {
      * isExactlyA(null, _) = NullPointerException
      * }</pre>
      *
-     * @param clazz
-     *            a class (non-null)
-     * @param node
-     *            the type node to check
+     * @param clazz a class (non-null)
+     * @param node  the type node to check
      *
      * @return true if the node is non-null and has the given type
      *
-     * @throws NullPointerException
-     *             if the class parameter is null
+     * @throws NullPointerException if the class parameter is null
      */
     public static boolean isExactlyA(final @NonNull Class<?> clazz, final @Nullable TypeNode node) {
         AssertionUtil.requireParamNotNull("class", clazz);
@@ -250,35 +234,31 @@ public final class TypeTestUtil {
     }
 
     /**
-     * Returns true if the signature is that of a method declared in the given class.
+     * Returns true if the signature is that of a method declared in the
+     * given class.
      *
-     * @param klass
-     *            Class
-     * @param sig
-     *            Method signature to test
+     * @param klass Class
+     * @param sig   Method signature to test
      *
-     * @throws NullPointerException
-     *             If any argument is null
+     * @throws NullPointerException If any argument is null
      */
     public static boolean isDeclaredInClass(@NonNull Class<?> klass, @NonNull JMethodSig sig) {
         return isExactlyA(klass, sig.getDeclaringType().getSymbol());
     }
 
     /**
-     * Checks whether the static type of the node is exactly the type given by the name. See
-     * {@link #isExactlyA(Class, TypeNode)} for examples and more info.
+     * Checks whether the static type of the node is exactly the type
+     * given by the name. See {@link #isExactlyA(Class, TypeNode)} for
+     * examples and more info.
      *
-     * @param canonicalName
-     *            a canonical name of a class or array type
-     * @param node
-     *            the type node to check
+     * @param canonicalName a canonical name of a class or array type
+     * @param node          the type node to check
      *
      * @return true if the node is non-null and has the given type
      *
-     * @throws NullPointerException
-     *             if the class name parameter is null
-     * @throws IllegalArgumentException
-     *             if the class name parameter is not a valid java binary name, eg it has type arguments
+     * @throws NullPointerException     if the class name parameter is null
+     * @throws IllegalArgumentException if the class name parameter is not a valid java binary name,
+     *                                  eg it has type arguments
      * @see #isExactlyA(Class, TypeNode)
      */
     public static boolean isExactlyA(@NonNull String canonicalName, final @Nullable TypeNode node) {

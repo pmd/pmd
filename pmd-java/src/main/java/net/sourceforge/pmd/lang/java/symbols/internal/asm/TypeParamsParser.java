@@ -8,14 +8,11 @@ import static net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeSigParser.i
 
 import java.util.ArrayList;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 
 final class TypeParamsParser {
 
-    private TypeParamsParser() {
-
-    }
+    private TypeParamsParser() {}
 
     static boolean hasTypeParams(String descriptor) {
         return descriptor.charAt(0) == '<';
@@ -34,8 +31,7 @@ final class TypeParamsParser {
             cur = scanTypeBound(cur, b);
 
             b.addTypeParam(tvarName, b.bufferToString(boundStart, cur));
-        }
-        while (b.charAt(cur) != '>');
+        } while (b.charAt(cur) != '>');
 
         cur = b.consumeChar(cur, '>');
 
@@ -43,7 +39,8 @@ final class TypeParamsParser {
     }
 
     /**
-     * This just skips the bound entirely, they will be parsed lazily later (because they may be self-referential).
+     * This just skips the bound entirely, they will be parsed lazily
+     * later (because they may be self-referential).
      */
     private static int scanTypeBound(final int start, SignatureScanner b) {
         int cur = b.consumeChar(start, ':', "class bound");

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -37,7 +36,8 @@ public final class ASTModuleProvidesDirective extends ASTModuleDirective {
     }
 
     /**
-     * Returns the nodes representing the service providers, that is, the service implementations.
+     * Returns the nodes representing the service providers, that is,
+     * the service implementations.
      */
     public NodeStream<ASTClassType> getServiceProviders() {
         return children(ASTClassType.class).drop(1);

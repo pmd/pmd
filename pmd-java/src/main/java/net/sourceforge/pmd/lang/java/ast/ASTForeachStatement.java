@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -15,9 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
  *
  * </pre>
  *
- * <p>
- * Note: Using a {@linkplain ASTRecordPattern RecordPattern} in an enhanced for statement is a Java 20 Preview feature
- * </p>
+ * <p>Note: Using a {@linkplain ASTRecordPattern RecordPattern} in an enhanced for statement is a Java 20 Preview feature</p>
  *
  * @see <a href="https://openjdk.org/jeps/432">JEP 432: Record Patterns (Second Preview)</a>
  */
@@ -41,11 +38,11 @@ public final class ASTForeachStatement extends AbstractStatement
     }
 
     /**
-     * Returns the expression that evaluates to the {@link Iterable} being looped upon.
+     * Returns the expression that evaluates to the {@link Iterable}
+     * being looped upon.
      */
     @NonNull
     public ASTExpression getIterableExpr() {
         return firstChild(ASTExpression.class);
     }
-
 }

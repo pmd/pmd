@@ -24,10 +24,6 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -42,6 +38,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Common operations on types.
@@ -53,10 +51,11 @@ public final class TypeOps {
         // utility class
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Type equality">
+    // <editor-fold  defaultstate="collapsed" desc="Type equality">
 
     /**
-     * Return true if t and s are the same method type. This compares their declaring type, and then their signature.
+     * Return true if t and s are the same method type. This compares
+     * their declaring type, and then their signature.
      *
      * @see #haveSameSignature(JMethodSig, JMethodSig)
      */
@@ -65,28 +64,31 @@ public final class TypeOps {
     }
 
     /*
-     * Note that type mirror implementations use this method as their Object#equals, which means it can't be used here
-     * unless it's on the smaller parts of a type.
+     * Note that type mirror implementations use this method as their
+     * Object#equals, which means it can't be used here unless it's on
+     * the smaller parts of a type.
      */
 
     /**
-     * Return true if t and s are the same type, ignoring any type annotations appearing within them. This is the
-     * implementation of the equals method of {@link JTypeMirror}.
+     * Return true if t and s are the same type, ignoring any type annotations
+     * appearing within them. This is the implementation of the equals method
+     * of {@link JTypeMirror}.
      */
     public static boolean isSameType(JTypeMirror t, JTypeMirror s) {
         return isSameType(t, s, true, false);
     }
 
     /**
-     * Return true if t and s are the same type, considering any type annotations appearing within them.
+     * Return true if t and s are the same type, considering any type annotations
+     * appearing within them.
      */
     public static boolean isSameTypeWithSameAnnotations(JTypeMirror t, JTypeMirror s) {
         return isSameType(t, s, true, true);
     }
 
     /**
-     * Return true if t and s are the same type. This may perform side effects on inference variables. Annotations are
-     * ignored.
+     * Return true if t and s are the same type. This may perform side effects
+     * on inference variables. Annotations are ignored.
      *
      * @apiNote Internal API
      */
@@ -95,8 +97,9 @@ public final class TypeOps {
     }
 
     /**
-     * Returns true if t and s are the same type. If 'inInference' is true, then encountering inference variables
-     * produces side effects on them, adding bounds.
+     * Returns true if t and s are the same type. If 'inInference' is
+     * true, then encountering inference variables produces side effects
+     * on them, adding bounds.
      */
     private static boolean isSameType(JTypeMirror t, JTypeMirror s, boolean pure, boolean considerAnnotations) {
         if (t == s) {
@@ -115,8 +118,7 @@ public final class TypeOps {
                 }
                 return t.getTypeAnnotations().equals(s.getTypeAnnotations())
                         && t.acceptVisitor(SameTypeVisitor.PURE_WITH_ANNOTATIONS, s);
-            }
-            else {
+            } else {
                 return t.acceptVisitor(SameTypeVisitor.PURE, s);
             }
         }
@@ -124,8 +126,7 @@ public final class TypeOps {
         // reorder
         if (t instanceof InferenceVar) {
             return t.acceptVisitor(SameTypeVisitor.INFERENCE, s);
-        }
-        else {
+        } else {
             return s.acceptVisitor(SameTypeVisitor.INFERENCE, t);
         }
     }
@@ -138,8 +139,8 @@ public final class TypeOps {
         return areSameTypes(ts, ss, EMPTY, false, false);
     }
 
-    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, boolean pure,
-            boolean considerAnnotations) {
+    private static boolean areSameTypes(
+            List<JTypeMirror> ts, List<JTypeMirror> ss, boolean pure, boolean considerAnnotations) {
         return areSameTypes(ts, ss, EMPTY, pure, considerAnnotations);
     }
 
@@ -147,8 +148,8 @@ public final class TypeOps {
         return areSameTypes(ts, ss, subst, true, false);
     }
 
-    private static boolean areSameTypes(List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst, boolean pure,
-            boolean considerAnnotations) {
+    private static boolean areSameTypes(
+            List<JTypeMirror> ts, List<JTypeMirror> ss, Substitution subst, boolean pure, boolean considerAnnotations) {
         if (ts.size() != ss.size()) {
             return false;
         }
@@ -227,8 +228,7 @@ public final class TypeOps {
                 JWildcardType s2 = (JWildcardType) s;
                 if (s2.isUpperBound()) {
                     t.addBound(BoundKind.UPPER, s2.asUpperBound());
-                }
-                else {
+                } else {
                     t.addBound(BoundKind.LOWER, s2.asLowerBound());
                 }
                 return true;
@@ -283,7 +283,7 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Supertype enumeration">
+    // <editor-fold  defaultstate="collapsed" desc="Supertype enumeration">
 
     /**
      * Returns the set of all supertypes of the given type.
@@ -391,7 +391,7 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Subtyping">
+    // <editor-fold  defaultstate="collapsed" desc="Subtyping">
 
     public static Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s) {
         return SubtypeVisitor.INFERENCE.isConvertible(t, s, true);
@@ -421,68 +421,70 @@ public final class TypeOps {
     }
 
     /**
-     * A result for a convertibility check. This is a tiny generalization of a subtyping check.
+     * A result for a convertibility check. This is a tiny generalization of
+     * a subtyping check.
      *
-     * <p>
-     * Primitive types are implicitly convertible to each other by widening primitive conversion. For reference types,
-     * subtyping implies convertibility (the conversion is technically called "widening reference conversion"). You can
-     * check those cases using:
+     * <p>Primitive types are implicitly convertible to each other by
+     * widening primitive conversion. For reference types, subtyping
+     * implies convertibility (the conversion is technically called
+     * "widening reference conversion"). You can check those cases using:
      *
      * {@link #bySubtyping() t.isConvertibleTo(s).bySubtyping()}
      *
-     * <p>
-     * Unchecked conversion may go backwards from subtyping. For example, {@code List<String>} is a subtype of the raw
-     * type {@code List}, and as such is convertible to it by reference widening. But {@code List} may be "coerced" to
-     * {@code List<String>} with an unchecked warning:
+     * <p>Unchecked conversion may go backwards from subtyping. For example,
+     * {@code List<String>} is a subtype of the raw type {@code List}, and
+     * as such is convertible to it by reference widening. But {@code List}
+     * may be "coerced" to {@code List<String>} with an unchecked warning:
      *
      * {@link #withUncheckedWarning() t.isConvertibleTo(s).withUncheckedWarning()}
      *
-     * <p>
-     * If the parameterized type only has wildcard type arguments, then the conversion produces no warning.
+     * <p>If the parameterized type only has wildcard type arguments,
+     * then the conversion produces no warning.
      *
      * {@link #UNCHECKED_NO_WARNING t.isConvertibleTo(s) == UNCHECKED_NO_WARNING}
      *
-     * <p>
-     * Two types may be unconvertible:
+     * <p>Two types may be unconvertible:
      *
      * {@link #never() t.isConvertibleTo(s).never()}
      *
-     * <p>
-     * the negation of which being
+     * <p>the negation of which being
      *
      * {@link #somehow() t.isConvertibleTo(s).somehow()}
      *
-     * <p>
-     * Note that this does not check for boxing or unboxing conversions, nor for narrowing conversions, which may happen
-     * through casts.
+     * <p>Note that this does not check for boxing or unboxing conversions,
+     * nor for narrowing conversions, which may happen through casts.
      */
     public enum Convertibility {
         /** T is never implicitly convertible to S. */
         NEVER,
 
         /**
-         * T is not a subtype of S, but every time T is used in a context where an S is expected, unchecked conversion
-         * converts the T to an S with a mandated warning. For example the raw type {@code Class} is convertible to
-         * {@code Class<String>} with an unchecked warning.
+         * T is not a subtype of S, but every time T is used in a context
+         * where an S is expected, unchecked conversion converts the T to
+         * an S with a mandated warning. For example the raw type {@code Class}
+         * is convertible to {@code Class<String>} with an unchecked warning.
          */
         UNCHECKED_WARNING,
 
         /**
-         * {@code T <: |S|} and {@code T </: S}, but S is parameterized with only unbounded wildcards. This is a special
-         * case of unchecked conversion that produces no warning. We keep it distinct from subtyping to help some
-         * algorithms that require subtyping to be a partial order.
+         * {@code T <: |S|} and {@code T </: S}, but S is
+         * parameterized with only unbounded wildcards. This is a special
+         * case of unchecked conversion that produces no warning. We keep
+         * it distinct from subtyping to help some algorithms that require
+         * subtyping to be a partial order.
          *
-         * <p>
-         * For example, {@code List<String>} is a subtype of the raw {@code Collection}, not a subtype of
-         * {@code Collection<?>}, but it is still convertible without warning.
+         * <p>For example, {@code List<String>} is a subtype of the raw
+         * {@code Collection}, not a subtype of {@code Collection<?>},
+         * but it is still convertible without warning.
          */
         UNCHECKED_NO_WARNING,
 
         /**
-         * T is a subtype of S ({@code T <: S}). In particular, any type is a subtype of itself ({@code T <: T}).
+         * T is a subtype of S ({@code T <: S}). In particular, any type
+         * is a subtype of itself ({@code T <: T}).
          *
-         * <p>
-         * For example, {@code int} can be widened to {@code long}, so we consider {@code int <: long}.
+         * <p>For example, {@code int} can be widened to {@code long},
+         * so we consider {@code int <: long}.
          */
         SUBTYPING;
 
@@ -533,7 +535,6 @@ public final class TypeOps {
         static Convertibility subtypeIf(boolean b) {
             return b ? SUBTYPING : NEVER;
         }
-
     }
 
     private static JTypeMirror wildUpperBound(JTypeMirror type) {
@@ -541,12 +542,10 @@ public final class TypeOps {
             JWildcardType wild = (JWildcardType) type;
             if (wild.isUpperBound()) {
                 return wildUpperBound(wild.asUpperBound());
-            }
-            else if (wild.asLowerBound() instanceof JTypeVar) {
+            } else if (wild.asLowerBound() instanceof JTypeVar) {
                 return ((JTypeVar) wild.asLowerBound()).getUpperBound();
             }
-        }
-        else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
+        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
             // note: tvar.getUpperBound() != tvar.getCapturedOrigin().asUpperBound()
             return wildUpperBound(((JTypeVar) type).getUpperBound());
         }
@@ -563,8 +562,7 @@ public final class TypeOps {
     private static JTypeMirror lowerBoundRec(JTypeMirror type) {
         if (type instanceof JWildcardType) {
             return lowerBoundRec(((JWildcardType) type).asLowerBound());
-        }
-        else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
+        } else if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
             return lowerBoundRec(((JTypeVar) type).getLowerBound());
         }
         return type;
@@ -595,13 +593,11 @@ public final class TypeOps {
         /**
          * Returns whether if {@code T <: S}, ie T is a subtype of S.
          *
-         * <p>
-         * Note that {@link TypeSystem#ERROR} and {@link TypeSystem#UNKNOWN} are considered subtypes of anything.
+         * <p>Note that {@link TypeSystem#ERROR} and {@link TypeSystem#UNKNOWN}
+         * are considered subtypes of anything.
          *
-         * @param t
-         *            A type T
-         * @param s
-         *            A type S
+         * @param t A type T
+         * @param s A type S
          */
         Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean capture) {
             // This is commented out as it makes JTypeMirror#isSubtypeOf partial,
@@ -613,21 +609,17 @@ public final class TypeOps {
             if (t == s) {
                 Objects.requireNonNull(t);
                 return Convertibility.SUBTYPING;
-            }
-            else if (s.isTop()) {
+            } else if (s.isTop()) {
                 return Convertibility.subtypeIf(!t.isPrimitive());
-            }
-            else if (s.isVoid() || t.isVoid()) { // t != s
+            } else if (s.isVoid() || t.isVoid()) { // t != s
                 return Convertibility.NEVER;
-            }
-            else if (s instanceof InferenceVar) {
+            } else if (s instanceof InferenceVar) {
                 if (!pure) {
                     // it's possible to add a bound to UNKNOWN or ERROR
                     ((InferenceVar) s).addBound(BoundKind.LOWER, t);
                 }
                 return Convertibility.SUBTYPING;
-            }
-            else if (isTypeRange(s)) {
+            } else if (isTypeRange(s)) {
                 // If s is a type range L..U,
                 // then showing t <: s is the same thing as t <: L
                 JTypeMirror lower = lowerBoundRec(s);
@@ -635,19 +627,16 @@ public final class TypeOps {
                     return isConvertible(t, lower);
                 }
                 // otherwise fallthrough
-            }
-            else if (hasUnresolvedSymbol(t)) {
+            } else if (hasUnresolvedSymbol(t)) {
                 // This also considers types with an unresolved symbol
                 // subtypes of (nearly) anything. This allows them to
                 // pass bound checks on type variables.
                 if (Objects.equals(t.getSymbol(), s.getSymbol())) {
                     return typeArgsAreContained((JClassType) t, (JClassType) s);
-                }
-                else {
+                } else {
                     return Convertibility.subtypeIf(s instanceof JClassType); // excludes array or so
                 }
-            }
-            else if (s instanceof JIntersectionType) { // TODO test intersection with tvars & arrays
+            } else if (s instanceof JIntersectionType) { // TODO test intersection with tvars & arrays
                 // If S is an intersection, then T must conform to *all* bounds of S
                 // Symmetrically, if T is an intersection, T <: S requires only that
                 // at least one bound of T is a subtype of S.
@@ -703,8 +692,7 @@ public final class TypeOps {
                     boolean sRaw = s.hasErasedSuperTypes();
                     if (tRaw && !sRaw) {
                         return Convertibility.UNCHECKED_NO_WARNING;
-                    }
-                    else {
+                    } else {
                         return Convertibility.SUBTYPING;
                     }
                 }
@@ -712,10 +700,10 @@ public final class TypeOps {
                 // T is convertible to S, by unchecked conversion.
                 // If S = D<?, .., ?>, then the conversion produces
                 // no unchecked warning.
-                return allArgsAreUnboundedWildcards(sargs) ? Convertibility.UNCHECKED_NO_WARNING
+                return allArgsAreUnboundedWildcards(sargs)
+                        ? Convertibility.UNCHECKED_NO_WARNING
                         : Convertibility.UNCHECKED_WARNING;
-            }
-            else if (sargs.isEmpty()) {
+            } else if (sargs.isEmpty()) {
                 // C<T1...TN> <: |C|
                 // JLS 4.10.2
                 // unchecked conversion converts a raw type to a generic type
@@ -743,28 +731,24 @@ public final class TypeOps {
         /**
          * Returns true if {@code T <= S}, ie "S contains T".
          *
-         * <p>
-         * S contains T if:
+         * <p>S contains T if:
          *
-         * <p>
-         * {@code L(S) <: L(T) && U(T) <: U(S)}
+         * <p>{@code L(S) <: L(T) && U(T) <: U(S)}
          *
-         * <p>
-         * This only makes sense for type arguments, it's a component of subtype checks for parameterized types:
+         * <p>This only makes sense for type arguments, it's a component of
+         * subtype checks for parameterized types:
          *
-         * <p>
-         * {@code C<S> <: C<T> if S <= T}
+         * <p>{@code C<S> <: C<T> if S <= T}
          *
-         * <p>
-         * Defined in JLS§4.5.1 (Type Arguments of Parameterized Types)
+         * <p>Defined in JLS§4.5.1 (Type Arguments of Parameterized Types)
          */
         Convertibility typeArgContains(JTypeMirror s, JTypeMirror t) {
             // the contains relation can be understood intuitively if we
             // represent types as ranges on a line:
 
             // ⊥ ---------L(S)---L(T)------U(T)-----U(S)---> Object
-            // range of S [-------------------------]
-            // range of T [---------]
+            // range of S   [-------------------------]
+            // range of T          [---------]
 
             // here S contains T because its range is greater
 
@@ -773,8 +757,8 @@ public final class TypeOps {
 
             // meaning when S != T, we only have two scenarios where T <= S:
 
-            // ⊥ -------U(T)-----U(S)------> Object (L(T) = L(S) = ⊥)
-            // ⊥ -------L(S)-----L(T)------> Object (U(T) = U(S) = Object)
+            //      ⊥ -------U(T)-----U(S)------> Object   (L(T) = L(S) = ⊥)
+            //      ⊥ -------L(S)-----L(T)------> Object   (U(T) = U(S) = Object)
 
             if (isSameType(s, t, pure, false)) {
                 // S <= S
@@ -791,10 +775,9 @@ public final class TypeOps {
                 }
 
                 if (sw.isUpperBound()) {
-                    // Test U(T) <: U(S), we already know L(S) <: L(T), because L(S) is bottom
+                    // Test U(T) <: U(S),  we already know L(S) <: L(T), because L(S) is bottom
                     return this.isConvertible(wildUpperBound(t), sw.asUpperBound());
-                }
-                else {
+                } else {
                     // Test L(S) <: L(T), we already know U(T) <: U(S), because U(S) is top
                     return this.isConvertible(sw.asLowerBound(), wildLowerBound(t));
                 }
@@ -812,8 +795,7 @@ public final class TypeOps {
         public Convertibility visitTypeVar(JTypeVar t, JTypeMirror s) {
             if (s instanceof JTypeVar && t.getSymbol() != null && Objects.equals(t.getSymbol(), s.getSymbol())) {
                 return Convertibility.SUBTYPING;
-            }
-            else if (s instanceof SentinelType) {
+            } else if (s instanceof SentinelType) {
                 return Convertibility.SUBTYPING;
             }
 
@@ -884,12 +866,10 @@ public final class TypeOps {
 
             if (superDecl == null) {
                 return Convertibility.NEVER;
-            }
-            else if (cs.isRaw()) {
+            } else if (cs.isRaw()) {
                 // a raw type C is a supertype for all the family of parameterized type generated by C<F1, .., Fn>
                 return Convertibility.SUBTYPING;
-            }
-            else {
+            } else {
                 return typeArgsAreContained(superDecl, cs);
             }
         }
@@ -905,11 +885,11 @@ public final class TypeOps {
             // because if s is itself an intersection we have a problem:
             // Eg let T = S = A & B
             // T <: S -> A & B <: S
-            // -> A <: S OR B <: S
-            // -> A <: A & B OR B <: A & B
-            // -> A <: A AND A <: B OR B <: A AND B <: B
-            // -> true AND false OR false AND true
-            // -> false
+            //        -> A <: S OR B <: S
+            //        -> A <: A & B OR B <: A & B
+            //        -> A <: A AND A <: B OR B <: A AND B <: B
+            //        -> true   AND false  OR false  AND true
+            //        -> false
 
             // what we mean is, if S is an intersection, then
             // "any component of T subtypes any component of S"
@@ -940,8 +920,7 @@ public final class TypeOps {
             if (t.getComponentType().isPrimitive() || cs.getComponentType().isPrimitive()) {
                 // arrays of primitive types have no sub-/ supertype
                 return Convertibility.subtypeIf(cs.getComponentType() == t.getComponentType());
-            }
-            else {
+            } else {
                 return isConvertible(t.getComponentType(), cs.getComponentType());
             }
         }
@@ -961,19 +940,18 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Substitution">
+    // <editor-fold  defaultstate="collapsed" desc="Substitution">
 
     /**
-     * Replace the type variables occurring in the given type to their image by the given function. Substitutions are
-     * not applied recursively.
+     * Replace the type variables occurring in the given type to their
+     * image by the given function. Substitutions are not applied
+     * recursively.
      *
-     * @param type
-     *            Type to substitute
-     * @param subst
-     *            Substitution function, eg a {@link Substitution}
+     * @param type  Type to substitute
+     * @param subst Substitution function, eg a {@link Substitution}
      */
-    public static JTypeMirror subst(@Nullable JTypeMirror type,
-            Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+    public static JTypeMirror subst(
+            @Nullable JTypeMirror type, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         if (type == null || Substitution.isEmptySubst(subst)) {
             return type;
         }
@@ -981,24 +959,24 @@ public final class TypeOps {
     }
 
     /** Substitute on a list of types. */
-    public static List<JTypeMirror> subst(List<? extends JTypeMirror> ts,
-            Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+    public static List<JTypeMirror> subst(
+            List<? extends JTypeMirror> ts, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         if (Substitution.isEmptySubst(subst)) {
             return CollectionUtil.makeUnmodifiableAndNonNull(ts);
         }
         return mapPreservingSelf(ts, t -> t.subst(subst));
     }
 
-    public static List<JClassType> substClasses(List<JClassType> ts,
-            Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+    public static List<JClassType> substClasses(
+            List<JClassType> ts, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         if (Substitution.isEmptySubst(subst)) {
             return ts;
         }
         return mapPreservingSelf(ts, t -> t.subst(subst));
     }
 
-    public static List<JTypeVar> substInBoundsOnly(List<JTypeVar> ts,
-            Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
+    public static List<JTypeVar> substInBoundsOnly(
+            List<JTypeVar> ts, Function<? super SubstVar, ? extends @NonNull JTypeMirror> subst) {
         if (Substitution.isEmptySubst(subst)) {
             return ts;
         }
@@ -1008,8 +986,8 @@ public final class TypeOps {
     // relies on the fact the original list is unmodifiable or won't be
     // modified
     @SuppressWarnings("unchecked")
-    private static @NonNull <T> List<T> mapPreservingSelf(List<? extends T> ts,
-            Function<? super T, ? extends @NonNull T> subst) {
+    private static @NonNull <T> List<T> mapPreservingSelf(
+            List<? extends T> ts, Function<? super T, ? extends @NonNull T> subst) {
         // Profiling shows, only 10% of calls to this method need to
         // create a new list. Substitution in general is a hot spot
         // of the framework, so optimizing this out is nice
@@ -1033,12 +1011,13 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Projection">
+    // <editor-fold  defaultstate="collapsed" desc="Projection">
 
     /**
-     * Returns the upwards projection of the given type, with respect to the set of capture variables that are found in
-     * it. This is some supertype of T which does not mention those capture variables. This is used for local variable
-     * type inference.
+     * Returns the upwards projection of the given type, with respect
+     * to the set of capture variables that are found in it. This is
+     * some supertype of T which does not mention those capture variables.
+     * This is used for local variable type inference.
      *
      * https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.10.5
      */
@@ -1067,8 +1046,7 @@ public final class TypeOps {
 
             if (t.isUpperBound()) {
                 return ts.wildcard(true, u);
-            }
-            else {
+            } else {
                 JTypeMirror down = t.getBound().acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
                 return down == NO_DOWN_PROJECTION ? ts.UNBOUNDED_WILD : ts.wildcard(false, down);
             }
@@ -1078,7 +1056,6 @@ public final class TypeOps {
         public JTypeMirror visitNullType(JTypeMirror t, RecursionStop recursionStop) {
             return t;
         }
-
     };
 
     private static final ProjectionVisitor DOWNWARDS_PROJECTOR = new ProjectionVisitor(false) {
@@ -1094,8 +1071,7 @@ public final class TypeOps {
             if (t.isUpperBound()) {
                 JTypeMirror down = t.getBound().acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
                 return down == NO_DOWN_PROJECTION ? NO_DOWN_PROJECTION : ts.wildcard(true, down);
-            }
-            else {
+            } else {
                 return ts.wildcard(false, u);
             }
         }
@@ -1130,30 +1106,32 @@ public final class TypeOps {
                 JTypeVar var = (JTypeVar) t;
                 if (isAbsent(var)) {
                     return body.apply(t, this);
-                }
-                else {
+                } else {
                     return t;
                 }
-            }
-            else {
+            } else {
                 return body.apply(t, this);
             }
         }
     }
 
     /**
-     * Restricted type variables are: - Inference vars - Capture vars
+     * Restricted type variables are:
+     * - Inference vars
+     * - Capture vars
      *
      * See
      *
      * https://docs.oracle.com/javase/specs/jls/se11/html/jls-4.html#jls-4.10.5
      *
      *
-     * <p>
-     * Here we use {@link #NO_DOWN_PROJECTION} as a sentinel (downwards projection is a partial function). If a type
-     * does not mention restricted type variables, then the visitor should return the original type (same reference).
-     * This allows testing predicates like <blockquote> "If Ai does not mention any restricted type variable, then Ai' =
-     * Ai." </blockquote>
+     * <p>Here we use {@link #NO_DOWN_PROJECTION} as a sentinel
+     * (downwards projection is a partial function). If a type does not mention
+     * restricted type variables, then the visitor should return the original
+     * type (same reference). This allows testing predicates like
+     * <blockquote>
+     * "If Ai does not mention any restricted type variable, then Ai' = Ai."
+     * </blockquote>
      */
     private abstract static class ProjectionVisitor implements JTypeVisitor<JTypeMirror, RecursionStop> {
 
@@ -1198,12 +1176,10 @@ public final class TypeOps {
                         // no change, or handled by the visitWildcard
                         newTargs.add(u);
                         continue;
-                    }
-                    else if (!upwards) {
+                    } else if (!upwards) {
                         // If Ai is a type that mentions a restricted type variable, then Ai' is undefined.
                         return NO_DOWN_PROJECTION;
-                    }
-                    else if (u instanceof JWildcardType) {
+                    } else if (u instanceof JWildcardType) {
                         // The rest of this function, below, treats u as the bound of a wildcard,
                         // but if u is already a wildcard (and therefore ai was a wildcard), we
                         // are already done.
@@ -1215,27 +1191,24 @@ public final class TypeOps {
                     change = true;
 
                     /*
-                     * If Ai is a type that mentions a restricted type variable...
-                     */
+                       If Ai is a type that mentions a restricted type variable...
+                    */
                     JTypeMirror bi = formals.get(i).getUpperBound();
 
                     if (u != ts.OBJECT && (mentionsAny(bi, formals) || !bi.isSubtypeOf(u))) {
                         newTargs.add(ts.wildcard(true, u));
-                    }
-                    else {
+                    } else {
                         JTypeMirror down = ai.acceptVisitor(DOWNWARDS_PROJECTOR, recursionStop);
                         if (down == NO_DOWN_PROJECTION) {
                             newTargs.add(ts.UNBOUNDED_WILD);
-                        }
-                        else {
+                        } else {
                             newTargs.add(ts.wildcard(false, down));
                         }
                     }
                 }
 
                 return change ? t.withTypeArguments(newTargs) : t;
-            }
-            else {
+            } else {
                 return t;
             }
         }
@@ -1249,8 +1222,7 @@ public final class TypeOps {
                 JTypeMirror proj = ci.acceptVisitor(this, recursionStop);
                 if (proj == NO_DOWN_PROJECTION) {
                     return NO_DOWN_PROJECTION;
-                }
-                else {
+                } else {
                     comps.set(i, proj);
                     if (ci != proj) {
                         change = true;
@@ -1263,7 +1235,8 @@ public final class TypeOps {
         @Override
         public JTypeMirror visitArray(JArrayType t, RecursionStop recursionStop) {
             JTypeMirror comp2 = t.getComponentType().acceptVisitor(this, recursionStop);
-            return comp2 == NO_DOWN_PROJECTION ? NO_DOWN_PROJECTION
+            return comp2 == NO_DOWN_PROJECTION
+                    ? NO_DOWN_PROJECTION
                     : comp2 == t.getComponentType() ? t : t.getTypeSystem().arrayType(comp2);
         }
 
@@ -1275,11 +1248,11 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Overriding">
+    // <editor-fold  defaultstate="collapsed" desc="Overriding">
 
     /**
-     * Returns true if m1 is return-type substitutable with m2. The notion of return-type-substitutability supports
-     * covariant returns, that is, the specialization of the return type to a subtype.
+     * Returns true if m1 is return-type substitutable with m2. The notion of return-type-substitutability
+     * supports covariant returns, that is, the specialization of the return type to a subtype.
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.5
      */
@@ -1306,8 +1279,8 @@ public final class TypeOps {
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.4
      *
-     * <p>
-     * Note that the type parameters of m1 are not replaced, only their occurrences in the rest of the signature.
+     * <p>Note that the type parameters of m1 are not replaced, only
+     * their occurrences in the rest of the signature.
      */
     static @Nullable JMethodSig adaptForTypeParameters(JMethodSig m1, JMethodSig m2) {
         if (haveSameTypeParams(m1, m2)) {
@@ -1342,12 +1315,12 @@ public final class TypeOps {
     }
 
     /**
-     * Two method signatures m1 and m2 are override-equivalent iff either m1 is a subsignature of m2 or m2 is a
-     * subsignature of m1. This does not look at the origin of the methods (their declaring class).
+     * Two method signatures m1 and m2 are override-equivalent iff either
+     * m1 is a subsignature of m2 or m2 is a subsignature of m1. This does
+     * not look at the origin of the methods (their declaring class).
      *
-     * <p>
-     * This is a prerequisite for one method to override the other, but not the only condition. See
-     * {@link #overrides(JMethodSig, JMethodSig, JTypeMirror)}.
+     * <p>This is a prerequisite for one method to override the other,
+     * but not the only condition. See {@link #overrides(JMethodSig, JMethodSig, JTypeMirror)}.
      *
      * See <a href="https://docs.oracle.com/javase/specs/jls/se9/html/jls-8.html#jls-8.4.2">JLS§8</a>
      */
@@ -1357,11 +1330,9 @@ public final class TypeOps {
         // Any optimization makes a big impact.
         if (m1.getArity() != m2.getArity()) {
             return false; // easy case
-        }
-        else if (m1 == m2) {
+        } else if (m1 == m2) {
             return true;
-        }
-        else if (!m1.getName().equals(m2.getName())) {
+        } else if (!m1.getName().equals(m2.getName())) {
             // note: most call sites statically know this is true
             // profile to figure out whether this matters
             return false;
@@ -1379,14 +1350,16 @@ public final class TypeOps {
         }
 
         // a non-generic method may override a generic one
-        return !m1.isGeneric() || !m2.isGeneric()
-        // if both are generic, they must have the same type params
+        return !m1.isGeneric()
+                || !m2.isGeneric()
+                // if both are generic, they must have the same type params
                 || haveSameTypeParams(m1, m2);
     }
 
     /**
-     * The signature of a method m1 is a subsignature of the signature of a method m2 if either: - m2 has the same
-     * signature as m1, or - the signature of m1 is the same as the erasure (§4.6) of the signature of m2.
+     * The signature of a method m1 is a subsignature of the signature of a method m2 if either:
+     * - m2 has the same signature as m1, or
+     * - the signature of m1 is the same as the erasure (§4.6) of the signature of m2.
      */
     public static boolean isSubSignature(JMethodSig m1, JMethodSig m2) {
         // prune easy cases
@@ -1398,8 +1371,7 @@ public final class TypeOps {
         if (m1Gen ^ m2Gen) {
             if (m1Gen) {
                 return false; // this test is assymetric
-            }
-            else {
+            } else {
                 m2 = m2.getErasure();
             }
         }
@@ -1407,27 +1379,33 @@ public final class TypeOps {
     }
 
     /**
-     * Two methods or constructors, M and N, have the same signature if they have the same name, the same type
-     * parameters (if any) (§8.4.4), and, after adapting the formal parameter types of N to the the type parameters of
-     * M, the same formal parameter types.
+     * Two methods or constructors, M and N, have the same signature if
+     * they have the same name, the same type parameters (if any) (§8.4.4),
+     * and, after adapting the formal parameter types of N to the the type
+     * parameters of M, the same formal parameter types.
      *
      * Thrown exceptions are not part of the signature of a method.
      */
     private static boolean haveSameSignature(JMethodSig m1, JMethodSig m2) {
-        return m1.getName().equals(m2.getName()) && m1.getArity() == m2.getArity() && haveSameTypeParams(m1, m2)
-                && areSameTypes(m1.getFormalParameters(), m2.getFormalParameters(),
+        return m1.getName().equals(m2.getName())
+                && m1.getArity() == m2.getArity()
+                && haveSameTypeParams(m1, m2)
+                && areSameTypes(
+                        m1.getFormalParameters(),
+                        m2.getFormalParameters(),
                         Substitution.mapping(m2.getTypeParameters(), m1.getTypeParameters()));
     }
 
     /**
-     * Returns true if m1 overrides m2, when both are view as members of class origin. m1 and m2 may be declared in
-     * supertypes of origin, possibly unrelated (default methods), which is why we need that third parameter. By
-     * convention a method overrides itself.
+     * Returns true if m1 overrides m2, when both are view as members of
+     * class origin. m1 and m2 may be declared in supertypes of origin,
+     * possibly unrelated (default methods), which is why we need that
+     * third parameter. By convention a method overrides itself.
      *
-     * <p>
-     * This method ignores the static modifier. If both methods are static, then this method tests for <i>hiding</i>.
-     * Otherwise, this method properly tests for overriding. Note that it is an error for a static method to override an
-     * instance method, or the reverse.
+     * <p>This method ignores the static modifier. If both methods are
+     * static, then this method tests for <i>hiding</i>. Otherwise, this
+     * method properly tests for overriding. Note that it is an error for
+     * a static method to override an instance method, or the reverse.
      */
     public static boolean overrides(JMethodSig m1, JMethodSig m2, JTypeMirror origin) {
 
@@ -1450,8 +1428,10 @@ public final class TypeOps {
         }
 
         // todo that is very weird
-        if (m1.isAbstract() || !m2.isAbstract() && !m2.getSymbol().isDefaultMethod()
-                || !isOverridableIn(m2, origin.getSymbol()) || !(m1Owner instanceof JClassType)) {
+        if (m1.isAbstract()
+                || !m2.isAbstract() && !m2.getSymbol().isDefaultMethod()
+                || !isOverridableIn(m2, origin.getSymbol())
+                || !(m1Owner instanceof JClassType)) {
             return false;
         }
 
@@ -1471,18 +1451,18 @@ public final class TypeOps {
     }
 
     /**
-     * Returns true if the given method can be overridden in the origin class. This only checks access modifiers and not
-     * eg whether the method is final or static. Regardless of whether the method is final it is overridden - whether
-     * this is a compile error or not is another matter.
+     * Returns true if the given method can be overridden in the origin
+     * class. This only checks access modifiers and not eg whether the
+     * method is final or static. Regardless of whether the method is
+     * final it is overridden - whether this is a compile error or not
+     * is another matter.
      *
-     * <p>
-     * Like {@link #overrides(JMethodSig, JMethodSig, JTypeMirror)}, this does not check the static modifier, and tests
-     * for hiding if the method is static.
+     * <p>Like {@link #overrides(JMethodSig, JMethodSig, JTypeMirror)},
+     * this does not check the static modifier, and tests for hiding
+     * if the method is static.
      *
-     * @param m
-     *            Method to test
-     * @param origin
-     *            Site of the potential override
+     * @param m      Method to test
+     * @param origin Site of the potential override
      */
     public static boolean isOverridableIn(JExecutableSymbol m, JTypeDeclSymbol origin) {
         if (m instanceof JConstructorSymbol) {
@@ -1508,7 +1488,7 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="SAM types">
+    // <editor-fold  defaultstate="collapsed" desc="SAM types">
 
     /*
      * Function types of SAM (single-abstract-method) types.
@@ -1517,16 +1497,16 @@ public final class TypeOps {
      */
 
     /**
-     * Returns the non-wildcard parameterization of the given functional interface type. Returns null if such a
-     * parameterization does not exist.
+     * Returns the non-wildcard parameterization of the given functional
+     * interface type. Returns null if such a parameterization does not
+     * exist.
      *
-     * <p>
-     * This is used to remove wildcards from the type of a functional interface.
+     * <p>This is used to remove wildcards from the type of a functional
+     * interface.
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-9.html#jls-9.9
      *
-     * @param type
-     *            A parameterized functional interface type
+     * @param type A parameterized functional interface type
      */
     public static @Nullable JClassType nonWildcardParameterization(@NonNull JClassType type) {
         TypeSystem ts = type.getTypeSystem();
@@ -1552,34 +1532,30 @@ public final class TypeOps {
 
                 if (ai2.isUnbounded()) {
                     newArgs.add(bi);
-                }
-                else if (ai2.isUpperBound()) {
+                } else if (ai2.isUpperBound()) {
                     newArgs.add(ts.glb(Arrays.asList(ai2.asUpperBound(), bi)));
-                }
-                else { // lower bound
+                } else { // lower bound
                     newArgs.add(ai2.asLowerBound());
                 }
 
-            }
-            else {
+            } else {
                 newArgs.add(ai);
             }
-
         }
 
         return type.withTypeArguments(newArgs);
     }
 
     /**
-     * Finds the method of the given type that can be overridden as a lambda expression. That is more complicated than
-     * "the unique abstract method", it's actually a function type which can override all abstract methods of the SAM at
-     * once.
+     * Finds the method of the given type that can be overridden as a lambda
+     * expression. That is more complicated than "the unique abstract method",
+     * it's actually a function type which can override all abstract methods
+     * of the SAM at once.
      *
      * https://docs.oracle.com/javase/specs/jls/se9/html/jls-9.html#jls-9.9
      *
-     * <p>
-     * If the parameter is not mappable to a class type with {@link #asClassType(JTypeMirror)}, or if the functional
-     * method does not exist, returns null.
+     * <p>If the parameter is not mappable to a class type with {@link #asClassType(JTypeMirror)},
+     * or if the functional method does not exist, returns null.
      */
     public static @Nullable JMethodSig findFunctionalInterfaceMethod(@Nullable JTypeMirror type) {
         JClassType candidateSam = asClassType(type);
@@ -1589,27 +1565,25 @@ public final class TypeOps {
 
         if (candidateSam.isParameterizedType()) {
             return findFunctionTypeImpl(nonWildcardParameterization(candidateSam));
-        }
-        else if (candidateSam.isRaw()) {
-            // The function type of the raw type of a generic functional
-            // interface I<...> is the erasure of the function type of the generic functional interface I<...>.
+        } else if (candidateSam.isRaw()) {
+            //  The function type of the raw type of a generic functional
+            //  interface I<...> is the erasure of the function type of the generic functional interface I<...>.
             JMethodSig fun = findFunctionTypeImpl(candidateSam.getGenericTypeDeclaration());
             return fun == null ? null : fun.getErasure();
-        }
-        else {
+        } else {
             return findFunctionTypeImpl(candidateSam);
         }
     }
 
     /**
-     * Returns t if it is a class or interface type. If it is an intersection type, returns the induced class or
-     * interface type. Returns null otherwise, including if the parameter is null.
+     * Returns t if it is a class or interface type. If it is an intersection type,
+     * returns the induced class or interface type. Returns null otherwise, including
+     * if the parameter is null.
      */
     public static @Nullable JClassType asClassType(@Nullable JTypeMirror t) {
         if (t instanceof JClassType) {
             return (JClassType) t;
-        }
-        else if (t instanceof JIntersectionType) {
+        } else if (t instanceof JIntersectionType) {
             return ((JIntersectionType) t).getInducedClassType();
         }
         return null;
@@ -1617,12 +1591,15 @@ public final class TypeOps {
 
     private static @Nullable JMethodSig findFunctionTypeImpl(@Nullable JClassType candidateSam) {
 
-        if (candidateSam == null || !candidateSam.isInterface() || candidateSam.getSymbol().isAnnotation()) {
+        if (candidateSam == null
+                || !candidateSam.isInterface()
+                || candidateSam.getSymbol().isAnnotation()) {
             return null;
         }
 
         Map<String, List<JMethodSig>> relevantMethods = candidateSam
-                .streamMethods(it -> !Modifier.isStatic(it.getModifiers())).filter(TypeOps::isNotDeclaredInClassObject)
+                .streamMethods(it -> !Modifier.isStatic(it.getModifiers()))
+                .filter(TypeOps::isNotDeclaredInClassObject)
                 .collect(Collectors.groupingBy(JMethodSig::getName, OverloadSet.collectMostSpecific(candidateSam)));
 
         List<JMethodSig> candidates = new ArrayList<>();
@@ -1636,14 +1613,14 @@ public final class TypeOps {
 
         if (candidates.isEmpty()) {
             return null;
-        }
-        else if (candidates.size() == 1) {
+        } else if (candidates.size() == 1) {
             return candidates.get(0);
         }
 
         JMethodSig currentBest = null;
 
-        nextCandidate: for (int i = 0; i < candidates.size(); i++) {
+        nextCandidate:
+        for (int i = 0; i < candidates.size(); i++) {
             JMethodSig cand = candidates.get(i);
 
             for (JMethodSig other : candidates) {
@@ -1654,8 +1631,7 @@ public final class TypeOps {
 
             if (currentBest == null) {
                 currentBest = cand;
-            }
-            else if (cand.getReturnType().isSubtypeOf(currentBest.getReturnType())) {
+            } else if (cand.getReturnType().isSubtypeOf(currentBest.getReturnType())) {
                 // select the most specific return type
                 currentBest = cand;
             }
@@ -1673,7 +1649,7 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="As super">
+    // <editor-fold  defaultstate="collapsed" desc="As super">
 
     /**
      * @see JTypeMirror#getAsSuper(JClassSymbol)
@@ -1689,7 +1665,8 @@ public final class TypeOps {
     }
 
     /**
-     * Return the base type of t or any of its outer types that starts with the given type. If none exists, return null.
+     * Return the base type of t or any of its outer types that starts
+     * with the given type.  If none exists, return null.
      */
     public static @Nullable JClassType asOuterSuper(JTypeMirror t, JClassSymbol sym) {
         if (t instanceof JClassType) {
@@ -1700,18 +1677,17 @@ public final class TypeOps {
                     return sup;
                 }
                 ct = ct.getEnclosingType();
-            }
-            while (ct != null);
-        }
-        else if (t instanceof JTypeVar || t instanceof JArrayType) {
+            } while (ct != null);
+        } else if (t instanceof JTypeVar || t instanceof JArrayType) {
             return (JClassType) t.getAsSuper(sym);
         }
         return null;
     }
 
     /**
-     * Return the first enclosing type of the container type that has the given symbol in its supertypes. Return null if
-     * this is not found.
+     * Return the first enclosing type of the container type
+     * that has the given symbol in its supertypes. Return null
+     * if this is not found.
      */
     public static @Nullable JClassType getReceiverType(@NonNull JClassType containerType, JClassSymbol sym) {
         JClassType ct = containerType;
@@ -1721,8 +1697,7 @@ public final class TypeOps {
                 return ct;
             }
             ct = ct.getEnclosingType();
-        }
-        while (ct != null);
+        } while (ct != null);
         return null;
     }
 
@@ -1731,7 +1706,6 @@ public final class TypeOps {
         static final AsSuperVisitor INSTANCE = new AsSuperVisitor();
 
         /** Parameter is the erasure of the target. */
-
         @Override
         public JTypeMirror visit(JTypeMirror t, JClassSymbol target) {
             return null;
@@ -1748,8 +1722,7 @@ public final class TypeOps {
             JClassType res = sup == null ? null : (JClassType) sup.acceptVisitor(this, target);
             if (res != null) {
                 return res;
-            }
-            else {
+            } else {
                 // then look in interfaces if possible
                 if (target.isInterface() || target.isUnresolved()) {
                     return firstResult(target, t.getSuperInterfaces());
@@ -1766,8 +1739,7 @@ public final class TypeOps {
 
         public @Nullable JTypeMirror firstResult(JClassSymbol target, Iterable<? extends JTypeMirror> components) {
             for (JTypeMirror ci : components) {
-                @Nullable
-                JTypeMirror sup = ci.acceptVisitor(this, target);
+                @Nullable JTypeMirror sup = ci.acceptVisitor(this, target);
                 if (sup != null) {
                     return sup;
                 }
@@ -1791,10 +1763,11 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="LUB/GLB">
+    // <editor-fold  defaultstate="collapsed" desc="LUB/GLB">
 
     /**
-     * Returns a subset S of the parameter, whose components have no strict supertype in S.
+     * Returns a subset S of the parameter, whose components have no
+     * strict supertype in S.
      *
      * <pre>{@code
      * S = { V | V in set, and for all W ≠ V in set, it is not the case that W <: V }
@@ -1807,7 +1780,8 @@ public final class TypeOps {
         // i.e. antisymmetric: A <: B && A != B implies not(B <: A)
         // This is not the case if we include unchecked conversion in there,
         // or special provisions for unresolved types.
-        vLoop: for (JTypeMirror v : set) {
+        vLoop:
+        for (JTypeMirror v : set) {
             for (JTypeMirror w : set) {
                 if (!w.equals(v) && !hasUnresolvedSymbolOrArray(w)) {
                     Convertibility isConvertible = isConvertibleNoCapture(w, v);
@@ -1828,13 +1802,13 @@ public final class TypeOps {
     // </editor-fold>
 
     /**
-     * Returns the components of t if it is an intersection type, otherwise returns t.
+     * Returns the components of t if it is an intersection type,
+     * otherwise returns t.
      */
     public static List<JTypeMirror> asList(JTypeMirror t) {
         if (t instanceof JIntersectionType) {
             return ((JIntersectionType) t).getComponents();
-        }
-        else {
+        } else {
             return Collections.singletonList(t);
         }
     }
@@ -1844,7 +1818,7 @@ public final class TypeOps {
         return CollectionUtil.map(ts, JTypeMirror::getErasure);
     }
 
-    // <editor-fold defaultstate="collapsed" desc="Mentions">
+    // <editor-fold  defaultstate="collapsed" desc="Mentions">
 
     public static boolean mentions(@NonNull JTypeVisitable type, @NonNull InferenceVar parent) {
         return type.acceptVisitor(MentionsVisitor.INSTANCE, Collections.singleton(parent));
@@ -1930,14 +1904,14 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Accessibility utils">
+    // <editor-fold  defaultstate="collapsed" desc="Accessibility utils">
 
     public static Predicate<JMethodSymbol> accessibleMethodFilter(String name, @NonNull JClassSymbol symbol) {
         return it -> it.nameEquals(name) && isAccessible(it, symbol);
     }
 
-    public static Iterable<JMethodSig> lazyFilterAccessible(List<JMethodSig> visible,
-            @NonNull JClassSymbol accessSite) {
+    public static Iterable<JMethodSig> lazyFilterAccessible(
+            List<JMethodSig> visible, @NonNull JClassSymbol accessSite) {
         return () -> IteratorUtil.filter(visible.iterator(), it -> isAccessible(it.getSymbol(), accessSite));
     }
 
@@ -1946,8 +1920,9 @@ public final class TypeOps {
     }
 
     /**
-     * Methods and fields of a type variable come from its upper bound, which must be captured. Capturing a type var
-     * does NOT capture its upper bound, so we must treat this case here.
+     * Methods and fields of a type variable come from its upper bound, which must be captured.
+     * Capturing a type var does NOT capture its upper bound, so we must treat this
+     * case here.
      */
     public static JTypeMirror getMemberSource(JTypeMirror t) {
         if (t instanceof JTypeVar) {
@@ -1957,20 +1932,19 @@ public final class TypeOps {
         return capture(t);
     }
 
-    public static List<JMethodSig> getMethodsOf(JTypeMirror type, String name, boolean staticOnly,
-            @NonNull JClassSymbol enclosing) {
+    public static List<JMethodSig> getMethodsOf(
+            JTypeMirror type, String name, boolean staticOnly, @NonNull JClassSymbol enclosing) {
         if (staticOnly && type.isInterface()) {
             // static methods, start on interface
             // static interface methods are not inherited
-            return type.streamDeclaredMethods(staticMethodFilter(name, true, enclosing)).collect(Collectors.toList());
-        }
-        else if (staticOnly) {
+            return type.streamDeclaredMethods(staticMethodFilter(name, true, enclosing))
+                    .collect(Collectors.toList());
+        } else if (staticOnly) {
             // static methods, doesn't start on interface
             // -> ignore non-static, ignore any that are interfaces
             return type.streamMethods(staticMethodFilter(name, false, enclosing))
                     .collect(OverloadSet.collectMostSpecific(type));
-        }
-        else {
+        } else {
             return type.streamMethods(methodFilter(name, enclosing)).collect(OverloadSet.collectMostSpecific(type));
         }
     }
@@ -1979,9 +1953,10 @@ public final class TypeOps {
         return it -> isAccessibleWithName(name, enclosing, it);
     }
 
-    private static @NonNull Predicate<JMethodSymbol> staticMethodFilter(String name, boolean acceptItfs,
-            @NonNull JClassSymbol enclosing) {
-        return it -> Modifier.isStatic(it.getModifiers()) && (acceptItfs || !it.getEnclosingClass().isInterface())
+    private static @NonNull Predicate<JMethodSymbol> staticMethodFilter(
+            String name, boolean acceptItfs, @NonNull JClassSymbol enclosing) {
+        return it -> Modifier.isStatic(it.getModifiers())
+                && (acceptItfs || !it.getEnclosingClass().isInterface())
                 && isAccessibleWithName(name, enclosing, it);
     }
 
@@ -2017,8 +1992,8 @@ public final class TypeOps {
         return superclass != null && isSubClassOfNoInterface(superclass, symbol);
     }
 
-    public static NameResolver<FieldSig> getMemberFieldResolver(JTypeMirror c, @NonNull String accessPackageName,
-            @Nullable JClassSymbol access, String name) {
+    public static NameResolver<FieldSig> getMemberFieldResolver(
+            JTypeMirror c, @NonNull String accessPackageName, @Nullable JClassSymbol access, String name) {
         if (c instanceof JClassType) {
             // fast path
             return JavaResolvers.getMemberFieldResolver((JClassType) c, accessPackageName, access, name);
@@ -2051,8 +2026,8 @@ public final class TypeOps {
 
         @Override
         public NameResolver<FieldSig> visitClass(JClassType t, FieldSearchParams fieldSearchParams) {
-            return JavaResolvers.getMemberFieldResolver(t, fieldSearchParams.accessPackageName,
-                    fieldSearchParams.access, fieldSearchParams.name);
+            return JavaResolvers.getMemberFieldResolver(
+                    t, fieldSearchParams.accessPackageName, fieldSearchParams.access, fieldSearchParams.name);
         }
 
         @Override
@@ -2062,15 +2037,15 @@ public final class TypeOps {
 
         @Override
         public NameResolver<FieldSig> visitIntersection(JIntersectionType t, FieldSearchParams fieldSearchParams) {
-            return NameResolver
-                    .composite(CollectionUtil.map(t.getComponents(), c -> c.acceptVisitor(this, fieldSearchParams)));
+            return NameResolver.composite(
+                    CollectionUtil.map(t.getComponents(), c -> c.acceptVisitor(this, fieldSearchParams)));
         }
 
         @Override
         public NameResolver<FieldSig> visitArray(JArrayType t, FieldSearchParams fieldSearchParams) {
             if ("length".equals(fieldSearchParams.name)) {
-                return CoreResolvers.singleton("length",
-                        t.getTypeSystem().sigOf(t, t.getSymbol().getDeclaredField("length")));
+                return CoreResolvers.singleton(
+                        "length", t.getTypeSystem().sigOf(t, t.getSymbol().getDeclaredField("length")));
             }
             return CoreResolvers.emptyResolver();
         }
@@ -2078,19 +2053,16 @@ public final class TypeOps {
 
     // </editor-fold>
 
-    // <editor-fold defaultstate="collapsed" desc="Miscellaneous">
+    // <editor-fold  defaultstate="collapsed" desc="Miscellaneous">
 
     /**
-     * Returns true if both types have a common supertype that is not Object. Primitive types are only related to
-     * themselves.
+     * Returns true if both types have a common supertype that is not Object.
+     * Primitive types are only related to themselves.
      *
-     * @param t
-     *            Non-null type
-     * @param s
-     *            Non-null type
+     * @param t Non-null type
+     * @param s Non-null type
      *
-     * @throws NullPointerException
-     *             if a parameter is null
+     * @throws NullPointerException if a parameter is null
      */
     public static boolean areRelated(@NonNull JTypeMirror t, JTypeMirror s) {
         if (t.isPrimitive() || s.isPrimitive()) {
@@ -2106,41 +2078,38 @@ public final class TypeOps {
     }
 
     /**
-     * Returns true if the type is {@link TypeSystem#UNKNOWN}, {@link TypeSystem#ERROR}, or a class type with unresolved
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * {@link TypeSystem#ERROR}, or a class type with unresolved
      * symbol.
      *
-     * @param t
-     *            Non-null type
+     * @param t Non-null type
      *
-     * @throws NullPointerException
-     *             if the parameter is null
+     * @throws NullPointerException if the parameter is null
      */
     public static boolean isUnresolved(@NonNull JTypeMirror t) {
         return isSpecialUnresolved(t) || hasUnresolvedSymbol(t);
     }
 
     /**
-     * Returns true if the type is {@link TypeSystem#UNKNOWN}, or {@link TypeSystem#ERROR}, or a class type with
-     * unresolved symbol, or an array of such types.
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * or {@link TypeSystem#ERROR}, or a class type with unresolved
+     * symbol, or an array of such types.
      *
-     * @param t
-     *            Non-null type
+     * @param t Non-null type
      *
-     * @throws NullPointerException
-     *             if the parameter is null
+     * @throws NullPointerException if the parameter is null
      */
     public static boolean isUnresolvedOrArray(@NonNull JTypeMirror t) {
         return isSpecialUnresolvedOrArray(t) || hasUnresolvedSymbolOrArray(t);
     }
 
     /**
-     * Returns true if the type is {@link TypeSystem#UNKNOWN}, or {@link TypeSystem#ERROR}.
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * or {@link TypeSystem#ERROR}.
      *
-     * @param t
-     *            Non-null type
+     * @param t Non-null type
      *
-     * @throws NullPointerException
-     *             if the parameter is null
+     * @throws NullPointerException if the parameter is null
      */
     public static boolean isSpecialUnresolved(@NonNull JTypeMirror t) {
         TypeSystem ts = t.getTypeSystem();
@@ -2148,30 +2117,31 @@ public final class TypeOps {
     }
 
     /**
-     * Returns true if the type is {@link TypeSystem#UNKNOWN}, or {@link TypeSystem#ERROR}, or an array of such types.
+     * Returns true if the type is {@link TypeSystem#UNKNOWN},
+     * or {@link TypeSystem#ERROR}, or an array of such types.
      *
-     * @param t
-     *            Non-null type
+     * @param t Non-null type
      *
-     * @throws NullPointerException
-     *             if the parameter is null
+     * @throws NullPointerException if the parameter is null
      */
     public static boolean isSpecialUnresolvedOrArray(@Nullable JTypeMirror t) {
-        return t == null || isSpecialUnresolved(t)
+        return t == null
+                || isSpecialUnresolved(t)
                 || t instanceof JArrayType && isSpecialUnresolved(((JArrayType) t).getElementType());
     }
 
     /**
-     * Return true if the argument is a {@link JClassType} with {@linkplain JClassSymbol#isUnresolved() an unresolved
-     * symbol}.
+     * Return true if the argument is a {@link JClassType} with
+     * {@linkplain JClassSymbol#isUnresolved() an unresolved symbol}.
      */
     public static boolean hasUnresolvedSymbol(@Nullable JTypeMirror t) {
         return t instanceof JClassType && t.getSymbol().isUnresolved();
     }
 
     /**
-     * Return true if the argument is a {@link JClassType} with {@linkplain JClassSymbol#isUnresolved() an unresolved
-     * symbol}, or an array whose element type has an unresolved symbol.
+     * Return true if the argument is a {@link JClassType} with
+     * {@linkplain JClassSymbol#isUnresolved() an unresolved symbol},
+     * or an array whose element type has an unresolved symbol.
      */
     public static boolean hasUnresolvedSymbolOrArray(@Nullable JTypeMirror t) {
         if (!(t instanceof JClassType)) {
@@ -2189,8 +2159,10 @@ public final class TypeOps {
     }
 
     /**
-     * Return true if the method is context dependent. That means its return type is influenced by the surrounding
-     * context during type inference. Generic constructors are always context dependent.
+     * Return true if the method is context dependent. That
+     * means its return type is influenced by the surrounding
+     * context during type inference. Generic constructors
+     * are always context dependent.
      *
      * @deprecated Since 7.11.0. Use {@link #isContextDependent(JExecutableSymbol)} instead which is more flexible.
      */
@@ -2200,8 +2172,10 @@ public final class TypeOps {
     }
 
     /**
-     * Return true if the method is context dependent. That means its return type is influenced by the surrounding
-     * context during type inference. Generic constructors are always context dependent.
+     * Return true if the method is context dependent. That
+     * means its return type is influenced by the surrounding
+     * context during type inference. Generic constructors
+     * are always context dependent.
      */
     public static boolean isContextDependent(JExecutableSymbol symbol) {
         if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {

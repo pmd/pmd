@@ -1,14 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
@@ -70,7 +68,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         }
 
         public Object[] getParamsForViolation() {
-            return new String[] { getTypeName(variable), String.valueOf(capacity), String.valueOf(anticipatedLength) };
+            return new String[] {getTypeName(variable), String.valueOf(capacity), String.valueOf(anticipatedLength)};
         }
 
         private String getTypeName(TypeNode node) {
@@ -89,8 +87,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             Map<Node, Integer> blocks = branches.get(parent);
             if (!blocks.containsKey(node)) {
                 blocks.put(node, counter);
-            }
-            else {
+            } else {
                 blocks.put(node, blocks.get(node) + counter);
             }
         }
@@ -128,8 +125,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                     processMethodCall(state, methodCall);
                     parent = parent.getParent();
                 }
-            }
-            else if (usage.getParent() instanceof ASTAssignmentExpression) {
+            } else if (usage.getParent() instanceof ASTAssignmentExpression) {
                 ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
                 State newState = getConstructorCapacity(node, assignment.getRightOperand());
 
@@ -138,8 +134,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                         asCtx(data).addViolation(state.rootNode, state.getParamsForViolation());
                     }
                     state = newState;
-                }
-                else {
+                } else {
                     state.addAnticipatedLength(newState.anticipatedLength);
                 }
             }
@@ -155,45 +150,44 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         if ("append".equals(methodCall.getMethodName())) {
             int counter = 0;
             Set<ASTLiteral> literals = new HashSet<>();
-            literals.addAll(methodCall.getArguments().descendants(ASTLiteral.class)
+            literals.addAll(methodCall
+                    .getArguments()
+                    .descendants(ASTLiteral.class)
                     // exclude literals, that belong to different method calls
-                    .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall).toList());
+                    .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall)
+                    .toList());
             for (ASTLiteral literal : literals) {
                 if (literal instanceof ASTStringLiteral) {
                     counter += ((ASTStringLiteral) literal).length();
-                }
-                else if (literal instanceof ASTNumericLiteral) {
+                } else if (literal instanceof ASTNumericLiteral) {
                     if (literal.getParent() instanceof ASTCastExpression
                             && TypeTestUtil.isA(char.class, (ASTCastExpression) literal.getParent())) {
                         counter += 1;
+                    } else {
+                        counter += String.valueOf(((ASTNumericLiteral) literal).getConstValue())
+                                .length();
                     }
-                    else {
-                        counter += String.valueOf(((ASTNumericLiteral) literal).getConstValue()).length();
-                    }
-                }
-                else if (literal instanceof ASTCharLiteral) {
+                } else if (literal instanceof ASTCharLiteral) {
                     counter += 1;
                 }
             }
 
-            ASTIfStatement ifStatement = methodCall.ancestors(ASTIfStatement.class).first();
-            ASTSwitchStatement switchStatement = methodCall.ancestors(ASTSwitchStatement.class).first();
+            ASTIfStatement ifStatement =
+                    methodCall.ancestors(ASTIfStatement.class).first();
+            ASTSwitchStatement switchStatement =
+                    methodCall.ancestors(ASTSwitchStatement.class).first();
             if (ifStatement != null) {
                 if (ifStatement.getThenBranch().descendants().any(n -> n == methodCall)) {
                     state.addBranch(ifStatement.getThenBranch(), counter);
-                }
-                else if (ifStatement.getElseBranch() != null) {
+                } else if (ifStatement.getElseBranch() != null) {
                     state.addBranch(ifStatement.getElseBranch(), counter);
                 }
-            }
-            else if (switchStatement != null) {
+            } else if (switchStatement != null) {
                 state.addBranch(methodCall.ancestors(ASTSwitchBranch.class).first(), counter);
-            }
-            else {
+            } else {
                 state.addAnticipatedLength(counter);
             }
-        }
-        else if ("setLength".equals(methodCall.getMethodName())) {
+        } else if ("setLength".equals(methodCall.getMethodName())) {
             int newLength = calculateExpression(methodCall.getArguments().get(0));
             if (state.capacity != State.UNKNOWN_CAPACITY && newLength > state.capacity) {
                 state.capacity = newLength; // a bigger setLength increases capacity
@@ -201,8 +195,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             }
             // setLength fills the string builder, any new append adds to this
             state.anticipatedLength = newLength;
-        }
-        else if ("ensureCapacity".equals(methodCall.getMethodName())) {
+        } else if ("ensureCapacity".equals(methodCall.getMethodName())) {
             int newCapacity = calculateExpression(methodCall.getArguments().get(0));
             if (newCapacity > state.capacity) {
                 // only a bigger new capacity changes the capacity
@@ -234,10 +227,12 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                     return state;
                 }
                 int stringLength = ((String) argument.getConstValue()).length();
-                return new State(variable, constructorCall, DEFAULT_BUFFER_SIZE + stringLength,
+                return new State(
+                        variable,
+                        constructorCall,
+                        DEFAULT_BUFFER_SIZE + stringLength,
                         stringLength + state.anticipatedLength);
-            }
-            else {
+            } else {
                 return new State(variable, constructorCall, calculateExpression(argument), state.anticipatedLength);
             }
         }

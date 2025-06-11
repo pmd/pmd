@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -37,5 +36,4 @@ public final class ASTLabeledStatement extends AbstractStatement {
     public ASTStatement getStatement() {
         return (ASTStatement) getChild(0);
     }
-
 }

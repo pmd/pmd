@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
@@ -12,7 +11,7 @@ package net.sourceforge.pmd.lang.java.ast;
  * SynchronizedStatement ::= "synchronized" "(" {@link ASTExpression Expression} ")" {@link ASTBlock Block}
  *
  * </pre>
- * 
+ *
  */
 public final class ASTSynchronizedStatement extends AbstractStatement {
 

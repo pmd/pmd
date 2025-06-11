@@ -6,9 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.isBooleanLiteral;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTBooleanLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -23,6 +20,8 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  *
@@ -51,35 +50,29 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
                         || JavaAstUtils.isNullLiteral(eq.getRightOperand())) {
                     // use assertNull/assertNonNull
                     suggestion = isPositive ? "assertNull" : "assertNonNull";
-                }
-                else {
+                } else {
                     if (isPrimitive(eq.getLeftOperand()) || isPrimitive(eq.getRightOperand())) {
                         suggestion = isPositive ? "assertEquals" : "assertNotEquals";
-                    }
-                    else {
+                    } else {
                         suggestion = isPositive ? "assertSame" : "assertNotSame";
                     }
                 }
                 asCtx(data).addViolation(node, suggestion);
 
-            }
-            else {
-                @Nullable
-                ASTExpression negatedExprOperand = getNegatedExprOperand(lastArg);
+            } else {
+                @Nullable ASTExpression negatedExprOperand = getNegatedExprOperand(lastArg);
 
                 if (OBJECT_EQUALS.matchesCall(negatedExprOperand)) {
                     // assertTrue(!a.equals(b))
                     String suggestion = isAssertTrue ? "assertNotEquals" : "assertEquals";
                     asCtx(data).addViolation(node, suggestion);
 
-                }
-                else if (negatedExprOperand != null) {
+                } else if (negatedExprOperand != null) {
                     // assertTrue(!something)
                     String suggestion = isAssertTrue ? "assertFalse" : "assertTrue";
                     asCtx(data).addViolation(node, suggestion);
 
-                }
-                else if (OBJECT_EQUALS.matchesCall(lastArg)) {
+                } else if (OBJECT_EQUALS.matchesCall(lastArg)) {
                     // assertTrue(a.equals(b))
                     String suggestion = isAssertTrue ? "assertEquals" : "assertNotEquals";
                     asCtx(data).addViolation(node, suggestion);
@@ -119,7 +112,8 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Returns a child with an offset from the end. Eg {@code getChildRev(list, -1)} returns the last child.
+     * Returns a child with an offset from the end. Eg {@code getChildRev(list, -1)}
+     * returns the last child.
      */
     private static <T extends JavaNode> T getChildRev(@NonNull ASTList<T> list, int i) {
         assert i < 0 : "Expecting negative offset";
@@ -127,7 +121,8 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAssertionCall(ASTMethodCall call, String methodName) {
-        return call.getMethodName().equals(methodName) && !call.getOverloadSelectionInfo().isFailed()
+        return call.getMethodName().equals(methodName)
+                && !call.getOverloadSelectionInfo().isFailed()
                 && TestFrameworksUtil.isCallOnAssertionContainer(call);
     }
 

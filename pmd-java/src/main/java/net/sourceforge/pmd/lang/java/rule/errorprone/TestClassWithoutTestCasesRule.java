@@ -1,14 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit3Class;
 import static net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil.isJUnit5NestedClass;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
@@ -19,12 +17,12 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 
 public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Pattern> TEST_CLASS_PATTERN =
-            PropertyFactory.regexProperty("testClassPattern")
-                    .defaultValue("^(?:.*\\.)?Test[^\\.]*$|^(?:.*\\.)?.*Tests?$|^(?:.*\\.)?.*TestCase$")
-                    .desc("Test class name pattern to identify test classes by their fully qualified name. "
-                            + "An empty pattern disables test class detection by name. Since PMD 6.51.0.")
-                    .build();
+    private static final PropertyDescriptor<Pattern> TEST_CLASS_PATTERN = PropertyFactory.regexProperty(
+                    "testClassPattern")
+            .defaultValue("^(?:.*\\.)?Test[^\\.]*$|^(?:.*\\.)?.*Tests?$|^(?:.*\\.)?.*TestCase$")
+            .desc("Test class name pattern to identify test classes by their fully qualified name. "
+                    + "An empty pattern disables test class detection by name. Since PMD 6.51.0.")
+            .build();
 
     public TestClassWithoutTestCasesRule() {
         super(ASTClassDeclaration.class);

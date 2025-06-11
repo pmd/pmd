@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
@@ -13,11 +12,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.pcollections.PVector;
-import org.pcollections.TreePVector;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -31,16 +25,21 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.reporting.RuleContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.pcollections.PVector;
+import org.pcollections.TreePVector;
 
 /**
- * Searches through all methods and constructors called from constructors. It marks as dangerous any call to overridable
- * methods from non-private constructors. It marks as dangerous any calls to dangerous private constructors from
- * non-private constructors.
+ * Searches through all methods and constructors called from constructors. It
+ * marks as dangerous any call to overridable methods from non-private
+ * constructors. It marks as dangerous any calls to dangerous private
+ * constructors from non-private constructors.
  *
  * @author CL Gilbert (dnoyeb@users.sourceforge.net)
  *
- *         TODO match parameter types. Aggressively strips off any package names. Normal compares the names as is. TODO
- *         What about interface declarations which can have internal classes
+ *         TODO match parameter types. Aggressively strips off any package
+ *         names. Normal compares the names as is. TODO What about interface
+ *         declarations which can have internal classes
  */
 public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRulechainRule {
 
@@ -80,7 +79,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 JMethodSig unsafeMethod = call.getTypeSystem().sigOf(unsafetyReason.getLast());
                 String message = unsafeMethod.equals(overload) ? MESSAGE : MESSAGE_TRANSITIVE;
                 String lastMethod = PrettyPrintingUtil.prettyPrintOverload(unsafetyReason.getLast());
-                String stack = unsafetyReason.stream().map(PrettyPrintingUtil::prettyPrintOverload)
+                String stack = unsafetyReason.stream()
+                        .map(PrettyPrintingUtil::prettyPrintOverload)
                         .collect(Collectors.joining(", "));
                 asCtx(data).addViolationWithMessage(call, message, lastMethod, stack);
             }
@@ -104,8 +104,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
             Deque<JMethodSymbol> stack = new LinkedList<>();
             stack.addFirst(method); // the method itself
             return stack;
-        }
-        else {
+        } else {
             return getUnsafetyReason(method, recursionGuard);
         }
     }
@@ -120,8 +119,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         ASTMethodDeclaration declaration = method.tryGetNode();
         if (declaration == null) {
             return EMPTY_STACK; // no idea
-        }
-        else if (recursionGuard.contains(declaration)) {
+        } else if (recursionGuard.contains(declaration)) {
             // being visited, assume body is safe
             return EMPTY_STACK;
         }
@@ -133,7 +131,8 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
         PVector<ASTMethodDeclaration> deeperRecursion = recursionGuard.plus(declaration);
 
-        for (ASTMethodCall call : NodeStream.of(declaration.getBody()).descendants(ASTMethodCall.class)
+        for (ASTMethodCall call : NodeStream.of(declaration.getBody())
+                .descendants(ASTMethodCall.class)
                 .filter(ConstructorCallsOverridableMethodRule::isCallOnThisInstance)) {
             Deque<JMethodSymbol> unsafetyReason = getUnsafetyReason(call, deeperRecursion);
             if (!unsafetyReason.isEmpty()) {

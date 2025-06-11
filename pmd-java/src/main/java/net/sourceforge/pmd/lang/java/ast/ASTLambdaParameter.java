@@ -25,8 +25,8 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
     }
 
     /**
-     * If true, this formal parameter represents one without explicit types. This can appear as part of a lambda
-     * expression with java11 using "var".
+     * If true, this formal parameter represents one without explicit types.
+     * This can appear as part of a lambda expression with java11 using "var".
      *
      * @see ASTVariableId#isTypeInferred()
      */

@@ -6,11 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.List;
 import java.util.Objects;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -33,18 +28,24 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Checks usages of explicity type arguments in a constructor call that may be replaced by a diamond ({@code <>}). In
- * order to determine this, we mock a type resolution call site, which is equivalent to the expression as if it had a
- * diamond instead of explicit type arguments. We then perform overload resolution for this fake call site. If overload
- * resolution fails, resolves to another overload, or if the inferred type is not compatible with the expected context
- * type, then the type arguments are unnecessary, and removing them will not break the program.
+ * Checks usages of explicity type arguments in a constructor call that
+ * may be replaced by a diamond ({@code <>}). In order to determine this,
+ * we mock a type resolution call site, which is equivalent to the expression
+ * as if it had a diamond instead of explicit type arguments. We then perform
+ * overload resolution for this fake call site. If overload resolution fails,
+ * resolves to another overload, or if the inferred type is not compatible
+ * with the expected context type, then the type arguments are unnecessary,
+ * and removing them will not break the program.
  *
- * <p>
- * Note that type inference in Java 8+ works differently from Java 7. In Java 7, type arguments may be necessary in more
- * places. The specifics are however implemented within the type resolution code, and this rule does not need to know
- * about it.
+ * <p>Note that type inference in Java 8+ works differently from Java 7.
+ * In Java 7, type arguments may be necessary in more places. The specifics
+ * are however implemented within the type resolution code, and this rule does
+ * not need to know about it.
  */
 public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
 
@@ -52,8 +53,8 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             "Explicit type arguments can be replaced by a diamond: `{0}`";
     private static final String RAW_TYPE_MESSAGE = "Raw type use may be avoided by using a diamond: `{0}`";
     /**
-     * Maximum length of the argument list (including parentheses) for it to be included in the violation message
-     * instead of an ellipsis {@code (...)}.
+     * Maximum length of the argument list (including parentheses) for
+     * it to be included in the violation message instead of an ellipsis {@code (...)}.
      */
     private static final int MAX_ARGS_LENGTH = 25;
 
@@ -103,29 +104,27 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         // this may not mutate the AST
         JavaExprMirrors factory = JavaExprMirrors.forObservation(infer);
 
-        InvocationNode invocContext = InternalApiBridge.getTopLevelExprContext(call).getInvocNodeIfInvocContext();
+        InvocationNode invocContext =
+                InternalApiBridge.getTopLevelExprContext(call).getInvocNodeIfInvocContext();
         ExprContext topmostContext;
         InvocationMirror mirror;
         if (invocContext == null) {
             CtorInvocationMirror defaultMirror = (CtorInvocationMirror) factory.getTopLevelInvocationMirror(call);
             mirror = new SpyInvocMirror(defaultMirror);
             topmostContext = call.getConversionContext();
-        }
-        else {
+        } else {
             mirror = factory.getInvocationMirror(invocContext, (e, parent, self) -> {
                 ExprMirror defaultImpl = factory.defaultMirrorMaker().createMirrorForSubexpression(e, parent, self);
                 if (e == call) {
                     return new SpyInvocMirror((CtorInvocationMirror) defaultImpl);
-                }
-                else {
+                } else {
                     return defaultImpl;
                 }
             });
 
             if (invocContext instanceof ASTExpression) {
                 topmostContext = ((ASTExpression) invocContext).getConversionContext();
-            }
-            else {
+            } else {
                 topmostContext = ExprContext.getMissingInstance();
             }
         }
@@ -144,13 +143,11 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
         String argsString;
         if (arguments.size() == 0) {
             argsString = "()";
-        }
-        else {
+        } else {
             CharSequence text = arguments.getText();
             if (text.length() <= MAX_ARGS_LENGTH && !StringUtils.contains(text, '\n')) {
                 argsString = text.toString();
-            }
-            else {
+            } else {
                 argsString = "(...)";
             }
         }
@@ -162,8 +159,7 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             JTypeDeclSymbol sym = type.getTypeMirror().getSymbol();
             Objects.requireNonNull(sym);
             sb.append(sym.getPackageName()).append('.');
-        }
-        else {
+        } else {
             ASTClassType qualifier = type.getQualifier();
             if (qualifier != null) {
                 produceSameTypeWithDiamond(qualifier, sb, false).append('.');
@@ -282,5 +278,4 @@ public class UseDiamondOperatorRule extends AbstractJavaRulechainRule {
             return base.isEquivalentToUnderlyingAst();
         }
     }
-
 }

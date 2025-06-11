@@ -4,12 +4,11 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.ast.Annotatable;
 import net.sourceforge.pmd.lang.java.ast.SymbolDeclaratorNode;
 import net.sourceforge.pmd.lang.java.symbols.AnnotableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import org.pcollections.PSet;
 
 /**
  * @author Clément Fournier

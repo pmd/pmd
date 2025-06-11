@@ -5,10 +5,6 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
@@ -25,14 +21,16 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 final class MethodRefMirrorImpl extends BaseFunctionalMirror<ASTMethodReference> implements MethodRefMirror {
 
     private JMethodSig exactMethod;
     private MethodCtDecl ctdecl;
 
-    MethodRefMirrorImpl(JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent,
-            MirrorMaker subexprMaker) {
+    MethodRefMirrorImpl(
+            JavaExprMirrors mirrors, ASTMethodReference lambda, ExprMirror parent, MirrorMaker subexprMaker) {
         super(mirrors, lambda, parent, subexprMaker);
         exactMethod = mirrors.ts.UNRESOLVED_METHOD;
 

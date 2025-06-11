@@ -9,10 +9,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 /**
  * Visits a type. This allows implementing many algorithms simply.
  *
- * @param <R>
- *            Return type
- * @param <P>
- *            Parameter type
+ * @param <R> Return type
+ * @param <P> Parameter type
  */
 public interface JTypeVisitor<R, P> {
 
@@ -55,11 +53,11 @@ public interface JTypeVisitor<R, P> {
     }
 
     /**
-     * Visit a sentinel type. The argument may be one of {@link TypeSystem#UNKNOWN}, {@link TypeSystem#NO_TYPE}, and
-     * {@link TypeSystem#NULL_TYPE}.
+     * Visit a sentinel type. The argument may be one of
+     * {@link TypeSystem#UNKNOWN}, {@link TypeSystem#NO_TYPE},
+     * and {@link TypeSystem#NULL_TYPE}.
      */
     default R visitSentinel(JTypeMirror t, P p) {
         return visit(t, p);
     }
-
 }

@@ -4,20 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.InternalInterfaces.AtLeastOneChild;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Wraps a type node but presents the interface of {@link ASTExpression}. This is only used in the following contexts:
+ * Wraps a type node but presents the interface of {@link ASTExpression}.
+ * This is only used in the following contexts:
  * <ul>
  * <li>As the right-hand side of {@link BinaryOp#INSTANCEOF instanceof expressions}.
- * <li>As the qualifier of {@linkplain ASTMethodCall method calls}, {@link ASTFieldAccess field accesses}, when they
- * access a static method or field
- * <li>As the qualifier of {@linkplain ASTMethodReference method references}, if it references a static method, or is a
- * constructor reference
+ * <li>As the qualifier of {@linkplain ASTMethodCall method calls},
+ * {@link ASTFieldAccess field accesses}, when they access a static method or field
+ * <li>As the qualifier of {@linkplain ASTMethodReference method references},
+ * if it references a static method, or is a constructor reference
  * </ul>
  *
  * <pre class="grammar">
@@ -65,5 +65,4 @@ public final class ASTTypeExpression extends AbstractJavaNode
     public @NonNull JTypeMirror getTypeMirror(TypingContext ctx) {
         return getTypeNode().getTypeMirror(ctx);
     }
-
 }

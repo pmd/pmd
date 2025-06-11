@@ -1,14 +1,12 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A lambda expression.
@@ -16,9 +14,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
  *
  * <pre class="grammar">
  *
- * LambdaExpression ::= {@link ASTLambdaParameterList LambdaParameterList} {@code
- * "->"
- * } ( {@link ASTExpression Expression} | {@link ASTBlock Block} )
+ * LambdaExpression ::= {@link ASTLambdaParameterList LambdaParameterList} {@code  "->"} ( {@link ASTExpression Expression} | {@link ASTBlock Block} )
  *
  * </pre>
  */
@@ -31,7 +27,8 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
     /**
-     * Returns the type of the functional interface. E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
+     * Returns the type of the functional interface.
+     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
      * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}.
      *
      * @see #getFunctionalMethod()
@@ -42,8 +39,9 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
     /**
-     * Returns the method that is overridden in the functional interface. E.g. in
-     * {@code stringStream.map(s -> s.isEmpty())}, this is {@code java.util.function.Function#apply(java.lang.String) ->
+     * Returns the method that is overridden in the functional interface.
+     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
+     * {@code java.util.function.Function#apply(java.lang.String) ->
      * java.lang.Boolean}
      *
      * @see #getTypeMirror()
@@ -63,7 +61,8 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     }
 
     /**
-     * Return true if this lambda is explicitly typed, meaning all parameters have an explicit type. Note that lambdas
+     * Return true if this lambda is explicitly typed, meaning
+     * all parameters have an explicit type. Note that lambdas
      * with zero parameters are explicitly typed.
      */
     public boolean isExplicitlyTyped() {

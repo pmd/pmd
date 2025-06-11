@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.rule.Rule;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
@@ -42,5 +41,4 @@ class TypeIsFunctionTest extends BaseXPathFunctionTest {
 
         assertFinds(rule, 0, "interface O { @Override void foo(); }");
     }
-
 }

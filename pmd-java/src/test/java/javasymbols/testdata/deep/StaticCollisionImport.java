@@ -14,5 +14,4 @@ public class StaticCollisionImport {
     static {
         oha();
     }
-
 }

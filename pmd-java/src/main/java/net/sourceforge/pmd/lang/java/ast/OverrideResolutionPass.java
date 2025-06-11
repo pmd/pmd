@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.table.internal.SuperTypesEnumerator;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -24,9 +23,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps;
  */
 final class OverrideResolutionPass {
 
-    private OverrideResolutionPass() {
-
-    }
+    private OverrideResolutionPass() {}
 
     static void resolveOverrides(ASTTypeDeclaration node) {
         // collect methods that may override another method (non private, non static)
@@ -45,7 +42,7 @@ final class OverrideResolutionPass {
         SuperTypesEnumerator.ALL_STRICT_SUPERTYPES.stream(node.getTypeMirror())
                 // Filter down to those that may be overridden by one of the possible violations
                 // This considers name, arity, and accessibility
-                // vvvvvvvvvvvvvvvvvvvvvvvvvvv
+                //                                      vvvvvvvvvvvvvvvvvvvvvvvvvvv
                 .flatMap(st -> st.streamDeclaredMethods(relevantMethods::isRelevant))
                 // For those methods, a simple override-equivalence check is enough,
                 // because we already know they're accessible, and declared in a supertype
@@ -53,8 +50,9 @@ final class OverrideResolutionPass {
     }
 
     /**
-     * This does a prefilter, so that we only collect methods of supertypes that may be overridden by a sub method. For
-     * a method to be potentially a super method, it must have same arity
+     * This does a prefilter, so that we only collect methods of supertypes
+     * that may be overridden by a sub method. For a method to be potentially
+     * a super method, it must have same arity
      */
     private static final class RelevantMethodSet {
 
@@ -75,8 +73,7 @@ final class OverrideResolutionPass {
             if (m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE)) {
                 // cannot override anything
                 return;
-            }
-            else if (m.isAnnotationPresent(Override.class)) {
+            } else if (m.isAnnotationPresent(Override.class)) {
                 // will be overwritten if we find it
                 m.setOverriddenMethod(m.getTypeSystem().UNRESOLVED_METHOD);
             }

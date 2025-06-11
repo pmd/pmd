@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * A guard for refining a switch case in {@link ASTSwitchLabel}s. This is a Java 21 language feature.
+ * A guard for refining a switch case in {@link ASTSwitchLabel}s.
+ * This is a Java 21 language feature.
  *
  * <pre class="grammar">
  *

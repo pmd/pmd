@@ -5,8 +5,9 @@
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
 /**
- * Common interface for symbols wrapping a class file "stub". The class is parsed with ASM, only the signature
- * information is retained, hence the name stub.
+ * Common interface for symbols wrapping a class file "stub".
+ * The class is parsed with ASM, only the signature information
+ * is retained, hence the name stub.
  */
 interface AsmStub {
 
@@ -17,5 +18,4 @@ interface AsmStub {
     default SignatureParser sigParser() {
         return getResolver().getSigParser();
     }
-
 }

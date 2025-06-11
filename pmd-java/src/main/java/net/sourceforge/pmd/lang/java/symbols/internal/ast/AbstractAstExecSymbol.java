@@ -6,11 +6,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
 import java.lang.annotation.ElementType;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTReceiverParameter;
@@ -21,6 +16,9 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.PSet;
 
 /**
  * @author Clément Fournier
@@ -53,7 +51,8 @@ abstract class AbstractAstExecSymbol<T extends ASTExecutableDeclaration> extends
 
     @Override
     public List<JTypeMirror> getThrownExceptionTypes(Substitution subst) {
-        return CollectionUtil.map(ASTList.orEmpty(node.getThrowsList()), t -> t.getTypeMirror().subst(subst));
+        return CollectionUtil.map(
+                ASTList.orEmpty(node.getThrowsList()), t -> t.getTypeMirror().subst(subst));
     }
 
     @Override
@@ -98,5 +97,4 @@ abstract class AbstractAstExecSymbol<T extends ASTExecutableDeclaration> extends
     public int getArity() {
         return formals.size();
     }
-
 }

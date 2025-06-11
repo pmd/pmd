@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
@@ -25,6 +22,8 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationM
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.CtorInvocMirror.EnumCtorInvocMirror;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /** Façade that creates {@link ExprMirror} instances. */
 public final class JavaExprMirrors {
@@ -52,8 +51,9 @@ public final class JavaExprMirrors {
     }
 
     /**
-     * The mirrors produced by this factory will not be able to mutate the AST. This lets the mirror be decorated to
-     * "pretend" the expression is something slightly different, without corrupting the data in the AST.
+     * The mirrors produced by this factory will not be able to mutate
+     * the AST. This lets the mirror be decorated to "pretend" the expression
+     * is something slightly different, without corrupting the data in the AST.
      */
     public static JavaExprMirrors forObservation(Infer infer) {
         return new JavaExprMirrors(infer, false);
@@ -66,35 +66,28 @@ public final class JavaExprMirrors {
     ExprMirror makeSubexprDefault(ASTExpression e, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
         if (e instanceof InvocationNode) {
             return getInvocationMirror((InvocationNode) e, parent, false, subexprMaker);
-        }
-        else if (e instanceof ASTLambdaExpression || e instanceof ASTMethodReference) {
+        } else if (e instanceof ASTLambdaExpression || e instanceof ASTMethodReference) {
             return getFunctionalMirror(e, parent, subexprMaker);
-        }
-        else if (e instanceof ASTConditionalExpression) {
+        } else if (e instanceof ASTConditionalExpression) {
             return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e, false, parent, subexprMaker);
-        }
-        else if (e instanceof ASTSwitchExpression) {
+        } else if (e instanceof ASTSwitchExpression) {
             return new SwitchMirror(this, (ASTSwitchExpression) e, false, parent, subexprMaker);
-        }
-        else {
+        } else {
             // Standalone
             return new StandaloneExprMirror(this, e, parent);
         }
     }
 
-    ExprMirror getBranchMirrorSubexpression(ASTExpression e, boolean mustBeStandalone, @NonNull BranchingMirror parent,
-            MirrorMaker subexprMaker) {
+    ExprMirror getBranchMirrorSubexpression(
+            ASTExpression e, boolean mustBeStandalone, @NonNull BranchingMirror parent, MirrorMaker subexprMaker) {
         if (e instanceof ASTConditionalExpression) {
-            return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e, mustBeStandalone, parent,
-                    subexprMaker);
-        }
-        else if (e instanceof ASTSwitchExpression) {
+            return new ConditionalMirrorImpl(
+                    this, (ASTConditionalExpression) e, mustBeStandalone, parent, subexprMaker);
+        } else if (e instanceof ASTSwitchExpression) {
             return new SwitchMirror(this, (ASTSwitchExpression) e, mustBeStandalone, parent, subexprMaker);
-        }
-        else if (e instanceof InvocationNode) {
+        } else if (e instanceof InvocationNode) {
             return getInvocationMirror((InvocationNode) e, parent, mustBeStandalone, subexprMaker);
-        }
-        else {
+        } else {
             return subexprMaker.createMirrorForSubexpression(e, parent, subexprMaker);
         }
     }
@@ -107,33 +100,30 @@ public final class JavaExprMirrors {
         return getInvocationMirror(e, null, false, subexprMaker);
     }
 
-    private InvocationMirror getInvocationMirror(InvocationNode e, @Nullable ExprMirror parent,
-            boolean mustBeStandalone, MirrorMaker subexprMaker) {
+    private InvocationMirror getInvocationMirror(
+            InvocationNode e, @Nullable ExprMirror parent, boolean mustBeStandalone, MirrorMaker subexprMaker) {
         if (e instanceof ASTMethodCall) {
             return new MethodInvocMirror(this, (ASTMethodCall) e, mustBeStandalone, parent, subexprMaker);
-        }
-        else if (e instanceof ASTConstructorCall) {
+        } else if (e instanceof ASTConstructorCall) {
             return new CtorInvocMirror(this, (ASTConstructorCall) e, mustBeStandalone, parent, subexprMaker);
-        }
-        else if (e instanceof ASTExplicitConstructorInvocation) {
-            return new CtorInvocMirror.ExplicitCtorInvocMirror(this, (ASTExplicitConstructorInvocation) e, parent,
-                    subexprMaker);
-        }
-        else if (e instanceof ASTEnumConstant) {
+        } else if (e instanceof ASTExplicitConstructorInvocation) {
+            return new CtorInvocMirror.ExplicitCtorInvocMirror(
+                    this, (ASTExplicitConstructorInvocation) e, parent, subexprMaker);
+        } else if (e instanceof ASTEnumConstant) {
             return new EnumCtorInvocMirror(this, (ASTEnumConstant) e, parent, subexprMaker);
         }
         throw AssertionUtil.shouldNotReachHere("Unhandled InvocationNode:" + e);
     }
 
     /**
-     * A mirror that implements the rules for standalone conditional expressions correctly. getStandaloneType will work
-     * differently than the one yielded by {@link #getPolyBranchingMirror(ASTExpression)}
+     * A mirror that implements the rules for standalone conditional
+     * expressions correctly. getStandaloneType will work differently
+     * than the one yielded by {@link #getPolyBranchingMirror(ASTExpression)}
      */
     public BranchingMirror getStandaloneBranchingMirror(ASTExpression e) {
         if (e instanceof ASTConditionalExpression) {
             return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e, true, null, defaultMirrorMaker());
-        }
-        else if (e instanceof ASTSwitchExpression) {
+        } else if (e instanceof ASTSwitchExpression) {
             return new SwitchMirror(this, (ASTSwitchExpression) e, true, null, defaultMirrorMaker());
         }
         throw AssertionUtil.shouldNotReachHere("Unhandled expression: " + e);
@@ -145,8 +135,7 @@ public final class JavaExprMirrors {
     public BranchingMirror getPolyBranchingMirror(ASTExpression e) {
         if (e instanceof ASTConditionalExpression) {
             return new ConditionalMirrorImpl(this, (ASTConditionalExpression) e, false, null, defaultMirrorMaker());
-        }
-        else if (e instanceof ASTSwitchExpression) {
+        } else if (e instanceof ASTSwitchExpression) {
             return new SwitchMirror(this, (ASTSwitchExpression) e, false, null, defaultMirrorMaker());
         }
         throw AssertionUtil.shouldNotReachHere("Unhandled expression: " + e);
@@ -159,8 +148,7 @@ public final class JavaExprMirrors {
     FunctionalExprMirror getFunctionalMirror(ASTExpression e, @Nullable ExprMirror parent, MirrorMaker subexprMaker) {
         if (e instanceof ASTLambdaExpression) {
             return new LambdaMirrorImpl(this, (ASTLambdaExpression) e, parent, subexprMaker);
-        }
-        else if (e instanceof ASTMethodReference) {
+        } else if (e instanceof ASTMethodReference) {
             return new MethodRefMirrorImpl(this, (ASTMethodReference) e, parent, subexprMaker);
         }
         throw AssertionUtil.shouldNotReachHere("Unhandled expression: " + e);
@@ -171,5 +159,4 @@ public final class JavaExprMirrors {
 
         ExprMirror createMirrorForSubexpression(ASTExpression e, ExprMirror parent, MirrorMaker self);
     }
-
 }

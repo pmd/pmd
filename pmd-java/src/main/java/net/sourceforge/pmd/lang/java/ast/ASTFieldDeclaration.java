@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -10,9 +9,9 @@ import net.sourceforge.pmd.lang.rule.xpath.DeprecatedAttribute;
 /**
  * Represents a field declaration in the body of a type declaration.
  *
- * <p>
- * This declaration may define several variables, possibly of different types. The nodes corresponding to the declared
- * variables are accessible through {@link #iterator()}.
+ * <p>This declaration may define several variables, possibly of different
+ * types. The nodes corresponding to the declared variables are accessible
+ * through {@link #iterator()}.
  *
  * <pre class="grammar">
  *
@@ -39,13 +38,14 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
     }
 
     /**
-     * Gets the variable name of this field. This method searches the first VariableId node and returns its image or
-     * <code>null</code> if the child node is not found.
+     * Gets the variable name of this field. This method searches the first
+     * VariableId node and returns its image or <code>null</code> if
+     * the child node is not found.
      *
      * @return a String representing the name of the variable
      *
-     * @deprecated FieldDeclaration may declare several variables, so this is not exhaustive Iterate on the
-     *             {@linkplain ASTVariableId VariableIds} instead
+     * @deprecated FieldDeclaration may declare several variables, so this is not exhaustive
+     *     Iterate on the {@linkplain ASTVariableId VariableIds} instead
      */
     @Deprecated
     @DeprecatedAttribute(replaceWith = "VariableId/@Name")
@@ -54,8 +54,9 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
     }
 
     /**
-     * Returns the type node at the beginning of this field declaration. The type of this node is not necessarily the
-     * type of the variables, see {@link ASTVariableId#getTypeNode()}.
+     * Returns the type node at the beginning of this field declaration.
+     * The type of this node is not necessarily the type of the variables,
+     * see {@link ASTVariableId#getTypeNode()}.
      */
     @Override
     public ASTType getTypeNode() {

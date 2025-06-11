@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.math.BigInteger;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
@@ -166,10 +165,10 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
                     npath = npath.add(branchNpath.multiply(BigInteger.valueOf(caseRange)));
                     caseRange = 0;
                 }
-            }
-            else if (n instanceof ASTSwitchArrowBranch) {
+            } else if (n instanceof ASTSwitchArrowBranch) {
                 int numAlts = JavaAstUtils.numAlternatives(n);
-                BigInteger branchNpath = ((ASTSwitchArrowBranch) n).getRightHandSide().acceptVisitor(this, data);
+                BigInteger branchNpath =
+                        ((ASTSwitchArrowBranch) n).getRightHandSide().acceptVisitor(this, data);
                 npath = npath.add(branchNpath.multiply(BigInteger.valueOf(numAlts)));
             }
         }
@@ -197,9 +196,10 @@ public class NpathBaseVisitor extends JavaVisitorBase<Void, BigInteger> {
     @Override
     public BigInteger visit(ASTTryStatement node, Void data) {
         /*
-         * This scenario was not addressed by the original paper. Based on the principles outlined in the paper, as well
-         * as the Checkstyle NPath implementation, this code will add the complexity of the try to the complexities of
-         * the catch and finally blocks.
+         * This scenario was not addressed by the original paper. Based on the
+         * principles outlined in the paper, as well as the Checkstyle NPath
+         * implementation, this code will add the complexity of the try to the
+         * complexities of the catch and finally blocks.
          */
         return sumChildrenComplexities(node, data);
     }

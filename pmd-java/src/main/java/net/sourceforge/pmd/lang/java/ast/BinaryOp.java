@@ -1,25 +1,22 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Comparator;
 import java.util.EnumSet;
 import java.util.Set;
-
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.util.CollectionUtil;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
-import net.sourceforge.pmd.util.CollectionUtil;
-
 /**
- * Represents the operator of an {@linkplain ASTInfixExpression infix expression}. Constants are roughly ordered by
- * precedence, except some of them have the same precedence.
+ * Represents the operator of an {@linkplain ASTInfixExpression infix expression}.
+ * Constants are roughly ordered by precedence, except some of them have the same
+ * precedence.
  *
- * <p>
- * All of those operators are left-associative.
+ * <p>All of those operators are left-associative.
  *
  * @see UnaryOp
  * @see AssignmentOp
@@ -90,17 +87,11 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     /** Set of {@code &&} and {@code ||}. Use with {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> CONDITIONAL_OPS =
             CollectionUtil.immutableEnumSet(CONDITIONAL_AND, CONDITIONAL_OR);
-    /**
-     * Set of {@code <}, {@code <=}, {@code >=} and {@code >}. Use with
-     * {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}.
-     */
+    /** Set of {@code <}, {@code <=}, {@code >=} and {@code >}. Use with {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> COMPARISON_OPS = CollectionUtil.immutableEnumSet(LE, GE, GT, LT);
     /** Set of {@code ==} and {@code !=}. Use with {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> EQUALITY_OPS = CollectionUtil.immutableEnumSet(EQ, NE);
-    /**
-     * Set of {@code <<}, {@code >>} and {@code >>>}. Use with
-     * {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}.
-     */
+    /** Set of {@code <<}, {@code >>} and {@code >>>}. Use with {@link JavaAstUtils#isInfixExprWithOperator(JavaNode, Set)}. */
     public static final Set<BinaryOp> SHIFT_OPS =
             CollectionUtil.immutableEnumSet(LEFT_SHIFT, RIGHT_SHIFT, UNSIGNED_RIGHT_SHIFT);
 
@@ -121,12 +112,12 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     }
 
     /**
-     * Compare the precedence of this operator with that of the other, as if with a {@link Comparator}. Returns a
-     * positive integer if this operator has a higher precedence as the argument, zero if they have the same precedence,
-     * etc.
+     * Compare the precedence of this operator with that of the other,
+     * as if with a {@link Comparator}. Returns a positive integer if
+     * this operator has a higher precedence as the argument, zero if
+     * they have the same precedence, etc.
      *
-     * @throws NullPointerException
-     *             If the argument is null
+     * @throws NullPointerException If the argument is null
      */
     public int comparePrecedence(@NonNull BinaryOp other) {
         // arguments are flipped because precedence class decreases
@@ -134,18 +125,19 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     }
 
     /**
-     * Returns true if this operator has the same relative precedence as the argument. For example, {@link #ADD} and
-     * {@link #SUB} have the same precedence.
+     * Returns true if this operator has the same relative precedence
+     * as the argument. For example, {@link #ADD} and {@link #SUB} have
+     * the same precedence.
      *
-     * @throws NullPointerException
-     *             If the argument is null
+     * @throws NullPointerException If the argument is null
      */
     public boolean hasSamePrecedenceAs(@NonNull BinaryOp other) {
         return comparePrecedence(other) == 0;
     }
 
     /**
-     * Returns the ops with strictly greater precedence than the given op. This may return an empty set.
+     * Returns the ops with strictly greater precedence than the given op.
+     * This may return an empty set.
      */
     public static Set<BinaryOp> opsWithGreaterPrecedence(BinaryOp op) {
         Set<BinaryOp> range = EnumSet.range(op, MOD);
@@ -191,8 +183,9 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
     }
 
     /**
-     * Complement, for boolean operators. Eg for {@code ==}, return {@code !=}, for {@code <=}, returns {@code >}.
-     * Returns null if this is another kind of operator.
+     * Complement, for boolean operators. Eg for {@code ==}, return {@code !=},
+     * for {@code <=}, returns {@code >}. Returns null if this is another kind
+     * of operator.
      */
     public @Nullable BinaryOp getComplement() {
         switch (this) {
@@ -222,5 +215,4 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
                 return null;
         }
     }
-
 }

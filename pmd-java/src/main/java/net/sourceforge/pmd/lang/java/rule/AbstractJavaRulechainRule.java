@@ -4,13 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Base class for rules using the rulechain. The visit methods don't recurse by default.
+ * Base class for rules using the rulechain. The visit methods don't
+ * recurse by default.
  *
  * @author Clément Fournier
  * @since 7.0.0
@@ -22,10 +22,8 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
     /**
      * Specify the node types to visit as parameters.
      *
-     * @param first
-     *            The first node, there must be at least one
-     * @param visits
-     *            The rest
+     * @param first  The first node, there must be at least one
+     * @param visits The rest
      */
     @SafeVarargs
     public AbstractJavaRulechainRule(Class<? extends JavaNode> first, Class<? extends JavaNode>... visits) {

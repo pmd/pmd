@@ -11,10 +11,6 @@ import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -29,10 +25,12 @@ import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Members inserted by the compiler, eg default constructor, etc. They would be absent from the source, but are
- * reflected by the {@link Class}.
+ * Members inserted by the compiler, eg default constructor, etc. They
+ * would be absent from the source, but are reflected by the {@link Class}.
  */
 public final class ImplicitMemberSymbols {
 
@@ -40,23 +38,29 @@ public final class ImplicitMemberSymbols {
     /** This is the private access flag for varargs modifiers. */
     private static final int VARARGS_MOD = 0x00000080;
 
-    private ImplicitMemberSymbols() {
-
-    }
+    private ImplicitMemberSymbols() {}
 
     public static JMethodSymbol enumValueOf(JClassSymbol enumSym) {
         assert enumSym.isEnum() : "Not an enum symbol " + enumSym;
 
-        return new FakeMethodSym(enumSym, "valueOf", Modifier.PUBLIC | Modifier.STATIC, TypeSystem::declaration,
-                singletonList(t -> new FakeFormalParamSym(t, "name",
-                        (ts, s) -> ts.declaration(ts.getClassSymbol(String.class)))));
+        return new FakeMethodSym(
+                enumSym,
+                "valueOf",
+                Modifier.PUBLIC | Modifier.STATIC,
+                TypeSystem::declaration,
+                singletonList(t ->
+                        new FakeFormalParamSym(t, "name", (ts, s) -> ts.declaration(ts.getClassSymbol(String.class)))));
     }
 
     public static JMethodSymbol enumValues(JClassSymbol enumSym) {
         assert enumSym.isEnum() : "Not an enum symbol " + enumSym;
 
-        return new FakeMethodSym(enumSym, "values", Modifier.PUBLIC | Modifier.STATIC,
-                (ts, c) -> ts.arrayType(ts.declaration(c)), emptyList());
+        return new FakeMethodSym(
+                enumSym,
+                "values",
+                Modifier.PUBLIC | Modifier.STATIC,
+                (ts, c) -> ts.arrayType(ts.declaration(c)),
+                emptyList());
     }
 
     public static JConstructorSymbol defaultCtor(JClassSymbol sym) {
@@ -74,39 +78,53 @@ public final class ImplicitMemberSymbols {
     public static JMethodSymbol arrayClone(JClassSymbol arraySym) {
         assert arraySym.isArray() : "Not an array symbol " + arraySym;
 
-        return new FakeMethodSym(arraySym, "clone", Modifier.PUBLIC | Modifier.FINAL, TypeSystem::declaration,
-                emptyList());
+        return new FakeMethodSym(
+                arraySym, "clone", Modifier.PUBLIC | Modifier.FINAL, TypeSystem::declaration, emptyList());
     }
 
     public static JConstructorSymbol arrayConstructor(JClassSymbol arraySym) {
         assert arraySym.isArray() : "Not an array symbol " + arraySym;
 
-        return new FakeCtorSym(arraySym, Modifier.PUBLIC | Modifier.FINAL,
+        return new FakeCtorSym(
+                arraySym,
+                Modifier.PUBLIC | Modifier.FINAL,
                 singletonList(c -> new FakeFormalParamSym(c, "arg0", (ts, sym) -> ts.INT)));
     }
 
     /** Symbol for the canonical record constructor. */
-    public static JConstructorSymbol recordConstructor(JClassSymbol recordSym,
-            List<JRecordComponentSymbol> recordComponents, boolean isVarargs) {
+    public static JConstructorSymbol recordConstructor(
+            JClassSymbol recordSym, List<JRecordComponentSymbol> recordComponents, boolean isVarargs) {
         assert recordSym.isRecord() : "Not a record symbol " + recordSym;
 
         int modifiers = isVarargs ? Modifier.PUBLIC | VARARGS_MOD : Modifier.PUBLIC;
 
-        return new FakeCtorSym(recordSym, modifiers,
-                CollectionUtil.map(recordComponents, f -> c -> new FakeFormalParamSym(c, f.getSimpleName(),
-                        f.tryGetNode().getVarId(), (ts, sym) -> f.getTypeMirror(Substitution.EMPTY))));
+        return new FakeCtorSym(
+                recordSym,
+                modifiers,
+                CollectionUtil.map(
+                        recordComponents,
+                        f -> c -> new FakeFormalParamSym(
+                                c,
+                                f.getSimpleName(),
+                                f.tryGetNode().getVarId(),
+                                (ts, sym) -> f.getTypeMirror(Substitution.EMPTY))));
     }
 
     /**
-     * Symbol for a record component accessor. Only synthesized if it is not explicitly declared.
+     * Symbol for a record component accessor.
+     * Only synthesized if it is not explicitly declared.
      */
     public static JMethodSymbol recordAccessor(JClassSymbol recordSym, JRecordComponentSymbol recordComponent) {
         // See https://cr.openjdk.java.net/~gbierman/jep359/jep359-20200115/specs/records-jls.html#jls-8.10.3
 
         assert recordSym.isRecord() : "Not a record symbol " + recordSym;
 
-        return new FakeMethodSym(recordSym, recordComponent.getSimpleName(), Modifier.PUBLIC,
-                (ts, encl) -> recordComponent.getTypeMirror(Substitution.EMPTY), emptyList());
+        return new FakeMethodSym(
+                recordSym,
+                recordComponent.getSimpleName(),
+                Modifier.PUBLIC,
+                (ts, encl) -> recordComponent.getTypeMirror(Substitution.EMPTY),
+                emptyList());
     }
 
     public static JFieldSymbol arrayLengthField(JClassSymbol arraySym) {
@@ -118,7 +136,10 @@ public final class ImplicitMemberSymbols {
     public static JFieldSymbol lombokSlf4jLoggerField(JClassSymbol classSym, JavaAstProcessor processor) {
         // https://javadoc.io/doc/org.projectlombok/lombok/1.16.18/lombok/extern/slf4j/Slf4j.html
 
-        return new FakeFieldSym(classSym, "log", Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
+        return new FakeFieldSym(
+                classSym,
+                "log",
+                Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
                 (ts, s) -> ts.declaration(processor.findSymbolCannotFail("org.slf4j.Logger")));
     }
 
@@ -129,8 +150,8 @@ public final class ImplicitMemberSymbols {
         private final int modifiers;
         private final List<JFormalParamSymbol> formals;
 
-        FakeExecutableSymBase(JClassSymbol owner, String name, int modifiers,
-                List<Function<T, JFormalParamSymbol>> formals) {
+        FakeExecutableSymBase(
+                JClassSymbol owner, String name, int modifiers, List<Function<T, JFormalParamSymbol>> formals) {
             this.owner = owner;
             this.name = name;
             this.modifiers = modifiers;
@@ -205,7 +226,10 @@ public final class ImplicitMemberSymbols {
 
         private final BiFunction<? super TypeSystem, ? super JClassSymbol, ? extends JTypeMirror> returnType;
 
-        FakeMethodSym(JClassSymbol owner, String name, int modifiers,
+        FakeMethodSym(
+                JClassSymbol owner,
+                String name,
+                int modifiers,
                 BiFunction<? super TypeSystem, ? super JClassSymbol, ? extends JTypeMirror> returnType,
                 List<Function<JMethodSymbol, JFormalParamSymbol>> formals) {
             super(owner, name, modifiers, formals);
@@ -258,12 +282,17 @@ public final class ImplicitMemberSymbols {
         private final ASTVariableId node;
         private final BiFunction<? super TypeSystem, ? super JFormalParamSymbol, ? extends JTypeMirror> type;
 
-        private FakeFormalParamSym(JExecutableSymbol owner, String name,
+        private FakeFormalParamSym(
+                JExecutableSymbol owner,
+                String name,
                 BiFunction<? super TypeSystem, ? super JFormalParamSymbol, ? extends JTypeMirror> type) {
             this(owner, name, null, type);
         }
 
-        private FakeFormalParamSym(JExecutableSymbol owner, String name, @Nullable ASTVariableId node,
+        private FakeFormalParamSym(
+                JExecutableSymbol owner,
+                String name,
+                @Nullable ASTVariableId node,
                 BiFunction<? super TypeSystem, ? super JFormalParamSymbol, ? extends JTypeMirror> type) {
             this.owner = owner;
             this.name = name;
@@ -324,7 +353,10 @@ public final class ImplicitMemberSymbols {
         private final int modifiers;
         private final BiFunction<? super TypeSystem, ? super JClassSymbol, ? extends JTypeMirror> type;
 
-        FakeFieldSym(JClassSymbol owner, String name, int modifiers,
+        FakeFieldSym(
+                JClassSymbol owner,
+                String name,
+                int modifiers,
                 BiFunction<? super TypeSystem, ? super JClassSymbol, ? extends JTypeMirror> type) {
             this.owner = owner;
             this.name = name;
@@ -377,5 +409,4 @@ public final class ImplicitMemberSymbols {
             return SymbolEquality.FIELD.hash(this);
         }
     }
-
 }

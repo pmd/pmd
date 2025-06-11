@@ -9,8 +9,8 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 
 /**
- * Reference to a variable, ie {@linkplain JLocalVariableSymbol local variable}, {@linkplain JFormalParamSymbol formal
- * parameter}, or {@linkplain JFieldSymbol field}.
+ * Reference to a variable, ie {@linkplain JLocalVariableSymbol local variable},
+ * {@linkplain JFormalParamSymbol formal parameter}, or {@linkplain JFieldSymbol field}.
  *
  * @since 7.0.0
  */
@@ -26,7 +26,8 @@ public interface JVariableSymbol extends BoundToNode<ASTVariableId>, AnnotableSy
     }
 
     /**
-     * Returns true if this declaration is declared final. This takes implicit modifiers into account.
+     * Returns true if this declaration is declared final.
+     * This takes implicit modifiers into account.
      */
     boolean isFinal();
 

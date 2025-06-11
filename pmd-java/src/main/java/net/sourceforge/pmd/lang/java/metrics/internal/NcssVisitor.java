@@ -5,9 +5,6 @@
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.List;
-
-import org.apache.commons.lang3.mutable.MutableInt;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
@@ -42,6 +39,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NcssOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 /**
  * Visitor for the Ncss metric.
@@ -70,7 +68,8 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
     public Void visit(ASTClassDeclaration node, MutableInt data) {
         if (countImports) {
             ASTCompilationUnit acu = node.getRoot();
-            List<ASTImportDeclaration> imports = acu.children(ASTImportDeclaration.class).toList();
+            List<ASTImportDeclaration> imports =
+                    acu.children(ASTImportDeclaration.class).toList();
 
             int increment = imports.size();
             if (acu.children(ASTPackageDeclaration.class).nonEmpty()) {
@@ -238,5 +237,4 @@ public class NcssVisitor extends JavaVisitorBase<MutableInt, Void> {
         data.increment();
         return super.visit(node, data);
     }
-
 }

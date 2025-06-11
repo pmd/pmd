@@ -14,14 +14,13 @@ import static net.sourceforge.pmd.lang.java.symbols.internal.TypeAnnotTestUtil.g
 import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.hamcrest.Matchers;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-
 import net.sourceforge.pmd.lang.java.symbols.testdata.ClassWithTypeAnnotationsOnMethods;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 /**
  *
@@ -35,7 +34,7 @@ class TypeAnnotReflectionOnMethodsTest {
 
         /*
          * abstract void aOnIntParam(@A int i);
-         * 
+         *
          * abstract void aOnStringParam(@A String i);
          */
 
@@ -57,7 +56,8 @@ class TypeAnnotReflectionOnMethodsTest {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
-         * abstract @A @B String abOnReturn(@A String i); abstract List<@A String> abOnReturnInArg();
+         * abstract @A @B String abOnReturn(@A String i); abstract List<@A String>
+         * abOnReturnInArg();
          */
 
         {
@@ -93,10 +93,11 @@ class TypeAnnotReflectionOnMethodsTest {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
-         * 
-         * abstract <@A @B T, E extends T> void abOnTypeParm(); abstract <@A @B T, E extends T> T abOnTypeParm2(T t);
-         * 
-         * 
+         *
+         * abstract <@A @B T, E extends T> void abOnTypeParm(); abstract <@A @B T, E
+         * extends T> T abOnTypeParm2(T t);
+         *
+         *
          */
 
         {
@@ -121,8 +122,8 @@ class TypeAnnotReflectionOnMethodsTest {
         JClassType sym = impl.getDeclaration(ClassWithTypeAnnotationsOnMethods.class);
 
         /*
-         * abstract <@A T, E extends @B T> E bOnTypeParmBound(T t); abstract <@A T, E extends @B Cloneable & @A
-         * Serializable> E bOnTypeParmBoundIntersection(T t);
+         * abstract <@A T, E extends @B T> E bOnTypeParmBound(T t); abstract <@A T, E
+         * extends @B Cloneable & @A Serializable> E bOnTypeParmBoundIntersection(T t);
          */
 
         {
@@ -144,7 +145,8 @@ class TypeAnnotReflectionOnMethodsTest {
             assertHasTypeAnnots(t.getFormalParameters().get(0), emptyList());
             assertHasAnnots(t.getFormalParameters().get(0).getSymbol(), ANNOT_A);
 
-            JIntersectionType ub = (JIntersectionType) t.getTypeParameters().get(1).getUpperBound();
+            JIntersectionType ub =
+                    (JIntersectionType) t.getTypeParameters().get(1).getUpperBound();
             assertHasTypeAnnots(ub, emptyList());
             assertHasTypeAnnots(ub.getComponents().get(0), ANNOT_B);
             assertHasTypeAnnots(ub.getComponents().get(1), ANNOT_A);
@@ -174,9 +176,9 @@ class TypeAnnotReflectionOnMethodsTest {
 
         /*
          * CtorOwner(@A @B int i) { }
-         * 
+         *
          * @A CtorOwner() { }
-         * 
+         *
          * CtorOwner(String i, int x) throws @A Exception {}
          */
 
@@ -196,5 +198,4 @@ class TypeAnnotReflectionOnMethodsTest {
             assertHasTypeAnnots(t.getThrownExceptions().get(0), ANNOT_A);
         }
     }
-
 }

@@ -19,9 +19,9 @@ import java.util.Set;
 /**
  * List of modifiers of a declaration.
  *
- * <p>
- * This class keeps track of two modifier sets: the {@linkplain #getExplicitModifiers() explicit} one, which is the
- * modifiers that appeared in the source, and the {@linkplain #getEffectiveModifiers() effective} one, which includes
+ * <p>This class keeps track of two modifier sets: the {@linkplain #getExplicitModifiers() explicit}
+ * one, which is the modifiers that appeared in the source, and the
+ * {@linkplain #getEffectiveModifiers() effective} one, which includes
  * modifiers implicitly given by the context of the node.
  *
  * <pre class="grammar">
@@ -67,7 +67,8 @@ public final class ASTModifierList extends AbstractJavaNode {
     }
 
     /**
-     * Returns the set of modifiers written out in the source explicitly. The returned set is unmodifiable.
+     * Returns the set of modifiers written out in the source explicitly.
+     * The returned set is unmodifiable.
      */
     public Set<JModifier> getExplicitModifiers() {
         assert explicitModifiers != null : "Parser should have set the explicit modifiers";
@@ -75,9 +76,11 @@ public final class ASTModifierList extends AbstractJavaNode {
     }
 
     /**
-     * Returns the {@linkplain #getExplicitModifiers() declared modifiers}, plus the modifiers that are implicitly
-     * bestowed by the context or the type of this declaration. E.g. an interface is implicitly abstract, while an
-     * interface field is implicitly static. The returned set is unmodifiable.
+     * Returns the {@linkplain #getExplicitModifiers() declared modifiers},
+     * plus the modifiers that are implicitly bestowed by the context or
+     * the type of this declaration. E.g. an interface is implicitly abstract,
+     * while an interface field is implicitly static.
+     * The returned set is unmodifiable.
      */
     public Set<JModifier> getEffectiveModifiers() {
         assert explicitModifiers != null : "Parser should have set the explicit modifiers";
@@ -90,7 +93,6 @@ public final class ASTModifierList extends AbstractJavaNode {
             getOwner().acceptVisitor(EffectiveModifierVisitor.INSTANCE, mods);
 
             this.effectiveModifiers = Collections.unmodifiableSet(mods);
-
         }
 
         return effectiveModifiers;
@@ -102,12 +104,11 @@ public final class ASTModifierList extends AbstractJavaNode {
     }
 
     /**
-     * Returns true if the effective modifiers contain all of the mentioned modifiers.
+     * Returns true if the effective modifiers contain all of the mentioned
+     * modifiers.
      *
-     * @param mod1
-     *            First mod
-     * @param mods
-     *            Other mods
+     * @param mod1 First mod
+     * @param mods Other mods
      */
     public boolean hasAll(JModifier mod1, JModifier... mods) {
         Set<JModifier> actual = getEffectiveModifiers();
@@ -115,12 +116,11 @@ public final class ASTModifierList extends AbstractJavaNode {
     }
 
     /**
-     * Returns true if the explicit modifiers contain all of the mentioned modifiers.
+     * Returns true if the explicit modifiers contain all of the mentioned
+     * modifiers.
      *
-     * @param mod1
-     *            First mod
-     * @param mods
-     *            Other mods
+     * @param mod1 First mod
+     * @param mods Other mods
      */
     public boolean hasAllExplicitly(JModifier mod1, JModifier... mods) {
         Set<JModifier> actual = getExplicitModifiers();
@@ -128,12 +128,11 @@ public final class ASTModifierList extends AbstractJavaNode {
     }
 
     /**
-     * Returns true if the effective modifiers contain any of the mentioned modifiers.
+     * Returns true if the effective modifiers contain any of the mentioned
+     * modifiers.
      *
-     * @param mod1
-     *            First mod
-     * @param mods
-     *            Other mods
+     * @param mod1 First mod
+     * @param mods Other mods
      */
     public boolean hasAny(JModifier mod1, JModifier... mods) {
         Set<JModifier> actual = getEffectiveModifiers();
@@ -141,12 +140,11 @@ public final class ASTModifierList extends AbstractJavaNode {
     }
 
     /**
-     * Returns true if the explicit modifiers contain any of the mentioned modifiers.
+     * Returns true if the explicit modifiers contain any of the mentioned
+     * modifiers.
      *
-     * @param mod1
-     *            First mod
-     * @param mods
-     *            Other mods
+     * @param mod1 First mod
+     * @param mods Other mods
      */
     public boolean hasAnyExplicitly(JModifier mod1, JModifier... mods) {
         Set<JModifier> actual = getExplicitModifiers();
@@ -182,8 +180,7 @@ public final class ASTModifierList extends AbstractJavaNode {
                 if (!node.isTopLevel()) {
                     effective.add(STATIC);
                 }
-            }
-            else if (!node.isTopLevel()
+            } else if (!node.isTopLevel()
                     && (node instanceof ASTEnumDeclaration || node instanceof ASTRecordDeclaration)) {
                 effective.add(STATIC);
             }
@@ -233,15 +230,15 @@ public final class ASTModifierList extends AbstractJavaNode {
 
         @Override
         public Void visit(ASTAnonymousClassDeclaration node, Set<JModifier> effective) {
-            ASTBodyDeclaration enclosing = node.ancestors(ASTBodyDeclaration.class).first();
+            ASTBodyDeclaration enclosing =
+                    node.ancestors(ASTBodyDeclaration.class).first();
 
             assert enclosing != null && !(enclosing instanceof ASTTypeDeclaration)
                     : "Weird position for an anonymous class " + enclosing;
 
             if (enclosing instanceof ASTEnumConstant) {
                 effective.add(STATIC);
-            }
-            else {
+            } else {
                 if (enclosing instanceof ModifierOwner && ((ModifierOwner) enclosing).hasModifiers(STATIC)
                         || enclosing instanceof ASTInitializer && ((ASTInitializer) enclosing).isStatic()) {
                     effective.add(STATIC);

@@ -1,11 +1,7 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -13,6 +9,8 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class UselessStringValueOfRule extends AbstractJavaRule {
 
@@ -27,16 +25,16 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
             ASTExpression valueOfArg = getValueOfArg(node);
             if (valueOfArg == null) {
                 return data; // not a valueOf call
-            }
-            else if (TypeTestUtil.isExactlyA(String.class, valueOfArg)) {
+            } else if (TypeTestUtil.isExactlyA(String.class, valueOfArg)) {
                 asCtx(data).addViolation(node); // valueOf call on a string
                 return data;
             }
 
             ASTExpression sibling = JavaAstUtils.getOtherOperandIfInInfixExpr(node);
-            if (TypeTestUtil.isExactlyA(String.class, sibling) && !valueOfArg.getTypeMirror().isArray()
-            // In `String.valueOf(a) + String.valueOf(b)`,
-            // only report the second call
+            if (TypeTestUtil.isExactlyA(String.class, sibling)
+                    && !valueOfArg.getTypeMirror().isArray()
+                    // In `String.valueOf(a) + String.valueOf(b)`,
+                    // only report the second call
                     && (getValueOfArg(sibling) == null || node.getIndexInParent() == 1)) {
                 asCtx(data).addViolation(node);
             }
@@ -47,12 +45,12 @@ public class UselessStringValueOfRule extends AbstractJavaRule {
     private static @Nullable ASTExpression getValueOfArg(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expr;
-            if (call.getArguments().size() == 1 && "valueOf".equals(call.getMethodName())
+            if (call.getArguments().size() == 1
+                    && "valueOf".equals(call.getMethodName())
                     && TypeTestUtil.isDeclaredInClass(String.class, call.getMethodType())) {
                 return call.getArguments().get(0);
             }
         }
         return null;
     }
-
 }

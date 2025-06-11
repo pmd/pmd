@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -21,7 +19,8 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
     private final PropertyDescriptor<Pattern> localVarRegex =
             defaultProp("localVar", "non-final local variable").build();
-    private final PropertyDescriptor<Pattern> finalVarRegex = defaultProp("finalVar", "final local variable").build();
+    private final PropertyDescriptor<Pattern> finalVarRegex =
+            defaultProp("finalVar", "final local variable").build();
 
     private final PropertyDescriptor<Pattern> exceptionBlockParameterRegex =
             defaultProp("catchParameter", "exception block parameter").build();
@@ -43,8 +42,7 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
 
         if (node.isExceptionBlockParameter()) {
             checkMatches(node, exceptionBlockParameterRegex, data);
-        }
-        else if (node.isLocalVariable()) {
+        } else if (node.isLocalVariable()) {
             checkMatches(node, node.isFinal() ? finalVarRegex : localVarRegex, data);
         }
 
@@ -65,8 +63,7 @@ public final class LocalVariableNamingConventionsRule extends AbstractNamingConv
     String kindDisplayName(ASTVariableId node, PropertyDescriptor<Pattern> descriptor) {
         if (node.isExceptionBlockParameter()) {
             return "exception block parameter";
-        }
-        else if (node.isLocalVariable()) {
+        } else if (node.isLocalVariable()) {
             return node.isFinal() ? "final local variable" : "local variable";
         }
 

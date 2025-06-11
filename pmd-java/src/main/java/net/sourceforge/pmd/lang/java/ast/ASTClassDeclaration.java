@@ -1,17 +1,15 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.List;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 
 /**
- * Represents class and interface declarations. This is a {@linkplain Node#isFindBoundary() find boundary} for tree
- * traversal methods.
+ * Represents class and interface declarations.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  *
  * <pre class="grammar">
  *

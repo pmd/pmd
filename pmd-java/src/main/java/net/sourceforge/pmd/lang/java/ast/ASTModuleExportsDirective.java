@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -30,7 +29,8 @@ public final class ASTModuleExportsDirective extends AbstractPackageNameModuleDi
     }
 
     /**
-     * Returns a stream of the module names that are found after the "to" keyword. May be empty
+     * Returns a stream of the module names that are found after the "to" keyword.
+     * May be empty
      */
     public NodeStream<ASTModuleName> getTargetModules() {
         return children(ASTModuleName.class);

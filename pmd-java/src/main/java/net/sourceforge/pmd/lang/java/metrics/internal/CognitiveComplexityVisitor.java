@@ -1,12 +1,10 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-
 import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -43,7 +41,8 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     public static final CognitiveComplexityVisitor INSTANCE = new CognitiveComplexityVisitor();
 
     public enum BooleanOp {
-        AND, OR
+        AND,
+        OR
     }
 
     public static class State {
@@ -59,7 +58,6 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
             // push enclosing methods on the stack
             // so that the stack is independent of where we started the visitor;
             topNode.ancestors().filterIs(ASTMethodDeclaration.class).forEach(methodStack::addLast);
-
         }
 
         public int getComplexity() {
@@ -115,13 +113,13 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
                 // This is an arbitrary decision that may cause FPs...
                 // Specifically it matters when anonymous classes are involved.
                 // void outer() {
-                // Runnable r = new Runnable(){
-                // public void run(){
-                // outer();
-                // }
-                // };
+                //     Runnable r = new Runnable(){
+                //       public void run(){
+                //         outer();
+                //       }
+                //     };
                 //
-                // r = () -> outer();
+                //     r = () -> outer();
                 // }
                 //
                 // If we only consider the top of the stack, then within the anonymous class, `outer()`
@@ -138,8 +136,9 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
 
         @Override
         public String toString() {
-            return "State{complexity=" + complexity + ", nestingLevel=" + nestingLevel + ", currentBooleanOperation="
-                    + currentBooleanOperation + '}';
+            return "State{complexity=" + complexity
+                    + ", nestingLevel=" + nestingLevel
+                    + ", currentBooleanOperation=" + currentBooleanOperation + '}';
         }
     }
 
@@ -196,8 +195,7 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
         BinaryOp op = node.getOperator();
         if (op == BinaryOp.CONDITIONAL_AND) {
             state.booleanOperation(BooleanOp.AND);
-        }
-        else if (op == BinaryOp.CONDITIONAL_OR) {
+        } else if (op == BinaryOp.CONDITIONAL_OR) {
             state.booleanOperation(BooleanOp.OR);
         }
         return visitChildren(node, state);
@@ -240,7 +238,8 @@ public class CognitiveComplexityVisitor extends JavaVisitorBase<CognitiveComplex
     @Override
     public Void visit(ASTMethodCall node, State state) {
 
-        JExecutableSymbol calledSymbol = node.getOverloadSelectionInfo().getMethodType().getSymbol();
+        JExecutableSymbol calledSymbol =
+                node.getOverloadSelectionInfo().getMethodType().getSymbol();
         if (calledSymbol instanceof JMethodSymbol) {
             state.callMethod((JMethodSymbol) calledSymbol);
         }

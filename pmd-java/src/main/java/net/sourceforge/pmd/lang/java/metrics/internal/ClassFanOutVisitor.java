@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
@@ -35,8 +34,7 @@ public final class ClassFanOutVisitor extends JavaVisitorBase<Set<JClassSymbol>,
     public static ClassFanOutVisitor getInstance(MetricOptions options) {
         if (options.getOptions().contains(ClassFanOutOption.INCLUDE_JAVA_LANG)) {
             return INCLUDE_JLANG;
-        }
-        else {
+        } else {
             return EXCLUDE_JLANG;
         }
     }

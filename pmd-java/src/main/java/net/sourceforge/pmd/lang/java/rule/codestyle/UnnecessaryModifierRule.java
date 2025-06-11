@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.lang.java.ast.JModifier.ABSTRACT;
@@ -12,9 +11,6 @@ import static net.sourceforge.pmd.lang.java.ast.JModifier.STATIC;
 
 import java.util.EnumSet;
 import java.util.Set;
-
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
@@ -29,27 +25,36 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import org.apache.commons.lang3.StringUtils;
 
 public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
 
     public UnnecessaryModifierRule() {
-        super(ASTTypeDeclaration.class, ASTMethodDeclaration.class, ASTResource.class, ASTFieldDeclaration.class,
+        super(
+                ASTTypeDeclaration.class,
+                ASTMethodDeclaration.class,
+                ASTResource.class,
+                ASTFieldDeclaration.class,
                 ASTConstructorDeclaration.class);
     }
 
-    private void reportUnnecessaryModifiers(Object data, JavaNode node, JModifier unnecessaryModifier,
-            String explanation) {
+    private void reportUnnecessaryModifiers(
+            Object data, JavaNode node, JModifier unnecessaryModifier, String explanation) {
         reportUnnecessaryModifiers(data, node, EnumSet.of(unnecessaryModifier), explanation);
     }
 
-    private void reportUnnecessaryModifiers(Object data, JavaNode node, Set<JModifier> unnecessaryModifiers,
-            String explanation) {
+    private void reportUnnecessaryModifiers(
+            Object data, JavaNode node, Set<JModifier> unnecessaryModifiers, String explanation) {
         if (unnecessaryModifiers.isEmpty()) {
             return;
         }
-        asCtx(data).addViolation(node, formatUnnecessaryModifiers(unnecessaryModifiers),
-                PrettyPrintingUtil.getPrintableNodeKind(node), PrettyPrintingUtil.getNodeName(node),
-                explanation.isEmpty() ? "" : ": " + explanation);
+        asCtx(data)
+                .addViolation(
+                        node,
+                        formatUnnecessaryModifiers(unnecessaryModifiers),
+                        PrettyPrintingUtil.getPrintableNodeKind(node),
+                        PrettyPrintingUtil.getNodeName(node),
+                        explanation.isEmpty() ? "" : ": " + explanation);
     }
 
     private String formatUnnecessaryModifiers(Set<JModifier> set) {
@@ -78,7 +83,6 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
         if (node.hasExplicitModifiers(ABSTRACT)) {
             // may have several violations, with different explanations
             reportUnnecessaryModifiers(data, node, ABSTRACT, "annotations types are implicitly abstract");
-
         }
 
         if (!node.isNested()) {
@@ -133,14 +137,12 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
             if (!isSafeVarargs(node)) {
                 if (node.hasModifiers(PRIVATE)) {
                     reportUnnecessaryModifiers(data, node, FINAL, "private methods cannot be overridden");
-                }
-                else {
+                } else {
                     final ASTTypeDeclaration n = node.getEnclosingType();
                     // A final method of an anonymous class / enum constant. Neither can be extended / overridden
                     if (n.isAnonymous()) {
                         reportUnnecessaryModifiers(data, node, FINAL, "an anonymous class cannot be extended");
-                    }
-                    else if (n.isFinal()) {
+                    } else if (n.isFinal()) {
                         // notice: enum types are implicitly final if no enum constant declares a body
                         reportUnnecessaryModifiers(data, node, FINAL, "the method is already in a final class");
                     }
@@ -201,5 +203,4 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
             reportUnnecessaryModifiers(data, member, unnecessary, explanation);
         }
     }
-
 }

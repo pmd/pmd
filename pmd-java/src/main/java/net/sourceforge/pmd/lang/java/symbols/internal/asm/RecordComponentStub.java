@@ -4,14 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.TypePath;
-import org.objectweb.asm.TypeReference;
-
 import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.TypePath;
+import org.objectweb.asm.TypeReference;
 
 /**
  * @author Clément Fournier

@@ -35,5 +35,4 @@ public interface JConstructorSymbol extends JExecutableSymbol, BoundToNode<ASTCo
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
         return visitor.visitCtor(this, param);
     }
-
 }

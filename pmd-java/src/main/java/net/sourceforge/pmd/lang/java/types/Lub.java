@@ -15,23 +15,19 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Helper class for {@link TypeSystem#lub(Collection)} and {@link TypeSystem#glb(Collection)}.
  *
- * <p>
- * Lub: Least Upper Bound, Glb: Greatest Lower Bound.
+ * <p>Lub: Least Upper Bound, Glb: Greatest Lower Bound.
  */
 final class Lub {
 
-    private Lub() {
-    }
+    private Lub() {}
 
     static JTypeMirror lub(TypeSystem ts, Collection<? extends JTypeMirror> us) {
         return new LubJudge(ts).lub(us);
@@ -67,13 +63,12 @@ final class Lub {
      *             = { V ∈ stunion | V = G<...> }
      * }</pre>
      *
-     * <p>
-     * G must be erased (raw).
+     * <p>G must be erased (raw).
      *
      * @return null if G is not a generic type, otherwise Relevant(G)
      */
-    @SuppressWarnings("PMD.ReturnEmptyCollectionRatherThanNull") // null is explicit mentioned as a possible return
-                                                                 // value
+    @SuppressWarnings(
+            "PMD.ReturnEmptyCollectionRatherThanNull") // null is explicit mentioned as a possible return value
     static @Nullable List<JClassType> relevant(JClassType g, Set<JTypeMirror> stunion) {
         if (!g.isRaw()) {
             return null;
@@ -136,14 +131,14 @@ final class Lub {
 
             if (us.size() == 1) {
                 return uIterator.next();
-            }
-            else if (us.isEmpty()) {
+            } else if (us.isEmpty()) {
                 // we removed the null type previously
                 return ts.NULL_TYPE;
             }
 
             // This is the union of all generic supertypes of the Uis
-            Set<JTypeMirror> stunion = new LinkedHashSet<>(uIterator.next().box().getSuperTypeSet());
+            Set<JTypeMirror> stunion =
+                    new LinkedHashSet<>(uIterator.next().box().getSuperTypeSet());
             // Let EC, the erased candidate set for U1 ... Uk, be the intersection of all the sets EST(Ui)
             Set<JTypeMirror> ec = erasedSuperTypes(stunion);
 
@@ -164,8 +159,7 @@ final class Lub {
                 if (g instanceof JClassType) {
                     List<JClassType> relevant = relevant((JClassType) g, stunion);
                     return relevant != null ? lcp(relevant) : g;
-                }
-                else {
+                } else {
                     return g;
                 }
             });
@@ -174,10 +168,11 @@ final class Lub {
         }
 
         /**
-         * LCP is the "least containing parameterization" of a set of parameterizations of the same generic type G.
+         * LCP is the "least containing parameterization" of a set of
+         * parameterizations of the same generic type G.
          *
-         * <p>
-         * It is a parameterization of G such that all elements of the set are subtypes of that parameterization.
+         * <p>It is a parameterization of G such that all elements of
+         * the set are subtypes of that parameterization.
          */
         private JClassType lcp(List<JClassType> relevant) {
             if (relevant.isEmpty()) {
@@ -214,8 +209,9 @@ final class Lub {
         }
 
         /**
-         * lcta(T, S), the least containing type argument, finds the most specific type argument that contains both T
-         * and S, in the sense of {@link TypeOps#typeArgContains(JTypeMirror, JTypeMirror)}.
+         * lcta(T, S), the least containing type argument, finds the most specific
+         * type argument that contains both T and S, in the sense of
+         * {@link TypeOps#typeArgContains(JTypeMirror, JTypeMirror)}.
          */
         private JTypeMirror lcta(JTypeMirror t, JTypeMirror s) {
 
@@ -225,8 +221,7 @@ final class Lub {
                 JTypeMirror res = computeLcta(t, s);
                 lubCache.remove(pair);
                 return res;
-            }
-            else {
+            } else {
                 // We're recursing on lcta(T,S) with the same arguments.
                 // We have to break the recursion.
                 return ts.UNBOUNDED_WILD;
@@ -247,14 +242,14 @@ final class Lub {
 
             if (isUpperBound(s)) {
 
-                // lcta(U, ? extends V) = ? extends lub(U, V)
-                // lcta(? extends U, ? extends V) = ? extends lub(U, V)
+                // lcta(U,           ? extends V)   = ? extends lub(U, V)
+                // lcta(? extends U, ? extends V)   = ? extends lub(U, V)
 
                 return ts.wildcard(true, this.lub(upperBound(t), upperBound(s)));
             }
 
             if (isLowerBound(s)) {
-                // lcta(U, ? super V) = ? super glb(U, V)
+                // lcta(U,         ? super V) = ? super glb(U, V)
                 // lcta(? super U, ? super V) = ? super glb(U, V)
 
                 return ts.wildcard(false, this.glb(lowerBound(t), lowerBound(s)));
@@ -303,8 +298,7 @@ final class Lub {
     static JTypeMirror glb(TypeSystem ts, Collection<? extends JTypeMirror> types) {
         if (types.isEmpty()) {
             throw new IllegalArgumentException("Cannot compute GLB of empty set");
-        }
-        else if (types.size() == 1) {
+        } else if (types.size() == 1) {
             return types.iterator().next();
         }
 
@@ -312,8 +306,7 @@ final class Lub {
 
         if (flat.size() == 1) {
             return flat.get(0);
-        }
-        else if (flat.isEmpty()) {
+        } else if (flat.isEmpty()) {
             return ts.OBJECT;
         }
 
@@ -335,19 +328,20 @@ final class Lub {
                 // Ci is not unresolved
                 if (primaryBound == null) {
                     primaryBound = ci;
-                }
-                else if (ci.isArray() && primaryBound.isArray()) {
+                } else if (ci.isArray() && primaryBound.isArray()) {
                     // A[] & B[] = (A & B)[]
                     // Note that since we're after mostSpecific, we already know
                     // that A is unrelated to B. Therefore if both B and A are classes,
                     // then A & B cannot exist and so (A & B)[] similarly does not exist.
 
-                    JTypeMirror componentGlb = glb(ts, setOf(((JArrayType) ci).getComponentType(),
-                            ((JArrayType) primaryBound).getComponentType()));
+                    JTypeMirror componentGlb = glb(
+                            ts,
+                            setOf(
+                                    ((JArrayType) ci).getComponentType(),
+                                    ((JArrayType) primaryBound).getComponentType()));
                     primaryBound = ts.arrayType(componentGlb);
 
-                }
-                else {
+                } else {
                     // We have two primary bounds. This may happen during capture
                     // of recursive F-bounded types. Here we do a last resort check
                     // to see if one of the bounds is a subtype (unchecked) of the other.
@@ -357,13 +351,11 @@ final class Lub {
                     if (cmp == 0) {
                         throw new IllegalArgumentException("Bad intersection, unrelated class types " + ci + " and "
                                 + primaryBound + " in " + types);
-                    }
-                    else if (cmp < 0) {
+                    } else if (cmp < 0) {
                         primaryBound = ci;
                     }
                 }
-            }
-            else {
+            } else {
                 bounds.add(ci);
             }
         }
@@ -386,8 +378,7 @@ final class Lub {
     private static int compareRelatedness(JTypeMirror t, JTypeMirror s) {
         if (TypeOps.isConvertiblePure(t, s.getErasure()).withoutWarnings()) {
             return -1;
-        }
-        else if (TypeOps.isConvertiblePure(s, t.getErasure()).withoutWarnings()) {
+        } else if (TypeOps.isConvertiblePure(s, t.getErasure()).withoutWarnings()) {
             return 1;
         }
         return 0;
@@ -406,8 +397,7 @@ final class Lub {
             // flatten intersections: (A & (B & C)) => (A & B & C)
             if (type instanceof JIntersectionType) {
                 bounds.addAll(((JIntersectionType) type).getComponents());
-            }
-            else {
+            } else {
                 checkGlbComponent(types, type);
 
                 if (!type.isTop()) {
@@ -419,8 +409,8 @@ final class Lub {
     }
 
     static boolean isExclusiveIntersectionBound(JTypeMirror ci) {
-        return !ci.isInterface() && !(ci instanceof InferenceVar)
+        return !ci.isInterface()
+                && !(ci instanceof InferenceVar)
                 && (ci.getSymbol() == null || !ci.getSymbol().isUnresolved());
     }
-
 }

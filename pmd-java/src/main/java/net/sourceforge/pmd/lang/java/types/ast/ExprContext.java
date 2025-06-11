@@ -9,19 +9,20 @@ import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKin
 import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.INVOCATION;
 import static net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind.MISSING;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.ast.internal.InvocCtx;
 import net.sourceforge.pmd.lang.java.types.ast.internal.RegularCtx;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Context of an expression. This determines the target type of poly expressions, which is necessary for overload
- * resolution. It also determines what kinds of conversions apply to the value to make it compatible with the context.
+ * Context of an expression. This determines the target type of poly
+ * expressions, which is necessary for overload resolution. It also
+ * determines what kinds of conversions apply to the value to make it
+ * compatible with the context.
  */
 public abstract class ExprContext {
     // note: most members of this class are quite low-level and should
@@ -41,14 +42,14 @@ public abstract class ExprContext {
     public abstract @Nullable JTypeMirror getTargetType();
 
     /**
-     * Returns true if the given type is compatible with this context implicitly (without cast). Conversions may occur
-     * to make this possible. What conversions may occur depends on the kind of this context.
+     * Returns true if the given type is compatible with this context
+     * implicitly (without cast). Conversions may occur to make this
+     * possible. What conversions may occur depends on the kind of
+     * this context.
      *
-     * <p>
-     * By convention, any type is compatible with a missing context.
+     * <p>By convention, any type is compatible with a missing context.
      *
-     * @param type
-     *            A type which is checked against the target type
+     * @param type A type which is checked against the target type
      */
     public boolean acceptsType(@NonNull JTypeMirror type) {
         AssertionUtil.requireParamNotNull("type", type);
@@ -57,13 +58,15 @@ public abstract class ExprContext {
 
         return targetType == null
                 // todo there's a gritty detail about compound assignment operators
-                // with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
-                || (kind == CAST ? TypeConversion.isConvertibleInCastContext(type, targetType)
+                //  with a primitive LHS, see https://github.com/pmd/pmd/issues/2023
+                || (kind == CAST
+                        ? TypeConversion.isConvertibleInCastContext(type, targetType)
                         : TypeConversion.isConvertibleUsingBoxing(type, targetType));
     }
 
     /**
-     * Returns true if this context does not provide any target type. This is then a sentinel object.
+     * Returns true if this context does not provide any target type.
+     * This is then a sentinel object.
      */
     public boolean isMissing() {
         return kind == MISSING;
@@ -89,9 +92,9 @@ public abstract class ExprContext {
     /**
      * Returns the target type bestowed by this context ON A POLY EXPRESSION.
      *
-     * @param lambdaOrMethodRef
-     *            Whether the poly to be considered is a lambda or method ref. In this case, cast contexts can give a
-     *            target type.
+     * @param lambdaOrMethodRef Whether the poly to be considered is a
+     *                          lambda or method ref. In this case, cast
+     *                          contexts can give a target type.
      */
     public @Nullable JTypeMirror getPolyTargetType(boolean lambdaOrMethodRef) {
         if (!canGiveContextToPoly(lambdaOrMethodRef)) {
@@ -101,8 +104,9 @@ public abstract class ExprContext {
     }
 
     /**
-     * Returns an {@link ExprContext} instance which represents a missing context. Use {@link #isMissing()} instead of
-     * testing for equality.
+     * Returns an {@link ExprContext} instance which represents a
+     * missing context. Use {@link #isMissing()} instead of testing
+     * for equality.
      */
     public static RegularCtx getMissingInstance() {
         return RegularCtx.NO_CTX;
@@ -128,23 +132,23 @@ public abstract class ExprContext {
          * <li>Superclass constructor invocation
          * </ul>
          *
-         * <p>
-         * An assignment context flows through ternary/switch branches. They are a context for poly expressions.
+         * <p>An assignment context flows through ternary/switch branches.
+         * They are a context for poly expressions.
          */
         ASSIGNMENT,
 
         /**
-         * Cast context. Lambdas and method refs can use them as a target type, but no other expressions. Cast contexts
-         * do not flow through ternary/switch branches.
+         * Cast context. Lambdas and method refs can use them as a
+         * target type, but no other expressions. Cast contexts do not
+         * flow through ternary/switch branches.
          */
         CAST,
 
         /**
-         * Numeric context. May determine that an (un)boxing or primitive widening conversion occurs. These is the
-         * context for operands of arithmetic expressions, array indices.
-         * <p>
-         * For instance:
-         * 
+         * Numeric context. May determine that an (un)boxing or
+         * primitive widening conversion occurs. These is the context for
+         * operands of arithmetic expressions, array indices.
+         * <p>For instance:
          * <pre>{@code
          * Integer integer;
          *
@@ -157,9 +161,10 @@ public abstract class ExprContext {
         NUMERIC,
 
         /**
-         * String contexts, which convert the operand to a string using {@link String#valueOf(Object)}, or the
-         * equivalent for a primitive type. They accept operands of any type. This is the context for the operands of a
-         * string concatenation expression, and for the message of an assert statement.
+         * String contexts, which convert the operand to a string using {@link String#valueOf(Object)},
+         * or the equivalent for a primitive type. They accept operands of any type.
+         * This is the context for the operands of a string concatenation expression,
+         * and for the message of an assert statement.
          */
         STRING,
 
@@ -170,13 +175,14 @@ public abstract class ExprContext {
         MISSING,
 
         /**
-         * Boolean contexts, which unbox their operand to a boolean. They accept operands of type boolean or Boolean.
-         * This is the context for e.g. the condition of an {@code if} statement, an assert statement, etc.
+         * Boolean contexts, which unbox their operand to a boolean.
+         * They accept operands of type boolean or Boolean. This is the
+         * context for e.g. the condition of an {@code if} statement, an
+         * assert statement, etc.
          *
-         * <p>
-         * This provides a target type for conversions, but not for poly expressions.
+         * <p>This provides a target type for conversions, but not for poly
+         * expressions.
          */
         BOOLEAN,
     }
-
 }

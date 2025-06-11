@@ -18,7 +18,8 @@ public class JUnitSpellingRule extends AbstractJavaRulechainRule {
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
         if (TestFrameworksUtil.isJUnit3Class(node)) {
-            node.getDeclarations(ASTMethodDeclaration.class).filter(this::isViolation)
+            node.getDeclarations(ASTMethodDeclaration.class)
+                    .filter(this::isViolation)
                     .forEach(it -> asCtx(data).addViolation(it));
         }
         return null;
@@ -31,6 +32,5 @@ public class JUnitSpellingRule extends AbstractJavaRulechainRule {
         String name = method.getName();
         return !"setUp".equals(name) && "setup".equalsIgnoreCase(name)
                 || !"tearDown".equals(name) && "teardown".equalsIgnoreCase(name);
-
     }
 }

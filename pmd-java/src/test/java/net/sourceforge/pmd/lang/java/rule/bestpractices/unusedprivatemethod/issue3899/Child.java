@@ -4,5 +4,4 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices.unusedprivatemethod.issue3899;
 
-public class Child implements Parent {
-}
+public class Child implements Parent {}

@@ -10,7 +10,8 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
- * Base class for Java rules. Any rule written in Java to analyse Java source should extend from this base class.
+ * Base class for Java rules. Any rule written in Java to analyse Java source should extend from
+ * this base class.
  *
  * TODO add documentation
  *
@@ -27,5 +28,4 @@ public abstract class AbstractJavaRule extends AbstractRule implements JavaVisit
     public void apply(Node target, RuleContext ctx) {
         target.acceptVisitor(this, ctx);
     }
-
 }

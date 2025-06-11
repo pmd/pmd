@@ -5,10 +5,8 @@
 package net.sourceforge.pmd.lang.java.symbols;
 
 import java.lang.reflect.Modifier;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Reference to a method.
@@ -27,14 +25,16 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
     }
 
     /**
-     * Returns the default value, if this is a constant method. See {@link SymbolicValue} for current limitations
+     * Returns the default value, if this is a constant method. See
+     * {@link SymbolicValue} for current limitations
      */
     default @Nullable SymbolicValue getDefaultAnnotationValue() {
         return null;
     }
 
     /**
-     * Return whether this method defines an attribute of the enclosing annotation type.
+     * Return whether this method defines an attribute of the enclosing
+     * annotation type.
      */
     default boolean isAnnotationAttribute() {
         return !isStatic() && getEnclosingClass().isAnnotation() && getArity() == 0;
@@ -44,5 +44,4 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
     default <R, P> R acceptVisitor(SymbolVisitor<R, P> visitor, P param) {
         return visitor.visitMethod(this, param);
     }
-
 }

@@ -8,10 +8,9 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
@@ -50,17 +49,14 @@ class NodeIsFunctionTest extends BaseXPathFunctionTest {
         testWithExpectedStaticException("//MethodDeclaration[pmd-java:nodeIs('ohio') > 1]", e -> {
             assertThat(e.getMessage(), containsString("ASTohio"));
         });
-
     }
 
     @Test
     void testNonExistentNodeNameStaticallyUnknown() {
-        testWithExpectedException("//MethodDeclaration[pmd-java:nodeIs(name() || 'qqq')]",
-                "class Moo { void foo() {if(true){}} }", e -> {
+        testWithExpectedException(
+                "//MethodDeclaration[pmd-java:nodeIs(name() || 'qqq')]", "class Moo { void foo() {if(true){}} }", e -> {
                     assertThat(e.getMessage(), containsString("MethodDeclarationqqq"));
                     assertThat(e.getPhase(), equalTo(Phase.EVALUATION));
                 });
-
     }
-
 }

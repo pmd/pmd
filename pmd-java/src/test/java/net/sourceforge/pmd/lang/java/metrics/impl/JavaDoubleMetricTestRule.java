@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.metrics.impl;
 
 import java.util.Locale;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;

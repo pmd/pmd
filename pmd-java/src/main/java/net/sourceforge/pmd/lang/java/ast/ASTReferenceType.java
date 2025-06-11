@@ -1,12 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a reference type, i.e. a {@linkplain ASTClassType class or interface type}, or an {@linkplain ASTArrayType
- * array type}.
+ * Represents a reference type, i.e. a {@linkplain ASTClassType class or interface type},
+ * or an {@linkplain ASTArrayType array type}.
  *
  * <pre class="grammar">
  *
@@ -18,5 +17,4 @@ package net.sourceforge.pmd.lang.java.ast;
  *
  * </pre>
  */
-public interface ASTReferenceType extends ASTType {
-}
+public interface ASTReferenceType extends ASTType {}

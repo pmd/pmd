@@ -5,7 +5,8 @@
 package net.sourceforge.pmd.lang.java.rule.security;
 
 /**
- * Finds hardcoded static Initialization Vectors vectors used with cryptographic operations.
+ * Finds hardcoded static Initialization Vectors vectors used with cryptographic
+ * operations.
  *
  * <code>
  * //bad: byte[] ivBytes = new byte[] {32, 87, -14, 25, 78, -104, 98, 40};
@@ -13,8 +14,7 @@ package net.sourceforge.pmd.lang.java.rule.security;
  * //bad: byte[] ivBytes = someString.getBytes();
  * </code>
  *
- * <p>
- * {@link javax.crypto.spec.IvParameterSpec} must not be created from a static sources
+ * <p>{@link javax.crypto.spec.IvParameterSpec} must not be created from a static sources
  *
  * @author sergeygorbaty
  * @since 6.3.0

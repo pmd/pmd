@@ -9,9 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 
 import java.util.HashMap;
 import java.util.List;
-
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
@@ -28,6 +25,7 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author daniels
@@ -52,7 +50,10 @@ class XPathRuleTest {
         XPathRule rule = makeXPath("//VariableId[@Name=$forbiddenNames]");
         rule.setMessage("Avoid vars");
         PropertyDescriptor<List<String>> varDescriptor = PropertyFactory.stringListProperty("forbiddenNames")
-                .desc("Forbidden names").defaultValues("forbid1", "forbid2").availableInXPath(true).build();
+                .desc("Forbidden names")
+                .defaultValues("forbid1", "forbid2")
+                .availableInXPath(true)
+                .build();
 
         rule.definePropertyDescriptor(varDescriptor);
 
@@ -64,8 +65,11 @@ class XPathRuleTest {
     void testVariables() throws Exception {
         XPathRule rule = makeXPath("//VariableId[@Name=$var]");
         rule.setMessage("Avoid vars");
-        PropertyDescriptor<String> varDescriptor =
-                PropertyFactory.stringProperty("var").desc("Test var").defaultValue("").availableInXPath(true).build();
+        PropertyDescriptor<String> varDescriptor = PropertyFactory.stringProperty("var")
+                .desc("Test var")
+                .defaultValue("")
+                .availableInXPath(true)
+                .build();
         rule.definePropertyDescriptor(varDescriptor);
         rule.setProperty(varDescriptor, "fiddle");
         Report report = getReportForTestString(rule, TEST2);
@@ -91,7 +95,8 @@ class XPathRuleTest {
 
     @Test
     void testSimpleQueryIsRuleChain() {
-        // ((/)/descendant::element(Q{}VariableId))[matches(convertUntyped(data(@Name)), "fiddle", "")]
+        // ((/)/descendant::element(Q{}VariableId))[matches(convertUntyped(data(@Name)),
+        // "fiddle", "")]
         assertIsRuleChain("//VariableId[matches(@Name, 'fiddle')]");
     }
 
@@ -105,10 +110,11 @@ class XPathRuleTest {
         XPathRule rule = makeXPath(xpath);
         try (LanguageProcessor proc = JavaParsingHelper.DEFAULT.newProcessor()) {
             rule.initialize(proc);
-            assertNotSame(rule.getTargetSelector(), RuleTargetSelector.forRootOnly(),
+            assertNotSame(
+                    rule.getTargetSelector(),
+                    RuleTargetSelector.forRootOnly(),
                     "Not recognized as a rulechain query: " + xpath);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -126,8 +132,12 @@ class XPathRuleTest {
 
         String xpath = "//ExtendsList/ClassType/following-sibling::ClassType";
 
-        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(xpath, XPathVersion.DEFAULT, new HashMap<>(),
-                XPathHandler.noFunctionDefinitions(), DeprecatedAttrLogger.noop());
+        SaxonXPathRuleQuery xpathRuleQuery = new SaxonXPathRuleQuery(
+                xpath,
+                XPathVersion.DEFAULT,
+                new HashMap<>(),
+                XPathHandler.noFunctionDefinitions(),
+                DeprecatedAttrLogger.noop());
         List<Node> nodes = xpathRuleQuery.evaluate(cu);
         assertEquals(2, nodes.size());
         assertEquals("Bar", ((JavaNode) nodes.get(0)).getText().toString());
@@ -144,5 +154,4 @@ class XPathRuleTest {
 
     private static final String TEST3 =
             "public class Foo {\n" + " int forbid1; int forbid2; int forbid1$forbid2;\n" + "}";
-
 }

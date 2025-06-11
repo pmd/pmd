@@ -11,9 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
@@ -32,11 +29,13 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A singular field is a field that may be converted to a local variable. This means, that in every method the field is
- * used, there is no path that uses the value that the field has before the method is called. In other words, the field
- * is overwritten before any read.
+ * A singular field is a field that may be converted to a local variable.
+ * This means, that in every method the field is used, there is no path
+ * that uses the value that the field has before the method is called.
+ * In other words, the field is overwritten before any read.
  *
  * @author Eric Olander
  * @author Wouter Zelle
@@ -45,12 +44,21 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class SingularFieldRule extends AbstractJavaRulechainRule {
 
-    private static final Set<String> INVALIDATING_CLASS_ANNOT = setOf("lombok.Builder", "lombok.EqualsAndHashCode",
-            "lombok.Getter", "lombok.Setter", "lombok.Data", "lombok.Value");
+    private static final Set<String> INVALIDATING_CLASS_ANNOT = setOf(
+            "lombok.Builder",
+            "lombok.EqualsAndHashCode",
+            "lombok.Getter",
+            "lombok.Setter",
+            "lombok.Data",
+            "lombok.Value");
 
     private static final PropertyDescriptor<List<String>> IGNORED_FIELD_ANNOTATIONS =
-            JavaPropertyUtil.ignoredAnnotationsDescriptor("lombok.Setter", "lombok.Getter", "java.lang.Deprecated",
-                    "lombok.experimental.Delegate", "javafx.fxml.FXML");
+            JavaPropertyUtil.ignoredAnnotationsDescriptor(
+                    "lombok.Setter",
+                    "lombok.Getter",
+                    "java.lang.Deprecated",
+                    "lombok.experimental.Delegate",
+                    "javafx.fxml.FXML");
 
     public SingularFieldRule() {
         super(ASTTypeDeclaration.class);
@@ -131,8 +139,8 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
         return true;
     }
 
-    private @Nullable ASTBodyDeclaration getEnclosingBodyDecl(ASTTypeDeclaration enclosingType,
-            ASTNamedReferenceExpr usage) {
+    private @Nullable ASTBodyDeclaration getEnclosingBodyDecl(
+            ASTTypeDeclaration enclosingType, ASTNamedReferenceExpr usage) {
         ASTBodyDeclaration decl =
                 usage.ancestors().takeWhile(it -> it != enclosingType).first(ASTBodyDeclaration.class);
         if (decl instanceof ASTFieldDeclaration || decl instanceof ASTInitializer) {

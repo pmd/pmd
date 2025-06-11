@@ -7,16 +7,14 @@ package net.sourceforge.pmd.lang.java.symbols.internal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Unresolved <i>external reference</i> to a class.
@@ -36,12 +34,12 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
     }
 
     /**
-     * Set the number of type parameters of this type. If the arity was already set to a value different from
-     * {@value #UNKNOWN_ARITY}, this does nothing: the unresolved type appears several times with inconsistent arities,
-     * which must be reported later.
+     * Set the number of type parameters of this type. If the arity was
+     * already set to a value different from {@value #UNKNOWN_ARITY},
+     * this does nothing: the unresolved type appears several times with
+     * inconsistent arities, which must be reported later.
      *
-     * @param newArity
-     *            New number of type parameters
+     * @param newArity New number of type parameters
      */
     @Override
     void setTypeParameterCount(int newArity) {
@@ -117,6 +115,5 @@ final class FlexibleUnresolvedClassImpl extends UnresolvedClassImpl {
         public JTypeParameterOwnerSymbol getDeclaringSymbol() {
             return owner;
         }
-
     }
 }

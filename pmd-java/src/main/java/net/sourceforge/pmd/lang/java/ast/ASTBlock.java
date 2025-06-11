@@ -1,14 +1,14 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTList.ASTMaybeEmptyListOf;
 
 /**
- * A block of code. This is a {@linkplain ASTStatement statement} that contains other statements.
+ * A block of code. This is a {@linkplain ASTStatement statement} that
+ * contains other statements.
  *
  * <pre class="grammar">
  *

@@ -1,15 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A "requires" directive of a {@linkplain ASTModuleDeclaration module declaration}.
+ * A "requires"  directive of a {@linkplain ASTModuleDeclaration module declaration}.
  *
  * <pre class="grammar">
  *

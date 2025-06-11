@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
@@ -31,8 +30,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
                 if (hashCodeMethod != null) {
                     break; // shortcut
                 }
-            }
-            else if (JavaAstUtils.isHashCodeMethod(m)) {
+            } else if (JavaAstUtils.isHashCodeMethod(m)) {
                 hashCodeMethod = m;
                 if (equalsMethod != null) {
                     break; // shortcut

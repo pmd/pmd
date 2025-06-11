@@ -7,7 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A statement that contains an expression. Note that this is not an expression itself.
+ * A statement that contains an expression. Note that this is not an
+ * expression itself.
  *
  * <pre class="grammar">
  *

@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -43,7 +42,8 @@ public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainR
         // since we know this is not a varargs call the last arg has an array type
         ASTExpression varargsArg = argList.getLastChild();
         assert varargsArg != null;
-        if (varargsArg.getTypeMirror().isSubtypeOf(expectedComponent) && !varargsArg.getTypeMirror().equals(lastFormal)
+        if (varargsArg.getTypeMirror().isSubtypeOf(expectedComponent)
+                && !varargsArg.getTypeMirror().equals(lastFormal)
                 && !TypeOps.isSpecialUnresolvedOrArray(varargsArg.getTypeMirror())) {
             // confusing
 
@@ -52,13 +52,13 @@ public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainR
                     && ((ASTArrayAllocation) varargsArg).getArrayInitializer() != null) {
                 message =
                         "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[], or pass varargs parameters separately to clarify intent.";
-            }
-            else {
+            } else {
                 message =
                         "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[] to clarify intent.";
             }
-            asCtx(data).addViolationWithMessage(varargsArg, message,
-                    TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent));
+            asCtx(data)
+                    .addViolationWithMessage(
+                            varargsArg, message, TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent));
         }
 
         return null;

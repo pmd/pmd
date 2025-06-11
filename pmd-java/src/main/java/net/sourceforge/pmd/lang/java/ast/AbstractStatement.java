@@ -9,5 +9,4 @@ abstract class AbstractStatement extends AbstractJavaNode implements ASTStatemen
     AbstractStatement(int id) {
         super(id);
     }
-
 }

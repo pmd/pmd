@@ -10,13 +10,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.hamcrest.BaseMatcher;
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -29,6 +22,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.util.StringUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.junit.jupiter.api.Test;
 
 class PrettyPrintingUtilTest extends BaseParserTest {
 
@@ -52,7 +50,9 @@ class PrettyPrintingUtilTest extends BaseParserTest {
 
     @Test
     void ppMethodCallArgsTooBig() {
-        testPrettyPrint("this.foo(\"a long string\", 12, 12, 12, 12, 12)", ASTMethodCall.class,
+        testPrettyPrint(
+                "this.foo(\"a long string\", 12, 12, 12, 12, 12)",
+                ASTMethodCall.class,
                 "this.foo(\"a long string\", 12...)");
     }
 
@@ -108,8 +108,7 @@ class PrettyPrintingUtilTest extends BaseParserTest {
 
     private <T extends ASTExpression> void testPrettyPrint(String expr, Class<T> nodeTy, String expected) {
         ASTCompilationUnit root = java.parse("class A { { Object x = " + expr + "; } }");
-        @NonNull
-        T node = root.descendants(nodeTy).firstOrThrow();
+        @NonNull T node = root.descendants(nodeTy).firstOrThrow();
         assertThat(prettyPrint(node), contentEquals(expected));
     }
 

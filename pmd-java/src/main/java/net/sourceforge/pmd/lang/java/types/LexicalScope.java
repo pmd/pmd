@@ -10,7 +10,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -35,7 +34,8 @@ public final class LexicalScope extends MapFunction<String, @Nullable JTypeVar> 
     }
 
     /**
-     * Return a new scope which contains the given tvars. They shadow tvars that were in this scope.
+     * Return a new scope which contains the given tvars. They shadow
+     * tvars that were in this scope.
      */
     public LexicalScope andThen(List<? extends JTypeVar> vars) {
         if (this == EMPTY && vars.isEmpty()) { // NOPMD CompareObjectsWithEquals
@@ -43,5 +43,4 @@ public final class LexicalScope extends MapFunction<String, @Nullable JTypeVar> 
         }
         return new LexicalScope(associateByTo(new HashMap<>(getMap()), vars, JTypeVar::getName));
     }
-
 }

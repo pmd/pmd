@@ -1,16 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JClassType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents an annotation.
@@ -66,9 +63,9 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
     }
 
     /**
-     * Return the expression values for the attribute with the given name. This may flatten an array initializer. For
-     * example, for the attribute named "value":
-     * 
+     * Return the expression values for the attribute with the given name.
+     * This may flatten an array initializer. For example, for the attribute
+     * named "value":
      * <pre>{@code
      * - @SuppressWarnings -> returns empty node stream
      * - @SuppressWarning("fallthrough") -> returns ["fallthrough"]
@@ -81,9 +78,9 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
     }
 
     /**
-     * Return expression values for all attributes. This may flatten an array initializer. For example, for the
-     * attribute named "value":
-     * 
+     * Return expression values for all attributes.
+     * This may flatten an array initializer. For example, for the attribute
+     * named "value":
      * <pre>{@code
      * - @SuppressWarnings -> returns empty node stream
      * - @SuppressWarning("fallthrough") -> returns ["fallthrough"]
@@ -96,14 +93,15 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
     }
 
     private static NodeStream<ASTMemberValue> flatValue(ASTMemberValue value) {
-        return value instanceof ASTMemberValueArrayInitializer ? value.children(ASTMemberValue.class)
+        return value instanceof ASTMemberValueArrayInitializer
+                ? value.children(ASTMemberValue.class)
                 : NodeStream.of(value);
     }
 
     /**
-     * Returns the value of the attribute with the given name, returns null if no such attribute was mentioned. For
-     * example, for the attribute named "value":
-     * 
+     * Returns the value of the attribute with the given name, returns
+     * null if no such attribute was mentioned. For example, for the attribute
+     * named "value":
      * <pre>{@code
      * - @SuppressWarnings -> returns null
      * - @SuppressWarning("fallthrough") -> returns "fallthrough"
@@ -111,16 +109,17 @@ public final class ASTAnnotation extends AbstractJavaTypeNode implements ASTMemb
      * - @SuppressWarning({"fallthrough", "rawtypes"}) -> returns {"fallthrough", "rawtypes"}
      * }</pre>
      *
-     * @param attrName
-     *            Name of an attribute
+     * @param attrName Name of an attribute
      */
     public @Nullable ASTMemberValue getAttribute(String attrName) {
-        return getMembers().filter(pair -> pair.getName().equals(attrName)).map(ASTMemberValuePair::getValue).first();
+        return getMembers()
+                .filter(pair -> pair.getName().equals(attrName))
+                .map(ASTMemberValuePair::getValue)
+                .first();
     }
 
     @Override
     public <P, R> R acceptVisitor(JavaVisitor<? super P, ? extends R> visitor, P data) {
         return visitor.visit(this, data);
     }
-
 }

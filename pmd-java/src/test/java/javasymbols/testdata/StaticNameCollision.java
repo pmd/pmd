@@ -20,7 +20,5 @@ public class StaticNameCollision {
         return "";
     }
 
-    public static class Ola {
-
-    }
+    public static class Ola {}
 }

@@ -16,19 +16,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collector;
-
-import org.apache.commons.lang3.NotImplementedException;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.util.OptionalBool;
+import org.apache.commons.lang3.NotImplementedException;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Tracks a set of overloads, automatically pruning override-equivalent methods if possible.
+ * Tracks a set of overloads, automatically pruning override-equivalent
+ * methods if possible.
  */
 public abstract class OverloadSet<T> {
 
@@ -72,20 +71,24 @@ public abstract class OverloadSet<T> {
     }
 
     /**
-     * Returns a collector that can apply to a stream of method signatures, and that collects them into a set of method,
-     * where none override one another. Do not use this in a parallel stream. Do not use this to collect constructors.
+     * Returns a collector that can apply to a stream of method signatures,
+     * and that collects them into a set of method, where none override one another.
+     * Do not use this in a parallel stream. Do not use this to collect constructors.
      * Do not use this if your stream contains methods that have different names.
      *
-     * @param commonSubtype
-     *            Site where the signatures are observed. The owner of every method in the stream must be a supertype of
-     *            this type
+     * @param commonSubtype Site where the signatures are observed. The owner of every method
+     *                      in the stream must be a supertype of this type
      *
      * @return A collector
      */
     public static Collector<JMethodSig, ?, List<JMethodSig>> collectMostSpecific(JTypeMirror commonSubtype) {
-        return Collector.of(() -> new ContextIndependentSet(commonSubtype), OverloadSet::add, (left, right) -> {
-            throw new NotImplementedException("Cannot use this in a parallel stream");
-        }, o -> Collections.unmodifiableList(o.getOverloadsMutable()));
+        return Collector.of(
+                () -> new ContextIndependentSet(commonSubtype),
+                OverloadSet::add,
+                (left, right) -> {
+                    throw new NotImplementedException("Cannot use this in a parallel stream");
+                },
+                o -> Collections.unmodifiableList(o.getOverloadsMutable()));
     }
 
     static final class ContextIndependentSet extends OverloadSet<JMethodSig> {
@@ -99,7 +102,8 @@ public abstract class OverloadSet<T> {
 
         @Override
         protected OptionalBool shouldTakePrecedence(JMethodSig m1, JMethodSig m2) {
-            return areOverrideEquivalent(m1, m2) ? shouldAlwaysTakePrecedence(m1, m2, viewingSite)
+            return areOverrideEquivalent(m1, m2)
+                    ? shouldAlwaysTakePrecedence(m1, m2, viewingSite)
                     : OptionalBool.UNKNOWN;
         }
 
@@ -115,15 +119,15 @@ public abstract class OverloadSet<T> {
     }
 
     /**
-     * Given that m1 and m2 are override-equivalent, should m1 be chosen over m2 (YES/NO), for ANY call expression, or
-     * could both be applicable given suitable expressions. This handles a few cases about shadowing/overriding/hiding
+     * Given that m1 and m2 are override-equivalent, should m1 be chosen
+     * over m2 (YES/NO), for ANY call expression, or could both be applicable
+     * given suitable expressions. This handles a few cases about shadowing/overriding/hiding
      * that are not covered strictly by the definition of "specificity".
      *
-     * <p>
-     * If m1 and m2 are equal, returns the first one by convention.
+     * <p>If m1 and m2 are equal, returns the first one by convention.
      */
-    static OptionalBool shouldAlwaysTakePrecedence(@NonNull JMethodSig m1, @NonNull JMethodSig m2,
-            @NonNull JTypeMirror commonSubtype) {
+    static OptionalBool shouldAlwaysTakePrecedence(
+            @NonNull JMethodSig m1, @NonNull JMethodSig m2, @NonNull JTypeMirror commonSubtype) {
         // select
         // 1. the non-bridge
         // 2. the one that overrides the other
@@ -131,18 +135,15 @@ public abstract class OverloadSet<T> {
 
         // Symbols don't reflect bridge methods anymore
         // if (m1.isBridge() != m2.isBridge()) {
-        // return definitely(!m1.isBridge());
+        //      return definitely(!m1.isBridge());
         // } else
         if (TypeOps.overrides(m1, m2, commonSubtype)) {
             return YES;
-        }
-        else if (TypeOps.overrides(m2, m1, commonSubtype)) {
+        } else if (TypeOps.overrides(m2, m1, commonSubtype)) {
             return NO;
-        }
-        else if (m1.isAbstract() ^ m2.isAbstract()) {
+        } else if (m1.isAbstract() ^ m2.isAbstract()) {
             return definitely(!m1.isAbstract());
-        }
-        else if (m1.isAbstract() && m2.isAbstract()) { // last ditch effort
+        } else if (m1.isAbstract() && m2.isAbstract()) { // last ditch effort
             // both are unrelated abstract, inherited into 'site'
             // their signature would be merged into the site
             // if exactly one is declared in a class, prefer it
@@ -165,11 +166,12 @@ public abstract class OverloadSet<T> {
     }
 
     /**
-     * Returns whether m1 shadows m2 in the body of the given site, ie m1 is declared in a class C1 that encloses the
-     * site, and m2 is declared in a type that strictly encloses C1.
+     * Returns whether m1 shadows m2 in the body of the given site, ie
+     * m1 is declared in a class C1 that encloses the site, and m2 is declared
+     * in a type that strictly encloses C1.
      *
-     * <p>
-     * Assumes m1 and m2 are override-equivalent, and declared in different classes.
+     * <p>Assumes m1 and m2 are override-equivalent, and declared in different
+     * classes.
      */
     // test only
     static OptionalBool shadows(JMethodSig m1, JMethodSig m2, JClassType site) {

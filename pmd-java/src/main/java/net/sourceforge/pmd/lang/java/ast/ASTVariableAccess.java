@@ -1,17 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.types.JVariableSig;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An unqualified reference to a variable (either local, or a field that is in scope).
+ * An unqualified reference to a variable (either local, or a field that
+ * is in scope).
  *
  * <pre class="grammar">
  *
@@ -19,8 +18,9 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
  *
  * </pre>
  *
- * @implNote {@linkplain ASTAmbiguousName Ambiguous names} are promoted to this status in the syntactic contexts, where
- *           we know they're definitely variable references.
+ * @implNote {@linkplain ASTAmbiguousName Ambiguous names} are promoted
+ *     to this status in the syntactic contexts, where we know they're definitely
+ *     variable references.
  */
 public final class ASTVariableAccess extends AbstractJavaExpr implements ASTNamedReferenceExpr {
 

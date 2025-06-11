@@ -10,9 +10,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.function.Consumer;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
@@ -24,6 +21,7 @@ import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.test.ast.TestUtilsKt;
 import net.sourceforge.pmd.reporting.Report;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * @author Clément Fournier
@@ -51,8 +49,8 @@ class BaseXPathFunctionTest extends BaseParserTest {
         TestUtilsKt.assertSize(report, numViolations);
     }
 
-    protected void testWithExpectedException(String xpath, String code,
-            Consumer<? super PmdXPathException> exceptionSpec) {
+    protected void testWithExpectedException(
+            String xpath, String code, Consumer<? super PmdXPathException> exceptionSpec) {
 
         Rule rule = makeXpathRuleFromXPath(xpath);
         FileAnalysisException thrown = assertThrows(FileAnalysisException.class, () -> executeRule(rule, code));
@@ -72,11 +70,8 @@ class BaseXPathFunctionTest extends BaseParserTest {
             exceptionSpec.accept(thrown);
             assertThat(thrown.getPhase(), equalTo(Phase.INITIALIZATION));
             assertThat(thrown.getRuleName(), equalTo(RULE_NAME_PLACEHOLDER));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
     }
-
 }

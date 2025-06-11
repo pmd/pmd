@@ -24,15 +24,13 @@ import static org.mockito.Mockito.verify;
 
 import java.util.List;
 import java.util.Set;
-
-import org.jetbrains.annotations.NotNull;
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.VarWalkStrategy.GraphWalk;
 import net.sourceforge.pmd.util.IteratorUtil;
+import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.Test;
 
 /**
  *
@@ -200,13 +198,13 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
     /*
      * Remember: let S, T != Object, S <: T
-     * 
+     *
      * G<? super T> </: G<? extends T> G<? extends T> </: G<? super T>
-     * 
+     *
      * G<? super T> <: G<? super S> G<? extends S> <: G<? extends T>
-     * 
+     *
      * if T = Object, then G<? extends T> = G<?>, and
-     * 
+     *
      * G<A> <: G<?> forall A (incl. wildcards)
      */
 
@@ -280,7 +278,8 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         // List<? extends 'a> & Serializable <: 'b
         // ~> 'b >: List<? extends 'a> & Serializable
 
-        // Note that this does not split the intersection into several constraints, like eg
+        // Note that this does not split the intersection into several constraints, like
+        // eg
         // 'b >: List<? extends 'a>
         // 'b >: Serializable
 
@@ -402,5 +401,4 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
 
         assertThat(batches, contains(setOf(c), setOf(b, a)));
     }
-
 }

@@ -4,9 +4,8 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 
-import org.apache.commons.lang3.StringUtils;
-
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Base class to scan a type signature.
@@ -76,8 +75,9 @@ class SignatureScanner {
 
     public RuntimeException expected(String expectedWhat, int pos) {
         final String indent = "    ";
-        String sb = "Expected " + expectedWhat + ":\n" + indent + bufferToString() + "\n" + indent
-                + StringUtils.repeat(' ', pos - start) + '^' + "\n";
+        String sb = "Expected " + expectedWhat + ":\n"
+                + indent + bufferToString() + "\n"
+                + indent + StringUtils.repeat(' ', pos - start) + '^' + "\n";
         return new InvalidTypeSignatureException(sb);
     }
 

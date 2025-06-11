@@ -4,16 +4,17 @@
 
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * An exception occurring during overload resolution. Some of those are completely normal and prune incompatible
- * overloads. There is a compile-time error if no compile-time declaration is identified though (all potentially
- * applicable methods fail), or if after the CTdecl is selected, its invocation fails (eg a param that was not pertinent
- * to applicability is incompatible with the declared formal).
+ * An exception occurring during overload resolution. Some of those
+ * are completely normal and prune incompatible overloads. There is
+ * a compile-time error if no compile-time declaration is identified
+ * though (all potentially applicable methods fail), or if after the
+ * CTdecl is selected, its invocation fails (eg a param that was not
+ * pertinent to applicability is incompatible with the declared formal).
  */
 public class ResolutionFailure {
 
@@ -41,7 +42,9 @@ public class ResolutionFailure {
      * Returns the location on which the failure should be reported.
      */
     public @Nullable JavaNode getLocation() {
-        return location != null ? location : callSite != null ? callSite.getExpr().getLocation() : null;
+        return location != null
+                ? location
+                : callSite != null ? callSite.getExpr().getLocation() : null;
     }
 
     /**
@@ -52,7 +55,8 @@ public class ResolutionFailure {
     }
 
     /**
-     * Returns the phase in which the failure occurred. Failures in invocation phase should be compile-time errors.
+     * Returns the phase in which the failure occurred. Failures in invocation
+     * phase should be compile-time errors.
      */
     public MethodResolutionPhase getPhase() {
         return phase;
@@ -70,8 +74,12 @@ public class ResolutionFailure {
 
     @Override
     public String toString() {
-        return "ResolutionFailure{" + "failedMethod=" + failedMethod + ", callSite=" + callSite + ", phase=" + phase
-                + ", reason='" + reason + '\'' + ", location=" + location + '}';
+        return "ResolutionFailure{"
+                + "failedMethod=" + failedMethod
+                + ", callSite=" + callSite
+                + ", phase=" + phase
+                + ", reason='" + reason + '\''
+                + ", location=" + location
+                + '}';
     }
-
 }

@@ -1,20 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Abstract class for type declarations nodes. This is a {@linkplain Node#isFindBoundary() find boundary} for tree
- * traversal methods.
+ * Abstract class for type declarations nodes.
+ * This is a {@linkplain Node#isFindBoundary() find boundary} for tree traversal methods.
  */
 abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JClassSymbol>
         implements ASTTypeDeclaration, LeftRecursiveNode {
@@ -31,8 +29,7 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
     public FileLocation getReportLocation() {
         if (isAnonymous()) {
             return super.getReportLocation();
-        }
-        else {
+        } else {
             // report on the identifier, not the entire class.
             return getModifiers().getLastToken().getNext().getReportLocation();
         }

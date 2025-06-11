@@ -9,7 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 
@@ -32,7 +31,8 @@ final class SupertypeCheckCache {
     };
 
     /**
-     * Returns true if t is certainly a subtype of s. Otherwise it needs to be recomputed.
+     * Returns true if t is certainly a subtype of s. Otherwise it
+     * needs to be recomputed.
      */
     boolean isCertainlyASubtype(JTypeMirror t, JTypeMirror s) {
         Set<JTypeMirror> superTypesOfT = cache.get(t);
@@ -49,5 +49,4 @@ final class SupertypeCheckCache {
         // some types are never cached
         return !(t instanceof InferenceVar) && !(t instanceof JPrimitiveType);
     }
-
 }

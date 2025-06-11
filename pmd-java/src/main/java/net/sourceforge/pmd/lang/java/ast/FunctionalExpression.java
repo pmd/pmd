@@ -4,10 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * A method reference or lambda expression.
@@ -15,7 +14,8 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 public interface FunctionalExpression extends ASTExpression {
 
     /**
-     * Returns the type of the functional interface. E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
+     * Returns the type of the functional interface.
+     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
      * {@code java.util.function.Function<java.lang.String, java.lang.Boolean>}.
      *
      * @see #getFunctionalMethod()
@@ -25,12 +25,12 @@ public interface FunctionalExpression extends ASTExpression {
     JTypeMirror getTypeMirror();
 
     /**
-     * Returns the method that is overridden in the functional interface. E.g. in
-     * {@code stringStream.map(s -> s.isEmpty())}, this is {@code java.util.function.Function#apply(java.lang.String) ->
+     * Returns the method that is overridden in the functional interface.
+     * E.g. in {@code stringStream.map(s -> s.isEmpty())}, this is
+     * {@code java.util.function.Function#apply(java.lang.String) ->
      * java.lang.Boolean}
      *
      * @see #getTypeMirror()
      */
     JMethodSig getFunctionalMethod();
-
 }

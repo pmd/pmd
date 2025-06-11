@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.stream.Stream;
-
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JjtreeNode;
@@ -16,12 +14,12 @@ import net.sourceforge.pmd.reporting.Reportable;
 import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
- * Wraps a comment token to provide some utilities. This is not a node, it's not part of the tree anywhere, just
- * convenient.
+ * Wraps a comment token to provide some utilities.
+ * This is not a node, it's not part of the tree anywhere,
+ * just convenient.
  *
- * <p>
- * This class represents any kind of comment. A specialized subclass provides more API for Javadoc comments, see
- * {@link JavadocComment}.
+ * <p>This class represents any kind of comment. A specialized subclass
+ * provides more API for Javadoc comments, see {@link JavadocComment}.
  */
 public class JavaComment implements Reportable {
     // TODO maybe move part of this into pmd core
@@ -56,18 +54,19 @@ public class JavaComment implements Reportable {
     }
 
     /**
-     * Returns true if the given token has the kind of a comment token (there are three such kinds).
+     * Returns true if the given token has the kind
+     * of a comment token (there are three such kinds).
      */
     public static boolean isComment(JavaccToken token) {
         return JavaAstUtils.isComment(token);
     }
 
     /**
-     * Removes the leading comment marker (like {@code *}) of each line of the comment as well as the start marker
-     * ({@code //}, {@code /*}, {@code /**} or {@code ///} and the end markers (<code>&#x2a;/</code>).
+     * Removes the leading comment marker (like {@code *}) of each line
+     * of the comment as well as the start marker ({@code //}, {@code /*}, {@code /**} or {@code ///}
+     * and the end markers (<code>&#x2a;/</code>).
      *
-     * <p>
-     * Empty lines are removed.
+     * <p>Empty lines are removed.
      *
      * @return List of lines of the comments
      */
@@ -78,8 +77,7 @@ public class JavaComment implements Reportable {
     public Iterable<Chars> getFilteredLines(boolean preserveEmptyLines) {
         if (preserveEmptyLines) {
             return () -> IteratorUtil.map(getText().lines().iterator(), JavaComment::removeCommentMarkup);
-        }
-        else {
+        } else {
             return () -> IteratorUtil.mapNotNull(getText().lines().iterator(), line -> {
                 line = removeCommentMarkup(line);
                 return line.isEmpty() ? null : line;
@@ -88,17 +86,23 @@ public class JavaComment implements Reportable {
     }
 
     /**
-     * True if this is a comment delimiter or an asterisk. This tests the whole parameter and not a prefix/suffix.
+     * True if this is a comment delimiter or an asterisk. This
+     * tests the whole parameter and not a prefix/suffix.
      */
     @SuppressWarnings("PMD.LiteralsFirstInComparisons") // a fp
     public static boolean isMarkupWord(Chars word) {
-        return word.length() <= 3 && (word.contentEquals("*") || word.contentEquals("//") || word.contentEquals("///")
-                || word.contentEquals("/*") || word.contentEquals("*/") || word.contentEquals("/**"));
+        return word.length() <= 3
+                && (word.contentEquals("*")
+                        || word.contentEquals("//")
+                        || word.contentEquals("///")
+                        || word.contentEquals("/*")
+                        || word.contentEquals("*/")
+                        || word.contentEquals("/**"));
     }
 
     /**
-     * Trim the start of the provided line to remove a comment markup opener ({@code //, ///, /*, /**, *}) or closer
-     * <code>&#x2a;/</code>.
+     * Trim the start of the provided line to remove a comment
+     * markup opener ({@code //, ///, /*, /**, *}) or closer <code>&#x2a;/</code>.
      */
     public static Chars removeCommentMarkup(Chars line) {
         line = line.trim().removeSuffix("*/");
@@ -106,12 +110,10 @@ public class JavaComment implements Reportable {
         if (line.startsWith('/', 0)) {
             if (line.startsWith("**", 1) || line.startsWith("//", 1)) {
                 subseqFrom = 3;
-            }
-            else if (line.startsWith('/', 1) || line.startsWith('*', 1)) {
+            } else if (line.startsWith('/', 1) || line.startsWith('*', 1)) {
                 subseqFrom = 2;
             }
-        }
-        else if (line.startsWith('*', 0)) {
+        } else if (line.startsWith('*', 0)) {
             subseqFrom = 1;
         }
         return line.subSequence(subseqFrom, line.length()).trim();
@@ -119,7 +121,8 @@ public class JavaComment implements Reportable {
 
     private static Stream<JavaccToken> getSpecialTokensIn(JjtreeNode<?> node) {
         return GenericToken.streamRange(node.getFirstToken(), node.getLastToken())
-                .flatMap(it -> IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
+                .flatMap(it ->
+                        IteratorUtil.toStream(GenericToken.previousSpecials(it).iterator()));
     }
 
     public static Stream<JavaComment> getLeadingComments(JavaNode node) {

@@ -9,19 +9,18 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Poly site for an invocation expression. Includes info about an ongoing outer inference process if any, as well as an
- * expected target type. The target type might depend on inference of the outer context, by mentioning free type
- * variables. In that case they're resolved together.
+ * Poly site for an invocation expression. Includes info about an ongoing
+ * outer inference process if any, as well as an expected target type.
+ * The target type might depend on inference of the outer context, by
+ * mentioning free type variables. In that case they're resolved together.
  */
 public class MethodCallSite extends PolySite<InvocationMirror> {
 
@@ -38,8 +37,12 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
 
     private final boolean isSpecificityCheck;
 
-    MethodCallSite(InvocationMirror expr, @Nullable JTypeMirror expectedType, @Nullable MethodCallSite outerSite,
-            @NonNull InferenceContext infCtx, boolean isSpecificityCheck) {
+    MethodCallSite(
+            InvocationMirror expr,
+            @Nullable JTypeMirror expectedType,
+            @Nullable MethodCallSite outerSite,
+            @NonNull InferenceContext infCtx,
+            boolean isSpecificityCheck) {
         super(expr, expectedType);
         this.outerSite = outerSite;
         this.localInferenceContext = infCtx;
@@ -85,11 +88,11 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
     }
 
     /**
-     * Returns a list of error messages encountered during the inference. For this list to be populated, the
-     * {@link Infer} must use a {@link SimpleLogger}.
+     * Returns a list of error messages encountered during the inference.
+     * For this list to be populated, the {@link Infer} must use
+     * a {@link SimpleLogger}.
      *
-     * <p>
-     * Failures in the invocation phase are compile-time errors.
+     * <p>Failures in the invocation phase are compile-time errors.
      */
     public Map<MethodResolutionPhase, List<ResolutionFailure>> getResolutionFailures() {
         return Collections.unmodifiableMap(errors);
@@ -119,8 +122,9 @@ public class MethodCallSite extends PolySite<InvocationMirror> {
     }
 
     /**
-     * Returns the inference context of the target site. This is relevant in invocation contexts, in which the inference
-     * context of an argument needs to be propagated to the outer context.
+     * Returns the inference context of the target site. This is relevant
+     * in invocation contexts, in which the inference context of an argument
+     * needs to be propagated to the outer context.
      */
     @NonNull
     InferenceContext getOuterCtx() {

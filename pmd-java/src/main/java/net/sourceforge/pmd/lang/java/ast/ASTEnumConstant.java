@@ -1,13 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents an enum constant declaration within an {@linkplain ASTEnumDeclaration enum type declaration}.
@@ -18,8 +16,12 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
  *
  * </pre>
  */
-public final class ASTEnumConstant extends AbstractJavaTypeNode implements InvocationNode, ModifierOwner,
-        ASTBodyDeclaration, InternalInterfaces.VariableIdOwner, JavadocCommentOwner {
+public final class ASTEnumConstant extends AbstractJavaTypeNode
+        implements InvocationNode,
+                ModifierOwner,
+                ASTBodyDeclaration,
+                InternalInterfaces.VariableIdOwner,
+                JavadocCommentOwner {
 
     private OverloadSelectionResult result;
 
@@ -61,14 +63,16 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode implements Invoc
     }
 
     /**
-     * Returns true if this enum constant defines a body, which is compiled like an anonymous class.
+     * Returns true if this enum constant defines a body,
+     * which is compiled like an anonymous class.
      */
     public boolean isAnonymousClass() {
         return getLastChild() instanceof ASTAnonymousClassDeclaration;
     }
 
     /**
-     * Returns the anonymous class declaration, or null if there is none.
+     * Returns the anonymous class declaration, or null if
+     * there is none.
      */
     public ASTAnonymousClassDeclaration getAnonymousClass() {
         return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTAnonymousClassDeclaration.class);

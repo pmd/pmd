@@ -1,11 +1,11 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Represents a type cast expression. This is syntactically a unary prefix operation and has the same precedence.
+ * Represents a type cast expression. This is syntactically a unary prefix
+ * operation and has the same precedence.
  *
  * <pre class="grammar">
  *

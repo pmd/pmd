@@ -5,20 +5,17 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
  * This defines a compact constructor for a {@linkplain ASTRecordDeclaration RecordDeclaration} (JDK 16 feature).
  * Compact constructors implicitly declares formal parameters corresponding to the record component list. These can be
  * fetched from {@link #getSymbol()}.
  *
- * <p>
- * Compact record constructors must be declared "public".
+ * <p>Compact record constructors must be declared "public".
  *
  * <pre class="grammar">
  *

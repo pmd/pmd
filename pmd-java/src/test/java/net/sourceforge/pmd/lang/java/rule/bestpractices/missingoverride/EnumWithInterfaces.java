@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 /**
@@ -17,7 +16,5 @@ public enum EnumWithInterfaces implements InterfaceWithBound<int[]> {
     };
 
     @Override
-    public void handle(int[] ints) {
-
-    }
+    public void handle(int[] ints) {}
 }

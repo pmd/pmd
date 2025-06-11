@@ -5,12 +5,10 @@
 package net.sourceforge.pmd.lang.java.symbols.table.coreimpl;
 
 import java.util.List;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.util.IteratorUtil;
 import net.sourceforge.pmd.util.OptionalBool;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 class ShadowChainIteratorImpl<S, I> extends IteratorUtil.AbstractPausingIterator<ShadowChainNode<S, I>>
         implements ShadowChainIterator<S, I> {
@@ -40,8 +38,7 @@ class ShadowChainIteratorImpl<S, I> extends IteratorUtil.AbstractPausingIterator
     protected void prepareViewOn(ShadowChainNode<S, I> current) {
         if (current instanceof ShadowChainNodeBase) {
             nextGroupToTest = current.getParent();
-        }
-        else {
+        } else {
             throw new IllegalStateException("Root group is empty " + current);
         }
     }
@@ -77,5 +74,4 @@ class ShadowChainIteratorImpl<S, I> extends IteratorUtil.AbstractPausingIterator
         // of enclosing groups
         return group.getResolver().resolveFirst(name) != null;
     }
-
 }

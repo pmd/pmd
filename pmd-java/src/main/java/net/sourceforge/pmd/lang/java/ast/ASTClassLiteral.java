@@ -1,14 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * A class literal. Class literals are {@linkplain ASTPrimaryExpression primary expressions}, but not proper
- * {@linkplain ASTLiteral literals}, since they are represented by several tokens.
+ * A class literal. Class literals are {@linkplain ASTPrimaryExpression primary expressions},
+ * but not proper {@linkplain ASTLiteral literals}, since they are represented by several tokens.
  *
  * <pre class="grammar">
  *

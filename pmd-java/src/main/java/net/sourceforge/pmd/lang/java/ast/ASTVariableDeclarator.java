@@ -1,19 +1,18 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * Groups a variable ID and its initializer if it exists. May be found as a child of {@linkplain ASTFieldDeclaration
- * field declarations} and {@linkplain ASTLocalVariableDeclaration local variable declarations}.
+ * Groups a variable ID and its initializer if it exists.
+ * May be found as a child of {@linkplain ASTFieldDeclaration field declarations} and
+ * {@linkplain ASTLocalVariableDeclaration local variable declarations}.
  *
- * <p>
- * The {@linkplain #getInitializer() initializer} is the only place {@linkplain ASTArrayInitializer array initializer
- * expressions} can be found.
+ * <p>The {@linkplain #getInitializer() initializer} is the only place
+ * {@linkplain ASTArrayInitializer array initializer expressions} can be found.
  *
  * <pre class="grammar">
  *
@@ -49,7 +48,8 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
     }
 
     /**
-     * Returns true if the declared variable is initialized. Otherwise, {@link #getInitializer()} returns null.
+     * Returns true if the declared variable is initialized.
+     * Otherwise, {@link #getInitializer()} returns null.
      */
     public boolean hasInitializer() {
         return getLastChild() instanceof ASTExpression;
@@ -62,5 +62,4 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
     public ASTExpression getInitializer() {
         return hasInitializer() ? (ASTExpression) getLastChild() : null;
     }
-
 }

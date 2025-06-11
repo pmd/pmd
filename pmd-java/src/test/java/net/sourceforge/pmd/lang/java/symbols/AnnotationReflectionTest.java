@@ -24,13 +24,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 import java.util.Objects;
 import java.util.Set;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
@@ -43,6 +36,11 @@ import net.sourceforge.pmd.lang.java.symbols.testdata.LocalVarAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.MethodAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.ParameterAnnotation;
 import net.sourceforge.pmd.lang.java.symbols.testdata.SomeClass;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.pcollections.PSet;
 
 class AnnotationReflectionTest {
 
@@ -68,7 +66,8 @@ class AnnotationReflectionTest {
     @ParameterizedTest
     @EnumSource
     void testAnnotUseThatUsesDefaults(SymImplementation impl) {
-        // note that as the annotation has retention class, we can't use reflection to check
+        // note that as the annotation has retention class, we can't use reflection to
+        // check
 
         /*
          * @AnnotWithDefaults(valueNoDefault = "ohio", stringArrayDefault = {})
@@ -86,10 +85,10 @@ class AnnotationReflectionTest {
 
         // default values are also known
         assertEquals(YES, target.attributeMatches("stringArrayEmptyDefault", new String[] {}));
-        assertEquals(NO, target.attributeMatches("stringArrayEmptyDefault", new String[] { "a" }));
+        assertEquals(NO, target.attributeMatches("stringArrayEmptyDefault", new String[] {"a"}));
 
         // Non existing values are always considered unknown
-        assertEquals(UNKNOWN, target.attributeMatches("attributeDoesNotExist", new String[] { "a" }));
+        assertEquals(UNKNOWN, target.attributeMatches("attributeDoesNotExist", new String[] {"a"}));
     }
 
     @ParameterizedTest
@@ -99,15 +98,17 @@ class AnnotationReflectionTest {
         Class<AnnotWithDefaults> actualClass = AnnotWithDefaults.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
 
-        Target targetAnnot = createAnnotationInstance(Target.class, mapOf("value",
-                new ElementType[] { ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD }));
+        Target targetAnnot = createAnnotationInstance(Target.class, mapOf("value", new ElementType[] {
+            ElementType.TYPE, ElementType.PARAMETER, ElementType.FIELD, ElementType.METHOD
+        }));
         assertHasAnnotations(setOf(targetAnnot), sym);
     }
 
     @ParameterizedTest
     @EnumSource
     void testAnnotOnParameter(SymImplementation impl) {
-        // This only checks Target.PARAMETER annotations, do not confuse with TYPE_PARAMETER / TYPE_USE
+        // This only checks Target.PARAMETER annotations, do not confuse with
+        // TYPE_PARAMETER / TYPE_USE
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
 
@@ -121,7 +122,8 @@ class AnnotationReflectionTest {
     @ParameterizedTest
     @EnumSource
     void testAnnotOnField(SymImplementation impl) {
-        // This only checks Target.FIELD annotations, do not confuse with TYPE_USE annotations
+        // This only checks Target.FIELD annotations, do not confuse with TYPE_USE
+        // annotations
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
 
@@ -132,7 +134,8 @@ class AnnotationReflectionTest {
     @ParameterizedTest
     @EnumSource
     void testAnnotOnMethod(SymImplementation impl) {
-        // This only checks Target.METHOD annotations, do not confuse with TYPE_USE on return types
+        // This only checks Target.METHOD annotations, do not confuse with TYPE_USE on
+        // return types
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
 
@@ -144,7 +147,8 @@ class AnnotationReflectionTest {
     @ParameterizedTest
     @EnumSource
     void testAnnotOnConstructor(SymImplementation impl) {
-        // This only checks Target.CONSTRUCTOR annotations, do not confuse with TYPE_USE on return types
+        // This only checks Target.CONSTRUCTOR annotations, do not confuse with TYPE_USE
+        // on return types
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
 
@@ -154,12 +158,16 @@ class AnnotationReflectionTest {
 
     @Test
     void testAnnotOnLocalVar() {
-        // This only checks Target.LOCAL_VAR annotations, do not confuse with TYPE_USE on return types
+        // This only checks Target.LOCAL_VAR annotations, do not confuse with TYPE_USE
+        // on return types
         JClassSymbol sym = SymImplementation.AST.getSymbol(SomeClass.class);
 
         @NonNull
-        JVariableSymbol localSym = Objects.requireNonNull(sym.tryGetNode()).descendants(ASTVariableId.class)
-                .filter(it -> "local".equals(it.getName())).firstOrThrow().getSymbol();
+        JVariableSymbol localSym = Objects.requireNonNull(sym.tryGetNode())
+                .descendants(ASTVariableId.class)
+                .filter(it -> "local".equals(it.getName()))
+                .firstOrThrow()
+                .getSymbol();
 
         assertHasAnnotations(setOf(createAnnotationInstance(LocalVarAnnotation.class)), localSym);
     }
@@ -167,14 +175,17 @@ class AnnotationReflectionTest {
     @Test
     void testAnnotWithInvalidType() {
         @NonNull
-        ASTVariableId field = JavaParsingHelper.DEFAULT.parse("@interface A {}\n" + "class C<A> { @A int a; }\n")
-                .descendants(ASTFieldDeclaration.class).firstOrThrow().getVarIds().firstOrThrow();
+        ASTVariableId field = JavaParsingHelper.DEFAULT
+                .parse("@interface A {}\n" + "class C<A> { @A int a; }\n")
+                .descendants(ASTFieldDeclaration.class)
+                .firstOrThrow()
+                .getVarIds()
+                .firstOrThrow();
 
         // The annotation actually refers to the type parameter A. Since
         // this is invalid code, it is filtered out.
         PSet<SymAnnot> annots = field.getSymbol().getDeclaredAnnotations();
         assertThat(annots, empty());
-
     }
 
     private void assertHasAnnotations(Set<? extends Annotation> expected, AnnotableSymbol annotable) {
@@ -193,5 +204,4 @@ class AnnotationReflectionTest {
             assertTrue(symAnnot.isOfType(annotType.getName()));
         }
     }
-
 }

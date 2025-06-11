@@ -7,13 +7,6 @@ package net.sourceforge.pmd.lang.java.symbols.internal.asm;
 import java.io.InputStream;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.objectweb.asm.Opcodes;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JModuleSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
@@ -21,6 +14,11 @@ import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.FailedLoader;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.Loader.StreamLoader;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.AssertionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link SymbolResolver} that reads class files to produce symbols.
@@ -37,8 +35,8 @@ public class AsmSymbolResolver implements SymbolResolver {
     private final ConcurrentMap<String, ClassStub> knownStubs = new ConcurrentHashMap<>();
 
     /**
-     * Sentinel for when we fail finding a URL. This allows using a single map, instead of caching failure cases
-     * separately.
+     * Sentinel for when we fail finding a URL. This allows using a single map,
+     * instead of caching failure cases separately.
      */
     private final ClassStub failed;
 
@@ -56,8 +54,7 @@ public class AsmSymbolResolver implements SymbolResolver {
         String internalName = getInternalName(binaryName);
 
         ClassStub found = knownStubs.computeIfAbsent(internalName, iname -> {
-            @Nullable
-            InputStream inputStream = getStreamOfInternalName(iname);
+            @Nullable InputStream inputStream = getStreamOfInternalName(iname);
             if (inputStream == null) {
                 return failed;
             }
@@ -67,7 +64,7 @@ public class AsmSymbolResolver implements SymbolResolver {
 
         if (!found.hasCanonicalName()) {
             // note: this check needs to be done outside of computeIfAbsent
-            // to prevent recursive updates of the knownStubs map.
+            //  to prevent recursive updates of the knownStubs map.
             knownStubs.put(internalName, failed);
             found = failed;
         }
@@ -105,8 +102,8 @@ public class AsmSymbolResolver implements SymbolResolver {
     }
 
     /*
-     * These methods return an unresolved symbol if the url is not found.
-     */
+      These methods return an unresolved symbol if the url is not found.
+    */
 
     @Nullable
     ClassStub resolveFromInternalNameCannotFail(@Nullable String internalName) {
@@ -123,8 +120,7 @@ public class AsmSymbolResolver implements SymbolResolver {
             if (prev != failed && prev != null) {
                 return prev;
             }
-            @Nullable
-            InputStream inputStream = getStreamOfInternalName(iname);
+            @Nullable InputStream inputStream = getStreamOfInternalName(iname);
             Loader loader = inputStream == null ? FailedLoader.INSTANCE : new StreamLoader(internalName, inputStream);
             return new ClassStub(this, iname, loader, observedArity);
         });
@@ -143,22 +139,24 @@ public class AsmSymbolResolver implements SymbolResolver {
                 // Eg package names may be queried just to figure
                 // out whether they're packages or classes.
                 numFailedQueries++;
-            }
-            else if (stub.isNotParsed()) {
+            } else if (stub.isNotParsed()) {
                 numNotParsed++;
-            }
-            else if (!stub.isFailed()) {
+            } else if (!stub.isFailed()) {
                 numParsed++;
-            }
-            else {
+            } else {
                 numFailed++;
             }
         }
 
         LOG.trace(
                 "Of {} distinct queries to the classloader, {} queries failed, "
-                        + "{} classes were found and parsed successfully, " + "{} were found but failed parsing (!), "
+                        + "{} classes were found and parsed successfully, "
+                        + "{} were found but failed parsing (!), "
                         + "{} were found but never parsed.",
-                knownStubs.size(), numFailedQueries, numParsed, numFailed, numNotParsed);
+                knownStubs.size(),
+                numFailedQueries,
+                numParsed,
+                numFailed,
+                numNotParsed);
     }
 }

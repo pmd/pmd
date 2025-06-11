@@ -9,12 +9,10 @@ import static java.util.Collections.singletonList;
 
 import java.util.List;
 import java.util.Map;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.NameResolver.SingleNameResolver;
 import net.sourceforge.pmd.util.OptionalBool;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public final class CoreResolvers {
 

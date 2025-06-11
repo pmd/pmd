@@ -4,13 +4,12 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.AstVisitor;
 import net.sourceforge.pmd.lang.ast.impl.javacc.AbstractJjtreeNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.java.symbols.table.JSymbolTable;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, JavaNode> implements JavaNode {
 
@@ -116,9 +115,8 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
 
     /**
      * Shift the start and end tokens by the given offsets.
-     * 
-     * @throws IllegalStateException
-     *             if the right shift identifies a token that is left of this node
+     * @throws IllegalStateException if the right shift identifies
+     * a token that is left of this node
      */
     void shiftTokens(int leftShift, int rightShift) {
         if (leftShift != 0) {
@@ -132,12 +130,10 @@ abstract class AbstractJavaNode extends AbstractJjtreeNode<AbstractJavaNode, Jav
     private JavaccToken findTokenSiblingInThisNode(JavaccToken token, int shift) {
         if (shift == 0) {
             return token;
-        }
-        else if (shift < 0) {
+        } else if (shift < 0) {
             // expects a positive shift
             return TokenUtils.nthPrevious(getFirstToken(), token, -shift);
-        }
-        else {
+        } else {
             return TokenUtils.nthFollower(token, shift);
         }
     }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -11,22 +10,19 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Consumer;
-
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersion;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 class PMDCoverageTest {
 
@@ -35,8 +31,7 @@ class PMDCoverageTest {
 
     @Test
     void runAllJavaPmdOnSourceTree() {
-        runPmd("src/main/java", conf -> {
-        });
+        runPmd("src/main/java", conf -> {});
     }
 
     @Test
@@ -84,16 +79,13 @@ class PMDCoverageTest {
             // these examples of parsing errors need to be excluded in rulesets/internal/all-java.xml via
             // exclude-patterns.
             assertThat(report.toString(), not(containsString("Error while parsing")));
-        }
-        catch (IOException ioe) {
+        } catch (IOException ioe) {
             fail("Problem creating temporary file: " + ioe.getLocalizedMessage());
-        }
-        catch (AssertionError ae) {
+        } catch (AssertionError ae) {
             System.out.println("\nReport:\n");
             System.out.println(report);
             throw ae;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

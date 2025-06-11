@@ -1,13 +1,13 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 /**
- * Type node to represent the void pseudo-type. This represents the absence of a type, not a type, but it's easier to
- * process that way. Can only occur as return type of method declarations, and as the qualifier of a
- * {@linkplain ASTClassLiteral class literal}.
+ * Type node to represent the void pseudo-type. This represents the
+ * absence of a type, not a type, but it's easier to process that way.
+ * Can only occur as return type of method declarations, and as the qualifier
+ * of a {@linkplain ASTClassLiteral class literal}.
  *
  * <pre class="grammar">
  *

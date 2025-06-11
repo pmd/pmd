@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,8 +15,9 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
- * How this rule works: find additive expressions: + check that the addition is between anything other than two literals
- * if true and also the parent is StringBuffer constructor or append, report a violation.
+ * How this rule works: find additive expressions: + check that the addition is
+ * between anything other than two literals if true and also the parent is
+ * StringBuffer constructor or append, report a violation.
  *
  * @author mgriffa
  */

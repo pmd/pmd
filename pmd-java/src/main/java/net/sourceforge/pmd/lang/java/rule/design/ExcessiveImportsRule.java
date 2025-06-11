@@ -9,9 +9,10 @@ import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
 
 /**
- * ExcessiveImports attempts to count all unique imports a class contains. This rule will count a "import
- * com.something.*;" as a single import. This is a unique situation and I'd like to create an audit type rule that
- * captures those.
+ * ExcessiveImports attempts to count all unique imports a class contains. This
+ * rule will count a "import com.something.*;" as a single import. This is a
+ * unique situation and I'd like to create an audit type rule that captures
+ * those.
  *
  * @author aglover
  * @since Feb 21, 2003

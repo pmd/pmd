@@ -15,8 +15,7 @@ import java.util.stream.Stream;
 
 public class TypeInferenceTestCases {
 
-    private TypeInferenceTestCases() {
-    }
+    private TypeInferenceTestCases() {}
 
     public static <K, L extends List<K>> L appendL(List<? extends K> in, L top) {
         top.addAll(in);
@@ -42,5 +41,4 @@ public class TypeInferenceTestCases {
     public static <T> T id(T t) {
         return t;
     }
-
 }

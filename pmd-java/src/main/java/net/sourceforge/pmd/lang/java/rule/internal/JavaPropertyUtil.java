@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
@@ -28,11 +27,11 @@ public final class JavaPropertyUtil {
         sortedDefaults.sort(Comparator.naturalOrder());
         return stringListProperty("ignoredAnnotations")
                 .desc("Fully qualified names of the annotation types that should be ignored by this rule")
-                .defaultValue(sortedDefaults).build();
+                .defaultValue(sortedDefaults)
+                .build();
     }
 
     public static PropertyDescriptor<List<String>> ignoredAnnotationsDescriptor(String... defaults) {
         return ignoredAnnotationsDescriptor(Arrays.asList(defaults));
     }
-
 }

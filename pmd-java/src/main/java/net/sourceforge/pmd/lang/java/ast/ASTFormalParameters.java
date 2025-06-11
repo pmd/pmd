@@ -1,15 +1,16 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A list of {@linkplain ASTFormalParameter formal parameters} in a method or constructor declaration. Some formal
- * parameter lists may feature a {@linkplain ASTReceiverParameter receiver parameter}. That is not treated as a regular
- * formal parameter, as it does not declare a variable.
+ * A list of {@linkplain ASTFormalParameter formal parameters} in a
+ * method or constructor declaration. Some formal parameter lists may
+ * feature a {@linkplain ASTReceiverParameter receiver parameter}. That
+ * is not treated as a regular formal parameter, as it does not declare
+ * a variable.
  *
  * <pre class="grammar">
  *
@@ -26,7 +27,8 @@ public final class ASTFormalParameters extends ASTList<ASTFormalParameter> {
     }
 
     /**
-     * Returns the number of formal parameters. This excludes the receiver parameter, if any.
+     * Returns the number of formal parameters.
+     * This excludes the receiver parameter, if any.
      */
     @Override
     public int size() {
@@ -39,7 +41,8 @@ public final class ASTFormalParameters extends ASTList<ASTFormalParameter> {
     }
 
     /**
-     * Returns the receiver parameter if it is present, otherwise returns null.
+     * Returns the receiver parameter if it is present, otherwise returns
+     * null.
      */
     @Nullable
     public ASTReceiverParameter getReceiverParameter() {

@@ -1,21 +1,19 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Represents a type parameter declaration of a method, constructor, class or interface declaration.
  *
- * <p>
- * The bound of a type parameter may only be an upper bound ("extends"). The bound is represented by the type node
- * directly. The type node may be an {@link ASTIntersectionType intersection type}.
+ * <p>The bound of a type parameter may only be an upper bound ("extends").
+ * The bound is represented by the type node directly. The type node may
+ * be an {@link ASTIntersectionType intersection type}.
  *
  * <pre class="grammar">
  *
@@ -39,15 +37,17 @@ public final class ASTTypeParameter extends AbstractTypedSymbolDeclarator<JTypeP
     }
 
     /**
-     * Returns true if this type parameter is bounded, in which case {@link #getTypeBoundNode()} doesn't return
-     * {@code null}.
+     * Returns true if this type parameter is bounded,
+     * in which case {@link #getTypeBoundNode()} doesn't
+     * return {@code null}.
      */
     public boolean hasTypeBound() {
         return getTypeBoundNode() != null;
     }
 
     /**
-     * Returns the type bound node of this parameter, or null if it is not bounded.
+     * Returns the type bound node of this parameter,
+     * or null if it is not bounded.
      */
     @Nullable
     public ASTType getTypeBoundNode() {

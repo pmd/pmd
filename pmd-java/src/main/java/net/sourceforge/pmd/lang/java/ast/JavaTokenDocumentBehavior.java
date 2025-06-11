@@ -8,14 +8,13 @@ import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.GT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RSIGNEDSHIFT;
 import static net.sourceforge.pmd.lang.java.ast.JavaTokenKinds.RUNSIGNEDSHIFT;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.ast.impl.javacc.CharStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaEscapeTranslator;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccTokenDocument;
 import net.sourceforge.pmd.lang.ast.impl.javacc.MalformedSourceException;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * {@link JavaccTokenDocument} for Java.
@@ -57,6 +56,5 @@ final class JavaTokenDocumentBehavior extends JavaccTokenDocument.TokenDocumentB
             super(kind, image, startOffset, endOffset, doc);
             this.realKind = realKind;
         }
-
     }
 }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
@@ -9,7 +8,6 @@ import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
@@ -17,11 +15,11 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertySource;
 
 /**
- * The loose package coupling Rule can be used to ensure coupling outside of a package hierarchy is minimized to all but
- * an allowed set of classes from within the package hierarchy.
+ * The loose package coupling Rule can be used to ensure coupling outside of a
+ * package hierarchy is minimized to all but an allowed set of classes from
+ * within the package hierarchy.
  *
- * <p>
- * For example, supposed you have the following package hierarchy:
+ * <p>For example, supposed you have the following package hierarchy:
  * <ul>
  * <li><code>org.sample</code></li>
  * <li><code>org.sample.impl</code></li>
@@ -29,18 +27,23 @@ import net.sourceforge.pmd.properties.PropertySource;
  * </ul>
  * And the allowed class <code>org.sample.SampleInterface</code>.
  *
- * <p>
- * This rule can be used to ensure that all classes within the <code>org.sample</code> package and its sub-packages are
- * not used outside of the <code>org.sample</code> package hierarchy. Further, the only allowed usage outside of a class
- * in the <code>org.sample</code> hierarchy would be via <code>org.sample.SampleInterface</code>.
+ * <p>This rule can be used to ensure that all classes within the
+ * <code>org.sample</code> package and its sub-packages are not used outside of
+ * the <code>org.sample</code> package hierarchy. Further, the only allowed
+ * usage outside of a class in the <code>org.sample</code> hierarchy would be
+ * via <code>org.sample.SampleInterface</code>.
  */
 public class LoosePackageCouplingRule extends AbstractJavaRule {
 
-    private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR =
-            stringListProperty("packages").desc("Restricted packages").emptyDefaultValue().build();
+    private static final PropertyDescriptor<List<String>> PACKAGES_DESCRIPTOR = stringListProperty("packages")
+            .desc("Restricted packages")
+            .emptyDefaultValue()
+            .build();
 
-    private static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR =
-            stringListProperty("classes").desc("Allowed classes").emptyDefaultValue().build();
+    private static final PropertyDescriptor<List<String>> CLASSES_DESCRIPTOR = stringListProperty("classes")
+            .desc("Allowed classes")
+            .emptyDefaultValue()
+            .build();
 
     // The package of this source file
     private String thisPackage;
@@ -81,15 +84,13 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
                 if (pkg.equals(thisPackage) || isContainingPackage(pkg, thisPackage)) {
                     // Valid usage
                     break;
-                }
-                else {
+                } else {
                     // On demand imports automatically fail because they include
                     // everything
                     if (node.isImportOnDemand()) {
                         asCtx(data).addViolation(node, node.getImportedName(), pkg);
                         break;
-                    }
-                    else {
+                    } else {
                         if (!isAllowedClass(node)) {
                             asCtx(data).addViolation(node, node.getImportedName(), pkg);
                             break;
@@ -117,14 +118,14 @@ public class LoosePackageCouplingRule extends AbstractJavaRule {
             if (importedName.equals(clazz)) {
                 return true;
             }
-
         }
         return false;
     }
 
     public boolean checksNothing() {
 
-        return getProperty(PACKAGES_DESCRIPTOR).isEmpty() && getProperty(CLASSES_DESCRIPTOR).isEmpty();
+        return getProperty(PACKAGES_DESCRIPTOR).isEmpty()
+                && getProperty(CLASSES_DESCRIPTOR).isEmpty();
     }
 
     /**

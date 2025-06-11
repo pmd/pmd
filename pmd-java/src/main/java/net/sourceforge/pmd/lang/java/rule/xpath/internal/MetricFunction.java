@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 
 import java.util.Optional;
-
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.metrics.Metric;
@@ -13,8 +12,10 @@ import net.sourceforge.pmd.lang.metrics.MetricOptions;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
 
 /**
- * Implements the {@code metric()} XPath function. Takes the string name of a metric and the context node and returns
- * the result if the metric can be computed, otherwise returns {@link Double#NaN}.
+ * Implements the {@code metric()} XPath function. Takes the
+ * string name of a metric and the context node and returns
+ * the result if the metric can be computed, otherwise returns
+ * {@link Double#NaN}.
  *
  * @author Clément Fournier
  * @since 6.0.0
@@ -29,7 +30,7 @@ public final class MetricFunction extends BaseJavaXPathFunction {
 
     @Override
     public Type[] getArgumentTypes() {
-        return new Type[] { Type.SINGLE_STRING };
+        return new Type[] {Type.SINGLE_STRING};
     }
 
     @Override
@@ -65,5 +66,4 @@ public final class MetricFunction extends BaseJavaXPathFunction {
         Number computed = Metric.compute(metric, n, MetricOptions.emptyOptions());
         return computed == null ? Optional.empty() : Optional.of(computed.doubleValue());
     }
-
 }

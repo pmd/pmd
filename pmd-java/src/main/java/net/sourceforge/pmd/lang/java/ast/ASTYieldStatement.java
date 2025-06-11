@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Objects;
-
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
@@ -34,12 +32,13 @@ public class ASTYieldStatement extends AbstractStatement {
     }
 
     /**
-     * Returns the switch expression to which this statement yields a value.
+     * Returns the switch expression to which this statement yields a
+     * value.
      */
     @NonNull
     public ASTSwitchExpression getYieldTarget() {
-        return Objects.requireNonNull(ancestors(ASTSwitchExpression.class).first(),
+        return Objects.requireNonNull(
+                ancestors(ASTSwitchExpression.class).first(),
                 "Yield statements should only be parsable inside switch expressions");
     }
-
 }

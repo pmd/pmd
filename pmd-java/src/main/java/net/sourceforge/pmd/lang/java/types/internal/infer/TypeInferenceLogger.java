@@ -14,12 +14,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
@@ -32,13 +26,18 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.FunctionalE
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.InvocationMirror.MethodCtDecl;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.SystemUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A strategy to log the execution traces of {@link Infer}. The default does nothing, so the logger calls can be
- * optimized out at runtime, while not having to check that logging is enabled at the call sites.
+ * A strategy to log the execution traces of {@link Infer}.
+ * The default does nothing, so the logger calls can be optimized out
+ * at runtime, while not having to check that logging is enabled at the
+ * call sites.
  *
- * <p>
- * To enable logging for the CLI, use the language property ({@link JavaLanguageProperties})
+ * <p>To enable logging for the CLI, use the language property ({@link JavaLanguageProperties})
  * {@code xTypeInferenceLogging}. From tests, see {@code JavaParsingHelper#logTypeInferenceVerbose()}.
  */
 @SuppressWarnings("PMD.UncommentedEmptyMethodBody")
@@ -46,110 +45,84 @@ public interface TypeInferenceLogger {
 
     // computeCompileTimeDecl
 
-    default void polyResolutionFailure(JavaNode node) {
-    }
+    default void polyResolutionFailure(JavaNode node) {}
 
-    default void noApplicableCandidates(MethodCallSite site) {
-    }
+    default void noApplicableCandidates(MethodCallSite site) {}
 
-    default void noCompileTimeDeclaration(MethodCallSite site) {
-    }
+    default void noCompileTimeDeclaration(MethodCallSite site) {}
 
-    default void startInference(JMethodSig sig, MethodCallSite site, MethodResolutionPhase phase) {
-    }
+    default void startInference(JMethodSig sig, MethodCallSite site, MethodResolutionPhase phase) {}
 
-    default void endInference(@Nullable JMethodSig result) {
-    }
+    default void endInference(@Nullable JMethodSig result) {}
 
-    default void fallbackInvocation(JMethodSig ctdecl, MethodCallSite site) {
-    }
+    default void fallbackInvocation(JMethodSig ctdecl, MethodCallSite site) {}
 
-    default void skipInstantiation(JMethodSig partiallyInferred, MethodCallSite site) {
-    }
+    default void skipInstantiation(JMethodSig partiallyInferred, MethodCallSite site) {}
 
-    default void ambiguityError(MethodCallSite site, @Nullable MethodCtDecl selected, List<MethodCtDecl> m1) {
-    }
+    default void ambiguityError(MethodCallSite site, @Nullable MethodCtDecl selected, List<MethodCtDecl> m1) {}
 
     // instantiateImpl
 
-    default void ctxInitialization(InferenceContext ctx, JMethodSig sig) {
-    }
+    default void ctxInitialization(InferenceContext ctx, JMethodSig sig) {}
 
-    default void applicabilityTest(InferenceContext ctx) {
-    }
+    default void applicabilityTest(InferenceContext ctx) {}
 
-    default void finishApplicabilityTest() {
-    }
+    default void finishApplicabilityTest() {}
 
-    default void startArgsChecks() {
-    }
+    default void startArgsChecks() {}
 
-    default void startArg(int i, ExprMirror expr, JTypeMirror formal) {
-    }
+    default void startArg(int i, ExprMirror expr, JTypeMirror formal) {}
 
-    default void skipArgAsNonPertinent(int i, ExprMirror expr) {
-    }
+    default void skipArgAsNonPertinent(int i, ExprMirror expr) {}
 
-    default void functionalExprNeedsInvocationCtx(JTypeMirror targetT, ExprMirror expr) {
-    }
+    default void functionalExprNeedsInvocationCtx(JTypeMirror targetT, ExprMirror expr) {}
 
-    default void functionalExprHasUnresolvedTargetType(JTypeMirror targetT, FunctionalExprMirror expr) {
-    }
+    default void functionalExprHasUnresolvedTargetType(JTypeMirror targetT, FunctionalExprMirror expr) {}
 
-    default void endArg() {
-    }
+    default void endArg() {}
 
-    default void endArgsChecks() {
-    }
+    default void endArgsChecks() {}
 
-    default void startReturnChecks() {
-    }
+    default void startReturnChecks() {}
 
-    default void endReturnChecks() {
-    }
+    default void endReturnChecks() {}
 
-    default void propagateAndAbort(InferenceContext context, InferenceContext parent) {
-    }
+    default void propagateAndAbort(InferenceContext context, InferenceContext parent) {}
 
-    default void contextDependenciesChanged(InferenceContext ctx) {
-    }
+    default void contextDependenciesChanged(InferenceContext ctx) {}
 
     // ivar events
 
-    default void boundAdded(InferenceContext ctx, InferenceVar var, BoundKind kind, JTypeMirror bound,
-            boolean isSubstitution) {
-    }
+    default void boundAdded(
+            InferenceContext ctx, InferenceVar var, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {}
 
-    default void ivarMerged(InferenceContext ctx, InferenceVar var, InferenceVar delegate) {
-    }
+    default void ivarMerged(InferenceContext ctx, InferenceVar var, InferenceVar delegate) {}
 
-    default void ivarInstantiated(InferenceContext ctx, InferenceVar var, JTypeMirror inst) {
-    }
+    default void ivarInstantiated(InferenceContext ctx, InferenceVar var, JTypeMirror inst) {}
 
-    default void ivarDependencyRegistered(InferenceContext ctx, InferenceVar var, Set<InferenceVar> deps) {
-    }
+    default void ivarDependencyRegistered(InferenceContext ctx, InferenceVar var, Set<InferenceVar> deps) {}
 
     /**
-     * Log that the instantiation of the method type m for the given call site failed. The exception provides a detail
-     * message. Such an event is perfectly normal and may happen repeatedly when performing overload resolution.
+     * Log that the instantiation of the method type m for the given
+     * call site failed. The exception provides a detail message.
+     * Such an event is perfectly normal and may happen repeatedly
+     * when performing overload resolution.
      *
-     * <p>
-     * Exceptions occuring in an {@link MethodResolutionPhase#isInvocation() invocation phase} are compile-time errors
-     * though.
+     * <p>Exceptions occuring in an {@link MethodResolutionPhase#isInvocation() invocation phase}
+     * are compile-time errors though.
      *
-     * @param exception
-     *            Failure record
+     * @param exception Failure record
      */
-    default void logResolutionFail(ResolutionFailure exception) {
-    }
+    default void logResolutionFail(ResolutionFailure exception) {}
 
     default boolean isNoop() {
         return false;
     }
 
     /**
-     * Return an instance for concurrent use in another thread. If this is Noop, then return the same instance because
-     * it's thread-safe.
+     * Return an instance for concurrent use in another thread.
+     * If this is Noop, then return the same instance because it's
+     * thread-safe.
      */
     TypeInferenceLogger newInstance();
 
@@ -253,8 +226,8 @@ public interface TypeInferenceLogger {
 
         @Override
         public void logResolutionFail(ResolutionFailure exception) {
-            if (exception.getCallSite() instanceof MethodCallSite && exception != ResolutionFailure.UNKNOWN) { // NOPMD
-                                                                                                               // CompareObjectsWithEquals
+            if (exception.getCallSite() instanceof MethodCallSite
+                    && exception != ResolutionFailure.UNKNOWN) { // NOPMD CompareObjectsWithEquals
                 ((MethodCallSite) exception.getCallSite()).acceptFailure(exception);
             }
         }
@@ -264,8 +237,7 @@ public interface TypeInferenceLogger {
             if (!site.isLogEnabled()) {
                 return;
             }
-            @Nullable
-            JTypeMirror receiver = site.getExpr().getErasedReceiverType();
+            @Nullable JTypeMirror receiver = site.getExpr().getErasedReceiverType();
             if (receiver != null) {
                 JTypeDeclSymbol symbol = receiver.getSymbol();
                 if (symbol == null || symbol.isUnresolved()) {
@@ -276,8 +248,7 @@ public interface TypeInferenceLogger {
             if (site.getExpr() instanceof CtorInvocationMirror) {
                 startSection("[WARNING] No potentially applicable constructors in "
                         + ((CtorInvocationMirror) site.getExpr()).getNewType());
-            }
-            else {
+            } else {
                 startSection("[WARNING] No potentially applicable methods in " + receiver);
             }
             printExpr(site.getExpr());
@@ -287,8 +258,7 @@ public interface TypeInferenceLogger {
                 startSection("Accessible signatures:");
                 iter.forEachRemaining(it -> println(ppMethod(it)));
                 endSection("");
-            }
-            else {
+            } else {
                 println("No accessible signatures");
             }
             endSection("");
@@ -345,8 +315,7 @@ public interface TypeInferenceLogger {
 
             if (selected != null) {
                 endSection("Will select " + color(cast(selected.getMethodType()).originalMethod(), ANSI_BLUE));
-            }
-            else {
+            } else {
                 endSection(""); // no fallback?
             }
         }
@@ -494,8 +463,8 @@ public interface TypeInferenceLogger {
         }
 
         @Override
-        public void boundAdded(InferenceContext ctx, InferenceVar ivar, BoundKind kind, JTypeMirror bound,
-                boolean isSubstitution) {
+        public void boundAdded(
+                InferenceContext ctx, InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isSubstitution) {
             String message = isSubstitution ? "Changed bound" : "New bound";
             println(addCtxInfo(ctx, message) + ppBound(ivar, kind, bound));
         }
@@ -512,7 +481,8 @@ public interface TypeInferenceLogger {
 
         @Override
         public void ivarDependencyRegistered(InferenceContext ctx, InferenceVar var, Set<InferenceVar> deps) {
-            println(addCtxInfo(ctx, "Ivar dependency registered: ") + color(var + " -> ", ANSI_BLUE)
+            println(addCtxInfo(ctx, "Ivar dependency registered: ")
+                    + color(var + " -> ", ANSI_BLUE)
                     + colorIvars(deps));
         }
 
@@ -535,7 +505,5 @@ public interface TypeInferenceLogger {
         public TypeInferenceLogger newInstance() {
             return new VerboseLogger(out);
         }
-
     }
-
 }

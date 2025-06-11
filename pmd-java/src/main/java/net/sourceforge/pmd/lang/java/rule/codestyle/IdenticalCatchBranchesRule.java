@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.ArrayList;
@@ -9,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
@@ -43,8 +41,10 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
         return JavaAstUtils.tokenEquals(st1.getBody(), st2.getBody(), name -> name.equals(e1Name) ? e2Name : name)
                 && areStructurallyEquivalent(st1.getBody(), st2.getBody(), (n1, n2) -> {
                     if (n1 instanceof InvocationNode) {
-                        JExecutableSymbol sym1 = ((InvocationNode) n1).getMethodType().getSymbol();
-                        JExecutableSymbol sym2 = ((InvocationNode) n2).getMethodType().getSymbol();
+                        JExecutableSymbol sym1 =
+                                ((InvocationNode) n1).getMethodType().getSymbol();
+                        JExecutableSymbol sym2 =
+                                ((InvocationNode) n2).getMethodType().getSymbol();
                         if (!Objects.equals(sym1, sym2)) {
                             return OptionalBool.NO;
                         }
@@ -54,12 +54,14 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
     }
 
     /**
-     * Check that both nodes have the same structure and that some semantic properties of the trees match (eg, methods
-     * that are being called). This is not a full equality routine, for instance we do not
+     * Check that both nodes have the same structure and that some semantic properties
+     * of the trees match (eg, methods that are being called). This is not a full
+     * equality routine, for instance we do not
      */
-    private static boolean areStructurallyEquivalent(JavaNode n1, JavaNode n2,
-            PartialEquivalenceRel<JavaNode> areEquivalent) {
-        if (n1.getNumChildren() != n2.getNumChildren() || !n1.getClass().equals(n2.getClass())
+    private static boolean areStructurallyEquivalent(
+            JavaNode n1, JavaNode n2, PartialEquivalenceRel<JavaNode> areEquivalent) {
+        if (n1.getNumChildren() != n2.getNumChildren()
+                || !n1.getClass().equals(n2.getClass())
                 || areEquivalent.test(n1, n2) == OptionalBool.NO) {
             return false;
         }
@@ -72,10 +74,7 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
         return true;
     }
 
-    /**
-     * groups catch statements by equivalence class, according to the equivalence
-     * {@link #areEquivalent(ASTCatchClause, ASTCatchClause)}.
-     */
+    /** groups catch statements by equivalence class, according to the equivalence {@link #areEquivalent(ASTCatchClause, ASTCatchClause)}. */
     private Set<List<ASTCatchClause>> equivalenceClasses(List<ASTCatchClause> catches) {
         Set<List<ASTCatchClause>> result = new HashSet<>(catches.size());
         for (ASTCatchClause stmt : catches) {
@@ -133,5 +132,4 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
 
         return data;
     }
-
 }

@@ -12,24 +12,22 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.pcollections.HashTreePSet;
-import org.pcollections.PSet;
-
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.pcollections.HashTreePSet;
+import org.pcollections.PSet;
 
 /**
- * An intersection type. Intersections type act as the {@linkplain TypeSystem#glb(Collection) greatest lower bound} for
- * a set of types.
+ * An intersection type. Intersections type act as the
+ * {@linkplain TypeSystem#glb(Collection) greatest lower bound}
+ * for a set of types.
  *
- * <p>
- * https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.9
+ * <p>https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.9
  */
 @SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class JIntersectionType implements JTypeMirror {
@@ -40,10 +38,8 @@ public final class JIntersectionType implements JTypeMirror {
     private JClassType induced;
 
     /**
-     * @param primaryBound
-     *            may be Object if every bound is an interface
-     * @param allBounds
-     *            including the superclass, unless Object
+     * @param primaryBound may be Object if every bound is an interface
+     * @param allBounds    including the superclass, unless Object
      */
     JIntersectionType(TypeSystem ts, JTypeMirror primaryBound, List<? extends JTypeMirror> allBounds) {
         this.primaryBound = primaryBound;
@@ -56,7 +52,6 @@ public final class JIntersectionType implements JTypeMirror {
                 : "Intersection of a single bound: " + toString(primaryBound, allBounds); // should be caught by GLB
 
         checkWellFormed(primaryBound, allBounds);
-
     }
 
     @Override
@@ -66,41 +61,48 @@ public final class JIntersectionType implements JTypeMirror {
 
     @Override
     public JTypeMirror withAnnotations(PSet<SymAnnot> newTypeAnnots) {
-        return new JIntersectionType(ts, primaryBound.withAnnotations(newTypeAnnots),
+        return new JIntersectionType(
+                ts,
+                primaryBound.withAnnotations(newTypeAnnots),
                 CollectionUtil.map(components, c -> c.withAnnotations(newTypeAnnots)));
     }
 
     /**
-     * Returns the list of components. Their erasure must be pairwise disjoint. If the intersection's superclass is
-     * {@link TypeSystem#OBJECT}, then it is excluded from this set.
+     * Returns the list of components. Their erasure must be pairwise disjoint.
+     * If the intersection's superclass is {@link TypeSystem#OBJECT},
+     * then it is excluded from this set.
      */
     public List<JTypeMirror> getComponents() {
         return components;
     }
 
     /**
-     * The primary bound of this intersection, which may be a type variable, array type, or class type (not an
-     * interface). If all bounds are interfaces, then this returns {@link TypeSystem#OBJECT}.
+     * The primary bound of this intersection, which may be a type variable,
+     * array type, or class type (not an interface). If all bounds are interfaces,
+     * then this returns {@link TypeSystem#OBJECT}.
      */
     public @NonNull JTypeMirror getPrimaryBound() {
         return primaryBound;
     }
 
     /**
-     * Returns all additional bounds on the primary bound, which are necessarily interface types.
+     * Returns all additional bounds on the primary bound, which are
+     * necessarily interface types.
      */
-    @SuppressWarnings({ "unchecked", "rawtypes" }) // safe because of checkWellFormed
+    @SuppressWarnings({"unchecked", "rawtypes"}) // safe because of checkWellFormed
     public @NonNull List<JClassType> getInterfaces() {
         return (List) (primaryBound == ts.OBJECT ? components : components.subList(1, components.size()));
     }
 
     /**
-     * Every intersection type induces a notional class or interface for the purpose of identifying its members. This
-     * may be a functional interface. This returns null for the non-implemented cases.
+     * Every intersection type induces a notional class or interface
+     * for the purpose of identifying its members. This may be a functional
+     * interface. This returns null for the non-implemented cases.
      *
-     * <p>
-     * This is only relevant to check for functional interface parameterization, eg {@code Runnable & Serializable}. Do
-     * not use this to find out the members of this type, rather, use {@link #streamMethods(Predicate)} or so.
+     * <p>This is only relevant to check for functional
+     * interface parameterization, eg {@code Runnable & Serializable}. Do
+     * not use this to find out the members of this type, rather, use {@link #streamMethods(Predicate)}
+     * or so.
      */
     public @Nullable JClassType getInducedClassType() {
         JTypeMirror primary = getPrimaryBound();
@@ -184,12 +186,10 @@ public final class JIntersectionType implements JTypeMirror {
                 if (i != 0) {
                     throw malformedIntersection(primary, flattened);
                 }
-            }
-            else if (ci instanceof JClassType) {
+            } else if (ci instanceof JClassType) {
                 // must be an interface, as per isExclusiveBlabla
                 assert ci.isInterface() || TypeOps.hasUnresolvedSymbol(ci);
-            }
-            else {
+            } else {
                 throw malformedIntersection(primary, flattened);
             }
         }
@@ -200,7 +200,8 @@ public final class JIntersectionType implements JTypeMirror {
     }
 
     private static String toString(JTypeMirror primary, List<? extends JTypeMirror> flattened) {
-        return flattened.stream().map(JTypeMirror::toString)
+        return flattened.stream()
+                .map(JTypeMirror::toString)
                 .collect(Collectors.joining(" & ", primary.toString() + " & ", ""));
     }
 }

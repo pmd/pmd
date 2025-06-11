@@ -8,10 +8,9 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
@@ -49,7 +48,5 @@ class GetModifiersFunctionsTest extends BaseXPathFunctionTest {
             assertThat(e.getMessage(), containsString("Type error"));
             assertThat(e.getPhase(), equalTo(Phase.INITIALIZATION));
         });
-
     }
-
 }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.design;
 
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
@@ -35,7 +34,8 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTFieldDeclaration node, Object data) {
-        if (node.hasModifiers(JModifier.FINAL) && !node.isStatic()
+        if (node.hasModifiers(JModifier.FINAL)
+                && !node.isStatic()
                 && !node.getEnclosingType().isAnnotationPresent("lombok.experimental.UtilityClass")
                 && !node.isAnnotationPresent("lombok.Builder.Default")) {
 
@@ -45,41 +45,45 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
                     asCtx(data).addViolation(field);
                 }
             }
-
         }
         return null;
     }
 
     private boolean isAllowedExpression(ASTExpression e) {
-        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression
+        if (e instanceof ASTLiteral
+                || e instanceof ASTClassLiteral
+                || e instanceof ASTTypeExpression
                 || e.isCompileTimeConstant()) {
             return true;
-        }
-        else if (e instanceof ASTFieldAccess && "length".equals(((ASTFieldAccess) e).getName())
+        } else if (e instanceof ASTFieldAccess
+                && "length".equals(((ASTFieldAccess) e).getName())
                 && ((ASTFieldAccess) e).getQualifier().getTypeMirror().isArray()) {
             JVariableSymbol arrayDeclarationSymbol =
                     ((ASTVariableAccess) ((ASTFieldAccess) e).getQualifier()).getReferencedSym();
-            if (arrayDeclarationSymbol != null && arrayDeclarationSymbol.isField()
+            if (arrayDeclarationSymbol != null
+                    && arrayDeclarationSymbol.isField()
                     && ((JFieldSymbol) arrayDeclarationSymbol).isStatic()
                     && arrayDeclarationSymbol.tryGetNode() != null) {
                 ASTVariableId arrayVarId = arrayDeclarationSymbol.tryGetNode();
-                return arrayVarId != null && arrayVarId.getInitializer() != null
+                return arrayVarId != null
+                        && arrayVarId.getInitializer() != null
                         && arrayVarId.getInitializer().isCompileTimeConstant();
             }
-        }
-        else if (e instanceof ASTNamedReferenceExpr) {
+        } else if (e instanceof ASTNamedReferenceExpr) {
             JVariableSymbol sym = ((ASTNamedReferenceExpr) e).getReferencedSym();
             return sym != null && sym.isField() && ((JFieldSymbol) sym).isStatic();
-        }
-        else if (e instanceof ASTArrayAllocation) {
+        } else if (e instanceof ASTArrayAllocation) {
             ASTArrayInitializer init = ((ASTArrayAllocation) e).getArrayInitializer();
             if (init != null) {
                 return init.length() == 0;
             }
-            return ((ASTArrayAllocation) e).getTypeNode().getDimensions().toStream().filterIs(ASTArrayDimExpr.class)
+            return ((ASTArrayAllocation) e)
+                    .getTypeNode()
+                    .getDimensions()
+                    .toStream()
+                    .filterIs(ASTArrayDimExpr.class)
                     .all(it -> JavaAstUtils.isLiteralInt(it.getLengthExpression(), 0));
-        }
-        else if (e instanceof ASTInfixExpression) {
+        } else if (e instanceof ASTInfixExpression) {
             return isAllowedExpression(((ASTInfixExpression) e).getLeftOperand())
                     && isAllowedExpression(((ASTInfixExpression) e).getRightOperand());
         }
@@ -88,15 +92,15 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isUsedForSynchronization(ASTVariableId field) {
-        return field.getLocalUsages().stream().anyMatch(it -> it.getParent() instanceof ASTSynchronizedStatement
-                && it.ancestors(ASTBodyDeclaration.class).take(1).any(d -> !isStatic(d)));
+        return field.getLocalUsages().stream()
+                .anyMatch(it -> it.getParent() instanceof ASTSynchronizedStatement
+                        && it.ancestors(ASTBodyDeclaration.class).take(1).any(d -> !isStatic(d)));
     }
 
     private boolean isStatic(ASTBodyDeclaration decl) {
         if (decl instanceof ModifierOwner) {
             return ((ModifierOwner) decl).hasModifiers(JModifier.STATIC);
-        }
-        else if (decl instanceof ASTInitializer) {
+        } else if (decl instanceof ASTInitializer) {
             return ((ASTInitializer) decl).isStatic();
         }
         return false;

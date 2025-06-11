@@ -6,9 +6,6 @@ package net.sourceforge.pmd.lang.java.types.internal.infer.ast;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
@@ -25,18 +22,25 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors.MirrorMaker;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<T> implements InvocationMirror {
 
     private MethodCtDecl ctDecl;
     private List<ExprMirror> args;
     /**
-     * Some method invocations may appear to be poly expressions, but they have no context type (for instance because
-     * they are in the initializer of a local with inferred type). These must be treated as standalone expressions.
+     * Some method invocations may appear to be poly expressions,
+     * but they have no context type (for instance because they
+     * are in the initializer of a local with inferred type).
+     * These must be treated as standalone expressions.
      */
     protected final boolean mayBePoly;
 
-    BaseInvocMirror(JavaExprMirrors mirrors, T call, boolean mustBeStandalone, @Nullable ExprMirror parent,
+    BaseInvocMirror(
+            JavaExprMirrors mirrors,
+            T call,
+            boolean mustBeStandalone,
+            @Nullable ExprMirror parent,
             MirrorMaker subexprMaker) {
         super(mirrors, call, parent, subexprMaker);
         mayBePoly = !mustBeStandalone;
@@ -51,13 +55,12 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
         }
         if (!myNode.getMethodType().getSymbol().equals(ctDecl.getMethodType().getSymbol())) {
             return false;
-        }
-        else if (myNode instanceof ASTConstructorCall && ((ASTConstructorCall) myNode).isAnonymousClass()
+        } else if (myNode instanceof ASTConstructorCall
+                && ((ASTConstructorCall) myNode).isAnonymousClass()
                 && !((ASTConstructorCall) myNode).getTypeNode().getTypeMirror().equals(getInferredType())) {
             // check anon class has same type args
             return false;
-        }
-        else if (myNode.getParent() instanceof ASTVariableDeclarator) {
+        } else if (myNode.getParent() instanceof ASTVariableDeclarator) {
             ASTVariableId varId = ((ASTVariableDeclarator) myNode.getParent()).getVarId();
             if (varId.isTypeInferred() && !getInferredType().equals(varId.getTypeMirror())) {
                 return false;
@@ -72,8 +75,7 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
         if (mayBePoly) {
             // this is cached for later anyway
             return factory.infer.getCompileTimeDecl(site);
-        }
-        else {
+        } else {
             factory.infer.inferInvocationRecursively(site);
             return site.getExpr().getCtDecl();
         }
@@ -81,7 +83,9 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
 
     @Override
     public List<JTypeMirror> getExplicitTypeArguments() {
-        return ASTList.orEmptyStream(myNode.getExplicitTypeArguments()).toStream().map(TypeNode::getTypeMirror)
+        return ASTList.orEmptyStream(myNode.getExplicitTypeArguments())
+                .toStream()
+                .map(TypeNode::getTypeMirror)
                 .collect(Collectors.toList());
     }
 

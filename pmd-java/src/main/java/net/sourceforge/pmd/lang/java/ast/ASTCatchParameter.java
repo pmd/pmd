@@ -1,19 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Collection;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.types.JIntersectionType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
 /**
- * Formal parameter of a {@linkplain ASTCatchClause catch clause} to represent the declared exception variable.
+ * Formal parameter of a {@linkplain ASTCatchClause catch clause}
+ * to represent the declared exception variable.
  *
  * <pre class="grammar">
  *
@@ -34,12 +32,11 @@ public final class ASTCatchParameter extends AbstractJavaNode
     }
 
     /**
-     * Returns true if this is a multi-catch parameter, that is, it catches several unrelated exception types at the
-     * same time. For example:
+     * Returns true if this is a multi-catch parameter,
+     * that is, it catches several unrelated exception types
+     * at the same time. For example:
      *
-     * <pre>
-     * catch (IllegalStateException | IllegalArgumentException e) {}
-     * </pre>
+     * <pre>catch (IllegalStateException | IllegalArgumentException e) {}</pre>
      */
     public boolean isMulticatch() {
         return getTypeNode() instanceof ASTUnionType;
@@ -57,27 +54,28 @@ public final class ASTCatchParameter extends AbstractJavaNode
     }
 
     /**
-     * Returns the type node of this catch parameter. May be a {@link ASTUnionType UnionType}.
+     * Returns the type node of this catch parameter. May be a
+     * {@link ASTUnionType UnionType}.
      */
     public ASTType getTypeNode() {
         return (ASTType) getChild(1);
     }
 
     /**
-     * Returns a stream of all declared exception types (expanding a union type if present).
+     * Returns a stream of all declared exception types (expanding a union
+     * type if present).
      *
-     * <p>
-     * Note that this is the only reliable way to inspect multi-catch clauses, as the type mirror of a
-     * {@link ASTUnionType} is not itself a {@link JIntersectionType}, but the {@link TypeSystem#lub(Collection) LUB} of
-     * the components. Since exception types cannot be interfaces, the LUB always erases to a single class supertype (eg
-     * {@link RuntimeException}).
+     * <p>Note that this is the only reliable way to inspect multi-catch clauses,
+     * as the type mirror of a {@link ASTUnionType} is not itself a {@link JIntersectionType},
+     * but the {@link TypeSystem#lub(Collection) LUB} of the components.
+     * Since exception types cannot be interfaces, the LUB always erases
+     * to a single class supertype (eg {@link RuntimeException}).
      */
     public NodeStream<ASTClassType> getAllExceptionTypes() {
         ASTType typeNode = getTypeNode();
         if (typeNode instanceof ASTUnionType) {
             return typeNode.children(ASTClassType.class);
-        }
-        else {
+        } else {
             return NodeStream.of((ASTClassType) typeNode);
         }
     }

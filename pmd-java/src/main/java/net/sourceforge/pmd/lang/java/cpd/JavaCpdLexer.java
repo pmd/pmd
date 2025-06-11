@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.cpd;
 
 import java.util.Deque;
 import java.util.LinkedList;
-
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.TokenEntry;
 import net.sourceforge.pmd.cpd.TokenFactory;
@@ -21,10 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
 
 /**
- * <p>
- * Note: This class has been called JavaTokenizer in PMD 6
- * </p>
- * .
+ * <p>Note: This class has been called JavaTokenizer in PMD 6</p>.
  */
 public class JavaCpdLexer extends JavaccCpdLexer {
 
@@ -60,10 +56,11 @@ public class JavaCpdLexer extends JavaccCpdLexer {
 
         constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
 
-        if (ignoreLiterals && (javaToken.kind == JavaTokenKinds.STRING_LITERAL
-                || javaToken.kind == JavaTokenKinds.CHARACTER_LITERAL
-                || javaToken.kind == JavaTokenKinds.INTEGER_LITERAL
-                || javaToken.kind == JavaTokenKinds.FLOATING_POINT_LITERAL)) {
+        if (ignoreLiterals
+                && (javaToken.kind == JavaTokenKinds.STRING_LITERAL
+                        || javaToken.kind == JavaTokenKinds.CHARACTER_LITERAL
+                        || javaToken.kind == JavaTokenKinds.INTEGER_LITERAL
+                        || javaToken.kind == JavaTokenKinds.FLOATING_POINT_LITERAL)) {
             image = JavaTokenKinds.describe(javaToken.kind);
         }
         if (ignoreIdentifiers && javaToken.kind == JavaTokenKinds.IDENTIFIER) {
@@ -76,10 +73,11 @@ public class JavaCpdLexer extends JavaccCpdLexer {
     }
 
     /**
-     * The {@link JavaTokenFilter} extends the {@link JavaCCTokenFilter} to discard Java-specific tokens.
+     * The {@link JavaTokenFilter} extends the {@link JavaCCTokenFilter} to discard
+     * Java-specific tokens.
      * <p>
-     * By default, it discards semicolons, package and import statements, and enables annotation-based CPD suppression.
-     * Optionally, all annotations can be ignored, too.
+     * By default, it discards semicolons, package and import statements, and
+     * enables annotation-based CPD suppression. Optionally, all annotations can be ignored, too.
      * </p>
      */
     private static class JavaTokenFilter extends JavaCCTokenFilter {
@@ -113,8 +111,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
         private void skipPackageAndImport(final JavaccToken currentToken) {
             if (currentToken.kind == JavaTokenKinds.PACKAGE || currentToken.kind == JavaTokenKinds.IMPORT) {
                 discardingKeywords = true;
-            }
-            else if (discardingKeywords && currentToken.kind == JavaTokenKinds.SEMICOLON) {
+            } else if (discardingKeywords && currentToken.kind == JavaTokenKinds.SEMICOLON) {
                 discardingKeywords = false;
             }
         }
@@ -122,8 +119,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
         private void skipSemicolon(final JavaccToken currentToken) {
             if (currentToken.kind == JavaTokenKinds.SEMICOLON) {
                 discardingSemicolon = true;
-            }
-            else if (discardingSemicolon) {
+            } else if (discardingSemicolon) {
                 discardingSemicolon = false;
             }
         }
@@ -131,11 +127,12 @@ public class JavaCpdLexer extends JavaccCpdLexer {
         private void skipAnnotationSuppression(final JavaccToken currentToken) {
             // if processing an annotation, look for a CPD-START or CPD-END
             if (isAnnotation) {
-                if (!discardingSuppressing && currentToken.kind == JavaTokenKinds.STRING_LITERAL
+                if (!discardingSuppressing
+                        && currentToken.kind == JavaTokenKinds.STRING_LITERAL
                         && CPD_START.equals(currentToken.getImage())) {
                     discardingSuppressing = true;
-                }
-                else if (discardingSuppressing && currentToken.kind == JavaTokenKinds.STRING_LITERAL
+                } else if (discardingSuppressing
+                        && currentToken.kind == JavaTokenKinds.STRING_LITERAL
                         && CPD_END.equals(currentToken.getImage())) {
                     discardingSuppressing = false;
                 }
@@ -145,8 +142,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
         private void skipAnnotations() {
             if (!discardingAnnotations && isAnnotation) {
                 discardingAnnotations = true;
-            }
-            else if (discardingAnnotations && !isAnnotation) {
+            } else if (discardingAnnotations && !isAnnotation) {
                 discardingAnnotations = false;
             }
         }
@@ -164,14 +160,13 @@ public class JavaCpdLexer extends JavaccCpdLexer {
             if (isAnnotation) {
                 if (currentToken.kind == JavaTokenKinds.LPAREN) {
                     annotationStack++;
-                }
-                else if (currentToken.kind == JavaTokenKinds.RPAREN) {
+                } else if (currentToken.kind == JavaTokenKinds.RPAREN) {
                     annotationStack--;
                     if (annotationStack == 0) {
                         nextTokenEndsAnnotation = true;
                     }
-                }
-                else if (annotationStack == 0 && currentToken.kind != JavaTokenKinds.IDENTIFIER
+                } else if (annotationStack == 0
+                        && currentToken.kind != JavaTokenKinds.IDENTIFIER
                         && currentToken.kind != JavaTokenKinds.LPAREN) {
                     isAnnotation = false;
                 }
@@ -183,8 +178,10 @@ public class JavaCpdLexer extends JavaccCpdLexer {
     }
 
     /**
-     * The {@link ConstructorDetector} consumes token by token and maintains state. It can detect, whether the current
-     * token belongs to a constructor method identifier and if so, is able to restore it when using ignoreIdentifiers.
+     * The {@link ConstructorDetector} consumes token by token and maintains
+     * state. It can detect, whether the current token belongs to a constructor
+     * method identifier and if so, is able to restore it when using
+     * ignoreIdentifiers.
      */
     private static class ConstructorDetector {
         private final boolean ignoreIdentifiers;
@@ -212,8 +209,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
                         // If declaring an enum, add a new block nesting level at
                         // which constructors may exist
                         pushTypeDeclaration();
-                    }
-                    else if (storeNextIdentifier) {
+                    } else if (storeNextIdentifier) {
                         classMembersIndentations.peek().name = currentToken.getImage();
                         storeNextIdentifier = false;
                     }
@@ -244,7 +240,8 @@ public class JavaCpdLexer extends JavaccCpdLexer {
                 default:
                     /*
                      * Did we find a "class" token not followed by an identifier? i.e:
-                     * expectThrows(IllegalStateException.class, () -> { newSearcher(r).search(parentQuery.build(), c);
+                     * expectThrows(IllegalStateException.class, () -> {
+                     *  newSearcher(r).search(parentQuery.build(), c);
                      * });
                      */
                     if (storeNextIdentifier) {

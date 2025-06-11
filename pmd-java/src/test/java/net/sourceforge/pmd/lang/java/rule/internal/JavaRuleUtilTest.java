@@ -10,9 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.java.BaseParserTest;
+import org.junit.jupiter.api.Test;
 
 class JavaRuleUtilTest extends BaseParserTest {
 
@@ -39,5 +38,4 @@ class JavaRuleUtilTest extends BaseParserTest {
         assertThrows(AssertionError.class, () -> containsCamelCaseWord("fnei", ""), "empty string");
         assertThrows(AssertionError.class, () -> containsCamelCaseWord("fnei", "a"), "not capitalized");
     }
-
 }

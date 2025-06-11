@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
@@ -10,10 +9,6 @@ import java.util.OptionalInt;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -27,11 +22,14 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
 
     /**
-     * Finds placeholder for ParameterizedMessages and format specifiers for StringFormattedMessages.
+     * Finds placeholder for ParameterizedMessages and format specifiers
+     * for StringFormattedMessages.
      */
     private static final Pattern PLACEHOLDER_AND_FORMAT_SPECIFIER =
             Pattern.compile("(\\{})|(%(?:\\d\\$)?(?:\\w+)?(?:\\d+)?(?:\\.\\d+)?\\w)");
@@ -43,8 +41,8 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     /**
      * Whitelisted methods of net.logstash.logback.argument.StructuredArguments
      */
-    private static final Set<String> STRUCTURED_ARGUMENTS_METHODS = immutableSetOf("a", "array", "defer", "e",
-            "entries", "f", "fields", "keyValue", "kv", "r", "raw", "v", "value");
+    private static final Set<String> STRUCTURED_ARGUMENTS_METHODS = immutableSetOf(
+            "a", "array", "defer", "e", "entries", "f", "fields", "keyValue", "kv", "r", "raw", "v", "value");
 
     public InvalidLogMessageFormatRule() {
         super(ASTMethodCall.class);
@@ -71,9 +69,11 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             int providedArguments = args.size() - (messageParam.getIndexInParent() + 1);
 
             if (providedArguments == 1 && JavaAstUtils.isArrayInitializer(args.getLastChild())) {
-                providedArguments = ((ASTArrayAllocation) args.getLastChild()).getArrayInitializer().length();
-            }
-            else if (TypeTestUtil.isA(Throwable.class, args.getLastChild()) && providedArguments > expectedArguments) {
+                providedArguments = ((ASTArrayAllocation) args.getLastChild())
+                        .getArrayInitializer()
+                        .length();
+            } else if (TypeTestUtil.isA(Throwable.class, args.getLastChild())
+                    && providedArguments > expectedArguments) {
                 // Remove throwable param, since it is shown separately.
                 // But only, if it is not used as a placeholder argument
                 providedArguments--;
@@ -86,14 +86,14 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             }
 
             if (providedArguments < expectedArguments) {
-                asCtx(data).addViolationWithMessage(call,
-                        "Missing arguments," + getExpectedMessage(providedArguments, expectedArguments));
+                asCtx(data)
+                        .addViolationWithMessage(
+                                call, "Missing arguments," + getExpectedMessage(providedArguments, expectedArguments));
+            } else if (providedArguments > expectedArguments) {
+                asCtx(data)
+                        .addViolationWithMessage(
+                                call, "Too many arguments," + getExpectedMessage(providedArguments, expectedArguments));
             }
-            else if (providedArguments > expectedArguments) {
-                asCtx(data).addViolationWithMessage(call,
-                        "Too many arguments," + getExpectedMessage(providedArguments, expectedArguments));
-            }
-
         }
 
         return null;
@@ -118,8 +118,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     private static OptionalInt expectedArguments0(final ASTExpression node) {
         if (node.getConstValue() instanceof String) {
             return OptionalInt.of(countPlaceHolders((String) node.getConstValue()));
-        }
-        else if (node instanceof ASTNamedReferenceExpr) {
+        } else if (node instanceof ASTNamedReferenceExpr) {
             DataflowResult dataflow = DataflowPass.getDataflowResult(node.getRoot());
             ReachingDefinitionSet reaching = dataflow.getReachingDefinitions((ASTNamedReferenceExpr) node);
             if (reaching.isNotFullyKnown()) {
@@ -140,13 +139,14 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     }
 
     private String getExpectedMessage(final int providedArguments, final int expectedArguments) {
-        return " expected " + expectedArguments + (expectedArguments > 1 ? " arguments " : " argument ") + "but found "
-                + providedArguments;
+        return " expected " + expectedArguments
+                + (expectedArguments > 1 ? " arguments " : " argument ")
+                + "but found " + providedArguments;
     }
 
     /**
-     * Removes up to {@code maxArgumentsToRemove} arguments from the end of the {@code argumentList}, if the argument is
-     * a method call to one of the whitelisted StructuredArguments methods.
+     * Removes up to {@code maxArgumentsToRemove} arguments from the end of the {@code argumentList},
+     * if the argument is a method call to one of the whitelisted StructuredArguments methods.
      *
      * @param maxArgumentsToRemove
      * @param argumentList
@@ -158,8 +158,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             ASTExpression argument = argumentList.get(lastIndex);
             if (isStructuredArgumentMethodCall(argument)) {
                 removed++;
-            }
-            else {
+            } else {
                 // stop if something else is encountered
                 break;
             }
@@ -171,8 +170,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     private boolean isStructuredArgumentMethodCall(ASTExpression argument) {
         if (argument instanceof ASTMethodCall) {
             ASTMethodCall methodCall = (ASTMethodCall) argument;
-            @Nullable
-            ASTExpression qualifier = methodCall.getQualifier();
+            @Nullable ASTExpression qualifier = methodCall.getQualifier();
             return TypeTestUtil.isA("net.logstash.logback.argument.StructuredArguments", qualifier)
                     || STRUCTURED_ARGUMENTS_METHODS.contains(methodCall.getMethodName());
         }

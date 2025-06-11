@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -19,15 +16,17 @@ import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A matcher for an expression like {@code a}, {@code a.b}, {@code a.getFoo()}. Those are expressions we assume to be
- * pure, and to be referring to the same reference when they're called repeatedly if no side effect occurs between
- * calls.
+ * A matcher for an expression like {@code a}, {@code a.b}, {@code a.getFoo()}.
+ * Those are expressions we assume to be pure, and to be referring to
+ * the same reference when they're called repeatedly if no side effect
+ * occurs between calls.
  *
- * <p>
- * Note that this is not relocatable: you must use a matcher in the same scope it has been created in, to avoid bugs
- * with accessibility/shadowing/etc. You must take care yourself that no side-effect occurs.
+ * <p>Note that this is not relocatable: you must use a matcher in the
+ * same scope it has been created in, to avoid bugs with accessibility/shadowing/etc.
+ * You must take care yourself that no side-effect occurs.
  */
 public final class StablePathMatcher {
 
@@ -59,8 +58,7 @@ public final class StablePathMatcher {
                     return false;
                 }
                 e = access.getQualifier();
-            }
-            else {
+            } else {
                 if (!(e instanceof ASTMethodCall)) {
                     return false;
                 }
@@ -75,8 +73,7 @@ public final class StablePathMatcher {
 
         if (e instanceof ASTVariableAccess) {
             return Objects.equals(((ASTVariableAccess) e).getReferencedSym(), owner);
-        }
-        else if (e instanceof ASTFieldAccess) {
+        } else if (e instanceof ASTFieldAccess) {
             ASTFieldAccess fieldAccess = (ASTFieldAccess) e;
             return JavaAstUtils.isUnqualifiedThis(fieldAccess.getQualifier())
                     && Objects.equals(fieldAccess.getReferencedSym(), owner);
@@ -85,7 +82,8 @@ public final class StablePathMatcher {
     }
 
     /**
-     * Returns a matcher matching the given expression if it is stable. Otherwise returns null.
+     * Returns a matcher matching the given expression if it is stable.
+     * Otherwise returns null.
      */
     public static @Nullable StablePathMatcher matching(ASTExpression e) {
         if (e == null) {
@@ -99,37 +97,31 @@ public final class StablePathMatcher {
                 ASTFieldAccess access = (ASTFieldAccess) e;
                 segments.add(new Segment(access.getName(), true));
                 e = access.getQualifier();
-            }
-            else if (e instanceof ASTMethodCall) {
+            } else if (e instanceof ASTMethodCall) {
                 ASTMethodCall call = (ASTMethodCall) e;
                 if (JavaRuleUtil.isGetterCall(call)) {
                     segments.add(new Segment(call.getMethodName(), false));
                     e = call.getQualifier();
-                }
-                else {
+                } else {
                     return null;
                 }
-            }
-            else if (e instanceof ASTVariableAccess) {
+            } else if (e instanceof ASTVariableAccess) {
                 owner = ((ASTVariableAccess) e).getReferencedSym();
                 if (owner == null) {
                     return null; // unresolved
                 }
                 break;
-            }
-            else if (e instanceof ASTThisExpression) {
+            } else if (e instanceof ASTThisExpression) {
                 if (((ASTThisExpression) e).getQualifier() != null) {
                     return null;
                 }
                 break;
-            }
-            else if (e instanceof ASTSuperExpression) {
+            } else if (e instanceof ASTSuperExpression) {
                 if (((ASTSuperExpression) e).getQualifier() != null) {
                     return null;
                 }
                 break;
-            }
-            else {
+            } else {
                 return null;
             }
         }

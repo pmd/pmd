@@ -30,7 +30,8 @@ abstract class MapFunction<T, R> implements Function<T, R> {
 
     @Override
     public String toString() {
-        return map.entrySet().stream().sorted(Comparator.comparing(e -> e.getKey().toString()))
+        return map.entrySet().stream()
+                .sorted(Comparator.comparing(e -> e.getKey().toString()))
                 .map(it -> it.getKey() + " => " + it.getValue())
                 .collect(Collectors.joining("; ", getClass().getSimpleName() + "[", "]"));
     }

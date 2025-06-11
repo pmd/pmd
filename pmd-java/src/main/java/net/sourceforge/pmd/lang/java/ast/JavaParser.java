@@ -54,7 +54,9 @@ public class JavaParser extends JjtreeParserAdapter<ASTCompilationUnit> {
         ASTCompilationUnit root = parser.CompilationUnit();
         root.setAstInfo(new AstInfo<>(task, root).withSuppressionComments(parser.getSuppressionComments()));
 
-        LanguageLevelChecker<?> levelChecker = new LanguageLevelChecker<>(jdkVersion, preview,
+        LanguageLevelChecker<?> levelChecker = new LanguageLevelChecker<>(
+                jdkVersion,
+                preview,
                 // TODO change this strategy with a new lang property
                 ReportingStrategy.reporterThatThrows());
 

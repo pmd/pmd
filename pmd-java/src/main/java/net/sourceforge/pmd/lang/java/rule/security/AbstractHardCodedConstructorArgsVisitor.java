@@ -39,10 +39,10 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
     }
 
     /**
-     * Recursively resolves the argument again, if the variable initializer is itself a expression.
+     * Recursively resolves the argument again, if the variable initializer
+     * is itself a expression.
      *
-     * <p>
-     * Then checks the expression for being a string literal or array
+     * <p>Then checks the expression for being a string literal or array
      */
     private void validateProperKeyArgument(Object data, ASTExpression firstArgumentExpression) {
         if (firstArgumentExpression == null) {
@@ -57,29 +57,30 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             if (expr instanceof ASTVariableAccess) {
                 varAccess = (ASTVariableAccess) expr;
             }
-        }
-        else if (firstArgumentExpression instanceof ASTVariableAccess) {
+        } else if (firstArgumentExpression instanceof ASTVariableAccess) {
             // check for named variable
             varAccess = (ASTVariableAccess) firstArgumentExpression;
         }
 
-        if (varAccess != null && varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
+        if (varAccess != null
+                && varAccess.getSignature() != null
+                && varAccess.getSignature().getSymbol() != null) {
             // named variable or method call on named variable found
             ASTVariableId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
             validateProperKeyArgument(data, varDecl.getInitializer());
             validateVarUsages(data, varDecl);
-        }
-        else if (firstArgumentExpression instanceof ASTArrayAllocation) {
+        } else if (firstArgumentExpression instanceof ASTArrayAllocation) {
             // hard coded array
             ASTArrayInitializer arrayInit = ((ASTArrayAllocation) firstArgumentExpression).getArrayInitializer();
             if (arrayInit != null) {
                 asCtx(data).addViolation(arrayInit);
             }
-        }
-        else {
+        } else {
             // string literal
-            ASTStringLiteral literal =
-                    firstArgumentExpression.descendantsOrSelf().filterIs(ASTStringLiteral.class).first();
+            ASTStringLiteral literal = firstArgumentExpression
+                    .descendantsOrSelf()
+                    .filterIs(ASTStringLiteral.class)
+                    .first();
             if (literal != null) {
                 asCtx(data).addViolation(literal);
             }
@@ -87,8 +88,10 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
     }
 
     private void validateVarUsages(Object data, ASTVariableId varDecl) {
-        varDecl.getLocalUsages().stream().filter(u -> u.getAccessType() == AccessType.WRITE)
-                .filter(u -> u.getParent() instanceof ASTAssignmentExpression).forEach(usage -> {
+        varDecl.getLocalUsages().stream()
+                .filter(u -> u.getAccessType() == AccessType.WRITE)
+                .filter(u -> u.getParent() instanceof ASTAssignmentExpression)
+                .forEach(usage -> {
                     ASTAssignmentExpression assignment = (ASTAssignmentExpression) usage.getParent();
                     validateProperKeyArgument(data, assignment.getRightOperand());
                 });

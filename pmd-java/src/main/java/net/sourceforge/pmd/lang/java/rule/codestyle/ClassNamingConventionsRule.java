@@ -1,11 +1,9 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.regex.Pattern;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
@@ -21,18 +19,28 @@ import net.sourceforge.pmd.properties.PropertyDescriptor;
  */
 public class ClassNamingConventionsRule extends AbstractNamingConventionRule<ASTTypeDeclaration> {
 
-    private final PropertyDescriptor<Pattern> classRegex = defaultProp("class", "concrete class").build();
-    private final PropertyDescriptor<Pattern> abstractClassRegex = defaultProp("abstract class").build();
-    private final PropertyDescriptor<Pattern> interfaceRegex = defaultProp("interface").build();
-    private final PropertyDescriptor<Pattern> enumerationRegex = defaultProp("enum").build();
-    private final PropertyDescriptor<Pattern> annotationRegex = defaultProp("annotation").build();
-    private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").build();
-    private final PropertyDescriptor<Pattern> testClassRegex =
-            defaultProp("test class").desc("Regex which applies to test class names. Since PMD 6.52.0.")
-                    .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$").build();
+    private final PropertyDescriptor<Pattern> classRegex =
+            defaultProp("class", "concrete class").build();
+    private final PropertyDescriptor<Pattern> abstractClassRegex =
+            defaultProp("abstract class").build();
+    private final PropertyDescriptor<Pattern> interfaceRegex =
+            defaultProp("interface").build();
+    private final PropertyDescriptor<Pattern> enumerationRegex =
+            defaultProp("enum").build();
+    private final PropertyDescriptor<Pattern> annotationRegex =
+            defaultProp("annotation").build();
+    private final PropertyDescriptor<Pattern> utilityClassRegex =
+            defaultProp("utility class").build();
+    private final PropertyDescriptor<Pattern> testClassRegex = defaultProp("test class")
+            .desc("Regex which applies to test class names. Since PMD 6.52.0.")
+            .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$")
+            .build();
 
     public ClassNamingConventionsRule() {
-        super(ASTClassDeclaration.class, ASTEnumDeclaration.class, ASTAnnotationTypeDeclaration.class,
+        super(
+                ASTClassDeclaration.class,
+                ASTEnumDeclaration.class,
+                ASTAnnotationTypeDeclaration.class,
                 ASTRecordDeclaration.class);
         definePropertyDescriptor(classRegex);
         definePropertyDescriptor(abstractClassRegex);
@@ -52,19 +60,15 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
         if (isTestClass(node)) {
             checkMatches(node, testClassRegex, data);
-        }
-        else if (JavaRuleUtil.isUtilityClass(node)) {
+        } else if (JavaRuleUtil.isUtilityClass(node)) {
             checkMatches(node, utilityClassRegex, data);
-        }
-        else if (node.isInterface()) {
+        } else if (node.isInterface()) {
             checkMatches(node, interfaceRegex, data);
-        }
-        else {
+        } else {
             // at this point, node must be a class and cannot be an interface anymore
             if (node.isAbstract()) {
                 checkMatches(node, abstractClassRegex, data);
-            }
-            else {
+            } else {
                 checkMatches(node, classRegex, data);
             }
         }

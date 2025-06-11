@@ -7,12 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.xpath.internal;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import org.junit.jupiter.api.Test;
-
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException.Phase;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Clément Fournier
@@ -66,7 +65,5 @@ class MatchesSignatureXPathTest extends BaseXPathFunctionTest {
             PmdXPathException e = assertThrows(PmdXPathException.class, () -> rule.initialize(lp));
             assertEquals(Phase.INITIALIZATION, e.getPhase());
         }
-
     }
-
 }

@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.bestpractices.missingoverride;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
@@ -11,7 +10,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTPackageDeclaration;
 
 public class GenericWithOverloadsImpl implements GenericInterfaceWithOverloads<String, Integer> {
 
-    // a bridge method is generated for each of these that implement an interface method
+    // a bridge method is generated for each of these that implement an interface
+    // method
 
     @Override
     public String visit(ASTCompilationUnit node, String data) {
@@ -37,5 +37,4 @@ public class GenericWithOverloadsImpl implements GenericInterfaceWithOverloads<S
     public String multi(ASTPackageDeclaration node, String data, Integer integer) {
         return null;
     }
-
 }

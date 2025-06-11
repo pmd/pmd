@@ -4,9 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.metrics.internal;
 
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -28,6 +25,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics.CycloOption;
 import net.sourceforge.pmd.lang.metrics.MetricOptions;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * Visitor for the Cyclo metric.
@@ -75,8 +74,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
 
             if (considerBooleanPaths) {
                 data.add(JavaAstUtils.numAlternatives(branch));
-            }
-            else if (branch instanceof ASTSwitchFallthroughBranch
+            } else if (branch instanceof ASTSwitchFallthroughBranch
                     && ((ASTSwitchFallthroughBranch) branch).getStatements().nonEmpty()) {
                 data.increment();
             }
@@ -175,8 +173,7 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
      * Evaluates the number of paths through a boolean expression. This is the total number of {@code &&} and {@code ||}
      * operators appearing in the expression. This is used in the calculation of cyclomatic and n-path complexity.
      *
-     * @param expr
-     *            Expression to analyse
+     * @param expr Expression to analyse
      *
      * @return The number of paths through the expression
      */
@@ -189,9 +186,9 @@ public class CycloVisitor extends JavaVisitorBase<MutableInt, Void> {
             ASTConditionalExpression conditional = (ASTConditionalExpression) expr;
             return booleanExpressionComplexity(conditional.getCondition())
                     + booleanExpressionComplexity(conditional.getThenBranch())
-                    + booleanExpressionComplexity(conditional.getElseBranch()) + 2;
-        }
-        else {
+                    + booleanExpressionComplexity(conditional.getElseBranch())
+                    + 2;
+        } else {
             return expr.descendantsOrSelf().filter(JavaAstUtils::isConditional).count();
         }
     }

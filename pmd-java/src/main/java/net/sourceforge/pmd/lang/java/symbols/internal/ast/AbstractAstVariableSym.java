@@ -35,12 +35,14 @@ abstract class AbstractAstVariableSym extends AbstractAstAnnotableSym<ASTVariabl
     public JTypeMirror getTypeMirror(Substitution subst) {
         ASTType typeNode = node.getTypeNode();
         /*
-         * Overridden on LocalVarSym.
-         * 
-         * This gives up on inferred types until a LazyTypeResolver has been set for the compilation unit.
-         * 
-         * Thankfully, the type of local vars is never requested by anything before that moment.
-         */
+           Overridden on LocalVarSym.
+
+           This gives up on inferred types until a LazyTypeResolver has
+           been set for the compilation unit.
+
+           Thankfully, the type of local vars is never requested by
+           anything before that moment.
+        */
         assert typeNode != null : "This implementation expects explicit types (" + this + ")";
         return subst(node.getTypeMirror(), subst);
     }

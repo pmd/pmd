@@ -7,20 +7,18 @@ package net.sourceforge.pmd.lang.java.types;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
-import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
-
 /**
- * Represents a wildcard type. Such types are converted to {@link JTypeVar} by
- * {@linkplain TypeConversion#capture(JTypeMirror) capture conversion}.
+ * Represents a wildcard type. Such types are converted to {@link JTypeVar}
+ * by {@linkplain TypeConversion#capture(JTypeMirror) capture conversion}.
  *
- * <p>
- * This implements JTypeMirror for convenience, however, it may only occur as a type argument, and as such some of the
- * behaviour of JTypeMirror is undefined: {@link #isSubtypeOf(JTypeMirror) subtyping} and {@link #getErasure() erasure}.
+ * <p>This implements JTypeMirror for convenience, however, it may only
+ * occur as a type argument, and as such some of the behaviour of JTypeMirror
+ * is undefined: {@link #isSubtypeOf(JTypeMirror) subtyping} and {@link #getErasure() erasure}.
  */
 public interface JWildcardType extends JTypeMirror {
 
@@ -52,8 +50,9 @@ public interface JWildcardType extends JTypeMirror {
     }
 
     /**
-     * This is implemented for convenience. However, the erasure of a wildcard type is undefined and useless. This is
-     * because they can only occur in type arguments, which are erased themselves.
+     * This is implemented for convenience. However, the erasure of a
+     * wildcard type is undefined and useless. This is because they can
+     * only occur in type arguments, which are erased themselves.
      */
     @Override
     default JTypeMirror getErasure() {
@@ -75,5 +74,4 @@ public interface JWildcardType extends JTypeMirror {
     default <T, P> T acceptVisitor(JTypeVisitor<T, P> visitor, P p) {
         return visitor.visitWildcard(this, p);
     }
-
 }

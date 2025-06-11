@@ -1,7 +1,6 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
@@ -40,13 +39,17 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
     }
 
     private boolean returnsLocalVariables(NodeStream<ASTReturnStatement> returns) {
-        return returns.children(ASTVariableAccess.class).filter(JavaAstUtils::isReferenceToLocal)
-                .filterNot(this::isDoubleAssignment).nonEmpty();
+        return returns.children(ASTVariableAccess.class)
+                .filter(JavaAstUtils::isReferenceToLocal)
+                .filterNot(this::isDoubleAssignment)
+                .nonEmpty();
     }
 
     private boolean isDoubleAssignment(ASTVariableAccess variableAccess) {
         // search in the whole method
-        return variableAccess.ancestors(ASTMethodDeclaration.class).descendants(ASTVariableAccess.class)
+        return variableAccess
+                .ancestors(ASTMethodDeclaration.class)
+                .descendants(ASTVariableAccess.class)
                 // for any writes
                 .filter(v -> v.getAccessType() == ASTAssignableExpr.AccessType.WRITE)
                 // to the same variable
@@ -71,17 +74,16 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
                             boolean fromRightToLeft = leftAssignment.getRightOperand() == rightAssignment;
                             boolean leftIsField = false;
                             if (leftAssignment.getLeftOperand() instanceof ASTAssignableExpr.ASTNamedReferenceExpr) {
-                                JVariableSymbol symbol =
-                                        ((ASTAssignableExpr.ASTNamedReferenceExpr) leftAssignment.getLeftOperand())
-                                                .getReferencedSym();
+                                JVariableSymbol symbol = ((ASTAssignableExpr.ASTNamedReferenceExpr)
+                                                leftAssignment.getLeftOperand())
+                                        .getReferencedSym();
                                 leftIsField = symbol != null && symbol.isField();
                             }
                             variant1 = fromConstructor && fromRightToLeft && leftIsField;
                         }
 
                         // check variant 2: localVar = field = new Singleton()
-                    }
-                    else if (v.getNextSibling() instanceof ASTAssignmentExpression) {
+                    } else if (v.getNextSibling() instanceof ASTAssignmentExpression) {
                         if (v.getParent() instanceof ASTAssignmentExpression) {
                             ASTAssignmentExpression leftAssignment = (ASTAssignmentExpression) v.getParent();
                             ASTAssignmentExpression rightAssignment = (ASTAssignmentExpression) v.getNextSibling();
@@ -90,16 +92,16 @@ public class SingletonClassReturningNewInstanceRule extends AbstractJavaRulechai
                             boolean fromRightToLeft = leftAssignment.getRightOperand() == rightAssignment;
                             boolean rightIsField = false;
                             if (rightAssignment.getLeftOperand() instanceof ASTAssignableExpr.ASTNamedReferenceExpr) {
-                                JVariableSymbol symbol =
-                                        ((ASTAssignableExpr.ASTNamedReferenceExpr) rightAssignment.getLeftOperand())
-                                                .getReferencedSym();
+                                JVariableSymbol symbol = ((ASTAssignableExpr.ASTNamedReferenceExpr)
+                                                rightAssignment.getLeftOperand())
+                                        .getReferencedSym();
                                 rightIsField = symbol != null && symbol.isField();
                             }
                             variant2 = fromConstructor && fromRightToLeft && rightIsField;
                         }
                     }
                     return variant1 || variant2;
-                }).nonEmpty();
+                })
+                .nonEmpty();
     }
-
 }

@@ -19,7 +19,5 @@ public class IdenticalToSomeFields {
         default int defaultMethod() {
             return 1;
         }
-
     }
-
 }

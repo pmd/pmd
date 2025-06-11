@@ -1,20 +1,17 @@
 /**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
-
 package net.sourceforge.pmd.lang.java.ast;
 
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
-
 /**
- * An explicit constructor invocation, occurring at the start of a {@linkplain ASTConstructorDeclaration constructor
- * declaration}.
+ * An explicit constructor invocation, occurring at the start of a
+ * {@linkplain ASTConstructorDeclaration constructor declaration}.
  *
- * <p>
- * See <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.8.7.1">JLS 8.8.7.1</a>.
+ * <p>See <a href="https://docs.oracle.com/javase/specs/jls/se11/html/jls-8.html#jls-8.8.7.1">JLS 8.8.7.1</a>.
  *
  * <pre class="grammar">
  *
@@ -57,25 +54,27 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
     }
 
     /**
-     * Returns true if this statement calls a constructor of the same class. The JLS calls that an <i>alternate
-     * constructor invocation</i>.
+     * Returns true if this statement calls a constructor of the same
+     * class. The JLS calls that an <i>alternate constructor invocation</i>.
      */
     public boolean isThis() {
         return !isSuper;
     }
 
     /**
-     * Returns true if this statement calls a constructor of the direct superclass. The JLS calls that a <i>superclass
-     * constructor invocation</i>.
+     * Returns true if this statement calls a constructor of the direct
+     * superclass. The JLS calls that a <i>superclass constructor invocation</i>.
      */
     public boolean isSuper() {
         return isSuper;
     }
 
     /**
-     * Returns true if this is a qualified superclass constructor invocation. They allow a subclass constructor to
-     * explicitly specify the newly created object's immediately enclosing instance with respect to the direct
-     * superclass (§8.1.3). This may be necessary when the superclass is an inner class.
+     * Returns true if this is a qualified superclass constructor invocation.
+     * They allow a subclass constructor to explicitly specify the newly created
+     * object's immediately enclosing instance with respect to the direct
+     * superclass (§8.1.3). This may be necessary when the superclass is
+     * an inner class.
      */
     public boolean isQualified() {
         return getFirstChild() instanceof ASTPrimaryExpression;
@@ -88,8 +87,8 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
     }
 
     /**
-     * Returns the qualifying expression if this is a {@linkplain #isQualified() qualified superclass constructor
-     * invocation}.
+     * Returns the qualifying expression if this is a {@linkplain #isQualified() qualified superclass
+     * constructor invocation}.
      */
     @Nullable
     public ASTExpression getQualifier() {
@@ -105,5 +104,4 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
     void setOverload(OverloadSelectionResult result) {
         this.result = result;
     }
-
 }
