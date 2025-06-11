@@ -29,7 +29,7 @@ import net.sourceforge.pmd.PMDVersion;
 class BinaryDistributionIT extends AbstractBinaryDistributionTest {
 
     private static final List<String> SUPPORTED_LANGUAGES_CPD = listOf(
-        "apex", "coco", "cpp", "cs", "dart", "ecmascript",
+        "apex", "coco", "cpp", "cs", "css", "dart", "ecmascript",
         "fortran", "gherkin", "go", "groovy", "html", "java", "jsp",
         "julia",
         "kotlin", "lua", "matlab", "modelica", "objectivec", "perl",
