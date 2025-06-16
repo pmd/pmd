@@ -42,6 +42,21 @@
                     </sequence>
                 </complexType>
             </element>
+            <element name="expected-suppressions" minOccurs="0">
+                <complexType>
+                    <sequence>
+                        <element name="suppressor" maxOccurs="unbounded">
+                            <complexType>
+                                <simpleContent>
+                                    <extension base="string">
+                                        <attribute name="line" type="positiveInteger"/>
+                                    </extension>
+                                </simpleContent>
+                            </complexType>
+                        </element>
+                    </sequence>
+                </complexType>
+            </element>
             <choice>
                 <element name="code" type="string"/>
                 <element name="code-ref">
