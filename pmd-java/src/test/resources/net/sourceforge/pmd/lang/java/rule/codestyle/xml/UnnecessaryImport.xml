@@ -1357,4 +1357,33 @@ public class C {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>[java] UnnecessaryImport false positive for multiline @see Javadoc #5832</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * @see ArrayList#addAll(int,
+ *      Collection)
+ */
+public class Main { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedImports false positive for multiline @link Javadoc #1639</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.io.FileOutputStream;
+
+public class Demo {
+    /** {@link
+     * FileOutputStream#FileOutputStream(File)} */
+    void main() {}
+}
+]]></code>
+    </test-code>
 </test-data>
