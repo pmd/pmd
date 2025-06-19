@@ -701,12 +701,20 @@
                 <artifactId>sortpom-maven-plugin</artifactId>
                 <version>4.0.0</version>
                 <executions>
-                  <execution>
-                    <goals>
-                      <goal>sort</goal>
-                      <goal>verify</goal>
-                    </goals>
-                  </execution>
+                    <execution>
+                      <id>sortpom-apply</id>
+                      <phase>process-sources</phase>
+                      <goals>
+                        <goal>sort</goal>
+                      </goals>
+                    </execution>
+                    <execution>
+                      <id>sortpom-check</id>
+                      <phase>verify</phase>
+                      <goals>
+                        <goal>verify</goal>
+                      </goals>
+                    </execution>
                 </executions>
               </plugin>
                 <plugin>
