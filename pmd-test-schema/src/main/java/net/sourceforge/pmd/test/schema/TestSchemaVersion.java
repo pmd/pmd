@@ -6,6 +6,7 @@ package net.sourceforge.pmd.test.schema;
 
 import java.net.URL;
 import java.util.Objects;
+
 import javax.xml.XMLConstants;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;

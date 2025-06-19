@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.rule.xpath.internal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import javax.xml.namespace.QName;
 
 import net.sourceforge.pmd.lang.ast.Node;

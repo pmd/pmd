@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.rule.xpath.impl;
 
 import java.util.Objects;
+
 import javax.xml.namespace.QName;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
