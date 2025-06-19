@@ -5,7 +5,7 @@ summary: |
   PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
   This page gives an overview of how these workflows work and how to use them.
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: May 2025 (7.14.0)
+last_updated: June 2025 (7.15.0)
 ---
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
@@ -219,7 +219,9 @@ we are actually building a RELEASE version. Then a first job is executed:
 * deploy-to-maven-central: Rebuilds PMD from the tag and deploys the artifact to maven central at
   <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/>.
   Rebuilding is necessary in order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the
-  artifacts. This is not available from the build artifacts of the "Build" workflow.
+  artifacts. This is not available from the build artifacts of the "Build" workflow.  
+  The maven plugin [central-publishing-maven-plugin](https://central.sonatype.org/publish/publish-portal-maven/) is used
+  to upload and publish the artifacts to maven central.
   * Environment: maven-central
   * Secrets: MAVEN_CENTRAL_PORTAL_USERNAME, MAVEN_CENTRAL_PORTAL_PASSWORD
 

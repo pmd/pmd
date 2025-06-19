@@ -575,7 +575,7 @@
                     </configuration>
                     <dependencies>
                         <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
-                        <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see .ci/build.sh -->
+                        <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see build.yml -->
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
