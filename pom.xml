@@ -1084,7 +1084,7 @@
                   <exclude>**gradlew**</exclude>
                   <exclude>**mvnw**</exclude>
                 </excludes>
-                <trimTrailingWhitespace></trimTrailingWhitespace>
+                <trimTrailingWhitespace/>
                 <includes>
                   <include>.gitignore</include>
                 </includes>
