@@ -703,7 +703,7 @@
                 <executions>
                     <execution>
                       <id>sortpom-apply</id>
-                      <phase>process-sources</phase>
+                      <phase>verify</phase>
                       <goals>
                         <goal>sort</goal>
                       </goals>
@@ -750,7 +750,7 @@
                     <executions>
                         <execution>
                             <id>spotless-apply</id>
-                            <phase>process-sources</phase>
+                          <phase>verify</phase>
                             <goals>
                                 <goal>apply</goal>
                             </goals>
