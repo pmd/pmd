@@ -32,9 +32,13 @@ not require any secrets.
 "Build Pull Request" is triggered, whenever a pull request is created or synchronized.
 
 "Build Snapshot" is triggered, whenever new commits are pushed to a branch (including the default branch and
-including forks).
+including forks). This is also a scheduled workflow that runs every month to make sure, the project
+can still be built.
 
-"Build Release" is triggered, whenever a tag is pushed.
+"Build Release" is triggered, whenever a tag is pushed. Note that the whole project is built at once, that
+means if pmd-designer/pmd-core update is required, this can't be built. See also
+[Circular dependencies between pmd-designer, pmd-core, pmd-cli #4446](https://github.com/pmd/pmd/issues/4446).
+As this happens very seldom, this situation is ignored for now.
 
 In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
 the current branch or pull request when a new commit has been pushed. This means, only the latest commit is built,
@@ -147,7 +151,7 @@ crawling side.
 
 This runs after "Build Snapshot" of a push on the `main` branch is finished.
 It runs in the context of our own repository and has access to all secrets. In order
-to have a nicer display in GitHub actions, we leverage "environments", which also
+to have a nicer progress display in GitHub actions, we leverage "environments", which also
 contain secrets.
 
 There is a first job "check-version" that just determines the version of PMD we are building. This is to ensure,
@@ -203,6 +207,64 @@ we are actually building a SNAPSHOT version. Then a couple of other jobs are bei
 
 * Builds: <https://github.com/pmd/pmd/actions/workflows/publish-release.yml>
 * Workflow file: <https://github.com/pmd/pmd/blob/main/.github/workflows/publish-release.yml>
+
+This runs after "Build Release" finishes from building from a tag.
+It runs in the context of our own repository and has access to all secrets. In order to have
+a nicer progress display in GitHub actions, we leverage "environments", which also
+contain secrets.
+
+There is a first job "check-version" that just determines the version of PMD we are building. This is to ensure,
+we are actually building a RELEASE version. Then a first job is executed:
+
+* deploy-to-maven-central: Rebuilds PMD from the tag and deploys the artifact to maven central at
+  <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/>.
+  Rebuilding is necessary in order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the
+  artifacts. This is not available from the build artifacts of the "Build" workflow.
+  * Environment: maven-central
+  * Secrets: MAVEN_CENTRAL_PORTAL_USERNAME, MAVEN_CENTRAL_PORTAL_PASSWORD
+
+When this was successful, then a couple of other jobs are being executed in parallel:
+
+* deploy-to-sourceforge-files: Uploads the binary distribution files to sourceforge at
+  <https://sourceforge.net/projects/pmd/files/pmd/> and select the new file as the latest
+  version.
+  * Environment: sourceforge
+  * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY, PMD_SF_APIKEY
+  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
+* deploy-to-sourceforge-io: Uploads the documentation to
+  <https://pmd.sourceforge.io/pmd-${PMD_VERSION}/>.
+  * Environment: sourceforge
+  * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
+* deploy-to-pmd-code-doc: Uploads the documentation to <https://docs.pmd-code.org/latest>.
+  * Environment: pmd-code
+  * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+  * Vars: PMD_CODE_ORG_KNOWN_HOSTS
+* deploy-to-pmd-code-javadoc: Uploads the javadoc to <https://docs.pmd-code.org/apidocs/>
+  * Environment: pmd-code
+  * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+  * Vars: PMD_CODE_ORG_KNOWN_HOSTS
+* github-release: Creates a new github release at <https://github.com/pmd/pmd/releases> including
+  the attached artifacts.
+  * Environment: github
+* create-sourceforge-blog-post: Creates a news entry at <https://sourceforge.net/p/pmd/news/>.
+  * Environment: sourceforge
+  * Secrets: PMD_SF_BEARER_TOKEN
+* create-regression-tester-baseline: Creates a new baseline and uploads it to
+  <https://pmd-code.org/pmd-regression-tester/>.
+  * Environment: pmd-code
+  * Secrets: PMD_CODE_ORG_DEPLOY_KEY
+  * Vars: PMD_CODE_ORG_KNOWN_HOSTS
+* upload-regression-tester-baseline-sourceforge: Uploads the baseline additionally to sourceforge
+  at <https://sourceforge.net/projects/pmd/files/pmd-regression-tester/>. Needs the previous job.
+  * Environment: sourceforge
+  * Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
+  * Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
+* create-docker: Triggers a new build at <https://github.com/pmd/docker/actions> to create and
+  upload a new docker image to Docker Hub and GitHub Packages.
+  * Environment: github
+  * Uses PMD Actions Helper app to call a workflow in the other repository
+  * Secrets: PMD_ACTIONS_HELPER_ID, PMD_ACTIONS_HELPER_PRIVATE_KEY
 
 
 ## Secrets and Variables
