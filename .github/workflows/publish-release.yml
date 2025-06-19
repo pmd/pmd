@@ -8,12 +8,6 @@ on:
     branches:
       - '**'
   workflow_dispatch:
-    inputs:
-      build_cli_dist_only:
-        description: "Build only modules cli and dist"
-        required: true
-        type: boolean
-        default: false
 
 permissions:
   contents: read # to fetch code (actions/checkout)
@@ -113,26 +107,11 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.MAVEN_CENTRAL_PORTAL_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PORTAL_PASSWORD }}
           MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
-          BUILD_CLI_DIST_ONLY: ${{ inputs.build_cli_dist_only }}
         # note: we can't use artifact staging-repository, as the jars are unsigned and javadoc+sources are missing.
         run: |
-          # make sure, BUILD_CLI_DIST_ONLY is set to false by default
-          : "${BUILD_CLI_DIST_ONLY:=false}"
-          echo "BUILD_CLI_DIST_ONLY=${BUILD_CLI_DIST_ONLY}"
-          # There are two possible release builds:
-          if [ "${BUILD_CLI_DIST_ONLY}" = "false" ]; then
-            # a) everything without pmd-cli and pmd-dist
-            BUILD_CLI_DIST_MAVEN_OPTION="-Dskip-cli-dist"
-          else
-            # b) only pmd-cli and pmd-dist
-            BUILD_CLI_DIST_MAVEN_OPTION="-pl pmd-cli,pmd-dist"
-          fi
-          echo "BUILD_CLI_DIST_MAVEN_OPTION=${BUILD_CLI_DIST_MAVEN_OPTION}"
-          
           ./mvnw --show-version --errors --batch-mode \
             deploy \
             -DskipTests \
-            ${BUILD_CLI_DIST_MAVEN_OPTION} \
             -PfastSkip,sign,pmd-release \
             -Dcyclonedx.skip=false \
             -Dmaven.javadoc.skip=false \
@@ -140,7 +119,6 @@ jobs:
 
   deploy-to-sourceforge-files:
     needs: [check-version, deploy-to-maven-central]
-    if: ${{ inputs.build_cli_dist_only == true }}
     # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
     # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS and PMD_SF_APIKEY
     environment:
@@ -261,7 +239,6 @@ jobs:
 
   deploy-to-sourceforge-io:
     needs: [check-version, deploy-to-maven-central]
-    if: ${{ inputs.build_cli_dist_only == true }}
     # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
     # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS
     environment:
@@ -311,7 +288,6 @@ jobs:
 
   deploy-to-pmd-code-doc:
     needs: [check-version, deploy-to-maven-central]
-    if: ${{ inputs.build_cli_dist_only == true }}
     # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
     # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
@@ -392,7 +368,6 @@ jobs:
 
   deploy-to-pmd-code-javadoc:
     needs: [check-version, deploy-to-maven-central]
-    if: ${{ inputs.build_cli_dist_only == true }}
     # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
     # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
@@ -477,11 +452,12 @@ jobs:
 
   github-release:
     needs: [check-version, deploy-to-maven-central]
-    if: ${{ inputs.build_cli_dist_only == true }}
     environment:
       name: github
       url: ${{ steps.release.outputs.release_url }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # create a release
     timeout-minutes: 10
     defaults:
       run:
@@ -553,7 +529,6 @@ jobs:
 
   create-sourceforge-blog-post:
     needs: [check-version, deploy-to-maven-central]
-    if: ${{ inputs.build_cli_dist_only == true }}
     # use environment sourceforge, where secrets/vars are configured for PMD_SF_BEARER_TOKEN
     environment:
       name: sourceforge
@@ -608,7 +583,6 @@ jobs:
 
   create-regression-tester-baseline:
     needs: [check-version, deploy-to-maven-central]
-    if: ${{ inputs.build_cli_dist_only == true }}
     # use environment pmd-code, where secrets/vars are configured for PMD_CODE_ORG_DEPLOY_KEY
     # and PMD_CODE_ORG_KNOWN_HOSTS
     environment:
@@ -685,7 +659,7 @@ jobs:
               IdentityFile=$HOME/.ssh/pmd-code.org_deploy_key
           " > "$HOME/.ssh/config"
           echo "${PMD_CODE_ORG_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
-      - name: Upload report
+      - name: Upload baseline
         env:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
         run: |
@@ -704,7 +678,6 @@ jobs:
 
   upload-regression-tester-baseline-sourceforge:
     needs: [check-version, deploy-to-maven-central, create-regression-tester-baseline]
-    if: ${{ inputs.build_cli_dist_only == true }}
     # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
     # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS and PMD_SF_APIKEY
     environment:
@@ -746,7 +719,6 @@ jobs:
 
   create-docker:
     needs: [check-version, deploy-to-maven-central]
-    if: ${{ inputs.build_cli_dist_only == true }}
     environment:
       name: github
       url: https://github.com/pmd/docker/actions
