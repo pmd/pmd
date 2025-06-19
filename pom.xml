@@ -853,7 +853,7 @@
             <execution>
               <id>checkstyle-check</id>
               <goals>
-                                                <goal>check</goal>
+                <goal>check</goal>
               </goals>
               <phase>verify</phase>
             </execution>
