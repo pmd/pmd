@@ -696,6 +696,18 @@
                         </execution>
                     </executions>
                 </plugin>
+              <plugin>
+                <groupId>com.github.ekryd.sortpom</groupId>
+                <artifactId>sortpom-maven-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>sort</goal>
+                    </goals>
+                  </execution>
+                </executions>
+              </plugin>
                 <plugin>
                     <groupId>com.diffplug.spotless</groupId>
                     <artifactId>spotless-maven-plugin</artifactId>
