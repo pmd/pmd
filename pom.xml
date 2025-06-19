@@ -704,6 +704,7 @@
                   <execution>
                     <goals>
                       <goal>sort</goal>
+                      <goal>verify</goal>
                     </goals>
                   </execution>
                 </executions>
@@ -817,6 +818,10 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+              <groupId>com.github.ekryd.sortpom</groupId>
+              <artifactId>sortpom-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
