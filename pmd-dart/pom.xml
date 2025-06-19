@@ -1,80 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>pmd-dart</artifactId>
-    <name>PMD Dart</name>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd</artifactId>
-        <version>7.15.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>pmd</artifactId>
+    <version>7.15.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>pmd-dart</artifactId>
+  <name>PMD Dart</name>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>antlr-cleanup</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
-                                    <property name="lang-name" value="Dart" />
-                                    <property name="lang-id" value="dart" />
-                                </ant>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+  <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+    </dependency>
 
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                    <delimiters>
-                        <delimiter>${*}</delimiter>
-                    </delimiters>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-lang-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-        </dependency>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>antlr-cleanup</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <target>
+                <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
+                  <property name="lang-name" value="Dart"></property>
+                  <property name="lang-id" value="dart"></property>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-lang-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+          <delimiters>
+            <delimiter>${*}</delimiter>
+          </delimiters>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

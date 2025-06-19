@@ -1,52 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <name>PMD Scala for Scala 2.13</name>
-    <artifactId>pmd-scala_2.13</artifactId>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd-scala-common</artifactId>
-        <version>7.15.0-SNAPSHOT</version>
-        <relativePath>../pmd-scala-common/pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>pmd-scala-common</artifactId>
+    <version>7.15.0-SNAPSHOT</version>
+    <relativePath>../pmd-scala-common/pom.xml</relativePath>
+  </parent>
+  <artifactId>pmd-scala_2.13</artifactId>
+  <name>PMD Scala for Scala 2.13</name>
 
-    <properties>
-        <scalaVersion>2.13</scalaVersion>
-    </properties>
+  <properties>
+    <scalaVersion>2.13</scalaVersion>
+  </properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <version>${scalaVersion}.16</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scalameta</groupId>
+      <artifactId>parsers_${scalaVersion}</artifactId>
+      <version>${scalameta.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.scalameta</groupId>
+      <artifactId>trees_${scalaVersion}</artifactId>
+      <version>${scalameta.version}</version>
+    </dependency>
+  </dependencies>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${scalaVersion}.16</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scalameta</groupId>
-            <artifactId>parsers_${scalaVersion}</artifactId>
-            <version>${scalameta.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.scalameta</groupId>
-            <artifactId>trees_${scalaVersion}</artifactId>
-            <version>${scalameta.version}</version>
-        </dependency>
-    </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>

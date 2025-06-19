@@ -1,104 +1,104 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>pmd-kotlin</artifactId>
-    <name>PMD Kotlin</name>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd</artifactId>
-        <version>7.15.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>pmd</artifactId>
+    <version>7.15.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>pmd-kotlin</artifactId>
+  <name>PMD Kotlin</name>
 
-    <properties>
-        <antlr4.visitor>true</antlr4.visitor>
-    </properties>
+  <properties>
+    <antlr4.visitor>true</antlr4.visitor>
+  </properties>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>${project.basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>antlr-cleanup</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <ant antfile="${antlr4.ant.wrapper}" target="pmd-language">
-                                    <property name="lang-name" value="Kotlin" />
-                                    <property name="lang-id" value="kotlin" />
-                                    <property name="root-node-name" value="KotlinFile" />
-                                    <property name="node-prefix" value="Kt" />
-                                </ant>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+  <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+    </dependency>
 
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                    <delimiters>
-                        <delimiter>${*}</delimiter>
-                    </delimiters>
-                </configuration>
-            </plugin>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-lang-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-            <plugin>
-                <groupId>com.github.siom79.japicmp</groupId>
-                <artifactId>japicmp-maven-plugin</artifactId>
-                <configuration>
-                    <parameter>
-                        <excludes combine.children="append">
-                            <exclude>net.sourceforge.pmd.lang.kotlin.rule.xpath.internal</exclude>
-                        </excludes>
-                    </parameter>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>${project.basedir}/src/main/resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>antlr-cleanup</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <target>
+                <ant antfile="${antlr4.ant.wrapper}" target="pmd-language">
+                  <property name="lang-name" value="Kotlin"></property>
+                  <property name="lang-id" value="kotlin"></property>
+                  <property name="root-node-name" value="KotlinFile"></property>
+                  <property name="node-prefix" value="Kt"></property>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-        </dependency>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+          <delimiters>
+            <delimiter>${*}</delimiter>
+          </delimiters>
+        </configuration>
+      </plugin>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-lang-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+      <plugin>
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
+        <configuration>
+          <parameter>
+            <excludes combine.children="append">
+              <exclude>net.sourceforge.pmd.lang.kotlin.rule.xpath.internal</exclude>
+            </excludes>
+          </parameter>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

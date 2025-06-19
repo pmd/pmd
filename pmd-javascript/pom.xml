@@ -1,137 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>pmd-javascript</artifactId>
-    <name>PMD JavaScript</name>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>net.sourceforge.pmd</groupId>
-        <artifactId>pmd</artifactId>
-        <version>7.15.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
-    </parent>
+  <parent>
+    <groupId>net.sourceforge.pmd</groupId>
+    <artifactId>pmd</artifactId>
+    <version>7.15.0-SNAPSHOT</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+  <artifactId>pmd-javascript</artifactId>
+  <name>PMD JavaScript</name>
 
-    <properties>
-        <java.version>8</java.version>
-    </properties>
+  <properties>
+    <java.version>8</java.version>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr4-runtime</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mozilla</groupId>
+      <artifactId>rhino</artifactId>
+      <version>1.7.15</version>
+    </dependency>
 
-    <build>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-        <plugins>
-            <plugin>
-                <groupId>org.antlr</groupId>
-                <artifactId>antlr4-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>antlr-cleanup</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
-                                    <property name="lang-name" value="TypeScript" />
-                                    <property name="lang-id" value="typescript" />
-                                </ant>
-                            </target>
-                        </configuration>
-                    </execution>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.sourceforge.pmd</groupId>
+      <artifactId>pmd-lang-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
-                    <execution>
-                        <id>generate-sources</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <target>
-                                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
-                                    <property name="plugin-classpath" refid="maven.plugin.classpath"/>
-                                    <property name="no-jjtree" value="true" /> <!-- This is a CPD module -->
-                                    <property name="lang-name" value="Ecmascript5" />
-                                    <property name="lang-id" value="ecmascript5" />
-                                </ant>
-                            </target>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <configuration>
-                    <useDefaultDelimiters>false</useDefaultDelimiters>
-                    <delimiters>
-                        <delimiter>${*}</delimiter>
-                    </delimiters>
-                </configuration>
-            </plugin>
+  <build>
+    <resources>
+      <resource>
+        <filtering>true</filtering>
+        <directory>${basedir}/src/main/resources</directory>
+      </resource>
+    </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr4-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>antlr-cleanup</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <target>
+                <ant antfile="${antlr4.ant.wrapper}" target="cpd-language">
+                  <property name="lang-name" value="TypeScript"></property>
+                  <property name="lang-id" value="typescript"></property>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
 
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>add-javacc-generated-sources</id>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
-                                <source>${project.build.directory}/generated-sources/javacc</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+          <execution>
+            <id>generate-sources</id>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <phase>generate-sources</phase>
+            <configuration>
+              <target>
+                <ant antfile="${javacc.ant.wrapper}" target="alljavacc">
+                  <property name="plugin-classpath" refid="maven.plugin.classpath"></property>
+                  <property name="no-jjtree" value="true"></property>
+                  <!-- This is a CPD module -->
+                  <property name="lang-name" value="Ecmascript5"></property>
+                  <property name="lang-id" value="ecmascript5"></property>
+                </ant>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <configuration>
+          <useDefaultDelimiters>false</useDefaultDelimiters>
+          <delimiters>
+            <delimiter>${*}</delimiter>
+          </delimiters>
+        </configuration>
+      </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <suppressionsLocation>pmd-javascript-checkstyle-suppressions.xml</suppressionsLocation>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <dependencies>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr4-runtime</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mozilla</groupId>
-            <artifactId>rhino</artifactId>
-            <version>1.7.15</version>
-        </dependency>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-javacc-generated-sources</id>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/javacc</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.pmd</groupId>
-            <artifactId>pmd-lang-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <suppressionsLocation>pmd-javascript-checkstyle-suppressions.xml</suppressionsLocation>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>
