@@ -8,6 +8,7 @@ bin/
 .ruleset
 .settings/
 *.iml
+*.bak
 .idea/*
 !.idea/icon.svg
 !.idea/vcs.xml
