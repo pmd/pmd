@@ -750,7 +750,7 @@
                         <execution>
                             <goals>
                                 <goal>sort</goal>
-                                <goal>check</goal>
+                                <goal>verify</goal>
                             </goals>
                         </execution>
                     </executions>
