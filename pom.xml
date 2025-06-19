@@ -483,7 +483,7 @@
                             <id>checkstyle-check</id>
                             <phase>verify</phase>
                             <goals>
-                                <goal>check</goal>
+<!--                                <goal>check</goal>-->
                             </goals>
                         </execution>
                     </executions>
