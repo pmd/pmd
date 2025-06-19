@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Global Boolean parameter should cause violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+global class Foo {
+    global static void bar(Boolean b) {
+        if (b) {
+            // do something
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Public Boolean parameter should cause violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void bar(Boolean b) {
+        if (b) {
+            // do something
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Case insensitive type declaration of Boolean parameter should cause violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static void bar(BoOlEaN b) {
+        if (b) {
+            // do something
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Protected Boolean parameter should not cause violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    protected void bar(Boolean b) {
+        if (b) {
+            // do something
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Private Boolean parameter should not cause violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar(Boolean b) {
+        if (b) {
+            // do something
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
