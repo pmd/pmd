@@ -1017,10 +1017,12 @@ public class SecureSystem {
             <property name="xpath">
                 <value><![CDATA[
                 //SwitchStatement
+                    (: exclude empty switches :)
+                    [count(*) > 1]
                     [@DefaultCase = false()]
                     [@ExhaustiveEnumSwitch = false()]
                     (: exclude pattern tests - for these, the compiler will ensure exhaustiveness :)
-                    [*/SwitchLabel[@PatternLabel = false()]]
+                    [not(*/SwitchLabel[@PatternLabel = true()])]
             ]]></value>
             </property>
         </properties>
