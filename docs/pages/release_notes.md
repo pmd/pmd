@@ -30,6 +30,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+### 💵 Financial Contributions
+
+Many thanks to our sponsors:
+
+* [Cybozu](https://github.com/cybozu) (@cybozu)
+
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5738](https://github.com/pmd/pmd/pull/5738): chore: Remove unused private methods in test classes - [Pankraz76](https://github.com/Pankraz76) (@Pankraz76)
