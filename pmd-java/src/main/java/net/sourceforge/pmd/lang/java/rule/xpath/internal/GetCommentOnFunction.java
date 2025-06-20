@@ -57,6 +57,3 @@ public class GetCommentOnFunction extends BaseJavaXPathFunction {
         };
     }
 }
-
-
-
