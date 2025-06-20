@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.IteratorUtil;
 
 /**
  * Detects unnecessary imports.
@@ -201,8 +203,12 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
             if (!(comment instanceof JavadocComment)) {
                 continue;
             }
+
+            String filteredCommentText = IteratorUtil.toStream(comment.getFilteredLines(true))
+                    .collect(Collectors.joining("\n"));
+
             for (Pattern p : PATTERNS) {
-                Matcher m = p.matcher(comment.getText());
+                Matcher m = p.matcher(filteredCommentText);
                 while (m.find()) {
                     String fullname = m.group(1);
 
