@@ -1359,7 +1359,8 @@ public class C {
 
     <test-code>
         <description>#2304: [java] static on-demand field import in javadoc</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 import static java.nio.charset.StandardCharsets.*;
 public class Foo {
@@ -1373,7 +1374,8 @@ public class Foo {
 
     <test-code>
         <description>#2304: [java] static on-demand method import in javadoc</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
 import static java.util.function.Predicate.*;
 public class Foo {
