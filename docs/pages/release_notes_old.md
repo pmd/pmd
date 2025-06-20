@@ -2135,7 +2135,7 @@ The rules have been moved into categories with PMD 6.
   * [#4817](https://github.com/pmd/pmd/issues/4817): \[java] UnusedPrivateMethod false-positive used in lambda
 * java-codestyle
   * [#2847](https://github.com/pmd/pmd/issues/2847): \[java] New Rule: Use Explicit Types
-  * [#4239](https://github.com/pmd/pmd/issues/4239): \[java] UnnecessaryLocalBeforeReturn - false positive with catch clause
+  * [#4239](https://github.com/pmd/pmd/issues/4239): \[java] UnnecessaryLocalBeforeBranch - false positive with catch clause
   * [#4578](https://github.com/pmd/pmd/issues/4578): \[java] CommentDefaultAccessModifier comment needs to be before annotation if present
   * [#4631](https://github.com/pmd/pmd/issues/4631): \[java] UnnecessaryFullyQualifiedName fails to recognize illegal self reference in enums
   * [#4645](https://github.com/pmd/pmd/issues/4645): \[java] CommentDefaultAccessModifier - False Positive with JUnit5's ParameterizedTest
@@ -7505,7 +7505,7 @@ This release ships with 3 new Java rules.
     *   [#3265](https://github.com/pmd/pmd/pull/3265): \[java] MethodArgumentCouldBeFinal: false negatives with interfaces and inner classes
     *   [#3266](https://github.com/pmd/pmd/pull/3266): \[java] LocalVariableCouldBeFinal: false negatives with interfaces, anon classes
     *   [#3274](https://github.com/pmd/pmd/pull/3274): \[java] OnlyOneReturn: false negative with anonymous class
-    *   [#3275](https://github.com/pmd/pmd/pull/3275): \[java] UnnecessaryLocalBeforeReturn: false negatives with lambda and anon class
+    *   [#3275](https://github.com/pmd/pmd/pull/3275): \[java] UnnecessaryLocalBeforeBranch: false negatives with lambda and anon class
 *   java-design
     *   [#2780](https://github.com/pmd/pmd/issues/2780): \[java] DataClass example from documentation results in false-negative
     *   [#2987](https://github.com/pmd/pmd/issues/2987): \[java] New Rule: Public and protected static fields must be final
@@ -9366,7 +9366,7 @@ Each `<file>` element in the XML format now has 3 new attributes:
 *   java-bestpractices
     *   [#2149](https://github.com/pmd/pmd/issues/2149): \[java] JUnitAssertionsShouldIncludeMessage - False positive with assertEquals and JUnit5
 *   java-codestyle
-    *   [#2167](https://github.com/pmd/pmd/issues/2167): \[java] UnnecessaryLocalBeforeReturn false positive with variable captured by method reference
+    *   [#2167](https://github.com/pmd/pmd/issues/2167): \[java] UnnecessaryLocalBeforeBranch false positive with variable captured by method reference
 *   java-documentation
     *   [#1683](https://github.com/pmd/pmd/issues/1683): \[java] CommentRequired property names are inconsistent
 *   java-errorprone
@@ -10193,7 +10193,7 @@ CPD also parses raw string literals now correctly (see [#1784](https://github.co
 *   java-codestyle
     *   [#1495](https://github.com/pmd/pmd/issues/1495): \[java] Rule to detect overly verbose array initializiation
     *   [#1684](https://github.com/pmd/pmd/issues/1684): \[java] Properly whitelist serialPersistentFields
-    *   [#1804](https://github.com/pmd/pmd/issues/1804): \[java] NPE in UnnecessaryLocalBeforeReturnRule
+    *   [#1804](https://github.com/pmd/pmd/issues/1804): \[java] NPE in UnnecessaryLocalBeforeBranchRule
 *   python
     *   [#1810](https://github.com/pmd/pmd/issues/1810): \[python] \[cpd] Parse error when using Python 2 backticks
 *   matlab
@@ -10297,7 +10297,7 @@ For the changes, see [PMD Designer Changelog](https://github.com/pmd/pmd-designe
     *   [#1190](https://github.com/pmd/pmd/issues/1190): \[java] UnusedLocalVariable/UnusedPrivateField false-positive 
     *   [#1720](https://github.com/pmd/pmd/issues/1720): \[java] UnusedImports false positive for Javadoc link with array type
 *   java-codestyle
-    *   [#1755](https://github.com/pmd/pmd/issues/1775): \[java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines
+    *   [#1755](https://github.com/pmd/pmd/issues/1775): \[java] False negative in UnnecessaryLocalBeforeBranch when splitting statements across multiple lines
     *   [#1782](https://github.com/pmd/pmd/issues/1782): \[java] NoPackage: False Negative for enums
 *   java-design
     *   [#1760](https://github.com/pmd/pmd/issues/1760): \[java] UseObjectForClearerAPI flags private methods
@@ -13281,7 +13281,7 @@ This new rule is part of the `java-design` ruleset.
 
 #### Modified Rules
 
-*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) now has a new property `statementOrderMatters`.
+*   The Java rule `UnnecessaryLocalBeforeBranch` (ruleset java-design) now has a new property `statementOrderMatters`.
     It is enabled by default to stay backwards compatible. But if this property is set to `false`, this rule
     no longer requires the variable declaration
     and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be
@@ -13375,22 +13375,22 @@ You need to use this, if you have a large project with many files, and you hit t
 *   java-coupling
     *   [#270](https://github.com/pmd/pmd/issues/270): \[java] LoD false positive
 *   java-design
-    *   [#933](https://sourceforge.net/p/pmd/bugs/933/): \[java] UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation
+    *   [#933](https://sourceforge.net/p/pmd/bugs/933/): \[java] UnnecessaryLocalBeforeBranch false positive for SuppressWarnings annotation
     *   [#1448](https://sourceforge.net/p/pmd/bugs/1448/): \[java] ImmutableField: Private field in inner class gives false positive with lambdas
-    *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeReturn with assert
+    *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeBranch with assert
     *   [#1496](https://sourceforge.net/p/pmd/bugs/1496/): \[java] New Rule: AccesorMethodGeneration - complements accessor class rule
     *   [#1512](https://sourceforge.net/p/pmd/bugs/1512/): \[java] Combine rules AvoidConstantsInInterface and ConstantsInInterface
     *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
     *   [#1556](https://sourceforge.net/p/pmd/bugs/1556/): \[java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)
     *   [#177](https://github.com/pmd/pmd/issues/177): \[java] SingularField with lambdas as final fields
     *   [#216](https://github.com/pmd/pmd/issues/216): \[java] \[doc] NonThreadSafeSingleton: Be more explicit as to why double checked locking is not recommended
-    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeReturn: ClassCastException in switch case with local variable returned
-    *   [#240](https://github.com/pmd/pmd/issues/240): \[java] UnnecessaryLocalBeforeReturn: Enhance by checking usages
+    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeBranch: ClassCastException in switch case with local variable returned
+    *   [#240](https://github.com/pmd/pmd/issues/240): \[java] UnnecessaryLocalBeforeBranch: Enhance by checking usages
     *   [#274](https://github.com/pmd/pmd/issues/274): \[java] AccessorMethodGeneration: Method inside static inner class incorrectly reported
     *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
-    *   [#282](https://github.com/pmd/pmd/issues/282): \[java] UnnecessaryLocalBeforeReturn false positive when cloning Maps
+    *   [#282](https://github.com/pmd/pmd/issues/282): \[java] UnnecessaryLocalBeforeBranch false positive when cloning Maps
     *   [#291](https://github.com/pmd/pmd/issues/291): \[java] Improve quality of AccessorClassGeneration
-    *   [#310](https://github.com/pmd/pmd/issues/310): \[java] UnnecessaryLocalBeforeReturn enhancement is overly restrictive -- method order matters
+    *   [#310](https://github.com/pmd/pmd/issues/310): \[java] UnnecessaryLocalBeforeBranch enhancement is overly restrictive -- method order matters
     *   [#352](https://github.com/pmd/pmd/issues/352): \[java] AccessorClassGeneration throws ClassCastException when seeing array construction
 *   java-imports
     *   [#338](https://github.com/pmd/pmd/issues/338): \[java] False positive on DontImportJavaLang when importing java.lang.ProcessBuilder
@@ -13542,7 +13542,7 @@ The PMD team is pleased to announce PMD 5.5.5.
 *   java-design
     *   [#274](https://github.com/pmd/pmd/issues/274): \[java] AccessorMethodGeneration: Method inside static inner class incorrectly reported
     *   [#275](https://github.com/pmd/pmd/issues/275): \[java] FinalFieldCouldBeStatic: Constant in @interface incorrectly reported as "could be made static"
-    *   [#282](https://github.com/pmd/pmd/issues/282): \[java] UnnecessaryLocalBeforeReturn false positive when cloning Maps
+    *   [#282](https://github.com/pmd/pmd/issues/282): \[java] UnnecessaryLocalBeforeBranch false positive when cloning Maps
     *   [#291](https://github.com/pmd/pmd/issues/291): \[java] Improve quality of AccessorClassGeneration
 *   java-junit:
     *   [#285](https://github.com/pmd/pmd/issues/285): \[java] JUnitTestsShouldIncludeAssertRule should support @Rule as well as @Test(expected = ...)
@@ -13607,7 +13607,7 @@ This new rule is part of the `java-design` ruleset.
     *   Classes, interfaces or annotations nested within an annotation marked as `public` or `static`.
     *   Nested enums marked as `static`.
 
-*   The Java rule `UnnecessaryLocalBeforeReturn` (ruleset java-design) no longer requires the variable declaration
+*   The Java rule `UnnecessaryLocalBeforeBranch` (ruleset java-design) no longer requires the variable declaration
     and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be
     reported.
 
@@ -13625,11 +13625,11 @@ This new rule is part of the `java-design` ruleset.
 *   java-coupling
     *   [#270](https://github.com/pmd/pmd/issues/270): \[java] LoD false positive
 *   java-design
-    *   [#933](https://sourceforge.net/p/pmd/bugs/933/): \[java] UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation
+    *   [#933](https://sourceforge.net/p/pmd/bugs/933/): \[java] UnnecessaryLocalBeforeBranch false positive for SuppressWarnings annotation
     *   [#1496](https://sourceforge.net/p/pmd/bugs/1496/): \[java] New Rule: AccesorMethodGeneration - complements accessor class rule
     *   [#216](https://github.com/pmd/pmd/issues/216): \[java] \[doc] NonThreadSafeSingleton: Be more explicit as to why double checked locking is not recommended
-    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeReturn: ClassCastException in switch case with local variable returned
-    *   [#240](https://github.com/pmd/pmd/issues/240): \[java] UnnecessaryLocalBeforeReturn: Enhance by checking usages
+    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeBranch: ClassCastException in switch case with local variable returned
+    *   [#240](https://github.com/pmd/pmd/issues/240): \[java] UnnecessaryLocalBeforeBranch: Enhance by checking usages
 *   java-optimizations
     *   [#215](https://github.com/pmd/pmd/issues/215): \[java] RedundantFieldInitializer report for annotation field not explicitly marked as final
 *   java-unusedcode
@@ -13842,7 +13842,7 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
     *   [#1545](https://sourceforge.net/p/pmd/bugs/1545/): \[java] Symbol Table fails to resolve inner classes
 *   java-design
     *   [#1448](https://sourceforge.net/p/pmd/bugs/1448/): \[java] ImmutableField: Private field in inner class gives false positive with lambdas
-    *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeReturn with assert
+    *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeBranch with assert
     *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
     *   [#1556](https://sourceforge.net/p/pmd/bugs/1556/): \[java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)
     *   [#177](https://github.com/pmd/pmd/issues/177): \[java] SingularField with lambdas as final fields
@@ -14229,7 +14229,7 @@ This is a bug fixing release.
     *   [#270](https://github.com/pmd/pmd/issues/270): \[java] LoD false positive
 *   java-design
     *   [#216](https://github.com/pmd/pmd/issues/216): \[java] \[doc] NonThreadSafeSingleton: Be more explicit as to why double checked locking is not recommended
-    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeReturn: ClassCastException in switch case with local variable returned
+    *   [#219](https://github.com/pmd/pmd/issues/219): \[java] UnnecessaryLocalBeforeBranch: ClassCastException in switch case with local variable returned
 *   java-optimizations
     *   [#215](https://github.com/pmd/pmd/issues/215): \[java] RedundantFieldInitializer report for annotation field not explicitly marked as final
 *   java-unusedcode
@@ -14285,7 +14285,7 @@ See also [bugfix #1556](https://sourceforge.net/p/pmd/bugs/1556/).
     *   [#213](https://github.com/pmd/pmd/issues/213): \[java] CPD: OutOfMemory when analyzing Lucene
 *   java-design
     *   [#1448](https://sourceforge.net/p/pmd/bugs/1448/): \[java] ImmutableField: Private field in inner class gives false positive with lambdas
-    *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeReturn with assert
+    *   [#1495](https://sourceforge.net/p/pmd/bugs/1495/): \[java] UnnecessaryLocalBeforeBranch with assert
     *   [#1552](https://sourceforge.net/p/pmd/bugs/1552/): \[java] MissingBreakInSwitch - False positive for continue
     *   [#1556](https://sourceforge.net/p/pmd/bugs/1556/): \[java] UseLocaleWithCaseConversions does not works with `ResultSet` (false negative)
     *   [#177](https://github.com/pmd/pmd/issues/177): \[java] SingularField with lambdas as final fields
@@ -16355,7 +16355,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 1571324 - UselessStringValueOf no longer reports a false positive for additive expressions.
     Fixed bug 1573795 - PreserveStackTrace doesn't throw CastClassException on exception with 0 args
     Fixed bug 1573591 - NonThreadSafeSingleton doesn't throw NPE when using this keyword
-    Fixed bug 1371753 - UnnecessaryLocalBeforeReturn is now less aggressive in its reporting.
+    Fixed bug 1371753 - UnnecessaryLocalBeforeBranch is now less aggressive in its reporting.
     Fixed bug 1566547 - Annotations with an empty MemberValueArrayInitializer are now parsed properly.
     Fixed bugs 1060761 / 1433119 & RFE 1196954 - CloseResource now takes an optional parameter to identify closure methods
     Fixed bug 1579615 - OverrideBothEqualsAndHashcode no longer throws an Exception on equals methods that don't have Object as a parameter type.
@@ -16566,7 +16566,7 @@ The binary package still contains all languages and can be used as usual. Have a
     Fixed bug 1384594 - Added a 'prefix' property for BeanMembersShouldSerializeRule
     Fixed bug 1394808 - Fewer missed hits for AppendCharacterWithChar and InefficientStringBuffering, thanks to Allan Caplan for catching these
     Fixed bug 1400754 - A NPE is no longer thrown on certain JDK 1.5 enum usages.
-    Partially fixed bug 1371753 - UnnecessaryLocalBeforeReturn message now reflects the fact that that rule flags all types
+    Partially fixed bug 1371753 - UnnecessaryLocalBeforeBranch message now reflects the fact that that rule flags all types
     Fixed a bug in UseStringBufferLength; it no longers fails with an exception on expressions like StringBuffer.toString.equals(x)
     Fixed a bug in CPD's C/C++ parser so that it no longer fails on multi-line literals; thx to Tom Judge for the nice patch.
     CPD now recognizes '--language c' and '--language cpp' as both mapping to the C/C++ parser.
@@ -16592,7 +16592,7 @@ The binary package still contains all languages and can be used as usual. Have a
      Strings ruleset: UseStringBufferLength
     Fixed bug 1292745 - Removed unused source file ExceptionTypeChecking.java
     Fixed bug 1292609 - The JDK 1.3 parser now correctly handles certain 'assert' usages.  Also added a 'JDK 1.3' menu item to the Designer.
-    Fixed bug 1292689 - Corrected description for UnnecessaryLocalBeforeReturn
+    Fixed bug 1292689 - Corrected description for UnnecessaryLocalBeforeBranch
     Fixed bug 1293157 - UnusedPrivateMethod no longer reports false positives for private methods which are only invoked from static initializers.
     Fixed bug 1293277 - Messages that used 'pluginname' had duplicated messages.
     Fixed bug 1291353 - ASTMethodDeclaration isPublic/isAbstract methods always return true.  The syntactical modifier - i.e., whether or not 'public' was used in the source code in the method declaration - is available via 'isSyntacticallyPublic' and 'isSyntacticallyAbstract'
@@ -16627,7 +16627,7 @@ The binary package still contains all languages and can be used as usual. Have a
 ## September 15, 2005 - 3.3:
 
     New rules:
-        Design: PositionLiteralsFirstInComparisons,  UnnecessaryLocalBeforeReturn
+        Design: PositionLiteralsFirstInComparisons,  UnnecessaryLocalBeforeBranch
         Logging-jakarta-commons: ProperLogger
         Basic: UselessOverridingMethod
         Naming: PackageCase, NoPackage

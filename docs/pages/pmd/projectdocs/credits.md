@@ -1251,7 +1251,7 @@ According to the book [PMD Applied](https://pmdapplied.thomasleecopeland.com/) t
 *   Maarten ter Huurne - BooleanGetMethodName, AddEmptyString, Noticed misspelling in AvoidArrayLoops rule
 *   Lukas Theussl - Patch to bring Maven configuration files up to date
 *   Jason Bennett - Rewrite of annotation-based warning suppression to allow for rule-specific suppression,
-    noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeReturn, wrote NPathComplexity rule,
+    noticed useless line in XSLT scripts, fix for UnnecessaryLocalBeforeBranch, wrote NPathComplexity rule,
     patches to improve CyclomaticComplexity rule, Implemented: UseCollectionIsEmpty, NcssTypeCount, NcssMethodCount,
     NcssConstructor, Patch to detect comparison with new Object
 *   Brent Fisher - Fixed report backslash bug, SummaryHTML report improvements
@@ -1310,7 +1310,7 @@ According to the book [PMD Applied](https://pmdapplied.thomasleecopeland.com/) t
 *   [Elliotte Rusty Harold](http://www.cafeaulait.org/) - reported bug in UseAssertSameInsteadOfAssertTrue,
     suggested creating a new ruleset containing rules in each release, UncommentedEmptyConstructor suggestions,
     noted missed case for UnusedFormalParameter, documentation suggestions,
-    reported mistake in UnnecessaryLocalBeforeReturn message,
+    reported mistake in UnnecessaryLocalBeforeBranch message,
     bug report 1371757 for misleading AvoidSynchronizedAtMethodLevel example,
     bug report 1293277 for duplicated rule messages, bug report for ConstructorCallsOverridableMethod,
     suggestion for improving command line interface, misspelling report, suggestion for improving Designer
@@ -1370,7 +1370,7 @@ According to the book [PMD Applied](https://pmdapplied.thomasleecopeland.com/) t
 *   Jean-Marc Vanel - suggested enhancements to the PMD scoreboard
 *   Andriy Rozeluk - suggested UseStringBufferLength, bug report 1306180 for
     AvoidConcatenatingNonLiteralsInStringBuffer, reported bug 1293157 for UnusedPrivateMethod,
-    suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeReturn,
+    suggested UnnecessaryCaseChange, bug report for SimplifyConditional, suggested UnnecessaryLocalBeforeBranch,
     suggestions for improving BooleanInstantiation, UnnecessaryReturn, AvoidDuplicateLiterals RFEs and bug reports,
     various other RFEs and thoughtful discussions as well
 *   Bruno Juillet - suggested reporting suppressed warnings, bug report for missing package/class/method names,

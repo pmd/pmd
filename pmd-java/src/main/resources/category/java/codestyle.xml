@@ -1787,28 +1787,6 @@ class Foo {
         </example>
     </rule>
 
-    <rule name="UnnecessaryLocalBeforeThrow"
-          language="java"
-          since="3.3"
-          message="Consider simply returning the value vs storing it in local variable ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeThrowRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforethrow">
-        <description>
-Avoid the creation of unnecessary local variables
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-public class Foo {
-   public int foo() {
-     var ex = getException();
-     throw ex;  // instead, just 'return getException();'
-   }
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="UnnecessaryModifier"
           language="java"
           since="1.02"
