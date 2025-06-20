@@ -325,7 +325,7 @@ public interface JTypeMirror extends JTypeVisitable {
      * Returns true if this is {@link TypeSystem#NO_TYPE}, ie {@code void}.
      */
     default boolean isVoid() {
-        return this == getTypeSystem().NO_TYPE; // NOPMD CompareObjectsWithEquals
+        return this == getTypeSystem().NO_TYPE;
     }
 
     /** Returns true if this is an {@linkplain JArrayType array type}. */

@@ -103,7 +103,6 @@ class NioTextFile extends BaseCloseable implements TextFile {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        @SuppressWarnings("PMD.CloseResource")
         NioTextFile that = (NioTextFile) o;
         return path.equals(that.path);
     }

@@ -90,7 +90,7 @@ public class LuaCpdLexer extends AntlrCpdLexer {
             if (ignoreLiteralSequences) {
                 final int type = currentToken.getKind();
                 if (isDiscardingLiterals()) {
-                    if (currentToken == discardingLiteralsUntil) { // NOPMD - intentional check for reference equality
+                    if (currentToken == discardingLiteralsUntil) {
                         discardingLiteralsUntil = null;
                         discardCurrent = true;
                     }
