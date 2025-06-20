@@ -28,6 +28,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+### 💵 Financial Contributions
+
+Many thanks to our sponsors:
+
+* [Cybozu](https://github.com/cybozu) (@cybozu)
+
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
