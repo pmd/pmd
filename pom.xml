@@ -701,6 +701,7 @@
                     <artifactId>spotless-maven-plugin</artifactId>
                     <version>2.44.5</version>
                     <configuration>
+                        <skip>${spot.skip}</skip>
                         <formats>
                             <format>
                                 <excludes>
@@ -708,10 +709,10 @@
                                     <exclude>**gradlew**</exclude>
                                     <exclude>**mvnw**</exclude>
                                 </excludes>
-                                <trimTrailingWhitespace/>
                                 <includes>
                                     <include>.gitignore</include>
                                 </includes>
+                                <trimTrailingWhitespace/>
                             </format>
                         </formats>
                         <java>
@@ -1242,6 +1243,7 @@
                 <maven.source.skip>true</maven.source.skip>
                 <checkstyle.skip>true</checkstyle.skip>
                 <pmd.skip>true</pmd.skip>
+                <spot.skip>true</spot.skip>
                 <cpd.skip>true</cpd.skip>
                 <cyclonedx.skip>true</cyclonedx.skip>
                 <dokka.skip>true</dokka.skip>
