@@ -1761,12 +1761,38 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UnnecessaryLocalBeforeReturn"
+    <rule name="UnnecessaryLocalBeforeBranch"
+          language="java"
+          since="7.15.0"
+          message="Alternate coupling burden on immediately following end ''{0}''."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeBranchRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforebranch">
+        <description>
+Alternate coupling burden on immediately following end.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+class Foo {
+   int foo() {
+     var bar = bar();
+     return bar;  // instead, just 'return bar();'
+   }
+   int bar() {
+     var ex = getIllegalArgumentException(foo());
+     throw ex;  // instead, just 'throw getIllegalArgumentException(foo());'
+   }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryLocalBeforeThrow"
           language="java"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn">
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeThrowRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforethrow">
         <description>
 Avoid the creation of unnecessary local variables
         </description>
@@ -1775,8 +1801,8 @@ Avoid the creation of unnecessary local variables
 <![CDATA[
 public class Foo {
    public int foo() {
-     int x = doSomething();
-     return x;  // instead, just 'return doSomething();'
+     var ex = getException();
+     throw ex;  // instead, just 'return getException();'
    }
 }
 ]]>
