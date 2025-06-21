@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class UnnecessaryLocalBeforeReturnTest extends PmdRuleTst {
+class UnnecessaryLocalBeforeBranchTest extends PmdRuleTst {
     // no additional unit tests
 }
