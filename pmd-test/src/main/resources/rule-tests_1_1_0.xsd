@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Version 1.0.0 -->
-<!-- Last change: 2022-07-22 -->
+<!-- Version 1.1.0 -->
+<!-- Last change: 2025-06-22 -->
+<!-- Changes against 1.0.0: expected-suppression -->
 <schema
         xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:tns="http://pmd.sourceforge.net/rule-tests"
@@ -41,6 +42,24 @@
                 <complexType>
                     <sequence>
                         <element name="message" type="string" maxOccurs="unbounded"/>
+                    </sequence>
+                </complexType>
+            </element>
+            <element name="expected-suppressions" minOccurs="0">
+                <annotation>
+                    <documentation>Declares the expected suppressed violations. Since PMD 7.15.0 / rule-tests 1.1.0.</documentation>
+                </annotation>
+                <complexType>
+                    <sequence>
+                        <element name="suppressor" maxOccurs="unbounded">
+                            <complexType>
+                                <simpleContent>
+                                    <extension base="string">
+                                        <attribute name="line" type="positiveInteger" use="required"/>
+                                    </extension>
+                                </simpleContent>
+                            </complexType>
+                        </element>
                     </sequence>
                 </complexType>
             </element>
