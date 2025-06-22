@@ -25,12 +25,15 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* java-codestyle
+  * [#2304](https://github.com/pmd/pmd/issues/2304): \[java] UnnecessaryImport false positive for on-demand imports in JavaDoc
 
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5738](https://github.com/pmd/pmd/pull/5738): chore: Remove unused private methods in test classes - [Pankraz76](https://github.com/Pankraz76) (@Pankraz76)
+* [#5818](https://github.com/pmd/pmd/pull/5818): Fix #2304: \[java] UnnecessaryImport FP for on-demand imports in JavaDoc - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

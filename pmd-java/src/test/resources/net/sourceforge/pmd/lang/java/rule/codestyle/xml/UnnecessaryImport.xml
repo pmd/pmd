@@ -1362,7 +1362,7 @@ public class C {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
-import static java.nio.charset.StandardCharsets.*;
+import static java.nio.charset.StandardCharsets.*; // Note: UTF_8 is a field in StandardCharsets and javadoc cannot reference it via static import
 public class Foo {
     /**
      * {@link UTF_8}
@@ -1377,7 +1377,8 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
-import static java.util.function.Predicate.*;
+import static java.util.function.Predicate.*; // Note: this would import all fields/methods from Predicate, but not Predicate itself, which is used in the javadoc
+import java.util.function.Predicate;
 public class Foo {
     /**
      * {@link Predicate#isEqual(Object)}}
