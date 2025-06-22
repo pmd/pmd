@@ -1386,4 +1386,96 @@ public class Demo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand field import in javadoc</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+import static java.nio.charset.StandardCharsets.*; // Note: UTF_8 is a field in StandardCharsets and javadoc cannot reference it via static import
+public class Foo {
+    /**
+     * {@link UTF_8}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand method import in javadoc</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+import static java.util.function.Predicate.*; // Note: this would import all fields/methods from Predicate, but not Predicate itself, which is used in the javadoc
+import java.util.function.Predicate;
+public class Foo {
+    /**
+     * {@link Predicate#isEqual(Object)}}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand class import in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Map.*;
+public class Foo {
+    /**
+     * {@link Entry}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] on-demand import in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    /**
+     * {@link  ArrayList  arraylist}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] on-demand import in javadoc method param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Foo {
+    /**
+     * {@see Foo#someMethod(String, ArrayList)}
+     */
+    public void test() {}
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand import in javadoc method param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Map.*;
+
+public class Foo {
+    /**
+     * {@see Foo#someMethod(String, Entry)}
+     */
+    public void test() {}
+
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

@@ -45,6 +45,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -214,6 +215,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
                     if (fullname != null) { // may be null for "@see #" and "@link #"
                         removeReferenceSingleImport(fullname);
+                        removeReferenceOnDemandImport(fullname);
                     }
 
                     if (m.groupCount() > 1) {
@@ -221,6 +223,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                         if (fullname != null) {
                             for (String param : fullname.split("\\s*,\\s*")) {
                                 removeReferenceSingleImport(param);
+                                removeReferenceOnDemandImport(param);
                             }
                         }
                     }
@@ -440,6 +443,27 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     private void removeReferenceSingleImport(String referenceName) {
         String expectedImport = StringUtils.substringBefore(referenceName, ".");
         allSingleNameImports.removeIf(it -> expectedImport.equals(it.node.getImportedSimpleName()));
+    }
+
+    private void removeReferenceOnDemandImport(String referenceName) {
+        if (referenceName.isEmpty()) {
+            return;
+        }
+
+        typeImportsOnDemand.removeIf(it -> {
+            final ASTImportDeclaration importNode = it.node;
+            return importNode.isImportOnDemand()
+                    && TypesFromReflection.loadSymbol(importNode.getTypeSystem(), importNode.getPackageName() + "." + referenceName) != null;
+        });
+        staticImportsOnDemand.removeIf(it -> {
+            final ASTImportDeclaration importNode = it.node;
+            if (importNode.isImportOnDemand()) {
+                final JClassSymbol symbol = TypesFromReflection.loadSymbol(importNode.getTypeSystem(), importNode.getImportedName());
+                return symbol != null && symbol.getDeclaredClass(referenceName) != null;
+            }
+
+            return false;
+        });
     }
 
     /** Override the equal behaviour of ASTImportDeclaration to put it into a set. */
