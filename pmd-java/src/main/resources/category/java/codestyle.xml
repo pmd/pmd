@@ -1783,6 +1783,28 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessaryLocalBeforeThrow"
+          language="java"
+          since="7.15.0"
+          message="Consider simply throwing the value vs storing it in local variable ''{0}''."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeThrowRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforethrow">
+        <description>
+Avoid the creation of unnecessary local variables.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+   public int foo(String bar) {
+     var ex = getIllegalArgumentException(bar);
+     throw ex; // instead, just 'throw getIllegalArgumentException(bar);'
+   }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnnecessaryModifier"
           language="java"
           since="1.02"

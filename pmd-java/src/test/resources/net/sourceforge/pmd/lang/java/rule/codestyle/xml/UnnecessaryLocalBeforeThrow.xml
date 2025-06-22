@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>#5770 Simple unnecessary local before throw</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Variable used elsewhere - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        System.out.println(e.getMessage());
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Annotated variable - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        @SuppressWarnings("serial")
+        RuntimeException e = new RuntimeException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Statements not consecutive - no violation when order matters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        doSomething();
+        throw e;
+    }
+    void doSomething() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw not using variable - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        throw new IllegalStateException();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Variable used in try-catch - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        Exception e;
+        try {
+            something();
+        } catch (Exception ex) {
+            e = ex;
+        }
+        throw e;
+    }
+    void something() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Multiple variables but only one used in throw</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e1 = new RuntimeException();
+        RuntimeException e2 = new RuntimeException();
+        throw e1;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Multiple variables but only one used in throw</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e2 = new RuntimeException();
+        RuntimeException e1 = new RuntimeException();
+        throw e1;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throwing field - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private Exception e = new Exception();
+
+    void test() {
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throwing parameter - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test(Exception e) {
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw in switch statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test(int value) {
+        switch (value) {
+            case 1:
+                RuntimeException e = new RuntimeException();
+                throw e;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw in if statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test(boolean condition) {
+        if (condition) {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw in try-with-resources</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() throws Exception {
+        try (AutoCloseable ac = something()) {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+    AutoCloseable something() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Throw inside for loop block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        for (int i = 0; i < 1; i++) {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Throw using lambda expression - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Supplier;
+
+public class Test {
+    void test() {
+        Supplier<RuntimeException> s = () -> new RuntimeException();
+        throw s.get();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Throw in ternary - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test(boolean condition) {
+        throw condition ? new IllegalArgumentException() : new RuntimeException();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested block with unnecessary throw variable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inner class with throw - no violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    class Inner {
+        void test() {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Exception assigned and rethrown inside catch - no violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        try {
+            something();
+        } catch (Exception ex) {
+            Exception e = ex;
+            throw e;
+        }
+    }
+    void something() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple throw variables but one is unnecessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        RuntimeException f = new RuntimeException();
+        throw f;
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+</test-data>
