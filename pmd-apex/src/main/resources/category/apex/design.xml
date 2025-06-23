@@ -488,4 +488,49 @@ public class Person {
         </example>
     </rule>
 
+    <rule name="RepeatedPrimitiveValue"
+          language="apex"
+          since="7.15.0"
+          message="This value has been repeated more than one time in this class. Please define the value as a static constant."
+          class="net.sourceforge.pmd.lang.apex.rule.design.RepeatedPrimitiveValueRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#repeatedprimitivevalue">
+        <description>
+Repeated primitive values can harm code maintainability and readability.
+When a value is used repeatedly in its literal form, it becomes harder to understand the purpose of that specific value.
+If the value needs to be changed, it must be updated in multiple places, increasing the risk of errors.
+Defining these repeated values as constants improves code readability by assigning a meaningful name to the value and centralizes the definition of the value, making it easier to maintain and refactor.
+        </description>
+        <priority>5</priority>
+        <example>
+<![CDATA[
+public class Example {
+  // Violation: The value 5 is repeated multiple times
+  public void myMethod() {
+    Integer age1 = 5;
+    Integer age2 = 5;
+    if (someCondition()) {
+      age1 = age1 + 5; // Another repetition of 5
+    } else {
+      age2 = 5; // Yet another repetition of 5
+    }
+  }
+}
+
+// Corrected Code:
+public class Example {
+  private static final Integer DEFAULT_AGE = 5;
+  public void myMethod() {
+    Integer age1 = DEFAULT_AGE;
+    Integer age2 = DEFAULT_AGE;
+    if (someCondition()) {
+      age1 = age1 + DEFAULT_AGE;
+    } else {
+      age2 = DEFAULT_AGE;
+    }
+  }
+}
+]]>
+        </example>
+    </rule>
+
 </ruleset>
