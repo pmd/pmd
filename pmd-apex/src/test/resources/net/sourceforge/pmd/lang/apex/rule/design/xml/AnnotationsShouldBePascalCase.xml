@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>AuraEnabled PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @AuraEnabled
+    public static void bar(Boolean b) {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>AuraEnabled lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @auraenabled
+    public static void bar(Boolean b) {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Deprecated PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Deprecated
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Deprecated lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @deprecated
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Future PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @Future
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Future lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @future
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>InvocableMethod PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @InvocableMethod
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>InvocableMethod lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @invocablemethod
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>InvocableVariable PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @InvocableVariable
+    public String myVar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>InvocableVariable lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @invocablevariable
+    public String myVar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>IsTest PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@IsTest
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>IsTest lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@istest
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JsonAccess PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@JsonAccess
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>JsonAccess lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@jsonaccess
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NamespaceAccessible PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@NamespaceAccessible
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>NamespaceAccessible lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@namespaceaccessible
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ReadOnly PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@ReadOnly
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ReadOnly lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@readonly
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>RemoteAction PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @RemoteAction
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>RemoteAction lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @remoteaction
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SuppressWarnings PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@SuppressWarnings
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SuppressWarnings lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@suppresswarnings
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestSetup PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @TestSetup
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestSetup lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @testsetup
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestVisible PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @TestVisible
+    private static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>TestVisible lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @testvisible
+    private static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>RestResource PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>RestResource lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@restresource(urlMapping='/yourUrl')
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpDelete PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @HttpDelete
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpDelete lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @httpdelete
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpGet PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @HttpGet
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpGet lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @httpget
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpPatch PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @HttpPatch
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpPatch lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @httppatch
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpPost PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @HttpPost
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpPost lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @httppost
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpPut PascalCase is correct</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @HttpPut
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>HttpPut lowercase is incorrect</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+@RestResource(urlMapping='/yourUrl')
+public class Foo {
+    @httpput
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Invalid annotation on class is ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+@nonexistent
+public class Foo {
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Invalid annotation on method is ignored</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @nonexistent
+    public static void bar() {
+        // do something
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
