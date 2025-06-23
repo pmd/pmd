@@ -1,9 +1,7 @@
-/*
+/**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-// CHECKSTYLE:OFF
-// Generated from net/sourceforge/pmd/lang/julia/ast/Julia.g4 by ANTLR 4.9.3
 package net.sourceforge.pmd.lang.julia.ast;
 
 import org.antlr.v4.runtime.ParserRuleContext;

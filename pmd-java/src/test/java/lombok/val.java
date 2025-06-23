@@ -1,8 +1,7 @@
-/*
+/**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-// CHECKSTYLE:OFF
 package lombok;
 
 /**

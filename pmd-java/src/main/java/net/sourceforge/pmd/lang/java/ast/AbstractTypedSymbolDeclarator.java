@@ -43,4 +43,3 @@ abstract class AbstractTypedSymbolDeclarator<T extends JElementSymbol>
     }
 
 }
-

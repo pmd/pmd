@@ -2,8 +2,6 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-// CHECKSTYLE:OFF
-// Generated from net/sourceforge/pmd/lang/kotlin/ast/UnicodeClasses.g4 by ANTLR 4.9.3
 package net.sourceforge.pmd.lang.kotlin.ast;
 
 import org.antlr.v4.runtime.CharStream;

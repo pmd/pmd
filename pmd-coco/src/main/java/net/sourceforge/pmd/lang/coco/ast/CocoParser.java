@@ -1,10 +1,7 @@
-/*
+/**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-// CPD-OFF
-// CHECKSTYLE:OFF
-// Generated from net/sourceforge/pmd/lang/coco/ast/Coco.g4 by ANTLR 4.9.3
 package net.sourceforge.pmd.lang.coco.ast;
 
 import java.util.List;

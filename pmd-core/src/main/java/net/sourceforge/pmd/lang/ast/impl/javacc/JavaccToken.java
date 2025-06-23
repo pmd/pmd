@@ -1,4 +1,4 @@
-/*
+/**
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -263,4 +263,3 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return new JavaccToken(IMPLICIT_TOKEN, "", offset, offset, document);
     }
 }
-
