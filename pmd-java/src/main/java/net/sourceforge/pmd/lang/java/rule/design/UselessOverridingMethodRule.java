@@ -60,7 +60,10 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
 
         // skip annotated methods
         if (!getProperty(IGNORE_ANNOTATIONS_DESCRIPTOR)
-            && node.getDeclaredAnnotations().any(it -> !TypeTestUtil.isA(Override.class, it))) {
+            && node.getDeclaredAnnotations()
+                .filter(it -> !TypeTestUtil.isA(SuppressWarnings.class, it))
+                .filter(it -> !TypeTestUtil.isA(Override.class, it))
+                .nonEmpty()) {
             return null;
         }
 
