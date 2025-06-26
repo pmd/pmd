@@ -24,13 +24,22 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### ✨ New Rules
+
+* The new Apex rule {% rule apex/design/AvoidBooleanMethodParameters %} finds methods that take a
+  boolean parameter. This can make method calls difficult to understand and maintain as the method is clearly
+  doing two things.
+
 ### 🐛 Fixed Issues
+* apex-design
+  * [#5427](https://github.com/pmd/pmd/issues/5427): \[apex] New Rule: Avoid Boolean Method Parameters
 
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5738](https://github.com/pmd/pmd/pull/5738): chore: Remove unused private methods in test classes - [Pankraz76](https://github.com/Pankraz76) (@Pankraz76)
+* [#5821](https://github.com/pmd/pmd/pull/5821): \[apex] New Rule: Avoid boolean method parameters - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
