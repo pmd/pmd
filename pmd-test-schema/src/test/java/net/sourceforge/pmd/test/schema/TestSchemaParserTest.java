@@ -154,6 +154,8 @@ class TestSchemaParserTest {
                 + "        <expected-suppressions>\n"
                 + "            <suppressor line=\"1\">@SuppressWarnings</suppressor>\n"
                 + "            <suppressor line=\"2\">NOPMD</suppressor>\n"
+                + "            <suppressor line=\"3\"></suppressor>\n"
+                + "            <suppressor line=\"4\"/>\n"
                 + "        </expected-suppressions>\n"
                 + "        <code><![CDATA[\n"
                 + "            public class Foo { }\n"
@@ -164,11 +166,15 @@ class TestSchemaParserTest {
         assertEquals(1, testCollection.getTests().size());
         RuleTestDescriptor test = testCollection.getTests().get(0);
         assertTrue(test.hasExpectedSuppressions());
-        assertEquals(2, test.getExpectedSuppressions().size());
+        assertEquals(4, test.getExpectedSuppressions().size());
         assertEquals(1, test.getExpectedSuppressions().get(0).getLine());
         assertEquals("@SuppressWarnings", test.getExpectedSuppressions().get(0).getSuppressorId());
         assertEquals(2, test.getExpectedSuppressions().get(1).getLine());
         assertEquals("NOPMD", test.getExpectedSuppressions().get(1).getSuppressorId());
+        assertEquals(3, test.getExpectedSuppressions().get(2).getLine());
+        assertEquals("", test.getExpectedSuppressions().get(2).getSuppressorId());
+        assertEquals(4, test.getExpectedSuppressions().get(3).getLine());
+        assertEquals("", test.getExpectedSuppressions().get(3).getSuppressorId());
     }
 
     @Test

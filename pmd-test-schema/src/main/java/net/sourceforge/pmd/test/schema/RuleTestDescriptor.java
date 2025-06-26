@@ -164,8 +164,15 @@ public class RuleTestDescriptor {
         expectedSuppressions = new ArrayList<>();
     }
 
-    void recordExpectedSuppression(String line, String suppressor) {
-        this.expectedSuppressions.add(new SuppressionDescriptor(Integer.parseInt(line), suppressor));
+    public void recordExpectedSuppression(int line) {
+        recordExpectedSuppression(line, null);
+    }
+
+    public void recordExpectedSuppression(int line, String suppressor) {
+        if (expectedSuppressions == null) {
+            createEmptyExpectedSuppression();
+        }
+        this.expectedSuppressions.add(new SuppressionDescriptor(line, suppressor));
     }
 
     public List<SuppressionDescriptor> getExpectedSuppressions() {

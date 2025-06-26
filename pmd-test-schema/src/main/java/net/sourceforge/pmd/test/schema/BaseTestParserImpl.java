@@ -217,7 +217,7 @@ class BaseTestParserImpl {
             String suppressor = parseTextNode(itemEl);
 
             if (line != null) {
-                descriptor.recordExpectedSuppression(line.getValue(), suppressor);
+                descriptor.recordExpectedSuppression(Integer.parseInt(line.getValue()), suppressor);
             }
         }
     }

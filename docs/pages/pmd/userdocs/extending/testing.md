@@ -167,10 +167,11 @@ The `<test-code>` elements understands the following optional attributes:
 
 *   **`<expected-suppressions>`**: Optional element, with `<suppressor>` elements as children.
     Each `<suppressor>` element has an attribute `line`, where the suppression violation occurred and
-    the suppressor's id as the text content. Example:
+    the suppressor's id as the text content. The suppression id is optional and can be omitted. Example:
     ```xml
     <expected-suppressions>
         <suppressor line="5">@SuppressWarnings</suppressor>
+        <suppressor line="6"/>
     </expected-suppressions>
     ```  
     This is available since PMD 7.15.0 (rule-test schema version 1.1.0).
