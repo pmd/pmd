@@ -194,20 +194,19 @@ jobs:
         id: upload
         env:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
-          PMD_SF_USER: adangel
         run: |
           # Deploy to sourceforge files https://sourceforge.net/projects/pmd/files/pmd/
           basePath="pmd/${PMD_VERSION}"
-          uploadUrl="${PMD_SF_USER}@web.sourceforge.net:/home/frs/project/pmd/${basePath}/"
+          uploadUrl="adangel@web.sourceforge.net:/home/frs/project/pmd/${basePath}"
 
-          rsync -avh "dist/pmd-dist-${PMD_VERSION}-bin.zip"        "${uploadUrl}"
-          rsync -avh "dist/pmd-dist-${PMD_VERSION}-bin.zip.asc"    "${uploadUrl}"
-          rsync -avh "dist/pmd-dist-${PMD_VERSION}-src.zip"        "${uploadUrl}"
-          rsync -avh "dist/pmd-dist-${PMD_VERSION}-src.zip.asc"    "${uploadUrl}"
-          rsync -avh "dist/pmd-dist-${PMD_VERSION}-doc.zip"        "${uploadUrl}"
-          rsync -avh "dist/pmd-dist-${PMD_VERSION}-doc.zip.asc"    "${uploadUrl}"
-          rsync -avh "dist/pmd-${PMD_VERSION}-cyclonedx.xml"       "${uploadUrl}"
-          rsync -avh "dist/pmd-${PMD_VERSION}-cyclonedx.json"      "${uploadUrl}"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-bin.zip"        "${uploadUrl}/"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-bin.zip.asc"    "${uploadUrl}/"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-src.zip"        "${uploadUrl}/"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-src.zip.asc"    "${uploadUrl}/"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-doc.zip"        "${uploadUrl}/"
+          rsync -avh "dist/pmd-dist-${PMD_VERSION}-doc.zip.asc"    "${uploadUrl}/"
+          rsync -avh "dist/pmd-${PMD_VERSION}-cyclonedx.xml"       "${uploadUrl}/"
+          rsync -avh "dist/pmd-${PMD_VERSION}-cyclonedx.json"      "${uploadUrl}/"
           rsync -avh "pmd-doc-${PMD_VERSION}/pmd_release_notes.md" "${uploadUrl}/ReadMe.md"
 
           targetUrl="https://sourceforge.net/projects/pmd/files/${basePath}"
@@ -276,9 +275,8 @@ jobs:
         id: upload
         env:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
-          PMD_SF_USER: adangel
         run: |
-          rsync -ah --stats --delete "docs/" "${PMD_SF_USER}@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${PMD_VERSION}/"
+          rsync -ah --stats --delete "docs/" "adangel@web.sourceforge.net:/home/project-web/pmd/htdocs/pmd-${PMD_VERSION}/"
           echo "url_output=https://pmd.sourceforge.io/pmd-${PMD_VERSION}/" >> "$GITHUB_OUTPUT"
 
       - name: Cleanup ssh
@@ -340,7 +338,7 @@ jobs:
           scp "${filename}" ${PMD_CODE_SSH_USER}@pmd-code.org:${PMD_CODE_DOCS_PATH}
           # shellcheck disable=SC2029
           ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
-                  ( test -h pmd-doc-${PMD_VERSION} && rm pmd-doc-${PMD_VERSION} || true ) && \
+                  rm -rf \"pmd-doc-${PMD_VERSION}\" && \
                   unzip -qo \"${filename}\" && \
                   rm \"${filename}\""
 
@@ -348,7 +346,7 @@ jobs:
           # shellcheck disable=SC2029
           ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
                   rm -f \"latest\" && \
-                  ln -s \"pmd-doc-${PMD_VERSION}\" \"snapshot\""
+                  ln -s \"pmd-doc-${PMD_VERSION}\" \"latest\""
 
           targetUrl="https://docs.pmd-code.org/pmd-doc-${PMD_VERSION}/"
           echo "TargetUrl: ${targetUrl}"
@@ -415,6 +413,7 @@ jobs:
               echo "Extracting remotely ${module}..."
               # shellcheck disable=SC2029
               ssh ${PMD_CODE_SSH_USER}@pmd-code.org "cd \"${PMD_CODE_DOCS_PATH}\" && \
+                      rm -rf \"apidocs/${module}/${PMD_VERSION}\" && \
                       mkdir -p \"apidocs/${module}/${PMD_VERSION}\" && \
                       unzip -qo -d \"apidocs/${module}/${PMD_VERSION}\" \"${moduleJavadocJarBasename}\" && \
                       rm \"${moduleJavadocJarBasename}\""
@@ -526,6 +525,10 @@ jobs:
               "dist/pmd-${PMD_VERSION}-cyclonedx.xml" \
               "dist/pmd-${PMD_VERSION}-cyclonedx.json"
           echo "release_url=https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${PMD_VERSION}" >> "$GITHUB_OUTPUT"
+      - name: Cleanup gpg
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.gpg"
 
   create-sourceforge-blog-post:
     needs: [check-version, deploy-to-maven-central]
@@ -612,7 +615,7 @@ jobs:
             ~/.gradle/caches
             ~/work/pmd/target/repositories
             .ci/files/vendor/bundle
-          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
+          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
       - uses: actions/download-artifact@v4
         with:
@@ -666,6 +669,8 @@ jobs:
           cd ../target/reports
           baseline_name="pmd_releases_${PMD_VERSION}"
           zip -q -r "${baseline_name}-baseline.zip" "${baseline_name}/"
+          cd ../../pmd
+          mv ../target/report/"${baseline_name}-baseline.zip" .
           scp "${baseline_name}-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
       - uses: actions/upload-artifact@v4
         with:

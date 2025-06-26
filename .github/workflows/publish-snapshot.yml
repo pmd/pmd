@@ -475,7 +475,7 @@ jobs:
             ~/.gradle/caches
             ~/work/pmd/target/repositories
             .ci/files/vendor/bundle
-          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
+          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
       - uses: actions/download-artifact@v4
         with:
