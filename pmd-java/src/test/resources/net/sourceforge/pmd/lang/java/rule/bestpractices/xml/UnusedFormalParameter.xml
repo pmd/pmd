@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>failure case</description>
@@ -181,6 +181,9 @@ public class Foo {
         <description>violation suppression regex works</description>
         <rule-property name="violationSuppressRegex">.*'paramB'.*</rule-property>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="2">Regex</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class Foo {
     private void bar2(Object paramA, Object paramB)
@@ -195,6 +198,9 @@ public class Foo {
         <description>violation suppression xpath works, by name</description>
         <rule-property name="violationSuppressXPath">.[@Name = 'paramB']</rule-property>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="2">XPath</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class Foo {
     private void bar2(Object paramA, Object paramB)
@@ -209,6 +215,9 @@ public class Foo {
         <description>violation suppression xpath works, by type</description>
         <rule-property name="violationSuppressXPath">.[pmd-java:typeIs('java.lang.String')]</rule-property>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="2">XPath</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class Foo {
     private void bar2(Object paramA, String paramB)
