@@ -24,7 +24,15 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### ✨ New Rules
+
+* The new Apex rule {% rule apex/design/AvoidBooleanMethodParameters %} finds methods that take a
+  boolean parameter. This can make method calls difficult to understand and maintain as the method is clearly
+  doing two things.
+
 ### 🐛 Fixed Issues
+* apex-design
+  * [#5427](https://github.com/pmd/pmd/issues/5427): \[apex] New Rule: Avoid Boolean Method Parameters
 * apex-security
   * [#5788](https://github.com/pmd/pmd/issues/5788): \[apex] ApexCRUDViolation unable to detect insecure SOQL if it is a direct input argument
 * doc
@@ -49,6 +57,7 @@ Many thanks to our sponsors:
 * [#5738](https://github.com/pmd/pmd/pull/5738): chore: Remove unused private methods in test classes - [Pankraz76](https://github.com/Pankraz76) (@Pankraz76)
 * [#5791](https://github.com/pmd/pmd/pull/5791): \[doc] Add a simple check whether generate rule doc pages exist - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5818](https://github.com/pmd/pmd/pull/5818): Fix #2304: \[java] UnnecessaryImport FP for on-demand imports in JavaDoc - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5821](https://github.com/pmd/pmd/pull/5821): \[apex] New Rule: Avoid boolean method parameters - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
