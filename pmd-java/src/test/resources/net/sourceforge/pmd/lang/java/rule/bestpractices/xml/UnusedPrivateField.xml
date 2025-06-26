@@ -905,4 +905,16 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedPrivateField doesn't play well with UnnecessaryWarningSuppression #5785 - valid violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+@SuppressWarnings("unchecked")
+public class Foo {
+    private String foo; // unused
+}
+]]></code>
+    </test-code>
 </test-data>
