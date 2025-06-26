@@ -44,7 +44,7 @@ import net.sourceforge.pmd.util.OptionalBool;
 /**
  * Main entry point for type inference.
  */
-@SuppressWarnings({"PMD.FieldNamingConventions", "PMD.CompareObjectsWithEquals"})
+@SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class Infer {
 
     final ExprOps exprOps;
@@ -206,7 +206,7 @@ public final class Infer {
 
     private MethodCtDecl goToInvocationWithFallback(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);
-        if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals
+        if (ctdecl == NO_CTDECL) {
             return NO_CTDECL;
         }
 
@@ -216,7 +216,7 @@ public final class Infer {
 
         { // reduce scope of invocType, outside of here it's failed
             final MethodCtDecl invocType = finishInstantiation(site, ctdecl);
-            if (invocType != FAILED_INVOCATION) { // NOPMD CompareObjectsWithEquals
+            if (invocType != FAILED_INVOCATION) {
                 return invocType;
             }
         }
@@ -262,7 +262,7 @@ public final class Infer {
      */
     @NonNull MethodCtDecl determineInvocationTypeOrFail(MethodCallSite site) {
         MethodCtDecl ctdecl = getCompileTimeDecl(site);
-        if (ctdecl == NO_CTDECL) { // NOPMD CompareObjectsWithEquals
+        if (ctdecl == NO_CTDECL) {
             return ctdecl;
         }
 
@@ -786,7 +786,7 @@ public final class Infer {
 
             for (JTypeMirror aLowerBound : alpha.getBounds(BoundKind.LOWER)) {
                 for (JTypeMirror anotherLowerBound : alpha.getBounds(BoundKind.LOWER)) {
-                    if (aLowerBound != anotherLowerBound // NOPMD CompareObjectsWithEquals
+                    if (aLowerBound != anotherLowerBound
                         && infCtx.isGround(aLowerBound)
                         && infCtx.isGround(anotherLowerBound)
                         && commonSuperWithDiffParameterization(aLowerBound, anotherLowerBound)) {
@@ -985,7 +985,7 @@ public final class Infer {
      * https://docs.oracle.com/javase/specs/jls/se8/html/jls-5.html#jls-5.3
      */
     static Convertibility isConvertible(JTypeMirror exprType, JTypeMirror formalType, boolean canBox) {
-        if (exprType == formalType) { // NOPMD CompareObjectsWithEquals
+        if (exprType == formalType) {
             // fast path
             return Convertibility.SUBTYPING;
         }

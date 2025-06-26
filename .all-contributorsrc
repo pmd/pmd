@@ -7309,7 +7309,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/705618?v=4",
       "profile": "https://erik.thauvin.net/",
       "contributions": [
-        "doc"
+        "doc",
+        "bug"
       ]
     },
     {
@@ -8128,6 +8129,43 @@
       "name": "Filippo Barbari",
       "avatar_url": "https://avatars.githubusercontent.com/u/68538713?v=4",
       "profile": "https://github.com/Ledmington",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Pankraz76",
+      "name": "Pankraz76",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8830888?v=4",
+      "profile": "https://github.com/Pankraz76",
+      "contributions": [
+        "code",
+        "bug"
+      ]
+    },
+    {
+      "login": "jongpie",
+      "name": "Jonathan Gillespie",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1267157?v=4",
+      "profile": "https://linkedin.com/in/jongpie",
+      "contributions": [
+        "financial"
+      ]
+    },
+    {
+      "login": "cybozu",
+      "name": "Cybozu",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2433152?v=4",
+      "profile": "https://www.kintone.com/",
+      "contributions": [
+        "financial"
+      ]
+    },
+    {
+      "login": "pkernevez",
+      "name": "Kernevez",
+      "avatar_url": "https://avatars.githubusercontent.com/u/338699?v=4",
+      "profile": "https://github.com/pkernevez",
       "contributions": [
         "bug"
       ]

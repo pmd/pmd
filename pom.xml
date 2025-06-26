@@ -84,13 +84,13 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>1.9.24</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit5.version>5.12.2</junit5.version>
-        <junit5.platform.version>1.12.2</junit5.platform.version>
+        <junit5.version>5.13.1</junit5.version>
+        <junit5.platform.version>1.13.1</junit5.platform.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.3</surefire.version>
-        <checkstyle.version>10.24.0</checkstyle.version>
+        <checkstyle.version>10.25.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.26.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
@@ -198,14 +198,14 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-clean-plugin</artifactId>
-                    <version>3.4.1</version>
+                    <version>3.5.0</version>
                 </plugin>
 
                 <!-- adds kotlin source directories for checkstyle header checks -->
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>build-helper-maven-plugin</artifactId>
-                    <version>3.6.0</version>
+                    <version>3.6.1</version>
                     <executions>
                         <execution>
                             <id>add-kotlin-source-dir</id>
@@ -380,7 +380,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.5.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -400,11 +400,11 @@
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <offlineLinks>
                             <offlineLink>
-                                <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                                <location>${project.basedir}/../pmd-core/target/reports/apidocs</location>
                                 <url>../../pmd-core/${project.version}</url>
                             </offlineLink>
                             <offlineLink>
-                                <location>${project.basedir}/../pmd-test/target/apidocs</location>
+                                <location>${project.basedir}/../pmd-test/target/reports/apidocs</location>
                                 <url>../../pmd-test/${project.version}</url>
                             </offlineLink>
                             <offlineLink>
@@ -453,11 +453,11 @@
                         <externalDocumentationLinks>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-core/${project.version}/</url>
-                                <packageListUrl>file://${project.basedir}/../pmd-core/target/apidocs/element-list</packageListUrl>
+                                <packageListUrl>file://${project.basedir}/../pmd-core/target/reports/apidocs/element-list</packageListUrl>
                             </link>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-test/${project.version}/</url>
-                                <packageListUrl>file://${project.basedir}/../pmd-test/target/apidocs/element-list</packageListUrl>
+                                <packageListUrl>file://${project.basedir}/../pmd-test/target/reports/apidocs/element-list</packageListUrl>
                             </link>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-lang-test/${project.version}/</url>
@@ -874,7 +874,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.49.3</version>
+                <version>3.49.4</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -909,7 +909,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>4.0.26</version>
+                <version>4.0.27</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -1105,7 +1105,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.31.0</version>
+                <version>4.31.1</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit5 needs. E.g. 5.12.1 needs 1.12.1
