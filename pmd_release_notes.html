@@ -2020,8 +2020,21 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="-new-rules">✨ New Rules</h4>
+
+<ul>
+  <li>The new Apex rule <a href="pmd_rules_apex_design.html#avoidbooleanmethodparameters"><code class="language-plaintext highlighter-rouge">AvoidBooleanMethodParameters</code></a> finds methods that take a
+boolean parameter. This can make method calls difficult to understand and maintain as the method is clearly
+doing two things.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
+  <li>apex-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5427">#5427</a>: [apex] New Rule: Avoid Boolean Method Parameters</li>
+    </ul>
+  </li>
   <li>apex-security
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5788">#5788</a>: [apex] ApexCRUDViolation unable to detect insecure SOQL if it is a direct input argument</li>
@@ -2048,6 +2061,13 @@
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
+<h4 id="rule-test-schema">Rule Test Schema</h4>
+<p>The rule test schema has been extended to support verifying suppressed violations.
+See <a href="pmd_userdocs_extending_testing.html">Testing your rules</a> for more information.</p>
+
+<p>Also note, the schema <a href="https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd">rule-tests.xsd</a>
+is now only in the module “pmd-test-schema”. It has been removed from the old location from module “pmd-test”.</p>
+
 <h3 id="-financial-contributions">💵 Financial Contributions</h3>
 
 <p>Many thanks to our sponsors:</p>
@@ -2061,7 +2081,10 @@
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/5738">#5738</a>: chore: Remove unused private methods in test classes - <a href="https://github.com/Pankraz76">Pankraz76</a> (@Pankraz76)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5791">#5791</a>: [doc] Add a simple check whether generate rule doc pages exist - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5806">#5806</a>: [test] Verify suppressed violations in rule tests - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5818">#5818</a>: Fix #2304: [java] UnnecessaryImport FP for on-demand imports in JavaDoc - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5821">#5821</a>: [apex] New Rule: Avoid boolean method parameters - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5851">#5851</a>: chore: [java] ReplaceHashtableWithMap: Fix name of test - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
 </ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
@@ -2099,7 +2122,7 @@
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jun 22, 2025 <br />
+             Site last generated: Jun 26, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

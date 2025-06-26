@@ -2116,7 +2116,7 @@ this test class.</p>
 <span class="nt">&lt;test-data</span>
     <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd"</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;test-code&gt;</span>
         <span class="nt">&lt;description&gt;</span>concrete class<span class="nt">&lt;/description&gt;</span>
@@ -2150,7 +2150,7 @@ between different test cases.</p>
 <div class="alert alert-info" role="alert">
   <p><i class="fas fa-info-circle"></i>
 <strong>Note:</strong>
-The XML schema is available at <a href="https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_0_0.xsd">rule-tests.xsd</a>.</p>
+The XML schema is available at <a href="https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd">rule-tests.xsd</a>.</p>
 </div>
 
 <h3 id="test-code-attributes"><code class="language-plaintext highlighter-rouge">&lt;test-code&gt;</code> attributes</h3>
@@ -2195,6 +2195,16 @@ and the second one from lines 4 to 5.</p>
     <p><strong><code class="language-plaintext highlighter-rouge">&lt;expected-messages&gt;</code></strong>: Optional element, with <code class="language-plaintext highlighter-rouge">&lt;message&gt;</code> elements as children.
 Can be used to validate the correct error message, e.g. if the error message references a variable name.</p>
   </li>
+  <li><strong><code class="language-plaintext highlighter-rouge">&lt;expected-suppressions&gt;</code></strong>: Optional element, with <code class="language-plaintext highlighter-rouge">&lt;suppressor&gt;</code> elements as children.
+Each <code class="language-plaintext highlighter-rouge">&lt;suppressor&gt;</code> element has an attribute <code class="language-plaintext highlighter-rouge">line</code>, where the suppression violation occurred and
+the suppressor’s id as the text content. The suppression id is optional and can be omitted. Example:
+    <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;expected-suppressions&gt;</span>
+    <span class="nt">&lt;suppressor</span> <span class="na">line=</span><span class="s">"5"</span><span class="nt">&gt;</span>@SuppressWarnings<span class="nt">&lt;/suppressor&gt;</span>
+    <span class="nt">&lt;suppressor</span> <span class="na">line=</span><span class="s">"6"</span><span class="nt">/&gt;</span>
+<span class="nt">&lt;/expected-suppressions&gt;</span>
+</code></pre></div>    </div>
+    <p>This is available since PMD 7.15.0 (rule-test schema version 1.1.0).</p>
+  </li>
   <li>
     <p><strong><code class="language-plaintext highlighter-rouge">&lt;code&gt;</code></strong>: Either the <code class="language-plaintext highlighter-rouge">&lt;code&gt;</code> element or the <code class="language-plaintext highlighter-rouge">&lt;code-ref&gt;</code> element is required. It provides the actual code
 snippet on which the rule is executed. The code itself is usually wrapped in a “CDATA” section, so that no
@@ -2205,11 +2215,9 @@ further XML escapes (entity references such as &amp;lt;) are necessary.</p>
 This allows you to share the same code snippet with several test cases. The attribute <code class="language-plaintext highlighter-rouge">id</code> must match the
 id of the references code fragment.</p>
   </li>
-  <li>
-    <p><strong><code class="language-plaintext highlighter-rouge">&lt;source-type&gt;</code></strong>: Optional element that specifies a specific language version. This can be used
+  <li><strong><code class="language-plaintext highlighter-rouge">&lt;source-type&gt;</code></strong>: Optional element that specifies a specific language version. This can be used
 to select a specific parser version for parsing the code snippet. If not given, the default version of
-the rule’s language is used. This element can almost always be omitted.</p>
-  </li>
+the rule’s language is used. This element can almost always be omitted.</li>
 </ul>
 
 <h3 id="code-fragment"><code class="language-plaintext highlighter-rouge">&lt;code-fragment&gt;</code></h3>
@@ -2224,7 +2232,7 @@ in a “CDATA” section, so that no further XML escapes (entity references such
 <span class="nt">&lt;test-data</span>
     <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_0_0.xsd"</span><span class="nt">&gt;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_1_0.xsd"</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;test-code</span> <span class="na">disabled=</span><span class="s">"false"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;description&gt;</span>Just a description, will be used as the test name for JUnit in the reports<span class="nt">&lt;/description&gt;</span>
@@ -2235,6 +2243,9 @@ in a “CDATA” section, so that no further XML escapes (entity references such
             <span class="nt">&lt;message&gt;</span>Violation message 1<span class="nt">&lt;/message&gt;</span>
             <span class="nt">&lt;message&gt;</span>Violation message 2<span class="nt">&lt;/message&gt;</span>
         <span class="nt">&lt;/expected-messages&gt;</span>
+        <span class="nt">&lt;expected-suppressions&gt;</span>
+            <span class="nt">&lt;suppressor</span> <span class="na">line=</span><span class="s">"20"</span><span class="nt">&gt;</span>@SuppressWarnings<span class="nt">&lt;/suppressor&gt;</span>
+        <span class="nt">&lt;/expected-suppressions&gt;</span>
         <span class="nt">&lt;code&gt;</span><span class="cp">&lt;![CDATA[
 public class ConsistentReturn {
     public Boolean foo() {
@@ -2381,7 +2392,7 @@ create custom PMD rules for different languages including tests.</p>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 2025 (7.12.0)<br /> Site last generated: Jun 22, 2025 <br />
+            June 2025 (7.15.0)<br /> Site last generated: Jun 26, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

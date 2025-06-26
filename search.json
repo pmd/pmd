@@ -2530,10 +2530,10 @@
 ,
 
 {
-"title": "UnusedMethod (Apex, Design)",
+"title": "AvoidBooleanMethodParameters (Apex, Design)",
 "tags": "",
-"keywords": "UnusedMethod",
-"url": "pmd_rules_apex_design.html#unusedmethod",
+"keywords": "AvoidBooleanMethodParameters",
+"url": "pmd_rules_apex_design.html#avoidbooleanmethodparameters",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
@@ -2624,6 +2624,15 @@
 "tags": "",
 "keywords": "TooManyFields",
 "url": "pmd_rules_apex_design.html#toomanyfields",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "UnusedMethod (Apex, Design)",
+"tags": "",
+"keywords": "UnusedMethod",
+"url": "pmd_rules_apex_design.html#unusedmethod",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 
