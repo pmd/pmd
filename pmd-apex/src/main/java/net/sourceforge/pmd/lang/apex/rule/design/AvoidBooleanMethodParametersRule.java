@@ -28,7 +28,8 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
  * separate methods, or configuration objects.
  * </p>
  * 
- * @see https://github.com/pmd/pmd/issues/5427
+ * @see <a href="https://github.com/pmd/pmd/issues/5427">[apex] New Rule: Avoid Boolean Method Parameters #5427</a>
+ * @since 7.15.0
  */
 public class AvoidBooleanMethodParametersRule extends AbstractApexRule {
 
