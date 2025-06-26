@@ -2,11 +2,13 @@
 
 Many thanks to all our sponsors:
 
-* [Matt Hargett](https://github.com/matthargett) (@matthargett)
-* [Oliver Siegmar](https://github.com/osiegmar) (@osiegmar)
-* [screamingfrog](https://github.com/screamingfrog) (@screamingfrog)
-* John Kuhl via opencollective
-* [flxbl-io](https://github.com/flxbl-io) (@flxbl-io)
+* [Matt Hargett](https://github.com/matthargett) (@matthargett) (7/2022 till 3/2023)
+* [Oliver Siegmar](https://github.com/osiegmar) (@osiegmar) (9/2022)
+* [screamingfrog](https://github.com/screamingfrog) (@screamingfrog) (11/2022)
+* John Kuhl via opencollective (11/2023)
+* [flxbl-io](https://github.com/flxbl-io) (@flxbl-io) (12/2024 till 05/2025)
+* [Jonathan Gillespie](https://github.com/jongpie) (@jongpie) (12/2024 till 04/2025)
+* [Cybozu](https://github.com/cybozu) (@cybozu) (since 05/2025)
 
 If you also want to sponsor PMD, you have two options:
 

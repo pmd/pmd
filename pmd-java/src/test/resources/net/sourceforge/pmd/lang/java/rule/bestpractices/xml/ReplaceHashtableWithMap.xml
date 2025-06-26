@@ -29,7 +29,7 @@ public class Foo {
      ]]></code>
     </test-code>
     <test-code>
-        <description> ok, not java.util.Vector</description>
+        <description>ok, not java.util.Hashtable</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import foo.Hashtable;

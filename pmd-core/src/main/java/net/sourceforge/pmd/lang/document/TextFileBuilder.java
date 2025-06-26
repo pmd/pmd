@@ -17,7 +17,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * A builder for a new text file.
  * See static methods on {@link TextFile}.
  */
-@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 public abstract class TextFileBuilder {
 
     protected final LanguageVersion languageVersion;

@@ -382,7 +382,7 @@ class ClassTypeImpl implements JClassType {
 
     @Override
     public final boolean isTop() {
-        return this.getSymbol().equals(ts.OBJECT.getSymbol()); // NOPMD CompareObjectsWithEquals
+        return this.getSymbol().equals(ts.OBJECT.getSymbol());
     }
 
     @Override

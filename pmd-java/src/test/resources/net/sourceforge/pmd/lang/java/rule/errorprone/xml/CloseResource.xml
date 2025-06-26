@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>connection is closed, ok</description>
@@ -442,6 +442,9 @@ public class Test {
             <message>Ensure that resources like this Connection object are closed after use</message>
             <message>Ensure that resources like this Statement object are closed after use</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="12">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 import java.sql.Connection;
 import java.sql.DriverManager;

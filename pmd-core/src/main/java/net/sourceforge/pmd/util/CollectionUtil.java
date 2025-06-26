@@ -351,7 +351,7 @@ public final class CollectionUtil {
         AssertionUtil.requireParamNotNull("values", to);
         Validate.isTrue(from.size() == to.size(), "Mismatched list sizes %s to %s", from, to);
 
-        if (from.isEmpty()) { //NOPMD: we really want to compare references here
+        if (from.isEmpty()) {
             return emptyMap();
         }
 

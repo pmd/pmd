@@ -2,7 +2,7 @@
 <test-data
         xmlns="http://pmd.sourceforge.net/rule-tests"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>comment suppression (baseline)</description>
@@ -25,6 +25,9 @@
     <test-code>
         <description>comment suppression (violation is suppressed)</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="5">//NOPMD</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 static {
@@ -62,6 +65,9 @@
         <expected-messages>
             <message>Unnecessary PMD suppression comment</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="5">//NOPMD</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 static {
@@ -76,6 +82,9 @@
     <test-code>
         <description>annotation suppression (all)</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings("all")
@@ -97,6 +106,9 @@
         <expected-messages>
             <message>Unnecessary @SuppressWarnings annotation</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings("PMD")
@@ -118,6 +130,9 @@
         <expected-messages>
             <message>Unnecessary @SuppressWarnings annotation</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings("PMD.FakeRuleThatReportsIncrements")
@@ -140,6 +155,9 @@
             <message>Unnecessary suppression "PMD" in @SuppressWarnings annotation</message>
             <message>Unnecessary @SuppressWarnings annotation</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "PMD"})
@@ -162,6 +180,9 @@
             <message>Unnecessary suppression "PMD" in @SuppressWarnings annotation</message>
             <message>Unnecessary @SuppressWarnings annotation</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings({"PMD", "PMD.FakeRuleThatReportsIncrements"})
@@ -184,6 +205,9 @@
             <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
             <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings({"all", "PMD.FakeRuleThatReportsIncrements"})
@@ -206,6 +230,9 @@
             <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
             <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "all"})
@@ -233,6 +260,10 @@
             <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
             <message>Unnecessary suppression "PMD.FakeRuleThatReportsIncrements" in @SuppressWarnings annotation</message>
         </expected-messages>
+        <expected-suppressions>
+            <suppressor line="5">@SuppressWarnings</suppressor>
+            <suppressor line="6">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
             public class Foo {
                 @SuppressWarnings({"PMD.FakeRuleThatReportsIncrements", "PMD"})
