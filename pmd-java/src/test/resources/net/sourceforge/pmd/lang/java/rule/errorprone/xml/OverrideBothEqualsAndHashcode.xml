@@ -210,4 +210,15 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] OverrideBothEqualsAndHashCode ignores records #4546</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public record Foo(int x) {
+                    public int hashCode() {
+                        return 1;
+                    }
+            }
+            ]]></code>
+    </test-code>
 </test-data>
