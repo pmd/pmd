@@ -31,37 +31,6 @@
                     </offlineLinks>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.8.1</version>
-                <executions>
-                    <execution>
-                        <id>copy-rule-test-schema</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>net.sourceforge.pmd</groupId>
-                                    <artifactId>pmd-test-schema</artifactId>
-                                    <version>${project.version}</version>
-                                    <includes>net/sourceforge/pmd/test/schema/rule-tests_*.xsd</includes>
-                                    <fileMappers>
-                                        <org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
-                                            <pattern>^\Qnet/sourceforge/pmd/test/schema/\E</pattern>
-                                            <replacement>./</replacement>
-                                        </org.codehaus.plexus.components.io.filemappers.RegExpFileMapper>
-                                    </fileMappers>
-                                </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
 
