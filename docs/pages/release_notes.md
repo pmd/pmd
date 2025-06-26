@@ -28,8 +28,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+#### Rule Test Schema
+The rule test schema has been extended to support verifying suppressed violations.
+See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for more information.
+
+Also note, the schema [rule-tests.xsd](https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd)
+is now only in the module "pmd-test-schema". It has been removed from the old location from module "pmd-test".
+
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5806](https://github.com/pmd/pmd/pull/5806): \[test] Verify suppressed violations in rule tests - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
