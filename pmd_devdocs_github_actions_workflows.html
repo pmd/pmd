@@ -2021,10 +2021,10 @@ This page gives an overview of how these workflows work and how to use them.
 This page is work in progress and does not yet describe all workflows.</p>
 </div>
 
-<h2 id="build-build-pull-request-build-snapshot">Build, Build Pull Request, Build Snapshot</h2>
+<h2 id="build-build-pull-request-build-snapshot-build-release">Build, Build Pull Request, Build Snapshot, Build Release</h2>
 
 <p>“Build” itself is a <a href="https://docs.github.com/en/actions/sharing-automations/reusing-workflows">reuseable workflow</a>,
-that is called by “Build Pull Request” and “Build Snapshot”.</p>
+that is called by “Build Pull Request” and “Build Snapshot” and “Build Release”.</p>
 
 <ul>
   <li>Workflow files:
@@ -2032,12 +2032,14 @@ that is called by “Build Pull Request” and “Build Snapshot”.</p>
       <li><a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build.yml</a></li>
       <li><a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build-pr.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build-pr.yml</a></li>
       <li><a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build-snapshot.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build-snapshot.yml</a></li>
+      <li><a href="https://github.com/pmd/pmd/blob/main/.github/workflows/build-release.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/build-release.yml</a></li>
     </ul>
   </li>
   <li>Builds:
     <ul>
       <li>Build Pull Request: <a href="https://github.com/pmd/pmd/actions/workflows/build-pr.yml">https://github.com/pmd/pmd/actions/workflows/build-pr.yml</a></li>
       <li>Build Snapshot: <a href="https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml">https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml</a></li>
+      <li>Build Release: <a href="https://github.com/pmd/pmd/actions/workflows/build-release.yml">https://github.com/pmd/pmd/actions/workflows/build-release.yml</a></li>
     </ul>
   </li>
 </ul>
@@ -2049,7 +2051,13 @@ not require any secrets.</p>
 <p>“Build Pull Request” is triggered, whenever a pull request is created or synchronized.</p>
 
 <p>“Build Snapshot” is triggered, whenever new commits are pushed to a branch (including the default branch and
-including forks).</p>
+including forks). This is also a scheduled workflow that runs every month to make sure, the project
+can still be built.</p>
+
+<p>“Build Release” is triggered, whenever a tag is pushed. Note that the whole project is built at once, that
+means if pmd-designer/pmd-core update is required, this can’t be built. See also
+<a href="https://github.com/pmd/pmd/issues/4446">Circular dependencies between pmd-designer, pmd-core, pmd-cli #4446</a>.
+As this happens very seldom, this situation is ignored for now.</p>
 
 <p>In order to avoid unnecessary builds, we use concurrency control to make sure, we cancel any in-progress jobs for
 the current branch or pull request when a new commit has been pushed. This means, only the latest commit is built,
@@ -2174,7 +2182,7 @@ crawling side.</p>
 
 <p>This runs after “Build Snapshot” of a push on the <code class="language-plaintext highlighter-rouge">main</code> branch is finished.
 It runs in the context of our own repository and has access to all secrets. In order
-to have a nicer display in GitHub actions, we leverage “environments”, which also
+to have a nicer progress display in GitHub actions, we leverage “environments”, which also
 contain secrets.</p>
 
 <p>There is a first job “check-version” that just determines the version of PMD we are building. This is to ensure,
@@ -2251,6 +2259,107 @@ uploads the results to coveralls at <a href="https://coveralls.io/github/pmd/pmd
     <ul>
       <li>Environment: coveralls</li>
       <li>Secrets: COVERALLS_REPO_TOKEN</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="publish-release">Publish Release</h2>
+
+<ul>
+  <li>Builds: <a href="https://github.com/pmd/pmd/actions/workflows/publish-release.yml">https://github.com/pmd/pmd/actions/workflows/publish-release.yml</a></li>
+  <li>Workflow file: <a href="https://github.com/pmd/pmd/blob/main/.github/workflows/publish-release.yml">https://github.com/pmd/pmd/blob/main/.github/workflows/publish-release.yml</a></li>
+</ul>
+
+<p>This runs after “Build Release” finishes from building from a tag.
+It runs in the context of our own repository and has access to all secrets. In order to have
+a nicer progress display in GitHub actions, we leverage “environments”, which also
+contain secrets.</p>
+
+<p>There is a first job “check-version” that just determines the version of PMD we are building. This is to ensure,
+we are actually building a RELEASE version. Then a first job is executed:</p>
+
+<ul>
+  <li>deploy-to-maven-central: Rebuilds PMD from the tag and deploys the artifact to maven central at
+<a href="https://repo.maven.apache.org/maven2/net/sourceforge/pmd/">https://repo.maven.apache.org/maven2/net/sourceforge/pmd/</a>.
+Rebuilding is necessary in order to produce all necessary artifacts (sources, javadoc) and also gpg-sign the
+artifacts. This is not available from the build artifacts of the “Build” workflow.<br />
+The maven plugin <a href="https://central.sonatype.org/publish/publish-portal-maven/">central-publishing-maven-plugin</a> is used
+to upload and publish the artifacts to maven central.
+    <ul>
+      <li>Environment: maven-central</li>
+      <li>Secrets: MAVEN_CENTRAL_PORTAL_USERNAME, MAVEN_CENTRAL_PORTAL_PASSWORD</li>
+    </ul>
+  </li>
+</ul>
+
+<p>When this was successful, then a couple of other jobs are being executed in parallel:</p>
+
+<ul>
+  <li>deploy-to-sourceforge-files: Uploads the binary distribution files to sourceforge at
+<a href="https://sourceforge.net/projects/pmd/files/pmd/">https://sourceforge.net/projects/pmd/files/pmd/</a> and select the new file as the latest
+version.
+    <ul>
+      <li>Environment: sourceforge</li>
+      <li>Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY, PMD_SF_APIKEY</li>
+      <li>Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>deploy-to-sourceforge-io: Uploads the documentation to
+<a href="https://pmd.sourceforge.io/pmd-${PMD_VERSION}/">https://pmd.sourceforge.io/pmd-${PMD_VERSION}/</a>.
+    <ul>
+      <li>Environment: sourceforge</li>
+      <li>Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY</li>
+      <li>Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>deploy-to-pmd-code-doc: Uploads the documentation to <a href="https://docs.pmd-code.org/latest">https://docs.pmd-code.org/latest</a>.
+    <ul>
+      <li>Environment: pmd-code</li>
+      <li>Secrets: PMD_CODE_ORG_DEPLOY_KEY</li>
+      <li>Vars: PMD_CODE_ORG_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>deploy-to-pmd-code-javadoc: Uploads the javadoc to <a href="https://docs.pmd-code.org/apidocs/">https://docs.pmd-code.org/apidocs/</a>
+    <ul>
+      <li>Environment: pmd-code</li>
+      <li>Secrets: PMD_CODE_ORG_DEPLOY_KEY</li>
+      <li>Vars: PMD_CODE_ORG_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>github-release: Creates a new github release at <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a> including
+the attached artifacts.
+    <ul>
+      <li>Environment: github</li>
+    </ul>
+  </li>
+  <li>create-sourceforge-blog-post: Creates a news entry at <a href="https://sourceforge.net/p/pmd/news/">https://sourceforge.net/p/pmd/news/</a>.
+    <ul>
+      <li>Environment: sourceforge</li>
+      <li>Secrets: PMD_SF_BEARER_TOKEN</li>
+    </ul>
+  </li>
+  <li>create-regression-tester-baseline: Creates a new baseline and uploads it to
+<a href="https://pmd-code.org/pmd-regression-tester/">https://pmd-code.org/pmd-regression-tester/</a>.
+    <ul>
+      <li>Environment: pmd-code</li>
+      <li>Secrets: PMD_CODE_ORG_DEPLOY_KEY</li>
+      <li>Vars: PMD_CODE_ORG_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>upload-regression-tester-baseline-sourceforge: Uploads the baseline additionally to sourceforge
+at <a href="https://sourceforge.net/projects/pmd/files/pmd-regression-tester/">https://sourceforge.net/projects/pmd/files/pmd-regression-tester/</a>. Needs the previous job.
+    <ul>
+      <li>Environment: sourceforge</li>
+      <li>Secrets: PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY</li>
+      <li>Vars: PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS</li>
+    </ul>
+  </li>
+  <li>create-docker: Triggers a new build at <a href="https://github.com/pmd/docker/actions">https://github.com/pmd/docker/actions</a> to create and
+upload a new docker image to Docker Hub and GitHub Packages.
+    <ul>
+      <li>Environment: github</li>
+      <li>Uses PMD Actions Helper app to call a workflow in the other repository</li>
+      <li>Secrets: PMD_ACTIONS_HELPER_ID, PMD_ACTIONS_HELPER_PRIVATE_KEY</li>
     </ul>
   </li>
 </ul>
@@ -2679,7 +2788,7 @@ curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87E
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            May 2025 (7.14.0)<br /> Site last generated: Jun 26, 2025 <br />
+            June 2025 (7.15.0)<br /> Site last generated: Jun 26, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
