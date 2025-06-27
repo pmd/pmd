@@ -113,6 +113,7 @@ jobs:
             -PfastSkip,sign,pmd-release \
             -Dcyclonedx.skip=false \
             -Dmaven.javadoc.skip=false \
+            -Ddokka.skip=false \
             -Dmaven.source.skip=false
 
   deploy-to-sourceforge-files:
