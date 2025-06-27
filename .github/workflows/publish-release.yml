@@ -456,8 +456,6 @@ jobs:
       name: github
       url: ${{ steps.release.outputs.release_url }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # create a release
     timeout-minutes: 10
     defaults:
       run:
@@ -506,17 +504,26 @@ jobs:
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-src.zip"
           printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-doc.zip"
+      - uses: actions/create-github-app-token@v2
+        id: pmd-actions-helper-app-token
+        with:
+          app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+          private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
+          owner: pmd
+          repositories: pmd
+          permission-contents: write # create a release
       - name: Create GitHub Release
         id: release
         env:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
         run: |
           release_name="PMD ${PMD_VERSION} ($(date -u +%d-%B-%Y))"
-          gh release --verify-tag \
+          gh release create "pmd_releases/${PMD_VERSION}" \
+            --repo pmd/pmd \
+            --verify-tag \
             --title "$release_name" \
             --notes-file "pmd-doc-${PMD_VERSION}/pmd_release_notes.md" \
-            create "pmd_releases/${PMD_VERSION}" \
               "dist/pmd-dist-${PMD_VERSION}-bin.zip" \
               "dist/pmd-dist-${PMD_VERSION}-bin.zip.asc" \
               "dist/pmd-dist-${PMD_VERSION}-src.zip" \
