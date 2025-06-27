@@ -2436,6 +2436,67 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ReplaceJavaUtilCalendar"
+          language="java"
+          since="7.16"
+          message="Usage of java.util.Calendar should be replaced with classes from java.time"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#replacejavautilcalendar">
+        <description>
+            Using java.util.Calendar leads to bugs. Use java.time instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //ClassType[pmd-java:typeIs('java.util.Calendar')]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
+public class Foo {
+    void bar() {
+        Calendar c = new GregorianCalendar();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReplaceJavaUtilDate"
+          language="java"
+          since="7.16"
+          message="Usage of java.util.Date should be replaced with classes from java.time"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#replacejavautildate">
+        <description>
+            Using java.util.Date leads to bugs. Use java.time instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //ClassType[pmd-java:typeIs('java.util.Date')]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.util.Date;
+
+public class Foo {
+    void bar() {
+        Date d = new Date();
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ReturnEmptyCollectionRatherThanNull"
           language="java"
           since="6.37.0"
