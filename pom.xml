@@ -1299,7 +1299,7 @@
                 <pluginRepository>
                     <id>dogfood</id>
                     <url>file://${dogfoodStagingRepo}</url>
-                    <releases><enabled>false</enabled></releases>
+                    <releases><enabled>true</enabled></releases>
                     <snapshots><enabled>true</enabled></snapshots>
                 </pluginRepository>
             </pluginRepositories>
