@@ -25,7 +25,7 @@
                     <!-- overrides the configuration from parent pom: we only have pmd-core yet -->
                     <offlineLinks combine.self="override">
                         <offlineLink>
-                            <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                            <location>${project.basedir}/../pmd-core/target/reports/apidocs</location>
                             <url>../../pmd-core/${project.version}</url>
                         </offlineLink>
                     </offlineLinks>
