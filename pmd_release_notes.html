@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.15.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 27-June-2025</div>
+    <li class="sidebarTitle">PMD 7.16.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 25-July-2025</div>
     
     
     
@@ -2012,86 +2012,20 @@
     </details>
 
   
-<h2 id="27-june-2025---7150-snapshot">27-June-2025 - 7.15.0-SNAPSHOT</h2>
+<h2 id="25-july-2025---7160-snapshot">25-July-2025 - 7.16.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.15.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.16.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h4 id="-new-rules">✨ New Rules</h4>
-
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_design.html#avoidbooleanmethodparameters"><code class="language-plaintext highlighter-rouge">AvoidBooleanMethodParameters</code></a> finds methods that take a
-boolean parameter. This can make method calls difficult to understand and maintain as the method is clearly
-doing two things.</li>
-</ul>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>apex-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5427">#5427</a>: [apex] New Rule: Avoid Boolean Method Parameters</li>
-    </ul>
-  </li>
-  <li>apex-security
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5788">#5788</a>: [apex] ApexCRUDViolation unable to detect insecure SOQL if it is a direct input argument</li>
-    </ul>
-  </li>
-  <li>doc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5790">#5790</a>: [doc] Website rule reference pages are returning 404</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5785">#5785</a>: [java] UnusedPrivateField doesn’t play well with UnnecessaryWarningSuppression</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5793">#5793</a>: [java] NonExhaustiveSwitch fails on exhaustive switch with sealed class</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/1639">#1639</a>: [java] UnnecessaryImport false positive for multiline @<!-- -->link Javadoc</li>
-      <li><a href="https://github.com/pmd/pmd/issues/2304">#2304</a>: [java] UnnecessaryImport false positive for on-demand imports in JavaDoc</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5832">#5832</a>: [java] UnnecessaryImport false positive for multiline @<!-- -->see Javadoc</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5804">#5804</a>: [java] UselessOverridingMethod doesn’t play well with UnnecessarySuppressWarning</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
-<h4 id="rule-test-schema">Rule Test Schema</h4>
-<p>The rule test schema has been extended to support verifying suppressed violations.
-See <a href="pmd_userdocs_extending_testing.html">Testing your rules</a> for more information.</p>
-
-<p>Also note, the schema <a href="https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd">rule-tests.xsd</a>
-is now only in the module “pmd-test-schema”. It has been removed from the old location from module “pmd-test”.</p>
-
-<h3 id="-financial-contributions">💵 Financial Contributions</h3>
-
-<p>Many thanks to our sponsors:</p>
-
-<ul>
-  <li><a href="https://github.com/cybozu">Cybozu</a> (@cybozu)</li>
-</ul>
-
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/5738">#5738</a>: chore: Remove unused private methods in test classes - <a href="https://github.com/Pankraz76">Pankraz76</a> (@Pankraz76)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5791">#5791</a>: [doc] Add a simple check whether generate rule doc pages exist - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5806">#5806</a>: [test] Verify suppressed violations in rule tests - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5818">#5818</a>: Fix #2304: [java] UnnecessaryImport FP for on-demand imports in JavaDoc - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5821">#5821</a>: [apex] New Rule: Avoid boolean method parameters - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5851">#5851</a>: chore: [java] ReplaceHashtableWithMap: Fix name of test - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-</ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
