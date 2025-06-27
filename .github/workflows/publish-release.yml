@@ -80,7 +80,7 @@ jobs:
       name: maven-central
       url: https://repo.maven.apache.org/maven2/net/sourceforge/pmd/
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 180
     defaults:
       run:
         shell: bash

@@ -119,6 +119,8 @@
         <antlr4.ant.wrapper>${project.basedir}/../antlr4-wrapper.xml</antlr4.ant.wrapper>
 
         <dokka.skip>false</dokka.skip>
+
+        <central-publishing.waitMaxTime>10800</central-publishing.waitMaxTime> <!-- 10800s = 180min = 3h -->
     </properties>
 
     <build>
@@ -787,6 +789,7 @@
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                     <waitUntil>published</waitUntil>
+                    <waitMaxTime>${central-publishing.waitMaxTime}</waitMaxTime>
                     <deploymentName>PMD ${project.version}</deploymentName>
                 </configuration>
             </plugin>
