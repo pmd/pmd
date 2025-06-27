@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>bad, local variable of type java.util.Calendar</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+
+public class Foo {
+    void bar() {
+        Calendar c;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, param of type java.util.Calendar</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.Calendar;
+
+public class Foo {
+    void bar(Calendar d) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bad, creating object of type java.util.GregorianCalendar</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.GregorianCalendar;
+
+public class Foo {
+    void bar() {
+        new GregorianCalendar();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>ok, not java.util.Calendar</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import foo.Calendar;
+
+public class Foo {
+    void bar(Calendar d) {
+    }
+}
+        ]]></code>
+    </test-code>
+</test-data>
