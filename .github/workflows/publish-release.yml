@@ -678,7 +678,7 @@ jobs:
           baseline_name="pmd_releases_${PMD_VERSION}"
           zip -q -r "${baseline_name}-baseline.zip" "${baseline_name}/"
           cd ../../pmd
-          mv ../target/report/"${baseline_name}-baseline.zip" .
+          mv ../target/reports/"${baseline_name}-baseline.zip" .
           scp "${baseline_name}-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
       - uses: actions/upload-artifact@v4
         with:
