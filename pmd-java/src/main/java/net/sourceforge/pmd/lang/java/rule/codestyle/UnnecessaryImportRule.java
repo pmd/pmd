@@ -368,10 +368,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
                 if (scopeIter.getScopeTag() == ScopeInfo.SINGLE_IMPORT) {
 
-                    allSingleNameImports.removeIf(
-                        it -> (it.isStatic() || !onlyStatic)
-                            && symbol.getSimpleName().equals(it.node.getImportedSimpleName())
-                    );
+                    allSingleNameImports.removeIf(it -> it.isStatic() || !onlyStatic);
 
                 } else if (scopeIter.getScopeTag() == ScopeInfo.IMPORT_ON_DEMAND) {
 
