@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.15.0-SNAPSHOT</version>
+    <version>7.16.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -73,7 +73,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2025-05-30T16:37:58Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-06-27T09:37:42Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -90,7 +90,7 @@
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.3</surefire.version>
-        <checkstyle.version>10.25.0</checkstyle.version>
+        <checkstyle.version>10.25.1</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.26.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
@@ -106,7 +106,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>30</pmd.build-tools.version>
+        <pmd.build-tools.version>32</pmd.build-tools.version>
 
         <pmd-designer.version>7.10.0</pmd-designer.version>
 
@@ -119,6 +119,8 @@
         <antlr4.ant.wrapper>${project.basedir}/../antlr4-wrapper.xml</antlr4.ant.wrapper>
 
         <dokka.skip>false</dokka.skip>
+
+        <central-publishing.waitMaxTime>10800</central-publishing.waitMaxTime> <!-- 10800s = 180min = 3h -->
     </properties>
 
     <build>
@@ -575,7 +577,7 @@
                     </configuration>
                     <dependencies>
                         <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
-                        <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see .ci/build.sh -->
+                        <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see build.yml -->
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
@@ -617,7 +619,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.7.0</version>
+                    <version>0.8.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -787,7 +789,8 @@
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                     <waitUntil>published</waitUntil>
-                    <deploymentName>${project.artifactId}</deploymentName>
+                    <waitMaxTime>${central-publishing.waitMaxTime}</waitMaxTime>
+                    <deploymentName>PMD ${project.version}</deploymentName>
                 </configuration>
             </plugin>
             <plugin>
@@ -1009,13 +1012,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.17.5</version>
+                <version>1.17.6</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.17.5</version>
+                <version>1.17.6</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1299,7 +1302,7 @@
                 <pluginRepository>
                     <id>dogfood</id>
                     <url>file://${dogfoodStagingRepo}</url>
-                    <releases><enabled>false</enabled></releases>
+                    <releases><enabled>true</enabled></releases>
                     <snapshots><enabled>true</enabled></snapshots>
                 </pluginRepository>
             </pluginRepositories>

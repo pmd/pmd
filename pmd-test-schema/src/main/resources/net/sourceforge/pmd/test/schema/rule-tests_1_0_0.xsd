@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Version 1.0.0 -->
+<!-- Last change: 2022-07-22 -->
 <schema
         xmlns="http://www.w3.org/2001/XMLSchema"
         xmlns:tns="http://pmd.sourceforge.net/rule-tests"
@@ -109,5 +111,4 @@
             </extension>
         </simpleContent>
     </complexType>
-
 </schema>

@@ -56,10 +56,16 @@ echo "::group::Fetching additional commits"
 # - ${PMD_REGRESSION_TESTER_BASE_BRANCH}_BASE_FETCH
 # - ${PMD_REGRESSION_TESTER_HEAD_BRANCH}_HEAD_FETCH
 
+# For release builds, HEAD points to a tag, which is not a normal reference
+head_references_tag=""
+if git show-ref -q --verify "refs/tags/${PMD_REGRESSION_TESTER_HEAD_BRANCH}" 2>/dev/null; then
+  head_references_tag="refs/tags/"
+fi
+
 echo "Fetching 25 commits for ${PMD_REGRESSION_TESTER_BASE_BRANCH} and ${PMD_REGRESSION_TESTER_HEAD_BRANCH}"
 git fetch --no-tags --depth=25 origin \
     "${PMD_REGRESSION_TESTER_BASE_BRANCH}:${PMD_REGRESSION_TESTER_BASE_BRANCH}_BASE_FETCH" \
-    "${PMD_REGRESSION_TESTER_HEAD_BRANCH}:${PMD_REGRESSION_TESTER_HEAD_BRANCH}_HEAD_FETCH"
+    "${head_references_tag}${PMD_REGRESSION_TESTER_HEAD_BRANCH}:${head_references_tag}${PMD_REGRESSION_TESTER_HEAD_BRANCH}_HEAD_FETCH"
 
 # if the PR/branch is older, base might have advanced more than 25 commits... fetch more, up to 150
 # until we find a merge base, so that we are sure, regression tester can find all the changed files on
@@ -69,7 +75,7 @@ for i in $(seq 1 3); do
     echo "No merge-base yet - fetching more commits... (try $i)"
     git fetch --no-tags --deepen=50 origin \
       "${PMD_REGRESSION_TESTER_BASE_BRANCH}:${PMD_REGRESSION_TESTER_BASE_BRANCH}_BASE_FETCH" \
-      "${PMD_REGRESSION_TESTER_HEAD_BRANCH}:${PMD_REGRESSION_TESTER_HEAD_BRANCH}_HEAD_FETCH"
+      "${head_references_tag}${PMD_REGRESSION_TESTER_HEAD_BRANCH}:${head_references_tag}${PMD_REGRESSION_TESTER_HEAD_BRANCH}_HEAD_FETCH"
   fi
 done
 merge_base="$( git merge-base "${PMD_REGRESSION_TESTER_BASE_BRANCH}_BASE_FETCH" "${PMD_REGRESSION_TESTER_2ND_REF}" )"

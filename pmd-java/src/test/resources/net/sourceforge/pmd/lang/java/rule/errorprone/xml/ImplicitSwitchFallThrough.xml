@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>one case, which is not empty</description>
@@ -262,8 +262,11 @@ public class DemoMissingBreakContinue {
         ]]></code>
     </test-code>
     <test-code>
-        <description>[java] Recognize @SuppressWanings("fallthrough") for MissingBreakInSwitch #1899</description>
+        <description>[java] Recognize @SuppressWarnings("fallthrough") for MissingBreakInSwitch #1899</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="9">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class DemoMissingBreakContinue {
 

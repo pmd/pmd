@@ -8,7 +8,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -137,6 +139,87 @@ class TestSchemaParserTest {
 
         assertThat(log, containsString("  8|         <rule-property name='invalid_property'>foo</rule-property>\n"
                                              + "                            ^^^^ Unknown property, known property names are violationSuppressRegex, violationSuppressXPath\n"));
+    }
+
+    @Test
+    void withExpectedSuppressions() throws IOException {
+        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<test-data>\n"
+                + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
+                + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd\">\n"
+                + "    <test-code>\n"
+                + "        <description>Test case with suppression</description>\n"
+                + "        <expected-problems>0</expected-problems>\n"
+                + "        <expected-suppressions>\n"
+                + "            <suppressor line=\"1\">@SuppressWarnings</suppressor>\n"
+                + "            <suppressor line=\"2\">NOPMD</suppressor>\n"
+                + "            <suppressor line=\"3\"></suppressor>\n"
+                + "            <suppressor line=\"4\"/>\n"
+                + "        </expected-suppressions>\n"
+                + "        <code><![CDATA[\n"
+                + "            public class Foo { }\n"
+                + "            ]]></code>\n"
+                + "    </test-code>\n"
+                + "</test-data>\n";
+        RuleTestCollection testCollection = parseFile(file);
+        assertEquals(1, testCollection.getTests().size());
+        RuleTestDescriptor test = testCollection.getTests().get(0);
+        assertTrue(test.hasExpectedSuppressions());
+        assertEquals(4, test.getExpectedSuppressions().size());
+        assertEquals(1, test.getExpectedSuppressions().get(0).getLine());
+        assertEquals("@SuppressWarnings", test.getExpectedSuppressions().get(0).getSuppressorId());
+        assertEquals(2, test.getExpectedSuppressions().get(1).getLine());
+        assertEquals("NOPMD", test.getExpectedSuppressions().get(1).getSuppressorId());
+        assertEquals(3, test.getExpectedSuppressions().get(2).getLine());
+        assertEquals("", test.getExpectedSuppressions().get(2).getSuppressorId());
+        assertEquals(4, test.getExpectedSuppressions().get(3).getLine());
+        assertEquals("", test.getExpectedSuppressions().get(3).getSuppressorId());
+    }
+
+    @Test
+    void withExpectedEmptySuppressions() throws IOException {
+        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<test-data>\n"
+                + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
+                + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd\">\n"
+                + "    <test-code>\n"
+                + "        <description>Test case with suppression</description>\n"
+                + "        <expected-problems>0</expected-problems>\n"
+                + "        <expected-suppressions>\n"
+                + "        </expected-suppressions>\n"
+                + "        <code><![CDATA[\n"
+                + "            public class Foo { }\n"
+                + "            ]]></code>\n"
+                + "    </test-code>\n"
+                + "</test-data>\n";
+        RuleTestCollection testCollection = parseFile(file);
+        assertEquals(1, testCollection.getTests().size());
+        RuleTestDescriptor test = testCollection.getTests().get(0);
+        assertTrue(test.hasExpectedSuppressions());
+        assertEquals(0, test.getExpectedSuppressions().size());
+    }
+
+    @Test
+    void withExpectedNoSuppressions() throws IOException {
+        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<test-data>\n"
+                + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
+                + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd\">\n"
+                + "    <test-code>\n"
+                + "        <description>Test case with suppression</description>\n"
+                + "        <expected-problems>0</expected-problems>\n"
+                + "        <code><![CDATA[\n"
+                + "            public class Foo { }\n"
+                + "            ]]></code>\n"
+                + "    </test-code>\n"
+                + "</test-data>\n";
+        RuleTestCollection testCollection = parseFile(file);
+        assertEquals(1, testCollection.getTests().size());
+        RuleTestDescriptor test = testCollection.getTests().get(0);
+        assertFalse(test.hasExpectedSuppressions());
     }
 
     private RuleTestCollection parseFile(String file) throws IOException {
