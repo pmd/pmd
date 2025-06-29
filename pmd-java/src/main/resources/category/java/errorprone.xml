@@ -2358,6 +2358,41 @@ public class Foo {        // perfect, both methods provided
 ]]>
         </example>
     </rule>
+    <rule name="MissingEqualsOnComparable"
+          language="java"
+          since="0.4"
+          message="Ensure you override both equals() and hashCode()"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.MissingEqualsOnComparableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingequalsoncomparable">
+        <description>
+Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Bar {        // poor, missing a hashcode() method
+    public boolean equals(Object o) {
+      // do some comparison
+    }
+}
+
+public class Baz {        // poor, missing an equals() method
+    public int hashCode() {
+      // return some hash value
+    }
+}
+
+public class Foo {        // perfect, both methods provided
+    public boolean equals(Object other) {
+      // do some comparison
+    }
+    public int hashCode() {
+      // return some hash value
+    }
+}
+]]>
+        </example>
+    </rule>
 
     <rule name="ProperCloneImplementation"
           language="java"
