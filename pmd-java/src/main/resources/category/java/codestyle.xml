@@ -1763,6 +1763,7 @@ public class Foo {
 
     <rule name="UnnecessaryLocalBeforeReturn"
           language="java"
+          deprecated="true"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
@@ -1780,6 +1781,32 @@ public class Foo {
    }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryLocalBeforeReturnOrThrows"
+          language="java"
+          since="7.15.0"
+          message="Consider simply using the value vs storing it in local variable ''{0}''."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnOrThrowsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforereturnorthrows">
+        <description>
+            [S1488](https://sonarsource.github.io/rspec/#/rspec/S1488) Unnecessary variable declaration that only serves to return or throw it immediately. This adds needless coupling and complexity.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+                class Foo {
+                   int foo() {
+                     var x = bar();
+                     return x;  // instead, just 'return bar();'
+                   }
+                   int bar() {
+                     var ex = getIllegalArgumentException(foo());
+                     throw ex; // instead, just 'throw getIllegalArgumentException(foo());'
+                   }
+                }
+                ]]>
         </example>
     </rule>
 
