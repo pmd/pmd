@@ -24,6 +24,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+* java-bestpractices
+  * [#5770](https://github.com/pmd/pmd/issues/5770): \[java] evolute UnnecessaryLocalBeforeReturnRule to UnnecessaryLocalBeforeBranchRule
+
 ### 🐛 Fixed Issues
 
 ### 🚨 API Changes

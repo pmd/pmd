@@ -1763,6 +1763,7 @@ public class Foo {
 
     <rule name="UnnecessaryLocalBeforeReturn"
           language="java"
+          deprecated="true"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
@@ -1780,6 +1781,48 @@ public class Foo {
    }
 }
 ]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryLocalBeforeBranch"
+          language="java"
+          since="7.15.0"
+          message="Consider simply using the value vs storing it in local variable ''{0}''."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeBranchRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforebranch">
+        <description>
+            [S1488](https://sonarsource.github.io/rspec/#/rspec/S1488) Unnecessary variable declaration that only serves to return or throw it immediately. This adds needless coupling and complexity.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+                class Foo {
+                    Object foo() {
+                        var foo = "foo";
+                        return foo;  // instead, just 'return "foo";'
+                    }
+
+                    Object bar() {
+                        var ex = getIllegalArgumentException();
+                        throw ex; // instead, just 'throw getIllegalArgumentException();'
+                    }
+
+                    Object baz() {
+                        var baz = switch (foo()) {
+                            case "foo" -> {
+                                var foo = foo();
+                                yield foo;  // Can be simplified to 'yield foo();'
+                            }
+                            case "bar" -> {
+                                var bar = bar();
+                                yield bar;  // Can be simplified to 'yield bar();'
+                            }
+                            default -> bar("baz");
+                        };
+                        return baz; // instead, just 'return switch (foo()) {...'
+                    }
+                }
+            ]]>
         </example>
     </rule>
 
