@@ -169,4 +169,31 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Assignments in other contexts</description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+            class AssignmentInOperand{
+                void test(){
+                    keys.contains(k = random.nextLong()); // warn
+                    Character.isJavaIdentifierPart(text.charAt(--j)); // warn
+
+                    // case2
+                    addNextStaticMember = ((staticMember.getNextStaticMember() != null) ? true : false) ; // ok
+                    ((null == theClassMethods) ? (theClassMethods = theClass.getMethods()) : theClassMethods); // warn
+
+                    Character.isWhitespace(segment.array[offset++]); // warn
+                    subPropMatches[i++]; // warn
+
+                    (is = ia.getNext(null)).isPresent(); // warn
+                    (destFile = new File (dest, srcFO.getNameExt ())).exists(); // warn
+
+                    // case5
+                    new File(location,
+                             projectName = projectNamePrefix + "_" + num // warn
+                    ).exists();
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
