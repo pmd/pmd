@@ -698,6 +698,70 @@
                         </execution>
                     </executions>
                 </plugin>
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>2.44.5</version>
+                    <configuration>
+                        <skip>${spot.skip}</skip>
+                        <!--lineEndings>UNIX</lineEndings-->
+                        <!--formats>
+                            <format>
+                                <endWithNewline />
+                                <excludes>
+                                    <exclude>**/testdata/**</exclude>
+                                    <exclude>**gradlew**</exclude>
+                                    <exclude>**mvnw**</exclude>
+                                </excludes>
+                                <includes>
+                                    <include>.gitignore</include>
+                                </includes>
+                                <trimTrailingWhitespace/>
+                            </format>
+                        </formats-->
+                        <java>
+                            <excludes>
+                                <exclude>**/src/main/java/net/sourceforge/pmd/lang/java/types/package-info.java</exclude>
+                                <exclude>**/testdata/**</exclude>
+                                <exclude>**/unnecessaryimport/package1/U.java</exclude>
+                            </excludes>
+                            <!-- eather /-->
+                            <!--googleJavaFormat/-->
+                            <!-- or /-->
+                            <!--palantirJavaFormat/-->
+                            <!--indent>
+                                <spaces>true</spaces>
+                            </indent-->
+                            <removeUnusedImports />
+                            <!--trimTrailingWhitespace/-->
+                            <importOrder>
+                                <file>${maven.multiModuleProjectDirectory}/.spotless/importorder</file>
+                            </importOrder>
+                            <!--licenseHeader>
+                                 <file>${maven.multiModuleProjectDirectory}/.spotless/copyright</file>
+                            <</licenseHeader>-->
+                        </java>
+                        <upToDateChecking>
+                            <enabled>true</enabled>
+                        </upToDateChecking>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>spotless-apply</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>apply</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>spotless-check</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -756,6 +820,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <!-- configuration is in plugin management section -->
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -1194,6 +1262,7 @@
                 <maven.source.skip>true</maven.source.skip>
                 <checkstyle.skip>true</checkstyle.skip>
                 <pmd.skip>true</pmd.skip>
+                <spot.skip>true</spot.skip>
                 <cpd.skip>true</cpd.skip>
                 <cyclonedx.skip>true</cyclonedx.skip>
                 <dokka.skip>true</dokka.skip>

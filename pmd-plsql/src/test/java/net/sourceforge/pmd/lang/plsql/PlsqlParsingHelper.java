@@ -22,4 +22,3 @@ public class PlsqlParsingHelper extends BaseParsingHelper<PlsqlParsingHelper, AS
     }
 
 }
-
