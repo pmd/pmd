@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.java.rule.AutoFixable;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +64,7 @@ import net.sourceforge.pmd.util.IteratorUtil;
  * import is used is hard though, mostly because the API to expose
  * is unclear (we wouldn't want symbol tables to expose a mutable API).
  */
-public class UnnecessaryImportRule extends AbstractJavaRule {
+public class UnnecessaryImportRule extends AbstractJavaRule implements AutoFixable {
 
     private static final String UNUSED_IMPORT_MESSAGE = "Unused import ''{0}''";
     private static final String UNUSED_STATIC_IMPORT_MESSAGE = "Unused static import ''{0}''";
@@ -464,6 +469,50 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
 
             return false;
         });
+    }
+
+    @Override
+    public String apply(String rawSource, File file) {
+        // Split the source into lines
+        String[] lines = rawSource.split("\\r?\\n");
+        List<String> lineList = new ArrayList<>(Arrays.asList(lines));
+
+        // Remove the lines in reverse order to avoid messing up line numbers
+        List<Integer> sortedLines = new ArrayList<>(getIntegers());
+        sortedLines.sort(Collections.reverseOrder());
+
+        for (int lineNum : sortedLines) {
+            // Line numbers are 1-based
+            if (lineNum > 0 && lineNum <= lineList.size()) {
+                lineList.remove(lineNum - 1);
+            }
+        }
+
+        // Join the lines back together
+        return String.join(System.lineSeparator(), lineList);
+    }
+
+    private Set<Integer> getIntegers() {
+        Set<Integer> linesToRemove = new HashSet<>();
+        for (ImportWrapper wrapper : allSingleNameImports) {
+            linesToRemove.add(wrapper.node.getBeginLine());
+        }
+        for (ImportWrapper wrapper : staticImportsOnDemand) {
+            linesToRemove.add(wrapper.node.getBeginLine());
+        }
+        for (ImportWrapper wrapper : typeImportsOnDemand) {
+            linesToRemove.add(wrapper.node.getBeginLine());
+        }
+        for (ImportWrapper wrapper : moduleImports) {
+            linesToRemove.add(wrapper.node.getBeginLine());
+        }
+        for (ImportWrapper wrapper : unnecessaryJavaLangImports) {
+            linesToRemove.add(wrapper.node.getBeginLine());
+        }
+        for (ImportWrapper wrapper : unnecessaryImportsFromSamePackage) {
+            linesToRemove.add(wrapper.node.getBeginLine());
+        }
+        return linesToRemove;
     }
 
     /** Override the equal behaviour of ASTImportDeclaration to put it into a set. */
