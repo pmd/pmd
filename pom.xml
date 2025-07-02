@@ -725,9 +725,6 @@
                                 <exclude>**/testdata/**</exclude>
                                 <exclude>**/unnecessaryimport/package1/U.java</exclude>
                             </excludes>
-                            <!-- eather /-->
-                            <!--googleJavaFormat/-->
-                            <!-- or /-->
                             <!--palantirJavaFormat/-->
                             <!--indent>
                                 <spaces>true</spaces>
