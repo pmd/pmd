@@ -10,7 +10,6 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
@@ -26,7 +25,7 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  * <pre class="grammar">
  *
  * CompilationUnit ::= OrdinaryCompilationUnit
- *                   | SimpleCompilationUnit
+ *                   | CompactCompilationUnit
  *                   | ModularCompilationUnit
  *
  * OrdinaryCompilationUnit ::=
@@ -34,7 +33,7 @@ import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
  *   {@linkplain ASTTypeDeclaration TypeDeclaration}*
  *
- * SimpleCompilationUnit ::=
+ * CompactCompilationUnit ::=
  *   {@linkplain ASTImportDeclaration ImportDeclaration}*
  *   {@linkplain ASTImplicitClassDeclaration ImplicitClassDeclaration}
  *
@@ -156,9 +155,15 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
         return lazyTypeResolver;
     }
 
-    @Experimental("Implicitly Declared Classes and Instance Main Methods is a Java 22 / Java 23 Preview feature")
+    /**
+     * If this compilation is a compact compilation unit and contains an
+     * implicitly declared class.
+     *
+     * @see <a href="https://openjdk.org/jeps/512">JEP 512: Compact Source Files and Instance Main Methods</a> (Java 25)
+     * @since 7.16.0
+     */
     @NoAttribute
-    public boolean isSimpleCompilationUnit() {
+    public boolean isCompact() {
         return children(ASTImplicitClassDeclaration.class).nonEmpty();
     }
 }

@@ -129,13 +129,14 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * Unnamed Classes and Instance Main Methods
+         * Compact Source Files and Instance Main Methods
          * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
          * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
          * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/512">JEP 512: Compact Source Files and Instance Main Methods</a> (Java 25)
          */
-        SIMPLE_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(22, 24, false),
+        COMPACT_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(22, 24, true),
 
         /**
          * Flexible Constructor Bodies
@@ -440,7 +441,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTImplicitClassDeclaration node, T data) {
-            check(node, PreviewFeature.SIMPLE_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS, data);
+            check(node, PreviewFeature.COMPACT_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS, data);
             return null;
         }
 
