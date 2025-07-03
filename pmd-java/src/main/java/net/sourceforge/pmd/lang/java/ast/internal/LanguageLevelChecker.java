@@ -138,12 +138,13 @@ public class LanguageLevelChecker<T> {
         SIMPLE_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(22, 24, false),
 
         /**
-         * Statements before super
+         * Flexible Constructor Bodies
          * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
          * @see <a href="https://openjdk.org/jeps/482">JEP 482: Flexible Constructor Bodies (Second Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/492">JEP 492: Flexible Constructor Bodies (Third Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/513">JEP 513: Flexible Constructor Bodies</a> (Java 25)
          */
-        FLEXIBLE_CONSTRUCTOR_BODIES(22, 24, false),
+        FLEXIBLE_CONSTRUCTOR_BODIES(22, 24, true),
 
         /**
          * Module import declarations
