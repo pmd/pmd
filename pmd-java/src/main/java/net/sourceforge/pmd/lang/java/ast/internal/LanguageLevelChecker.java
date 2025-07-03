@@ -156,8 +156,9 @@ public class LanguageLevelChecker<T> {
          * Primitive types in patterns, instanceof, and switch
          * @see <a href="https://openjdk.org/jeps/455">JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/488">JEP 488: Primitive Types in Patterns, instanceof, and switch (Second Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/507">JEP 507: Primitive Types in Patterns, instanceof, and switch (Third Preview)</a> (Java 25)
          */
-        PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 24, false),
+        PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 25, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
