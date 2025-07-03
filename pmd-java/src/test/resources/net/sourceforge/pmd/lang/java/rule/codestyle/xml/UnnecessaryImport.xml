@@ -1273,7 +1273,7 @@ public class Foo {
     private File file; // imported via module import from java.base
 }
 ]]></code>
-        <source-type>java 23-preview</source-type>
+        <source-type>java 24-preview</source-type>
     </test-code>
 
     <test-code>
@@ -1288,7 +1288,7 @@ import module java.base; // unnecessary
 public class Foo {
 }
 ]]></code>
-        <source-type>java 23-preview</source-type>
+        <source-type>java 24-preview</source-type>
     </test-code>
 
     <test-code>
@@ -1302,7 +1302,7 @@ public class Foo {
     private File file;
 }
 ]]></code>
-        <source-type>java 23-preview</source-type>
+        <source-type>java 24-preview</source-type>
     </test-code>
 
     <test-code>
@@ -1319,7 +1319,7 @@ public class Foo {
     private File file;
 }
 ]]></code>
-        <source-type>java 23-preview</source-type>
+        <source-type>java 24-preview</source-type>
     </test-code>
 
     <test-code>
