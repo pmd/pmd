@@ -16,7 +16,6 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
-import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 
 
 /**
@@ -162,7 +161,6 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
      * @see <a href="https://openjdk.org/jeps/512">JEP 512: Compact Source Files and Instance Main Methods</a> (Java 25)
      * @since 7.16.0
      */
-    @NoAttribute
     public boolean isCompact() {
         return children(ASTImplicitClassDeclaration.class).nonEmpty();
     }
