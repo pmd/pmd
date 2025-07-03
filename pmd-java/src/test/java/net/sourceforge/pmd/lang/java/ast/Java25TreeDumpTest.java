@@ -8,15 +8,14 @@ import net.sourceforge.pmd.lang.java.BaseJavaTreeDumpTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
-class Java24TreeDumpTest extends BaseJavaTreeDumpTest {
-    private final JavaParsingHelper java24 =
-            JavaParsingHelper.DEFAULT.withDefaultVersion("24")
-                    .withResourceContext(Java24TreeDumpTest.class, "jdkversiontests/java24/");
+class Java25TreeDumpTest extends BaseJavaTreeDumpTest {
+    private final JavaParsingHelper java25 =
+            JavaParsingHelper.DEFAULT.withDefaultVersion("25")
+                    .withResourceContext(Java25TreeDumpTest.class, "jdkversiontests/java25/");
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
-        return java24;
+        return java25;
     }
 
-    // Java 24 didn't finalize any new features, thus there are no tests
 }
