@@ -357,7 +357,7 @@ class HeaderScopesTest : ProcessorTestSpec({
         block.symbolTable.types().resolve("Inner").shouldBeEmpty()
     }
 
-    parserTest("$moduleImport of java.base should resolve java.util.List", javaVersion = JavaVersion.J24__PREVIEW) {
+    parserTest("$moduleImport of java.base should resolve java.util.List") {
         assertNoSemanticErrorsOrWarnings()
 
         val acu = parser.parse(

@@ -37,4 +37,15 @@ class Java25TreeDumpTest extends BaseJavaTreeDumpTest {
         assertThat(thrown.getMessage(), containsString("Flexible constructor bodies was only standardized in Java 25, you should select your language version accordingly"));
     }
 
+    @Test
+    void jep511ModuleImportDeclarations() {
+        doTest("Jep511_ModuleImportDeclarations");
+    }
+
+    @Test
+    void jep511ModuleImportDeclarationsBeforeJava25() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep511_ModuleImportDeclarations.java"));
+        assertThat(thrown.getMessage(), containsString("Module import declarations was only standardized in Java 25, you should select your language version accordingly"));
+    }
+
 }

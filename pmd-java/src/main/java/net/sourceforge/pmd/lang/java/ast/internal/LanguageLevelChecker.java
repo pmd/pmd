@@ -150,8 +150,9 @@ public class LanguageLevelChecker<T> {
          * Module import declarations
          * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/511">JEP 511: Module Import Declarations</a> (Java 25)
          */
-        MODULE_IMPORT_DECLARATIONS(23, 24, false),
+        MODULE_IMPORT_DECLARATIONS(23, 24, true),
 
         /**
          * Primitive types in patterns, instanceof, and switch

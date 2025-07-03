@@ -65,7 +65,7 @@ class Java24PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep494ModuleImportDeclarationsBeforeJava24Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep494_ModuleImportDeclarations.java"));
-        assertThat(thrown.getMessage(), containsString("Module import declarations is a preview feature of JDK 24, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Module import declarations was only standardized in Java 25, you should select your language version accordingly"));
     }
 
     @Test
