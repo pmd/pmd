@@ -24,61 +24,58 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
-class Java24PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
-    private final JavaParsingHelper java24p =
-            JavaParsingHelper.DEFAULT.withDefaultVersion("24-preview")
-                    .withResourceContext(Java24PreviewTreeDumpTest.class, "jdkversiontests/java24p/");
-    private final JavaParsingHelper java24 = java24p.withDefaultVersion("24");
+class Java25TreeDumpTest extends BaseJavaTreeDumpTest {
+    private final JavaParsingHelper java25 =
+            JavaParsingHelper.DEFAULT.withDefaultVersion("25")
+                    .withResourceContext(Java25TreeDumpTest.class, "jdkversiontests/java25/");
+    private final JavaParsingHelper java24 = java25.withDefaultVersion("24");
 
     @Override
     public BaseParsingHelper<?, ?> getParser() {
-        return java24p;
+        return java25;
     }
 
     @Test
-    void jep488PrimitiveTypesInPatternsInstanceofAndSwitch() {
-        doTest("Jep488_PrimitiveTypesInPatternsInstanceofAndSwitch");
+    void jep513FlexibleConstructorBodies() {
+        doTest("Jep513_FlexibleConstructorBodies");
     }
 
     @Test
-    void jep488PrimitiveTypesInPatternsInstanceofAndSwitchBeforeJava24Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep488_PrimitiveTypesInPatternsInstanceofAndSwitch.java"));
-        assertThat(thrown.getMessage(), containsString("Primitive types in patterns instanceof and switch is a preview feature of JDK 24, you should select your language version accordingly"));
-    }
-
-    @Test
-    void jep492FlexibleConstructorBodies() {
-        doTest("Jep492_FlexibleConstructorBodies");
-    }
-
-    @Test
-    void jep492FlexibleConstructorBodiesBeforeJava24Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep492_FlexibleConstructorBodies.java"));
+    void jep513FlexibleConstructorBodiesBeforeJava25() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep513_FlexibleConstructorBodies.java"));
         assertThat(thrown.getMessage(), containsString("Flexible constructor bodies was only standardized in Java 25, you should select your language version accordingly"));
     }
 
     @Test
-    void jep494ModuleImportDeclarations() {
-        doTest("Jep494_ModuleImportDeclarations");
+    void jep511ModuleImportDeclarations() {
+        doTest("Jep511_ModuleImportDeclarations");
     }
 
     @Test
-    void jep494ModuleImportDeclarationsBeforeJava24Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep494_ModuleImportDeclarations.java"));
+    void jep511ModuleImportDeclarationsBeforeJava25() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep511_ModuleImportDeclarations.java"));
         assertThat(thrown.getMessage(), containsString("Module import declarations was only standardized in Java 25, you should select your language version accordingly"));
     }
 
     @Test
-    void jep495SimpleSourceFilesAndInstanceMainMethods() {
-        doTest("Jep495_SimpleSourceFilesAndInstanceMainMethods");
+    void jep512CompactSourceFilesAndInstanceMainMethods() {
+        int javaVersion = Integer.parseInt(System.getProperty("java.version").split("\\.")[0].replaceAll("-ea", ""));
+        //assumeTrue(javaVersion < 23, "This test is for Java < 23, where java.lang.IO/java.io.IO is not existing yet - and thus AmbiguousNames are left in the AST");
+        if (javaVersion < 23) {
+            // java.lang.IO/java.io.IO is not existing yet - and thus AmbiguousNames are left in the AST
+            doTest("Jep512_CompactSourceFilesAndInstanceMainMethodsBeforeJava23");
+        } else {
+            // java.lang.IO/java.io.IO are available - the AmbiguousNames are resolved as ClassTypes in the AST
+            doTest("Jep512_CompactSourceFilesAndInstanceMainMethodsAfterJava23");
+        }
     }
 
     @Test
-    void jep495SimpleSourceFilesAndInstanceMainMethodsVerifyTypes() {
+    void jep512CompactSourceFilesAndInstanceMainMethodsVerifyTypes() {
         int javaVersion = Integer.parseInt(System.getProperty("java.version").split("\\.")[0].replaceAll("-ea", ""));
-        assumeTrue(javaVersion >= 23 && javaVersion < 25, "Java " + javaVersion + " doesn't support java.io.IO. Java 23 or Java 24 is needed for this test.");
+        assumeTrue(javaVersion >= 25, "Java " + javaVersion + " doesn't support java.lang.IO. At least Java 25 is needed for this test.");
 
-        ASTCompilationUnit compilationUnit = java24p.parseResource("Jep495_SimpleSourceFilesAndInstanceMainMethods.java");
+        ASTCompilationUnit compilationUnit = java25.parseResource("Jep512_CompactSourceFilesAndInstanceMainMethods.java");
         assertTrue(compilationUnit.isCompact());
 
         List<ASTMethodCall> methodCalls = compilationUnit.descendants(ASTMethodCall.class).toList();
@@ -94,14 +91,15 @@ class Java24PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
         ASTTypeExpression qualifier = (ASTTypeExpression) initializer.getQualifier();
         TypeTestUtil.isA("java.util.List", qualifier.getTypeNode().getTypeMirror());
 
-        OverloadSelectionResult javaIoPrintln = methodCalls.get(5).getOverloadSelectionInfo(); // println from java.io.IO
+        OverloadSelectionResult javaIoPrintln = methodCalls.get(5).getOverloadSelectionInfo(); // println from java.lang.IO
         assertFalse(javaIoPrintln.isFailed());
-        TypeTestUtil.isA("java.io.IO", javaIoPrintln.getMethodType().getDeclaringType());
+        TypeTestUtil.isA("java.lang.IO", javaIoPrintln.getMethodType().getDeclaringType());
     }
 
     @Test
-    void jep495SimpleSourceFilesAndInstanceMainMethodsBeforeJava24Preview() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep495_SimpleSourceFilesAndInstanceMainMethods.java"));
+    void jep512CompactSourceFilesAndInstanceMainMethodsBeforeJava24Preview() {
+        ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep512_CompactSourceFilesAndInstanceMainMethodsAfterJava23.java"));
         assertThat(thrown.getMessage(), containsString("Compact source files and instance main methods was only standardized in Java 25, you should select your language version accordingly"));
     }
+
 }

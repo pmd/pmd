@@ -129,35 +129,39 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * Unnamed Classes and Instance Main Methods
+         * Compact Source Files and Instance Main Methods
          * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
          * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
          * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/512">JEP 512: Compact Source Files and Instance Main Methods</a> (Java 25)
          */
-        SIMPLE_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(22, 24, false),
+        COMPACT_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(22, 24, true),
 
         /**
-         * Statements before super
+         * Flexible Constructor Bodies
          * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
          * @see <a href="https://openjdk.org/jeps/482">JEP 482: Flexible Constructor Bodies (Second Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/492">JEP 492: Flexible Constructor Bodies (Third Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/513">JEP 513: Flexible Constructor Bodies</a> (Java 25)
          */
-        FLEXIBLE_CONSTRUCTOR_BODIES(22, 24, false),
+        FLEXIBLE_CONSTRUCTOR_BODIES(22, 24, true),
 
         /**
          * Module import declarations
          * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/511">JEP 511: Module Import Declarations</a> (Java 25)
          */
-        MODULE_IMPORT_DECLARATIONS(23, 24, false),
+        MODULE_IMPORT_DECLARATIONS(23, 24, true),
 
         /**
          * Primitive types in patterns, instanceof, and switch
          * @see <a href="https://openjdk.org/jeps/455">JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/488">JEP 488: Primitive Types in Patterns, instanceof, and switch (Second Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/507">JEP 507: Primitive Types in Patterns, instanceof, and switch (Third Preview)</a> (Java 25)
          */
-        PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 24, false),
+        PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 25, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -437,7 +441,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTImplicitClassDeclaration node, T data) {
-            check(node, PreviewFeature.SIMPLE_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS, data);
+            check(node, PreviewFeature.COMPACT_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS, data);
             return null;
         }
 

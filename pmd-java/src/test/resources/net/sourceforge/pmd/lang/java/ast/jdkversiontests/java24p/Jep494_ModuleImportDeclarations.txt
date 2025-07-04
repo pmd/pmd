@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.base", @ImportedSimpleName = null, @ModuleImport = true, @PackageName = null, @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.desktop", @ImportedSimpleName = null, @ModuleImport = true, @PackageName = null, @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.util.List", @ImportedSimpleName = "List", @ModuleImport = false, @PackageName = "java.util", @Static = false]

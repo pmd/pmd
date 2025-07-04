@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "PatternsInSwitchLabels", @CanonicalName = "PatternsInSwitchLabels", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "PatternsInSwitchLabels", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC), @ExplicitModifiers = (JModifier.PUBLIC)]
       +- ClassBody[@Empty = false, @Size = 1]

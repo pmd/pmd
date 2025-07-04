@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.io.BufferedReader", @ImportedSimpleName = "BufferedReader", @ModuleImport = false, @PackageName = "java.io", @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.io.File", @ImportedSimpleName = "File", @ModuleImport = false, @PackageName = "java.io", @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.io.FileReader", @ImportedSimpleName = "FileReader", @ModuleImport = false, @PackageName = "java.io", @Static = false]

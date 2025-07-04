@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.awt.Button", @ImportedSimpleName = "Button", @ModuleImport = false, @PackageName = "java.awt", @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.io.File", @ImportedSimpleName = "File", @ModuleImport = false, @PackageName = "java.io", @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.io.FileFilter", @ImportedSimpleName = "FileFilter", @ModuleImport = false, @PackageName = "java.io", @Static = false]
