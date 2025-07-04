@@ -52,7 +52,9 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAllowedExpression(ASTExpression e) {
-        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral || e instanceof ASTTypeExpression || e.isCompileTimeConstant()) {
+        if (e instanceof ASTLiteral || e instanceof ASTClassLiteral
+                || e instanceof ASTTypeExpression
+                || e.isCompileTimeConstant() && !isNonEmptyArray(e)) {
             return true;
         } else if (e instanceof ASTFieldAccess
                 && "length".equals(((ASTFieldAccess) e).getName())
@@ -82,6 +84,10 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
         }
 
         return false;
+    }
+
+    private boolean isNonEmptyArray(ASTExpression e) {
+        return e instanceof ASTArrayInitializer && e.getNumChildren() > 0;
     }
 
     private boolean isUsedForSynchronization(ASTVariableId field) {
