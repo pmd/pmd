@@ -1345,6 +1345,7 @@
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
+        <module>pmd-css</module>
         <module>pmd-dart</module>
         <module>pmd-doc</module>
         <module>pmd-fortran</module>
