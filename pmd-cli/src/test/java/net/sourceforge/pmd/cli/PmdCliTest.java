@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
 
 import java.io.File;
 import java.io.FilterOutputStream;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -458,6 +460,7 @@ class PmdCliTest extends BaseCliTest {
 
     @Test
     void testRelativizeWithSymLink() throws Exception {
+        assumeFalse(SystemUtils.IS_OS_WINDOWS);
         // srcDir = /tmp/junit123/src
         // symlinkedSrcDir = /tmp/junit123/sources -> /tmp/junit123/src
         Path symlinkedSrcDir = Files.createSymbolicLink(tempRoot().resolve("sources"), srcDir);
@@ -472,6 +475,7 @@ class PmdCliTest extends BaseCliTest {
 
     @Test
     void testRelativizeWithSymLinkParent() throws Exception {
+        assumeFalse(SystemUtils.IS_OS_WINDOWS);
         // srcDir = /tmp/junit123/src
         // symlinkedSrcDir = /tmp/junit-relativize-with-123 -> /tmp/junit123/src
         Path tempPath = Files.createTempDirectory("junit-relativize-with-");
