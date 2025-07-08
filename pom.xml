@@ -708,7 +708,7 @@
 <!--                            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>-->
 <!--                            <recipe>org.openrewrite.staticanalysis.MissingOverrideAnnotation</recipe>-->
                         </activeRecipes>
-                        <checkstyleConfigFile>/net/sourceforge/pmd/pmd-checkstyle-config.xml</checkstyleConfigFile>
+<!--                        <checkstyleConfigFile>/net/sourceforge/pmd/pmd-checkstyle-config.xml</checkstyleConfigFile>-->
                     </configuration>
                     <executions>
                         <execution>
