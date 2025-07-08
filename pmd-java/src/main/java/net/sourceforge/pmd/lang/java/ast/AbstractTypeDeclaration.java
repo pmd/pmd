@@ -81,3 +81,4 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
         return isNested();
     }
 }
+

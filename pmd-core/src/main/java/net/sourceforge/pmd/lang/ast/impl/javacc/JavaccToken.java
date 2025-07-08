@@ -263,3 +263,4 @@ public class JavaccToken implements GenericToken<JavaccToken> {
         return new JavaccToken(IMPLICIT_TOKEN, "", offset, offset, document);
     }
 }
+

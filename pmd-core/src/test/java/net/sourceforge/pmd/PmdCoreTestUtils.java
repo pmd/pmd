@@ -34,3 +34,4 @@ public final class PmdCoreTestUtils {
         return dummyLanguage().getDefaultVersion();
     }
 }
+

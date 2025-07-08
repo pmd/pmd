@@ -58,3 +58,4 @@ public class NPathComplexityRule extends AbstractJavaRulechainRule {
         return data;
     }
 }
+

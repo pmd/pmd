@@ -100,3 +100,4 @@ abstract class SalesforceFieldTypes {
      */
     protected abstract void findDataType(String expression, List<Path> metadataDirectories);
 }
+

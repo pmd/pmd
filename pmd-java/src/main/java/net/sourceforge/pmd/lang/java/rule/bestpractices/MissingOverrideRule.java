@@ -8,8 +8,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
-import java.io.File;
-
 
 /**
  * Flags missing @Override annotations.
@@ -17,7 +15,7 @@ import java.io.File;
  * @author Clément Fournier
  * @since 6.2.0
  */
-public class MissingOverrideRule extends AbstractJavaRulechainRule implements Auto {
+public class MissingOverrideRule extends AbstractJavaRulechainRule {
 
     public MissingOverrideRule() {
         super(ASTMethodDeclaration.class);
@@ -30,14 +28,4 @@ public class MissingOverrideRule extends AbstractJavaRulechainRule implements Au
         }
         return data;
     }
-}
-
-
- interface AutoFixable {
-    /**
-     * @param rawSource Original source code
-     * @param file Target file being analyzed
-     * @return Modified source code with fixes applied
-     */
-    String format(String rawSource, File file);
 }
