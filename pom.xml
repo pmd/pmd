@@ -705,6 +705,8 @@
                     <configuration>
                         <activeRecipes>
                             <recipe>org.openrewrite.staticanalysis.CodeCleanup</recipe>
+                            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>
+                            <recipe>org.openrewrite.staticanalysis.MissingOverrideAnnotation</recipe>
                         </activeRecipes>
                     </configuration>
                     <dependencies>
