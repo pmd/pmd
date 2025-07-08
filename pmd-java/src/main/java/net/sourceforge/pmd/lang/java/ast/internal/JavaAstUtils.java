@@ -116,7 +116,7 @@ public final class JavaAstUtils {
     }
 
     public static int numAlternatives(ASTSwitchBranch n) {
-        return n.isDefault() ? 1 : n.getLabel().getExprList().count();
+                         return n.isDefault() ? 1 : n.getLabel().getExprList().count();
     }
 
     /**
