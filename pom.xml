@@ -710,6 +710,14 @@
                         </activeRecipes>
                         <checkstyleConfigFile>/net/sourceforge/pmd/pmd-checkstyle-config.xml</checkstyleConfigFile>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                     <dependencies>
                         <dependency>
                             <groupId>org.openrewrite.recipe</groupId>
