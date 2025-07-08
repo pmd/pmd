@@ -705,9 +705,10 @@
                     <configuration>
                         <activeRecipes>
                             <recipe>org.openrewrite.staticanalysis.CodeCleanup</recipe>
-                            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>
-                            <recipe>org.openrewrite.staticanalysis.MissingOverrideAnnotation</recipe>
+<!--                            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>-->
+<!--                            <recipe>org.openrewrite.staticanalysis.MissingOverrideAnnotation</recipe>-->
                         </activeRecipes>
+                        <checkstyleConfigFile>/net/sourceforge/pmd/pmd-checkstyle-config.xml</checkstyleConfigFile>
                     </configuration>
                     <dependencies>
                         <dependency>
