@@ -81,8 +81,10 @@
         <maven.compiler.test.target>1.8</maven.compiler.test.target>
 
 
+        <kotlin.compiler.apiVersion>1.9</kotlin.compiler.apiVersion>
+        <kotlin.compiler.languageVersion>1.9</kotlin.compiler.languageVersion>
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.9.24</kotlin.version>
+        <kotlin.version>2.2.0</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
         <junit5.version>5.13.3</junit5.version>
         <junit5.platform.version>1.13.3</junit5.platform.version>
@@ -475,6 +477,19 @@
                             </goals>
                         </execution>
                     </executions>
+                    <dependencies>
+                        <!-- Adding kotlin-compiler directly, which is a workaround to fix
+                             https://youtrack.jetbrains.com/issue/KT-73967 in dokka.
+                             While com.intellij.util.lang.JavaVersion is actually brought in via the
+                             dokka plugin "org.jetbrains.dokka:analysis-kotlin-descriptors", adding the
+                             kotlin-compiler dependency overrides this class.
+                        -->
+                        <dependency>
+                            <groupId>org.jetbrains.kotlin</groupId>
+                            <artifactId>kotlin-compiler</artifactId>
+                            <version>${kotlin.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
