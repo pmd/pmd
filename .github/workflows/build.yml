@@ -208,9 +208,6 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Generate settings.xml to use dogfoodStagingRepo"
-          echo "original file ~/.m2/settings.xml:"
-          cat ~/.m2/settings.xml
-          echo "-------------------"
           maven_settings_file="$(pwd)/target/staging/settings.xml"
           cat > "${maven_settings_file}" <<EOF
           <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -239,7 +236,7 @@ jobs:
             --settings "${maven_settings_file}" \
             -Dmaven.repo.local=.m2/repository \
             verify \
-            -PfastSkip \
+            -PfastSkip,dogfood \
             -DskipTests \
             -Dpmd.skip=false \
             -Dcpd.skip=false
