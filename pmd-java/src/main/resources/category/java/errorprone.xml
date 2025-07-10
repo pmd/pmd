@@ -2438,8 +2438,9 @@ public class Foo {
 
     <rule name="ReplaceJavaUtilCalendar"
           language="java"
-          since="7.16"
+          since="7.16.0"
           message="Usage of java.util.Calendar should be replaced with classes from java.time"
+          minimumLanguageVersion="1.8"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#replacejavautilcalendar">
         <description>
@@ -2490,15 +2491,16 @@ public class Foo {
 
     <rule name="ReplaceJavaUtilDate"
           language="java"
-          since="7.16"
+          since="7.16.0"
           message="Usage of java.util.Date should be replaced with classes from java.time"
+          minimumLanguageVersion="1.8"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#replacejavautildate">
         <description>
 The legacy java.util.Date class is mutable, not thread-safe, and has a confusing API. Many of its methods 
 are deprecated, it doesn't handle timezones properly, and it represents both date and time even when only 
 one is needed. The constructor parameters are particularly error-prone: year is "years since 1900" and 
-month is 0-based (January = 0). The modern java.time API provides better type safety, immutability, and clearer semantics.
+month is 0-based (January = 0). The modern java.time API (introduced in Java 8) provides better type safety, immutability, and clearer semantics.
 
 Use LocalDate (date only), LocalTime (time only), LocalDateTime (date and time), Instant (timestamp), 
 or ZonedDateTime (date-time with timezone) from java.time package instead.

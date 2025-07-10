@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class ReplaceJavaUtilCalendarTest extends PmdRuleTst {
+class ReplaceJavaUtilCalendarTest extends PmdRuleTst {
     // no additional unit tests
 }

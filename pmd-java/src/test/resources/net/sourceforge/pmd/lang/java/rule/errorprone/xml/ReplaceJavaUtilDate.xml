@@ -7,6 +7,7 @@
     <test-code>
         <description>bad, local variable of type java.util.Date</description>
         <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,5</expected-linenumbers>
         <code><![CDATA[
 import java.util.Date;
 
@@ -21,6 +22,7 @@ public class Foo {
     <test-code>
         <description>bad, param of type java.util.Date</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import java.util.Date;
 
@@ -34,6 +36,7 @@ public class Foo {
     <test-code>
         <description>bad, param of type java.sql.Date</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 import java.sql.Date;
 
