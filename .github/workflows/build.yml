@@ -39,7 +39,7 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
             -Dmaven.repo.local=.m2/repository \
             verify -PfastSkip -DskipTests -Dcyclonedx.skip=false \
-            deploy:deploy -DdogfoodStagingRepo="$(pwd)/target/staging"
+            deploy:deploy -DaltDeploymentRepository="dogfood::file://$(pwd)/target/staging"
       - name: Cleanup local repository
         run: |
           # Cleanup local repository to not poison the shared cache with our SNAPSHOTS of the current build.
@@ -207,12 +207,34 @@ jobs:
           sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${current_pmd_version}"'<\/version>\1/' pom.xml
           echo "::endgroup::"
 
+          echo "::group::Generate settings.xml to use dogfoodStagingRepo"
+          maven_settings_file="$(pwd)/target/staging/settings.xml"
+          cat > "${maven_settings_file}" <<EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <profiles>
+              <profile>
+                <id>dogfood</id>
+                <pluginRepositories>
+                    <pluginRepository>
+                        <id>dogfood</id>
+                        <url>file://$(pwd)/target/staging</url>
+                        <releases><enabled>true</enabled></releases>
+                        <snapshots><enabled>true</enabled></snapshots>
+                    </pluginRepository>
+                </pluginRepositories>
+              </profile>
+            </profiles>
+          </settings>
+          EOF
+          echo "::endgroup::"
+
           echo "::group::Run ./mvnw verify"
           ./mvnw --show-version --errors --batch-mode \
+            --settings "${maven_settings_file}" \
             -Dmaven.repo.local=.m2/repository \
             verify \
             -PfastSkip \
-            -DdogfoodStagingRepo="$(pwd)/target/staging" \
             -DskipTests \
             -Dpmd.skip=false \
             -Dcpd.skip=false
