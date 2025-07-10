@@ -477,6 +477,19 @@
                             </goals>
                         </execution>
                     </executions>
+                    <dependencies>
+                        <!-- Adding kotlin-compiler directly, which is a workaround to fix
+                             https://youtrack.jetbrains.com/issue/KT-73967 in dokka.
+                             While com.intellij.util.lang.JavaVersion is actually brought in via the
+                             dokka plugin "org.jetbrains.dokka:analysis-kotlin-descriptors", adding the
+                             kotlin-compiler dependency overrides this class.
+                        -->
+                        <dependency>
+                            <groupId>org.jetbrains.kotlin</groupId>
+                            <artifactId>kotlin-compiler</artifactId>
+                            <version>${kotlin.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
