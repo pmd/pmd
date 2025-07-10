@@ -9,7 +9,7 @@ import net.sourceforge.pmd.annotation.InternalApi
 import org.junit.jupiter.api.Test
 
 /**
- * This is to trick Intellij into making subclasses executable (because of @TestFactory).
+ * This is to trick Intellij into making subclasses executable (because of @Test).
  * But Junit does not use it because of the unsatisfiable condition. This comes from
  * Kotest, but was removed in 4.2.0 without explanation.
  */
