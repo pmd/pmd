@@ -24,12 +24,18 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### New: CPD support for CSS
+CPD now supports CSS (Cascading Style Sheets), a language for describing the rendering of structured
+documents (such as HTML) on screen, on paper etc.  
+It is shipped with the new module `pmd-css`.
+
 ### 🐛 Fixed Issues
 
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5733](https://github.com/pmd/pmd/pull/5733): \[css] Add new CPD language - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
