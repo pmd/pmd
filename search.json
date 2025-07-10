@@ -2462,6 +2462,22 @@
 
 
 {
+"title": "CSS support",
+"tags": "languagesCpdCapableLanguage",
+"keywords": "",
+"url": "pmd_languages_css.html",
+"summary": "\bCSS\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+}
+
+
+
+,
+
+
+
+
+
+{
 "title": "Dart support",
 "tags": "languagesCpdCapableLanguage",
 "keywords": "",

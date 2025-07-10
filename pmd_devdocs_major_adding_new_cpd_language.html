@@ -1241,6 +1241,18 @@
             
 
                 
+                <li><a href="pmd_languages_css.html">CSS</a></li>
+                
+
+            
+
+            
+            
+            
+
+            
+
+                
                 <li><a href="pmd_languages_coco.html">Coco</a></li>
                 
 
@@ -2078,7 +2090,7 @@ If your language only supports CPD, then you can subclass <a href="https://docs.
  <span class="kn">package</span> <span class="nn">net.sourceforge.pmd.lang.go</span><span class="o">;</span>
 
  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">GoLanguageModule</span> <span class="kd">extends</span> <span class="nc">CpdOnlyLanguageModuleBase</span> <span class="o">{</span>
-        
+
      <span class="c1">// A public noarg constructor is required.</span>
      <span class="kd">public</span> <span class="nf">GoLanguageModule</span><span class="o">()</span> <span class="o">{</span>
          <span class="kd">super</span><span class="o">(</span><span class="nc">LanguageMetadata</span><span class="o">.</span><span class="na">withId</span><span class="o">(</span><span class="s">"go"</span><span class="o">).</span><span class="na">name</span><span class="o">(</span><span class="s">"Go"</span><span class="o">).</span><span class="na">extensions</span><span class="o">(</span><span class="s">"go"</span><span class="o">));</span>
@@ -2089,7 +2101,7 @@ If your language only supports CPD, then you can subclass <a href="https://docs.
          <span class="c1">// This method should return an instance of the CpdLexer you created.</span>
          <span class="k">return</span> <span class="k">new</span> <span class="nf">GoCpdLexer</span><span class="o">();</span>
      <span class="o">}</span>
- <span class="o">}</span> 
+ <span class="o">}</span>
 </code></pre></div>    </div>
 
     <p>To make PMD find the language module at runtime, write the fully-qualified name of your language class into the file <code class="language-plaintext highlighter-rouge">src/main/resources/META-INF/services/net.sourceforge.pmd.lang.Language</code>.</p>
@@ -2103,7 +2115,7 @@ If your language only supports CPD, then you can subclass <a href="https://docs.
     <p>Add some tests for your CpdLexer by following the <a href="#testing-your-implementation">section below</a>.</p>
   </li>
   <li>
-    <p>Finishing up your new language module by adding a page in the documentation. Create a new markdown file
+    <p>Add a page in the documentation. Create a new markdown file
 <code class="language-plaintext highlighter-rouge">&lt;langId&gt;.md</code> in <code class="language-plaintext highlighter-rouge">docs/pages/pmd/languages/</code>. This file should have the following frontmatter:</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
@@ -2121,6 +2133,15 @@ There is also the following Jekyll Include, that creates summary box for the lan
 {% include language_info.html name='&lt;Language Name&gt;' id='&lt;langId&gt;' implementation='&lt;langId&gt;::lang.&lt;langId&gt;.&lt;langId&gt;LanguageModule' supports_cpd=true %}
    
 </code></pre></div>    </div>
+  </li>
+  <li>Finishing up your new language module by adding a menu entry in <a href="https://github.com/pmd/pmd/blob/main/docs/_data/sidebars/pmd_sidebar.yml">PMD Sidebar</a>.
+```
+    <ul>
+      <li>title: <Language Name="">
+url: /pmd_languages_<langId>.html
+output: web, pdf
+```</langId></Language></li>
+    </ul>
   </li>
 </ol>
 
@@ -2230,7 +2251,7 @@ call the method <code class="language-plaintext highlighter-rouge">doTest</code>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2024 (7.3.0)<br /> Site last generated: Jul 8, 2025 <br />
+            June 2024 (7.3.0)<br /> Site last generated: Jul 10, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
