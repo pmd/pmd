@@ -17,6 +17,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
@@ -34,6 +36,8 @@ import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericSigBase.class);
+
     /*
        Signatures must be parsed lazily, because at the point we see them
        in the file, the enclosing class might not yet have been encountered
@@ -408,9 +412,18 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 receiverAnnotations.add(path, annot);
                 return false;
             }
+            case TypeReference.CLASS_EXTENDS: {
+                // avoid exception for Java 11 bug
+                // see https://github.com/pmd/pmd/issues/5344 and https://bugs.openjdk.org/browse/JDK-8198945
+                LOGGER.debug("Invalid target type CLASS_EXTENDS of type annotation {} for method or ctor detected. "
+                        + "The annotation is ignored. Method: {}#{}. See https://github.com/pmd/pmd/issues/5344.",
+                        annot, ctx.getEnclosingClass().getCanonicalName(), ctx.getSimpleName());
+                return false;
+            }
             default:
                 throw new IllegalArgumentException(
-                    "Invalid type reference for method or ctor type annotation: " + tyRef.getSort());
+                    "Invalid target type of type annotation " + annot + " for method or ctor type annotation: "
+                            + tyRef.getSort());
             }
         }
 
