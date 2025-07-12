@@ -82,6 +82,9 @@
         <description>Comparable with wrong equals signature</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+           <message>Missing equals and hashCode</message>
+        </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable<Foo> {
                 @Override
