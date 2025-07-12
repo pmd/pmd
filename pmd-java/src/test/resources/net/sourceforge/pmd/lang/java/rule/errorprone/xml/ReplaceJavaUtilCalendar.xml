@@ -60,4 +60,24 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>don't trigger too many violations when one change fixes all</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Calendar;
+
+public class Foo {
+    void bar() {
+        Calendar cal = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault()); // first violation
+        cal.setTimeInMillis(timeNow);
+        cal.set(Calendar.SECOND, 0); // second violation
+        cal.set(Calendar.MILLISECOND, 0); // third
+        cal.set(Calendar.HOUR_OF_DAY, mm); // fourth
+        cal.set(Calendar.MINUTE, mm); // fifth
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -2454,7 +2454,10 @@ Use LocalDate (for date-only operations), LocalDateTime (for date and time), or 
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassType[pmd-java:typeIs('java.util.Calendar')]
+                //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //FormalParameter[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Calendar')]]
                 ]]></value>
             </property>
         </properties>
@@ -2509,7 +2512,10 @@ or ZonedDateTime (date-time with timezone) from java.time package instead.
         <properties>
             <property name="xpath">
                 <value><![CDATA[
-                //ClassType[pmd-java:typeIs('java.util.Date')]
+                //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //FormalParameter[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Date')]]
                 ]]></value>
             </property>
         </properties>
