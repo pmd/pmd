@@ -66,9 +66,10 @@ public class MissingEqualsOnComparableRule extends AbstractJavaRulechainRule {
             }
         }
 
-        if (equalsMethod == null) {
-            // Missing equals entirely
-            asCtx(data).addViolation(node);
+        if (equalsMethod == null && hashCodeMethod == null) {
+            asCtx(data).addViolationWithMessage(node, "missing equals and hashCode");
+        } else if (equalsMethod == null) {
+            asCtx(data).addViolationWithMessage(node, "missing equals");
         } else if (hashCodeMethod == null) {
             // Has equals but no hashCode
             asCtx(data).addViolation(equalsMethod);
