@@ -13,6 +13,9 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
+/**
+ * @since 7.16.0
+ */
 public class MissingEqualsOnComparableRule extends AbstractJavaRulechainRule {
 
     public MissingEqualsOnComparableRule() {
