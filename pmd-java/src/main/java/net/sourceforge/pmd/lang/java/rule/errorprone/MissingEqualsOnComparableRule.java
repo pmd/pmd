@@ -38,7 +38,7 @@ public class MissingEqualsOnComparableRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTRecordDeclaration node, Object data) {
-        return null;
+        visitTypeDecl(node, data);
         return null;
     }
 
