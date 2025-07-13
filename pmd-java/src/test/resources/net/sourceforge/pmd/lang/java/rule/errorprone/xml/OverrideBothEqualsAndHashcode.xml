@@ -210,4 +210,16 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>No feature envy on MissingEqualsOnComparableRule: Comparable without equals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

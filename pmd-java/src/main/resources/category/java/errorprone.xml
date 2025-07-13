@@ -2358,6 +2358,50 @@ public class Foo {        // perfect, both methods provided
 ]]>
         </example>
     </rule>
+    <rule name="MissingEqualsOnComparable"
+          language="java"
+          since="7.16.0"
+          message="Classes implementing Comparable should override both equals() and hashCode()"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.MissingEqualsOnComparableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingequalsoncomparable">
+        <description>
+            Classes that implement `Comparable` must override both `equals()` and `hashCode()` so that the class's natural ordering is consistent with equals. Failing to do so might result in sets, that do not comply to the `Set` interface: The `Set` interface is defined in terms of `equals`, but a sorted set like `TreeSet` always uses `compareTo`. The same applies, if instances of this class are used as keys in sorted maps.
+            
+            Note 1: This rule is related to {% rule OverrideBothEqualsAndHashcode %}. It will report also missing `hashCode` methods, if the class implements `Comparable`.
+            Note 2: This rule also reports records that implement `Comparable`. While for records, `equals` and `hashCode` are generated, you still must make sure that `compareTo` is consistent with `equals`.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Bar implements Comparable<Bar> {  // poor - missing equals() and hashCode()
+    public int compareTo(Bar other) {
+        // some comparison
+    }
+}
+
+public class Baz implements Comparable<Baz> {  // poor - missing hashCode()
+    public int compareTo(Baz other) {
+        // some comparison
+    }
+    public boolean equals(Object o) {
+        // some comparison
+    }
+}
+
+public class Foo implements Comparable<Foo> {  // correct
+    public int compareTo(Foo other) {
+        // some comparison
+    }
+    public boolean equals(Object o) {
+        // some comparison
+    }
+    public int hashCode() {
+        // return hash code
+    }
+}
+]]>
+        </example>
+    </rule>
 
     <rule name="ProperCloneImplementation"
           language="java"
