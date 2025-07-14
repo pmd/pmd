@@ -81,6 +81,19 @@ There are various channels, on which you can ask questions:
 
 *   Ask your question our [PMD Guru at Gurubase](https://gurubase.io/g/pmd).
 
+## 🚀 Code Transformation & Automated Rewriting
+*(Advanced Refactoring, Modernization, and Bulk Code Changes)*
+
+#### 🔧 Automated rewriting of source code to
+- **Refactor** safely (e.g., rename methods, migrate APIs)
+- **Modernize** (e.g., Java 8 → Java 17 features)
+- **Fix anti-patterns** (e.g., replace `Vector` with `ArrayList`)
+- **Enforce conventions** (e.g., JUnit's naming rules)
+
+The build system incorporates [Moderne](https://moderne.io/) rewrite capabilities for automated code transformations. These modifications are environment-driven enlisted in the [junitbuild.java-library-conventions.gradle.kts](gradle/plugins/common/src/main/kotlin/junitbuild.java-library-conventions.gradle.kts)
+
+You can use `mvn rewrite:run` to apply the change or just activate this automatically by setting the env variable `rewriteDogFood=true`.
+
 ## Code Style
 
 PMD uses [Checkstyle](https://checkstyle.org/) to enforce a common code style.
@@ -88,6 +101,8 @@ PMD uses [Checkstyle](https://checkstyle.org/) to enforce a common code style.
 See [pmd-checkstyle-config.xml](https://github.com/pmd/build-tools/blob/main/src/main/resources/net/sourceforge/pmd/pmd-checkstyle-config.xml) for the configuration and
 [the eclipse configuration files](https://github.com/pmd/build-tools/tree/main/eclipse) that can
 be imported into a fresh workspace.
+
+Rewrite will automatically apply all rules, by using the CodeCleanup recipe like in this [showcase](https://docs.openrewrite.org/running-recipes/popular-recipe-guides/automatically-fix-checkstyle-violations). 
 
 ## Add yourself as contributor
 

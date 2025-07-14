@@ -87,6 +87,8 @@
         <junit5.version>5.13.3</junit5.version>
         <junit5.platform.version>1.13.3</junit5.platform.version>
         <dokka.version>2.0.0</dokka.version>
+        <rewrite.version>6.12.1</rewrite.version>
+        <rewrite.static.analysis.version>2.12.0</rewrite.static.analysis.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.3</surefire.version>
@@ -477,6 +479,45 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.openrewrite.maven</groupId>
+                    <artifactId>rewrite-maven-plugin</artifactId>
+                    <version>${rewrite.version}</version>
+                    <configuration>
+                        <exclusions>
+                            <exclusion>**Chars.java</exclusion> <!-- // @SuppressWarnings("PMD.MissingOverride") -->
+                            <exclusion>**Dummy**.java</exclusion>
+                            <exclusion>**FooRule.java</exclusion>
+                            <exclusion>**jdkversiontests**</exclusion>
+                            <exclusion>**missingoverride**</exclusion>
+                            <exclusion>**private_method_in_inner_class_interface*.java</exclusion>
+                            <exclusion>**testdata**</exclusion>
+                            <exclusion>**unnecessaryimport**</exclusion>
+                            <exclusion>**uselessoverridingmethod**</exclusion>
+                        </exclusions>
+                        <activeRecipes>
+                            <recipe>org.openrewrite.staticanalysis.EqualsAvoidsNull</recipe>
+                            <recipe>org.openrewrite.staticanalysis.ModifierOrder</recipe>
+                        </activeRecipes>
+                        <failOnDryRunResults>true</failOnDryRunResults>
+                        <rewriteSkip>${rewrite.skip}</rewriteSkip>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>dryRun</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.openrewrite.recipe</groupId>
+                            <artifactId>rewrite-static-analysis</artifactId>
+                            <version>${rewrite.static.analysis.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${checkstyle.plugin.version}</version>
@@ -756,6 +797,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <!-- configuration is in plugin management section -->
+            </plugin>
+            <plugin>
+                <groupId>org.openrewrite.maven</groupId>
+                <artifactId>rewrite-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -1285,6 +1330,7 @@
             <activation>
                 <property>
                     <name>dogfoodStagingRepo</name>
+                    <value>true</value>
                 </property>
             </activation>
             <build>
@@ -1306,6 +1352,32 @@
                     <snapshots><enabled>true</enabled></snapshots>
                 </pluginRepository>
             </pluginRepositories>
+        </profile>
+
+        <profile>
+            <id>rewriteDogFood</id>
+            <activation>
+                <property>
+                    <name>rewriteDogFood</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.openrewrite.maven</groupId>
+                        <artifactId>rewrite-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <profile>
