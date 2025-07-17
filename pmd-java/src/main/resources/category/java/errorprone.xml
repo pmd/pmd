@@ -3158,6 +3158,29 @@ class Test {
         </example>
     </rule>
 
+    <rule name="UselessPureMethodCall"
+          language="java"
+          since="7.16"
+          message="Do not call pure method {0} if the result is not used."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessPureMethodCallRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselesspuremethodcall">
+        <description>
+            Useless Pure Method Call detects when a pure method is called and the result is unused.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Something {
+    public void foo() {
+        List.of("foo").size(); // result unused
+        Stream.of("bar").map(item -> System.out.format("%s", item)); // result unused
+        Stream.of("bar").forEach(item -> System.out.format("%s", item)); // better
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UseLocaleWithCaseConversions"
           language="java"
           since="2.0"
