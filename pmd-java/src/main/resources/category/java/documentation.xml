@@ -148,5 +148,32 @@ public void doSomething() {
 ]]>
         </example>
     </rule>
+    <rule name="DanglingJavadoc"
+          language="java"
+          since="5.0"
+          message="Javadoc not belonging to any class, method or field should be removed."
+          class="net.sourceforge.pmd.lang.java.rule.documentation.DanglingJavadocRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#danglingjavadoc">
+        <description>
+            Javadoc should belong to a class or method.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+  /**
+   * Public methods // wrong
+   */
 
+  /**
+   * A setter // OK
+   */
+   public void setFoo() {
+
+   }
+
+}
+]]>
+        </example>
+    </rule>
 </ruleset>
