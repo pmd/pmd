@@ -29,9 +29,18 @@ CPD now supports CSS (Cascading Style Sheets), a language for describing the ren
 documents (such as HTML) on screen, on paper etc.  
 It is shipped with the new module `pmd-css`.
 
+#### ✨ New Rules
+
+* Two new rules have been added to Java's Error Prone category: {%rule java/errorprone/ReplaceJavaUtilCalendar %}
+  and {%rule java/errorprone/ReplaceJavaUtilDate %}. These rules help to migrate away from old Java APIs around
+  `java.util.Calendar` and `java.util.Date`. It is recommended to use the modern `java.time` API instead, which
+  is available since Java 8.
+
 ### 🐛 Fixed Issues
 * java-design
   * [#5858](https://github.com/pmd/pmd/issues/5858): \[java] FinalFieldCouldBeStatic false positive for array initializers
+* java-errorprone
+  * [#2862](https://github.com/pmd/pmd/issues/2862): \[java] New Rules: Avoid java.util.Date and Calendar classes
 
 ### 🚨 API Changes
 
@@ -39,6 +48,7 @@ It is shipped with the new module `pmd-css`.
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5733](https://github.com/pmd/pmd/pull/5733): \[css] Add new CPD language - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
 * [#5859](https://github.com/pmd/pmd/pull/5859): Fix #5858: \[java] Fix false positive in FinalFieldCouldBeStatic for array initializers - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#5883](https://github.com/pmd/pmd/pull/5883): Fix #2862: \[java] Add rules discouraging the use of java.util.Calendar and java.util.Date - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
