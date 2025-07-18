@@ -106,7 +106,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>32</pmd.build-tools.version>
+        <pmd.build-tools.version>33</pmd.build-tools.version>
 
         <pmd-designer.version>7.10.0</pmd-designer.version>
 
