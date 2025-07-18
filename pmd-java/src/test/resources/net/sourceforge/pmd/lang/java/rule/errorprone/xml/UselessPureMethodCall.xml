@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
+
+    <test-code>
+        <description>Collection methods</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>8,9,10,11</expected-linenumbers>
+        <code><![CDATA[
+import java.util.List;
+
+public class Foo {
+    private List list = List.of(5);
+
+    private void foo() {
+        int size = list.size();
+        list.size();
+        list.isEmpty();
+        list.toString();
+        list.contains(7);
+    }
+
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throwable methods</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6,7,8,9</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private Exception ex = new RuntimeException();
+
+    private void foo() {
+        System.out.println(ex.getMessage());
+        ex.getMessage();
+        ex.getLocalizedMessage();
+        ex.getCause();
+        ex.getStacktrace();
+        if ("" != null) {
+            throw ex.getCause();
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String methods</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>5,8,9</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    private String name = "Foo";
+
+    private String foo() {
+        name.indexOf("F");
+        name.getChars(0, 1, new char[1], 0);
+        name.getBytes(0, 1, new char[1], 0);
+        name.getBytes();
+        name.getBytes("UTF8");
+        return name.substring(1);
+    }
+
+}
+        ]]></code>
+    </test-code>
+</test-data>
