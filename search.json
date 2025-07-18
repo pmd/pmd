@@ -4460,6 +4460,24 @@
 ,
 
 {
+"title": "ReplaceJavaUtilCalendar (Java, Error Prone)",
+"tags": "",
+"keywords": "ReplaceJavaUtilCalendar",
+"url": "pmd_rules_java_errorprone.html#replacejavautilcalendar",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ReplaceJavaUtilDate (Java, Error Prone)",
+"tags": "",
+"keywords": "ReplaceJavaUtilDate",
+"url": "pmd_rules_java_errorprone.html#replacejavautildate",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
 "title": "ReturnEmptyCollectionRatherThanNull (Java, Error Prone)",
 "tags": "",
 "keywords": "ReturnEmptyCollectionRatherThanNull",

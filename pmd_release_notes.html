@@ -2037,11 +2037,25 @@
 documents (such as HTML) on screen, on paper etc.<br />
 It is shipped with the new module <code class="language-plaintext highlighter-rouge">pmd-css</code>.</p>
 
+<h4 id="-new-rules">✨ New Rules</h4>
+
+<ul>
+  <li>Two new rules have been added to Java’s Error Prone category: <a href="pmd_rules_java_errorprone.html#replacejavautilcalendar"><code class="language-plaintext highlighter-rouge">ReplaceJavaUtilCalendar</code></a>
+and <a href="pmd_rules_java_errorprone.html#replacejavautildate"><code class="language-plaintext highlighter-rouge">ReplaceJavaUtilDate</code></a>. These rules help to migrate away from old Java APIs around
+<code class="language-plaintext highlighter-rouge">java.util.Calendar</code> and <code class="language-plaintext highlighter-rouge">java.util.Date</code>. It is recommended to use the modern <code class="language-plaintext highlighter-rouge">java.time</code> API instead, which
+is available since Java 8.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>java-design
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5858">#5858</a>: [java] FinalFieldCouldBeStatic false positive for array initializers</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2862">#2862</a>: [java] New Rules: Avoid java.util.Date and Calendar classes</li>
     </ul>
   </li>
 </ul>
@@ -2053,6 +2067,7 @@ It is shipped with the new module <code class="language-plaintext highlighter-ro
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/5733">#5733</a>: [css] Add new CPD language - <a href="https://github.com/tprouvot">Thomas Prouvot</a> (@tprouvot)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5859">#5859</a>: Fix #5858: [java] Fix false positive in FinalFieldCouldBeStatic for array initializers - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5883">#5883</a>: Fix #2862: [java] Add rules discouraging the use of java.util.Calendar and java.util.Date - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
 </ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
@@ -2090,7 +2105,7 @@ It is shipped with the new module <code class="language-plaintext highlighter-ro
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 17, 2025 <br />
+             Site last generated: Jul 18, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

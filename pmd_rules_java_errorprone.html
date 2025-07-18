@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonCaseLabelInSwitch, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
+<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonCaseLabelInSwitch, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -4713,6 +4713,120 @@ with the restriction that the logger needs to be passed into the constructor.</p
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="replacejavautilcalendar">ReplaceJavaUtilCalendar</h2>
+
+<p><strong>Since:</strong> PMD 7.16.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p><strong>Minimum Language Version:</strong> Java 1.8</p>
+
+<p>The legacy java.util.Calendar API is error-prone, mutable, and not thread-safe. It has confusing month indexing 
+(January = 0), inconsistent field semantics, and verbose usage patterns. The modern java.time API (introduced in Java 8) 
+provides immutable, thread-safe alternatives with clear, intuitive methods.</p>
+
+<p>Use LocalDate (for date-only operations), LocalDateTime (for date and time), or ZonedDateTime (when timezone is important) from java.time package instead.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)]]</span><span class="w"> </span><span class="p">|</span><span class="w">
+                </span><span class="o">//</span><span class="nt">FormalParameter</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)]]</span><span class="w"> </span><span class="p">|</span><span class="w">
+                </span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)]]</span><span class="w"> </span><span class="p">|</span><span class="w">
+                </span><span class="o">//</span><span class="nt">ConstructorCall</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Calendar</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.GregorianCalendar</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.time.LocalDate</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.time.LocalDateTime</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.time.ZonedDateTime</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">problematic</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Problematic - using legacy Calendar API</span>
+        <span class="nc">Calendar</span> <span class="n">cal</span> <span class="o">=</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">getInstance</span><span class="o">();</span>
+        <span class="n">cal</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">2024</span><span class="o">,</span> <span class="nc">Calendar</span><span class="o">.</span><span class="na">JANUARY</span><span class="o">,</span> <span class="mi">15</span><span class="o">);</span> <span class="c1">// Month indexing is confusing (0-based)</span>
+        <span class="n">cal</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="nc">Calendar</span><span class="o">.</span><span class="na">DAY_OF_MONTH</span><span class="o">,</span> <span class="mi">7</span><span class="o">);</span>
+        
+        <span class="nc">Calendar</span> <span class="n">specific</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GregorianCalendar</span><span class="o">(</span><span class="mi">2024</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">15</span><span class="o">);</span> <span class="c1">// Also problematic</span>
+    <span class="o">}</span>
+    
+    <span class="kt">void</span> <span class="nf">preferred</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Preferred - using modern java.time API</span>
+        <span class="nc">LocalDate</span> <span class="n">date</span> <span class="o">=</span> <span class="nc">LocalDate</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="mi">2024</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">15</span><span class="o">);</span> <span class="c1">// Month indexing is intuitive (1-based)</span>
+        <span class="nc">LocalDate</span> <span class="n">weekLater</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="na">plusDays</span><span class="o">(</span><span class="mi">7</span><span class="o">);</span>
+        
+        <span class="nc">LocalDateTime</span> <span class="n">dateTime</span> <span class="o">=</span> <span class="nc">LocalDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">();</span>
+        <span class="nc">ZonedDateTime</span> <span class="n">zonedDateTime</span> <span class="o">=</span> <span class="nc">ZonedDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/ReplaceJavaUtilCalendar"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="replacejavautildate">ReplaceJavaUtilDate</h2>
+
+<p><strong>Since:</strong> PMD 7.16.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p><strong>Minimum Language Version:</strong> Java 1.8</p>
+
+<p>The legacy java.util.Date class is mutable, not thread-safe, and has a confusing API. Many of its methods 
+are deprecated, it doesn’t handle timezones properly, and it represents both date and time even when only 
+one is needed. The constructor parameters are particularly error-prone: year is "years since 1900" and 
+month is 0-based (January = 0). The modern java.time API (introduced in Java 8) provides better type safety, immutability, and clearer semantics.</p>
+
+<p>Use LocalDate (date only), LocalTime (time only), LocalDateTime (date and time), Instant (timestamp), 
+or ZonedDateTime (date-time with timezone) from java.time package instead.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Date'</span><span class="p">)]]</span><span class="w"> </span><span class="p">|</span><span class="w">
+                </span><span class="o">//</span><span class="nt">FormalParameter</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Date'</span><span class="p">)]]</span><span class="w"> </span><span class="p">|</span><span class="w">
+                </span><span class="o">//</span><span class="nt">FieldDeclaration</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Date'</span><span class="p">)]]</span><span class="w"> </span><span class="p">|</span><span class="w">
+                </span><span class="o">//</span><span class="nt">ConstructorCall</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Date'</span><span class="p">)]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">java.util.Date</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.time.Instant</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.time.LocalDate</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.time.LocalDateTime</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.time.ZonedDateTime</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">problematic</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Problematic - using legacy Date API</span>
+        <span class="nc">Date</span> <span class="n">now</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">();</span>
+        <span class="nc">Date</span> <span class="n">epoch</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">(</span><span class="mi">0L</span><span class="o">);</span>
+        <span class="nc">Date</span> <span class="n">custom</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Date</span><span class="o">(</span><span class="mi">124</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="mi">15</span><span class="o">);</span> <span class="c1">// Deprecated constructor: year=1900+124=2024, month=0=January</span>
+        
+        <span class="c1">// Mutable operations are error-prone</span>
+        <span class="n">now</span><span class="o">.</span><span class="na">setTime</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">());</span>
+    <span class="o">}</span>
+    
+    <span class="kt">void</span> <span class="nf">preferred</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// Preferred - using modern java.time API</span>
+        <span class="nc">Instant</span> <span class="n">now</span> <span class="o">=</span> <span class="nc">Instant</span><span class="o">.</span><span class="na">now</span><span class="o">();</span> <span class="c1">// For timestamps</span>
+        <span class="nc">LocalDate</span> <span class="n">today</span> <span class="o">=</span> <span class="nc">LocalDate</span><span class="o">.</span><span class="na">now</span><span class="o">();</span> <span class="c1">// For date only</span>
+        <span class="nc">LocalDateTime</span> <span class="n">dateTime</span> <span class="o">=</span> <span class="nc">LocalDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">();</span> <span class="c1">// For date and time</span>
+        <span class="nc">ZonedDateTime</span> <span class="n">zonedDateTime</span> <span class="o">=</span> <span class="nc">ZonedDateTime</span><span class="o">.</span><span class="na">now</span><span class="o">();</span> <span class="c1">// With timezone</span>
+        
+        <span class="c1">// Immutable operations are safer</span>
+        <span class="nc">LocalDate</span> <span class="n">tomorrow</span> <span class="o">=</span> <span class="n">today</span><span class="o">.</span><span class="na">plusDays</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="nc">LocalDateTime</span> <span class="n">nextHour</span> <span class="o">=</span> <span class="n">dateTime</span><span class="o">.</span><span class="na">plusHours</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/ReplaceJavaUtilDate"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="returnemptycollectionratherthannull">ReturnEmptyCollectionRatherThanNull</h2>
 
 <p><strong>Since:</strong> PMD 6.37.0</p>
@@ -5515,7 +5629,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 17, 2025 <br />
+             Site last generated: Jul 18, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
