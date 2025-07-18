@@ -30,6 +30,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5876](https://github.com/pmd/pmd/pull/5876): chore: license header cleanup - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
