@@ -171,4 +171,17 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5892: Unnamed Variable in record pattern matching is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    record Point(int xCoord, int yCoord) { }
+    private void bar(Object point) {
+        if (point instanceof Point(int myXCoord, _)) { }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
