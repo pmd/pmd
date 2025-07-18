@@ -1477,5 +1477,278 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#5852: [java] UnnecessaryImport with multiple static imports from same class - false negative</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            package io.quarkus.runtime.configuration;
+
+            import static io.quarkus.runtime.ConfigConfig.Foo;
+            import static io.quarkus.runtime.ConfigConfig.Foo.fail;
+            import static io.quarkus.runtime.ConfigConfig.Foo.warn;
+
+            import java.util.Map;
+            import org.jboss.logging.Logger;
+
+            @Recorder
+            public class ConfigRecorder {
+                private static final Logger log = Logger.getLogger(ConfigRecorder.class);
+
+                public void handleConfigChange(Map<String, ConfigValue> buildTimeRuntimeValues) {
+                    if (!mismatches.isEmpty()) {
+                        var msg = "Build time property cannot be changed at runtime:\n" + String.join("\n", mismatches);
+                        var buildTimeMismatchAtRuntime = config
+                                .getOptionalValue("quarkus.config.build-time-mismatch-at-runtime", Foo.class) // used
+                                .orElse(warn);
+                        if (fail.equals(buildTimeMismatchAtRuntime)) {
+                            throw new IllegalStateException(msg);
+                        } else if (warn.equals(buildTimeMismatchAtRuntime)) {
+                            log.warn(msg);
+                        }
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+<!--    <test-code>-->
+<!--        <description>#5852: [java] UnnecessaryImport with multiple static imports from same class - true positive</description>-->
+<!--        <expected-problems>3</expected-problems>-->
+<!--        <expected-linenumbers>3,4,5</expected-linenumbers>-->
+<!--        <code><![CDATA[-->
+<!--            package io.quarkus.runtime.configuration;-->
+
+<!--            import static io.quarkus.runtime.ConfigConfig.Bar;-->
+<!--            import static io.quarkus.runtime.ConfigConfigg.Bar;-->
+<!--            import static io.quarkus.runtime.ConfigConfig.Foo;-->
+<!--            import static io.quarkus.runtime.ConfigConfig.Foo.fail;-->
+<!--            import static io.quarkus.runtime.ConfigConfig.Foo.warn;-->
+
+<!--            import java.util.Map;-->
+<!--            import org.jboss.logging.Logger;-->
+
+<!--            @Recorder-->
+<!--            public class ConfigRecorder {-->
+<!--                private static final Logger log = Logger.getLogger(ConfigRecorder.class);-->
+
+<!--                public void handleConfigChange(Map<String, ConfigValue> buildTimeRuntimeValues) {-->
+<!--                    if (!mismatches.isEmpty()) {-->
+<!--                        var msg = "Build time property cannot be changed at runtime:\n" + String.join("\n", mismatches);-->
+<!--                        var buildTimeMismatchAtRuntime = config-->
+<!--                                .getOptionalValue("quarkus.config.build-time-mismatch-at-runtime", String.class)-->
+<!--                                .orElse(warn);-->
+<!--                        if (fail.equals(buildTimeMismatchAtRuntime)) {-->
+<!--                            throw new IllegalStateException(msg);-->
+<!--                        } else if (warn.equals(buildTimeMismatchAtRuntime)) {-->
+<!--                            log.warn(msg);-->
+<!--                        }-->
+<!--                    }-->
+<!--                }-->
+<!--            }-->
+<!--        ]]></code>-->
+<!--    </test-code>-->
+
+
+    <!-- Test cases for static imports of nested classes -->
+    <test-code>
+        <description>Static import of nested class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Map.Entry;
+public class Foo {
+    Entry<String, String> entry;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Static on-demand import of nested class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Map.*;
+public class Foo {
+    Entry<String, String> entry;
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in annotations -->
+    <test-code>
+        <description>Import used in annotation value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pkg.MyEnum;
+@MyAnnotation(MyEnum.VALUE)
+public class Foo {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Import used in array annotation value</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pkg.MyEnum;
+@MyAnnotation({MyEnum.VALUE1, MyEnum.VALUE2})
+public class Foo {}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in lambda parameters -->
+    <test-code>
+        <description>Import used in lambda parameter type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+public class Foo {
+    void test() {
+        list.stream().map((File f) -> f.getName());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in method references -->
+    <test-code>
+        <description>Import used in method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+public class Foo {
+    void test() {
+        list.stream().map(File::getName);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in switch expressions -->
+    <test-code>
+        <description>Import used in switch expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pkg.MyEnum;
+public class Foo {
+    String test(MyEnum e) {
+        return switch(e) {
+            case VALUE1 -> "one";
+            case VALUE2 -> "two";
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in records -->
+    <test-code>
+        <description>Import used in record component</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDate;
+public record Person(String name, LocalDate birthDate) {}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in sealed classes -->
+    <test-code>
+        <description>Import used in sealed class hierarchy</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pkg.Shape;
+public sealed class Circle extends Shape permits BigCircle, SmallCircle {}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in pattern matching -->
+    <test-code>
+        <description>Import used in instanceof pattern matching</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class Foo {
+    void test(Object o) {
+        if (o instanceof List l) {
+            l.size();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in text blocks -->
+    <test-code>
+        <description>Import used in text block with embedded expressions</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.LocalDate;
+public class Foo {
+    String test(String name) {
+        return """
+            Hello %s!
+            Today is %s
+            """.formatted(name, LocalDate.now());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in var declarations -->
+    <test-code>
+        <description>Import used in var declaration with initializer</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+public class Foo {
+    void test() {
+        var list = new ArrayList<String>();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in module-info.java -->
+<!--    <test-code>-->
+<!--        <description>Import used in module-info requires</description>-->
+<!--        <expected-problems>0</expected-problems>-->
+<!--        <code><![CDATA[-->
+<!--import some.module.ModuleName;-->
+<!--module my.module {-->
+<!--    requires ModuleName;-->
+<!--}-->
+<!--        ]]></code>-->
+<!--    </test-code>-->
+
+    <!-- Test cases for imports used in Java 14+ record patterns -->
+    <test-code>
+        <description>Import used in record pattern</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pkg.Point;
+public class Foo {
+    void test(Object o) {
+        if (o instanceof Point(int x, int y)) {
+            System.out.println(x + "," + y);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- Test cases for imports used in Java 22+ unnamed patterns/variables -->
+    <test-code>
+        <description>Import used with unnamed pattern variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import some.pkg.Point;
+public class Foo {
+    void test(Object o) {
+        if (o instanceof Point(_, int y)) {
+            System.out.println(y);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+
 
 </test-data>
+
