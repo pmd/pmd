@@ -1281,34 +1281,6 @@
         </profile>
 
         <profile>
-            <id>dogfood</id>
-            <activation>
-                <property>
-                    <name>dogfoodStagingRepo</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <altDeploymentRepository>dogfood::file://${dogfoodStagingRepo}</altDeploymentRepository>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>dogfood</id>
-                    <url>file://${dogfoodStagingRepo}</url>
-                    <releases><enabled>true</enabled></releases>
-                    <snapshots><enabled>true</enabled></snapshots>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-
-        <profile>
             <id>central-portal-snapshots</id>
             <repositories>
                 <repository>
