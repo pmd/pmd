@@ -24,8 +24,8 @@ class JavaLanguageModuleTest {
 
     @Test
     void previewVersionShouldBeGreaterThanNonPreview() {
-        LanguageVersion java = JavaLanguageModule.getInstance().getVersion("24");
-        LanguageVersion javaPreview = JavaLanguageModule.getInstance().getVersion("24-preview");
+        LanguageVersion java = JavaLanguageModule.getInstance().getVersion("25");
+        LanguageVersion javaPreview = JavaLanguageModule.getInstance().getVersion("25-preview");
 
         assertTrue(javaPreview.compareTo(java) > 0, "java-preview should be greater than java");
     }

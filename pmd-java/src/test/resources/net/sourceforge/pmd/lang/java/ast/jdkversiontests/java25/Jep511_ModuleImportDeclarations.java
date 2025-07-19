@@ -8,9 +8,9 @@ import module java.desktop;
 import java.util.List;
 
 /**
- * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
+ * @see <a href="https://openjdk.org/jeps/511">JEP 511: Module Import Declarations</a> (Java 25)
  */
-public class Jep476_ModuleImportDeclarations {
+public class Jep511_ModuleImportDeclarations {
     public static void main(String[] args) {
         File f = new File(".");
         List<File> myList = new ArrayList<>();

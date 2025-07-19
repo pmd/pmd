@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = "com.pmd.test"]
++- CompilationUnit[@Compact = false, @PackageName = "com.pmd.test"]
    +- PackageDeclaration[@Name = "com.pmd.test"]
    |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "com.pmd.test.GitHubBug1780OuterClass", @CanonicalName = "com.pmd.test.GitHubBug1780OuterClass", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "com.pmd.test", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "GitHubBug1780OuterClass", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]

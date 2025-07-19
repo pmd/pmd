@@ -24,13 +24,33 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### 🚀 New: Java 25 Support
+This release of PMD brings support for Java 25.
+
+There are the following new standard language features:
+* [JEP 511: Module Import Declarations](https://openjdk.org/jeps/511)
+* [JEP 512: Compact Source Files and Instance Main Methods](https://openjdk.org/jeps/512)
+* [JEP 513: Flexible Constructor Bodies](https://openjdk.org/jeps/513)
+
+And one preview language feature:
+* [JEP 507: Primitive Types in Patterns, instanceof, and switch (Third Preview)](https://openjdk.org/jeps/507)
+
+In order to analyze a project with PMD that uses these preview language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `25-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-25-preview ...
+
+Note: Support for Java 23 preview language features have been removed. The version "23-preview"
+is no longer available.
+
 #### New: CPD support for CSS
 CPD now supports CSS (Cascading Style Sheets), a language for describing the rendering of structured
 documents (such as HTML) on screen, on paper etc.  
 It is shipped with the new module `pmd-css`.
 
 #### ✨ New Rules
-
 * Two new rules have been added to Java's Error Prone category: {%rule java/errorprone/ReplaceJavaUtilCalendar %}
   and {%rule java/errorprone/ReplaceJavaUtilDate %}. These rules help to migrate away from old Java APIs around
   `java.util.Calendar` and `java.util.Date`. It is recommended to use the modern `java.time` API instead, which
@@ -39,6 +59,8 @@ It is shipped with the new module `pmd-css`.
 ### 🐛 Fixed Issues
 * core
   * [#5597](https://github.com/pmd/pmd/issues/5597): \[core] POM Incompatibility with Maven 4
+* java
+  * [#5478](https://github.com/pmd/pmd/issues/5478): \[java] Support Java 25
 * java-codestyle
   * [#5892](https://github.com/pmd/pmd/issues/5892): \[java] ShortVariable false positive for java 22 unnamed variable `_`
 * java-design
@@ -47,6 +69,15 @@ It is shipped with the new module `pmd-css`.
   * [#2862](https://github.com/pmd/pmd/issues/2862): \[java] New Rules: Avoid java.util.Date and Calendar classes
 
 ### 🚨 API Changes
+
+#### Experimental APIs that are now considered stable
+* pmd-java
+  * {% jdoc !!java::lang.java.ast.ASTImportDeclaration#isModuleImport() %} is now stable API.
+  * {% jdoc !!java::lang.java.ast.ASTCompilationUnit#isCompact() %} is now stable API. Note, it was previously
+    called `isSimpleCompilationUnit`.
+  * {% jdoc java::lang.java.ast.ASTImplicitClassDeclaration %} is now stable API.
+  * {% jdoc !ac!java::lang.java.ast.JavaVisitorBase#visit(java::lang.java.ast.ASTImplicitClassDeclaration,P) %} is now
+    stable API.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

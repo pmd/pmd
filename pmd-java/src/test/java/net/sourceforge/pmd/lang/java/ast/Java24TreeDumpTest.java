@@ -18,4 +18,5 @@ class Java24TreeDumpTest extends BaseJavaTreeDumpTest {
         return java24;
     }
 
+    // Java 24 didn't finalize any new features, thus there are no tests
 }

@@ -1058,7 +1058,7 @@ ASTCompilationUnit CompilationUnit() :
   // OrdinaryCompilationUnit: -> TopLevelClassOrInterfaceDeclaration
   ( TypeDeclaration() ( EmptyDeclaration() )* )*
 
-  // SimpleCompilationUnit:
+  // CompactCompilationUnit:
   [
     (
       { pushEmptyModifierList(); }

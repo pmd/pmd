@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.io.IOException", @ImportedSimpleName = "IOException", @ModuleImport = false, @PackageName = "java.io", @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.lang.annotation.Target", @ImportedSimpleName = "Target", @ModuleImport = false, @PackageName = "java.lang.annotation", @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.lang.annotation.ElementType", @ImportedSimpleName = "ElementType", @ModuleImport = false, @PackageName = "java.lang.annotation", @Static = false]

@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.lang.annotation.ElementType.CONSTRUCTOR", @ImportedSimpleName = "CONSTRUCTOR", @ModuleImport = false, @PackageName = "java.lang.annotation.ElementType", @Static = true]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.lang.annotation.ElementType.FIELD", @ImportedSimpleName = "FIELD", @ModuleImport = false, @PackageName = "java.lang.annotation.ElementType", @Static = true]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.lang.annotation.ElementType.LOCAL_VARIABLE", @ImportedSimpleName = "LOCAL_VARIABLE", @ModuleImport = false, @PackageName = "java.lang.annotation.ElementType", @Static = true]

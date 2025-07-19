@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
  * Represents an import declaration in a Java file.
  *
@@ -137,11 +135,11 @@ public final class ASTImportDeclaration extends AbstractJavaNode implements ASTT
      * of a module.
      *
      * @return {@code true} if this is a module declaration import
-     * @since 7.5.0
      * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
      * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java 24)
+     * @see <a href="https://openjdk.org/jeps/511">JEP 511: Module Import Declarations</a> (Java 25)
+     * @since 7.16.0
      */
-    @Experimental
     public boolean isModuleImport() {
         return moduleImport;
     }
