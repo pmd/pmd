@@ -71,7 +71,7 @@ jobs:
       name: maven-central
       url: https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 180
     defaults:
       run:
         shell: bash
