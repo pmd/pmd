@@ -59,7 +59,7 @@ class Java23PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep477ImplicitlyDeclaredClassesAndInstanceMainMethods1WithJava23Runtime() {
         int javaVersion = Integer.parseInt(System.getProperty("java.version").split("\\.")[0].replaceAll("-ea", ""));
-        assumeTrue(javaVersion >= 23 && javaVersion < 25, "Java " + javaVersion + " doesn't support java.io.IO. At least Java 23 is needed for this test.");
+        assumeTrue(javaVersion >= 23, "Java " + javaVersion + " doesn't support java.io.IO. At least Java 23 is needed for this test.");
 
         ASTCompilationUnit compilationUnit = java23p.parseResource("Jep477_ImplicitlyDeclaredClassesAndInstanceMainMethods1.java");
 
