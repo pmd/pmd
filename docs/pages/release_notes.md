@@ -33,6 +33,7 @@ This is a {{ site.pmd.release_type }} release.
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5859](https://github.com/pmd/pmd/pull/5859): Fix #5858: \[java] Fix false positive in FinalFieldCouldBeStatic for array initializers - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#5893](https://github.com/pmd/pmd/pull/5893): chore: Fix Mockito javaagent warning for Java 21+ - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
