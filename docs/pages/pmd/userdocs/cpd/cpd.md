@@ -4,7 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: May 2025 (7.14.0)
+last_updated: July 2025 (7.16.0)
 ---
 
 ## Overview
@@ -270,41 +270,7 @@ to be "debug".
 
 ## Supported Languages
 
-* C#
-* C/C++
-* [Coco](pmd_languages_coco.html)
-* Dart
-* EcmaScript (JavaScript)
-* Fortran
-* [Gherkin](pmd_languages_gherkin.html) (Cucumber)
-* Go
-* Groovy
-* [Html](pmd_languages_html.html)
-* [Java](pmd_languages_java.html)
-* [Jsp](pmd_languages_jsp.html)
-* [Julia](pmd_languages_julia.html)
-* [Kotlin](pmd_languages_kotlin.html)
-* Lua
-* Matlab
-* Modelica
-* Objective-C
-* Perl
-* PHP
-* [PL/SQL](pmd_languages_plsql.html)
-* Python
-* Ruby
-* [Rust](pmd_languages_rust.html)
-* [Salesforce.com Apex](pmd_languages_apex.html)
-* Scala
-* Swift
-* T-SQL
-* [TypeScript](pmd_languages_js_ts.html)
-* [Visualforce](pmd_languages_visualforce.html)
-* vm (Apache Velocity)
-* [XML](pmd_languages_xml.html)
-  * POM (Apache Maven)
-  * XSL
-  * WSDL
+See [CPD Capable Languages](tag_CpdCapableLanguage.html) for the full list of supported languages.
 
 ## Available report formats
 
