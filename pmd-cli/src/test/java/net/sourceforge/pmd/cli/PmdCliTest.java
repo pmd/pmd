@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -456,11 +458,39 @@ class PmdCliTest extends BaseCliTest {
                 });
     }
 
+    private static Path createSymlink(Path linkName, Path target) throws IOException {
+        assertTrue(Files.isDirectory(target), "Symbolic link target " + target + " is not a directory!");
+        try {
+            return Files.createSymbolicLink(linkName, target);
+        } catch (IOException e) {
+            if (SystemUtils.IS_OS_WINDOWS) {
+                // Creating symbolic links under Windows requires special permission "SeCreateSymbolicLinkPrivilege".
+                // GitHub Actions runners under Windows run with Administrator privileges, which allow to create
+                // symlinks. Non-admin users would need to have this privilege added or enable Developer Mode.
+                // However, we only need a symlink to a directory, and Windows supports "Directory Junctions"
+                // for this - these can be created by ordinary users without special privileges.
+                Process process = Runtime.getRuntime().exec(new String[]{"cmd", "/c", "mklink", "/J", linkName.toString(), target.toString()});
+                int exitCode;
+                try {
+                    exitCode = process.waitFor();
+                } catch (InterruptedException interrupt) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(interrupt);
+                }
+                assertEquals(0, exitCode, "Error creating symlink on windows: exit code = " + exitCode);
+                assertTrue(Files.exists(linkName), "Symlink (junction) " + linkName + " doesn't exist!");
+                return linkName;
+            } else {
+                throw e;
+            }
+        }
+    }
+
     @Test
     void testRelativizeWithSymLink() throws Exception {
         // srcDir = /tmp/junit123/src
         // symlinkedSrcDir = /tmp/junit123/sources -> /tmp/junit123/src
-        Path symlinkedSrcDir = Files.createSymbolicLink(tempRoot().resolve("sources"), srcDir);
+        Path symlinkedSrcDir = createSymlink(tempRoot().resolve("sources"), srcDir);
         runCli(VIOLATIONS_FOUND, "--dir", symlinkedSrcDir.toString(), "--rulesets",
                 DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.toString())
                 .verify(result -> {
@@ -476,7 +506,7 @@ class PmdCliTest extends BaseCliTest {
         // symlinkedSrcDir = /tmp/junit-relativize-with-123 -> /tmp/junit123/src
         Path tempPath = Files.createTempDirectory("junit-relativize-with-");
         Files.delete(tempPath);
-        Path symlinkedSrcDir = Files.createSymbolicLink(tempPath, srcDir);
+        Path symlinkedSrcDir = createSymlink(tempPath, srcDir);
         // relativizing against parent of symlinkedSrcDir: /tmp
         runCli(VIOLATIONS_FOUND, "--dir", symlinkedSrcDir.toString(), "--rulesets",
                 DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.getParent().toString())
