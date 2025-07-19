@@ -8178,6 +8178,16 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "zbynek",
+      "name": "Zbynek Konecny",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1105305?v=4",
+      "profile": "http://www.geogebra.org/u/zbynek",
+      "contributions": [
+        "bug",
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

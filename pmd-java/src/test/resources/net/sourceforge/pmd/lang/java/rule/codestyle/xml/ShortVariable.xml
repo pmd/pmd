@@ -145,4 +145,43 @@ public class ShortVariable {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5892: Unnamed Variables are not flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class UnnamedVar {
+    public void foo() {
+        List<Integer> list = new ArrayList<>();
+        var _ = list.add(1);
+        boolean _ = list.add(1);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5892: Unnamed Variable in Exception is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private void bar() {
+     try {} catch (Exception _) {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5892: Unnamed Variable in record pattern matching is OK</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    record Point(int xCoord, int yCoord) { }
+    private void bar(Object point) {
+        if (point instanceof Point(int myXCoord, _)) { }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
