@@ -38,6 +38,7 @@ It is shipped with the new module `pmd-css`.
 
 ### 🐛 Fixed Issues
 * core
+  * [#4328](https://github.com/pmd/pmd/issues/4328): \[ci] Improve Github Actions Workflows
   * [#5597](https://github.com/pmd/pmd/issues/5597): \[core] POM Incompatibility with Maven 4
 * java-codestyle
   * [#5892](https://github.com/pmd/pmd/issues/5892): \[java] ShortVariable false positive for java 22 unnamed variable `_`
@@ -55,6 +56,7 @@ It is shipped with the new module `pmd-css`.
 * [#5876](https://github.com/pmd/pmd/pull/5876): chore: license header cleanup - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5883](https://github.com/pmd/pmd/pull/5883): Fix #2862: \[java] Add rules discouraging the use of java.util.Calendar and java.util.Date - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5895](https://github.com/pmd/pmd/pull/5895): Fix #5597: Move dogfood profile to separate settings.xml - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5909](https://github.com/pmd/pmd/pull/5909): \[ci] Create a pre-release for snapshot builds - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5914](https://github.com/pmd/pmd/pull/5914): Fix #5892: \[java] ShortVariable FP for java 22 Unnamed Variable - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 
 ### 📦 Dependency updates
