@@ -2436,6 +2436,124 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ReplaceJavaUtilCalendar"
+          language="java"
+          since="7.16.0"
+          message="Usage of java.util.Calendar should be replaced with classes from java.time"
+          minimumLanguageVersion="1.8"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#replacejavautilcalendar">
+        <description>
+The legacy java.util.Calendar API is error-prone, mutable, and not thread-safe. It has confusing month indexing 
+(January = 0), inconsistent field semantics, and verbose usage patterns. The modern java.time API (introduced in Java 8) 
+provides immutable, thread-safe alternatives with clear, intuitive methods.
+
+Use LocalDate (for date-only operations), LocalDateTime (for date and time), or ZonedDateTime (when timezone is important) from java.time package instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //FormalParameter[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Calendar')]]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
+public class Foo {
+    void problematic() {
+        // Problematic - using legacy Calendar API
+        Calendar cal = Calendar.getInstance();
+        cal.set(2024, Calendar.JANUARY, 15); // Month indexing is confusing (0-based)
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        
+        Calendar specific = new GregorianCalendar(2024, 0, 15); // Also problematic
+    }
+    
+    void preferred() {
+        // Preferred - using modern java.time API
+        LocalDate date = LocalDate.of(2024, 1, 15); // Month indexing is intuitive (1-based)
+        LocalDate weekLater = date.plusDays(7);
+        
+        LocalDateTime dateTime = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReplaceJavaUtilDate"
+          language="java"
+          since="7.16.0"
+          message="Usage of java.util.Date should be replaced with classes from java.time"
+          minimumLanguageVersion="1.8"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#replacejavautildate">
+        <description>
+The legacy java.util.Date class is mutable, not thread-safe, and has a confusing API. Many of its methods 
+are deprecated, it doesn't handle timezones properly, and it represents both date and time even when only 
+one is needed. The constructor parameters are particularly error-prone: year is "years since 1900" and 
+month is 0-based (January = 0). The modern java.time API (introduced in Java 8) provides better type safety, immutability, and clearer semantics.
+
+Use LocalDate (date only), LocalTime (time only), LocalDateTime (date and time), Instant (timestamp), 
+or ZonedDateTime (date-time with timezone) from java.time package instead.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //FormalParameter[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Date')]]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
+public class Foo {
+    void problematic() {
+        // Problematic - using legacy Date API
+        Date now = new Date();
+        Date epoch = new Date(0L);
+        Date custom = new Date(124, 0, 15); // Deprecated constructor: year=1900+124=2024, month=0=January
+        
+        // Mutable operations are error-prone
+        now.setTime(System.currentTimeMillis());
+    }
+    
+    void preferred() {
+        // Preferred - using modern java.time API
+        Instant now = Instant.now(); // For timestamps
+        LocalDate today = LocalDate.now(); // For date only
+        LocalDateTime dateTime = LocalDateTime.now(); // For date and time
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(); // With timezone
+        
+        // Immutable operations are safer
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDateTime nextHour = dateTime.plusHours(1);
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ReturnEmptyCollectionRatherThanNull"
           language="java"
           since="6.37.0"
