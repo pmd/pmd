@@ -106,7 +106,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>32</pmd.build-tools.version>
+        <pmd.build-tools.version>33</pmd.build-tools.version>
 
         <pmd-designer.version>7.10.0</pmd-designer.version>
 
@@ -887,7 +887,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.17.0</version>
+                <version>3.18.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -1315,34 +1315,6 @@
         </profile>
 
         <profile>
-            <id>dogfood</id>
-            <activation>
-                <property>
-                    <name>dogfoodStagingRepo</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <altDeploymentRepository>dogfood::file://${dogfoodStagingRepo}</altDeploymentRepository>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>dogfood</id>
-                    <url>file://${dogfoodStagingRepo}</url>
-                    <releases><enabled>true</enabled></releases>
-                    <snapshots><enabled>true</enabled></snapshots>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-
-        <profile>
             <id>central-portal-snapshots</id>
             <repositories>
                 <repository>
@@ -1379,6 +1351,7 @@
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
+        <module>pmd-css</module>
         <module>pmd-dart</module>
         <module>pmd-doc</module>
         <module>pmd-fortran</module>
