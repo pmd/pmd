@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <test-code>
+        <description>Comparable without equals</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Missing equals and hashCode</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>No feature envy on OverrideBothEqualsAndHashcodeRule: Only check Comparable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparable with equals but no hashCode</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+
+                @Override
+                public boolean equals(Object o) {
+                    return o instanceof Foo && compareTo((Foo) o) == 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparable with both methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+
+                @Override
+                public boolean equals(Object o) {
+                    return o instanceof Foo && compareTo((Foo) o) == 0;
+                }
+
+                @Override
+                public int hashCode() {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Non-Comparable class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparable interface</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            interface Foo extends Comparable<Foo> {
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparable with wrong equals signature</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+           <message>Missing equals and hashCode</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+
+                public boolean equals(Foo o) {
+                    return compareTo(o) == 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparable with wrong equals signature</description>
+        <expected-problems>1</expected-problems>
+        <!-- this is inconsistent: equals will fail on class but hashcode on the equals method, should be consistent -->
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Missing equals</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+
+                @Override
+                public int hashCode() {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparable with wrong equals signature</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+           <message>Missing hashCode</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+
+                @Override
+                public boolean equals(Object o) {
+                    return false;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Raw Comparable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+            class Foo implements Comparable {
+                @Override
+                public int compareTo(Object o) {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Anonymous Comparable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+            class Test {
+                Comparable<Object> anonymous = new Comparable<Object>() {
+                    @Override
+                    public int compareTo(Object o) {
+                        return 0;
+                    }
+                };
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>FileId interface with proper methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public interface FileId extends Comparable<FileId> {
+                @Override
+                boolean equals(Object o);
+
+                @Override
+                int hashCode();
+
+                @Override
+                default int compareTo(FileId o) {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Abstract class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class AbstractTestClass {
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Abstract class with equals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public abstract class AbstractWithOneMethod {
+                @Override
+                public boolean equals(Object o) {
+                    return false;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Concrete class missing hashCode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class ConcreteClass {
+                public boolean equals(Object o) {
+                    return false;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>enum declaration with no methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum SimpleEnum {
+                VALUE1, VALUE2
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>enum declaration with equals only</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum EnumWithEquals {
+                VALUE1, VALUE2;
+
+                @Override
+                public boolean equals(Object o) {
+                    return false;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>enum declaration with hashCode only</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum EnumWithHashCode {
+                VALUE1, VALUE2;
+
+                @Override
+                public int hashCode() {
+                    return 42;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>enum declaration with both equals and hashCode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum CompleteEnum {
+                VALUE1, VALUE2;
+
+                @Override
+                public boolean equals(Object o) {
+                    return false;
+                }
+
+                @Override
+                public int hashCode() {
+                    return 42;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>enum implementing Comparable with equals</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum ComparableEnum implements Comparable<ComparableEnum> {
+                VALUE1, VALUE2;
+
+                @Override
+                public boolean equals(Object o) {
+                    return false;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>enum implementing Comparable with hashCode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum ComparableEnum implements Comparable<ComparableEnum> {
+                VALUE1, VALUE2;
+
+                @Override
+                public int hashCode() {
+                    return 42;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Non-Comparable class with equals but no hashCode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        class Foo {
+            @Override
+            public boolean equals(Object o) {
+                return false;
+            }
+        }
+    ]]></code>
+    </test-code>
+    <test-code>
+        <description>Record with Comparable and no explicit equals/hashCode</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+            public record Foo(int x, int y) implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return Integer.compare(this.x, o.x);
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Record with Comparable and explicit equals</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>Missing hashCode</message>
+        </expected-messages>
+        <code><![CDATA[
+            public record Foo(int x, int y) implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return Integer.compare(this.x, o.x);
+                }
+
+                @Override
+                public boolean equals(Object o) {
+                    return o instanceof Foo f && compareTo(f) == 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Record with Comparable and explicit hashCode</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Missing equals</message>
+        </expected-messages>
+        <code><![CDATA[
+            public record Foo(int x, int y) implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return Integer.compare(this.x, o.x);
+                }
+
+                @Override
+                public int hashCode() {
+                    return x;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Record with Comparable and both explicit equals and hashCode</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public record Foo(int x, int y) implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return Integer.compare(this.x, o.x);
+                }
+
+                @Override
+                public boolean equals(Object o) {
+                    return o instanceof Foo f && compareTo(f) == 0;
+                }
+
+                @Override
+                public int hashCode() {
+                    return x;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Record without Comparable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public record Foo(int x, int y) {
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Record with wrong equals signature</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Missing equals and hashCode</message>
+        </expected-messages>
+        <code><![CDATA[
+            public record Foo(int x, int y) implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return Integer.compare(this.x, o.x);
+                }
+
+                public boolean equals(Foo o) {
+                    return compareTo(o) == 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+</test-data>
