@@ -17,7 +17,7 @@ GEM
     logger-colors (1.0.0)
     nokogiri (1.18.8-x86_64-linux-gnu)
       racc (~> 1.4)
-    ostruct (0.6.2)
+    ostruct (0.6.3)
     pmdtester (1.5.5)
       differ (~> 0.1)
       liquid (~> 5.4)
