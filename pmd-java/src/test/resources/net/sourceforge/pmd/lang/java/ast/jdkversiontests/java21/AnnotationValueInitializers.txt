@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "AnnotationValueInitializers", @CanonicalName = "AnnotationValueInitializers", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "AnnotationValueInitializers", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PACKAGE]
    |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
    |  |  +- Annotation[@SimpleName = "MyAnnotation"]
