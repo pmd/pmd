@@ -5,17 +5,21 @@
 package net.sourceforge.pmd.lang.test.ast
 
 
-import org.junit.jupiter.api.TestFactory
-import org.junit.jupiter.api.condition.EnabledIfSystemProperty
+import net.sourceforge.pmd.annotation.InternalApi
+import org.junit.jupiter.api.Test
 
 /**
- * This is to trick Intellij into making subclasses executable (because of @TestFactory).
+ * This is to trick Intellij into making subclasses executable (because of @Test).
  * But Junit does not use it because of the unsatisfiable condition. This comes from
  * Kotest, but was removed in 4.2.0 without explanation.
  */
 interface IntelliMarker {
-    @EnabledIfSystemProperty(named = "wibble", matches = "wobble")
-    @TestFactory
+    @Deprecated("This is not an API")
     fun primer() {
+    }
+
+    @Test
+    @InternalApi
+    fun dummyTestForIntelliJIntegration() {
     }
 }
