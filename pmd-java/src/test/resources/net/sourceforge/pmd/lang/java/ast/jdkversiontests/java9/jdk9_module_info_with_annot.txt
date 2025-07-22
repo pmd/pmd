@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ModuleDeclaration[@Name = "jdk.pack", @Open = false]
       +- Annotation[@SimpleName = "Deprecated"]
       |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "Deprecated"]
