@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ModuleDeclaration[@Name = "com.example.foo", @Open = true]
       +- ModuleName[@Name = "com.example.foo"]
       +- ModuleRequiresDirective[@Static = false, @Transitive = false]
