@@ -2251,6 +2251,13 @@ so that the new documentation page is available at
       <li>Secrets: no additional secrets</li>
     </ul>
   </li>
+  <li>github-prerelease: Creates a new GitHub pre-release at <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a> including
+the attached artifacts. It first removes an old pre-release, then
+creates the new one with the same tag name. This means, the tag is moved forward for every pre-release.
+    <ul>
+      <li>Environment: github</li>
+    </ul>
+  </li>
   <li>create-regression-tester-baseline: Creates a new baseline to be used by the pull request builds
 for regression testing. The baseline is uploaded to <a href="https://pmd-code.org/pmd-regression-tester/main-baseline.zip">https://pmd-code.org/pmd-regression-tester/main-baseline.zip</a>.
     <ul>
@@ -2338,8 +2345,8 @@ version.
       <li>Vars: PMD_CODE_ORG_KNOWN_HOSTS</li>
     </ul>
   </li>
-  <li>github-release: Creates a new github release at <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a> including
-the attached artifacts.
+  <li>github-release: Creates a new GitHub release at <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a> including
+the attached artifacts. Deletes a pre-release for the same version, if it exists.
     <ul>
       <li>Environment: github</li>
     </ul>
@@ -2800,7 +2807,7 @@ curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87E
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2025 (7.15.0)<br /> Site last generated: Jul 18, 2025 <br />
+            July 2025 (7.16.0)<br /> Site last generated: Jul 22, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
