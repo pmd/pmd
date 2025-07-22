@@ -15,7 +15,7 @@ GEM
       strscan (>= 3.1.1)
     logger (1.7.0)
     logger-colors (1.0.0)
-    nokogiri (1.18.8-x86_64-linux-gnu)
+    nokogiri (1.18.9-x86_64-linux-gnu)
       racc (~> 1.4)
     ostruct (0.6.3)
     pmdtester (1.5.5)
