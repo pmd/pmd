@@ -6,9 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
-import net.sourceforge.pmd.annotation.Experimental;
-
 /**
+ * A class declaration added by the compiler implicitly in a compact compilation unit (see JEP 512, Java 25).
  *
  * <pre class="grammar">
  * ImplicitClassDeclaration ::= {@linkplain ASTClassBody ClassBody}
@@ -20,8 +19,9 @@ import net.sourceforge.pmd.annotation.Experimental;
  *
  * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
  * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)
+ * @see <a href="https://openjdk.org/jeps/512">JEP 512: Compact Source Files and Instance Main Methods</a> (Java 25)
+ * @since 7.16.0
  */
-@Experimental("Simple Source Files and Instance Main Methods is a Java 22 / Java 23 / Java 24 Preview feature")
 public final class ASTImplicitClassDeclaration extends AbstractTypeDeclaration {
     ASTImplicitClassDeclaration(int id) {
         super(id);

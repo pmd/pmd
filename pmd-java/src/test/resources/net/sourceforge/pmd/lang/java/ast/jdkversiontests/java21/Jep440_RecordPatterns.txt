@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Jep440_RecordPatterns", @CanonicalName = "Jep440_RecordPatterns", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Jep440_RecordPatterns", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PACKAGE]
       +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
       +- ClassBody[@Empty = false, @Size = 15]
