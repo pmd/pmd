@@ -445,6 +445,114 @@ jobs:
           git commit -q -m "$MSG"
           git push
 
+  github-prerelease:
+    needs: check-version
+    environment:
+      name: github
+      url: ${{ steps.release.outputs.release_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: docs-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: docs
+
+      - name: Setup GPG
+        env:
+          PMD_CI_GPG_PRIVATE_KEY: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+        run: |
+          mkdir -p "${HOME}/.gpg"
+          chmod 700 "${HOME}/.gpg"
+          printenv PMD_CI_GPG_PRIVATE_KEY | gpg --batch --import
+
+          gpg --list-keys --fingerprint --keyid-format=long
+          gpg --list-secret-keys --fingerprint --keyid-format=long
+      - name: Create docs zip
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+        run: |
+          mv docs "pmd-doc-${PMD_VERSION}"
+          zip -qr "dist/pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
+
+      - name: Sign files
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
+        run: |
+          cd dist
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-bin.zip"
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-src.zip"
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-doc.zip"
+      - uses: actions/create-github-app-token@v2
+        id: pmd-actions-helper-app-token
+        with:
+          app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+          private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
+          owner: pmd
+          repositories: pmd
+          permission-contents: write # create a release
+      - name: Delete old GitHub Pre-Release
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+        run: |
+          tagName="pmd_releases/${PMD_VERSION}"
+          existingTagName="$(gh --repo pmd/pmd release list --json tagName,isPrerelease --jq ".[] | select(.tagName == \"${tagName}\" and .isPrerelease == true) | .tagName")"
+          
+          if [ "${existingTagName}" = "${tagName}" ]; then
+            echo "Pre-release for tag ${tagName} already exists - deleting it..."
+            gh release delete "${tagName}" \
+              --repo pmd/pmd \
+              --cleanup-tag \
+              --yes
+          else
+            echo "No pre-release ${tagName} exists, nothing to delete"
+          fi
+      - name: Create GitHub Pre-Release
+        id: release
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+        run: |
+          tagName="pmd_releases/${PMD_VERSION}"
+          # now, create a new pre-release for the same tag (new tag will be created)
+          release_name="PMD ${PMD_VERSION} ($(date -u +%d-%B-%Y))"
+          gh release create "${tagName}" \
+            --repo pmd/pmd \
+            --prerelease \
+            --target main \
+            --title "$release_name" \
+            --notes-file "pmd-doc-${PMD_VERSION}/pmd_release_notes.md" \
+              "dist/pmd-dist-${PMD_VERSION}-bin.zip" \
+              "dist/pmd-dist-${PMD_VERSION}-bin.zip.asc" \
+              "dist/pmd-dist-${PMD_VERSION}-src.zip" \
+              "dist/pmd-dist-${PMD_VERSION}-src.zip.asc" \
+              "dist/pmd-dist-${PMD_VERSION}-doc.zip" \
+              "dist/pmd-dist-${PMD_VERSION}-doc.zip.asc" \
+              "dist/pmd-${PMD_VERSION}-cyclonedx.xml" \
+              "dist/pmd-${PMD_VERSION}-cyclonedx.json"
+          echo "release_url=https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${PMD_VERSION}" >> "$GITHUB_OUTPUT"
+      - name: Cleanup gpg
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.gpg"
+
   create-regression-tester-baseline:
     needs: check-version
     runs-on: ubuntu-latest
