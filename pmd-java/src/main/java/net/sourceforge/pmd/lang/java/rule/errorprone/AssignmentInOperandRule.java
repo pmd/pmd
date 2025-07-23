@@ -7,10 +7,12 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTDoStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -30,6 +32,11 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
             .desc("Allow assignment within the conditional expression of an if statement")
             .defaultValue(false).build();
 
+    private static final PropertyDescriptor<Boolean> ALLOW_SWITCH_DESCRIPTOR =
+            booleanProperty("allowSwitch")
+                    .desc("Allow assignment within the conditional expression of a switch statement")
+                    .defaultValue(false).build();
+
     private static final PropertyDescriptor<Boolean> ALLOW_FOR_DESCRIPTOR =
         booleanProperty("allowFor")
             .desc("Allow assignment within the conditional expression of a for statement")
@@ -38,6 +45,11 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<Boolean> ALLOW_WHILE_DESCRIPTOR =
             booleanProperty("allowWhile")
                     .desc("Allow assignment within the conditional expression of a while statement")
+                    .defaultValue(false).build();
+
+    private static final PropertyDescriptor<Boolean> ALLOW_DO_WHILE_DESCRIPTOR =
+            booleanProperty("allowDoWhile")
+                    .desc("Allow assignment within the conditional expression of a do-while statement")
                     .defaultValue(false).build();
 
     private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR =
@@ -52,6 +64,8 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
         definePropertyDescriptor(ALLOW_FOR_DESCRIPTOR);
         definePropertyDescriptor(ALLOW_WHILE_DESCRIPTOR);
         definePropertyDescriptor(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR);
+        definePropertyDescriptor(ALLOW_DO_WHILE_DESCRIPTOR);
+        definePropertyDescriptor(ALLOW_SWITCH_DESCRIPTOR);
     }
 
     @Override
@@ -77,6 +91,8 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
         }
         if (parent instanceof ASTIfStatement && !getProperty(ALLOW_IF_DESCRIPTOR)
             || parent instanceof ASTWhileStatement && !getProperty(ALLOW_WHILE_DESCRIPTOR)
+            || parent instanceof ASTDoStatement && !getProperty(ALLOW_DO_WHILE_DESCRIPTOR)
+            || parent instanceof ASTSwitchStatement && !getProperty(ALLOW_SWITCH_DESCRIPTOR)
             || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel && !getProperty(ALLOW_FOR_DESCRIPTOR)) {
 
             ctx.addViolation(impureExpr);
@@ -85,7 +101,8 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
 
     public boolean allowsAllAssignments() {
         return getProperty(ALLOW_IF_DESCRIPTOR) && getProperty(ALLOW_FOR_DESCRIPTOR)
-                && getProperty(ALLOW_WHILE_DESCRIPTOR) && getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR);
+                && getProperty(ALLOW_WHILE_DESCRIPTOR) && getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR)
+                && getProperty(ALLOW_DO_WHILE_DESCRIPTOR) && getProperty(ALLOW_SWITCH_DESCRIPTOR);
     }
 
     /**
