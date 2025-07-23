@@ -210,4 +210,21 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>No feature envy on MissingEqualsOnComparableRule: Comparable with equals, but missing hashCode.</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+
+                @Override
+                public boolean equals(Object o) {
+                    return o instanceof Foo && compareTo((Foo) o) == 0;
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
