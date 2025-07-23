@@ -94,13 +94,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <suppressionsLocation>pmd-javascript-checkstyle-suppressions.xml</suppressionsLocation>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
     <dependencies>

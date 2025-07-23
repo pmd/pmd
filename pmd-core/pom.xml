@@ -47,13 +47,6 @@
                     </includeOnlyProperties>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <configuration>
-                    <suppressionsLocation>pmd-core-checkstyle-suppressions.xml</suppressionsLocation>
-                </configuration>
-            </plugin>
 
             <plugin>
                 <!-- package test sources for use by other submodules -->
