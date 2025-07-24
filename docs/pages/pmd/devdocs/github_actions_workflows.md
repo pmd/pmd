@@ -5,7 +5,7 @@ summary: |
   PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
   This page gives an overview of how these workflows work and how to use them.
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: July 2025 (7.16.0)
+last_updated: July 2025 (7.17.0)
 ---
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
@@ -35,7 +35,8 @@ not require any secrets.
 including forks). This is also a scheduled workflow that runs every month to make sure, the project
 can still be built.
 
-"Build Release" is triggered, whenever a tag is pushed. Note that the whole project is built at once, that
+"Build Release" is triggered, whenever a tag is pushed (excluding SNAPSHOT pre-release tags).
+Note that the whole project is built at once, that
 means if pmd-designer/pmd-core update is required, this can't be built. See also
 [Circular dependencies between pmd-designer, pmd-core, pmd-cli #4446](https://github.com/pmd/pmd/issues/4446).
 As this happens very seldom, this situation is ignored for now.
@@ -189,9 +190,9 @@ we are actually building a SNAPSHOT version. Then a couple of other jobs are bei
   <https://pmd.github.io/pmd/>.
   * Environment: github-pages
   * Secrets: no additional secrets
-* github-prerelease: Creates a new GitHub pre-release at <https://github.com/pmd/pmd/releases> including
-  the attached artifacts. It first removes an old pre-release, then
-  creates the new one with the same tag name. This means, the tag is moved forward for every pre-release.
+* github-prerelease: Creates a new GitHub pre-release or updates and existing one at <https://github.com/pmd/pmd/releases>.
+  This looks like a real release and includes the usual attached (signed) artifacts.
+  The release is reused and the tag is moved forward for every pre-release.
   * Environment: github
 * create-regression-tester-baseline: Creates a new baseline to be used by the pull request builds
   for regression testing. The baseline is uploaded to <https://pmd-code.org/pmd-regression-tester/main-baseline.zip>.
