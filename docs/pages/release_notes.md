@@ -85,6 +85,7 @@ It is shipped with the new module `pmd-css`.
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5733](https://github.com/pmd/pmd/pull/5733): \[css] Add new CPD language - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
 * [#5859](https://github.com/pmd/pmd/pull/5859): Fix #5858: \[java] Fix false positive in FinalFieldCouldBeStatic for array initializers - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#5872](https://github.com/pmd/pmd/pull/5872): \[java] Add Support for Java 25 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5876](https://github.com/pmd/pmd/pull/5876): chore: license header cleanup - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5883](https://github.com/pmd/pmd/pull/5883): Fix #2862: \[java] Add rules discouraging the use of java.util.Calendar and java.util.Date - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5893](https://github.com/pmd/pmd/pull/5893): chore: Fix Mockito javaagent warning for Java 21+ - [Andreas Dangel](https://github.com/adangel) (@adangel)
@@ -99,9 +100,31 @@ It is shipped with the new module `pmd-css`.
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5857](https://github.com/pmd/pmd/pull/5857): Bump PMD from 7.14.0 to 7.15.0
+* [#5861](https://github.com/pmd/pmd/pull/5861): Bump scalameta.version from 4.13.7 to 4.13.8
+* [#5862](https://github.com/pmd/pmd/pull/5862): Bump com.puppycrawl.tools:checkstyle from 10.25.1 to 10.26.1
+* [#5863](https://github.com/pmd/pmd/pull/5863): Bump org.apache.maven.plugins:maven-pmd-plugin from 3.26.0 to 3.27.0
+* [#5864](https://github.com/pmd/pmd/pull/5864): Bump kotlin.version from 1.9.24 to 2.2.0
+* [#5865](https://github.com/pmd/pmd/pull/5865): Bump org.junit:junit-bom from 5.13.1 to 5.13.2
+* [#5866](https://github.com/pmd/pmd/pull/5866): Bump org.jsoup:jsoup from 1.20.1 to 1.21.1
+* [#5884](https://github.com/pmd/pmd/pull/5884): Bump org.junit:junit-bom from 5.13.2 to 5.13.3
+* [#5885](https://github.com/pmd/pmd/pull/5885): Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.7 to 3.2.8
+* [#5886](https://github.com/pmd/pmd/pull/5886): Bump org.checkerframework:checker-qual from 3.49.4 to 3.49.5
+* [#5889](https://github.com/pmd/pmd/pull/5889): Bump org.apache.maven.plugins:maven-enforcer-plugin from 3.5.0 to 3.6.0
+* [#5900](https://github.com/pmd/pmd/pull/5900): Bump org.apache.commons:commons-lang3 from 3.17.0 to 3.18.0
+* [#5901](https://github.com/pmd/pmd/pull/5901): Bump io.github.apex-dev-tools:apex-parser from 4.4.0 to 4.4.1
+* [#5902](https://github.com/pmd/pmd/pull/5902): Bump log4j.version from 2.25.0 to 2.25.1
+* [#5910](https://github.com/pmd/pmd/pull/5910): Bump maven from 3.9.10 to 3.9.11
+* [#5921](https://github.com/pmd/pmd/pull/5921): Bump build-tools from 32 to 33
+* [#5926](https://github.com/pmd/pmd/pull/5926): chore(deps): bump org.apache.maven.plugins:maven-enforcer-plugin from 3.6.0 to 3.6.1
+* [#5927](https://github.com/pmd/pmd/pull/5927): chore(deps): bump ostruct from 0.6.2 to 0.6.3 in /.ci/files in the all-gems group across 1 directory
+* [#5928](https://github.com/pmd/pmd/pull/5928): chore(deps): bump marocchino/sticky-pull-request-comment from 2.9.3 to 2.9.4 in the all-actions group
+* [#5929](https://github.com/pmd/pmd/pull/5929): chore(deps): Update gems
 
 ### 📈 Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 100 commits
+* 21 closed tickets & PRs
+* Days since last release: 27
 
 {% endtocmaker %}
-
