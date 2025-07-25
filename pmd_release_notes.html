@@ -85,8 +85,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.16.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 25-July-2025</div>
+    <li class="sidebarTitle">PMD 7.17.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 12-September-2025</div>
     
     
     
@@ -2024,117 +2024,20 @@
     </details>
 
   
-<h2 id="25-july-2025---7160-snapshot">25-July-2025 - 7.16.0-SNAPSHOT</h2>
+<h2 id="12-september-2025---7170-snapshot">12-September-2025 - 7.17.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.16.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.17.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
-<h4 id="-new-java-25-support">🚀 New: Java 25 Support</h4>
-<p>This release of PMD brings support for Java 25.</p>
-
-<p>There are the following new standard language features:</p>
-<ul>
-  <li><a href="https://openjdk.org/jeps/511">JEP 511: Module Import Declarations</a></li>
-  <li><a href="https://openjdk.org/jeps/512">JEP 512: Compact Source Files and Instance Main Methods</a></li>
-  <li><a href="https://openjdk.org/jeps/513">JEP 513: Flexible Constructor Bodies</a></li>
-</ul>
-
-<p>And one preview language feature:</p>
-<ul>
-  <li><a href="https://openjdk.org/jeps/507">JEP 507: Primitive Types in Patterns, instanceof, and switch (Third Preview)</a></li>
-</ul>
-
-<p>In order to analyze a project with PMD that uses these preview language features,
-you’ll need to enable it via the environment variable <code class="language-plaintext highlighter-rouge">PMD_JAVA_OPTS</code> and select the new language
-version <code class="language-plaintext highlighter-rouge">25-preview</code>:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PMD_JAVA_OPTS=--enable-preview
-pmd check --use-version java-25-preview ...
-</code></pre></div></div>
-
-<p>Note: Support for Java 23 preview language features have been removed. The version “23-preview”
-is no longer available.</p>
-
-<h4 id="new-cpd-support-for-css">New: CPD support for CSS</h4>
-<p>CPD now supports CSS (Cascading Style Sheets), a language for describing the rendering of structured
-documents (such as HTML) on screen, on paper etc.<br />
-It is shipped with the new module <code class="language-plaintext highlighter-rouge">pmd-css</code>.</p>
-
-<h4 id="-new-rules">✨ New Rules</h4>
-<ul>
-  <li>Two new rules have been added to Java’s Error Prone category: <a href="pmd_rules_java_errorprone.html#replacejavautilcalendar"><code class="language-plaintext highlighter-rouge">ReplaceJavaUtilCalendar</code></a>
-and <a href="pmd_rules_java_errorprone.html#replacejavautildate"><code class="language-plaintext highlighter-rouge">ReplaceJavaUtilDate</code></a>. These rules help to migrate away from old Java APIs around
-<code class="language-plaintext highlighter-rouge">java.util.Calendar</code> and <code class="language-plaintext highlighter-rouge">java.util.Date</code>. It is recommended to use the modern <code class="language-plaintext highlighter-rouge">java.time</code> API instead, which
-is available since Java 8.</li>
-</ul>
-
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4328">#4328</a>: [ci] Improve Github Actions Workflows</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5597">#5597</a>: [core] POM Incompatibility with Maven 4</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5344">#5344</a>: [java] IllegalArgumentException: Invalid type reference for method or ctor type annotation: 16</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5478">#5478</a>: [java] Support Java 25</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5892">#5892</a>: [java] ShortVariable false positive for java 22 unnamed variable <code class="language-plaintext highlighter-rouge">_</code></li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5858">#5858</a>: [java] FinalFieldCouldBeStatic false positive for array initializers</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2862">#2862</a>: [java] New Rules: Avoid java.util.Date and Calendar classes</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
-<h4 id="experimental-apis-that-are-now-considered-stable">Experimental APIs that are now considered stable</h4>
-<ul>
-  <li>pmd-java
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.16.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTImportDeclaration.html#isModuleImport()"><code>ASTImportDeclaration#isModuleImport</code></a> is now stable API.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.16.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#isCompact()"><code>ASTCompilationUnit#isCompact</code></a> is now stable API. Note, it was previously
-called <code class="language-plaintext highlighter-rouge">isSimpleCompilationUnit</code>.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.16.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/ASTImplicitClassDeclaration.html#"><code>ASTImplicitClassDeclaration</code></a> is now stable API.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.16.0-SNAPSHOT/net/sourceforge/pmd/lang/java/ast/JavaVisitorBase.html#visit(net.sourceforge.pmd.lang.java.ast.ASTImplicitClassDeclaration,P)"><code>JavaVisitorBase#visit(ASTImplicitClassDeclaration, P)</code></a> is now
-stable API.</li>
-    </ul>
-  </li>
-</ul>
-
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/5733">#5733</a>: [css] Add new CPD language - <a href="https://github.com/tprouvot">Thomas Prouvot</a> (@tprouvot)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5859">#5859</a>: Fix #5858: [java] Fix false positive in FinalFieldCouldBeStatic for array initializers - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5876">#5876</a>: chore: license header cleanup - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5883">#5883</a>: Fix #2862: [java] Add rules discouraging the use of java.util.Calendar and java.util.Date - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5893">#5893</a>: chore: Fix Mockito javaagent warning for Java 21+ - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5894">#5894</a>: chore: Fix JUnit warning about invalid test factory - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5895">#5895</a>: Fix #5597: Move dogfood profile to separate settings.xml - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5899">#5899</a>: Fix #5344: [java] Just log invalid annotation target type - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5909">#5909</a>: [ci] Create a pre-release for snapshot builds - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5911">#5911</a>: [doc] Reference CPD Capable Languages in CPD CLI docu - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5914">#5914</a>: Fix #5892: [java] ShortVariable FP for java 22 Unnamed Variable - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5918">#5918</a>: chore: [cli] Improve symbolic link tests for Windows - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5920">#5920</a>: chore: [scala] Fix javadoc config - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-</ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2171,7 +2074,7 @@ stable API.</li>
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jul 22, 2025 <br />
+             Site last generated: Jul 25, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
