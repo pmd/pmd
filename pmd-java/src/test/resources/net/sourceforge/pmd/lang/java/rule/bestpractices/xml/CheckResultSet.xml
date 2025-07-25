@@ -325,7 +325,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#5198: Result is saved in variable before being checked</description>
+        <description>#5198: Result is saved in variable before being checked in if statement</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.sql.*;
@@ -342,6 +342,24 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#5198: Result is saved in variable before being checked in while loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+public class Foo {
+    public void bar(Statement stmt) {
+        ResultSet results = stmt.executeQuery();
+        boolean hasNext = results.next();
+        while (hasNext) {
+            System.out.println("next!");
+            hasNext = results.next();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 
     <test-code>
         <description>Result is overwritten before being checked</description>
