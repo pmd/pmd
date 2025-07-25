@@ -323,4 +323,44 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5198: Result is saved in variable before being checked</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+public class Foo {
+    public void bar(Statement stmt) {
+        ResultSet results = stmt.executeQuery();
+        boolean hasNext = results.next();
+        if (hasNext) {
+            System.out.println("next!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>Result is overwritten before being checked</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+
+public class Foo {
+    public void bar(Statement stmt) {
+        ResultSet results = stmt.executeQuery();
+        boolean hasNext = results.next();
+        hasNext = false;
+        if (hasNext) {
+            System.out.println("next!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

@@ -7,12 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.sql.ResultSet;
+import java.util.List;
 import java.util.Set;
 
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.*;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -41,7 +40,7 @@ public class CheckResultSetRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTMethodCall node, Object data) {
-        if (isResultSetMethod(node)) {
+        if (isResultSetMethod(node) && !isCheckedIndirectly(node)) {
             asCtx(data).addViolation(node);
         }
         return super.visit(node, data);
@@ -50,5 +49,16 @@ public class CheckResultSetRule extends AbstractJavaRule {
     private boolean isResultSetMethod(ASTMethodCall node) {
         return METHODS.contains(node.getMethodName())
             && TypeTestUtil.isDeclaredInClass(ResultSet.class, node.getMethodType());
+    }
+
+    private boolean isCheckedIndirectly(ASTMethodCall node) {
+        if (!(node.getParent() instanceof ASTVariableDeclarator)) {
+            return false;
+        }
+
+        final ASTVariableDeclarator declarator = (ASTVariableDeclarator) node.getParent();
+        final List<ASTAssignableExpr.ASTNamedReferenceExpr> usages = declarator.getVarId().getLocalUsages();
+        //check that the result is used and its first usage is not overwriting the result
+        return !usages.isEmpty() && usages.get(0).getAccessType() == ASTAssignableExpr.AccessType.READ;
     }
 }
