@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <!-- InputStreamReader class tests -->
+    <test-code>
+        <description>InputStreamReader</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() throws IOException {
+        InputStreamReader reader1 = new InputStreamReader(System.in); // violation
+        
+        // Correct replacements - no violations (both String and Charset variants)
+        InputStreamReader reader2 = new InputStreamReader(System.in, "UTF-8");
+        InputStreamReader reader3 = new InputStreamReader(System.in, StandardCharsets.UTF_8);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <!-- OutputStreamWriter class tests -->
+    <test-code>
+        <description>OutputStreamWriter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() throws IOException {
+        OutputStreamWriter writer1 = new OutputStreamWriter(System.out); // violation
+        
+        // Correct replacements - no violations (both String and Charset variants)
+        OutputStreamWriter writer2 = new OutputStreamWriter(System.out, "UTF-8");
+        OutputStreamWriter writer3 = new OutputStreamWriter(System.out, StandardCharsets.UTF_8);
+    }
+}
+        ]]></code>
+        <source-type>java 1.4</source-type>
+    </test-code>
+
+    <!-- URLEncoder/URLDecoder class tests -->
+    <test-code>
+        <description>URLEncoder/URLDecoder - violations and replacements in Java 1.4+</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <code><![CDATA[
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() throws Exception {
+        String encoded = URLEncoder.encode("test string"); // violation (deprecated)
+        String decoded = URLDecoder.decode("test%20string"); // violation (deprecated)
+        
+        // Correct replacements - no violations (String variants only)
+        String encoded2 = URLEncoder.encode("test string", "UTF-8");
+        String decoded2 = URLDecoder.decode("test%20string", "UTF-8");
+        String encoded3 = URLEncoder.encode("test string", StandardCharsets.UTF_8);
+        String decoded3 = URLDecoder.decode("test%20string", StandardCharsets.UTF_8);
+    }
+}
+        ]]></code>
+        <source-type>java 1.4</source-type>
+    </test-code>
+
+    <test-code>
+        <description>URLEncoder/URLDecoder - no violations in Java 1.3 (replacements not available)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+public class Test {
+    void test() throws Exception {
+        String encoded = URLEncoder.encode("test string"); // no violation - replacement not available until Java 1.4
+        String decoded = URLDecoder.decode("test%20string"); // no violation - replacement not available until Java 1.4
+    }
+}
+        ]]></code>
+        <source-type>java 1.3</source-type>
+    </test-code>
+
+    <!-- PrintStream class tests -->
+    <test-code>
+        <description>PrintStream - violations and replacements in Java 1.5+</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>7,8,9,10</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() throws IOException {
+        PrintStream ps1 = new PrintStream(System.out); // violation
+        PrintStream ps2 = new PrintStream(System.out, true); // violation
+        PrintStream ps3 = new PrintStream("output.txt"); // violation
+        PrintStream ps4 = new PrintStream(new File("output.txt")); // violation
+        
+        // Correct replacements - no violations (String variants)
+        PrintStream ps5 = new PrintStream(System.out, true, "UTF-8");
+        PrintStream ps6 = new PrintStream("output.txt", "UTF-8");
+        PrintStream ps7 = new PrintStream(new File("output.txt"), "UTF-8");
+    }
+}
+        ]]></code>
+        <source-type>java 1.5</source-type>
+    </test-code>
+
+    <test-code>
+        <description>PrintStream - partial violations in Java 1.4 (some replacements available)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+public class Test {
+    void test() throws IOException {
+        PrintStream ps1 = new PrintStream(System.out); // violation - replacement available since Java 1.4
+        PrintStream ps2 = new PrintStream(System.out, true); // violation - replacement available since Java 1.4
+        PrintStream ps3 = new PrintStream("output.txt"); // no violation - replacement not available until Java 1.5
+        PrintStream ps4 = new PrintStream(new File("output.txt")); // no violation - replacement not available until Java 1.5
+    }
+}
+        ]]></code>
+        <source-type>java 1.4</source-type>
+    </test-code>
+
+    <test-code>
+        <description>PrintStream - no violations in Java 1.3 (no replacements available)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+public class Test {
+    void test() throws IOException {
+        PrintStream ps1 = new PrintStream(System.out); // violation - replacement not available until Java 1.4
+        PrintStream ps2 = new PrintStream(System.out, true); // violation - replacement not available until Java 1.4
+        PrintStream ps3 = new PrintStream("output.txt"); // violation - replacement not available until Java 1.5
+        PrintStream ps4 = new PrintStream(new File("output.txt")); //violation - replacement not available until Java 1.5
+    }
+}
+        ]]></code>
+        <source-type>java 1.3</source-type>
+    </test-code>
+
+    <!-- PrintWriter class tests -->
+    <test-code>
+        <description>PrintWriter - violations and replacements in Java 10+</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>7,8,9,10</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() throws IOException {
+        PrintWriter pw1 = new PrintWriter(System.out); // violation (replacement available in Java 10+)
+        PrintWriter pw2 = new PrintWriter(System.out, true); // violation (replacement available in Java 10+)
+        PrintWriter pw3 = new PrintWriter("output.txt"); // violation (replacement available in Java 1.5+)
+        PrintWriter pw4 = new PrintWriter(new File("output.txt")); // violation (replacement available in Java 1.5+)
+        
+        // Correct replacements - no violations (both String and Charset variants)
+        PrintWriter pw5 = new PrintWriter(System.out, true, StandardCharsets.UTF_8); // available since Java 10
+        PrintWriter pw6 = new PrintWriter("output.txt", "UTF-8"); // available since Java 1.5
+        PrintWriter pw7 = new PrintWriter(new File("output.txt"), "UTF-8"); // available since Java 1.5
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>PrintWriter - partial violations in Java 1.5 (some replacements available)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>8,9</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+public class Test {
+    void test() throws IOException {
+        PrintWriter pw1 = new PrintWriter(System.out); // no violation - replacement not available until Java 10
+        PrintWriter pw2 = new PrintWriter(System.out, true); // no violation - replacement not available until Java 10
+        PrintWriter pw3 = new PrintWriter("output.txt"); // violation - replacement available since Java 1.5
+        PrintWriter pw4 = new PrintWriter(new File("output.txt")); // violation - replacement available since Java 1.5
+    }
+}
+        ]]></code>
+        <source-type>java 1.5</source-type>
+    </test-code>
+
+    <test-code>
+        <description>PrintWriter - no violations in Java 1.5 (no replacements available)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+public class Test {
+    void test() throws IOException {
+        PrintWriter pw1 = new PrintWriter(System.out); // no violation - replacement not available until Java 10
+        PrintWriter pw2 = new PrintWriter(System.out, true); // no violation - replacement not available until Java 10
+        PrintWriter pw3 = new PrintWriter("output.txt"); // no violation - replacement not available until Java 1.5
+        PrintWriter pw4 = new PrintWriter(new File("output.txt")); // no violation - replacement not available until Java 1.5
+    }
+}
+        ]]></code>
+        <source-type>java 1.4</source-type>
+    </test-code>
+
+    <!-- Scanner class tests -->
+    <test-code>
+        <description>Scanner - violations and replacements in Java 10+</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>9,10,11,12</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Scanner;
+public class Test {
+    void test() throws IOException {
+        Scanner s1 = new Scanner(System.in); // violation (replacement available in Java 1.5+)
+        Scanner s2 = new Scanner(new File("input.txt")); // violation (replacement available in Java 1.5+)
+        Scanner s3 = new Scanner(Paths.get("input.txt")); // violation (replacement available in Java 1.7+)
+        Scanner s4 = new Scanner((ReadableByteChannel) null); // violation (replacement available in Java 1.10+)
+        
+        // Correct replacements - no violations (String variants)
+        Scanner s5 = new Scanner(System.in, "UTF-8");
+        Scanner s6 = new Scanner(new File("input.txt"), "UTF-8");
+        Scanner s7 = new Scanner(Paths.get("input.txt"), "UTF-8");
+        Scanner s8 = new Scanner((ReadableByteChannel) null, "UTF-8");
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
+    <!-- Formatter class tests -->
+    <test-code>
+        <description>Formatter - violations and replacements in Java 1.5+</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>7,8,9,10,11</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.IOException;
+import java.util.Formatter;
+import java.util.Locale;
+public class Test {
+    void test() throws IOException {
+        Formatter f1 = new Formatter(); // violation
+        Formatter f2 = new Formatter(System.out); // violation
+        Formatter f3 = new Formatter(System.out); // violation (same as PrintStream)
+        Formatter f4 = new Formatter("output.txt"); // violation
+        Formatter f5 = new Formatter(new File("output.txt")); // violation
+        
+        // Correct replacements - no violations (String variants)
+        Formatter f6 = new Formatter(Locale.US);
+        Formatter f7 = new Formatter(System.out, Locale.US);
+        Formatter f8 = new Formatter("output.txt", "UTF-8");
+        Formatter f9 = new Formatter(new File("output.txt"), "UTF-8");
+    }
+}
+        ]]></code>
+        <source-type>java 1.5</source-type>
+    </test-code>
+
+    <!-- String class tests -->
+    <test-code>
+        <description>String - violations and replacements in Java 1.6+</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>4,5,6</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() {
+        String s1 = new String(new byte[]{65, 66, 67}); // violation
+        String s2 = new String(new byte[]{65, 66, 67}, 0, 3); // violation
+        byte[] bytes = "test".getBytes(); // violation
+        
+        // Correct replacements - no violations (both String and Charset variants)
+        String s3 = new String(new byte[]{65, 66, 67}, "UTF-8");
+        String s4 = new String(new byte[]{65, 66, 67}, StandardCharsets.UTF_8);
+        String s5 = new String(new byte[]{65, 66, 67}, 0, 3, "UTF-8");
+        String s6 = new String(new byte[]{65, 66, 67}, 0, 3, StandardCharsets.UTF_8);
+        byte[] bytes2 = "test".getBytes("UTF-8");
+        byte[] bytes3 = "test".getBytes(StandardCharsets.UTF_8);
+    }
+}
+        ]]></code>
+        <source-type>java 1.6</source-type>
+    </test-code>
+
+    <test-code>
+        <description>String - no violations in Java 1.5 (replacements not available)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        String s1 = new String(new byte[]{65, 66, 67}); // no violation - replacement not available until Java 1.6
+        String s2 = new String(new byte[]{65, 66, 67}, 0, 3); // no violation - replacement not available until Java 1.6
+        byte[] bytes = "test".getBytes(); // no violation - replacement not available until Java 1.6
+    }
+}
+        ]]></code>
+        <source-type>java 1.5</source-type>
+    </test-code>
+
+    <!-- ByteArrayOutputStream class tests -->
+    <test-code>
+        <description>ByteArrayOutputStream - violations and replacements in Java 10+</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() {
+        String s1 = new ByteArrayOutputStream().toString(); // violation
+        
+        // Correct replacements - no violations (both String and Charset variants)
+        String s2 = new ByteArrayOutputStream().toString("UTF-8");
+        String s3 = new ByteArrayOutputStream().toString(StandardCharsets.UTF_8);
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
+    <test-code>
+        <description>ByteArrayOutputStream - no violations in Java 9 (replacement not available)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ByteArrayOutputStream;
+public class Test {
+    void test() {
+        String s = new ByteArrayOutputStream().toString(); // no violation - replacement not available until Java 10
+    }
+}
+        ]]></code>
+        <source-type>java 9</source-type>
+    </test-code>
+
+    <!-- FileReader class tests -->
+    <test-code>
+        <description>FileReader - violations and replacements in Java 11+</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>8,9,10</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() throws IOException {
+        FileReader fr1 = new FileReader("input.txt"); // violation
+        FileReader fr2 = new FileReader(new File("input.txt")); // violation
+        FileReader fr3 = new FileReader(FileDescriptor.in); // violation
+        
+        // Correct replacements - no violations (Charset variants only)
+        FileReader fr4 = new FileReader("input.txt", StandardCharsets.UTF_8);
+        FileReader fr5 = new FileReader(new File("input.txt"), StandardCharsets.UTF_8);
+    }
+}
+        ]]></code>
+        <source-type>java 11</source-type>
+    </test-code>
+
+    <test-code>
+        <description>FileReader - no violations in Java 10 (replacements not available)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileReader;
+import java.io.IOException;
+public class Test {
+    void test() throws IOException {
+        FileReader fr1 = new FileReader("input.txt"); // no violation - replacement not available until Java 11
+        FileReader fr2 = new FileReader(new File("input.txt")); // no violation - replacement not available until Java 11
+        FileReader fr3 = new FileReader(FileDescriptor.in); // no violation - replacement not available until Java 11
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
+    <!-- FileWriter class tests -->
+    <test-code>
+        <description>FileWriter - violations and replacements in Java 11+</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>8,9,10,11,12</expected-linenumbers>
+        <code><![CDATA[
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+public class Test {
+    void test() throws IOException {
+        FileWriter fw1 = new FileWriter("output.txt"); // violation
+        FileWriter fw2 = new FileWriter("output.txt", true); // violation
+        FileWriter fw3 = new FileWriter(new File("output.txt")); // violation
+        FileWriter fw4 = new FileWriter(new File("output.txt"), true); // violation
+        FileWriter fw5 = new FileWriter(FileDescriptor.out); // violation
+        
+        // Correct replacements - no violations (Charset variants only)
+        FileWriter fw6 = new FileWriter("output.txt", StandardCharsets.UTF_8);
+        FileWriter fw7 = new FileWriter("output.txt", StandardCharsets.UTF_8, true);
+        FileWriter fw8 = new FileWriter(new File("output.txt"), StandardCharsets.UTF_8);
+        FileWriter fw9 = new FileWriter(new File("output.txt"), StandardCharsets.UTF_8, true);
+    }
+}
+        ]]></code>
+        <source-type>java 11</source-type>
+    </test-code>
+
+    <test-code>
+        <description>FileWriter - no violations in Java 10 (replacements not available)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.io.FileDescriptor;
+import java.io.FileWriter;
+import java.io.IOException;
+public class Test {
+    void test() throws IOException {
+        FileWriter fw1 = new FileWriter("output.txt"); // no violation - replacement not available until Java 11
+        FileWriter fw2 = new FileWriter("output.txt", true); // no violation - replacement not available until Java 11
+        FileWriter fw3 = new FileWriter(new File("output.txt")); // no violation - replacement not available until Java 11
+        FileWriter fw4 = new FileWriter(new File("output.txt"), true); // no violation - replacement not available until Java 11
+        FileWriter fw5 = new FileWriter(FileDescriptor.out); // no violation - replacement not available until Java 11
+    }
+}
+        ]]></code>
+        <source-type>java 10</source-type>
+    </test-code>
+
+</test-data>
