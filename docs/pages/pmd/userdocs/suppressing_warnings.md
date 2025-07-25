@@ -169,7 +169,7 @@ For example, to suppress reporting specifically named parameters which
 are unused:
 
 ```xml
-<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
+<rule ref="category/java/unusedcode.xml/UnusedFormalParameter">
   <properties>
     <property name="violationSuppressRegex" value=".*'mySpecialParameterName'.*"/>
   </properties>
@@ -198,9 +198,9 @@ The XPath version used by those queries is XPath 3.1 since PMD 7. Before then XP
 For example, to suppress reporting specifically "String" parameters which are unused:
 
 ```xml
-<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
+<rule ref="category/java/unusedcode.xml/UnusedFormalParameter">
   <properties>
-    <property name="violationSuppressXPath" value=".[typeIs('java.lang.String')]"/>
+    <property name="violationSuppressXPath" value=".[pmd-java:typeIs('java.lang.String')]"/>
   </properties>
 </rule>
 ```
