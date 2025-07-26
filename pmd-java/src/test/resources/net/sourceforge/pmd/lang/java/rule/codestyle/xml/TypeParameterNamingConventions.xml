@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>1 upper case/single letter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo <B extends Number>
+{
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>2 upper case/single letter</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo <B extends Number, C extends Comparable<C>>
+{
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1 lower case/single letter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>The type parameter name 'b' doesn't match '[A-Z]'</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface Foo <b extends Number>
+{
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1 upper case/multiple letter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>The type parameter name 'CBA' doesn't match '[A-Z]'</message>
+        </expected-messages>
+        <code><![CDATA[
+public interface Foo <CBA extends Foo<CBA>>
+{
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>1 upper case/multiple letter - custom pattern</description>
+        <rule-property name="typeParameterNamePattern">[A-Z]+</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public interface Foo <CBA extends Foo<CBA>>
+{
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generic method - single uppercase letter (valid)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public <T> T getValue(T input) {
+        return input;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generic method - multiple type parameters (valid)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public <T, U> T transform(T input, U other) {
+        return input;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generic method - lowercase letter (invalid)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The type parameter name 't' doesn't match '[A-Z]'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public <t> t getValue(t input) {
+        return input;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generic method - multiple letters (invalid)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The type parameter name 'TYPE' doesn't match '[A-Z]'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public <TYPE> TYPE getValue(TYPE input) {
+        return input;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generic method - mixed valid and invalid</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The type parameter name 'invalid' doesn't match '[A-Z]'</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public <T, invalid> T transform(T input, invalid other) {
+        return input;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generic static method - valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static <T extends Comparable<T>> T max(T a, T b) {
+        return a.compareTo(b) > 0 ? a : b;
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
