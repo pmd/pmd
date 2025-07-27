@@ -577,8 +577,10 @@ public void checkRequests() {
           language="java"
           message="Avoid statements in a catch block that invoke accessors on the exception without using the information"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidlosingexceptioninformation">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidlosingexceptioninformation"
+          deprecated="true">
         <description>
+This rule is *deprecated* in favor of {% rule java/errorprone/UselessPureMethodCall %}.
 Statements in a catch block that invoke accessors on the exception without using the information
 only add to code size.  Either remove the invocation, or use the return result.
         </description>
@@ -3132,8 +3134,11 @@ public boolean test(String s) {
           since="3.5"
           message="The result of an operation on an immutable object is ignored"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable"
+          deprecated="true">
         <description>
+This rule is *deprecated* in favor of {% rule java/errorprone/UselessPureMethodCall %}.
+
 An operation on an immutable object will not change the object itself since the result of the operation is a new object.
 Therefore, ignoring the result of such an operation is likely a mistake. The operation can probably be removed.
 
