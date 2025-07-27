@@ -14,9 +14,6 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
  */
 public class UselessPureMethodCallRule extends AbstractJavaRulechainRule {
 
-    /**
-     * Specify the node types to visit as parameters.
-     */
     public UselessPureMethodCallRule() {
         super(ASTExpressionStatement.class);
     }

@@ -69,7 +69,7 @@ public final class JavaRuleUtil {
         "java.lang.Comparable#compareTo(_)",
         "java.math.BigDecimal#_(_*)",
         "java.math.BigInteger#_(_*)",
-        "java.time.Temporal#_(_*)",
+        "java.time.temporal.Temporal#_(_*)",
         "java.time.Duration#_(_*)",
         "java.time.Period#_(_*)"
     );
@@ -392,7 +392,6 @@ public final class JavaRuleUtil {
 
     /**
      * Whether the invocation has no side-effects. Very conservative.
-     * @param call method call
      */
     private static boolean isPure(ASTMethodCall call) {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
@@ -402,11 +401,10 @@ public final class JavaRuleUtil {
      * Whether the invocation has no side effects. Even more conservative than {@code isPure}.
      * Only checks methods in java.* packages because frameworks may define getter-like methods
      * with side effects (such as isEqualTo matcher in AssertJ).
-     * @param call method call
      */
     public static boolean isKnownPure(ASTMethodCall call) {
         return isGetterCall(call)
-                    && InvocationMatcher.matchQualifier(call, (type, exact) -> hasPureGetters(type))
+                    && hasPureGetters(call.getMethodType().getDeclaringType())
             || KNOWN_PURE_METHODS.anyMatch(call) && !call.getMethodType().getReturnType().isVoid();
     }
 

@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -99,17 +98,11 @@ public final class InvocationMatcher {
             return false;
         }
         OverloadSelectionResult info = node.getOverloadSelectionInfo();
-        return !info.isFailed() && matchQualifier(node, qualifierMatcher)
+        return !info.isFailed() && matchQualifier(node)
                 && argsMatchOverload(info.getMethodType());
     }
 
-    /**
-     * Check if method was invoked on a type that satisfies given condition.
-     * @param node invocation
-     * @param qualifierMatcher type matcher
-     * @return whether declaring type matches
-     */
-    public static boolean matchQualifier(InvocationNode node, TypeMatcher qualifierMatcher) {
+    private boolean matchQualifier(InvocationNode node) {
         if (qualifierMatcher == TypeMatcher.ANY) {
             return true;
         }
@@ -276,29 +269,24 @@ public final class InvocationMatcher {
     }
 
     private static TypeMatcher newMatcher(String name) {
-        return "_".equals(name) ? TypeMatcher.ANY : new ClassTypeMatcher(name);
+        return "_".equals(name) ? TypeMatcher.ANY : new TypeMatcher(name);
     }
 
-    public interface TypeMatcher {
+    private static final class TypeMatcher {
 
         /** Matches any type. */
-        TypeMatcher ANY = (type, exact) -> true;
+        public static final TypeMatcher ANY = new TypeMatcher(null);
 
-        boolean matches(JTypeMirror type, boolean exact);
-    }
+        final @Nullable String name;
 
-    private static final class ClassTypeMatcher implements TypeMatcher {
-
-        final @NonNull String name;
-
-        private ClassTypeMatcher(@NonNull String name) {
+        private TypeMatcher(@Nullable String name) {
             this.name = name;
         }
 
-        @Override
-        public boolean matches(JTypeMirror type, boolean exact) {
-            return exact ? TypeTestUtil.isExactlyAOrAnon(name, type) == OptionalBool.YES
-                : TypeTestUtil.isA(name, type);
+        boolean matches(JTypeMirror type, boolean exact) {
+            return name == null
+                   || (exact ? TypeTestUtil.isExactlyAOrAnon(name, type) == OptionalBool.YES
+                         : TypeTestUtil.isA(name, type));
         }
     }
 
