@@ -24,12 +24,26 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+#### ✨ New Rules
+* The new java rule {% rule java/codestyle/TypeParameterNamingConventions %} replaces the now deprecated rule
+  GenericsNaming. The new rule is configurable and checks for naming conventions of type parameters in
+  generic types and methods. It can be configured via a regular expression.  
+  By default, this rule uses the standard Java naming convention (single uppercase letter).  
+  The rule is referenced in the quickstart.xml ruleset for Java.
+
+#### Deprecated Rules
+* The java rule {% rule java/codestyle/GenericsNaming %} has been deprecated for removal in favor
+  of the new rule {% rule java/codestyle/TypeParameterNamingConventions %}.
+
 ### 🐛 Fixed Issues
+* java-codestyle
+  * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
 
 ### 🚨 API Changes
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5922](https://github.com/pmd/pmd/pull/5922): Fix #972: \[java] Add a new rule TypeParameterNamingConventions - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5932](https://github.com/pmd/pmd/pull/5932): \[ci] Reuse GitHub Pre-Releases - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
