@@ -503,6 +503,7 @@ jobs:
           owner: pmd
           repositories: pmd
           permission-contents: write # create a release, remove/create a tag
+          permission-workflows: write # needed for creating a tag, in case some workflow files have been modified
       - name: Prepare tag for GitHub Pre-Release
         id: tags
         env:
