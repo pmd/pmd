@@ -20,6 +20,10 @@ public class Foo {
     <test-code>
         <description>AuraEnabled lowercase is incorrect</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>The annotation @auraenabled should be in PascalCase: @AuraEnabled</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     @auraenabled
@@ -126,6 +130,17 @@ public class Foo {
 public class Foo {
     @invocablevariable
     public String myVar;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>InvocableVariable lowercase is incorrect for multiple fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @invocablevariable
+    public String myVar1, myVar2;
 }
         ]]></code>
     </test-code>

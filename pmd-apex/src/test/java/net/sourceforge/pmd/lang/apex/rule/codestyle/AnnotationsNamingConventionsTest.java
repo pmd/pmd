@@ -1,11 +1,11 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.apex.rule.design;
+package net.sourceforge.pmd.lang.apex.rule.codestyle;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class AnnotationsShouldBePascalCaseTest extends PmdRuleTst {
+class AnnotationsNamingConventionsTest extends PmdRuleTst {
     // no additional unit tests
 }

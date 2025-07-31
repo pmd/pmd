@@ -467,43 +467,6 @@ public class Person {
         </example>
     </rule>
 
-    <rule name="AnnotationsShouldBePascalCase"
-          language="apex"
-          since="7.15.0"
-          message="Annotations should be PascalCase"
-          class="net.sourceforge.pmd.lang.apex.rule.design.AnnotationsShouldBePascalCaseRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#annotationsshouldbepascalcase">
-        <description>
-Apex, while case-insensitive, benefits from a consistent code style to improve readability and maintainability.
-Enforcing PascalCase for annotations aligns with the established conventions and reduces ambiguity - promoting a unified coding standard.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-// Incorrect:
-@istest
-private static void fooShouldBar() {
-  //...
-}
-
-// Correct:
-@IsTest
-private static void fooShouldBar() {
-  //...
-}
-
-//Incorrect:
-@testvisible
-private boolean doSomething = false;
-
-
-//Correct:
-@TestVisible
-private boolean doSomething = false;
-]]>
-        </example>
-    </rule>
-
     <rule name="UnusedMethod"
           language="apex"
           since="7.0.0"
