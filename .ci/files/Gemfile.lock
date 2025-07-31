@@ -18,13 +18,16 @@ GEM
     nokogiri (1.18.9-x86_64-linux-gnu)
       racc (~> 1.4)
     ostruct (0.6.3)
-    pmdtester (1.5.5)
+    pmdtester (1.6.0)
+      base64 (~> 0.3)
+      bigdecimal (~> 3.2)
       differ (~> 0.1)
-      liquid (~> 5.4)
+      liquid (~> 5.8)
+      logger (~> 1.7)
       logger-colors (~> 1.0)
-      nokogiri (~> 1.13)
-      rufus-scheduler (~> 3.8)
-      slop (~> 4.9)
+      nokogiri (~> 1.18)
+      rufus-scheduler (~> 3.9)
+      slop (~> 4.10)
     raabro (1.4.0)
     racc (1.8.1)
     rufus-scheduler (3.9.2)
@@ -44,4 +47,4 @@ DEPENDENCIES
   pmdtester
 
 BUNDLED WITH
-   2.6.6
+   2.6.9
