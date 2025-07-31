@@ -701,11 +701,14 @@ public class Foo {
     <rule name="GenericsNaming"
           language="java"
           since="4.2.6"
+          deprecated="true"
           message="Generics names should be a one letter long and upper case."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#genericsnaming">
         <description>
 Names for references to generic values should be limited to a single uppercase letter.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule TypeParameterNamingConventions %}, which provides more comprehensive and configurable naming conventions for type parameters.
         </description>
         <priority>4</priority>
         <properties>
@@ -1199,6 +1202,45 @@ public class ClassInDefaultPackage {
             <![CDATA[
 public class Foo {
     private int num = 1000000; // should be 1_000_000
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="TypeParameterNamingConventions"
+          language="java"
+          since="7.17.0"
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.TypeParameterNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#typeparameternamingconventions">
+        <description>
+            Configurable naming conventions for type parameters in generic types and methods.
+            This rule reports type parameter declarations which do not match the configured regex.
+            Type parameters can appear on classes, interfaces, enums, records, and methods.
+
+            By default, this rule uses the standard Java naming convention (single uppercase letter).
+        </description>
+        <priority>4</priority>
+        <example>
+<![CDATA[
+// Generic types - valid
+public interface Repository<T> { }
+public class Cache<K, V> { }
+
+// Generic types - invalid
+public interface Repository<type> { }      // lowercase
+public class Cache<KEY, VALUE> { }         // multiple letters
+
+// Generic methods - valid
+public class Util {
+    public static <T> T identity(T value) { return value; }
+    public <T, R> R transform(T input, Function<T, R> mapper) { }
+}
+
+// Generic methods - invalid
+public class Util {
+    public static <element> element get(element value) { }  // lowercase
+    public <INPUT, OUTPUT> OUTPUT convert(INPUT in) { }     // multiple letters
 }
 ]]>
         </example>
