@@ -2066,7 +2066,8 @@ not require any secrets.</p>
 including forks). This is also a scheduled workflow that runs every month to make sure, the project
 can still be built.</p>
 
-<p>“Build Release” is triggered, whenever a tag is pushed. Note that the whole project is built at once, that
+<p>“Build Release” is triggered, whenever a tag is pushed (excluding SNAPSHOT pre-release tags).
+Note that the whole project is built at once, that
 means if pmd-designer/pmd-core update is required, this can’t be built. See also
 <a href="https://github.com/pmd/pmd/issues/4446">Circular dependencies between pmd-designer, pmd-core, pmd-cli #4446</a>.
 As this happens very seldom, this situation is ignored for now.</p>
@@ -2251,9 +2252,9 @@ so that the new documentation page is available at
       <li>Secrets: no additional secrets</li>
     </ul>
   </li>
-  <li>github-prerelease: Creates a new GitHub pre-release at <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a> including
-the attached artifacts. It first removes an old pre-release, then
-creates the new one with the same tag name. This means, the tag is moved forward for every pre-release.
+  <li>github-prerelease: Creates a new GitHub pre-release or updates and existing one at <a href="https://github.com/pmd/pmd/releases">https://github.com/pmd/pmd/releases</a>.
+This looks like a real release and includes the usual attached (signed) artifacts.
+The release is reused and the tag is moved forward for every pre-release.
     <ul>
       <li>Environment: github</li>
     </ul>
@@ -2807,7 +2808,7 @@ curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87E
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2025 (7.16.0)<br /> Site last generated: Jul 31, 2025 <br />
+            July 2025 (7.17.0)<br /> Site last generated: Jul 31, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
