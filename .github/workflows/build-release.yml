@@ -3,7 +3,8 @@ name: Build Release
 on:
   push:
     tags:
-      - '**'
+      - 'pmd_releases/*'
+      - '!pmd_releases/*-SNAPSHOT'
   workflow_dispatch:
 
 jobs:

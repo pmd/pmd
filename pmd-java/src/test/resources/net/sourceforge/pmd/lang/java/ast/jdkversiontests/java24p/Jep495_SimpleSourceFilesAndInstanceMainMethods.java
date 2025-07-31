@@ -5,6 +5,7 @@
 // explicit imports are possible as well (although not really needed in this example)
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import static java.io.IO.*; // support for the implicit import in PMD and Java 25 has been removed with JEP 512
 
 /**
  * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)

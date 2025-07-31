@@ -512,6 +512,23 @@ jobs:
           owner: pmd
           repositories: pmd
           permission-contents: write # create a release
+      - name: Delete old GitHub Pre-Release
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+        run: |
+          tagName="pmd_releases/${PMD_VERSION}-SNAPSHOT"
+          existingTagName="$(gh --repo pmd/pmd release list --json tagName,isPrerelease --jq ".[] | select(.tagName == \"${tagName}\" and .isPrerelease == true) | .tagName")"
+          
+          if [ "${existingTagName}" = "${tagName}" ]; then
+            echo "Pre-release for tag ${tagName} exists - deleting it..."
+            gh release delete "${tagName}" \
+              --repo pmd/pmd \
+              --cleanup-tag \
+              --yes
+          else
+            echo "No pre-release ${tagName} exists, nothing to delete"
+          fi
       - name: Create GitHub Release
         id: release
         env:

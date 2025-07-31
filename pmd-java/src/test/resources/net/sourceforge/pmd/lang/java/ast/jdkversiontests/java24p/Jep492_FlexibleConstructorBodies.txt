@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.math.BigInteger", @ImportedSimpleName = "BigInteger", @ModuleImport = false, @PackageName = "java.math", @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.security.cert.Certificate", @ImportedSimpleName = "Certificate", @ModuleImport = false, @PackageName = "java.security.cert", @Static = false]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.security.interfaces.DSAPublicKey", @ImportedSimpleName = "DSAPublicKey", @ModuleImport = false, @PackageName = "java.security.interfaces", @Static = false]
