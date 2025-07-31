@@ -9,6 +9,43 @@
 Rules which enforce a specific coding style.
     </description>
 
+    <rule name="AnnotationsNamingConventions"
+          language="apex"
+          since="7.17.0"
+          message="The annotation @{0} should be in PascalCase: @{1}"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.AnnotationsNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#annotationsnamingconventions">
+        <description>
+            Apex, while case-insensitive, benefits from a consistent code style to improve readability and maintainability.
+            Enforcing PascalCase for annotations aligns with the established conventions and reduces ambiguity - promoting a unified coding standard.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+// Incorrect:
+@istest
+private static void fooShouldBar() {
+  //...
+}
+
+// Correct:
+@IsTest
+private static void fooShouldBar() {
+  //...
+}
+
+//Incorrect:
+@testvisible
+private boolean doSomething = false;
+
+
+//Correct:
+@TestVisible
+private boolean doSomething = false;
+]]>
+        </example>
+    </rule>
+
     <rule name="ClassNamingConventions"
           language="apex"
           since="5.5.0"

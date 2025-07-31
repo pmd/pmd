@@ -115,6 +115,9 @@
    <rule ref="category/apex/codestyle.xml/PropertyNamingConventions">
       <priority>3</priority>
    </rule>
+   <rule ref="category/apex/codestyle.xml/AnnotationsNamingConventions">
+      <priority>3</priority>
+   </rule>
 
    <!-- TESTS -->
    <rule ref="category/apex/bestpractices.xml/ApexUnitTestClassShouldHaveAsserts" message="Apex unit test classes should have at least one System.assert() or assertEquals() or AssertNotEquals() call">
