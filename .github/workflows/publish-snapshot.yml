@@ -472,9 +472,7 @@ jobs:
       - name: Create docs zip
         env:
           PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
-        run: |
-          zip -qr "dist/pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
-          rm -rf "pmd-doc-${PMD_VERSION}/"
+        run: zip -qr "dist/pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
       - name: Setup GPG
         env:
           PMD_CI_GPG_PRIVATE_KEY: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
