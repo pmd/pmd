@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -141,11 +141,11 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
     }
 
     /**
-     * With JEP 445/463/477/495 (Java 23/24 Preview) the main method does not need to be static anymore and
+     * With JEP 445/463/477/495/512 (Java 24 Preview/Java 25) the main method does not need to be static anymore and
      * does not need to be public or have a formal parameter.
      */
     private boolean isLaunchableMainMethod() {
-        return this.getRoot().isSimpleCompilationUnit()
+        return this.getRoot().isCompact()
                 && "main".equals(this.getName())
                 && !this.hasModifiers(JModifier.PRIVATE)
                 && this.isVoid()

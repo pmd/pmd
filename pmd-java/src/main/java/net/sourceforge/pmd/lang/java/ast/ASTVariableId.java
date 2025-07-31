@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -365,7 +365,6 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      */
     // @formatter:on
     @Override
-    @SuppressWarnings("PMD.UselessOverridingMethod")
     public @NonNull JTypeMirror getTypeMirror() {
         return super.getTypeMirror();
     }

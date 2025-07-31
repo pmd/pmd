@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>call super</description>
@@ -687,5 +687,28 @@ public class OtherSubclass extends BaseClass {
                 }
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UselessOverridingMethod doesn't play well with UnnecessarySuppressWarning #5804</description>
+        <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="10">@SuppressWarnings</suppressor>
+        </expected-suppressions>
+        <code><![CDATA[
+class BaseClass {
+  void method() {
+    System.out.println("base class");
+  }
+}
+
+class SubClass extends BaseClass {
+    @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
+    void method() {
+        super.method();
+    }
+}
+]]></code>
     </test-code>
 </test-data>

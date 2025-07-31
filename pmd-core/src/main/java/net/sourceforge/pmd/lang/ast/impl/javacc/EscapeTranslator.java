@@ -19,7 +19,6 @@ import net.sourceforge.pmd.util.AssertionUtil;
  * <p>This is an abstract class because the default implementation does not
  * perform any escape processing. Subclasses refine this behavior.
  */
-@SuppressWarnings("PMD.AssignmentInOperand")
 public abstract class EscapeTranslator {
     // Note that this can easily be turned into a java.io.Reader with
     // efficient block IO, optimized for the common case where there are

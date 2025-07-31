@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "a", @ImportedSimpleName = "a", @ModuleImport = false, @PackageName = "", @Static = false]
    +- EmptyDeclaration[]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "b", @ImportedSimpleName = "b", @ModuleImport = false, @PackageName = "", @Static = false]

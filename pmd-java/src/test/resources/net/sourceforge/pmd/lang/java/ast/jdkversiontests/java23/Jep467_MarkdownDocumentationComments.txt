@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.util.Locale", @ImportedSimpleName = "Locale", @ModuleImport = false, @PackageName = "java.util", @Static = false]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Jep467_MarkdownDocumentationComments", @CanonicalName = "Jep467_MarkdownDocumentationComments", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Jep467_MarkdownDocumentationComments", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC), @ExplicitModifiers = (JModifier.PUBLIC)]

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -127,7 +127,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             sb.append(startIncluded.getTypeMirror().getSymbol().getPackageName());
         }
         ASTClassType nextSimpleName = startIncluded;
-        while (nextSimpleName != stopExcluded) { // NOPMD we want identity comparison
+        while (nextSimpleName != stopExcluded) {
             sb.append('.').append(nextSimpleName.getSimpleName());
             nextSimpleName = (ASTClassType) nextSimpleName.getParent();
         }

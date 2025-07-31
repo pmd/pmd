@@ -103,7 +103,7 @@ public final class InvocationMatcher {
     }
 
     private boolean matchQualifier(InvocationNode node) {
-        if (qualifierMatcher == TypeMatcher.ANY) { // NOPMD CompareObjectsWithEquals
+        if (qualifierMatcher == TypeMatcher.ANY) {
             return true;
         }
         if (node instanceof ASTConstructorCall) {

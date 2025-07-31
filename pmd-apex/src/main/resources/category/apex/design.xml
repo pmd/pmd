@@ -36,76 +36,55 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UnusedMethod"
+    <rule name="AvoidBooleanMethodParameters"
           language="apex"
-          since="7.0.0"
-          message="Unused methods make understanding code harder"
-          class="net.sourceforge.pmd.lang.apex.rule.design.UnusedMethodRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#unusedmethod">
-        <description><![CDATA[
-Avoid having unused methods since they make understanding and maintaining code harder.
+          since="7.15.0"
+          message="Avoid Boolean method parameters"
+          class="net.sourceforge.pmd.lang.apex.rule.design.AvoidBooleanMethodParametersRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#avoidbooleanmethodparameters">
+        <description>
+            Boolean parameters in a system's API can make method calls difficult to understand and
+            maintain. They often indicate that a method is doing more than one thing and
+            could benefit from being split into separate methods with more descriptive
+            names.
 
-This rule finds not only unused private methods, but public methods as well, as long as
-the class itself is not entirely unused. A class is considered used, if it contains at
-least one other method/variable declaration that is used, as shown in the
-[test project file Foo.cls](https://github.com/pmd/pmd/blob/469b2a67ae375bde52bb33ccd4fb69e3c2993948/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1/src/Foo.cls#L6-L8).
-
-[ApexLink](https://github.com/nawforce/ApexLink) is used to make this possible and this needs
-additional configuration. The environment variable `PMD_APEX_ROOT_DIRECTORY` needs to be set prior to executing
-PMD. With this variable the root directory of the Salesforce metadata, where `sfdx-project.json` resides, is
-specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.
-
-For an accurate analysis it is important that the `PMD_APEX_ROOT_DIRECTORY` contains a complete set of metadata that
-may be referenced from the Apex source code, such as Custom Objects, Visualforce Pages, Flows and Labels. The
-`PMD_APEX_ROOT_DIRECTORY` directory must contain a `sfdx-project.json`, but metadata may be either in the
-[SFDX Source format](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_source_file_format.htm)
-or the older MDAPI format. The `packageDirectories` entries in `sfdx-project.json` are used to determine which
-directories to search for metadata, if a `.forceignore` file is present it will be respected.
-
-If the Apex code references external packages via namespace(s) you should declare these in your `sfdx-project.json`
-file using the 'plugins' syntax shown in the example below to avoid errors. Here's an example of a
-well-formed `sfdx-project.json`:
-```json
-{
-    "packageDirectories": [
-      {
-        "path": "src",
-        "default": true
-      }
-    ],
-    "namespace": "my_namespace",
-    "sfdcLoginUrl": "https://login.salesforce.com",
-    "sourceApiVersion": "52.0",
-    "plugins": {
-        "dependencies": [
-            {"namespace": "aa"}
-        ]
-    }
-}
-```
-]]>
+            This rule flags any boolean parameters found in public or global methods,
+            encouraging developers to use more expressive alternatives such as enums,
+            separate methods, or configuration objects.
         </description>
-        <priority>3</priority>
+        <priority>2</priority>
         <example>
             <![CDATA[
-public class Triangle {
-    private Double side1;
-    private Double side2;
-    private Double side3;
-
-    public Triangle(Double side1, Double side2, Double side3) {
-        this.side1 = side1;
-        this.side2 = side2;
-        this.side3 = side3;
+// Violates the rule: Uses a Boolean parameter
+public class MyClass {
+  public static void doSomething(Boolean isSomething) {
+    if (isSomething == true) {
+      // Do something
+    } else {
+      // Do something else, or maybe do nothing if isSomething is null?
     }
+  }
+}
 
-    // Method is not invoked so can be removed
-    public Double area() {
-        return (side1 + side2 + side3)/2;
-    }
+// Compliant code: Two separate methods
+public class MyClass {
+  public static void doSomething() {
+    // Do something
+  }
+
+  public static void doSomethingElse() {
+    // Do something else
+  }
 }
 ]]>
         </example>
+        <example><![CDATA[
+public void setFlag(Boolean strict) { ... } // violation
+
+// compliant
+public void enableStrictChecking() { ... }
+public void disableStrictChecking() { ... }
+        ]]></example>
     </rule>
 
     <rule name="CyclomaticComplexity"
@@ -521,6 +500,78 @@ private boolean doSomething = false;
 //Correct:
 @TestVisible
 private boolean doSomething = false;
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedMethod"
+          language="apex"
+          since="7.0.0"
+          message="Unused methods make understanding code harder"
+          class="net.sourceforge.pmd.lang.apex.rule.design.UnusedMethodRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#unusedmethod">
+        <description><![CDATA[
+Avoid having unused methods since they make understanding and maintaining code harder.
+
+This rule finds not only unused private methods, but public methods as well, as long as
+the class itself is not entirely unused. A class is considered used, if it contains at
+least one other method/variable declaration that is used, as shown in the
+[test project file Foo.cls](https://github.com/pmd/pmd/blob/469b2a67ae375bde52bb33ccd4fb69e3c2993948/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1/src/Foo.cls#L6-L8).
+
+[ApexLink](https://github.com/nawforce/ApexLink) is used to make this possible and this needs
+additional configuration. The environment variable `PMD_APEX_ROOT_DIRECTORY` needs to be set prior to executing
+PMD. With this variable the root directory of the Salesforce metadata, where `sfdx-project.json` resides, is
+specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.
+
+For an accurate analysis it is important that the `PMD_APEX_ROOT_DIRECTORY` contains a complete set of metadata that
+may be referenced from the Apex source code, such as Custom Objects, Visualforce Pages, Flows and Labels. The
+`PMD_APEX_ROOT_DIRECTORY` directory must contain a `sfdx-project.json`, but metadata may be either in the
+[SFDX Source format](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_source_file_format.htm)
+or the older MDAPI format. The `packageDirectories` entries in `sfdx-project.json` are used to determine which
+directories to search for metadata, if a `.forceignore` file is present it will be respected.
+
+If the Apex code references external packages via namespace(s) you should declare these in your `sfdx-project.json`
+file using the 'plugins' syntax shown in the example below to avoid errors. Here's an example of a
+well-formed `sfdx-project.json`:
+```json
+{
+    "packageDirectories": [
+      {
+        "path": "src",
+        "default": true
+      }
+    ],
+    "namespace": "my_namespace",
+    "sfdcLoginUrl": "https://login.salesforce.com",
+    "sourceApiVersion": "52.0",
+    "plugins": {
+        "dependencies": [
+            {"namespace": "aa"}
+        ]
+    }
+}
+```
+]]>
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Triangle {
+    private Double side1;
+    private Double side2;
+    private Double side3;
+
+    public Triangle(Double side1, Double side2, Double side3) {
+        this.side1 = side1;
+        this.side2 = side2;
+        this.side3 = side3;
+    }
+
+    // Method is not invoked so can be removed
+    public Double area() {
+        return (side1 + side2 + side3)/2;
+    }
+}
 ]]>
         </example>
     </rule>

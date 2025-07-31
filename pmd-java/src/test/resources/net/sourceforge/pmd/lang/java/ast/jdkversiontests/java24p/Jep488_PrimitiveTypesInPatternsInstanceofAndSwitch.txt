@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "java.util.Map", @ImportedSimpleName = "Map", @ModuleImport = false, @PackageName = "java.util", @Static = false]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Jep488_PrimitiveTypesInPatternsInstanceofAndSwitch", @CanonicalName = "Jep488_PrimitiveTypesInPatternsInstanceofAndSwitch", @EffectiveVisibility = Visibility.V_PUBLIC, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Jep488_PrimitiveTypesInPatternsInstanceofAndSwitch", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PUBLIC]
       +- ModifierList[@EffectiveModifiers = (JModifier.PUBLIC), @ExplicitModifiers = (JModifier.PUBLIC)]

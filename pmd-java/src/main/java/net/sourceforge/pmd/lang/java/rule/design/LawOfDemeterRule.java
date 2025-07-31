@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -159,7 +159,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
         }
         int degree = foreignDegree(expr);
         if (isReportedDegree(degree) && isUsedAsGetter(expr)) {
-            if (expr.getParent() instanceof ASTVariableDeclarator) { // NOPMD #3786
+            if (expr.getParent() instanceof ASTVariableDeclarator) {
                 // Stored in local var, don't report if some usages escape.
                 // In that case, usage sites with non-escaping usage will be reported.
                 return isAllowedStore(((ASTVariableDeclarator) expr.getParent()).getVarId());
@@ -263,7 +263,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
     private boolean isPureDataContainer(JTypeMirror type) {
         JTypeDeclSymbol symbol = type.getSymbol();
-        if (symbol instanceof JClassSymbol) { // NOPMD
+        if (symbol instanceof JClassSymbol) {
             return "java.util".equals(symbol.getPackageName()) // collection, map, iterator, properties, etc
                 || TypeTestUtil.isA(Stream.class, type)
                 || TypeTestUtil.isA(Class.class, type)
@@ -336,7 +336,7 @@ public class LawOfDemeterRule extends AbstractJavaRule {
 
     private boolean isFactoryMethod(ASTMethodCall expr) {
         ASTExpression qualifier = expr.getQualifier();
-        if (qualifier != null) { // NOPMD SimplifyBooleanReturns https://github.com/pmd/pmd/issues/3786
+        if (qualifier != null) {
             return typeEndsWith(qualifier, "Factory")
                 || nameEndsWith(qualifier, "Factory")
                 || nameIs(qualifier, "factory");

@@ -71,7 +71,7 @@ jobs:
       name: maven-central
       url: https://central.sonatype.com/service/rest/repository/browse/maven-snapshots/net/sourceforge/pmd/
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 180
     defaults:
       run:
         shell: bash
@@ -110,7 +110,11 @@ jobs:
             -Dmaven.repo.local=.m2/repository \
             deploy \
             -DskipTests \
-            -PfastSkip,sign,pmd-release -Dcyclonedx.skip=false
+            -PfastSkip,sign,pmd-release \
+            -Dcyclonedx.skip=false \
+            -Dmaven.javadoc.skip=false \
+            -Ddokka.skip=false \
+            -Dmaven.source.skip=false
 
   deploy-to-sourceforge-files:
     needs: check-version
@@ -441,6 +445,187 @@ jobs:
           git commit -q -m "$MSG"
           git push
 
+  github-prerelease:
+    needs: check-version
+    environment:
+      name: github
+      url: ${{ steps.release.outputs.release_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: dist
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: docs-artifact
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+          path: pmd-doc-${{ needs.check-version.outputs.PMD_VERSION }}
+      - name: Create docs zip
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+        run: zip -qr "dist/pmd-dist-${PMD_VERSION}-doc.zip" "pmd-doc-${PMD_VERSION}/"
+      - name: Setup GPG
+        env:
+          PMD_CI_GPG_PRIVATE_KEY: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
+        run: |
+          mkdir -p "${HOME}/.gpg"
+          chmod 700 "${HOME}/.gpg"
+          printenv PMD_CI_GPG_PRIVATE_KEY | gpg --batch --import
+
+          gpg --list-keys --fingerprint --keyid-format=long
+          gpg --list-secret-keys --fingerprint --keyid-format=long
+      - name: Sign files
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.PMD_CI_GPG_PASSPHRASE }}
+        run: |
+          cd dist
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-bin.zip"
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-src.zip"
+          printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
+            --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-doc.zip"
+      - uses: actions/create-github-app-token@v2
+        id: pmd-actions-helper-app-token
+        with:
+          app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
+          private-key: ${{ secrets.PMD_ACTIONS_HELPER_PRIVATE_KEY }}
+          owner: pmd
+          repositories: pmd
+          permission-contents: write # create a release, remove/create a tag
+          permission-workflows: write # needed for creating a tag, in case some workflow files have been modified
+      - name: Prepare tag for GitHub Pre-Release
+        id: tags
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+        run: |
+          existingTagName="$(gh --repo pmd/pmd release list --json tagName,isPrerelease --jq ".[] | select(.isPrerelease == true) | .tagName")"
+          previousTagName=""
+
+          if [ -n "${existingTagName}" ]; then
+            # we can't simply delete the old tag, as the existing pre-release would then become a draft and
+            # we would need to republish it again, which we want to avoid to avoid notifications for every pre-release.
+            # strategy:
+            # 1. create a new tag with suffix "-previous-SNAPSHOT"
+            previousSha="$(gh api \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/pmd/pmd/git/ref/tags/${existingTagName}" --jq ".object.sha")"
+            previousTagName="${existingTagName}-previous-SNAPSHOT"
+            echo "Creating tag ${previousTagName} -> ${previousSha}"
+            gh api \
+              --method POST \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              /repos/pmd/pmd/git/refs \
+              -f "ref=refs/tags/${previousTagName}" -f "sha=${previousSha}"
+            # 2. update pre-release to point to this new tag
+            echo "Update existing pre-release to use tag ${previousTagName}"
+            gh release edit "${existingTagName}" \
+              --repo pmd/pmd \
+              --tag "${previousTagName}" \
+              --verify-tag
+            # 3. remove the old, existing tag
+            echo "Deleting tag ${existingTagName}"
+            gh api \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/pmd/pmd/git/refs/tags/${existingTagName}"
+          fi
+
+          # create a new tag
+          mainSha="$(gh api \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/pmd/pmd/git/ref/heads/main --jq ".object.sha")"
+          tagName="pmd_releases/${PMD_VERSION}"
+          echo "Creating tag ${tagName} -> ${mainSha}"
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/pmd/pmd/git/refs \
+            -f "ref=refs/tags/${tagName}" -f "sha=${mainSha}"
+          
+          echo "tagName=${tagName}" >> "${GITHUB_OUTPUT}"
+          echo "previousTagName=${previousTagName}" >> "${GITHUB_OUTPUT}"
+      - name: Create or Update GitHub Pre-Release
+        id: release
+        env:
+          PMD_VERSION: ${{ needs.check-version.outputs.PMD_VERSION }}
+          GH_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
+          TAG_NAME: ${{ steps.tags.outputs.tagName }}
+          PREVIOUS_TAG_NAME: ${{ steps.tags.outputs.previousTagName }}
+        run: |
+          release_name="PMD ${PMD_VERSION} ($(date -u +%d-%B-%Y))"
+          if [ -z "${PREVIOUS_TAG_NAME}" ]; then
+            echo "Create new release ${TAG_NAME}"
+            gh release create "${TAG_NAME}" \
+              --repo pmd/pmd \
+              --verify-tag \
+              --prerelease \
+              --title "$release_name" \
+              --notes-file "pmd-doc-${PMD_VERSION}/pmd_release_notes.md" \
+                "dist/pmd-dist-${PMD_VERSION}-bin.zip" \
+                "dist/pmd-dist-${PMD_VERSION}-bin.zip.asc" \
+                "dist/pmd-dist-${PMD_VERSION}-src.zip" \
+                "dist/pmd-dist-${PMD_VERSION}-src.zip.asc" \
+                "dist/pmd-dist-${PMD_VERSION}-doc.zip" \
+                "dist/pmd-dist-${PMD_VERSION}-doc.zip.asc" \
+                "dist/pmd-${PMD_VERSION}-cyclonedx.xml" \
+                "dist/pmd-${PMD_VERSION}-cyclonedx.json"
+          else
+            echo "Update release ${PREVIOUS_TAG_NAME} -> ${TAG_NAME}"
+            gh release edit "${PREVIOUS_TAG_NAME}" \
+              --repo pmd/pmd \
+              --tag "${TAG_NAME}" \
+              --verify-tag \
+              --prerelease \
+              --title "$release_name" \
+              --notes-file "pmd-doc-${PMD_VERSION}/pmd_release_notes.md"
+            echo "Deleting old release assets"
+            for name in $(gh release view "${TAG_NAME}" --repo pmd/pmd --json assets --jq ".assets[].name"); do
+              gh release delete-asset "${TAG_NAME}" "$name" \
+                --repo pmd/pmd \
+                --yes
+            done
+            echo "Uploading new release assets"
+            gh release upload "${TAG_NAME}" \
+              --repo pmd/pmd \
+                "dist/pmd-dist-${PMD_VERSION}-bin.zip" \
+                "dist/pmd-dist-${PMD_VERSION}-bin.zip.asc" \
+                "dist/pmd-dist-${PMD_VERSION}-src.zip" \
+                "dist/pmd-dist-${PMD_VERSION}-src.zip.asc" \
+                "dist/pmd-dist-${PMD_VERSION}-doc.zip" \
+                "dist/pmd-dist-${PMD_VERSION}-doc.zip.asc" \
+                "dist/pmd-${PMD_VERSION}-cyclonedx.xml" \
+                "dist/pmd-${PMD_VERSION}-cyclonedx.json"
+
+            echo "Deleting tag ${PREVIOUS_TAG_NAME}"
+            gh api \
+              --method DELETE \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "/repos/pmd/pmd/git/refs/tags/${PREVIOUS_TAG_NAME}"
+          fi
+          echo "release_url=https://github.com/pmd/pmd/releases/tag/pmd_releases%2F${PMD_VERSION}" >> "$GITHUB_OUTPUT"
+      - name: Cleanup gpg
+        if: ${{ always() }}
+        run: |
+          rm -rf "${HOME}/.gpg"
+
   create-regression-tester-baseline:
     needs: check-version
     runs-on: ubuntu-latest
@@ -472,7 +657,7 @@ jobs:
             ~/.gradle/caches
             ~/work/pmd/target/repositories
             .ci/files/vendor/bundle
-          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
+          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
       - uses: actions/download-artifact@v4
         with:

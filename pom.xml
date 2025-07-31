@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.15.0-SNAPSHOT</version>
+    <version>7.17.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -73,7 +73,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2025-05-30T16:37:58Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-07-25T06:06:19Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -81,18 +81,20 @@
         <maven.compiler.test.target>1.8</maven.compiler.test.target>
 
 
+        <kotlin.compiler.apiVersion>1.9</kotlin.compiler.apiVersion>
+        <kotlin.compiler.languageVersion>1.9</kotlin.compiler.languageVersion>
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.9.24</kotlin.version>
+        <kotlin.version>2.2.0</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit5.version>5.13.1</junit5.version>
-        <junit5.platform.version>1.13.1</junit5.platform.version>
+        <junit5.version>5.13.4</junit5.version>
+        <junit5.platform.version>1.13.4</junit5.platform.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.3</surefire.version>
-        <checkstyle.version>10.25.0</checkstyle.version>
+        <checkstyle.version>10.26.1</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
-        <pmd.plugin.version>3.26.0</pmd.plugin.version>
+        <pmd.plugin.version>3.27.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
         <javadoc.plugin.version>3.11.2</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
@@ -106,7 +108,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>30</pmd.build-tools.version>
+        <pmd.build-tools.version>33</pmd.build-tools.version>
 
         <pmd-designer.version>7.10.0</pmd-designer.version>
 
@@ -119,6 +121,8 @@
         <antlr4.ant.wrapper>${project.basedir}/../antlr4-wrapper.xml</antlr4.ant.wrapper>
 
         <dokka.skip>false</dokka.skip>
+
+        <central-publishing.waitMaxTime>10800</central-publishing.waitMaxTime> <!-- 10800s = 180min = 3h -->
     </properties>
 
     <build>
@@ -400,11 +404,11 @@
                         <detectOfflineLinks>false</detectOfflineLinks>
                         <offlineLinks>
                             <offlineLink>
-                                <location>${project.basedir}/../pmd-core/target/apidocs</location>
+                                <location>${project.basedir}/../pmd-core/target/reports/apidocs</location>
                                 <url>../../pmd-core/${project.version}</url>
                             </offlineLink>
                             <offlineLink>
-                                <location>${project.basedir}/../pmd-test/target/apidocs</location>
+                                <location>${project.basedir}/../pmd-test/target/reports/apidocs</location>
                                 <url>../../pmd-test/${project.version}</url>
                             </offlineLink>
                             <offlineLink>
@@ -453,11 +457,11 @@
                         <externalDocumentationLinks>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-core/${project.version}/</url>
-                                <packageListUrl>file://${project.basedir}/../pmd-core/target/apidocs/element-list</packageListUrl>
+                                <packageListUrl>file://${project.basedir}/../pmd-core/target/reports/apidocs/element-list</packageListUrl>
                             </link>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-test/${project.version}/</url>
-                                <packageListUrl>file://${project.basedir}/../pmd-test/target/apidocs/element-list</packageListUrl>
+                                <packageListUrl>file://${project.basedir}/../pmd-test/target/reports/apidocs/element-list</packageListUrl>
                             </link>
                             <link>
                                 <url>https://docs.pmd-code.org/apidocs/pmd-lang-test/${project.version}/</url>
@@ -473,6 +477,19 @@
                             </goals>
                         </execution>
                     </executions>
+                    <dependencies>
+                        <!-- Adding kotlin-compiler directly, which is a workaround to fix
+                             https://youtrack.jetbrains.com/issue/KT-73967 in dokka.
+                             While com.intellij.util.lang.JavaVersion is actually brought in via the
+                             dokka plugin "org.jetbrains.dokka:analysis-kotlin-descriptors", adding the
+                             kotlin-compiler dependency overrides this class.
+                        -->
+                        <dependency>
+                            <groupId>org.jetbrains.kotlin</groupId>
+                            <artifactId>kotlin-compiler</artifactId>
+                            <version>${kotlin.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -511,7 +528,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -575,26 +592,26 @@
                     </configuration>
                     <dependencies>
                         <!-- Note: we can't use a property for the version here due to https://issues.apache.org/jira/browse/MRELEASE-932 -->
-                        <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see .ci/build.sh -->
+                        <!-- We use the comment "pmd.dogfood.version" as a marker and manually change the version - see build.yml -->
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.14.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.14.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.14.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.14.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -617,7 +634,7 @@
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.7.0</version>
+                    <version>0.8.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -787,7 +804,8 @@
                     <publishingServerId>central</publishingServerId>
                     <autoPublish>true</autoPublish>
                     <waitUntil>published</waitUntil>
-                    <deploymentName>${project.artifactId}</deploymentName>
+                    <waitMaxTime>${central-publishing.waitMaxTime}</waitMaxTime>
+                    <deploymentName>PMD ${project.version}</deploymentName>
                 </configuration>
             </plugin>
             <plugin>
@@ -874,7 +892,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.49.4</version>
+                <version>3.49.5</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -884,12 +902,12 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.17.0</version>
+                <version>3.18.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.13.1</version>
+                <version>1.14.0</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -909,7 +927,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>4.0.27</version>
+                <version>4.0.28</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -1009,13 +1027,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.17.5</version>
+                <version>1.17.6</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.17.5</version>
+                <version>1.17.6</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1122,6 +1140,40 @@
 
     <profiles>
         <profile>
+            <id>Java 21+</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>dependency-properties</id>
+                                <goals>
+                                    <goal>properties</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <properties>
+                <!-- see https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3 -->
+                <extraArgLine>-javaagent:${org.mockito:mockito-core:jar}</extraArgLine>
+            </properties>
+        </profile>
+
+        <profile>
             <!-- Adds an SLF4J implementation, useful when developing within an IDE -->
             <id>with-slf4j-impl</id>
             <activation>
@@ -1148,7 +1200,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.7</version>
+                        <version>3.2.8</version>
                         <configuration>
                             <bestPractices>true</bestPractices>
                         </configuration>
@@ -1278,34 +1330,6 @@
         </profile>
 
         <profile>
-            <id>dogfood</id>
-            <activation>
-                <property>
-                    <name>dogfoodStagingRepo</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <altDeploymentRepository>dogfood::file://${dogfoodStagingRepo}</altDeploymentRepository>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>dogfood</id>
-                    <url>file://${dogfoodStagingRepo}</url>
-                    <releases><enabled>false</enabled></releases>
-                    <snapshots><enabled>true</enabled></snapshots>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-
-        <profile>
             <id>central-portal-snapshots</id>
             <repositories>
                 <repository>
@@ -1342,6 +1366,7 @@
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
+        <module>pmd-css</module>
         <module>pmd-dart</module>
         <module>pmd-doc</module>
         <module>pmd-fortran</module>

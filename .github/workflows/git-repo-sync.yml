@@ -5,7 +5,8 @@ on:
     branches:
       - main
     tags:
-      - '**'
+      - 'pmd_releases/*'
+      - '!pmd_releases/*-SNAPSHOT'
   workflow_dispatch:
 
 permissions:

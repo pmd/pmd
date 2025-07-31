@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -166,7 +166,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
 
                     ASTStatement body = ((ASTLoopStatement) stmt).getBody();
                     for (JavaNode child : stmt.children()) {
-                        if (child != body) { // NOPMD
+                        if (child != body) {
                             checkVorViolations(child);
                         }
                     }
