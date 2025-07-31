@@ -708,7 +708,7 @@ public class Foo {
         <description>
 Names for references to generic values should be limited to a single uppercase letter.
 
-**Deprecated:** This rule has been replaced by {% rule TypeParameterNamingConventions %}, which provides more comprehensive and configurable naming conventions for type parameters.
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule TypeParameterNamingConventions %}, which provides more comprehensive and configurable naming conventions for type parameters.
         </description>
         <priority>4</priority>
         <properties>
