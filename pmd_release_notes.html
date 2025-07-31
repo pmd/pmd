@@ -2032,13 +2032,36 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="-new-rules">✨ New Rules</h4>
+<ul>
+  <li>The new java rule <a href="pmd_rules_java_codestyle.html#typeparameternamingconventions"><code class="language-plaintext highlighter-rouge">TypeParameterNamingConventions</code></a> replaces the now deprecated rule
+GenericsNaming. The new rule is configurable and checks for naming conventions of type parameters in
+generic types and methods. It can be configured via a regular expression.<br />
+By default, this rule uses the standard Java naming convention (single uppercase letter).<br />
+The rule is referenced in the quickstart.xml ruleset for Java.</li>
+</ul>
+
+<h4 id="deprecated-rules">Deprecated Rules</h4>
+<ul>
+  <li>The java rule <a href="pmd_rules_java_codestyle.html#genericsnaming"><code class="language-plaintext highlighter-rouge">GenericsNaming</code></a> has been deprecated for removal in favor
+of the new rule <a href="pmd_rules_java_codestyle.html#typeparameternamingconventions"><code class="language-plaintext highlighter-rouge">TypeParameterNamingConventions</code></a>.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
+<ul>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/972">#972</a>: [java] Improve naming conventions rules</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/5922">#5922</a>: Fix #972: [java] Add a new rule TypeParameterNamingConventions - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5932">#5932</a>: [ci] Reuse GitHub Pre-Releases - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
 </ul>
 

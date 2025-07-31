@@ -2060,6 +2060,15 @@
 ,
 
 {
+"title": "TypeParameterNamingConventions (Java, Code Style)",
+"tags": "",
+"keywords": "TypeParameterNamingConventions",
+"url": "pmd_rules_java_codestyle.html#typeparameternamingconventions",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
 "title": "OnlyOneReturn (Java, Code Style)",
 "tags": "",
 "keywords": "OnlyOneReturn",
