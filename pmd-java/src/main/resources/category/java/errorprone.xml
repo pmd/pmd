@@ -2406,7 +2406,7 @@ public class Baz implements Comparable<Baz> {  // poor - missing hashCode()
         // some comparison
     }
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass() {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         return compareTo((Baz) o) == 0;
@@ -2418,7 +2418,7 @@ public class Foo implements Comparable<Foo> {  // correct
         // some comparison
     }
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass() {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
         return compareTo((Foo) o) == 0;
