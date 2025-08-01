@@ -2358,28 +2358,28 @@ public class Foo {        // perfect, both methods provided
 ]]>
         </example>
     </rule>
-    <rule name="MissingEqualsOnComparable"
-          language="java"
-          since="7.16.0"
-          message="Classes implementing Comparable should override both equals() and hashCode()"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.MissingEqualsOnComparableRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#missingequalsoncomparable">
-        <description>
 
-            Classes that implement `Comparable` should override both `equals()` and 
-            `hashCode()` if instances of these classes are used in collections. This is 
-            to ensure that the class's natural ordering is consistent with `equals()`. 
-            Failing to do so can lead to unexpected behavior in sets which then do not 
-            conform to the `Set` interface. While the `Set` interface relies on 
-            `equals()` to determine object equality, sorted sets like `TreeSet` use 
-            `compareTo()` instead. The same issue can arise when such objects are used 
+    <rule name="OverrideBothEqualsAndHashCodeOnComparable"
+          language="java"
+          since="7.17.0"
+          message="When implementing Comparable both equals() and hashCode() should be overridden"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashCodeOnComparableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#overridebothequalsandhashcodeoncomparable">
+        <description>
+            Classes that implement `Comparable` should override both `equals()` and
+            `hashCode()` if instances of these classes are used in collections. This is
+            to ensure that the class's natural ordering is consistent with `equals()`.
+            Failing to do so can lead to unexpected behavior in sets which then do not
+            conform to the `Set` interface. While the `Set` interface relies on
+            `equals()` to determine object equality, sorted sets like `TreeSet` use
+            `compareTo()` instead. The same issue can arise when such objects are used
             as keys in sorted maps.
 
-            Note 1: This rule is related to {% rule OverrideBothEqualsAndHashcode %}. It 
-            will report also missing `hashCode()` methods, if the class implements 
-            `Comparable`.  
-            Note 2: This rule also reports records that implement `Comparable`. While 
-            for records, `equals()` and `hashCode()` are generated, you still must make 
+            Note 1: This rule is related to {% rule OverrideBothEqualsAndHashcode %}. It
+            will report missing `equals()` and/or `hashCode()` methods for classes only
+            that implement `Comparable`.
+            Note 2: This rule also reports records that implement `Comparable`. While
+            for records, `equals()` and `hashCode()` are generated, you still must make
             sure that `compareTo()` is consistent with `equals()`.
         </description>
         <priority>3</priority>

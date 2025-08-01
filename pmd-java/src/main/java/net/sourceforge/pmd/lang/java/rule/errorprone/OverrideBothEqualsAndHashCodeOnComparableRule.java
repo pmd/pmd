@@ -19,16 +19,16 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  * <a href="https://www.jetbrains.com/help/inspectopedia/ComparableImplementedButEqualsNotOverridden.html">ComparableImplementedButEqualsNotOverridden</a>
  *
  * @author <a href="mailto:vpotucek@me.com">Vincent Rudolf Potuček</a>
- * @since 7.16.0
+ * @since 7.17.0
  */
-public class MissingEqualsOnComparableRule extends AbstractJavaRulechainRule {
+public class OverrideBothEqualsAndHashCodeOnComparableRule extends AbstractJavaRulechainRule {
 
     private static final String MESSAGE_PREFIX = "When implementing Comparable ";
     private static final String MISSING_HASH_CODE = MESSAGE_PREFIX + "hashCode() should be overridden";
     private static final String MISSING_EQUALS = MESSAGE_PREFIX + "equals() should be overridden";
     private static final String MISSING_EQUALS_AND_HASH_CODE = MESSAGE_PREFIX + "both equals() and hashCode() should be overridden";
 
-    public MissingEqualsOnComparableRule() {
+    public OverrideBothEqualsAndHashCodeOnComparableRule() {
         super(ASTClassDeclaration.class,
                 ASTRecordDeclaration.class,
                 ASTAnonymousClassDeclaration.class);

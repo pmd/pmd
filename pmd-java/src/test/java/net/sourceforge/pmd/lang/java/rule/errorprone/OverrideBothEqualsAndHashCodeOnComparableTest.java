@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class MissingEqualsOnComparableTest extends PmdRuleTst {
+class OverrideBothEqualsAndHashCodeOnComparableTest extends PmdRuleTst {
     // no additional unit tests
 }
