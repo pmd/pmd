@@ -2387,6 +2387,7 @@ public class Foo {        // perfect, both methods provided
             Note 1: This rule is related to {% rule OverrideBothEqualsAndHashcode %}. It
             will report missing `equals()` and/or `hashCode()` methods for classes only
             that implement `Comparable`.
+
             Note 2: This rule also reports records that implement `Comparable`. While
             for records, `equals()` and `hashCode()` are generated, you still must make
             sure that `compareTo()` is consistent with `equals()`.
