@@ -4,11 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
     <test-code>
-        <description>Comparable without equals</description>
+        <description>Comparable without equals and hashCode</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <expected-messages>
-            <message>Missing equals and hashCode</message>
+            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable<Foo> {
@@ -20,20 +20,12 @@
         ]]></code>
     </test-code>
     <test-code>
-        <description>No feature envy on OverrideBothEqualsAndHashcodeRule: Only check Comparable</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            class Foo {
-                public int compareTo(Foo o) {
-                    return 0;
-                }
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
         <description>Comparable with equals but no hashCode</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>When implementing Comparable hashCode() should be overridden</message>
+        </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable<Foo> {
                 @Override
@@ -44,6 +36,27 @@
                 @Override
                 public boolean equals(Object o) {
                     return o instanceof Foo && compareTo((Foo) o) == 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Comparable with hashCode but no equals</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <expected-messages>
+            <message>When implementing Comparable equals() should be overridden</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Foo implements Comparable<Foo> {
+                @Override
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+
+                @Override
+                public int hashCode() {
+                    return 0;
                 }
             }
         ]]></code>
@@ -71,6 +84,17 @@
         ]]></code>
     </test-code>
     <test-code>
+        <description>Ignore classes that don't implement Comparable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Foo {
+                public int compareTo(Foo o) {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
         <description>Non-Comparable class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -91,7 +115,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <expected-messages>
-           <message>Missing equals and hashCode</message>
+           <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable<Foo> {
@@ -107,52 +131,12 @@
         ]]></code>
     </test-code>
     <test-code>
-        <description>Comparable with wrong equals signature</description>
-        <expected-problems>1</expected-problems>
-        <!-- this is inconsistent: equals will fail on class but hashcode on the equals method, should be consistent -->
-        <expected-linenumbers>1</expected-linenumbers>
-        <expected-messages>
-            <message>Missing equals</message>
-        </expected-messages>
-        <code><![CDATA[
-            class Foo implements Comparable<Foo> {
-                @Override
-                public int compareTo(Foo o) {
-                    return 0;
-                }
-
-                @Override
-                public int hashCode() {
-                    return 0;
-                }
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>Comparable with wrong equals signature</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
-        <expected-messages>
-           <message>Missing hashCode</message>
-        </expected-messages>
-        <code><![CDATA[
-            class Foo implements Comparable<Foo> {
-                @Override
-                public int compareTo(Foo o) {
-                    return 0;
-                }
-
-                @Override
-                public boolean equals(Object o) {
-                    return false;
-                }
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
         <description>Raw Comparable</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+        </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable {
                 @Override
@@ -166,6 +150,9 @@
         <description>Anonymous Comparable</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+        </expected-messages>
         <code><![CDATA[
             class Test {
                 Comparable<Object> anonymous = new Comparable<Object>() {
@@ -216,14 +203,15 @@
         ]]></code>
     </test-code>
     <test-code>
-        <description>Concrete class missing hashCode</description>
+        <description>Non-Comparable class with equals but no hashCode</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-            public class ConcreteClass {
-                public boolean equals(Object o) {
-                    return false;
-                }
+        class Foo {
+            @Override
+            public boolean equals(Object o) {
+                return false;
             }
+        }
         ]]></code>
     </test-code>
     <test-code>
@@ -236,96 +224,12 @@
         ]]></code>
     </test-code>
     <test-code>
-        <description>enum declaration with equals only</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            public enum EnumWithEquals {
-                VALUE1, VALUE2;
-
-                @Override
-                public boolean equals(Object o) {
-                    return false;
-                }
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>enum declaration with hashCode only</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            public enum EnumWithHashCode {
-                VALUE1, VALUE2;
-
-                @Override
-                public int hashCode() {
-                    return 42;
-                }
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>enum declaration with both equals and hashCode</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            public enum CompleteEnum {
-                VALUE1, VALUE2;
-
-                @Override
-                public boolean equals(Object o) {
-                    return false;
-                }
-
-                @Override
-                public int hashCode() {
-                    return 42;
-                }
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>enum implementing Comparable with equals</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            public enum ComparableEnum implements Comparable<ComparableEnum> {
-                VALUE1, VALUE2;
-
-                @Override
-                public boolean equals(Object o) {
-                    return false;
-                }
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>enum implementing Comparable with hashCode</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            public enum ComparableEnum implements Comparable<ComparableEnum> {
-                VALUE1, VALUE2;
-
-                @Override
-                public int hashCode() {
-                    return 42;
-                }
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>Non-Comparable class with equals but no hashCode</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-        class Foo {
-            @Override
-            public boolean equals(Object o) {
-                return false;
-            }
-        }
-    ]]></code>
-    </test-code>
-    <test-code>
         <description>Record with Comparable and no explicit equals/hashCode</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+        </expected-messages>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
                 @Override
@@ -340,7 +244,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
-            <message>Missing hashCode</message>
+            <message>When implementing Comparable hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
@@ -359,9 +263,9 @@
     <test-code>
         <description>Record with Comparable and explicit hashCode</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
-            <message>Missing equals</message>
+            <message>When implementing Comparable equals() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
@@ -408,11 +312,11 @@
         ]]></code>
     </test-code>
     <test-code>
-        <description>Record with wrong equals signature</description>
+        <description>Comparable Record with wrong equals signature</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <expected-messages>
-            <message>Missing equals and hashCode</message>
+            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {

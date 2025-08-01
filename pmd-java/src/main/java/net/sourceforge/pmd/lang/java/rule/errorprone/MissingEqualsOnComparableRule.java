@@ -23,9 +23,10 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
  */
 public class MissingEqualsOnComparableRule extends AbstractJavaRulechainRule {
 
-    private static final String MISSING_HASH_CODE = "Missing hashCode";
-    private static final String MISSING_EQUALS = "Missing equals";
-    private static final String MISSING_EQUALS_AND_HASH_CODE = "Missing equals and hashCode";
+    private static final String MESSAGE_PREFIX = "When implementing Comparable ";
+    private static final String MISSING_HASH_CODE = MESSAGE_PREFIX + "hashCode() should be overridden";
+    private static final String MISSING_EQUALS = MESSAGE_PREFIX + "equals() should be overridden";
+    private static final String MISSING_EQUALS_AND_HASH_CODE = MESSAGE_PREFIX + "both equals() and hashCode() should be overridden";
 
     public MissingEqualsOnComparableRule() {
         super(ASTClassDeclaration.class,
@@ -67,7 +68,7 @@ public class MissingEqualsOnComparableRule extends AbstractJavaRulechainRule {
             if (equalsMethod == null && hashCodeMethod == null) {
                 asCtx(data).addViolationWithMessage(node, MISSING_EQUALS_AND_HASH_CODE);
             } else if (equalsMethod == null) {
-                asCtx(data).addViolationWithMessage(node, MISSING_EQUALS);
+                asCtx(data).addViolationWithMessage(hashCodeMethod, MISSING_EQUALS);
             } else if (hashCodeMethod == null) {
                 asCtx(data).addViolationWithMessage(equalsMethod, MISSING_HASH_CODE);
             }
