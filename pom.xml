@@ -555,10 +555,6 @@
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
                                 </rulesets>
-                                <excludeRoots>
-                                    <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                                    <excludeRoot>target/generated-sources/antlr4</excludeRoot>
-                                </excludeRoots>
                             </configuration>
                         </execution>
                         <execution>
@@ -585,6 +581,10 @@
                         <failurePriority>2</failurePriority>
                         <failOnViolation>true</failOnViolation>
                         <printFailingErrors>true</printFailingErrors>
+                        <excludeRoots>
+                            <excludeRoot>target/generated-sources/javacc</excludeRoot>
+                            <excludeRoot>target/generated-sources/antlr4</excludeRoot>
+                        </excludeRoots>
                         <!-- Skip the default pmd executions, which is triggered by pmd:check and avoid
                              unnecessary pmd analysis of the main code.
                              We use executions pmd-main and pmd-test instead and explicitly run pmd:pmd. -->
