@@ -6,7 +6,7 @@
     <test-code>
         <description>Comparable without equals and hashCode</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
@@ -113,7 +113,7 @@
     <test-code>
         <description>Comparable with wrong equals signature</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
@@ -133,7 +133,7 @@
     <test-code>
         <description>Raw Comparable</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
@@ -149,7 +149,7 @@
     <test-code>
         <description>Anonymous Comparable</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>2</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
             <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
@@ -235,7 +235,7 @@
     <test-code>
         <description>Record with Comparable and no explicit equals/hashCode</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
@@ -323,7 +323,7 @@
     <test-code>
         <description>Comparable Record with wrong equals signature</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
             <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
         </expected-messages>
@@ -343,7 +343,7 @@
     <test-code>
         <description>Do report in inherited Comparables with compareTo</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>2</expected-linenumbers>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
             import java.io.File;
             public class MyFile extends File {

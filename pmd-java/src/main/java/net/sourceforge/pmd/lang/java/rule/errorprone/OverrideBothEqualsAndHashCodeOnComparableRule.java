@@ -27,23 +27,27 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
 
     @Override
     protected boolean skipType(ASTTypeDeclaration node) {
-        return !TypeTestUtil.isA(Comparable.class, node)
-                || TypeTestUtil.isA(Enum.class, node)
-                || hasNoCompareToMethod(node);
+        return !TypeTestUtil.isA(Comparable.class, node) || TypeTestUtil.isA(Enum.class, node);
     }
 
-    private boolean hasNoCompareToMethod(ASTTypeDeclaration node) {
-        return node.getDeclarations(ASTMethodDeclaration.class)
-                .none(m -> "compareTo".equals(m.getName())
-                        && m.getArity() == 1
-                        && m.getResultTypeNode().getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)
-                        && !m.isStatic());
+    private static boolean isCompareToMethod(ASTMethodDeclaration method) {
+        return "compareTo".equals(method.getName())
+                && method.getArity() == 1
+                && method.getResultTypeNode().getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)
+                && !method.isStatic();
     }
 
     @Override
     protected void maybeReport(RuleContext ctx, ASTTypeDeclaration node, ASTMethodDeclaration hashCodeMethod, ASTMethodDeclaration equalsMethod) {
+        ASTMethodDeclaration compareToMethod = node
+                .getDeclarations(ASTMethodDeclaration.class)
+                .first(OverrideBothEqualsAndHashCodeOnComparableRule::isCompareToMethod);
+        if (compareToMethod == null) {
+            return;
+        }
+
         if (equalsMethod == null && hashCodeMethod == null) {
-            ctx.addViolationWithMessage(node, MISSING_EQUALS_AND_HASH_CODE);
+            ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
         } else if (equalsMethod == null) {
             ctx.addViolationWithMessage(hashCodeMethod, MISSING_EQUALS);
         } else if (hashCodeMethod == null) {
