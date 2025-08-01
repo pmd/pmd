@@ -2330,7 +2330,16 @@ public void bar() {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#overridebothequalsandhashcode">
         <description>
-Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+Override both `public boolean Object.equals(Object other)` and `public int Object.hashCode()` or override neither.
+Even if you are inheriting a `hashCode()` from a parent class, consider implementing `hashCode()` and explicitly
+delegating to your superclass.
+
+Not overriding both methods could violate the contract between `equals()` and `hashCode()`. Most importantly,
+if two instances are equal, then they must have the same hash code. Using such invalid instances in hash-based
+collections like `HashSet` or `HashMap` could lead to duplicated or missing entries.
+
+This rule does not consider types that implement `Comparable`. There is a separate rule
+{% rule OverrideBothEqualsAndHashCodeOnComparable %} for this.
         </description>
         <priority>3</priority>
         <example>
@@ -2353,6 +2362,69 @@ public class Foo {        // perfect, both methods provided
     }
     public int hashCode() {
       // return some hash value
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="OverrideBothEqualsAndHashCodeOnComparable"
+          language="java"
+          since="7.17.0"
+          message="When implementing Comparable both equals() and hashCode() should be overridden"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashCodeOnComparableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#overridebothequalsandhashcodeoncomparable">
+        <description>
+            Classes that implement `Comparable` should override both `equals()` and
+            `hashCode()` if instances of these classes are used in collections. This is
+            to ensure that the class's natural ordering is consistent with `equals()`.
+            Failing to do so can lead to unexpected behavior in sets which then do not
+            conform to the `Set` interface. While the `Set` interface relies on
+            `equals()` to determine object equality, sorted sets like `TreeSet` use
+            `compareTo()` instead. The same issue can arise when such objects are used
+            as keys in sorted maps.
+
+            Note 1: This rule is related to {% rule OverrideBothEqualsAndHashcode %}. It
+            will report missing `equals()` and/or `hashCode()` methods for classes only
+            that implement `Comparable`.
+
+            Note 2: This rule also reports records that implement `Comparable`. While
+            for records, `equals()` and `hashCode()` are generated, you still must make
+            sure that `compareTo()` is consistent with `equals()`.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Bar implements Comparable<Bar> {  // poor - missing equals() and hashCode()
+    public int compareTo(Bar other) {
+        // some comparison
+    }
+}
+
+public class Baz implements Comparable<Baz> {  // poor - missing hashCode()
+    public int compareTo(Baz other) {
+        // some comparison
+    }
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return compareTo((Baz) o) == 0;
+    }
+}
+
+public class Foo implements Comparable<Foo> {  // correct
+    public int compareTo(Foo other) {
+        // some comparison
+    }
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return compareTo((Foo) o) == 0;
+    }
+    public int hashCode() {
+        // return hash code
     }
 }
 ]]>
