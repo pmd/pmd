@@ -12,7 +12,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.Random;
 import java.util.TreeMap;
@@ -378,7 +377,7 @@ public class MapUtilsTest extends JUnitTestSupport {
                 private static final long serialVersionUID = 1L;
 
                 {
-                    put("expected", Objects.toString(expected));
+                    put("expected", String.valueOf(expected));
                 }
             };
 

@@ -254,7 +254,7 @@ public class DBMSMetadata {
          * Only define callableStatement once and reuse it for subsequent calls
          * to getSourceCode()
          */
-        if (null == callableStatement) {
+        if (callableStatement == null) {
             LOG.trace("getSourceCode: returnSourceCodeStatement=\"{}\"", returnSourceCodeStatement);
             LOG.trace("getSourceCode: returnType=\"{}\"", returnType);
             callableStatement = getConnection().prepareCall(returnSourceCodeStatement);
@@ -282,7 +282,7 @@ public class DBMSMetadata {
      */
     public List<SourceObject> getSourceObjectList() {
 
-        if (null == dburi) {
+        if (dburi == null) {
             LOG.warn("No dbUri defined - no further action possible");
             return Collections.emptyList();
         } else {
@@ -328,36 +328,36 @@ public class DBMSMetadata {
          * explicit parameter dburi field wildcard list
          *
          */
-        if (null == searchLanguages) {
-            List<String> dbURIList = (null == dburi) ? null : dburi.getLanguagesList();
-            if (null == dbURIList || dbURIList.isEmpty()) {
+        if (searchLanguages == null) {
+            List<String> dbURIList = (dburi == null) ? null : dburi.getLanguagesList();
+            if (dbURIList == null || dbURIList.isEmpty()) {
                 searchLanguages = wildcardList;
             } else {
                 searchLanguages = dbURIList;
             }
         }
 
-        if (null == searchSchemas) {
-            List<String> dbURIList = (null == dburi) ? null : dburi.getSchemasList();
-            if (null == dbURIList || dbURIList.isEmpty()) {
+        if (searchSchemas == null) {
+            List<String> dbURIList = (dburi == null) ? null : dburi.getSchemasList();
+            if (dbURIList == null || dbURIList.isEmpty()) {
                 searchSchemas = wildcardList;
             } else {
                 searchSchemas = dbURIList;
             }
         }
 
-        if (null == searchSourceCodeTypes) {
-            List<String> dbURIList = (null == dburi) ? null : dburi.getSourceCodeTypesList();
-            if (null == dbURIList || dbURIList.isEmpty()) {
+        if (searchSourceCodeTypes == null) {
+            List<String> dbURIList = (dburi == null) ? null : dburi.getSourceCodeTypesList();
+            if (dbURIList == null || dbURIList.isEmpty()) {
                 searchSourceCodeTypes = wildcardList;
             } else {
                 searchSourceCodeTypes = dbURIList;
             }
         }
 
-        if (null == searchSourceCodeNames) {
-            List<String> dbURIList = (null == dburi) ? null : dburi.getSourceCodeNamesList();
-            if (null == dbURIList || dbURIList.isEmpty()) {
+        if (searchSourceCodeNames == null) {
+            List<String> dbURIList = (dburi == null) ? null : dburi.getSourceCodeNamesList();
+            if (dbURIList == null || dbURIList.isEmpty()) {
                 searchSourceCodeNames = wildcardList;
             } else {
                 searchSourceCodeNames = dbURIList;
@@ -366,7 +366,7 @@ public class DBMSMetadata {
 
         try {
 
-            if (null != returnSourceCodeObjectsStatement) {
+            if (returnSourceCodeObjectsStatement != null) {
                 LOG.debug("Have bespoke returnSourceCodeObjectsStatement from DBURI: \"{}\"",
                         returnSourceCodeObjectsStatement);
                 try (PreparedStatement sourceCodeObjectsStatement = getConnection()

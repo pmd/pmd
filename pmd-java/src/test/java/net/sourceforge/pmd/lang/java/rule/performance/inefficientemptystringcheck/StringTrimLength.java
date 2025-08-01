@@ -10,18 +10,18 @@ public class StringTrimLength {
     }
 
     void bar() {
-        if (get().trim().length() == 0) {
+        if (get().trim().isEmpty()) {
             // violation
         }
-        if (this.get().trim().length() == 0) {
+        if (this.get().trim().isEmpty()) {
             // violation
         }
 
         String bar = get();
-        if (bar.trim().length() == 0) {
+        if (bar.trim().isEmpty()) {
             // violation
         }
-        if (bar.toString().trim().length() == 0) {
+        if (bar.toString().trim().isEmpty()) {
             // violation
         }
     }

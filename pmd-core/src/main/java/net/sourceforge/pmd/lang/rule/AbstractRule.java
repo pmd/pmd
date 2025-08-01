@@ -286,7 +286,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
 
         AbstractRule that = (AbstractRule) o;
         return Objects.equals(getName(), that.getName())
-                && Objects.equals(getPriority(), that.getPriority())
+                && getPriority() == that.getPriority()
                 && super.equals(o);
     }
 

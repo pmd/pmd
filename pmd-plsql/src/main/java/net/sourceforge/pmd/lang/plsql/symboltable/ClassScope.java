@@ -170,7 +170,7 @@ public class ClassScope extends AbstractScope {
         List<String> images = new ArrayList<>();
         images.add(occurrence.getImage());
 
-        if (null == occurrence.getImage()) {
+        if (occurrence.getImage() == null) {
             LOG.trace("occurrence=={} with Argument Count == {} for className={}",
                     occurrence.toString(),
                     occurrence.getArgumentCount(),
