@@ -8,7 +8,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+            <message>When implementing Comparable, both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable<Foo> {
@@ -24,7 +24,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable hashCode() should be overridden</message>
+            <message>When implementing Comparable, hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable<Foo> {
@@ -45,7 +45,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable equals() should be overridden</message>
+            <message>When implementing Comparable, equals() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable<Foo> {
@@ -115,7 +115,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-           <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+           <message>When implementing Comparable, both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable<Foo> {
@@ -135,7 +135,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+            <message>When implementing Comparable, both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             class Foo implements Comparable {
@@ -151,7 +151,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+            <message>When implementing Comparable, both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             class Test {
@@ -237,7 +237,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+            <message>When implementing Comparable, both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
@@ -253,7 +253,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable hashCode() should be overridden</message>
+            <message>When implementing Comparable, hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
@@ -274,7 +274,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable equals() should be overridden</message>
+            <message>When implementing Comparable, equals() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
@@ -325,7 +325,7 @@
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>When implementing Comparable both equals() and hashCode() should be overridden</message>
+            <message>When implementing Comparable, both equals() and hashCode() should be overridden</message>
         </expected-messages>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
