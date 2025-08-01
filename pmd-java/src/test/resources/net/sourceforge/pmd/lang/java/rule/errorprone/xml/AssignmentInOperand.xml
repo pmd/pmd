@@ -106,6 +106,46 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>assignment in do-while conditional expression</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumber>6</expected-linenumber>
+        <expected-message>Avoid assignments in operands</expected-message>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 2;
+        do {
+            System.out.println("loop");
+        } while ((x = getX()) > 0);
+    }
+    private int getX() {return 1;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment in switch expression</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumber>4</expected-linenumber>
+        <expected-message>Avoid assignments in operands</expected-message>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 2;
+        switch ((x = getValue())) {
+            case 1:
+                System.out.println("one");
+                break;
+            default:
+                break;
+        }
+    }
+    private int getValue() {return 5;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>assignment in while conditional expression, allowed</description>
         <rule-property name="allowWhile">true</rule-property>
         <expected-problems>0</expected-problems>
@@ -150,6 +190,44 @@ public class Foo {
             int x = i;
         }
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment in do-while conditional expression, allowed</description>
+        <rule-property name="allowDoWhile">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 2;
+        do {
+            System.out.println("loop");
+        } while ((x = getX()) > 0);
+    }
+    private int getX() {return 1;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment in switch expression, allowed</description>
+        <rule-property name="allowSwitch">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 2;
+        switch ((x = getValue())) {
+            case 1:
+                System.out.println("one");
+                break;
+            default:
+                break;
+        }
+    }
+    private int getValue() {return 5;}
 }
         ]]></code>
     </test-code>
