@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -26,7 +27,17 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
 
     @Override
     protected boolean skipType(ASTTypeDeclaration node) {
-        return !TypeTestUtil.isA(Comparable.class, node) || TypeTestUtil.isA(Enum.class, node);
+        return !TypeTestUtil.isA(Comparable.class, node)
+                || TypeTestUtil.isA(Enum.class, node)
+                || hasNoCompareToMethod(node);
+    }
+
+    private boolean hasNoCompareToMethod(ASTTypeDeclaration node) {
+        return node.getDeclarations(ASTMethodDeclaration.class)
+                .none(m -> "compareTo".equals(m.getName())
+                        && m.getArity() == 1
+                        && m.getResultTypeNode().getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)
+                        && !m.isStatic());
     }
 
     @Override

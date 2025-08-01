@@ -340,4 +340,27 @@
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Do report in inherited Comparables with compareTo</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <code><![CDATA[
+            import java.io.File;
+            public class MyFile extends File {
+                @Override
+                public int compareTo(File other) {
+                    return 0;
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Do not report in inherited Comparables without compareTo</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.io.File;
+            public class MyFile extends File {
+            }
+        ]]></code>
+    </test-code>
 </test-data>
