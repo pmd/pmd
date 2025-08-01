@@ -87,12 +87,59 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>skip Comparable implementations</description>
+        <description>skip Comparable implementations (raw, missing hashCode)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo implements Comparable {
     public boolean equals(Object other) { return false; }
     public int compareTo(Object other) { return 42; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip Comparable implementations (raw, missing equals)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo implements Comparable {
+    public int hashCode() { return 0; }
+    public int compareTo(Object other) { return 42; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip Comparable implementation (generic, missing hashCode)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo implements Comparable<Foo> {
+    @Override
+    public int compareTo(Foo o) {
+        return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof Foo && compareTo((Foo) o) == 0;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip Comparable implementation (generic, missing equals)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo implements Comparable<Foo> {
+    @Override
+    public int compareTo(Foo o) {
+        return 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return 0;
+    }
 }
         ]]></code>
     </test-code>
@@ -209,22 +256,5 @@ public class Foo {
                     }
             }
             ]]></code>
-    </test-code>
-    <test-code>
-        <description>No feature envy on MissingEqualsOnComparableRule: Comparable with equals, but missing hashCode.</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-            class Foo implements Comparable<Foo> {
-                @Override
-                public int compareTo(Foo o) {
-                    return 0;
-                }
-
-                @Override
-                public boolean equals(Object o) {
-                    return o instanceof Foo && compareTo((Foo) o) == 0;
-                }
-            }
-        ]]></code>
     </test-code>
 </test-data>
