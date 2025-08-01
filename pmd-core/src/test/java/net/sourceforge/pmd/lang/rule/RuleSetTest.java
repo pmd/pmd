@@ -215,7 +215,9 @@ class RuleSetTest {
                 .withName("basic rules")
                 .withDescription("desc")
                 .build();
-        assertFalse(s.equals("basic rules"), "A ruleset cannot be equals to another kind of object");
+        @SuppressWarnings("PMD.LiteralsFirstInComparisons") // we really want to call equals on RuleSet
+        boolean result = s.equals("basic rules");
+        assertFalse(result, "A ruleset cannot be equals to another kind of object");
     }
 
     @Test

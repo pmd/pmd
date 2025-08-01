@@ -84,13 +84,13 @@ public class TypeAnnotTestUtil {
     @SuppressWarnings("unchecked")
     public static <A extends Annotation> A createAnnotationInstance(Class<A> annotationClass, Map<String, Object> attributes) {
         return (A) Proxy.newProxyInstance(annotationClass.getClassLoader(), new Class[] { annotationClass }, (proxy, method, args) -> {
-            if (method.getName().equals("annotationType") && args == null) {
+            if ("annotationType".equals(method.getName()) && args == null) {
                 return annotationClass;
-            } else if (method.getName().equals("toString") && args == null) {
+            } else if ("toString".equals(method.getName()) && args == null) {
                 return AnnotationUtils.toString((Annotation) proxy);
-            } else if (method.getName().equals("hashCode") && args == null) {
+            } else if ("hashCode".equals(method.getName()) && args == null) {
                 return AnnotationUtils.hashCode((Annotation) proxy);
-            } else if (method.getName().equals("equals") && args.length == 1) {
+            } else if ("equals".equals(method.getName()) && args.length == 1) {
                 if (args[0] instanceof Annotation) {
                     return AnnotationUtils.equals((Annotation) proxy, (Annotation) args[0]);
                 }

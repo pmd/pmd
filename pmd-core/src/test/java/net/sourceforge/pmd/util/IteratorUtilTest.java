@@ -149,7 +149,7 @@ class IteratorUtilTest {
     void testFlatmapIsLazy() {
         Iterator<String> iter = iterOf("a", "b");
         Function<String, Iterator<String>> fun = s -> {
-            if (s.equals("a")) {
+            if ("a".equals(s)) {
                 return iterOf("a");
             } else {
                 throw new AssertionError("This statement shouldn't be reached");

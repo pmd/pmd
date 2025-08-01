@@ -160,7 +160,9 @@ class AbstractRuleTest {
     @Test
     void testEquals4() {
         MyRule myRule = new MyRule();
-        assertFalse(myRule.equals("MyRule"), "A rule cannot be equal to an object of another class");
+        @SuppressWarnings("PMD.LiteralsFirstInComparisons") // we really want to call equals on MyRule
+        boolean result = myRule.equals("MyRule");
+        assertFalse(result, "A rule cannot be equal to an object of another class");
     }
 
     @Test
