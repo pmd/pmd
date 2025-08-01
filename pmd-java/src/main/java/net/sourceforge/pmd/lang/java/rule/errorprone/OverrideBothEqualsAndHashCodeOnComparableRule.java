@@ -15,7 +15,6 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * <p>This is essentially the same as the rule {@link OverrideBothEqualsAndHashcodeRule} but only for
  * {@link Comparable} types.
  *
- * @author <a href="mailto:vpotucek@me.com">Vincent Rudolf Potuček</a>
  * @see <a href="https://www.jetbrains.com/help/inspectopedia/ComparableImplementedButEqualsNotOverridden.html">ComparableImplementedButEqualsNotOverridden</a>
  * @since 7.17.0
  */
