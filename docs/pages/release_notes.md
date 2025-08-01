@@ -36,6 +36,8 @@ This is a {{ site.pmd.release_type }} release.
   of the new rule {% rule java/codestyle/TypeParameterNamingConventions %}.
 
 ### 🐛 Fixed Issues
+* java
+  * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
 * java-codestyle
   * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
 
