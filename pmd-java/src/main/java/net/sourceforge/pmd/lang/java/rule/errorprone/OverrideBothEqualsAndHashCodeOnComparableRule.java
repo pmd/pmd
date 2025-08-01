@@ -27,7 +27,7 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
 
     @Override
     protected boolean skipType(ASTTypeDeclaration node) {
-        return !TypeTestUtil.isA(Comparable.class, node);
+        return !TypeTestUtil.isA(Comparable.class, node) || TypeTestUtil.isA(Enum.class, node);
     }
 
     @Override

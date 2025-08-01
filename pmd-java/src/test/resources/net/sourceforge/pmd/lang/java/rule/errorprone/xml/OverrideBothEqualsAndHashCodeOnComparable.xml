@@ -224,6 +224,15 @@
         ]]></code>
     </test-code>
     <test-code>
+        <description>enum declaration with implementation but no methods (anonymous classes)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public enum SimpleEnum {
+                VALUE1 { }, VALUE2 { }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
         <description>Record with Comparable and no explicit equals/hashCode</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
