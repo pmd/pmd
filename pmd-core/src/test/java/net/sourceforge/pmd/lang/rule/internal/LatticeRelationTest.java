@@ -207,7 +207,7 @@ class LatticeRelationTest {
     void testTransitiveSucc() {
 
         LatticeRelation<String, String, Set<String>> lattice =
-            stringLattice(s -> s.equals("c") || s.equals("bc"));
+            stringLattice(s -> "c".equals(s) || "bc".equals(s));
 
         lattice.put("abc", "val");
         lattice.put("bc", "v2");

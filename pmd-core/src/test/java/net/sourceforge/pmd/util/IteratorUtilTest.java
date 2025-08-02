@@ -89,7 +89,7 @@ class IteratorUtilTest {
     void testNoneMatchPos() {
         Iterator<String> iter = iterOf("ap", "bcd", "cd");
 
-        boolean match = IteratorUtil.noneMatch(iter, it -> it.length() < 1);
+        boolean match = IteratorUtil.noneMatch(iter, it -> it.isEmpty());
 
         assertTrue(match);
     }
@@ -98,7 +98,7 @@ class IteratorUtilTest {
     void testNoneMatchNeg() {
         Iterator<String> iter = iterOf("a", "bcd", "");
 
-        boolean match = IteratorUtil.noneMatch(iter, it -> it.length() < 1);
+        boolean match = IteratorUtil.noneMatch(iter, it -> it.isEmpty());
 
         assertFalse(match);
     }
@@ -107,7 +107,7 @@ class IteratorUtilTest {
     void testNoneMatchEmpty() {
         Iterator<String> iter = emptyIterator();
 
-        boolean match = IteratorUtil.noneMatch(iter, it -> it.length() < 1);
+        boolean match = IteratorUtil.noneMatch(iter, it -> it.isEmpty());
 
         assertTrue(match);
     }
@@ -149,7 +149,7 @@ class IteratorUtilTest {
     void testFlatmapIsLazy() {
         Iterator<String> iter = iterOf("a", "b");
         Function<String, Iterator<String>> fun = s -> {
-            if (s.equals("a")) {
+            if ("a".equals(s)) {
                 return iterOf("a");
             } else {
                 throw new AssertionError("This statement shouldn't be reached");
