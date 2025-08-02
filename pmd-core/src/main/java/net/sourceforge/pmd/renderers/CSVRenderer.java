@@ -4,21 +4,16 @@
 
 package net.sourceforge.pmd.renderers;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.nullness.qual.NonNull;
-
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import java.io.IOException;
+import java.util.*;
 
 
 /**
@@ -39,6 +34,22 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "csv";
 
+    private static final String PROP_BEGIN_LINE = "beginLine";
+    private static final String PROP_END_LINE = "endLine";
+    private static final String PROP_BEGIN_COL = "beginCol";
+    private static final String PROP_END_COL = "endCol";
+
+    private static final Set<String> DEFAULT_OFF;
+
+    static {
+        HashSet<String> set = new HashSet<>();
+        set.add(PROP_BEGIN_LINE);
+        set.add(PROP_END_LINE);
+        set.add(PROP_BEGIN_COL);
+        set.add(PROP_END_COL);
+        DEFAULT_OFF = Collections.unmodifiableSet(set);
+    }
+
     @SuppressWarnings("unchecked")
     private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
         newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
@@ -49,10 +60,18 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
         newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
         newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
+        newColDescriptor(PROP_BEGIN_LINE, "Begin Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine()), false),
+        newColDescriptor(PROP_END_LINE, "End Line", (idx, rv, cr) -> Integer.toString(rv.getEndLine()), false),
+        newColDescriptor(PROP_BEGIN_COL, "Begin Column", (idx, rv, cr) -> Integer.toString(rv.getBeginColumn()), false),
+        newColDescriptor(PROP_END_COL, "End Column", (idx, rv, cr) -> Integer.toString(rv.getEndColumn()), false),
     };
 
     private static @NonNull ColumnDescriptor<RuleViolation> newColDescriptor(String id, String title, Accessor<RuleViolation> accessor) {
         return new ColumnDescriptor<>(id, title, accessor);
+    }
+
+    private static @NonNull ColumnDescriptor<RuleViolation> newColDescriptor(String id, String title, Accessor<RuleViolation> accessor, boolean enabled) {
+        return new ColumnDescriptor<>(id, title, accessor, enabled);
     }
 
     public CSVRenderer(ColumnDescriptor<RuleViolation>[] columns, String theSeparator, String theCR) {
@@ -84,7 +103,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
             return prop;
         }
 
-        prop = PropertyFactory.booleanProperty(id).defaultValue(true).desc("Include " + label + " column").build();
+        prop = PropertyFactory.booleanProperty(id).defaultValue(!DEFAULT_OFF.contains(id)).desc("Include " + label + " column").build();
         PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
         return prop;
     }

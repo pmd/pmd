@@ -12,15 +12,21 @@ final class ColumnDescriptor<T> {
     public final String id;
     public final String title;
     public final Accessor<T> accessor;
+    public final boolean enabled;
 
     public interface Accessor<T> {
 
         String get(int idx, T violation, String lineSeparator);
     }
 
-    ColumnDescriptor(String theId, String theTitle, Accessor<T> theAccessor) {
+    ColumnDescriptor(String theId, String theTitle, Accessor<T> theAccessor, boolean theEnabled) {
         id = theId;
         title = theTitle;
         accessor = theAccessor;
+        enabled = theEnabled;
+    }
+
+    ColumnDescriptor(String theId, String theTitle, Accessor<T> theAccessor) {
+        this(theId, theTitle, theAccessor, true);
     }
 }
