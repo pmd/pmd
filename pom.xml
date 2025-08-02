@@ -510,7 +510,6 @@
                             <recipe>tech.picnic.errorprone.refasterrules.CollectionRulesRecipes</recipe>
                             <recipe>tech.picnic.errorprone.refasterrules.ComparatorRulesRecipes</recipe>
                             <recipe>tech.picnic.errorprone.refasterrules.EqualityRulesRecipes</recipe>
-                            <recipe>tech.picnic.errorprone.refasterrules.EqualityRulesRecipes</recipe>
                             <recipe>tech.picnic.errorprone.refasterrules.FileRulesRecipes</recipe>
                             <recipe>tech.picnic.errorprone.refasterrules.MicrometerRulesRecipes</recipe>
                             <recipe>tech.picnic.errorprone.refasterrules.NullRulesRecipes</recipe>
