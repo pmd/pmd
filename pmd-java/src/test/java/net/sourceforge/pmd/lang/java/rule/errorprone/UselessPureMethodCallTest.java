@@ -9,6 +9,6 @@ import net.sourceforge.pmd.test.PmdRuleTst;
 /**
  * Test for {@link UselessPureMethodCallRule}.
  */
-public class UselessPureMethodCallTest extends PmdRuleTst {
+class UselessPureMethodCallTest extends PmdRuleTst {
   // no additional unit tests
 }
