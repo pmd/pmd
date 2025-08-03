@@ -66,7 +66,6 @@
     <rule ref="category/java/codestyle.xml/ClassNamingConventions"/>
     <!--<rule ref="category/java/codestyle.xml/FieldNamingConventions" />-->
     <rule ref="category/java/codestyle.xml/FormalParameterNamingConventions"/>
-    <rule ref="category/java/codestyle.xml/GenericsNaming"/>
     <rule ref="category/java/codestyle.xml/LambdaCanBeMethodReference"/>
     <!-- <rule ref="category/java/codestyle.xml/LinguisticNaming" /> -->
     <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
@@ -76,6 +75,7 @@
     <!-- <rule ref="category/java/codestyle.xml/ShortClassName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/ShortMethodName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/ShortVariable" /> -->
+    <rule ref="category/java/codestyle.xml/TypeParameterNamingConventions"/>
 
     <!-- <rule ref="category/java/codestyle.xml/LocalHomeNamingConvention" /> -->
     <!-- <rule ref="category/java/codestyle.xml/LocalInterfaceSessionNamingConvention" /> -->
@@ -252,6 +252,8 @@
     <rule ref="category/java/errorprone.xml/OverrideBothEqualsAndHashcode"/>
     <rule ref="category/java/errorprone.xml/ProperCloneImplementation"/>
     <rule ref="category/java/errorprone.xml/ProperLogger"/>
+    <!-- <rule ref="category/java/errorprone.xml/ReplaceJavaUtilCalendar"/> -->
+    <!-- <rule ref="category/java/errorprone.xml/ReplaceJavaUtilDate"/> -->
     <rule ref="category/java/errorprone.xml/ReturnEmptyCollectionRatherThanNull"/>
     <rule ref="category/java/errorprone.xml/ReturnFromFinallyBlock"/>
     <!-- <rule ref="category/java/errorprone.xml/SimpleDateFormatNeedsLocale" /> -->

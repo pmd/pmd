@@ -443,6 +443,9 @@ entries:
     - title: C#
       url: /pmd_languages_cs.html
       output: web, pdf
+    - title: CSS
+      url: /pmd_languages_css.html
+      output: web, pdf
     - title: Coco
       url: /pmd_languages_coco.html
       output: web, pdf

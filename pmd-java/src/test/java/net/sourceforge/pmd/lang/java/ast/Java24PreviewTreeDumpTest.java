@@ -54,7 +54,7 @@ class Java24PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep492FlexibleConstructorBodiesBeforeJava24Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep492_FlexibleConstructorBodies.java"));
-        assertThat(thrown.getMessage(), containsString("Flexible constructor bodies is a preview feature of JDK 24, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Flexible constructor bodies was only standardized in Java 25, you should select your language version accordingly"));
     }
 
     @Test
@@ -65,7 +65,7 @@ class Java24PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep494ModuleImportDeclarationsBeforeJava24Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep494_ModuleImportDeclarations.java"));
-        assertThat(thrown.getMessage(), containsString("Module import declarations is a preview feature of JDK 24, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Module import declarations was only standardized in Java 25, you should select your language version accordingly"));
     }
 
     @Test
@@ -76,10 +76,10 @@ class Java24PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep495SimpleSourceFilesAndInstanceMainMethodsVerifyTypes() {
         int javaVersion = Integer.parseInt(System.getProperty("java.version").split("\\.")[0].replaceAll("-ea", ""));
-        assumeTrue(javaVersion >= 23, "Java " + javaVersion + " doesn't support java.io.IO. At least Java 23 is needed for this test.");
+        assumeTrue(javaVersion >= 23 && javaVersion < 25, "Java " + javaVersion + " doesn't support java.io.IO. Java 23 or Java 24 is needed for this test.");
 
         ASTCompilationUnit compilationUnit = java24p.parseResource("Jep495_SimpleSourceFilesAndInstanceMainMethods.java");
-        assertTrue(compilationUnit.isSimpleCompilationUnit());
+        assertTrue(compilationUnit.isCompact());
 
         List<ASTMethodCall> methodCalls = compilationUnit.descendants(ASTMethodCall.class).toList();
         OverloadSelectionResult systemOutPrintln = methodCalls.get(4).getOverloadSelectionInfo(); // System.out.println
@@ -102,6 +102,6 @@ class Java24PreviewTreeDumpTest extends BaseJavaTreeDumpTest {
     @Test
     void jep495SimpleSourceFilesAndInstanceMainMethodsBeforeJava24Preview() {
         ParseException thrown = assertThrows(ParseException.class, () -> java24.parseResource("Jep495_SimpleSourceFilesAndInstanceMainMethods.java"));
-        assertThat(thrown.getMessage(), containsString("Simple source files and instance main methods is a preview feature of JDK 24, you should select your language version accordingly"));
+        assertThat(thrown.getMessage(), containsString("Compact source files and instance main methods was only standardized in Java 25, you should select your language version accordingly"));
     }
 }
