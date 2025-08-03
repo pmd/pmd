@@ -105,7 +105,7 @@ public class DBType {
 
         LOG.debug("subProtocol={}, subnamePrefix={}", subProtocol, subnamePrefix);
 
-        if (null == subProtocol && null == subnamePrefix) {
+        if (subProtocol == null && subnamePrefix == null) {
             throw new RuntimeException("subProtocol and subnamePrefix cannot both be null");
         } else {
 
@@ -211,7 +211,7 @@ public class DBType {
          * any previous properties with the matched properties.
          */
         String extendedPropertyFile = (String) matchedProperties.remove("extends");
-        if (null != extendedPropertyFile && !"".equals(extendedPropertyFile.trim())) {
+        if (extendedPropertyFile != null && !"".equals(extendedPropertyFile.trim())) {
             Properties extendedProperties = loadDBProperties(extendedPropertyFile.trim());
 
             // Overwrite extended properties with properties in the matched
@@ -378,27 +378,27 @@ public class DBType {
         this.properties = properties;
 
         // Driver Class
-        if (null != this.properties.getProperty("driver")) {
+        if (this.properties.getProperty("driver") != null) {
             this.driverClass = this.properties.getProperty("driver");
         }
 
         // Database CharacterSet
-        if (null != this.properties.getProperty("characterset")) {
+        if (this.properties.getProperty("characterset") != null) {
             this.characterSet = this.properties.getProperty("characterset");
         }
 
         // String to get objects
-        if (null != this.properties.getProperty("sourcecodetypes")) {
+        if (this.properties.getProperty("sourcecodetypes") != null) {
             this.sourceCodeTypes = this.properties.getProperty("sourcecodetypes");
         }
 
         // Languages to process
-        if (null != this.properties.getProperty("languages")) {
+        if (this.properties.getProperty("languages") != null) {
             this.languages = this.properties.getProperty("languages");
         }
 
         // Return class for source code
-        if (null != this.properties.getProperty("returnType")) {
+        if (this.properties.getProperty("returnType") != null) {
             LOG.trace("returnType={}", this.properties.getProperty("returnType"));
             this.sourceCodeReturnType = Integer.parseInt(this.properties.getProperty("returnType"));
         }

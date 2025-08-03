@@ -256,9 +256,9 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             // Entry methodEntry = entryStack.pop();
             int methodDecisionPoints = methodEntry.decisionPoints;
             // PackageBody (including Object Type Body)
-            if (null != node.ancestors(ASTPackageBody.class).first()
+            if (node.ancestors(ASTPackageBody.class).first() != null
                     // Trigger of any form
-                    || null != node.ancestors(ASTTriggerUnit.class).first()
+                    || node.ancestors(ASTTriggerUnit.class).first() != null
             // TODO || null != node.ancestors(ASTProgramUnit.class).first()
             // //Another Procedure
             // TODO || null != node.ancestors(ASTTypeMethod.class).first()
@@ -295,7 +295,7 @@ public class CyclomaticComplexityRule extends AbstractPLSQLRule {
             // Entry methodEntry = entryStack.pop();
             int methodDecisionPoints = methodEntry.decisionPoints;
             // PAckageBody (including Object Type Body)
-            if (null != node.ancestors(ASTPackageBody.class).first()) {
+            if (node.ancestors(ASTPackageBody.class).first() != null) {
                 /*
                  * TODO This does not cope with nested methods We need the
                  * outer most ASTPackageBody

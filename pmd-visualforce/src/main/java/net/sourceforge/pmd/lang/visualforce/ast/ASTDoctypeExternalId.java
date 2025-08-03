@@ -21,7 +21,7 @@ public final class ASTDoctypeExternalId extends AbstractVfNode {
     }
 
     public boolean isHasPublicId() {
-        return null != publicId;
+        return publicId != null;
     }
 
     public String getUri() {
@@ -37,7 +37,7 @@ public final class ASTDoctypeExternalId extends AbstractVfNode {
      *         this external entity id).
      */
     public String getPublicId() {
-        return null == publicId ? "" : publicId;
+        return publicId == null ? "" : publicId;
     }
 
     void setPublicId(String publicId) {

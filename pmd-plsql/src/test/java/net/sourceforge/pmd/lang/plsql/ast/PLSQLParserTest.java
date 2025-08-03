@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.plsql.ast;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Test;
 
@@ -34,7 +33,7 @@ class PLSQLParserTest extends AbstractPLSQLParserTst {
 
     @Test
     void testBug1531() {
-        assertTimeout(Duration.of(5, ChronoUnit.SECONDS), () ->
+        assertTimeout(Duration.ofSeconds(5), () ->
             plsql.parse("create or replace force view oxa.o_xa_function_role_types as\n"
                            + "select \"CFT_ID\",\"CFR_ID\",\"CFT_NAME\",\"TCN\",\"LOG_MODULE\",\"LOG_USER\",\"LOG_DATE\",\"LOG_TIME\" from crm_function_role_types\n"
                            + "/"));

@@ -73,7 +73,7 @@ public final class Slf4jSimpleConfiguration {
             Map<String, Logger> loggerMap = (Map<String, Logger>) loggerMapField.get(loggerFactory);
             for (Logger logger : loggerMap.values()) {
                 if (logger.getName().startsWith(PMD_ROOT_LOGGER)
-                    && simpleLoggerClass.isAssignableFrom(logger.getClass())) {
+                    && simpleLoggerClass.isInstance(logger)) {
                     String newConfiguredLevel = (String) levelStringMethod.invoke(logger);
                     int newLogLevel = newDefaultLogLevel;
                     if (newConfiguredLevel != null) {
@@ -132,7 +132,7 @@ public final class Slf4jSimpleConfiguration {
         try {
             ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
             Class<?> loggerFactoryClass = loggerFactory.getClass().getClassLoader().loadClass(SIMPLE_LOGGER_FACTORY_CLASS);
-            return loggerFactoryClass.isAssignableFrom(loggerFactory.getClass());
+            return loggerFactoryClass.isInstance(loggerFactory);
         } catch (ClassNotFoundException e) {
             // not slf4j simple logger
             return false;

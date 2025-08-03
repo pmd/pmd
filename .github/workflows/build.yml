@@ -36,7 +36,7 @@ jobs:
           enableCrossOsArchive: true
       - name: Fast Build with Maven
         run: |
-          ./mvnw --show-version --errors --batch-mode \
+          ./mvnw --show-version --errors --batch-mode --no-transfer-progress \
             -Dmaven.repo.local=.m2/repository \
             verify -PfastSkip -DskipTests -Dcyclonedx.skip=false \
             deploy:deploy -DaltDeploymentRepository="dogfood::file://$(pwd)/target/staging"
@@ -97,7 +97,7 @@ jobs:
           name: compile-artifact
       - name: Full Build with Maven
         run: |
-          ./mvnw --show-version --errors --batch-mode \
+          ./mvnw --show-version --errors --batch-mode --no-transfer-progress \
               -Dmaven.repo.local=.m2/repository \
               verify -DskipTests
       - uses: actions/upload-artifact@v4
@@ -154,13 +154,41 @@ jobs:
           name: compile-artifact
       - name: Build with Maven and run unit tests
         run: |
-          ./mvnw --show-version --errors --batch-mode \
+          ./mvnw --show-version --errors --batch-mode --no-transfer-progress \
               -Dmaven.repo.local=.m2/repository \
               verify \
               -PfastSkip -Dcyclonedx.skip=false \
               -Djava8.home="${JAVA_HOME_8_X64}" \
               -Djava17.home="${JAVA_HOME_17_X64}" \
               -Djava21.home="${JAVA_HOME_21_X64}"
+
+  rewrite:
+    needs: compile
+    timeout-minutes: 90
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+      - uses: actions/cache@v4
+        with:
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+          path: .m2/repository
+          enableCrossOsArchive: true
+      - uses: actions/download-artifact@v4
+        with:
+          name: compile-artifact
+      - name: Rewrite
+        run: |
+          ./mvnw --show-version --errors --batch-mode --no-transfer-progress \
+              -Dmaven.repo.local=.m2/repository \
+              clean rewrite:dryRun
 
   dogfood:
     needs: compile
@@ -232,7 +260,7 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::Run ./mvnw verify"
-          ./mvnw --show-version --errors --batch-mode \
+          ./mvnw --show-version --errors --batch-mode --no-transfer-progress \
             --settings "${maven_settings_file}" \
             -Dmaven.repo.local=.m2/repository \
             verify \
@@ -272,7 +300,7 @@ jobs:
           name: compile-artifact
       - name: Generate rule docs
         run: |
-          ./mvnw --show-version --errors --batch-mode \
+          ./mvnw --show-version --errors --batch-mode --no-transfer-progress \
             -Dmaven.repo.local=.m2/repository \
             verify \
             -Pgenerate-rule-docs,fastSkip \

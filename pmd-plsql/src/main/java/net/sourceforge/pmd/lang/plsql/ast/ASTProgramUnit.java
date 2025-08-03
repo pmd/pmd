@@ -41,7 +41,7 @@ public final class ASTProgramUnit extends AbstractPLSQLNode implements Executabl
     @Override
     public String getObjectName() {
         // This _IS_ a schema-level Program Unit
-        if (null == this.getParent()) {
+        if (this.getParent() == null) {
             return this.getImage();
         } else {
             return this.getImage();

@@ -47,7 +47,7 @@ public class OccurrenceFinder extends PlsqlVisitorBase<Object, Object> {
                     // now we've got a scope we're starting with, so work from
                     // there
                     Scope scope = decl.getScope();
-                    if (null == scope) {
+                    if (scope == null) {
                         LOG.trace("NameOccurrence has no Scope:{}=>{}",
                                 decl.getClass().getCanonicalName(), decl.getImage());
                         break;

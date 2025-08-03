@@ -226,7 +226,7 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         // potentially text nodes
         return node.descendants(TextNode.class).toStream()
                 .map(TextNode::getText)
-                .collect(Collectors.joining(""));
+                .collect(Collectors.joining());
     }
 
     @Override

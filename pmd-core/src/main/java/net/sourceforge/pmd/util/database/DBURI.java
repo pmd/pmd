@@ -225,19 +225,19 @@ public class DBURI {
             languages = parameters.get("languages");
 
             // Populate the lists
-            if (null != sourceCodeNames) {
+            if (sourceCodeNames != null) {
                 sourceCodeNamesList = Arrays.asList(sourceCodeNames.split(","));
             }
 
-            if (null != languages) {
+            if (languages != null) {
                 languagesList = Arrays.asList(languages.split(","));
             }
 
-            if (null != parameters.get("schemas")) {
+            if (parameters.get("schemas") != null) {
                 schemasList = Arrays.asList(parameters.get("schemas").split(","));
             }
 
-            if (null != sourceCodeTypes) {
+            if (sourceCodeTypes != null) {
                 sourceCodeTypesList = Arrays.asList(sourceCodeTypes.split(","));
             }
 
@@ -257,7 +257,7 @@ public class DBURI {
         Map<String, String> map = new HashMap<>();
         String query = dburi.getRawQuery();
         LOG.trace("dburi,getQuery()={}", query);
-        if (null != query && !"".equals(query)) {
+        if (query != null && !"".equals(query)) {
             String[] params = query.split("&");
             for (String param : params) {
                 String[] splits = param.split("=");
@@ -266,7 +266,7 @@ public class DBURI {
                 if (splits.length > 1) {
                     value = splits[1];
                 }
-                map.put(name, (null == value) ? value : URLDecoder.decode(value, "UTF-8"));
+                map.put(name, (value == null) ? value : URLDecoder.decode(value, "UTF-8"));
             }
         }
         return map;
@@ -285,7 +285,7 @@ public class DBURI {
                 dburi.getHost(), dburi.getPort(), dburi.getPath(), dburi.getFragment(), dburi.getQuery());
 
         String query = dburi.getQuery();
-        if (null != query && !"".equals(query)) {
+        if (query != null && !"".equals(query)) {
             String[] params = query.split("&");
             Map<String, String> map = new HashMap<>();
             for (String param : params) {
@@ -459,48 +459,48 @@ public class DBURI {
 
             LOG.trace("DBType properties are:- {}", dbType.getProperties());
 
-            if (null != dbType.getDriverClass()) {
+            if (dbType.getDriverClass() != null) {
                 this.driverClass = dbType.getDriverClass();
             }
 
-            if (null != dbType.getCharacterSet()) {
+            if (dbType.getCharacterSet() != null) {
                 this.characterSet = dbType.getCharacterSet();
             }
 
-            if (null != dbType.getLanguages()) {
+            if (dbType.getLanguages() != null) {
                 this.languages = dbType.getLanguages();
             }
 
-            if (null != dbType.getSourceCodeTypes()) {
+            if (dbType.getSourceCodeTypes() != null) {
                 sourceCodeTypes = dbType.getSourceCodeTypes();
             }
 
             LOG.debug("DBType other properties follow  ...");
 
-            if (null != dbType.getProperties().getProperty("schemas")) {
+            if (dbType.getProperties().getProperty("schemas") != null) {
                 schemasList = Arrays.asList(dbType.getProperties().getProperty("schemas").split(","));
             }
 
-            if (null != dbType.getProperties().getProperty("sourcecodenames")) {
+            if (dbType.getProperties().getProperty("sourcecodenames") != null) {
                 sourceCodeNames = dbType.getProperties().getProperty("sourcecodenames");
             }
 
             String returnType = dbType.getProperties().getProperty("returnType");
-            if (null != returnType) {
+            if (returnType != null) {
                 sourceCodeType = Integer.parseInt(returnType);
             }
 
             LOG.debug("DBType populating lists ");
             // Populate the lists
-            if (null != sourceCodeNames) {
+            if (sourceCodeNames != null) {
                 sourceCodeNamesList = Arrays.asList(sourceCodeNames.split(","));
             }
 
-            if (null != languages) {
+            if (languages != null) {
                 languagesList = Arrays.asList(languages.split(","));
             }
 
-            if (null != sourceCodeTypes) {
+            if (sourceCodeTypes != null) {
                 sourceCodeTypesList = Arrays.asList(sourceCodeTypes.split(","));
             }
 

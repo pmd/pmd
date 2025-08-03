@@ -25,6 +25,6 @@ public final class ASTUserInterface extends BaseApexClass<InterfaceDeclaration> 
      * The type name does NOT include type arguments.
      */
     public String getSuperInterfaceName() {
-        return node.getExtendsTypes().stream().map(TypeRef::asTypeErasedString).findFirst().orElse("");
+        return node.getExtendsTypes().stream().findFirst().map(TypeRef::asTypeErasedString).orElse("");
     }
 }

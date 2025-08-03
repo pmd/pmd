@@ -75,7 +75,7 @@ public abstract class AbstractScope implements Scope {
     public <T extends Scope> T getEnclosingScope(Class<T> clazz) {
         Scope current = this;
         while (current != null) {
-            if (clazz.isAssignableFrom(current.getClass())) {
+            if (clazz.isInstance(current)) {
                 return (T) current;
             }
             current = current.getParent();

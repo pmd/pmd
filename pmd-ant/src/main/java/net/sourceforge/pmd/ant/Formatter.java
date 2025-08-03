@@ -87,16 +87,16 @@ public class Formatter {
         Charset charset;
         {
             String s = (String) properties.get("encoding");
-            if (null == s) {
+            if (s == null) {
 
                 if (toConsole) {
                     s = getConsoleEncoding();
-                    if (null == s) {
+                    if (s == null) {
                         s = System.getProperty("file.encoding");
                     }
                 }
 
-                if (null == s) {
+                if (s == null) {
                     charset = StandardCharsets.UTF_8;
                 } else {
                     charset = Charset.forName(s);
