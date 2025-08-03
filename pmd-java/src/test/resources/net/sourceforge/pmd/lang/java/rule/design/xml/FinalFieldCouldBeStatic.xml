@@ -408,4 +408,17 @@ class MyConstants {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>Distinct error messages for the same line</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The final field FOO could be made static</message>
+            <message>The final field BAR could be made static</message>
+        </expected-messages>
+        <code><![CDATA[
+class MyConstants {
+    private final int FOO=2, BAR=3;
+}
+]]></code>
+    </test-code>
 </test-data>

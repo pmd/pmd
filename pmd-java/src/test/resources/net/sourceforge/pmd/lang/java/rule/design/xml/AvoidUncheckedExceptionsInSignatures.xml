@@ -133,4 +133,19 @@ public interface Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Distinct error messages for the same line</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,2</expected-linenumbers>
+        <expected-messages>
+            <message>A method or constructor should not explicitly declare unchecked exception IllegalArgumentException in its 'throws' clause</message>
+            <message>A method or constructor should not explicitly declare unchecked exception NullPointerException in its 'throws' clause</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void foo() throws IllegalArgumentException, NullPointerException {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

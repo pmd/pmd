@@ -12,7 +12,7 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
     <rule name="AssignmentInOperand"
           language="java"
           since="1.03"
-          message="Avoid assignments in operands"
+          message="Avoid assignment to {0} in operand"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentInOperandRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assignmentinoperand">
         <description>
@@ -494,7 +494,7 @@ try {  // Prefer this:
     <rule name="AvoidLiteralsInIfCondition"
           language="java"
           since="4.2.6"
-          message="Avoid using literals in if statements"
+          message="Avoid using literals such as {0} in if statements"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidliteralsinifcondition">
         <description>
