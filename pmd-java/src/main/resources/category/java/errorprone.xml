@@ -587,7 +587,7 @@ only add to code size.  Either remove the invocation, or use the return result.
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchClause/Block/ExpressionStatement/MethodCall[
+//CatchClause/Block//ExpressionStatement/MethodCall[
     pmd-java:matchesSig("java.lang.Throwable#getMessage()")
     or pmd-java:matchesSig("java.lang.Throwable#getLocalizedMessage()")
     or pmd-java:matchesSig("java.lang.Throwable#getCause()")

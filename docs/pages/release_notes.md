@@ -40,6 +40,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
 * java-codestyle
   * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
+* java-errorprone
+  * [#5881](https://github.com/pmd/pmd/issues/5881): \[java] AvoidLosingExceptionInformation does not trigger when inside if-else
 
 ### 🚨 API Changes
 
