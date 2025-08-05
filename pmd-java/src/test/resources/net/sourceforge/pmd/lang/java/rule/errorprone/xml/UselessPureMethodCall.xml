@@ -26,7 +26,7 @@ public class Foo {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Throwable methods</description>
+        <description>Throwable methods (formerly rule AvoidLosingExceptionInformation)</description>
         <expected-problems>4</expected-problems>
         <expected-linenumbers>6,7,8,9</expected-linenumbers>
         <code><![CDATA[
