@@ -11,6 +11,8 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 
 /**
  * Reports usages of pure methods where the result is ignored.
+ *
+ * @since 7.17.0
  */
 public class UselessPureMethodCallRule extends AbstractJavaRulechainRule {
 

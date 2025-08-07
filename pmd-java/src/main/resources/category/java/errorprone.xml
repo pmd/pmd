@@ -580,9 +580,11 @@ public void checkRequests() {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidlosingexceptioninformation"
           deprecated="true">
         <description>
-This rule is *deprecated* in favor of {% rule java/errorprone/UselessPureMethodCall %}.
 Statements in a catch block that invoke accessors on the exception without using the information
 only add to code size.  Either remove the invocation, or use the return result.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UselessPureMethodCall %}.
         </description>
         <priority>2</priority>
         <properties>
@@ -3255,12 +3257,13 @@ public boolean test(String s) {
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable"
           deprecated="true">
         <description>
-This rule is *deprecated* in favor of {% rule java/errorprone/UselessPureMethodCall %}.
-
 An operation on an immutable object will not change the object itself since the result of the operation is a new object.
 Therefore, ignoring the result of such an operation is likely a mistake. The operation can probably be removed.
 
 This rule recognizes the types `String`, `BigDecimal`, `BigInteger` or any type from `java.time.*` as immutable.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UselessPureMethodCall %}.
         </description>
         <priority>3</priority>
         <example>
@@ -3283,12 +3286,15 @@ class Test {
 
     <rule name="UselessPureMethodCall"
           language="java"
-          since="7.16"
+          since="7.17.0"
           message="Do not call pure method {0} if the result is not used."
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessPureMethodCallRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselesspuremethodcall">
         <description>
-            Useless Pure Method Call detects when a pure method is called and the result is unused.
+This rule detects method calls of pure methods whose result is unused. A pure method is a method without
+side effects. Therefore, ignoring the result of such a method call is likely a mistake.
+
+Either the method call can be removed or the result should be used.
         </description>
         <priority>3</priority>
         <example>
