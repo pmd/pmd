@@ -30,12 +30,17 @@ This is a {{ site.pmd.release_type }} release.
   generic types and methods. It can be configured via a regular expression.  
   By default, this rule uses the standard Java naming convention (single uppercase letter).  
   The rule is referenced in the quickstart.xml ruleset for Java.
+* The new apex rule {% rule apex/codestyle/AnnotationsNamingConventions %} enforces that annotations
+  are used consistently in PascalCase.  
+  The rule is referenced in the quickstart.xml ruleset for Apex.
 
 #### Deprecated Rules
 * The java rule {% rule java/codestyle/GenericsNaming %} has been deprecated for removal in favor
   of the new rule {% rule java/codestyle/TypeParameterNamingConventions %}.
 
 ### 🐛 Fixed Issues
+* apex-codestyle
+  * [#5650](https://github.com/pmd/pmd/issues/5650): \[apex] New Rule: AnnotationsNamingConventions
 * java
   * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
 * java-codestyle
@@ -45,6 +50,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5822](https://github.com/pmd/pmd/pull/5822): Fix #5650: \[apex] New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5922](https://github.com/pmd/pmd/pull/5922): Fix #972: \[java] Add a new rule TypeParameterNamingConventions - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5932](https://github.com/pmd/pmd/pull/5932): \[ci] Reuse GitHub Pre-Releases - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
