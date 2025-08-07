@@ -148,7 +148,8 @@ public class BaseTokenFilter<T extends GenericToken<T>> implements TokenManager<
                     throw new ConcurrentModificationException("Using iterator after next token has been requested.");
                 }
                 if (index < unprocessedTokens.size()) {
-                    setNext(unprocessedTokens.get(index++));
+                    setNext(unprocessedTokens.get(index));
+                    index++;
                 } else {
                     final T nextToken = tokenManager.getNextToken();
                     if (shouldStopProcessing(nextToken)) {

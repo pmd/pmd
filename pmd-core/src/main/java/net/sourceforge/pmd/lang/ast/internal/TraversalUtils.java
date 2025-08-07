@@ -116,7 +116,9 @@ final class TraversalUtils {
             @Override
             public @NonNull
             Node next() {
-                return parent.getChild(i++);
+                Node result = parent.getChild(i);
+                i++;
+                return result;
             }
         };
     }

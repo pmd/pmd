@@ -116,7 +116,8 @@ final class InferenceContext {
         this.ts = ts;
         this.supertypeCheckCache = supertypeCheckCache;
         this.logger = logger;
-        this.id = ctxId++;
+        this.id = ctxId;
+        ctxId++;
 
         for (JTypeVar p : tvars) {
             addVarImpl(p);
@@ -181,7 +182,8 @@ final class InferenceContext {
      * Add a variable to this context.
      */
     private InferenceVar addVarImpl(@NonNull JTypeVar tvar) {
-        InferenceVar ivar = new InferenceVar(this, tvar, varId++);
+        InferenceVar ivar = new InferenceVar(this, tvar, varId);
+        varId++;
         freeVars.add(ivar);
         inferenceVars.add(ivar);
         mapping = mapping.plus(tvar, ivar);

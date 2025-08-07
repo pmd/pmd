@@ -85,7 +85,8 @@ public abstract class LanguageModuleBase implements Language {
         int i = 0;
         for (LanguageMetadata.LangVersionMetadata versionId : metadata.versionMetadata) {
             String versionStr = versionId.name;
-            LanguageVersion languageVersion = new LanguageVersion(this, versionStr, i++, versionId.aliases);
+            LanguageVersion languageVersion = new LanguageVersion(this, versionStr, i, versionId.aliases);
+            i++;
 
             versions.add(languageVersion);
 

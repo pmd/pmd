@@ -85,7 +85,8 @@ public final class AstElementNode extends BaseNodeInfo implements SiblingCountin
         int attrIdx = 0;
         while (it.hasNext()) {
             Attribute next = it.next();
-            atts.put(next.getName(), new AstAttributeNode(this, next, attrIdx++));
+            atts.put(next.getName(), new AstAttributeNode(this, next, attrIdx));
+            attrIdx++;
         }
 
         return atts;
