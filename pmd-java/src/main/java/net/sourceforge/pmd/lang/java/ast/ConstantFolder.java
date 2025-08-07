@@ -143,7 +143,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
             if (!itemResult.hasValue()) {
                 return ConstResult.NO_CONST_VALUE;
             }
-            result[index++] = itemResult.getValue();
+            result[index] = itemResult.getValue();
+            index++;
             isCtConst &= itemResult.isCompileTimeConstant();
         }
 
