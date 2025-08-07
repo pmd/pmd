@@ -693,8 +693,8 @@ public class Foo {
                 doSomethingWith(i++);
                 i = i + 1;
                 i = i - 1;
-                i = 1 + i;
-                i = 1 - i; // not OK
+                i = 1 + i; // OK: same as i++
+                i = 1 - i; // not OK: this is not the same as i--
                 i -= 2;    // not OK
                 i += 2;    // not OK
                 i &= 1;    // not OK
