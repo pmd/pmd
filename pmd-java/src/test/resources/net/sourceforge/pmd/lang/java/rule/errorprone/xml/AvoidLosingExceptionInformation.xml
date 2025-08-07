@@ -103,4 +103,25 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5881 [java] AvoidLosingExceptionInformation does not trigger when inside if-else</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,9</expected-linenumbers>
+        <code><![CDATA[
+class AvoidLosingExceptionInformation {
+    public void showBug() {
+        try {
+            throw new Exception("This is a test exception");
+        } catch (Exception se) {
+            if (true) {
+                se.getMessage();    // should raise flag
+            } else {
+                se.getLocalizedMessage();    // should raise flag
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
