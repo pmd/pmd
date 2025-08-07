@@ -106,7 +106,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>assignment in do-while conditional expression</description>
+        <description>#5915 assignment in do-while conditional expression</description>
         <expected-problems>1</expected-problems>
         <expected-linenumber>6</expected-linenumber>
         <expected-message>Avoid assignments in operands</expected-message>
