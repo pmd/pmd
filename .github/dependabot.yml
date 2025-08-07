@@ -5,6 +5,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "wednesday"
     # Allow up to 10 open pull requests for maven dependencies
     open-pull-requests-limit: 10
   - package-ecosystem: "bundler"
@@ -13,13 +14,14 @@ updates:
       - "/docs"
     schedule:
       interval: "weekly"
-    groups:
-      all-gems:
-        patterns: [ "*" ]
+      day: "wednesday"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-    groups:
-      all-actions:
-        patterns: [ "*" ]
+      day: "wednesday"
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "wednesday"
