@@ -2034,29 +2034,77 @@
 
 <h4 id="-new-rules">✨ New Rules</h4>
 <ul>
+  <li>The new apex rule <a href="pmd_rules_apex_codestyle.html#annotationsnamingconventions"><code class="language-plaintext highlighter-rouge">AnnotationsNamingConventions</code></a> enforces that annotations
+are used consistently in PascalCase.<br />
+The rule is referenced in the quickstart.xml ruleset for Apex.</li>
   <li>The new java rule <a href="pmd_rules_java_codestyle.html#typeparameternamingconventions"><code class="language-plaintext highlighter-rouge">TypeParameterNamingConventions</code></a> replaces the now deprecated rule
 GenericsNaming. The new rule is configurable and checks for naming conventions of type parameters in
 generic types and methods. It can be configured via a regular expression.<br />
 By default, this rule uses the standard Java naming convention (single uppercase letter).<br />
 The rule is referenced in the quickstart.xml ruleset for Java.</li>
+  <li>The new java rule <a href="pmd_rules_java_errorprone.html#overridebothequalsandhashcodeoncomparable"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashCodeOnComparable</code></a> finds missing
+<code class="language-plaintext highlighter-rouge">hashCode()</code> and/or <code class="language-plaintext highlighter-rouge">equals()</code> methods on types that implement <code class="language-plaintext highlighter-rouge">Comparable</code>. This is important if
+instances of these classes are used in collections. Failing to do so can lead to unexpected behavior in sets
+which then do not conform to the <code class="language-plaintext highlighter-rouge">Set</code> interface. While the <code class="language-plaintext highlighter-rouge">Set</code> interface relies on
+<code class="language-plaintext highlighter-rouge">equals()</code> to determine object equality, sorted sets like <code class="language-plaintext highlighter-rouge">TreeSet</code> use
+<code class="language-plaintext highlighter-rouge">compareTo()</code> instead. The same issue can arise when such objects are used
+as keys in sorted maps.<br />
+This rule is very similar to <a href="pmd_rules_java_errorprone.html#overridebothequalsandhashcode"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashcode</code></a> which has always been
+skipping <code class="language-plaintext highlighter-rouge">Comparable</code> and only reports if one of the two methods is missing. The new rule will also report,
+if both methods (hashCode and equals) are missing.<br />
+The rule is referenced in the quickstart.xml ruleset for Java.</li>
+  <li>The new java rule <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a> finds method calls of pure methods
+whose result is not used. Ignoring the result of such method calls is likely as mistake as pure
+methods are side effect free.<br />
+The rule is referenced in the quickstart.xml ruleset for Java.</li>
+  <li>The new java rule <a href="pmd_rules_java_bestpractices.html#relianceondefaultcharset"><code class="language-plaintext highlighter-rouge">RelianceOnDefaultCharset</code></a> finds method calls that
+depend on the JVM’s default charset. Using these method without specifying the charset explicitly
+can lead to unexpected behavior on different platforms.</li>
 </ul>
 
 <h4 id="deprecated-rules">Deprecated Rules</h4>
 <ul>
   <li>The java rule <a href="pmd_rules_java_codestyle.html#genericsnaming"><code class="language-plaintext highlighter-rouge">GenericsNaming</code></a> has been deprecated for removal in favor
 of the new rule <a href="pmd_rules_java_codestyle.html#typeparameternamingconventions"><code class="language-plaintext highlighter-rouge">TypeParameterNamingConventions</code></a>.</li>
+  <li>The java rule <a href="pmd_rules_java_errorprone.html#avoidlosingexceptioninformation"><code class="language-plaintext highlighter-rouge">AvoidLosingExceptionInformation</code></a> has been deprecated for removal
+in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a>.</li>
+  <li>The java rule <a href="pmd_rules_java_errorprone.html#uselessoperationonimmutable"><code class="language-plaintext highlighter-rouge">UselessOperationOnImmutable</code></a> has been deprecated for removal
+in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a>.</li>
 </ul>
 
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
+  <li>apex-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5650">#5650</a>: [apex] New Rule: AnnotationsNamingConventions</li>
+    </ul>
+  </li>
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5874">#5874</a>: [java] Update java regression tests with Java 25 language features</li>
     </ul>
   </li>
+  <li>java-bestpractices
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2186">#2186</a>: [java] New rule: Reliance on default charset</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4500">#4500</a>: [java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed</li>
+    </ul>
+  </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/972">#972</a>: [java] Improve naming conventions rules</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5023">#5023</a>: [java] UseUtilityClass implementation hardcodes a message instead of using the one defined in the XML</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5837">#5837</a>: [java] New Rule OverrideBothEqualsAndHashCodeOnComparable</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5881">#5881</a>: [java] AvoidLosingExceptionInformation does not trigger when inside if-else</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5915">#5915</a>: [java] AssignmentInOperand not raised when inside do-while loop</li>
     </ul>
   </li>
 </ul>
@@ -2066,8 +2114,18 @@ of the new rule <a href="pmd_rules_java_codestyle.html#typeparameternamingconven
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/5822">#5822</a>: Fix #5650: [apex] New Rule: AnnotationsNamingConventions - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5856">#5856</a>: Fix #5837: [java] New Rule OverrideBothEqualsAndHashCodeOnComparable - <a href="https://github.com/Pankraz76">Vincent Potucek</a> (@Pankraz76)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5907">#5907</a>: [java] New rule: UselessPureMethodCall - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5922">#5922</a>: Fix #972: [java] Add a new rule TypeParameterNamingConventions - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5924">#5924</a>: Fix #5915: [java] Fix AssignmentInOperandRule to also work an do-while loops and switch statements - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5930">#5930</a>: Fix #4500: [java] Fix AvoidReassigningLoopVariablesRule to allow only simple assignments in the forReassign=skip case - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5931">#5931</a>: Fix #5023: [java] Fix UseUtilityClassRule to use the message provided in design.xml - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5932">#5932</a>: [ci] Reuse GitHub Pre-Releases - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5934">#5934</a>: Fix #2186: [java] New Rule: RelianceOnDefaultCharset - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5938">#5938</a>: [doc] Update suppression docs to reflect PMD 7 changes - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5965">#5965</a>: Fix #5881: AvoidLosingException - Consider nested method calls - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5967">#5967</a>: [doc][java] ReplaceJavaUtilDate - improve doc to mention java.sql.Date - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
 </ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
@@ -2105,7 +2163,7 @@ of the new rule <a href="pmd_rules_java_codestyle.html#typeparameternamingconven
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 5, 2025 <br />
+             Site last generated: Aug 7, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

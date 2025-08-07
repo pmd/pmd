@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonCaseLabelInSwitch, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UseLocaleWithCaseConversions, UseProperClassLoader">
+<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonCaseLabelInSwitch, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -2077,6 +2077,16 @@
       <td>false</td>
       <td>Allow increment or decrement operators within the conditional expression of an if, for, or while statement</td>
     </tr>
+    <tr>
+      <td>allowDoWhile</td>
+      <td>false</td>
+      <td>Allow assignment within the conditional expression of a do-while statement</td>
+    </tr>
+    <tr>
+      <td>allowSwitch</td>
+      <td>false</td>
+      <td>Allow assignment within the conditional expression of a switch statement</td>
+    </tr>
   </tbody>
 </table>
 
@@ -2091,6 +2101,8 @@
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowFor"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowWhile"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowIncrementDecrement"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowDoWhile"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowSwitch"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -2712,6 +2724,8 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
 
 <h2 id="avoidlosingexceptioninformation">AvoidLosingExceptionInformation</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.2.6</p>
 
 <p><strong>Priority:</strong> Medium High (2)</p>
@@ -2719,8 +2733,11 @@ the property ignoreMagicNumbers is not taken into account, if there are multiple
 <p>Statements in a catch block that invoke accessors on the exception without using the information
 only add to code size.  Either remove the invocation, or use the return result.</p>
 
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a>.</p>
+
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchClause</span><span class="o">/</span><span class="nt">Block</span><span class="o">/</span><span class="nt">ExpressionStatement</span><span class="o">/</span><span class="nt">MethodCall</span><span class="p">[</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchClause</span><span class="o">/</span><span class="nt">Block</span><span class="o">//</span><span class="nt">ExpressionStatement</span><span class="o">/</span><span class="nt">MethodCall</span><span class="p">[</span><span class="w">
     </span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s2">"java.lang.Throwable#getMessage()"</span><span class="p">)</span><span class="w">
     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s2">"java.lang.Throwable#getLocalizedMessage()"</span><span class="p">)</span><span class="w">
     </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s2">"java.lang.Throwable#getCause()"</span><span class="p">)</span><span class="w">
@@ -4571,7 +4588,16 @@ of assignment is an indication that the programmer doesn’t completely understa
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.</p>
+<p>Override both <code class="language-plaintext highlighter-rouge">public boolean Object.equals(Object other)</code> and <code class="language-plaintext highlighter-rouge">public int Object.hashCode()</code> or override neither.
+Even if you are inheriting a <code class="language-plaintext highlighter-rouge">hashCode()</code> from a parent class, consider implementing <code class="language-plaintext highlighter-rouge">hashCode()</code> and explicitly
+delegating to your superclass.</p>
+
+<p>Not overriding both methods could violate the contract between <code class="language-plaintext highlighter-rouge">equals()</code> and <code class="language-plaintext highlighter-rouge">hashCode()</code>. Most importantly,
+if two instances are equal, then they must have the same hash code. Using such invalid instances in hash-based
+collections like <code class="language-plaintext highlighter-rouge">HashSet</code> or <code class="language-plaintext highlighter-rouge">HashMap</code> could lead to duplicated or missing entries.</p>
+
+<p>This rule does not consider types that implement <code class="language-plaintext highlighter-rouge">Comparable</code>. There is a separate rule
+<a href="pmd_rules_java_errorprone.html#overridebothequalsandhashcodeoncomparable"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashCodeOnComparable</code></a> for this.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/OverrideBothEqualsAndHashcodeRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule</a></p>
 
@@ -4601,6 +4627,71 @@ of assignment is an indication that the programmer doesn’t completely understa
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/OverrideBothEqualsAndHashcode"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="overridebothequalsandhashcodeoncomparable">OverrideBothEqualsAndHashCodeOnComparable</h2>
+
+<p><strong>Since:</strong> PMD 7.17.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Classes that implement <code class="language-plaintext highlighter-rouge">Comparable</code> should override both <code class="language-plaintext highlighter-rouge">equals()</code> and
+<code class="language-plaintext highlighter-rouge">hashCode()</code> if instances of these classes are used in collections. This is
+to ensure that the class’s natural ordering is consistent with <code class="language-plaintext highlighter-rouge">equals()</code>.
+Failing to do so can lead to unexpected behavior in sets which then do not
+conform to the <code class="language-plaintext highlighter-rouge">Set</code> interface. While the <code class="language-plaintext highlighter-rouge">Set</code> interface relies on
+<code class="language-plaintext highlighter-rouge">equals()</code> to determine object equality, sorted sets like <code class="language-plaintext highlighter-rouge">TreeSet</code> use
+<code class="language-plaintext highlighter-rouge">compareTo()</code> instead. The same issue can arise when such objects are used
+as keys in sorted maps.</p>
+
+<p>Note 1: This rule is related to <a href="pmd_rules_java_errorprone.html#overridebothequalsandhashcode"><code class="language-plaintext highlighter-rouge">OverrideBothEqualsAndHashcode</code></a>. It
+will report missing <code class="language-plaintext highlighter-rouge">equals()</code> and/or <code class="language-plaintext highlighter-rouge">hashCode()</code> methods for classes only
+that implement <code class="language-plaintext highlighter-rouge">Comparable</code>.</p>
+
+<p>Note 2: This rule also reports records that implement <code class="language-plaintext highlighter-rouge">Comparable</code>. While
+for records, <code class="language-plaintext highlighter-rouge">equals()</code> and <code class="language-plaintext highlighter-rouge">hashCode()</code> are generated, you still must make
+sure that <code class="language-plaintext highlighter-rouge">compareTo()</code> is consistent with <code class="language-plaintext highlighter-rouge">equals()</code>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/OverrideBothEqualsAndHashCodeOnComparableRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashCodeOnComparableRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="kd">implements</span> <span class="nc">Comparable</span><span class="o">&lt;</span><span class="nc">Bar</span><span class="o">&gt;</span> <span class="o">{</span>  <span class="c1">// poor - missing equals() and hashCode()</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="nc">Bar</span> <span class="n">other</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// some comparison</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Baz</span> <span class="kd">implements</span> <span class="nc">Comparable</span><span class="o">&lt;</span><span class="nc">Baz</span><span class="o">&gt;</span> <span class="o">{</span>  <span class="c1">// poor - missing hashCode()</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="nc">Baz</span> <span class="n">other</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// some comparison</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nc">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">o</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">getClass</span><span class="o">()</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="na">getClass</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="nf">compareTo</span><span class="o">((</span><span class="nc">Baz</span><span class="o">)</span> <span class="n">o</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="kd">implements</span> <span class="nc">Comparable</span><span class="o">&lt;</span><span class="nc">Foo</span><span class="o">&gt;</span> <span class="o">{</span>  <span class="c1">// correct</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">compareTo</span><span class="o">(</span><span class="nc">Foo</span> <span class="n">other</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// some comparison</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nc">Object</span> <span class="n">o</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">o</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">||</span> <span class="n">getClass</span><span class="o">()</span> <span class="o">!=</span> <span class="n">o</span><span class="o">.</span><span class="na">getClass</span><span class="o">())</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="nf">compareTo</span><span class="o">((</span><span class="nc">Foo</span><span class="o">)</span> <span class="n">o</span><span class="o">)</span> <span class="o">==</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+        <span class="c1">// return hash code</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/OverrideBothEqualsAndHashCodeOnComparable"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="propercloneimplementation">ProperCloneImplementation</h2>
@@ -4721,11 +4812,15 @@ with the restriction that the logger needs to be passed into the constructor.</p
 
 <p><strong>Minimum Language Version:</strong> Java 1.8</p>
 
-<p>The legacy java.util.Calendar API is error-prone, mutable, and not thread-safe. It has confusing month indexing 
-(January = 0), inconsistent field semantics, and verbose usage patterns. The modern java.time API (introduced in Java 8) 
-provides immutable, thread-safe alternatives with clear, intuitive methods.</p>
+<p>The legacy <code class="language-plaintext highlighter-rouge">java.util.Calendar</code> API is error-prone, mutable, and not thread-safe. It has confusing month indexing
+(January = 0), inconsistent field semantics, and verbose usage patterns. The modern <code class="language-plaintext highlighter-rouge">java.time API</code>
+(introduced in Java 8) provides immutable, thread-safe alternatives with clear, intuitive methods.</p>
 
-<p>Use LocalDate (for date-only operations), LocalDateTime (for date and time), or ZonedDateTime (when timezone is important) from java.time package instead.</p>
+<p>Use <code class="language-plaintext highlighter-rouge">LocalDate</code> (for date-only operations), <code class="language-plaintext highlighter-rouge">LocalDateTime</code> (for date and time), or <code class="language-plaintext highlighter-rouge">ZonedDateTime</code>
+(when timezone is important) from <code class="language-plaintext highlighter-rouge">java.time</code> package instead.</p>
+
+<p>Note: Since JPA 3.2 (Jakarta Persistence) usage of <code class="language-plaintext highlighter-rouge">java.util.Date</code> and <code class="language-plaintext highlighter-rouge">java.util.Calendar</code> and others is
+deprecated there as well in favour of <code class="language-plaintext highlighter-rouge">java.time</code> API.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Calendar'</span><span class="p">)]]</span><span class="w"> </span><span class="p">|</span><span class="w">
@@ -4775,13 +4870,18 @@ provides immutable, thread-safe alternatives with clear, intuitive methods.</p>
 
 <p><strong>Minimum Language Version:</strong> Java 1.8</p>
 
-<p>The legacy java.util.Date class is mutable, not thread-safe, and has a confusing API. Many of its methods 
-are deprecated, it doesn’t handle timezones properly, and it represents both date and time even when only 
-one is needed. The constructor parameters are particularly error-prone: year is "years since 1900" and 
-month is 0-based (January = 0). The modern java.time API (introduced in Java 8) provides better type safety, immutability, and clearer semantics.</p>
+<p>The legacy <code class="language-plaintext highlighter-rouge">java.util.Date</code> class is mutable, not thread-safe, and has a confusing API. Many of its methods
+are deprecated, it doesn’t handle timezones properly, and it represents both date and time even when only
+one is needed. The constructor parameters are particularly error-prone: year is "years since 1900" and
+month is 0-based (January = 0). The modern java.time API (introduced in Java 8) provides better type safety,
+immutability, and clearer semantics.</p>
 
-<p>Use LocalDate (date only), LocalTime (time only), LocalDateTime (date and time), Instant (timestamp), 
-or ZonedDateTime (date-time with timezone) from java.time package instead.</p>
+<p>Use <code class="language-plaintext highlighter-rouge">LocalDate</code> (date only), <code class="language-plaintext highlighter-rouge">LocalTime</code> (time only), <code class="language-plaintext highlighter-rouge">LocalDateTime</code> (date and time), <code class="language-plaintext highlighter-rouge">Instant</code> (timestamp),
+or <code class="language-plaintext highlighter-rouge">ZonedDateTime</code> (date-time with timezone) from <code class="language-plaintext highlighter-rouge">java.time</code> package instead.</p>
+
+<p>Note: This includes subtypes such as <code class="language-plaintext highlighter-rouge">java.sql.Date</code>, <code class="language-plaintext highlighter-rouge">java.sql.Time</code> and <code class="language-plaintext highlighter-rouge">java.sql.Timestamp</code>.
+Since JPA 3.2 (Jakarta Persistence) usage of <code class="language-plaintext highlighter-rouge">java.util.Date</code> and <code class="language-plaintext highlighter-rouge">java.util.Calendar</code> and others is
+deprecated there as well in favour of <code class="language-plaintext highlighter-rouge">java.time</code> API.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="nt">ClassType</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.util.Date'</span><span class="p">)]]</span><span class="w"> </span><span class="p">|</span><span class="w">
@@ -5496,6 +5596,8 @@ is used on both sides.</p>
 
 <h2 id="uselessoperationonimmutable">UselessOperationOnImmutable</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.5</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -5504,6 +5606,9 @@ is used on both sides.</p>
 Therefore, ignoring the result of such an operation is likely a mistake. The operation can probably be removed.</p>
 
 <p>This rule recognizes the types <code class="language-plaintext highlighter-rouge">String</code>, <code class="language-plaintext highlighter-rouge">BigDecimal</code>, <code class="language-plaintext highlighter-rouge">BigInteger</code> or any type from <code class="language-plaintext highlighter-rouge">java.time.*</code> as immutable.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/UselessOperationOnImmutableRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule</a></p>
 
@@ -5525,6 +5630,34 @@ Therefore, ignoring the result of such an operation is likely a mistake. The ope
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/UselessOperationOnImmutable"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="uselesspuremethodcall">UselessPureMethodCall</h2>
+
+<p><strong>Since:</strong> PMD 7.17.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule detects method calls of pure methods whose result is unused. A pure method is a method without
+side effects. Therefore, ignoring the result of such a method call is likely a mistake.</p>
+
+<p>Either the method call can be removed or the result should be used.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/UselessPureMethodCallRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.UselessPureMethodCallRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Something</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">List</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"foo"</span><span class="o">).</span><span class="na">size</span><span class="o">();</span> <span class="c1">// result unused</span>
+        <span class="nc">Stream</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"bar"</span><span class="o">).</span><span class="na">map</span><span class="o">(</span><span class="n">item</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"%s"</span><span class="o">,</span> <span class="n">item</span><span class="o">));</span> <span class="c1">// result unused</span>
+        <span class="nc">Stream</span><span class="o">.</span><span class="na">of</span><span class="o">(</span><span class="s">"bar"</span><span class="o">).</span><span class="na">forEach</span><span class="o">(</span><span class="n">item</span> <span class="o">-&gt;</span> <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">format</span><span class="o">(</span><span class="s">"%s"</span><span class="o">,</span> <span class="n">item</span><span class="o">));</span> <span class="c1">// better</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/UselessPureMethodCall"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="uselocalewithcaseconversions">UseLocaleWithCaseConversions</h2>
@@ -5629,7 +5762,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 5, 2025 <br />
+             Site last generated: Aug 7, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

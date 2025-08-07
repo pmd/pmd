@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DefaultLabelNotLastInSwitch, DoubleBraceInitialization, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitchStmt, DefaultLabelNotLastInSwitch, DoubleBraceInitialization, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -3813,6 +3813,61 @@ are preferred instead of <code class="language-plaintext highlighter-rouge">Bool
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/PrimitiveWrapperInstantiation"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="relianceondefaultcharset">RelianceOnDefaultCharset</h2>
+
+<p><strong>Since:</strong> PMD 7.17.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Be sure to specify a character set for APIs that use the JVM’s default character set to ensure
+stable encoding behavior between different JVMs, programs, and servers. Using the platform’s
+default charset makes the code less portable and might lead to unexpected behavior when running
+on different systems.</p>
+
+<p>Additional, since Java 18, the default charset for these APIs is consistently UTF-8
+(see <a href="https://openjdk.org/jeps/400">JEP 400</a>). While this reduces unexpected behavior
+on different systems, it is still advised to explicitly specify a character set,
+especially if UTF-8 is not the desired charset.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/bestpractices/RelianceOnDefaultCharsetRule.java">net.sourceforge.pmd.lang.java.rule.bestpractices.RelianceOnDefaultCharsetRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">bad</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+        <span class="k">new</span> <span class="nf">InputStreamReader</span><span class="o">(</span><span class="n">inputStream</span><span class="o">);</span>  <span class="c1">// violation</span>
+        <span class="k">new</span> <span class="nf">OutputStreamWriter</span><span class="o">(</span><span class="n">outputStream</span><span class="o">);</span>  <span class="c1">// violation</span>
+        <span class="nc">URLEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="s">"test string"</span><span class="o">);</span>  <span class="c1">// violation (deprecated)</span>
+        <span class="k">new</span> <span class="nf">PrintStream</span><span class="o">(</span><span class="n">outputStream</span><span class="o">);</span>  <span class="c1">// violation</span>
+        <span class="k">new</span> <span class="nf">PrintWriter</span><span class="o">(</span><span class="s">"output.txt"</span><span class="o">);</span>  <span class="c1">// violation</span>
+        <span class="k">new</span> <span class="nf">Scanner</span><span class="o">(</span><span class="n">inputStream</span><span class="o">);</span>  <span class="c1">// violation</span>
+        <span class="k">new</span> <span class="nf">Formatter</span><span class="o">();</span>  <span class="c1">// violation</span>
+        <span class="s">"test"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">();</span>  <span class="c1">// violation</span>
+        <span class="k">new</span> <span class="nf">ByteArrayOutputStream</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>  <span class="c1">// violation</span>
+        <span class="k">new</span> <span class="nf">FileReader</span><span class="o">(</span><span class="s">"input.txt"</span><span class="o">);</span>  <span class="c1">// violation</span>
+        <span class="k">new</span> <span class="nf">FileWriter</span><span class="o">(</span><span class="s">"output.txt"</span><span class="o">);</span>  <span class="c1">// violation</span>
+    <span class="o">}</span>
+
+    <span class="kt">void</span> <span class="nf">good</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">IOException</span> <span class="o">{</span>
+        <span class="k">new</span> <span class="nf">InputStreamReader</span><span class="o">(</span><span class="n">inputStream</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="k">new</span> <span class="nf">OutputStreamWriter</span><span class="o">(</span><span class="n">outputStream</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="nc">URLEncoder</span><span class="o">.</span><span class="na">encode</span><span class="o">(</span><span class="s">"test string"</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="k">new</span> <span class="nf">PrintStream</span><span class="o">(</span><span class="n">outputStream</span><span class="o">,</span> <span class="kc">true</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="k">new</span> <span class="nf">PrintWriter</span><span class="o">(</span><span class="s">"output.txt"</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="k">new</span> <span class="nf">Scanner</span><span class="o">(</span><span class="n">inputStream</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="k">new</span> <span class="nf">Formatter</span><span class="o">(</span><span class="nc">Locale</span><span class="o">.</span><span class="na">US</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="s">"test"</span><span class="o">.</span><span class="na">getBytes</span><span class="o">(</span><span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="k">new</span> <span class="nf">ByteArrayOutputStream</span><span class="o">().</span><span class="na">toString</span><span class="o">(</span><span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="k">new</span> <span class="nf">FileReader</span><span class="o">(</span><span class="s">"input.txt"</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+        <span class="k">new</span> <span class="nf">FileWriter</span><span class="o">(</span><span class="s">"output.txt"</span><span class="o">,</span> <span class="nc">StandardCharsets</span><span class="o">.</span><span class="na">UTF_8</span><span class="o">);</span>  <span class="c1">// ok</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/RelianceOnDefaultCharset"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="replaceenumerationwithiterator">ReplaceEnumerationWithIterator</h2>
 
 <p><strong>Since:</strong> PMD 3.4</p>
@@ -5106,7 +5161,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 5, 2025 <br />
+             Site last generated: Aug 7, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

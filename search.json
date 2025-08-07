@@ -1042,6 +1042,15 @@
 ,
 
 {
+"title": "RelianceOnDefaultCharset (Java, Best Practices)",
+"tags": "",
+"keywords": "RelianceOnDefaultCharset",
+"url": "pmd_rules_java_bestpractices.html#relianceondefaultcharset",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
 "title": "ReplaceEnumerationWithIterator (Java, Best Practices)",
 "tags": "",
 "keywords": "ReplaceEnumerationWithIterator",
@@ -1630,6 +1639,15 @@
 "tags": "",
 "keywords": "Code Style",
 "url": "pmd_rules_apex_codestyle.html#code style",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "AnnotationsNamingConventions (Apex, Code Style)",
+"tags": "",
+"keywords": "AnnotationsNamingConventions",
+"url": "pmd_rules_apex_codestyle.html#annotationsnamingconventions",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
@@ -4451,6 +4469,15 @@
 ,
 
 {
+"title": "OverrideBothEqualsAndHashCodeOnComparable (Java, Error Prone)",
+"tags": "",
+"keywords": "OverrideBothEqualsAndHashCodeOnComparable",
+"url": "pmd_rules_java_errorprone.html#overridebothequalsandhashcodeoncomparable",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
 "title": "ProperCloneImplementation (Java, Error Prone)",
 "tags": "",
 "keywords": "ProperCloneImplementation",
@@ -4653,6 +4680,15 @@
 "tags": "",
 "keywords": "UselessOperationOnImmutable",
 "url": "pmd_rules_java_errorprone.html#uselessoperationonimmutable",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "UselessPureMethodCall (Java, Error Prone)",
+"tags": "",
+"keywords": "UselessPureMethodCall",
+"url": "pmd_rules_java_errorprone.html#uselesspuremethodcall",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
