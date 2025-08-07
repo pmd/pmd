@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule {
 
@@ -21,8 +22,12 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
               ASTAnonymousClassDeclaration.class);
     }
 
+    protected boolean skipType(ASTTypeDeclaration node) {
+        return TypeTestUtil.isA(Comparable.class, node);
+    }
+
     private void visitTypeDecl(ASTTypeDeclaration node, Object data) {
-        if (TypeTestUtil.isA(Comparable.class, node)) {
+        if (skipType(node)) {
             return;
         }
         ASTMethodDeclaration equalsMethod = null;
@@ -41,10 +46,14 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractJavaRulechainRule
             }
         }
 
+        maybeReport(asCtx(data), node, hashCodeMethod, equalsMethod);
+    }
+
+    protected void maybeReport(RuleContext ctx, ASTTypeDeclaration node, ASTMethodDeclaration hashCodeMethod, ASTMethodDeclaration equalsMethod) {
         if (hashCodeMethod != null ^ equalsMethod != null) {
             ASTMethodDeclaration nonNullNode =
-                equalsMethod == null ? hashCodeMethod : equalsMethod;
-            asCtx(data).addViolation(nonNullNode);
+                    equalsMethod == null ? hashCodeMethod : equalsMethod;
+            ctx.addViolation(nonNullNode);
         }
     }
 
