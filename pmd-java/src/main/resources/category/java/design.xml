@@ -1452,7 +1452,7 @@ public class MyClass {
     <rule name="UseUtilityClass"
           language="java"
           since="0.3"
-          message="All methods are static.  Consider using a utility class instead. Alternatively, you could add a private constructor or make the class abstract to silence this warning."
+          message="All methods are static. Consider adding a private no-args constructor to prevent instantiation."
           class="net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#useutilityclass">
         <description>

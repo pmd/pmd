@@ -76,10 +76,8 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
             && !hasLombokPrivateCtor(klass);
 
 
-        String message;
         if (hasAnyMethods && hasNonPrivateCtor) {
-            message = "This utility class has a non-private constructor";
-            asCtx(data).addViolationWithMessage(klass, message);
+            asCtx(data).addViolation(klass);
         }
         return null;
     }
