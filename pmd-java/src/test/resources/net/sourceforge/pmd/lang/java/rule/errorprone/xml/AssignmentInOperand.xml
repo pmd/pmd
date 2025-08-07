@@ -108,8 +108,8 @@ public class Foo {
     <test-code>
         <description>#5915 assignment in do-while conditional expression</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumber>6</expected-linenumber>
-        <expected-message>Avoid assignments in operands</expected-message>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages><message>Avoid assignments in operands</message></expected-messages>
         <code><![CDATA[
 public class Foo {
     public void bar() {
@@ -126,8 +126,8 @@ public class Foo {
     <test-code>
         <description>assignment in switch expression</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumber>4</expected-linenumber>
-        <expected-message>Avoid assignments in operands</expected-message>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages><message>Avoid assignments in operands</message></expected-messages>
         <code><![CDATA[
 public class Foo {
     public void bar() {
