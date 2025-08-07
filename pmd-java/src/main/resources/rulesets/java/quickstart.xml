@@ -35,6 +35,7 @@
     <rule ref="category/java/bestpractices.xml/NonExhaustiveSwitch"/>
     <rule ref="category/java/bestpractices.xml/OneDeclarationPerLine"/>
     <rule ref="category/java/bestpractices.xml/PrimitiveWrapperInstantiation"/>
+    <!-- <rule ref="category/java/bestpractices.xml/RelianceOnDefaultCharset"/> -->
     <rule ref="category/java/bestpractices.xml/PreserveStackTrace"/>
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceEnumerationWithIterator" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/ReplaceHashtableWithMap" /> -->

@@ -48,6 +48,9 @@ This is a {{ site.pmd.release_type }} release.
   whose result is not used. Ignoring the result of such method calls is likely as mistake as pure
   methods are side effect free.  
   The rule is referenced in the quickstart.xml ruleset for Java.
+* The new java rule {% rule java/bestpractices/RelianceOnDefaultCharset %} finds method calls that
+  depend on the JVM's default charset. Using these method without specifying the charset explicitly
+  can lead to unexpected behavior on different platforms.
 
 #### Deprecated Rules
 * The java rule {% rule java/codestyle/GenericsNaming %} has been deprecated for removal in favor
@@ -62,6 +65,8 @@ This is a {{ site.pmd.release_type }} release.
   * [#5650](https://github.com/pmd/pmd/issues/5650): \[apex] New Rule: AnnotationsNamingConventions
 * java
   * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
+* java-bestpractices
+  * [#2186](https://github.com/pmd/pmd/issues/2186): \[java] New rule: Reliance on default charset
 * java-codestyle
   * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
 * java-design
@@ -82,6 +87,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5924](https://github.com/pmd/pmd/pull/5924): Fix #5915: \[java] Fix AssignmentInOperandRule to also work an do-while loops and switch statements - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5931](https://github.com/pmd/pmd/pull/5931): Fix #5023: \[java] Fix UseUtilityClassRule to use the message provided in design.xml - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5932](https://github.com/pmd/pmd/pull/5932): \[ci] Reuse GitHub Pre-Releases - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5934](https://github.com/pmd/pmd/pull/5934): Fix #2186: \[java] New Rule: RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5965](https://github.com/pmd/pmd/pull/5965): Fix #5881: AvoidLosingException - Consider nested method calls - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5967](https://github.com/pmd/pmd/pull/5967): \[doc]\[java] ReplaceJavaUtilDate - improve doc to mention java.sql.Date - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
