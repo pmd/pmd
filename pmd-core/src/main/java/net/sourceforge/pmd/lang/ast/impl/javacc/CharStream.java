@@ -67,7 +67,9 @@ public final class CharStream {
         if (curOffset == chars.length()) {
             throw EOF_EXCEPTION;
         }
-        return chars.charAt(curOffset++);
+        char result = chars.charAt(curOffset);
+        curOffset++;
+        return result;
     }
 
 

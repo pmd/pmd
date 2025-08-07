@@ -52,7 +52,11 @@ public class Tokens {
     }
 
     private int getImageId(String newImage) {
-        return images.computeIfAbsent(newImage, k -> curImageId++);
+        return images.computeIfAbsent(newImage, k -> {
+            int result = curImageId;
+            curImageId++;
+            return result;
+        });
     }
 
     String imageFromId(int i) {

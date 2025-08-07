@@ -46,7 +46,8 @@ public final class GraphUtil {
         List<V> vertexList = new ArrayList<>(vertices);
         vertexList.sort(Comparator.comparing(Object::toString)); // for reproducibility in tests
         for (V node : vertexList) {
-            String id = "n" + i++;
+            String id = "n" + i;
+            i++;
             ids.put(node, id);
             sb.append(id)
               .append(" [ shape=box, color=")

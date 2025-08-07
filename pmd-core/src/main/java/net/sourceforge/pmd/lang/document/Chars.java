@@ -726,7 +726,12 @@ public final class Chars implements CharSequence {
         @Override
         public int read() throws IOException {
             ensureOpen();
-            return pos >= max ? NOT_FOUND : chars.str.charAt(pos++);
+            if (pos >= max) {
+                return NOT_FOUND;
+            }
+            char result = chars.str.charAt(pos);
+            pos++;
+            return result;
         }
 
         @Override

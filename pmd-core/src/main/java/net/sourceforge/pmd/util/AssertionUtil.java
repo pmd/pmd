@@ -21,11 +21,17 @@ public final class AssertionUtil {
 
     private static final boolean ASSERT_ENABLED;
 
+    private static boolean areAssertsEnabled() {
+        try {
+            assert false;
+            return false;
+        } catch (AssertionError e) {
+            return true;
+        }
+    }
+
     static {
-        boolean assertEnabled = false;
-        //noinspection AssertWithSideEffects
-        assert assertEnabled = true; // SUPPRESS CHECKSTYLE now
-        ASSERT_ENABLED = assertEnabled;
+        ASSERT_ENABLED = areAssertsEnabled();
     }
 
     private AssertionUtil() {

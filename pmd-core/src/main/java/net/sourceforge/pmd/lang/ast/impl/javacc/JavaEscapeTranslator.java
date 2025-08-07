@@ -44,12 +44,16 @@ public final class JavaEscapeTranslator extends BackslashEscapeTranslator {
     private Chars escapeValue(int posOfFirstBackSlash, final int offOfTheU) throws MalformedSourceException {
         int off = offOfTheU;
         try {
-            char c = (char)
-                ( hexVal(input.charAt(++off)) << 12 // SUPPRESS CHECKSTYLE paren pad
-                | hexVal(input.charAt(++off)) << 8
-                | hexVal(input.charAt(++off)) << 4
-                | hexVal(input.charAt(++off))
-                );
+            off++;
+            int hex1 = hexVal(input.charAt(off));
+            off++;
+            int hex2 = hexVal(input.charAt(off));
+            off++;
+            int hex3 = hexVal(input.charAt(off));
+            off++;
+            int hex4 = hexVal(input.charAt(off));
+            
+            char c = (char)(hex1 << 12 | hex2 << 8 | hex3 << 4 | hex4);
 
             return Chars.wrap(Character.toString(c));
         } catch (NumberFormatException | IndexOutOfBoundsException e) {

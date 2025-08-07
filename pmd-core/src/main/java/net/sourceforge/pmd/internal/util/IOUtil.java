@@ -477,7 +477,9 @@ public final class IOUtil {
         @Override
         public int read() throws IOException {
             if (beginIndex < begin.length) {
-                return begin[beginIndex++];
+                int result = begin[beginIndex];
+                beginIndex++;
+                return result;
             }
             return super.read();
         }
