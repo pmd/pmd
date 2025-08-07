@@ -660,4 +660,94 @@ public class Foo {
             }
         ]]></code>
     </test-code>
+    
+    <test-code>
+        <description>#5948 Method overload - should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.ArrayList;
+            import java.util.List;
+
+            class Example {
+                public void foo() {
+                    List<String> l = new ArrayList<>();
+                    Integer i = 3;
+
+                    l.remove(i.intValue());
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method overload - should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Example {
+                public static interface HasOverloads {
+                    void foo(Object o);
+                    void foo(int i);
+
+                    void bar(Long l);
+                    void bar(long l);
+                }
+
+                public void funcA(HasOverloads h, Integer i, Long l) {
+                    h.foo(i.intValue());
+                    h.bar(l.longValue());
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constructor overloads - should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class ConstructorOverloads {
+                public ConstructorOverloads(int i) { }
+                public ConstructorOverloads(Integer i) { }
+                
+                public void test() {
+                    Integer boxed = 42;
+                    // The unboxing is needed for the right constructor
+                    new ConstructorOverloads(boxed.intValue());
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generic method overloads - unboxing should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class GenericOverloads {
+                public <T> void method(T value) { }
+                public void method(int value) { }
+                
+                void test() {
+                    Integer boxed = 42;
+                    // The unboxing should be necessary to select the int overload
+                    method(boxed.intValue());
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Primitive widening vs boxing - unboxing should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class WideningVsBoxing {
+                public void method(long value) { }
+                public void method(Object obj) { }
+                
+                void test() {
+                    Integer boxed = 42;
+                    // Should intValue() be flagged? It enables widening to long
+                    method(boxed.intValue());
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
