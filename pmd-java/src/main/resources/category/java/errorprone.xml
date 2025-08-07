@@ -577,10 +577,14 @@ public void checkRequests() {
           language="java"
           message="Avoid statements in a catch block that invoke accessors on the exception without using the information"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidlosingexceptioninformation">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidlosingexceptioninformation"
+          deprecated="true">
         <description>
 Statements in a catch block that invoke accessors on the exception without using the information
 only add to code size.  Either remove the invocation, or use the return result.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UselessPureMethodCall %}.
         </description>
         <priority>2</priority>
         <properties>
@@ -3322,12 +3326,16 @@ public boolean test(String s) {
           since="3.5"
           message="The result of an operation on an immutable object is ignored"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable"
+          deprecated="true">
         <description>
 An operation on an immutable object will not change the object itself since the result of the operation is a new object.
 Therefore, ignoring the result of such an operation is likely a mistake. The operation can probably be removed.
 
 This rule recognizes the types `String`, `BigDecimal`, `BigInteger` or any type from `java.time.*` as immutable.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UselessPureMethodCall %}.
         </description>
         <priority>3</priority>
         <example>
@@ -3342,6 +3350,32 @@ class Test {
     void method2() {
         BigDecimal bd=new BigDecimal(10);
         bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UselessPureMethodCall"
+          language="java"
+          since="7.17.0"
+          message="Do not call pure method {0} if the result is not used."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessPureMethodCallRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselesspuremethodcall">
+        <description>
+This rule detects method calls of pure methods whose result is unused. A pure method is a method without
+side effects. Therefore, ignoring the result of such a method call is likely a mistake.
+
+Either the method call can be removed or the result should be used.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Something {
+    public void foo() {
+        List.of("foo").size(); // result unused
+        Stream.of("bar").map(item -> System.out.format("%s", item)); // result unused
+        Stream.of("bar").forEach(item -> System.out.format("%s", item)); // better
     }
 }
 ]]>

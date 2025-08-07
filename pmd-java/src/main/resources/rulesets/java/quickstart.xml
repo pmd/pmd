@@ -201,7 +201,6 @@
     <!-- <rule ref="category/java/errorprone.xml/AvoidFieldNameMatchingTypeName" /> -->
     <rule ref="category/java/errorprone.xml/AvoidInstanceofChecksInCatchClause"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidLiteralsInIfCondition" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/AvoidLosingExceptionInformation" /> -->
     <rule ref="category/java/errorprone.xml/AvoidMultipleUnaryOperators"/>
     <rule ref="category/java/errorprone.xml/AvoidUsingOctalValues"/>
     <!-- <rule ref="category/java/errorprone.xml/BeanMembersShouldSerialize" /> -->
@@ -273,7 +272,7 @@
     <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/>
     <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" /> -->
     <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/>
-    <rule ref="category/java/errorprone.xml/UselessOperationOnImmutable"/>
+    <rule ref="category/java/errorprone.xml/UselessPureMethodCall"/>
     <rule ref="category/java/errorprone.xml/UseLocaleWithCaseConversions"/>
     <!-- <rule ref="category/java/errorprone.xml/UseProperClassLoader" /> -->
 

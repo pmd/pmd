@@ -44,10 +44,18 @@ This is a {{ site.pmd.release_type }} release.
   skipping `Comparable` and only reports if one of the two methods is missing. The new rule will also report,
   if both methods (hashCode and equals) are missing.  
   The rule is referenced in the quickstart.xml ruleset for Java.
+* The new java rule {% rule java/errorprone/UselessPureMethodCall %} finds method calls of pure methods
+  whose result is not used. Ignoring the result of such method calls is likely as mistake as pure
+  methods are side effect free.  
+  The rule is referenced in the quickstart.xml ruleset for Java.
 
 #### Deprecated Rules
 * The java rule {% rule java/codestyle/GenericsNaming %} has been deprecated for removal in favor
   of the new rule {% rule java/codestyle/TypeParameterNamingConventions %}.
+* The java rule {% rule java/errorprone/AvoidLosingExceptionInformation %} has been deprecated for removal
+  in favor of the new rule {% rule java/errorprone/UselessPureMethodCall %}.
+* The java rule {% rule java/errorprone/UselessOperationOnImmutable %} has been deprecated for removal
+  in favor of the new rule {% rule java/errorprone/UselessPureMethodCall %}.
 
 ### 🐛 Fixed Issues
 * apex-codestyle
@@ -66,6 +74,7 @@ This is a {{ site.pmd.release_type }} release.
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5822](https://github.com/pmd/pmd/pull/5822): Fix #5650: \[apex] New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5856](https://github.com/pmd/pmd/pull/5856): Fix #5837: \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
+* [#5907](https://github.com/pmd/pmd/pull/5907): \[java] New rule: UselessPureMethodCall - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5922](https://github.com/pmd/pmd/pull/5922): Fix #972: \[java] Add a new rule TypeParameterNamingConventions - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5932](https://github.com/pmd/pmd/pull/5932): \[ci] Reuse GitHub Pre-Releases - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5965](https://github.com/pmd/pmd/pull/5965): Fix #5881: AvoidLosingException - Consider nested method calls - [Andreas Dangel](https://github.com/adangel) (@adangel)
