@@ -748,7 +748,7 @@ jobs:
           rm -rf "${HOME}/.ssh"
 
   create-docker:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [check-version, github-release]
     environment:
       name: github
       url: https://github.com/pmd/docker/actions
