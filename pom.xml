@@ -555,10 +555,10 @@
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
                                 </rulesets>
-                                <excludeRoots>
-                                    <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                                    <excludeRoot>target/generated-sources/antlr4</excludeRoot>
-                                </excludeRoots>
+                                <compileSourceRoots>
+                                    <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                                    <compileSourceRoot>${project.basedir}/src/main/resources</compileSourceRoot>
+                                </compileSourceRoots>
                             </configuration>
                         </execution>
                         <execution>
@@ -575,10 +575,17 @@
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-test-dogfood-config.xml</ruleset>
                                 </rulesets>
+                                <compileSourceRoots>
+                                    <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
+                                </compileSourceRoots>
                             </configuration>
                         </execution>
                     </executions>
                     <configuration>
+                        <includes>
+                            <include>**/*.java</include>
+                            <include>**/*.xml</include>
+                        </includes>
                         <linkXRef>false</linkXRef>
                         <targetJdk>1.${java.version}</targetJdk>
                         <skipPmdError>false</skipPmdError>
@@ -611,6 +618,11 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-xml</artifactId>
                             <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
