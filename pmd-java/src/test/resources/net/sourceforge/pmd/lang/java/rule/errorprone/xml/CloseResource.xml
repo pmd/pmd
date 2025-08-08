@@ -2085,4 +2085,24 @@ public class DefaultFileSystemUsage {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#5974: NPE with var in for-each loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this Closeable object are closed after use</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.Closeable;
+import java.util.List;
+
+public class Foo {
+    public void bar(List<Closeable> connections) {
+        for (final var c: connections) {
+            c.close();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
