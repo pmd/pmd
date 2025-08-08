@@ -76,8 +76,19 @@ This is a {{ site.pmd.release_type }} release.
   * [#5837](https://github.com/pmd/pmd/issues/5837): \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable
   * [#5881](https://github.com/pmd/pmd/issues/5881): \[java] AvoidLosingExceptionInformation does not trigger when inside if-else
   * [#5915](https://github.com/pmd/pmd/issues/5915): \[java] AssignmentInOperand not raised when inside do-while loop
+* test
+  * [#5973](https://github.com/pmd/pmd/issues/5973): \[test] Enable XML validation for rule tests
 
 ### 🚨 API Changes
+
+#### Rule Test Schema
+When executing rule tests, the rule test XML file will be validated against the schema and the tests will fail
+if the XML file is invalid.
+
+There was a small bug in the schema around verifying suppressed violations: If a test wanted to verify, that there
+are _no_ suppressed violations, then this was not possible. Now the `<expected-suppression>` element may be
+empty. This is available in version 1.1.1 of the schema.
+See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for more information.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
