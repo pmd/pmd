@@ -53,6 +53,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -678,6 +679,11 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private String getResourceTypeName(ASTVariableId varId, TypeNode type) {
+        if (type == null) {
+            final JTypeMirror typeMirror = varId.getTypeMirror();
+            return typeMirror.getSymbol() != null ? typeMirror.getSymbol().getSimpleName() : typeMirror.toString();
+        }
+
         if (type instanceof ASTType) {
             return PrettyPrintingUtil.prettyPrintType((ASTType) type);
         }
