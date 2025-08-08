@@ -317,7 +317,10 @@ class BaseTestParserImpl {
     private boolean parseBoolAttribute(Element testCode, String attrName, boolean defaultValue, PmdXmlReporter err, String deprecationMessage) {
         Attr attrNode = testCode.getAttributeNode(attrName);
         if (attrNode != null) {
-            if (deprecationMessage != null) {
+            // only consider attributes that are "specified". XML Validation will add the default values of
+            // the defined attributes implicitly. This would lead to deprecation messages for attributes, that
+            // are not actually used.
+            if (deprecationMessage != null && attrNode.getSpecified()) {
                 err.at(attrNode).warn(deprecationMessage);
             }
             return Boolean.parseBoolean(attrNode.getNodeValue());

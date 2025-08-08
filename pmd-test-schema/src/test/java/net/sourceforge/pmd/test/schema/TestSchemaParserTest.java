@@ -7,6 +7,7 @@ package net.sourceforge.pmd.test.schema;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -14,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Locale;
 
 import org.junit.jupiter.api.Test;
 import org.xml.sax.InputSource;
@@ -144,7 +146,7 @@ class TestSchemaParserTest {
     @Test
     void withExpectedSuppressions() throws IOException {
         String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<test-data>\n"
+                + "<test-data\n"
                 + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
                 + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
                 + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd\">\n"
@@ -180,10 +182,10 @@ class TestSchemaParserTest {
     @Test
     void withExpectedEmptySuppressions() throws IOException {
         String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<test-data>\n"
+                + "<test-data\n"
                 + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
                 + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
-                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd\">\n"
+                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_1.xsd\">\n"
                 + "    <test-code>\n"
                 + "        <description>Test case with suppression</description>\n"
                 + "        <expected-problems>0</expected-problems>\n"
@@ -204,7 +206,7 @@ class TestSchemaParserTest {
     @Test
     void withExpectedNoSuppressions() throws IOException {
         String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-                + "<test-data>\n"
+                + "<test-data\n"
                 + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
                 + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
                 + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd\">\n"
@@ -222,6 +224,55 @@ class TestSchemaParserTest {
         assertFalse(test.hasExpectedSuppressions());
     }
 
+    @Test
+    void noWarningsForUnusedDeprecatedAttributes() throws Exception {
+        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<test-data\n"
+                + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
+                + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd\">\n"
+                + "    <test-code disabled=\"true\">\n"
+                + "        <description>Test case with suppression</description>\n"
+                + "        <expected-problems>1</expected-problems>\n"
+                + "        <expected-linenumbers>1</expected-linenumbers>\n"
+                + "        <code><![CDATA[\n"
+                + "            public class Foo { }\n"
+                + "            ]]></code>\n"
+                + "    </test-code>\n"
+                + "</test-data>\n";
+
+        String log = SystemLambda.tapSystemErr(() -> {
+            parseFile(file);
+        });
+
+        assertThat(log, not(containsString("is deprecated")));
+    }
+
+    @Test
+    void failOnValidationErrors() throws Exception {
+        String file = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                + "<test-data\n"
+                + "        xmlns=\"http://pmd.sourceforge.net/rule-tests\"\n"
+                + "        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n"
+                + "        xsi:schemaLocation=\"http://pmd.sourceforge.net/rule-tests net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd\">\n"
+                + "    <test-code>\n"
+                + "        <description>Test case with suppression</description>\n"
+                + "        <expected-problems>1</expected-problems>\n"
+                + "        <expected-linenumber>1</expected-linenumber> <!-- should be expected-linenumbers -->\n"
+                + "        <code><![CDATA[\n"
+                + "            public class Foo { }\n"
+                + "            ]]></code>\n"
+                + "    </test-code>\n"
+                + "</test-data>\n";
+
+
+        String log = SystemLambda.tapSystemErr(() -> {
+            assertThrows(IllegalStateException.class, () -> parseFile(file));
+        });
+
+        assertThat(log, containsString("cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://pmd.sourceforge.net/rule-tests\":expected-linenumber}'"));
+    }
+
     private RuleTestCollection parseFile(String file) throws IOException {
         MockRule mockRule = new MockRule();
         mockRule.setLanguage(PlainTextLanguage.getInstance());
@@ -230,7 +281,15 @@ class TestSchemaParserTest {
         is.setSystemId("a/file.xml");
         is.setCharacterStream(new StringReader(file));
 
-        return new TestSchemaParser().parse(mockRule, is);
+        final Locale defaultLocale = Locale.getDefault();
+        try {
+            // make sure to use English for XML validation errors, like invalid element
+            Locale.setDefault(Locale.ENGLISH);
+
+            return new TestSchemaParser().parse(mockRule, is);
+        } finally {
+            Locale.setDefault(defaultLocale);
+        }
     }
 
     public static final class MockRule extends AbstractRule {
