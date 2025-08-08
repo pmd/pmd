@@ -28,22 +28,23 @@ public class AddEmptyStringRule extends AbstractJavaRulechainRule {
             return null;
         }
         JavaNode parent = node.getParent();
-        checkExpr(data, parent);
+        checkExpr(data, parent, node);
         if (parent instanceof ASTVariableDeclarator) {
             ASTVariableId varId = ((ASTVariableDeclarator) parent).getVarId();
             if (varId.hasModifiers(JModifier.FINAL)) {
                 for (ASTNamedReferenceExpr usage : varId.getLocalUsages()) {
-                    checkExpr(data, usage.getParent());
+                    checkExpr(data, usage.getParent(), usage);
                 }
             }
         }
         return null;
     }
 
-    private void checkExpr(Object data, JavaNode parent) {
+    private void checkExpr(Object data, JavaNode parent, JavaNode emptyStringNode) {
         if (JavaAstUtils.isInfixExprWithOperator(parent, BinaryOp.ADD)
             && parent.ancestors(ASTAnnotation.class).isEmpty()) {
-            asCtx(data).addViolation(parent);
+            asCtx(data).addViolationWithPosition(parent, parent.getAstInfo(),
+                emptyStringNode.getReportLocation(), getMessage());
         }
     }
 }

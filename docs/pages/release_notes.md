@@ -95,6 +95,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5938](https://github.com/pmd/pmd/pull/5938): \[doc] Update suppression docs to reflect PMD 7 changes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5939](https://github.com/pmd/pmd/pull/5939): Fix #5198: \[java] CheckResultSet FP when local variable is checked - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5957](https://github.com/pmd/pmd/pull/5957): Fix #3401: \[java] Improve message/description/examples for AvoidUsingOctalValues - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5959](https://github.com/pmd/pmd/pull/5959): Fix #5960: \[java] AddEmptyString: Improve report location - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5965](https://github.com/pmd/pmd/pull/5965): Fix #5881: AvoidLosingException - Consider nested method calls - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5967](https://github.com/pmd/pmd/pull/5967): \[doc]\[java] ReplaceJavaUtilDate - improve doc to mention java.sql.Date - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
