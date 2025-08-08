@@ -101,6 +101,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5961](https://github.com/pmd/pmd/pull/5961): Fix #5960: \[java] Add details to the error message for some rules - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5965](https://github.com/pmd/pmd/pull/5965): Fix #5881: AvoidLosingException - Consider nested method calls - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5967](https://github.com/pmd/pmd/pull/5967): \[doc]\[java] ReplaceJavaUtilDate - improve doc to mention java.sql.Date - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5970](https://github.com/pmd/pmd/pull/5970): chore: CI improvements - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5971](https://github.com/pmd/pmd/pull/5971): Fix #5948: \[java] UnnecessaryBoxingRule: Check if unboxing is required for overload resolution - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates
