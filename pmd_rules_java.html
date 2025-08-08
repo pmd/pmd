@@ -2236,7 +2236,7 @@
   <li><a href="pmd_rules_java_errorprone.html#avoidliteralsinifcondition">AvoidLiteralsInIfCondition</a>: Avoid using hard-coded literals in conditional statements. By declaring them as static variables …</li>
   <li><a href="pmd_rules_java_errorprone.html#avoidlosingexceptioninformation">AvoidLosingExceptionInformation</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Statements in a catch block that invoke accessors on the exception without using the information …</li>
   <li><a href="pmd_rules_java_errorprone.html#avoidmultipleunaryoperators">AvoidMultipleUnaryOperators</a>: The use of multiple unary operators may be problematic, and/or confusing. Ensure that the intende…</li>
-  <li><a href="pmd_rules_java_errorprone.html#avoidusingoctalvalues">AvoidUsingOctalValues</a>: Integer literals should not start with zero since this denotes that the rest of literal will be i…</li>
+  <li><a href="pmd_rules_java_errorprone.html#avoidusingoctalvalues">AvoidUsingOctalValues</a>: Integer literals that start with zero are interpreted as octal (base-8) values in Java, which can…</li>
   <li><a href="pmd_rules_java_errorprone.html#brokennullcheck">BrokenNullCheck</a>: The null check is broken since it will throw a NullPointerException itself. It is likely that you…</li>
   <li><a href="pmd_rules_java_errorprone.html#callsuperfirst">CallSuperFirst</a>: Super should be called at the start of the method</li>
   <li><a href="pmd_rules_java_errorprone.html#callsuperlast">CallSuperLast</a>: Super should be called at the end of the method</li>
@@ -2411,7 +2411,7 @@
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 7, 2025 <br />
+             Site last generated: Aug 8, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2082,17 +2082,20 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5874">#5874</a>: [java] Update java regression tests with Java 25 language features</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5960">#5960</a>: [java] Avoid/reduce duplicate error messages for some rules</li>
     </ul>
   </li>
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2186">#2186</a>: [java] New rule: Reliance on default charset</li>
       <li><a href="https://github.com/pmd/pmd/issues/4500">#4500</a>: [java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5198">#5198</a>: [java] CheckResultSet false-positive with local variable checked in a while loop</li>
     </ul>
   </li>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/972">#972</a>: [java] Improve naming conventions rules</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5948">#5948</a>: [java] UnnecessaryBoxing false positive when calling <code class="language-plaintext highlighter-rouge">List.remove(int)</code></li>
     </ul>
   </li>
   <li>java-design
@@ -2102,6 +2105,7 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/3401">#3401</a>: [java] Improve AvoidUsingOctalValues documentation</li>
       <li><a href="https://github.com/pmd/pmd/issues/5837">#5837</a>: [java] New Rule OverrideBothEqualsAndHashCodeOnComparable</li>
       <li><a href="https://github.com/pmd/pmd/issues/5881">#5881</a>: [java] AvoidLosingExceptionInformation does not trigger when inside if-else</li>
       <li><a href="https://github.com/pmd/pmd/issues/5915">#5915</a>: [java] AssignmentInOperand not raised when inside do-while loop</li>
@@ -2124,8 +2128,14 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
   <li><a href="https://github.com/pmd/pmd/pull/5932">#5932</a>: [ci] Reuse GitHub Pre-Releases - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5934">#5934</a>: Fix #2186: [java] New Rule: RelianceOnDefaultCharset - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5938">#5938</a>: [doc] Update suppression docs to reflect PMD 7 changes - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5939">#5939</a>: Fix #5198: [java] CheckResultSet FP when local variable is checked - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5957">#5957</a>: Fix #3401: [java] Improve message/description/examples for AvoidUsingOctalValues - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5959">#5959</a>: Fix #5960: [java] AddEmptyString: Improve report location - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5961">#5961</a>: Fix #5960: [java] Add details to the error message for some rules - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5965">#5965</a>: Fix #5881: AvoidLosingException - Consider nested method calls - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5967">#5967</a>: [doc][java] ReplaceJavaUtilDate - improve doc to mention java.sql.Date - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5970">#5970</a>: chore: CI improvements - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5971">#5971</a>: Fix #5948: [java] UnnecessaryBoxingRule: Check if unboxing is required for overload resolution - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
 </ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
@@ -2163,7 +2173,7 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 7, 2025 <br />
+             Site last generated: Aug 8, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
