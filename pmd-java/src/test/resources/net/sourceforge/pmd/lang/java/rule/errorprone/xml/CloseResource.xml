@@ -2090,16 +2090,18 @@ public class DefaultFileSystemUsage {
         <expected-problems>1</expected-problems>
         <expected-linenumbers>6</expected-linenumbers>
         <expected-messages>
-            <message>Ensure that resources like this Closeable object are closed after use</message>
+            <message>Ensure that resources like this FileInputStream object are closed after use</message>
         </expected-messages>
         <code><![CDATA[
-import java.io.Closeable;
+import java.io.FileInputStream;
 import java.util.List;
 
 public class Foo {
-    public void bar(List<Closeable> connections) {
-        for (final var c: connections) {
-            c.close();
+    public void bar(List<FileInputStream> streams) {
+        for (final var stream: streams) {
+            try {
+                int c = stream.in();
+            } catch (IOException ignored) {}
         }
     }
 }
