@@ -660,19 +660,30 @@ int j = -~7;
     <rule name="AvoidUsingOctalValues"
           language="java"
           since="3.9"
-          message="Do not start a literal by 0 unless it's an octal value"
+          message="Avoid integer literals that start with zero (interpreted as octal), remove the leading 0 to get a decimal literal (or use explicit 0x, 0b prefixes)"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidUsingOctalValuesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidusingoctalvalues">
         <description>
-Integer literals should not start with zero since this denotes that the rest of literal will be
-interpreted as an octal value.
+Integer literals that start with zero are interpreted as octal (base-8) values in Java, which can lead to 
+unexpected behavior and bugs. Most developers expect decimal (base-10) interpretation, making octal literals 
+a common source of confusion and errors. For example, 012 equals 10 in decimal, not 12 as might be expected.
+This rule helps prevent such mistakes by flagging integer literals that could be misinterpreted as decimal values. 
+Use decimal literals without leading zeros, or use explicit prefixes like 0x for hexadecimal or 0b for binary values to make the intended base clear.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-int i = 012;    // set i with 10 not 12
-int j = 010;    // set j with 8 not 10
-k = i * j;      // set k with 80 not 120
+// Bad: These look like decimal but are actually octal
+int timeout = 060;     // Actually 48 in decimal, not 60!
+int count = 012;       // Actually 10 in decimal, not 12!
+
+// Good: Use decimal literals
+int timeout = 60;      // Clear decimal value
+int count = 12;        // Clear decimal value
+
+// Good: Use explicit prefixes for other bases
+int hexValue = 0xFF;   // Clearly hexadecimal
+int binaryValue = 0b1010; // Clearly binary (Java 7+)
 ]]>
         </example>
     </rule>
