@@ -24,6 +24,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀 New and noteworthy
 
+* java-bestpractices
+    * [#5770](https://github.com/pmd/pmd/issues/5770): \[java] evolute UnnecessaryLocalBeforeReturnRule to VariableCanBeInlinedRule
+
 #### ✨ New Rules
 * The new apex rule {% rule apex/codestyle/AnnotationsNamingConventions %} enforces that annotations
   are used consistently in PascalCase.  
@@ -62,20 +65,20 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛 Fixed Issues
 * apex-codestyle
-  * [#5650](https://github.com/pmd/pmd/issues/5650): \[apex] New Rule: AnnotationsNamingConventions
+    * [#5650](https://github.com/pmd/pmd/issues/5650): \[apex] New Rule: AnnotationsNamingConventions
 * java
-  * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
+    * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
 * java-bestpractices
-  * [#2186](https://github.com/pmd/pmd/issues/2186): \[java] New rule: Reliance on default charset
-  * [#4500](https://github.com/pmd/pmd/issues/4500): \[java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed
+    * [#2186](https://github.com/pmd/pmd/issues/2186): \[java] New rule: Reliance on default charset
+    * [#4500](https://github.com/pmd/pmd/issues/4500): \[java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed
 * java-codestyle
-  * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
+    * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
 * java-design
-  * [#5023](https://github.com/pmd/pmd/issues/5023): \[java] UseUtilityClass implementation hardcodes a message instead of using the one defined in the XML
+    * [#5023](https://github.com/pmd/pmd/issues/5023): \[java] UseUtilityClass implementation hardcodes a message instead of using the one defined in the XML
 * java-errorprone
-  * [#5837](https://github.com/pmd/pmd/issues/5837): \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable
-  * [#5881](https://github.com/pmd/pmd/issues/5881): \[java] AvoidLosingExceptionInformation does not trigger when inside if-else
-  * [#5915](https://github.com/pmd/pmd/issues/5915): \[java] AssignmentInOperand not raised when inside do-while loop
+    * [#5837](https://github.com/pmd/pmd/issues/5837): \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable
+    * [#5881](https://github.com/pmd/pmd/issues/5881): \[java] AvoidLosingExceptionInformation does not trigger when inside if-else
+    * [#5915](https://github.com/pmd/pmd/issues/5915): \[java] AssignmentInOperand not raised when inside do-while loop
 
 ### 🚨 API Changes
 
