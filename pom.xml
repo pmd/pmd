@@ -492,6 +492,133 @@
                     </dependencies>
                 </plugin>
                 <plugin>
+                    <groupId>org.openrewrite.maven</groupId>
+                    <artifactId>rewrite-maven-plugin</artifactId>
+                    <version>6.15.0</version>
+                    <configuration>
+                        <activeRecipes>
+                            <recipe>org.openrewrite.java.RemoveUnusedImports</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.BigDecimalRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.BugCheckerRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.CharSequenceRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.ClassRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.CollectionRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.ComparatorRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.EqualityRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.FileRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.MicrometerRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.NullRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.OptionalRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.PatternRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.PreconditionsRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.PrimitiveRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.StreamRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.StringRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.SuggestedFixRulesRecipes</recipe>
+                            <recipe>tech.picnic.errorprone.refasterrules.TimeRulesRecipes</recipe>
+                            <!-- TBD
+                            <recipe>org.openrewrite.java.migrate.UpgradeToJava17</recipe>
+                            <recipe>org.openrewrite.java.migrate.UpgradeToJava25</recipe>
+                            <recipe>org.openrewrite.java.recipes.JavaRecipeBestPractices</recipe>
+                            <recipe>org.openrewrite.java.recipes.RecipeNullabilityBestPractices</recipe>
+                            <recipe>org.openrewrite.java.recipes.RecipeTestingBestPractices</recipe>
+                            <recipe>org.openrewrite.maven.OrderPomElements</recipe>
+                            <recipe>org.openrewrite.maven.cleanup.PrefixlessExpressions</recipe>
+                            <recipe>org.openrewrite.staticanalysis.CodeCleanup</recipe>
+                            <recipe>org.openrewrite.staticanalysis.CommonStaticAnalysis</recipe>
+                            <recipe>org.openrewrite.staticanalysis.EqualsAvoidsNull</recipe>
+                            <recipe>org.openrewrite.staticanalysis.JavaApiBestPractices</recipe>
+                            <recipe>org.openrewrite.staticanalysis.LowercasePackage</recipe>
+                            <recipe>org.openrewrite.staticanalysis.MissingOverrideAnnotation</recipe>
+                            <recipe>org.openrewrite.staticanalysis.ModifierOrder</recipe>
+                            <recipe>org.openrewrite.staticanalysis.RemoveUnusedLocalVariables</recipe>
+                            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateFields</recipe>
+                            <recipe>org.openrewrite.staticanalysis.RemoveUnusedPrivateMethods</recipe>
+                            <recipe>org.openrewrite.staticanalysis.UnnecessaryThrows</recipe>
+                            -->
+                        </activeRecipes>
+                        <exclusions>
+                            <exclusion>**ASTAnnotationTypeDeclaration**</exclusion>
+                            <exclusion>**ASTField**</exclusion>
+                            <exclusion>**ApexMultifileAnalysis**</exclusion>
+                            <exclusion>**ApexSharingViolationsRule**</exclusion>
+                            <exclusion>**ApexUnitTestClassShouldHaveAssertsRule**</exclusion>
+                            <exclusion>**AstDisambiguationPass**</exclusion>
+                            <exclusion>**AstSymbolMakerVisitor**</exclusion>
+                            <exclusion>**AtfdBaseVisitor**</exclusion>
+                            <exclusion>**AvoidNonRestrictiveQueriesRule**</exclusion>
+                            <exclusion>**AvoidUsingHardCodedIPRule**</exclusion>
+                            <exclusion>**Chars**</exclusion>
+                            <exclusion>**ClassFanOutVisitor**</exclusion>
+                            <exclusion>**CognitiveComplexityVisitor**</exclusion>
+                            <exclusion>**ConfusingTernaryRule**</exclusion>
+                            <exclusion>**DataflowPass**</exclusion>
+                            <exclusion>**Dummy**</exclusion>
+                            <exclusion>**Example.java**</exclusion>
+                            <exclusion>**FieldDeclarationsShouldBeAtStartRule**</exclusion>
+                            <exclusion>**FileId**</exclusion>
+                            <exclusion>**FooRule**</exclusion>
+                            <exclusion>**GoodFile**</exclusion>
+                            <exclusion>**JavaCommentTest**</exclusion>
+                            <exclusion>**JavaVisitorBase**</exclusion>
+                            <exclusion>**LanguageLevelChecker**</exclusion>
+                            <exclusion>**ModuleStubTest**</exclusion>
+                            <exclusion>**NPathMetricCalculator**</exclusion>
+                            <exclusion>**NestedLambdasAndMethodCalls**</exclusion>
+                            <exclusion>**NodeFindingUtilTest**</exclusion>
+                            <exclusion>**ResourceResolver**</exclusion>
+                            <exclusion>**RuleDocGenerator**</exclusion>
+                            <exclusion>**RuleFactory**</exclusion>
+                            <exclusion>**RuleSetLoader**</exclusion>
+                            <exclusion>**RuleTst**</exclusion>
+                            <exclusion>**SaxonExtensionFunctionDefinitionAdapter**</exclusion>
+                            <exclusion>**SignatureScanner**</exclusion>
+                            <exclusion>**SourceObject**</exclusion>
+                            <exclusion>**StringUtil**</exclusion>
+                            <exclusion>**SymTableFactory**</exclusion>
+                            <exclusion>**SymbolTableResolver**</exclusion>
+                            <exclusion>**TypeAnnotTestUtil**</exclusion>
+                            <exclusion>**TypeOps**</exclusion>
+                            <exclusion>**TypeScriptLexerBase**</exclusion>
+                            <exclusion>**UnaryOp**</exclusion>
+                            <exclusion>**UnnecessaryFullyQualifiedNameRule**</exclusion>
+                            <exclusion>**ViolationSuppressor**</exclusion>
+                            <exclusion>**badandgood**</exclusion>
+                            <exclusion>**jdkversiontests**</exclusion>
+                            <exclusion>**ParserCornerCases**</exclusion>
+                            <exclusion>**GitHubBug309.java**</exclusion>
+                            <exclusion>**GitHubBug650.java**</exclusion>
+                            <exclusion>**InfiniteLoopInLookahead.java**</exclusion>
+                            <exclusion>**ParserCornerCases17.java**</exclusion>
+                            <exclusion>**missingoverride**</exclusion>
+                            <exclusion>**private_method_in_inner_class_interface**</exclusion>
+                            <exclusion>**testdata**</exclusion>
+                            <exclusion>**unnecessaryimport**</exclusion>
+                            <exclusion>**uselessoverridingmethod**</exclusion>
+                        </exclusions>
+                        <exportDatatables>true</exportDatatables>
+                        <failOnDryRunResults>true</failOnDryRunResults>
+                        <rewriteSkip>${rewrite.skip}</rewriteSkip>
+                    </configuration>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.openrewrite.recipe</groupId>
+                            <artifactId>rewrite-rewrite</artifactId>
+                            <version>0.10.1</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.openrewrite.recipe</groupId>
+                            <artifactId>rewrite-static-analysis</artifactId>
+                            <version>2.14.0</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.openrewrite.recipe</groupId>
+                            <artifactId>rewrite-migrate-java</artifactId>
+                            <version>3.13.0</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>${checkstyle.plugin.version}</version>
@@ -766,6 +893,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
                 <!-- configuration is in plugin management section -->
+            </plugin>
+            <plugin>
+                <groupId>org.openrewrite.maven</groupId>
+                <artifactId>rewrite-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

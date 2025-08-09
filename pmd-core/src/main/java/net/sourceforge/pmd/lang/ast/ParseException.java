@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.ast;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -94,7 +93,7 @@ public class ParseException extends FileAnalysisException {
             expectedBranches.add(expected.toString());
         }
 
-        String expected = expectedBranches.stream().collect(Collectors.joining(System.lineSeparator() + "    "));
+        String expected = String.join(System.lineSeparator() + "    ", expectedBranches);
 
         StringBuilder retval = new StringBuilder("Encountered ");
         if (maxSize > 1) {

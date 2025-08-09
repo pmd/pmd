@@ -73,7 +73,7 @@ class DBURITest {
                 description, dburi.isOpaque(), dburi.isAbsolute(), dburi.getScheme(), dburi.getSchemeSpecificPart(),
                 dburi.getHost(), dburi.getPort(), dburi.getPath(), dburi.getFragment(), dburi.getQuery());
         String query = dburi.getQuery();
-        if (null != query && !"".equals(query)) {
+        if (query != null && !"".equals(query)) {
             String[] params = query.split("&");
             Map<String, String> map = new HashMap<>();
             for (String param : params) {
