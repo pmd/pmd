@@ -7,6 +7,7 @@
     <test-code>
         <description>failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -62,6 +63,48 @@ public class Foo {
             } catch (IllegalArgumentException oe) {
                 throw se;
             }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>#4911 AvoidRethrowingException should allow rethrowing exception subclasses</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.nio.file.NoSuchFileException;
+import java.io.IOException;
+
+public class Repro {
+    void foo() {
+        try {
+            Files.delete("example.txt");
+        } catch (NoSuchFileException e) {
+            // Unrecoverable error
+            throw e;
+        } catch (IOException e) {
+            // Potentially recoverable error. Sleep and try again...
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>catch followed by an unrelated catch</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.file.NoSuchFileException;
+
+public class Foo {
+    void foo() {
+        try {
+            Files.delete("example.txt");
+        } catch (NoSuchFileException e) {
+            throw e;
+        } catch (IllegalStateException e) {
         }
     }
 }
