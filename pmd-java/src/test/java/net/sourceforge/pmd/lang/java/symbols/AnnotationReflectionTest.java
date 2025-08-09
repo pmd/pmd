@@ -137,7 +137,7 @@ class AnnotationReflectionTest {
         Class<SomeClass> actualClass = SomeClass.class;
         JClassSymbol sym = impl.getSymbol(actualClass);
 
-        JMethodSymbol method = getMethodSym(sym, "anotatedMethod");
+        JMethodSymbol method = getMethodSym(sym, "annotatedMethod");
         assertHasAnnotations(emptySet(), method.getFormalParameters().get(0));
         assertHasAnnotations(setOf(createAnnotationInstance(MethodAnnotation.class)), method);
     }

@@ -345,7 +345,7 @@ public class FooTest {
     </test-code>
 
     <test-code>
-        <description>#1465 False Positve UnusedImports with javadoc @link</description>
+        <description>#1465 False Positive UnusedImports with javadoc @link</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import a.b.c.d.AgentState;
@@ -366,7 +366,7 @@ public interface Foo {
     </test-code>
 
     <test-code>
-        <description>#1547 False Positve UnusedImports with javadoc for identifiers with underscores</description>
+        <description>#1547 False Positive UnusedImports with javadoc for identifiers with underscores</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.net.HttpURLConnection;
@@ -507,7 +507,7 @@ public class Derived extends FileInputStream {
         <description>#2025 False Positive in UnusedImports for params when using @see with FQCN</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import spark.Response; // flaged, should not
+import spark.Response; // flagged, should not
 
 /**
  * @see foo.bar.MyController#startTransaction(Response)
@@ -521,7 +521,7 @@ public class VendingV2PaymentRequest {
         <description>#2025 False Positive in UnusedImports for params when using @link with FQCN</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import spark.Request; // flaged, should not
+import spark.Request; // flagged, should not
 
 /**
  * {@link foo.bar.MyController#startTransaction(Request)}

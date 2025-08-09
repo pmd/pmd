@@ -9,7 +9,7 @@
 @Target(ElementType.TYPE_USE)
 @interface NonNull {}
 
-class AnnotedArrayType {
+class AnnotatedArrayType {
     @NonNull int @NonNull[] @NonNull[] field1;
     @NonNull int @NonNull [] @NonNull [] field2;
     private @NonNull int array2 @NonNull [] @NonNull [];

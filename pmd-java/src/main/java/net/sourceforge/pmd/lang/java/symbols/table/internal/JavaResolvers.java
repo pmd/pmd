@@ -298,7 +298,7 @@ public final class JavaResolvers {
     private static List<JMethodSig> methodMerger(boolean inStaticType, List<JMethodSig> myResult, List<JMethodSig> otherResult) {
         if (otherResult.isEmpty()) {
             return myResult;
-        } // don't check myResult for emptyness, we might need to remove static methods
+        } // don't check myResult for emptiness, we might need to remove static methods
 
         // For both the input lists, their elements are pairwise non-equivalent.
         // If any element of myResult is override-equivalent to

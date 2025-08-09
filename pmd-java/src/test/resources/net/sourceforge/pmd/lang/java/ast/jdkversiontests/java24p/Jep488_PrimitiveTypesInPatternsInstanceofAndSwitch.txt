@@ -341,7 +341,7 @@
          |                    +- InfixExpression[@CompileTimeConstant = false, @Operator = BinaryOp.ADD, @ParenthesisDepth = 0, @Parenthesized = false]
          |                       +- StringLiteral[@CompileTimeConstant = true, @ConstValue = "byte: ... ", @Empty = false, @Image = "\"byte: ... \"", @Length = 10, @LiteralText = "\"byte: ... \"", @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
          |                       +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "b", @Name = "b", @ParenthesisDepth = 0, @Parenthesized = false]
-         +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @Name = "expanedPrimitiveSupportInSwitch", @Overridden = false, @Static = false, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
+         +- MethodDeclaration[@Abstract = false, @Arity = 0, @EffectiveVisibility = Visibility.V_PACKAGE, @Final = false, @Name = "expandedPrimitiveSupportInSwitch", @Overridden = false, @Static = false, @Varargs = false, @Visibility = Visibility.V_PACKAGE, @Void = true]
          |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
          |  +- VoidType[]
          |  +- FormalParameters[@Empty = true, @Size = 0]

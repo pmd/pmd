@@ -213,12 +213,12 @@ fun JTypeMirror.shouldBePrimitive(kind: JPrimitiveType.PrimitiveTypeKind) {
 
 fun canIntersect(t: JTypeMirror, s: JTypeMirror, vararg others: JTypeMirror): Boolean {
     val comps = listOf(t, s, *others)
-    return comps.filter { it.isExlusiveIntersectionBound }.size <= 1
+    return comps.filter { it.isExclusiveIntersectionBound }.size <= 1
             && comps.none { it.isPrimitive || it.isGenericTypeDeclaration }
 }
 
 /** If so, there can only be one in a well formed intersection. */
-val JTypeMirror.isExlusiveIntersectionBound
+val JTypeMirror.isExclusiveIntersectionBound
     get() = this is JArrayType
             || this is JClassType && this.symbol.isClass
             || this is JTypeVar

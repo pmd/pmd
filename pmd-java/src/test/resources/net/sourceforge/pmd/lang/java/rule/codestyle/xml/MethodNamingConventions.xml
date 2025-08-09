@@ -199,7 +199,7 @@ public class TournamentTest {
     public void getBestTeam() {
     }
 
-    @ParameterizedTest // this is a paramterized junit 5 test
+    @ParameterizedTest // this is a parameterized junit 5 test
     public void getWorstTeam(String param) {
     }
 

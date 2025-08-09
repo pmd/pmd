@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>setUp mispellings</description>
+        <description>setUp misspellings</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 import junit.framework.TestCase;

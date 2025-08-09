@@ -374,8 +374,8 @@ public class ConcatInLoop {
     }
 
     public static void good2(String propertyFile) {
-        String[] properyFilenames = propertyFile.split(",");
-        for (String propertyFilename : properyFilenames) {
+        String[] propertyFilenames = propertyFile.split(",");
+        for (String propertyFilename : propertyFilenames) {
             if (propertyFilename != null) {
                 try {
                     //getResourceAsStream(propertyFilename);

@@ -61,7 +61,7 @@ import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
  *     would allow us to remove all the remaining ambiguous names.
  */
 public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTReferenceType, ASTPrimaryExpression {
-    // if true, then this was explitly left in the tree by the disambig
+    // if true, then this was explicitly left in the tree by the disambig
     // pass, with a warning
     private boolean wasProcessed = false;
 

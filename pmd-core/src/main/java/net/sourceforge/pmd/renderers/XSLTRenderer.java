@@ -74,7 +74,7 @@ public class XSLTRenderer extends XMLRenderer {
             }
         }
 
-        // We keep the inital writer to put the final html output
+        // We keep the initial writer to put the final html output
         this.outputWriter = getWriter();
         // We use a new one to store the XML...
         this.stringWriter = new StringWriter();

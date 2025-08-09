@@ -442,7 +442,7 @@ public class LiteralsFirstInComparisonCase {
     public static boolean compare() {
         return S1.equals(S2);
     }
-    public static boolean isUnkown() {
+    public static boolean isUnknown() {
         return Foo.VERSION.equals(S2);
     }
 }
@@ -467,7 +467,7 @@ public class LiteralsFirstInComparisonCase {
     public static boolean compare() {
         return S1.equals(S2);
     }
-    public static boolean isUnkown() {
+    public static boolean isUnknown() {
         return Foo.VERSION.equals(S2);
     }
 }

@@ -237,7 +237,7 @@ class VarScopingTest : ProcessorTestSpec({
         }
 
         doTest("Inside fallthrough: var is in scope") {
-            // this is suprising but legal, the var is just not definitely
+            // this is surprising but legal, the var is just not definitely
             // assigned at the point of use
             iAccess2 shouldResolveToLocal ivar
         }

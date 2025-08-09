@@ -120,7 +120,7 @@ abstract class ParserTestSpec(body: ParserTestSpec.() -> Unit) : DslDrivenSpec()
      * and grouped by the given [name].
      *
      * @param name Name of the container test
-     * @param javaVersions Language versions fo which to generate tests
+     * @param javaVersions Language versions for which to generate tests
      * @param spec Assertions.
      */
     fun parserTest(name: String,

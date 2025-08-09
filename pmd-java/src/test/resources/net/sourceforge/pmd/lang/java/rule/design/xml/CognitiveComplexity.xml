@@ -73,18 +73,18 @@ class JavaSymbol {
         <code><![CDATA[
 public class Foo {
 
-    private void addVersion(final Entry entry, final Transaction txn, Entry frst) throws Exception {
+    private void addVersion(final Entry entry, final Transaction txn, Entry first) throws Exception {
         final int ti = getTransactionIndex();
         while (true) { // +1
             try {
                 synchronized (this) {
-                    if (frst != null) { // +2 (nesting = 1)
-                        if (frst.hashCode() > entry.hashCode()) { // +3 (nesting = 2)
+                    if (first != null) { // +2 (nesting = 1)
+                        if (first.hashCode() > entry.hashCode()) { // +3 (nesting = 2)
                             throw new Exception();
                         }
                         if (txn.isActive()) { // +3 (nesting = 2)
                             for // +4 (nesting = 3)
-                            (Entry e = frst; e != null; e = e.getPrevious()) {
+                            (Entry e = first; e != null; e = e.getPrevious()) {
                                 final long version = e.getVersion();
                                 final long depends = ti.wwDependency(version,
                                                                      txn.getTransactionStatus(), 0);
@@ -98,8 +98,8 @@ public class Foo {
                             }
                         }
                     }
-                    entry.setPrevious(frst);
-                    frst = entry;
+                    entry.setPrevious(first);
+                    first = entry;
                     break;
                 }
             } catch (final Exception re) { // +2 (nesting = 1)

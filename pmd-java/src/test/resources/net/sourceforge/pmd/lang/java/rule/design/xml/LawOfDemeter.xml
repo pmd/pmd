@@ -780,7 +780,7 @@ public final class ControlEvent {
             class Q {
                 void foo(Token t) {
                     Manager m = t.getLastToken().manager;
-                    m.doSomethn();
+                    m.doSomething();
                 }
             }
             ]]></code>

@@ -186,7 +186,7 @@ public class O {
     </test-code>
 
     <test-code>
-        <description>False positive with string concatentation</description>
+        <description>False positive with string concatenation</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {{

@@ -484,7 +484,7 @@ class SomeTest {
   void repeatedTest() {}
 
   @RegisterExtension
-  void registerExtenstionTest(){}
+  void registerExtensionTest(){}
 }
         ]]></code>
     </test-code>

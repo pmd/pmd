@@ -119,7 +119,7 @@ public class DBURI {
     // languages to process - defaults inferred from the JDBC URL
     private String languages;
 
-    // Return class for source code, mapped fron java.sql.Types
+    // Return class for source code, mapped from java.sql.Types
     private int sourceCodeType;
 
     /**

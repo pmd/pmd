@@ -512,7 +512,7 @@ public final class SymbolTableResolver {
         @Override
         public Void visit(ASTInfixExpression node, @NonNull ReferenceCtx ctx) {
             // need to account for pattern bindings.
-            // visit left operand first. Maybe it introduces bindings in the rigt operand.
+            // visit left operand first. Maybe it introduces bindings in the right operand.
 
             node.getLeftOperand().acceptVisitor(this, ctx);
 

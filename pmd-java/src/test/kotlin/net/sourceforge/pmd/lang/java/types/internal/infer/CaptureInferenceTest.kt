@@ -550,7 +550,7 @@ public class SubClass<T> {
         acu.varId("k") shouldHaveType acu.typeSystem.OBJECT
     }
 
-    parserTest("Problem with capture of type parametr that has wildcard parameterized bound") {
+    parserTest("Problem with capture of type parameter that has wildcard parameterized bound") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class AJjtN<Q, B> {}
@@ -577,7 +577,7 @@ public class SubClass<T> {
             call.overloadSelectionInfo::isFailed shouldBe false
         }
     }
-    parserTest("Problem with capture of type parametr that has wildcard parameterized bound (field access)") {
+    parserTest("Problem with capture of type parameter that has wildcard parameterized bound (field access)") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class AJjtN<Q, B> {

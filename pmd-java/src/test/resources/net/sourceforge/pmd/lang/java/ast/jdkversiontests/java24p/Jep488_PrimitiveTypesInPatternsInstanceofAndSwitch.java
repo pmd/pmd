@@ -71,7 +71,7 @@ public class Jep488_PrimitiveTypesInPatternsInstanceofAndSwitch {
         }
     }
 
-    void expanedPrimitiveSupportInSwitch() {
+    void expandedPrimitiveSupportInSwitch() {
         class User {
             boolean isLoggedIn() { return false; }
             int id() { return 42; }

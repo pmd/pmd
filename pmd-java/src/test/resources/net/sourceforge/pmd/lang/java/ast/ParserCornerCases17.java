@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 
 /*
- * This file is to test the JavaCC java grammer, whether we can parse specific java constructs without
+ * This file is to test the JavaCC java grammar, whether we can parse specific java constructs without
  * throwing a syntax error.
  *
  * Java 7, see: http://docs.oracle.com/javase/7/docs/technotes/guides/language/enhancements.html#javase7

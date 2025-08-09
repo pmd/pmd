@@ -352,7 +352,7 @@ import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQuali
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryFullyQualifiedNameTest.Container.PhonyMockito.mock;
 
 public class Foo {
-    private Foo bar = PhonyMockito.mock(Foo.class); // doing simply mock(Foo.class) would use a differen method than intended
+    private Foo bar = PhonyMockito.mock(Foo.class); // doing simply mock(Foo.class) would use a different method than intended
 }
         ]]></code>
     </test-code>

@@ -253,7 +253,7 @@ final class ExprCheckHelper {
             // we need to set the parameter types
             lambda.updateTypingContext(paramTypes);
             // And add a constraint on the free variables in the target type.
-            // These free variables may be inferrable when the classpath is complete
+            // These free variables may be inferable when the classpath is complete
             // through the lambda adding constraints on those variables. Since
             // we do not know the signature of the function, we should allow for
             // the variables mentioned in this type to resolve to (*unknown*) and not

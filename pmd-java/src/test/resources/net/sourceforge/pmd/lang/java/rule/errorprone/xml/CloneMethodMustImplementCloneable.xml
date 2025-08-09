@@ -124,12 +124,12 @@ public final class Foo {
     </test-code>
 
     <test-code>
-        <description>Bug 681, extending a class which implements Clonable.</description>
+        <description>Bug 681, extending a class which implements Cloneable.</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class MyAbstractClass implements Cloneable{
 }
-public class MyClonableClass extends MyAbstractClass{
+public class MyCloneableClass extends MyAbstractClass{
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }

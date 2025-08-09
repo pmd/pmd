@@ -41,7 +41,7 @@ public class MyClass {
     public void connect(String username,
         String pssd,
         String databaseName,
-        String databaseAdress)
+        String databaseAddress)
         // Instead of those parameters object
         // would ensure a cleaner API and permit
         // to add extra data transparently (no code change):
@@ -60,19 +60,19 @@ public class MyClass {
     protected void connectProtected(String username,
         String pssd,
         String databaseName,
-        String databaseAdress)
+        String databaseAddress)
     {
     }
     void connectPackagePrivate(String username,
         String pssd,
         String databaseName,
-        String databaseAdress)
+        String databaseAddress)
     {
     }
     private void connectPrivate(String username,
         String pssd,
         String databaseName,
-        String databaseAdress)
+        String databaseAddress)
     {
     }
 }
@@ -87,7 +87,7 @@ public class MyClass {
     public void connectProtected(String username,
         String[] pssd,
         String databaseName,
-        String databaseAdress)
+        String databaseAddress)
     {
     }
 }

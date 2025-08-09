@@ -396,7 +396,7 @@ public class DBMSMetadata {
                 }
             }
 
-            LOG.trace("Identfied={} sourceObjects", sourceObjectsList.size());
+            LOG.trace("Identified={} sourceObjects", sourceObjectsList.size());
 
             return sourceObjectsList;
         } catch (SQLException sqle) {

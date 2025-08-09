@@ -14,7 +14,7 @@ import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
- * A handler for events occuring during analysis of a single file. Instances
+ * A handler for events occurring during analysis of a single file. Instances
  * are only used on a single thread for their entire lifetime, so don't
  * need to be synchronized to access state they own. File listeners are
  * spawned by a {@link GlobalAnalysisListener}.
