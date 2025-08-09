@@ -36,7 +36,7 @@ public class Foo {
 
     <test-code>
         <description>one break, but two cases + one default case. But there is an intentional fall through -
-because there are no statemenets between case 1 and case 2.</description>
+because there are no statements between case 1 and case 2.</description>
         <!--
         Indeed if there is no statement between the two cases, then no break
         should be expected between those cases.
@@ -329,9 +329,9 @@ public class DemoMissingBreak {
         <code><![CDATA[
 import java.math.MathContext;
 public class DemoMissingBreak {
-    public MathContext foo(int precission) {
+    public MathContext foo(int precision) {
         MathContext mc = null;
-        switch (precission) {
+        switch (precision) {
             case 32:
                 mc = MathContext.DECIMAL32;
                 break;
@@ -342,7 +342,7 @@ public class DemoMissingBreak {
                 mc = MathContext.DECIMAL128;
                 break;
             default:
-                mc = new MathContext(precission);
+                mc = new MathContext(precision);
         }
         return mc;
     }
@@ -357,9 +357,9 @@ public class DemoMissingBreak {
         <code><![CDATA[
 import java.math.MathContext;
 public class DemoMissingBreak {
-    public MathContext foo(int precission) {
+    public MathContext foo(int precision) {
         MathContext mc = null;
-        switch (precission) {
+        switch (precision) {
             case 32:
                 mc = MathContext.DECIMAL32;
                 break;
@@ -367,7 +367,7 @@ public class DemoMissingBreak {
                 mc = MathContext.DECIMAL64;
                 break;
             default:
-                mc = new MathContext(precission);
+                mc = new MathContext(precision);
             case 128: // violation!!
                 mc = MathContext.DECIMAL128;
                 break;

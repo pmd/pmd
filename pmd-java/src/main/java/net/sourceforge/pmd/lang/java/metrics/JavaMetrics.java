@@ -357,7 +357,7 @@ public final class JavaMetrics {
      * because the {@code if} branch returns early. There are two paths
      * from {@code join} to {@code exit} (and notice, that's true even if
      * there is no else branch, because the path where the if condition is
-     * falso must be taken into account anyway). So in total there are {@code 1*2 + 1 = 3}
+     * false must be taken into account anyway). So in total there are {@code 1*2 + 1 = 3}
      * paths from {@code entry} to the end of the block or function (the
      * return statement still counts).
      *

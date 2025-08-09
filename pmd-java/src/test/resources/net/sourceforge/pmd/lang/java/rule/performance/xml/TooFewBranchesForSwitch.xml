@@ -108,7 +108,7 @@ public class ValidSwitch {
 sealed interface S permits A {}
 final class A implements S {}
 public class Sample {
-    public void simpleSwitchStatment(S s) {
+    public void simpleSwitchStatement(S s) {
         switch(s) {
             case A a -> System.out.println("a");
         }

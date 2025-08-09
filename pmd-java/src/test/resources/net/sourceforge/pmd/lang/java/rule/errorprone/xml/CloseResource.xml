@@ -742,7 +742,7 @@ public class CloseResource {
         String someSql = "select something...";
         try {
             stmt = connection.createStatement();
-            resultSet = stmt.executQuery(someSql);
+            resultSet = stmt.executeQuery(someSql);
             while (resultSet.next()) {
                 // do something
             }
@@ -2065,7 +2065,7 @@ public class CastedParameter {
     public void checkValidity(ClassLoader auxclassPathClassLoader) {
         if (auxclassPathClassLoader instanceof URLClassLoader) {
             final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
-            // doesn't need to be closed, it's still a paramter…
+            // doesn't need to be closed, it's still a parameter…
         }
     }
 }

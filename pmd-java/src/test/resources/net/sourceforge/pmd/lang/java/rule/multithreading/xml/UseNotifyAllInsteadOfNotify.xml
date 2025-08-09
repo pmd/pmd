@@ -85,7 +85,7 @@ public class Foo {
         <description>#1438 UseNotifyAllInsteadOfNotify gives false positive</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class FlasePositive {
+public class FalsePositive {
     public static void main(String[] args) {
         boolean notify;
         notify = true;

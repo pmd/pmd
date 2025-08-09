@@ -102,7 +102,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#2141 [java] StringInstatiation: False negative with String-array access</description>
+        <description>#2141 [java] StringInstantiation: False negative with String-array access</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,10</expected-linenumbers>
         <code><![CDATA[
