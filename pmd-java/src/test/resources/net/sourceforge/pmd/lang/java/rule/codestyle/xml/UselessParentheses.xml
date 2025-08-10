@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>failure case, return statement</description>
@@ -662,5 +662,38 @@ public class Test {
                 }
             }
             ]]></code>
+    </test-code>
+    <test-code>
+        <description>Detailed message</description>
+        <expected-problems>8</expected-problems>
+        <expected-messages>
+            <message>Useless parentheses around *.</message>
+            <message>Useless parentheses around 4.</message>
+            <message>Useless parentheses around conditional expression.</message>
+            <message>Useless parentheses around k3.</message>
+            <message>Useless parentheses around primary expression.</message>
+            <message>Useless parentheses around ++.</message>
+            <message>Useless parentheses around assignment expression.</message>
+            <message>Duplicate parentheses.</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Parentheses {
+
+                public int id(int k) {
+                    return k;
+                }
+
+                public void run() {
+                    int k1 = (3 * 3);
+                    int k2 = (4);
+                    int k3 = (true ? 4 : 2);
+                    int k4 = id((k3));
+                    int k5 = (id(k3));
+                    int k6 = (k5++);
+                    int k7 = (k1 = (k2 = 2)) + 1;
+                    int k8 = ((1 + 2));
+                }
+            }
+        ]]></code>
     </test-code>
 </test-data>

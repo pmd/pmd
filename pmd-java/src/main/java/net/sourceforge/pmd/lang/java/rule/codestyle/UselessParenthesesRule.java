@@ -17,9 +17,11 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -82,11 +84,42 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
         if (necessity == NEVER
             || reportClarifying() && necessity == CLARIFYING
             || reportBalancing() && necessity == BALANCING) {
-            asCtx(data).addViolation(e);
+            if (e.getParenthesisDepth() > 1) {
+                asCtx(data).addViolationWithMessage(e, "Duplicate parentheses.");
+            } else {
+                String description = getNodeDescription(e);
+                if (description != null) {
+                    asCtx(data).addViolationWithMessage(e, "Useless parentheses around {0}.",
+                        description);
+                } else {
+                    asCtx(data).addViolation(e);
+                }
+            }
         }
 
     }
 
+    private String getNodeDescription(ASTExpression e) {
+        final String desc;
+        if (e instanceof ASTInfixExpression) {
+            desc = ((ASTInfixExpression) e).getOperator().getToken();
+        } else if (e instanceof ASTUnaryExpression) {
+            desc = ((ASTUnaryExpression) e).getOperator().getToken();
+        } else if (e instanceof ASTLiteral) {
+            desc = ((ASTLiteral) e).getLiteralText().toString();
+        } else if (e instanceof ASTVariableAccess) {
+            desc = ((ASTVariableAccess) e).getName();
+        } else if (e instanceof ASTPrimaryExpression) {
+            desc = "primary expression";
+        } else if (e instanceof ASTAssignmentExpression) {
+            desc = "assignment expression";
+        } else if (e instanceof ASTConditionalExpression) {
+            desc = "conditional expression";
+        } else {
+            desc = null;
+        }
+        return desc;
+    }
 
     public static Necessity needsParentheses(ASTExpression inner, JavaNode outer) {
         // Note: as of jdk 15, PatternExpression cannot be parenthesized
