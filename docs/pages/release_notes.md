@@ -51,6 +51,7 @@ This is a {{ site.pmd.release_type }} release.
 * The new java rule {% rule java/bestpractices/RelianceOnDefaultCharset %} finds method calls that
   depend on the JVM's default charset. Using these method without specifying the charset explicitly
   can lead to unexpected behavior on different platforms.
+* [#5770](https://github.com/pmd/pmd/issues/5770): \[java] `VariableCanBeInlined`
 
 #### Deprecated Rules
 * The java rule {% rule java/codestyle/GenericsNaming %} has been deprecated for removal in favor

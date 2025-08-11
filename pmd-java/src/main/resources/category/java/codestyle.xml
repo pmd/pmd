@@ -1807,6 +1807,7 @@ public class Foo {
 
     <rule name="UnnecessaryLocalBeforeReturn"
           language="java"
+          deprecated="true"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
@@ -2141,6 +2142,52 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
 Foo[] x = new Foo[] { ... }; // Overly verbose
 Foo[] x = { ... }; //Equivalent to above line
 ]]>
+        </example>
+    </rule>
+
+    <rule name="VariableCanBeInlined"
+          language="java"
+          since="7.17.0"
+          message="Consider simply using the value vs storing it in local variable ''{0}''."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableCanBeInlinedRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variablecanbeinlined">
+        <description>
+            Local variables should not be declared and then immediately returned or thrown. Such
+            variable declarations add unnecessary complexity and make the code harder to read.
+            It is often simpler and cleaner to return or throw the value directly.
+
+            This rule implements SonarSource rule [S1488](https://sonarsource.github.io/rspec/#/rspec/S1488).
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+                class Foo {
+                    Object foo() {
+                        var foo = "foo";
+                        return foo;  // instead, just 'return "foo";'
+                    }
+
+                    Object bar() {
+                        var ex = getIllegalArgumentException();
+                        throw ex; // instead, just 'throw getIllegalArgumentException();'
+                    }
+
+                    Object baz() {
+                        var baz = switch (foo()) {
+                            case "foo" -> {
+                                var foo = foo();
+                                yield foo;  // Can be simplified to 'yield foo();'
+                            }
+                            case "bar" -> {
+                                var bar = bar();
+                                yield bar;  // Can be simplified to 'yield bar();'
+                            }
+                            default -> bar("baz");
+                        };
+                        return baz; // instead, just 'return switch (foo()) {...'
+                    }
+                }
+            ]]>
         </example>
     </rule>
 </ruleset>

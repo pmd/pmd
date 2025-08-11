@@ -1,0 +1,1042 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    <!--        -->
+    <!-- return -->
+    <!--        -->
+    <test-code>
+        <description>skip void/native/abstract methods</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {}
+    public native int buz();
+    public abstract int baz();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip literal returns</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() { return 5; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>simple failure case</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int x = doSomething();
+        return x;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip complicated returns</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int x = doSomething();
+        return x == null ? foo : bar;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>skip method calls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        return doSomething(a, b, c);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1495 [java] UnnecessaryLocalBeforeReturn with assert</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2; assert res>=0;
+        return res;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#219 ClassCastException in switch case with local variable returned</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int m(int val) {
+        switch (vl) {
+            default:
+                int i = 0;
+                return i;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Detect violation even if not on consecutive lines</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething();
+        return res;
+    }
+
+    public void doSomething() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violations on multiple uses of the variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething(res);
+        return res;
+    }
+
+    public void doSomething(int x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violations on multiple uses of the variable - statement order does not matter</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public int bar() {
+        int res = 2;
+        doSomething(res);
+        return res;
+    }
+
+    public void doSomething(int x) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#933 UnnecessaryLocalBeforeReturn false positive for SuppressWarnings annotation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class TestCase<T> {
+    T getSomeT() { return null; }
+    private static <T> T findEventTypeValueByName(TestCase<?> unchecked) {
+        @SuppressWarnings("unchecked")
+        T result = (T) unchecked.getSomeT();
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#282 UnnecessaryLocalBeforeReturn false positive when cloning Maps</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
+import java.util.HashMap;
+public class CustomerErrorCollector {
+
+    private final ConcurrentHashMap<String, String> customerErrors = new ConcurrentHashMap<>();
+
+    public void error(String customerNr, String errorMsg) {
+        customerErrors.put(customerNr, errorMsg);
+    }
+
+    public Map<String, String> getAndReset() {
+        final Map<String, String> copy = new HashMap<>(customerErrors);
+        customerErrors.clear();
+        return copy; // PMD complains that variable could be avoided
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#310 UnnecessaryLocalBeforeReturn enhancement is overly restrictive -- method order matters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Mutable {
+    public int example1() {
+        int i = compute(); // might throw
+        markComputationDone();
+        return i; // PMD complains that variable could be avoided
+    }
+
+    public int example2() {
+        Mutable m = new Mutable();
+        int i = compute(m);
+        sideEffect(m);
+        return i;
+    }
+    static void sideEffect(Mutable m) {}
+    static int sideEffect(Mutable m) {}
+    static int compute() {}
+    static int markComputationDone() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#310 UnnecessaryLocalBeforeReturn statement order does not matter</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
+        <code><![CDATA[
+public class Mutable {
+    public int example1() {
+        int i = compute(); // might throw
+        markComputationDone();
+        return i; // PMD complains that variable could be avoided
+    }
+
+    public int example2() {
+        Mutable m = new Mutable();
+        int i = compute(m);
+        sideEffect(m);
+        return i;
+    }
+    static void sideEffect(Mutable m) {}
+    static int sideEffect(Mutable m) {}
+    static int compute() {}
+    static int markComputationDone() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1775 [java] False negative in UnnecessaryLocalBeforeReturn when splitting statements across multiple lines</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class UnnecessaryLocalBeforeReturnFP {
+    public Object test2() {
+        int i = 0;
+        Object o = thing()
+            .make(i);
+        return o; // true positive
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#1804 [java] NPE with fields</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class ObjectCreator {
+
+    private static final String A = "";
+    private static final String B = "" + A; // the existence of this line causes the NPE.
+
+    public Object create() {
+        final Object o = new Object(A);
+        return o;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FP with captured method reference</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Supplier;
+public class ObjectCreator {
+    public Supplier<String> create() {
+        final Object o = new Object(); // captured by the method ref
+        return o::toString;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with lambdas #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = () -> { String s = "1"; return s; };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>FN with anonymous classes #3275</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.concurrent.Callable;
+
+public class UnnecessaryLocal {
+    void foo() {
+        Callable<String> c = new Callable<>() {
+            public String call() {
+                String s = "1";
+                return s;
+            }
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryLocalBeforeReturn - false positive with catch clause</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    public Example() {
+        Exception result = attempt(() -> {});
+        if (result != null) {
+            throw new RuntimeException(result);
+        }
+    }
+
+    private Exception attempt(Runnable task) {
+        try {
+            task.run();
+            return null;
+        } catch (Exception e) {
+            // src/Example.java:15:    UnnecessaryLocalBeforeReturn:   Consider simply returning the value vs storing it in local variable 'e'
+            return e;
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryLocalBeforeReturn false positive when negating variable #2206</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Example {
+    public boolean isOk() {
+        boolean isWrong = foo();
+        return !isWrong;
+    }
+
+    private boolean foo() {
+        return false;
+    }
+}
+]]></code>
+    </test-code>
+    <!--        -->
+    <!-- throw  -->
+    <!--        -->
+    <test-code>
+        <description>#5770 Simple unnecessary local before throw</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Variable used elsewhere - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        System.out.println(e.getMessage());
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Annotated variable - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        @SuppressWarnings("serial")
+        RuntimeException e = new RuntimeException();
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Statements not consecutive - no violation when order matters</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        doSomething();
+        throw e;
+    }
+    void doSomething() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Statements not consecutive - violation when order does not matter</description>
+        <rule-property name="statementOrderMatters">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        doSomething();
+        throw e;
+    }
+    void doSomething() {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw not using variable - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        throw new IllegalStateException();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Variable used in try-catch - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        Exception e;
+        try {
+            something();
+        } catch (Exception ex) {
+            e = ex;
+        }
+        throw e;
+    }
+    void something() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Multiple variables but only one used in throw</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e1 = new RuntimeException();
+        RuntimeException e2 = new RuntimeException();
+        throw e1;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Multiple variables but only one used in throw</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e2 = new RuntimeException();
+        RuntimeException e1 = new RuntimeException();
+        throw e1;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throwing field - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private Exception e = new Exception();
+
+    void test() {
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throwing parameter - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test(Exception e) {
+        throw e;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw in switch statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test(int value) {
+        switch (value) {
+            case 1:
+                RuntimeException e = new RuntimeException();
+                throw e;
+            default:
+                throw new IllegalArgumentException();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw in if statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test(boolean condition) {
+        if (condition) {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw in try-with-resources</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() throws Exception {
+        try (AutoCloseable ac = something()) {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+    AutoCloseable something() { return null; }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw inside for loop block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        for (int i = 0; i < 1; i++) {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw using lambda expression - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.function.Supplier;
+
+public class Test {
+    void test() {
+        Supplier<RuntimeException> s = () -> new RuntimeException();
+        throw s.get();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw in ternary - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test(boolean condition) {
+        throw condition ? new IllegalArgumentException() : new RuntimeException();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Nested block with unnecessary throw variable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Inner class with throw - no violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    class Inner {
+        void test() {
+            RuntimeException e = new RuntimeException();
+            throw e;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Exception assigned and rethrown inside catch - no violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        try {
+            something();
+        } catch (Exception ex) {
+            Exception e = ex;
+            throw e;
+        }
+    }
+    void something() throws Exception {}
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Multiple throw variables but one is unnecessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        RuntimeException e = new RuntimeException();
+        RuntimeException f = new RuntimeException();
+        throw f;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return with method chain - no violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public String getName() {
+        String name = getFirst() + " " + getLast();
+        return name;
+    }
+    private String getFirst() { return ""; }
+    private String getLast() { return ""; }
+}
+    ]]></code>
+    </test-code>
+    <test-code>
+        <description>Throw with method chain - no violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public String getName() {
+        RuntimeException name = new RuntimeException(getFirst() + " " + getLast());
+        throw name;
+    }
+    private String getFirst() { return ""; }
+    private String getLast() { return ""; }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return with array access - no violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public int getFirst(int[] arr) {
+        int first = arr[0];
+        return first;
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return with field access - no violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    private int count;
+    public int getCount() {
+        int current = this.count;
+        return current;
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Throw with ternary initialization - violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test(boolean flag) {
+        RuntimeException e = flag ? new IllegalArgumentException() : new RuntimeException();
+        throw e;
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return in try-with-resources - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public String test() throws Exception {
+        try (AutoCloseable ac = something()) {
+            String result = "result";
+            return result;
+        }
+    }
+    AutoCloseable something() { return null; }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return in synchronized block - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public String test() {
+        synchronized(this) {
+            String result = "result";
+            return result;
+        }
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Throw with multiple catch blocks - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        Exception e;
+        try {
+            something();
+        } catch (IOException ex) {
+            e = ex;
+        } catch (RuntimeException ex) {
+            e = ex;
+        }
+        throw e;
+    }
+    void something() throws IOException {}
+}
+    ]]></code>
+    </test-code>
+    <test-code>
+        <description>Super coupling: Throw with multiple catch blocks</description>
+        <!--  fixme      <expected-problems>1</expected-problems>-->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        try {
+            something();
+        } catch (IOException ex) {
+            Exception e; // unnecessary instead use: throw ex;
+            e = ex; // unnecessary instead use: throw ex;
+            throw e;
+        }
+    }
+    void something() throws IOException {}
+}
+    ]]></code>
+    </test-code>
+    <test-code>
+        <description>Would we detect it, if the declaration and initialization wouldn't be separated?</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        try {
+            something();
+        } catch (IOException ex) {
+            Exception e = ex; // unnecessary instead use: throw ex;
+            throw e;
+        }
+    }
+    void something() throws IOException {}
+}
+    ]]></code>
+    </test-code>
+    <test-code>
+        <description>Coupling: Throw with multiple catch blocks</description>
+        <!--  fixme      <expected-problems>1</expected-problems>-->
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        Exception e;
+        try {
+            something();
+        } catch (IOException ex) {
+            e = ex; // unnecessary instead use: throw ex;
+        }
+        throw e;
+    }
+    void something() throws IOException {}
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Return with instanceof check</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public String test(Object obj) {
+        String result = obj instanceof String ? (String)obj : "default";
+        return result;
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Throw with initialization in if block - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    void test(boolean flag) {
+        RuntimeException e;
+        if (flag) {
+            e = new IllegalArgumentException();
+        } else {
+            e = new RuntimeException();
+        }
+        throw e;
+    }
+}
+    ]]></code>
+    </test-code>
+    <!--        -->
+    <!-- yield  -->
+    <!--        -->
+    <test-code>
+        <description>Simple yield with unnecessary local variable</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public int test(int value) {
+        return switch (value) {
+            case 1 -> {
+                int result = 10;  // unnecessary
+                yield result;
+            }
+            default -> 0;
+        };
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Yield with variable used elsewhere - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public int test(int value) {
+        return switch (value) {
+            case 1 -> {
+                int result = 10;
+                System.out.println(result);
+                yield result;
+            }
+            default -> 0;
+        };
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Yield with multiple variables - one unnecessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public int test(int value) {
+        return switch (value) {
+            case 1 -> {
+                int x = 5;
+                int y = 10;
+                int result = x + y;  // unnecessary
+                yield result;
+            }
+            default -> 0;
+        };
+    }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Yield with complex expression - violation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public int test(int value) {
+        return switch (value) {
+            case 1 -> {
+                int result = calculate(value) * 2;
+                yield result;
+            }
+            default -> 0;
+        };
+    }
+    private int calculate(int x) { return x * 10; }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Yield with annotated variable - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public int test(int value) {
+        return switch (value) {
+            case 1 -> {
+                @SuppressWarnings("deprecation")
+                int result = deprecatedMethod();
+                yield result;
+            }
+            default -> 0;
+        };
+    }
+    @Deprecated
+    private int deprecatedMethod() { return 42; }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Yield with try-catch block - no violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Test {
+    public int test(int value) {
+        return switch (value) {
+            case 1 -> {
+                int result;
+                try {
+                    result = riskyOperation();
+                } catch (Exception e) {
+                    result = -1;
+                }
+                yield result;
+            }
+            default -> 0;
+        };
+    }
+    private int riskyOperation() throws Exception { return 42; }
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Yield with multiple statements before - violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public int test(int value) {
+        return switch (value) {
+            case 1 -> {
+                log("processing case 1");
+                validate(value);
+                int result = 42;  // unnecessary
+                yield result;
+            }
+            default -> 0;
+        };
+    }
+    private void log(String msg) {}
+    private void validate(int x) {}
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Yield in nested switch expression</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public int test(int value, int subValue) {
+        return switch (value) {
+            case 1 -> switch (subValue) {
+                case 1 -> {
+                    int result = 100;  // unnecessary
+                    yield result;
+                }
+                default -> 0;
+            };
+            default -> 0;
+        };
+    }
+}
+    ]]></code>
+    </test-code>
+</test-data>
