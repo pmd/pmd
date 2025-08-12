@@ -11,17 +11,17 @@ import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRul
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.definitely;
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.necessaryIf;
 
+import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -48,6 +48,7 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
                                  + "For example, in `(a == null) == (b == null)`, only the second pair "
                                  + "of parentheses is necessary, but the expression is clearer that way.")
                        .build();
+    private static final int MAX_SNIPPET_LENGTH = 50;
 
     public UselessParenthesesRule() {
         super(ASTExpression.class);
@@ -87,38 +88,22 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
             if (e.getParenthesisDepth() > 1) {
                 asCtx(data).addViolationWithMessage(e, "Duplicate parentheses.");
             } else {
-                String description = getNodeDescription(e);
-                if (description != null) {
-                    asCtx(data).addViolationWithMessage(e, "Useless parentheses around {0}.",
-                        description);
+                TextRegion textRegion = e.getTextRegion().growLeft(-1).growRight(-1);
+                Chars nodeContent = e.getTextDocument().sliceOriginalText(textRegion).trim();
+                String snippet;
+                String dots = "...";
+                if (nodeContent.length() > MAX_SNIPPET_LENGTH) {
+                    snippet = nodeContent.slice(0, MAX_SNIPPET_LENGTH - dots.length())
+                            .toString() + dots;
                 } else {
-                    asCtx(data).addViolation(e);
+                    snippet = nodeContent.toString();
                 }
+                asCtx(data).addViolationWithMessage(e, "Useless parentheses around `{0}`.",
+                        snippet);
+
             }
         }
 
-    }
-
-    private String getNodeDescription(ASTExpression e) {
-        final String desc;
-        if (e instanceof ASTInfixExpression) {
-            desc = ((ASTInfixExpression) e).getOperator().getToken();
-        } else if (e instanceof ASTUnaryExpression) {
-            desc = ((ASTUnaryExpression) e).getOperator().getToken();
-        } else if (e instanceof ASTLiteral) {
-            desc = ((ASTLiteral) e).getLiteralText().toString();
-        } else if (e instanceof ASTVariableAccess) {
-            desc = ((ASTVariableAccess) e).getName();
-        } else if (e instanceof ASTPrimaryExpression) {
-            desc = "primary expression";
-        } else if (e instanceof ASTAssignmentExpression) {
-            desc = "assignment expression";
-        } else if (e instanceof ASTConditionalExpression) {
-            desc = "conditional expression";
-        } else {
-            desc = null;
-        }
-        return desc;
     }
 
     public static Necessity needsParentheses(ASTExpression inner, JavaNode outer) {

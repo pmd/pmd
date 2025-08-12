@@ -665,16 +665,17 @@ public class Test {
     </test-code>
     <test-code>
         <description>Detailed message</description>
-        <expected-problems>8</expected-problems>
+        <expected-problems>9</expected-problems>
         <expected-messages>
-            <message>Useless parentheses around *.</message>
-            <message>Useless parentheses around 4.</message>
-            <message>Useless parentheses around conditional expression.</message>
-            <message>Useless parentheses around k3.</message>
-            <message>Useless parentheses around primary expression.</message>
-            <message>Useless parentheses around ++.</message>
-            <message>Useless parentheses around assignment expression.</message>
+            <message>Useless parentheses around `3 * 3`.</message>
+            <message>Useless parentheses around `4`.</message>
+            <message>Useless parentheses around `true ? 4 : 2`.</message>
+            <message>Useless parentheses around `k3`.</message>
+            <message>Useless parentheses around `id(k3)`.</message>
+            <message>Useless parentheses around `k5++`.</message>
+            <message>Useless parentheses around `k2 = 2`.</message>
             <message>Duplicate parentheses.</message>
+            <message>Useless parentheses around `"very" + "long            " + "concat     split...`.</message>
         </expected-messages>
         <code><![CDATA[
             class Parentheses {
@@ -692,6 +693,7 @@ public class Test {
                     int k6 = (k5++);
                     int k7 = (k1 = (k2 = 2)) + 1;
                     int k8 = ((1 + 2));
+                    int k9 =  (  "very" + "long            " + "concat     splitHere");
                 }
             }
         ]]></code>
