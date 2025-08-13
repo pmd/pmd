@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
-import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -19,6 +18,7 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
