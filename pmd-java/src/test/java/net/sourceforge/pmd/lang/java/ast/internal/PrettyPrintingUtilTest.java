@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -80,6 +81,8 @@ class PrettyPrintingUtilTest extends BaseParserTest {
     @Test
     void ppUnary() {
         testPrettyPrintIdentity("-+4", ASTUnaryExpression.class);
+        testPrettyPrintIdentity("j++", ASTUnaryExpression.class);
+        testPrettyPrintIdentity("++j", ASTUnaryExpression.class);
     }
 
 
@@ -109,6 +112,15 @@ class PrettyPrintingUtilTest extends BaseParserTest {
     void ppLambdaBlock() {
         testPrettyPrint("(a, b) -> {return new Foo(); }", ASTLambdaExpression.class,
             "(a, b) -> { ... }");
+    }
+
+    @Test
+    void ppArrayAllocation() {
+        testPrettyPrintIdentity("new int[1]", ASTArrayAllocation.class);
+        testPrettyPrintIdentity("new int[1][2]", ASTArrayAllocation.class);
+        testPrettyPrint("new List<String>[]{}", ASTArrayAllocation.class, "new List<String>[]{}");
+        testPrettyPrint("new int[]{1}", ASTArrayAllocation.class, "new int[]{ ... }");
+        testPrettyPrint("new int[][]{{4}}", ASTArrayAllocation.class, "new int[][]{ ... }");
     }
 
     private <T extends ASTExpression> void testPrettyPrint(String expr, Class<T> nodeTy, String expected) {

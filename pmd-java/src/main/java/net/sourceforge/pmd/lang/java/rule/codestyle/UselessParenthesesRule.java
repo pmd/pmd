@@ -11,8 +11,6 @@ import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRul
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.definitely;
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.necessaryIf;
 
-import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
@@ -24,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -88,18 +87,13 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
             if (e.getParenthesisDepth() > 1) {
                 asCtx(data).addViolationWithMessage(e, "Duplicate parentheses.");
             } else {
-                TextRegion textRegion = e.getTextRegion().growLeft(-1).growRight(-1);
-                Chars nodeContent = e.getTextDocument().sliceOriginalText(textRegion).trim();
-                String snippet;
+                CharSequence snippet = PrettyPrintingUtil.prettyPrint(e);
                 String dots = "...";
-                if (nodeContent.length() > MAX_SNIPPET_LENGTH) {
-                    snippet = nodeContent.slice(0, MAX_SNIPPET_LENGTH - dots.length())
-                            .toString() + dots;
-                } else {
-                    snippet = nodeContent.toString();
+                if (snippet.length() > MAX_SNIPPET_LENGTH) {
+                    snippet = snippet.subSequence(0, MAX_SNIPPET_LENGTH - dots.length()) + dots;
                 }
                 asCtx(data).addViolationWithMessage(e, "Useless parentheses around `{0}`.",
-                        snippet);
+                    snippet);
 
             }
         }
