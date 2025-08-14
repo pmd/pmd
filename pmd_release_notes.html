@@ -2079,6 +2079,11 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
       <li><a href="https://github.com/pmd/pmd/issues/5650">#5650</a>: [apex] New Rule: AnnotationsNamingConventions</li>
     </ul>
   </li>
+  <li>core
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4721">#4721</a>: chore: [core] Enable XML rule MissingEncoding in dogfood ruleset</li>
+    </ul>
+  </li>
   <li>java
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5874">#5874</a>: [java] Update java regression tests with Java 25 language features</li>
@@ -2115,6 +2120,16 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
+<h4 id="deprecations">Deprecations</h4>
+<ul>
+  <li>test
+    <ul>
+      <li>The method <a href="https://docs.pmd-code.org/apidocs/pmd-test/7.17.0-SNAPSHOT/net/sourceforge/pmd/test/lang/rule/AbstractRuleSetFactoryTest.html#hasCorrectEncoding(java.lang.String)"><code>AbstractRuleSetFactoryTest#hasCorrectEncoding</code></a> will be removed.
+PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><code class="language-plaintext highlighter-rouge">MissingEncoding</code></a> for XML files that should be used instead.</li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
@@ -2129,6 +2144,8 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
   <li><a href="https://github.com/pmd/pmd/pull/5934">#5934</a>: Fix #2186: [java] New Rule: RelianceOnDefaultCharset - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5938">#5938</a>: [doc] Update suppression docs to reflect PMD 7 changes - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5939">#5939</a>: Fix #5198: [java] CheckResultSet FP when local variable is checked - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5954">#5954</a>: Fix #4721: [core] Enable XML rule MissingEncoding in dogfood ruleset - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5955">#5955</a>: chore: Fix LiteralsFirstInComparison violations in test code - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5957">#5957</a>: Fix #3401: [java] Improve message/description/examples for AvoidUsingOctalValues - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5959">#5959</a>: Fix #5960: [java] AddEmptyString: Improve report location - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5961">#5961</a>: Fix #5960: [java] Add details to the error message for some rules - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
