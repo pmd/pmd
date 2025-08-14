@@ -104,6 +104,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5938](https://github.com/pmd/pmd/pull/5938): \[doc] Update suppression docs to reflect PMD 7 changes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5939](https://github.com/pmd/pmd/pull/5939): Fix #5198: \[java] CheckResultSet FP when local variable is checked - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5954](https://github.com/pmd/pmd/pull/5954): Fix #4721: \[core] Enable XML rule MissingEncoding in dogfood ruleset - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5955](https://github.com/pmd/pmd/pull/5955): chore: Fix LiteralsFirstInComparison violations in test code - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5957](https://github.com/pmd/pmd/pull/5957): Fix #3401: \[java] Improve message/description/examples for AvoidUsingOctalValues - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5959](https://github.com/pmd/pmd/pull/5959): Fix #5960: \[java] AddEmptyString: Improve report location - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5961](https://github.com/pmd/pmd/pull/5961): Fix #5960: \[java] Add details to the error message for some rules - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
