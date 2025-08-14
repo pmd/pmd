@@ -96,12 +96,9 @@ public class RelianceOnDefaultCharsetRule extends AbstractJavaRulechainRule {
             InvocationMatcher matcher = entry.getKey();
             String minVersion = entry.getValue();
             
-            if (matcher.matchesCall(node)) {
-                // Only flag violation if replacement method is available in current Java version
-                if (node.getLanguageVersion().compareToVersion(minVersion) >= 0) {
-                    asCtx(data).addViolation(node);
-                }
-                return;
+            // Only flag violation if replacement method is available in current Java version
+            if (node.getLanguageVersion().compareToVersion(minVersion) >= 0 && matcher.matchesCall(node)) {
+                asCtx(data).addViolation(node);
             }
         }
     }
