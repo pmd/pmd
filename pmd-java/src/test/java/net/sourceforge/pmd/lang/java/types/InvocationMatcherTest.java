@@ -94,4 +94,44 @@ class InvocationMatcherTest extends BaseParserTest {
         assertFalse(parse(s).matchesCall(call), s + " should not match " + call);
     }
 
+    @Test
+    void testEquals() {
+        InvocationMatcher matcher1 = parse("java.lang.String#toString()");
+        InvocationMatcher matcher2 = parse("java.lang.String#toString()");
+        InvocationMatcher matcher3 = parse("java.lang.Object#toString()");
+        InvocationMatcher matcher4 = parse("java.lang.String#valueOf(int)");
+        InvocationMatcher matcher5 = parse("_#toString()");
+
+        assertTrue(matcher1.equals(matcher2));
+        assertTrue(matcher2.equals(matcher1));
+        assertTrue(matcher1.equals(matcher1));
+
+        assertFalse(matcher1.equals(null));
+        assertFalse(matcher1.equals("not a matcher"));  // NOPMD
+        assertFalse(matcher1.equals(matcher3));
+        assertFalse(matcher1.equals(matcher4));
+        assertFalse(matcher1.equals(matcher5));
+
+        InvocationMatcher anyArgsMatch1 = parse("java.lang.String#toString(_*)");
+        InvocationMatcher anyArgsMatch2 = parse("java.lang.String#toString(_*)");
+        InvocationMatcher emptyArgsMatch = parse("java.lang.String#toString()");
+
+        assertTrue(anyArgsMatch1.equals(anyArgsMatch2));
+        assertFalse(anyArgsMatch1.equals(emptyArgsMatch));
+
+        InvocationMatcher wildcardMethod1 = parse("java.lang.String#_(int)");
+        InvocationMatcher wildcardMethod2 = parse("java.lang.String#_(int)");
+        InvocationMatcher namedMethod = parse("java.lang.String#valueOf(int)");
+
+        assertTrue(wildcardMethod1.equals(wildcardMethod2));
+        assertFalse(wildcardMethod1.equals(namedMethod));
+    }
+
+    @Test
+    void testHashCode() {
+        InvocationMatcher matcher1 = parse("java.lang.String#toString()");
+        InvocationMatcher matcher2 = parse("java.lang.String#toString()");
+
+        assertThat(matcher1.hashCode(), equalTo(matcher2.hashCode()));
+    }
 }
