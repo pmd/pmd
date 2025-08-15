@@ -1504,7 +1504,7 @@ Fields, local variables, enum constant names or parameter names that are very sh
  (: Lambda expression parameter :)
  [not(parent::LambdaParameter)]
  (: Exclude Unnamed Variables (JEP 456) :)
- [not(@Name='_')]
+ [@Unnamed = false()]
 ]]>
                 </value>
             </property>
