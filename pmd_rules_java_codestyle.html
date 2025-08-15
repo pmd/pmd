@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, NoPackage, UseUnderscoresInNumericLiterals, TypeParameterNamingConventions, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer">
+<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, NoPackage, UseUnderscoresInNumericLiterals, TypeParameterNamingConventions, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, VariableCanBeInlined">
 <title>Code Style | PMD Source Code Analyzer</title>
 
 
@@ -4088,7 +4088,7 @@ can reorder code.</p>
  </span><span class="c">(: Lambda expression parameter :)</span><span class="w">
  </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">LambdaParameter</span><span class="p">)]</span><span class="w">
  </span><span class="c">(: Exclude Unnamed Variables (JEP 456) :)</span><span class="w">
- </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'_'</span><span class="p">)]</span><span class="w">
+ </span><span class="p">[</span><span class="na">@Unnamed</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -4591,11 +4591,16 @@ as used even if they’re not to avoid false positives.</p>
 
 <h2 id="unnecessarylocalbeforereturn">UnnecessaryLocalBeforeReturn</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 3.3</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid the creation of unnecessary local variables</p>
+<p>Avoid the creation of unnecessary local variables.</p>
+
+<p>This rule has been deprecated since 7.17.0. Use the new rule
+<a href="pmd_rules_java_codestyle.html#variablecanbeinlined"><code class="language-plaintext highlighter-rouge">VariableCanBeInlined</code></a> instead, which additionally covers throw statements.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/UnnecessaryLocalBeforeReturnRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule</a></p>
 
@@ -5082,6 +5087,81 @@ that are misplaced (not making groups of 3 digits) are reported.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="variablecanbeinlined">VariableCanBeInlined</h2>
+
+<p><strong>Since:</strong> PMD 7.17.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Local variables should not be declared and then immediately returned or thrown. Such
+variable declarations add unnecessary complexity and make the code harder to read.
+It is often simpler and cleaner to return or throw the value directly.</p>
+
+<p>This rule implements SonarSource rule <a href="https://sonarsource.github.io/rspec/#/rspec/S1488">S1488</a>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/VariableCanBeInlinedRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.VariableCanBeInlinedRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+                    <span class="nc">Object</span> <span class="nf">foo</span><span class="o">()</span> <span class="o">{</span>
+                        <span class="kt">var</span> <span class="n">foo</span> <span class="o">=</span> <span class="s">"foo"</span><span class="o">;</span>
+                        <span class="k">return</span> <span class="n">foo</span><span class="o">;</span>  <span class="c1">// instead, just 'return "foo";'</span>
+                    <span class="o">}</span>
+
+                    <span class="nc">Object</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span>
+                        <span class="kt">var</span> <span class="n">ex</span> <span class="o">=</span> <span class="n">getIllegalArgumentException</span><span class="o">();</span>
+                        <span class="k">throw</span> <span class="n">ex</span><span class="o">;</span> <span class="c1">// instead, just 'throw getIllegalArgumentException();'</span>
+                    <span class="o">}</span>
+
+                    <span class="nc">Object</span> <span class="nf">baz</span><span class="o">()</span> <span class="o">{</span>
+                        <span class="kt">var</span> <span class="n">baz</span> <span class="o">=</span> <span class="k">switch</span> <span class="o">(</span><span class="n">foo</span><span class="o">())</span> <span class="o">{</span>
+                            <span class="k">case</span> <span class="s">"foo"</span> <span class="o">-&gt;</span> <span class="o">{</span>
+                                <span class="kt">var</span> <span class="n">foo</span> <span class="o">=</span> <span class="n">foo</span><span class="o">();</span>
+                                <span class="n">yield</span> <span class="n">foo</span><span class="o">;</span>  <span class="c1">// Can be simplified to 'yield foo();'</span>
+                            <span class="o">}</span>
+                            <span class="k">case</span> <span class="s">"bar"</span> <span class="o">-&gt;</span> <span class="o">{</span>
+                                <span class="kt">var</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">bar</span><span class="o">();</span>
+                                <span class="n">yield</span> <span class="n">bar</span><span class="o">;</span>  <span class="c1">// Can be simplified to 'yield bar();'</span>
+                            <span class="o">}</span>
+                            <span class="k">default</span> <span class="o">-&gt;</span> <span class="n">bar</span><span class="o">(</span><span class="s">"baz"</span><span class="o">);</span>
+                        <span class="o">};</span>
+                        <span class="k">return</span> <span class="n">baz</span><span class="o">;</span> <span class="c1">// instead, just 'return switch (foo()) {...'</span>
+                    <span class="o">}</span>
+                <span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>statementOrderMatters</td>
+      <td>true</td>
+      <td>If set to false this rule no longer requires the variable declaration and return/throw statement to be on consecutive lines. Any variable that is used solely in a return/throw statement will be reported.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/VariableCanBeInlined"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/VariableCanBeInlined"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"statementOrderMatters"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
 
 
     <div class="tags">
@@ -5111,7 +5191,7 @@ that are misplaced (not making groups of 3 digits) are reported.</p>
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 14, 2025 <br />
+             Site last generated: Aug 15, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

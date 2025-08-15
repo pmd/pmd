@@ -2170,6 +2170,15 @@
 "url": "pmd_rules_java_codestyle.html#useshortarrayinitializer",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
+,
+
+{
+"title": "VariableCanBeInlined (Java, Code Style)",
+"tags": "",
+"keywords": "VariableCanBeInlined",
+"url": "pmd_rules_java_codestyle.html#variablecanbeinlined",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
 
 
 

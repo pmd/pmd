@@ -2060,6 +2060,11 @@ The rule is referenced in the quickstart.xml ruleset for Java.</li>
   <li>The new java rule <a href="pmd_rules_java_bestpractices.html#relianceondefaultcharset"><code class="language-plaintext highlighter-rouge">RelianceOnDefaultCharset</code></a> finds method calls that
 depend on the JVM’s default charset. Using these method without specifying the charset explicitly
 can lead to unexpected behavior on different platforms.</li>
+  <li>Thew new java rule <a href="pmd_rules_java_codestyle.html#variablecanbeinlined"><code class="language-plaintext highlighter-rouge">VariableCanBeInlined</code></a> finds local variables that are
+immediately returned or thrown. This rule replaces the old rule <a href="pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn"><code class="language-plaintext highlighter-rouge">UnnecessaryLocalBeforeReturn</code></a>
+which only considered return statements. The new rule also finds unnecessary local variables
+before throw statements.<br />
+The rule is referenced in the quickstart.xml ruleset for Java.</li>
 </ul>
 
 <h4 id="deprecated-rules">Deprecated Rules</h4>
@@ -2070,6 +2075,8 @@ of the new rule <a href="pmd_rules_java_codestyle.html#typeparameternamingconven
 in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a>.</li>
   <li>The java rule <a href="pmd_rules_java_errorprone.html#uselessoperationonimmutable"><code class="language-plaintext highlighter-rouge">UselessOperationOnImmutable</code></a> has been deprecated for removal
 in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremethodcall"><code class="language-plaintext highlighter-rouge">UselessPureMethodCall</code></a>.</li>
+  <li>The java rule <a href="pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn"><code class="language-plaintext highlighter-rouge">UnnecessaryLocalBeforeReturn</code></a> has been deprecated for removal
+in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinlined"><code class="language-plaintext highlighter-rouge">VariableCanBeInlined</code></a>.</li>
 </ul>
 
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
@@ -2100,6 +2107,7 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/972">#972</a>: [java] Improve naming conventions rules</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5770">#5770</a>: [java] New Rule: VariableCanBeInlined: Local variables should not be declared and then immediately returned or thrown</li>
       <li><a href="https://github.com/pmd/pmd/issues/5948">#5948</a>: [java] UnnecessaryBoxing false positive when calling <code class="language-plaintext highlighter-rouge">List.remove(int)</code></li>
     </ul>
   </li>
@@ -2111,6 +2119,7 @@ in favor of the new rule <a href="pmd_rules_java_errorprone.html#uselesspuremeth
   <li>java-errorprone
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/3401">#3401</a>: [java] Improve AvoidUsingOctalValues documentation</li>
+      <li><a href="https://github.com/pmd/pmd/issues/3434">#3434</a>: [java] False negatives in AssignmentInOperand Rule</li>
       <li><a href="https://github.com/pmd/pmd/issues/5837">#5837</a>: [java] New Rule OverrideBothEqualsAndHashCodeOnComparable</li>
       <li><a href="https://github.com/pmd/pmd/issues/5881">#5881</a>: [java] AvoidLosingExceptionInformation does not trigger when inside if-else</li>
       <li><a href="https://github.com/pmd/pmd/issues/5915">#5915</a>: [java] AssignmentInOperand not raised when inside do-while loop</li>
@@ -2134,6 +2143,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
   <li><a href="https://github.com/pmd/pmd/pull/5822">#5822</a>: Fix #5650: [apex] New Rule: AnnotationsNamingConventions - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5847">#5847</a>: Fix #5770: [java] New Rule: VariableCanBeInlined - <a href="https://github.com/Pankraz76">Vincent Potucek</a> (@Pankraz76)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5856">#5856</a>: Fix #5837: [java] New Rule OverrideBothEqualsAndHashCodeOnComparable - <a href="https://github.com/Pankraz76">Vincent Potucek</a> (@Pankraz76)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5907">#5907</a>: [java] New rule: UselessPureMethodCall - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5922">#5922</a>: Fix #972: [java] Add a new rule TypeParameterNamingConventions - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
@@ -2153,6 +2163,8 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
   <li><a href="https://github.com/pmd/pmd/pull/5967">#5967</a>: [doc][java] ReplaceJavaUtilDate - improve doc to mention java.sql.Date - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5970">#5970</a>: chore: CI improvements - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5971">#5971</a>: Fix #5948: [java] UnnecessaryBoxingRule: Check if unboxing is required for overload resolution - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5972">#5972</a>: Fix #3434: [java] False negatives in AssignmentInOperand rule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5989">#5989</a>: [java] Improve performance of RelianceOnDefaultCharset - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
 </ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
@@ -2190,7 +2202,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 14, 2025 <br />
+             Site last generated: Aug 15, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
