@@ -12,10 +12,10 @@ public class StringTrimMethodArgument {
     public void bar() {
         String bar = "foo";
         System.out.println(bar.trim().isEmpty()); // violation missing
-        System.out.println(bar.trim().length() == 0);
+        System.out.println(bar.trim().isEmpty());
         System.out.println(get().trim().isEmpty());
-        System.out.println(get().trim().length() == 0);
+        System.out.println(get().trim().isEmpty());
         System.out.println(this.get().trim().isEmpty());
-        System.out.println(this.get().trim().length() == 0);
+        System.out.println(this.get().trim().isEmpty());
     }
 }

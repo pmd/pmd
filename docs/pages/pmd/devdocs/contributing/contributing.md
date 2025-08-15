@@ -81,6 +81,20 @@ There are various channels, on which you can ask questions:
 
 *   Ask your question our [PMD Guru at Gurubase](https://gurubase.io/g/pmd).
 
+## 🚀 Code Transformation & Automated Rewriting
+*(Advanced Refactoring, Modernization, and Bulk Code Changes)*
+
+#### 🔧 Automated rewriting of source code to
+- **Refactor** safely (e.g., rename methods, migrate APIs)
+- **Modernize** (e.g., Java 8 → Java 17 features)
+- **Patterns** (e.g., replace `Vector` with `ArrayList`)
+- **Enforce conventions** (e.g., JUnit's naming rules)
+
+The build system incorporates [OpenRewrite](https://docs.openrewrite.org/) capabilities for automated code transformations.
+
+- Check for compliance with `mvn rewrite:dryRun`.
+- Apply suggestions with `mvn rewrite:run`.
+
 ## Code Style
 
 PMD uses [Checkstyle](https://checkstyle.org/) to enforce a common code style.
@@ -88,6 +102,8 @@ PMD uses [Checkstyle](https://checkstyle.org/) to enforce a common code style.
 See [pmd-checkstyle-config.xml](https://github.com/pmd/build-tools/blob/main/src/main/resources/net/sourceforge/pmd/pmd-checkstyle-config.xml) for the configuration and
 [the eclipse configuration files](https://github.com/pmd/build-tools/tree/main/eclipse) that can
 be imported into a fresh workspace.
+
+Rewrite will automatically apply all rules, by using the CodeCleanup recipe like in this [showcase](https://docs.openrewrite.org/running-recipes/popular-recipe-guides/automatically-fix-checkstyle-violations). 
 
 ## Add yourself as contributor
 

@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.metrics;
 
 import java.util.DoubleSummaryStatistics;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -65,8 +64,7 @@ public final class MetricsUtil {
         Objects.requireNonNull(ops, NULL_NODE_MESSAGE);
 
         return StreamSupport.stream(ops.spliterator(), false)
-                            .filter(key::supports)
-                            .collect(Collectors.summarizingDouble(op -> computeMetric(key, op, options).doubleValue()));
+                .filter(key::supports).mapToDouble(op -> computeMetric(key, op, options).doubleValue()).summaryStatistics();
     }
 
     /**
