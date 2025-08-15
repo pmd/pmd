@@ -122,23 +122,12 @@ public class Foo {
           language="java"
           since="3.8"
           message="A catch statement that catches an exception only to rethrow it should be avoided."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.AvoidRethrowingExceptionRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidrethrowingexception">
         <description>
 Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//CatchClause[
-  CatchParameter/VariableId/@Name
-= Block[@Size = 1]/ThrowStatement/VariableAccess/@Name]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public void bar() {
