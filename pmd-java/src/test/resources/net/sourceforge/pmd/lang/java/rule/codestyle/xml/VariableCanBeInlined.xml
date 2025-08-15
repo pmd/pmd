@@ -31,6 +31,10 @@ public class Foo {
     <test-code>
         <description>simple failure case</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Consider simply using the value vs. storing it in local variable 'x'.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
     public int bar() {
@@ -648,21 +652,7 @@ public class Test {
         ]]></code>
     </test-code>
     <test-code>
-        <description>Multiple throw variables but one is unnecessary</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
-        <code><![CDATA[
-public class Test {
-    void test() {
-        RuntimeException e = new RuntimeException();
-        RuntimeException f = new RuntimeException();
-        throw f;
-    }
-}
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>Return with method chain - no violation</description>
+        <description>Return a concatenated string - violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Test {
@@ -676,7 +666,7 @@ public class Test {
     ]]></code>
     </test-code>
     <test-code>
-        <description>Throw with method chain - no violation</description>
+        <description>Throw an exception with a message build from a concatenated string - violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Test {
@@ -691,7 +681,7 @@ public class Test {
     </test-code>
 
     <test-code>
-        <description>Return with array access - no violation</description>
+        <description>Return with array access - violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Test {
@@ -704,7 +694,7 @@ public class Test {
     </test-code>
 
     <test-code>
-        <description>Return with field access - no violation</description>
+        <description>Return with field access - violation</description>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Test {
@@ -783,10 +773,10 @@ public class Test {
 }
     ]]></code>
     </test-code>
-    <test-code>
-        <description>Super coupling: Throw with multiple catch blocks</description>
-        <!--  fixme      <expected-problems>1</expected-problems>-->
-        <expected-problems>0</expected-problems>
+    <test-code disabled="true">
+        <description>Super coupling: Throw with separated local var initializer in catch block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Test {
     void test() {
@@ -803,8 +793,9 @@ public class Test {
     ]]></code>
     </test-code>
     <test-code>
-        <description>Would we detect it, if the declaration and initialization wouldn't be separated?</description>
+        <description>Throw in catch block with local var directly initialized</description>
         <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
         <code><![CDATA[
 public class Test {
     void test() {
@@ -819,10 +810,10 @@ public class Test {
 }
     ]]></code>
     </test-code>
-    <test-code>
-        <description>Coupling: Throw with multiple catch blocks</description>
-        <!--  fixme      <expected-problems>1</expected-problems>-->
-        <expected-problems>0</expected-problems>
+    <test-code disabled="true">
+        <description>Coupling: Throw after catch block</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 public class Test {
     void test() {

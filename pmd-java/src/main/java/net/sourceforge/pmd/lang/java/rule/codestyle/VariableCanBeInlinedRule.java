@@ -18,6 +18,9 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
+/**
+ * @since 7.17.0
+ */
 public class VariableCanBeInlinedRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters")

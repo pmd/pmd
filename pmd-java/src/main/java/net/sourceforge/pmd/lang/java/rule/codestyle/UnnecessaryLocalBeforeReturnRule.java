@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
- * @deprecated Since 7.17.0. This rule is replaced by VariableCanBeInlined.
+ * @deprecated Since 7.17.0. This rule is replaced by {@link VariableCanBeInlinedRule}.
  */
 @Deprecated
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule {
