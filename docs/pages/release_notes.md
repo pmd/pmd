@@ -51,7 +51,11 @@ This is a {{ site.pmd.release_type }} release.
 * The new java rule {% rule java/bestpractices/RelianceOnDefaultCharset %} finds method calls that
   depend on the JVM's default charset. Using these method without specifying the charset explicitly
   can lead to unexpected behavior on different platforms.
-* [#5770](https://github.com/pmd/pmd/issues/5770): \[java] `VariableCanBeInlined`
+* Thew new java rule {% rule java/codestyle/VariableCanBeInlined %} finds local variables that are
+  immediately returned or thrown. This rule replaces the old rule {% rule java/codestyle/UnnecessaryLocalBeforeReturn %}
+  which only considered return statements. The new rule also finds unnecessary local variables
+  before throw statements.  
+  The rule is referenced in the quickstart.xml ruleset for Java.
 
 #### Deprecated Rules
 * The java rule {% rule java/codestyle/GenericsNaming %} has been deprecated for removal in favor
@@ -60,6 +64,8 @@ This is a {{ site.pmd.release_type }} release.
   in favor of the new rule {% rule java/errorprone/UselessPureMethodCall %}.
 * The java rule {% rule java/errorprone/UselessOperationOnImmutable %} has been deprecated for removal
   in favor of the new rule {% rule java/errorprone/UselessPureMethodCall %}.
+* The java rule {% rule java/codestyle/UnnecessaryLocalBeforeReturn %} has been deprecated for removal
+  in favor of the new rule {% rule java/codestyle/VariableCanBeInlined %}.
 
 ### 🐛 Fixed Issues
 * apex-codestyle
@@ -71,6 +77,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#4500](https://github.com/pmd/pmd/issues/4500): \[java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed
 * java-codestyle
   * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
+  * [#5770](https://github.com/pmd/pmd/issues/5770): \[java] New Rule: VariableCanBeInlined: Local variables should not be declared and then immediately returned or thrown
 * java-design
   * [#5023](https://github.com/pmd/pmd/issues/5023): \[java] UseUtilityClass implementation hardcodes a message instead of using the one defined in the XML
 * java-errorprone
@@ -83,6 +90,7 @@ This is a {{ site.pmd.release_type }} release.
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#5822](https://github.com/pmd/pmd/pull/5822): Fix #5650: \[apex] New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
+* [#5847](https://github.com/pmd/pmd/pull/5847): Fix #5770: \[java] New Rule: VariableCanBeInlined - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5856](https://github.com/pmd/pmd/pull/5856): Fix #5837: \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5907](https://github.com/pmd/pmd/pull/5907): \[java] New rule: UselessPureMethodCall - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5922](https://github.com/pmd/pmd/pull/5922): Fix #972: \[java] Add a new rule TypeParameterNamingConventions - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
