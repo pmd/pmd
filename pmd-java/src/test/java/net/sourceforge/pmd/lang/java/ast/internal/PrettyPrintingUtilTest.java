@@ -18,6 +18,7 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
@@ -80,6 +81,8 @@ class PrettyPrintingUtilTest extends BaseParserTest {
     @Test
     void ppUnary() {
         testPrettyPrintIdentity("-+4", ASTUnaryExpression.class);
+        testPrettyPrintIdentity("j++", ASTUnaryExpression.class);
+        testPrettyPrintIdentity("++j", ASTUnaryExpression.class);
     }
 
 
@@ -109,6 +112,15 @@ class PrettyPrintingUtilTest extends BaseParserTest {
     void ppLambdaBlock() {
         testPrettyPrint("(a, b) -> {return new Foo(); }", ASTLambdaExpression.class,
             "(a, b) -> { ... }");
+    }
+
+    @Test
+    void ppArrayAllocation() {
+        testPrettyPrintIdentity("new int[1]", ASTArrayAllocation.class);
+        testPrettyPrintIdentity("new int[1][2]", ASTArrayAllocation.class);
+        testPrettyPrint("new List<String>[]{}", ASTArrayAllocation.class, "new List<String>[]{}");
+        testPrettyPrint("new int[]{1}", ASTArrayAllocation.class, "new int[]{ ... }");
+        testPrettyPrint("new int[][]{{4}}", ASTArrayAllocation.class, "new int[][]{ ... }");
     }
 
     private <T extends ASTExpression> void testPrettyPrint(String expr, Class<T> nodeTy, String expected) {
