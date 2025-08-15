@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
@@ -94,8 +95,12 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
             || parent instanceof ASTDoStatement && !getProperty(ALLOW_DO_WHILE_DESCRIPTOR)
             || parent instanceof ASTSwitchStatement && !getProperty(ALLOW_SWITCH_DESCRIPTOR)
             || parent instanceof ASTForStatement && ((ASTForStatement) parent).getCondition() == toplevel && !getProperty(ALLOW_FOR_DESCRIPTOR)) {
-
-            ctx.addViolation(impureExpr);
+            JavaNode firstChild = impureExpr.getChild(0);
+            if (firstChild instanceof ASTVariableAccess) {
+                ctx.addViolation(impureExpr, ((ASTVariableAccess) firstChild).getName());
+            } else {
+                ctx.addViolationWithMessage(impureExpr, "Avoid assignments in operands");
+            }
         }
     }
 

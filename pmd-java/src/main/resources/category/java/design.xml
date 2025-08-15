@@ -242,7 +242,7 @@ public class Foo {
     <rule name="AvoidThrowingRawExceptionTypes"
           language="java"
           since="1.8"
-          message="Avoid throwing raw exception types."
+          message="Avoid throwing raw exception type {0}."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingrawexceptiontypes">
         <description>
@@ -282,7 +282,7 @@ public class Foo {
     <rule name="AvoidUncheckedExceptionsInSignatures"
           since="6.13.0"
           language="java"
-          message="A method or constructor should not explicitly declare unchecked exceptions in its ''throws'' clause"
+          message="A method or constructor should not explicitly declare unchecked exception {0} in its ''throws'' clause"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures">
         <description>
@@ -716,7 +716,7 @@ public class Foo {
     <rule name="FinalFieldCouldBeStatic"
           language="java"
           since="1.1"
-          message="This final field could be made static"
+          message="The final field {0} could be made static"
           class="net.sourceforge.pmd.lang.java.rule.design.FinalFieldCouldBeStaticRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#finalfieldcouldbestatic">
         <description>

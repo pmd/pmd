@@ -247,4 +247,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Distinct error messages for the same line</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Avoid assignment to x in operand</message>
+            <message>Avoid assignment to y in operand</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 0;
+        int y = 0;
+        if (x++ > (y = 5)) {
+            x = 2;
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
