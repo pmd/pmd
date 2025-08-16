@@ -19,7 +19,7 @@ public class GCCall {
     </test-code>
 
     <test-code>
-        <description>Alernate Basic test case</description>
+        <description>Alternate Basic test case</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>4,9</expected-linenumbers>
         <code><![CDATA[

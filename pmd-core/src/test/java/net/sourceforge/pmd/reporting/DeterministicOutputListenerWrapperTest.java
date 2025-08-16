@@ -27,7 +27,7 @@ import net.sourceforge.pmd.renderers.AbstractIncrementingRenderer;
 
 class DeterministicOutputListenerWrapperTest {
 
-    // repeat the test several times to make sure it isn't suceeding by chance
+    // repeat the test several times to make sure it isn't succeeding by chance
     @RepeatedTest(10)
     void testDeterministicOutputListener() {
         PMDConfiguration config = new PMDConfiguration();

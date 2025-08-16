@@ -424,7 +424,7 @@ while (true) {  // preferred approach
           message="An empty method in an abstract class should be abstract instead"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract">
         <description>
-Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate
+Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inappropriate
 usage by developers who should be implementing their own versions in the concrete subclasses.
         </description>
         <priority>1</priority>
@@ -1861,7 +1861,7 @@ public interface Foo {
 }
 public class Bar {
     public static interface Baz {}  // static ignored
-    public static enum FoorBar {    // static ignored
+    public static enum FooBar {    // static ignored
         FOO;
     }
 }
@@ -2109,7 +2109,7 @@ public class Foo {
     }
 
     private class Foo2 {
-        final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
+        final Foo2 myFoo2 = Foo2.this;  // Use "this" directly
     }
 }
 ]]>

@@ -35,7 +35,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
 
 /**
- * Checks usages of explicity type arguments in a constructor call that
+ * Checks usages of explicit type arguments in a constructor call that
  * may be replaced by a diamond ({@code <>}). In order to determine this,
  * we mock a type resolution call site, which is equivalent to the expression
  * as if it had a diamond instead of explicit type arguments. We then perform
