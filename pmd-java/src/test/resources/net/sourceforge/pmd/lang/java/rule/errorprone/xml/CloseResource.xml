@@ -2085,4 +2085,26 @@ public class DefaultFileSystemUsage {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#5974: NPE with var in for-each loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this FileInputStream object are closed after use</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.util.List;
+
+public class Foo {
+    public void bar(List<FileInputStream> streams) {
+        for (final var stream: streams) {
+            try {
+                int c = stream.in();
+            } catch (IOException ignored) {}
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

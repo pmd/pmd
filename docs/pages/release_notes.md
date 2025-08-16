@@ -91,6 +91,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#5837](https://github.com/pmd/pmd/issues/5837): \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable
   * [#5881](https://github.com/pmd/pmd/issues/5881): \[java] AvoidLosingExceptionInformation does not trigger when inside if-else
   * [#5915](https://github.com/pmd/pmd/issues/5915): \[java] AssignmentInOperand not raised when inside do-while loop
+  * [#5974](https://github.com/pmd/pmd/issues/5974): \[java] CloseResourceRule: NullPointerException while analyzing
 
 ### 🚨 API Changes
 
@@ -123,6 +124,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5970](https://github.com/pmd/pmd/pull/5970): chore: CI improvements - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5971](https://github.com/pmd/pmd/pull/5971): Fix #5948: \[java] UnnecessaryBoxingRule: Check if unboxing is required for overload resolution - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5972](https://github.com/pmd/pmd/pull/5972): Fix #3434: \[java] False negatives in AssignmentInOperand rule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5979](https://github.com/pmd/pmd/pull/5979): Fix #5974: \[java] NPE in CloseResourceRule - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5989](https://github.com/pmd/pmd/pull/5989): \[java] Improve performance of RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates
