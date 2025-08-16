@@ -2187,7 +2187,7 @@ the volatile keyword should not be used for maintenance purpose and portability.
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ThrDeux</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Data</span> <span class="o">{</span>
   <span class="kd">private</span> <span class="kd">volatile</span> <span class="nc">String</span> <span class="n">var1</span><span class="o">;</span> <span class="c1">// not suggested</span>
   <span class="kd">private</span>          <span class="nc">String</span> <span class="n">var2</span><span class="o">;</span> <span class="c1">// preferred</span>
 <span class="o">}</span>
@@ -2337,7 +2337,7 @@ Other possible fixes are to synchronize the entire method or to use an
 <a href="https://en.wikipedia.org/wiki/Initialization-on-demand_holder_idiom">initialize-on-demand holder class</a>.</p>
 
 <p>Refrain from using the double-checked locking pattern. The Java Memory Model doesn’t
-guarantee it to work unless the variable is declared as <code class="language-plaintext highlighter-rouge">volatile</code>, adding an uneeded
+guarantee it to work unless the variable is declared as <code class="language-plaintext highlighter-rouge">volatile</code>, adding an unneeded
 performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/DoubleCheckedLocking.html">Reference</a></p>
 
 <p>See Effective Java, item 48.</p>

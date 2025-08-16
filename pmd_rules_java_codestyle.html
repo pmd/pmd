@@ -2727,7 +2727,7 @@ EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt
 
 <p><strong>Priority:</strong> High (1)</p>
 
-<p>Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate
+<p>Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inappropriate
 usage by developers who should be implementing their own versions in the concrete subclasses.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
@@ -4675,7 +4675,7 @@ For historical reasons, modifiers which are implied by the context are accepted 
 <span class="o">}</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Bar</span> <span class="o">{</span>
     <span class="kd">public</span> <span class="kd">static</span> <span class="kd">interface</span> <span class="nc">Baz</span> <span class="o">{}</span>  <span class="c1">// static ignored</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">enum</span> <span class="nc">FoorBar</span> <span class="o">{</span>    <span class="c1">// static ignored</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kd">enum</span> <span class="nc">FooBar</span> <span class="o">{</span>    <span class="c1">// static ignored</span>
         <span class="no">FOO</span><span class="o">;</span>
     <span class="o">}</span>
 <span class="o">}</span>
@@ -4978,7 +4978,7 @@ just more visually pleasing. Unset the property <code class="language-plaintext 
     <span class="o">}</span>
 
     <span class="kd">private</span> <span class="kd">class</span> <span class="nc">Foo2</span> <span class="o">{</span>
-        <span class="kd">final</span> <span class="nc">Foo2</span> <span class="n">myFoo2</span> <span class="o">=</span> <span class="nc">Foo2</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// Use "this" direclty</span>
+        <span class="kd">final</span> <span class="nc">Foo2</span> <span class="n">myFoo2</span> <span class="o">=</span> <span class="nc">Foo2</span><span class="o">.</span><span class="na">this</span><span class="o">;</span>  <span class="c1">// Use "this" directly</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
