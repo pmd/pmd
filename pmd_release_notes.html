@@ -2113,6 +2113,7 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
   </li>
   <li>java-design
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4911">#4911</a>: [java] AvoidRethrowingException should allow rethrowing exception subclasses</li>
       <li><a href="https://github.com/pmd/pmd/issues/5023">#5023</a>: [java] UseUtilityClass implementation hardcodes a message instead of using the one defined in the XML</li>
     </ul>
   </li>
@@ -2167,6 +2168,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
   <li><a href="https://github.com/pmd/pmd/pull/5972">#5972</a>: Fix #3434: [java] False negatives in AssignmentInOperand rule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5979">#5979</a>: Fix #5974: [java] NPE in CloseResourceRule - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5980">#5980</a>: chore: Fix typos - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5981">#5981</a>: Fix #4911: [java] AvoidRethrowingException consider supertypes in following catches - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5989">#5989</a>: [java] Improve performance of RelianceOnDefaultCharset - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
 </ul>
 
@@ -2205,7 +2207,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Aug 16, 2025 <br />
+             Site last generated: Aug 17, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
