@@ -15,7 +15,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotationTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayType;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassLiteral;
@@ -46,6 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReferenceType;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
@@ -263,6 +266,7 @@ public final class PrettyPrintingUtil {
     static class ExprPrinter extends JavaVisitorBase<StringBuilder, Void> {
 
         private static final int MAX_ARG_LENGTH = 20;
+        public static final String BLOCK_PLACEHOLDER = "{ ... }";
 
         @Override
         public Void visitJavaNode(JavaNode node, StringBuilder data) {
@@ -292,7 +296,7 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visitLiteral(ASTLiteral node, StringBuilder data) {
-            data.append(node.getText());
+            data.append(node.getLiteralText());
             return null;
         }
 
@@ -363,8 +367,14 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visit(ASTUnaryExpression node, StringBuilder sb) {
-            sb.append(node.getOperator());
+            boolean prefix = node.getOperator().isPrefix();
+            if (prefix) {
+                sb.append(node.getOperator());
+            }
             printWithParensIfNecessary(node.getOperand(), sb, node);
+            if (!prefix) {
+                sb.append(node.getOperator());
+            }
             return null;
         }
 
@@ -394,7 +404,7 @@ public final class PrettyPrintingUtil {
             if (exprBody != null) {
                 exprBody.acceptVisitor(this, sb);
             } else {
-                sb.append("{ ... }");
+                sb.append(BLOCK_PLACEHOLDER);
             }
             return null;
         }
@@ -466,6 +476,40 @@ public final class PrettyPrintingUtil {
             sb.append("::");
             ppTypeArgs(sb, node.getExplicitTypeArguments());
             sb.append(node.getMethodName());
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTAssignmentExpression node, StringBuilder sb) {
+            node.getLeftOperand().acceptVisitor(this, sb);
+            sb.append(" = ");
+            node.getRightOperand().acceptVisitor(this, sb);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTSwitchExpression node, StringBuilder sb) {
+            sb.append("switch (");
+            node.getFirstChild().acceptVisitor(this, sb);
+            sb.append(") ").append(BLOCK_PLACEHOLDER);
+            return null;
+        }
+
+        @Override
+        public Void visit(ASTArrayAllocation node, StringBuilder sb) {
+            sb.append("new ");
+            node.getTypeNode().getElementType().acceptVisitor(this, sb);
+            node.getTypeNode().getDimensions().children().forEach(child -> {
+                sb.append('[');
+                JavaNode firstChild = child.getFirstChild();
+                if (firstChild != null) {
+                    firstChild.acceptVisitor(this, sb);
+                }
+                sb.append(']');
+            });
+            if (node.getArrayInitializer() != null) {
+                sb.append(node.getArrayInitializer().length() == 0 ? "{}" : BLOCK_PLACEHOLDER);
+            }
             return null;
         }
 
