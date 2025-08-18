@@ -266,6 +266,7 @@ public final class PrettyPrintingUtil {
     static class ExprPrinter extends JavaVisitorBase<StringBuilder, Void> {
 
         private static final int MAX_ARG_LENGTH = 20;
+        public static final String BLOCK_PLACEHOLDER = "{ ... }";
 
         @Override
         public Void visitJavaNode(JavaNode node, StringBuilder data) {
@@ -295,7 +296,7 @@ public final class PrettyPrintingUtil {
 
         @Override
         public Void visitLiteral(ASTLiteral node, StringBuilder data) {
-            data.append(node.getText());
+            data.append(node.getLiteralText());
             return null;
         }
 
@@ -403,7 +404,7 @@ public final class PrettyPrintingUtil {
             if (exprBody != null) {
                 exprBody.acceptVisitor(this, sb);
             } else {
-                sb.append("{ ... }");
+                sb.append(BLOCK_PLACEHOLDER);
             }
             return null;
         }
@@ -490,7 +491,7 @@ public final class PrettyPrintingUtil {
         public Void visit(ASTSwitchExpression node, StringBuilder sb) {
             sb.append("switch (");
             node.getFirstChild().acceptVisitor(this, sb);
-            sb.append(") { ... }");
+            sb.append(") ").append(BLOCK_PLACEHOLDER);
             return null;
         }
 
@@ -507,7 +508,7 @@ public final class PrettyPrintingUtil {
                 sb.append(']');
             });
             if (node.getArrayInitializer() != null) {
-                sb.append(node.getArrayInitializer().length() == 0 ? "{}" : "{ ... }");
+                sb.append(node.getArrayInitializer().length() == 0 ? "{}" : BLOCK_PLACEHOLDER);
             }
             return null;
         }

@@ -665,16 +665,16 @@ public class Test {
     </test-code>
     <test-code>
         <description>Detailed message</description>
-        <expected-problems>12</expected-problems>
+        <expected-problems>11</expected-problems>
         <expected-messages>
             <message>Useless parentheses around `3 * 3`.</message>
-            <message>Useless parentheses around `(4)`.</message>
+            <message>Useless parentheses around `4`.</message>
             <message>Useless parentheses around `true ? 4 : 2`.</message>
             <message>Useless parentheses around `k3`.</message>
             <message>Useless parentheses around `id(k3)`.</message>
             <message>Useless parentheses around `k5++`.</message>
             <message>Useless parentheses around `k2 = 2`.</message>
-            <message>Duplicate parentheses.</message>
+            <message>Duplicate parentheses around `1 + 2`.</message>
             <message>Useless parentheses around `"very" + "long            " + "concat     split...`.</message>
             <message>Useless parentheses around `new int[5][7]`.</message>
             <message>Useless parentheses around `switch (k2 + k3) { ... }`.</message>

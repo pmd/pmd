@@ -84,20 +84,17 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
         if (necessity == NEVER
             || reportClarifying() && necessity == CLARIFYING
             || reportBalancing() && necessity == BALANCING) {
-            if (e.getParenthesisDepth() > 1) {
-                asCtx(data).addViolationWithMessage(e, "Duplicate parentheses.");
-            } else {
-                CharSequence snippet = PrettyPrintingUtil.prettyPrint(e);
-                String dots = "...";
-                if (snippet.length() > MAX_SNIPPET_LENGTH) {
-                    snippet = snippet.subSequence(0, MAX_SNIPPET_LENGTH - dots.length()) + dots;
-                }
-                asCtx(data).addViolationWithMessage(e, "Useless parentheses around `{0}`.",
-                    snippet);
-
+            String template = e.getParenthesisDepth() > 1 ? "Duplicate parentheses around `{0}`."
+                : "Useless parentheses around `{0}`.";
+            CharSequence snippet = PrettyPrintingUtil.prettyPrint(e);
+            String dots = "...";
+            if (snippet.length() > MAX_SNIPPET_LENGTH) {
+                snippet = snippet.subSequence(0, MAX_SNIPPET_LENGTH - dots.length()) + dots;
             }
-        }
+            asCtx(data).addViolationWithMessage(e, template,
+                snippet);
 
+        }
     }
 
     public static Necessity needsParentheses(ASTExpression inner, JavaNode outer) {
