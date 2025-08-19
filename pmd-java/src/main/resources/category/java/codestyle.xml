@@ -2008,12 +2008,14 @@ See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/pr
         <properties>
             <property name="allowLiterals" type="Boolean" value="false" description="Allow when variables are directly initialized with literals"/>
             <property name="allowCtors" type="Boolean" value="false" description="Allow when variables are directly initialized with a constructor call"/>
+            <property name="allowCasts" type="Boolean" value="false" description="Allow when variables are directly initialized with a the result of a cast"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
 //LocalVariableDeclaration[@TypeInferred = true()]
     [not(VariableDeclarator[*[pmd-java:nodeIs("Literal")]]) or $allowLiterals = false()]
     [not(VariableDeclarator[ConstructorCall]) or $allowCtors = false()]
+    [not(VariableDeclarator[CastExpression]) or $allowCasts = false()]
 ]]>
                 </value>
             </property>

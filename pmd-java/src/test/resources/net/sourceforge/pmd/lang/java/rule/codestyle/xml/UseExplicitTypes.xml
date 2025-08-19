@@ -14,7 +14,9 @@ public class Foo {
         String s2 = "a"; // no violation - explicit type
         var f = getFoo(); // line 8 - violation
         var f = new Foo(); // line 9 - violation - ctor call
-        Function<Integer, Integer> quadrat = (var x) -> x*x;
+        Function<Integer, Integer> square = (var x) -> x*x;
+
+        var f = (Integer)getFoo(); // line 12 - violation - cast
     }
 
     private String getFoo() {
@@ -25,24 +27,32 @@ public class Foo {
     
     <test-code>
         <description>No vars anywhere</description>
-        <expected-problems>4</expected-problems>
-        <expected-linenumbers>5,6,8,9</expected-linenumbers>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>5,6,8,9,12</expected-linenumbers>
         <code-ref id="basic-sample"/>
     </test-code>
 
     <test-code>
         <description>Allow literals</description>
         <rule-property name="allowLiterals">true</rule-property>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>8,9</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>8,9,12</expected-linenumbers>
         <code-ref id="basic-sample"/>
     </test-code>
 
     <test-code>
         <description>Allow constructor calls</description>
         <rule-property name="allowCtors">true</rule-property>
-        <expected-problems>3</expected-problems>
-        <expected-linenumbers>5,6,8</expected-linenumbers>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,8,12</expected-linenumbers>
+        <code-ref id="basic-sample"/>
+    </test-code>
+
+    <test-code>
+        <description>Allow casts</description>
+        <rule-property name="allowCasts">true</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>5,6,8,9</expected-linenumbers>
         <code-ref id="basic-sample"/>
     </test-code>
 </test-data>
