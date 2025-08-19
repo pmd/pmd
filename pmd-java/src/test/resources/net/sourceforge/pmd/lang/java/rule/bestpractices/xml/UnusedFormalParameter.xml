@@ -105,14 +105,23 @@ class Foo {
         ]]></code>
     </test-code>
 
-    <test-code>
-        <description>unused constructor param</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
+    <code-fragment id="public-constructor"><![CDATA[
 class Foo {
     public Foo(int s) {}
 }
-        ]]></code>
+        ]]></code-fragment>
+
+    <test-code>
+        <description>#4700 don't flag unused constructor param by default</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="public-constructor"/>
+    </test-code>
+
+    <test-code>
+        <description>#4700 flag unused constructor param if checkall property is set</description>
+        <rule-property name="checkAll">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="public-constructor"/>
     </test-code>
 
     <test-code>
@@ -145,7 +154,7 @@ class Foo {
         <code><![CDATA[
 class Foo {
     int type;
-    public Foo (int type, String[] s) {
+    private Foo (int type, String[] s) {
         this.type = type;
     }
 }
