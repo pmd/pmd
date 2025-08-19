@@ -2009,6 +2009,7 @@ See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/pr
             <property name="allowLiterals" type="Boolean" value="false" description="Allow when variables are directly initialized with literals"/>
             <property name="allowCtors" type="Boolean" value="false" description="Allow when variables are directly initialized with a constructor call"/>
             <property name="allowCasts" type="Boolean" value="false" description="Allow when variables are directly initialized with a the result of a cast"/>
+            <property name="allowLoopVariable" type="Boolean" value="false" description="Allow when variables are used as loop variables in enhanced for loops"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
@@ -2016,6 +2017,7 @@ See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/pr
     [not(VariableDeclarator[*[pmd-java:nodeIs("Literal")]]) or $allowLiterals = false()]
     [not(VariableDeclarator[ConstructorCall]) or $allowCtors = false()]
     [not(VariableDeclarator[CastExpression]) or $allowCasts = false()]
+    [not(parent::ForeachStatement) or $allowLoopVariable = false()]
 ]]>
                 </value>
             </property>
