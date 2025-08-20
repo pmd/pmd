@@ -16,11 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 /**
@@ -41,30 +39,14 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "csv";
 
-    enum CSVColumn {
-        END_LINE("endLine", "End Line", false),
-        BEGIN_COLUMN("beginColumn", "Begin Column", false),
-        END_COLUMN("endColumn", "End Column", false);
-
-        final String id;
-        final String title;
-        final boolean enabled;
-
-        CSVColumn(String id, String title, boolean enabled) {
-            this.id = id;
-            this.title = title;
-            this.enabled = enabled;
-        }
-    }
-
-    private static final Set<String> DEFAULT_OFF;
+    static final Map<String, ColumnDescriptor<RuleViolation>> DEFAULT_OFF;
 
     static {
-        HashSet<String> set = new HashSet<>();
-        set.add(CSVColumn.END_LINE.id);
-        set.add(CSVColumn.BEGIN_COLUMN.id);
-        set.add(CSVColumn.END_COLUMN.id);
-        DEFAULT_OFF = Collections.unmodifiableSet(set);
+        HashMap<String, ColumnDescriptor<RuleViolation>> m = new HashMap<>();
+        m.put("endLine", newColDescriptor("endLine", "End Line", (idx, rv, cr) -> Integer.toString(rv.getEndLine()), false));
+        m.put("beginColumn", newColDescriptor("beginColumn", "Begin Column", (idx, rv, cr) -> Integer.toString(rv.getBeginColumn()), false));
+        m.put("endColumn", newColDescriptor("endColumn", "End Column", (idx, rv, cr) -> Integer.toString(rv.getEndColumn()), false));
+        DEFAULT_OFF = Collections.unmodifiableMap(m);
     }
 
     @SuppressWarnings("unchecked")
@@ -74,9 +56,9 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
         newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
         newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
         newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
-        newColDescriptor(CSVColumn.END_LINE.id, CSVColumn.END_LINE.title, (idx, rv, cr) -> Integer.toString(rv.getEndLine()), CSVColumn.END_LINE.enabled),
-        newColDescriptor(CSVColumn.BEGIN_COLUMN.id, CSVColumn.BEGIN_COLUMN.title, (idx, rv, cr) -> Integer.toString(rv.getBeginColumn()), CSVColumn.BEGIN_COLUMN.enabled),
-        newColDescriptor(CSVColumn.END_COLUMN.id, CSVColumn.END_COLUMN.title, (idx, rv, cr) -> Integer.toString(rv.getEndColumn()), CSVColumn.END_COLUMN.enabled),
+        DEFAULT_OFF.get("endLine"),
+        DEFAULT_OFF.get("beginColumn"),
+        DEFAULT_OFF.get("endColumn"),
         newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
         newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
         newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
@@ -119,7 +101,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
             return prop;
         }
 
-        prop = PropertyFactory.booleanProperty(id).defaultValue(!DEFAULT_OFF.contains(id)).desc("Include " + label + " column").build();
+        prop = PropertyFactory.booleanProperty(id).defaultValue(!DEFAULT_OFF.containsKey(id)).desc("Include " + label + " column").build();
         PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
         return prop;
     }
