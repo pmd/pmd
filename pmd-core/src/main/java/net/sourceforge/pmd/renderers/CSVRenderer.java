@@ -41,36 +41,45 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "csv";
 
-    private static final String PROP_BEGIN_LINE = "beginLine";
-    private static final String PROP_END_LINE = "endLine";
-    private static final String PROP_BEGIN_COL = "beginCol";
-    private static final String PROP_END_COL = "endCol";
+    enum CSVColumn {
+        END_LINE("endLine", "End Line", false),
+        BEGIN_COLUMN("beginColumn", "Begin Column", false),
+        END_COLUMN("endColumn", "End Column", false);
+
+        final String id;
+        final String title;
+        final boolean enabled;
+
+        CSVColumn(String id, String title, boolean enabled) {
+            this.id = id;
+            this.title = title;
+            this.enabled = enabled;
+        }
+    }
 
     private static final Set<String> DEFAULT_OFF;
 
     static {
         HashSet<String> set = new HashSet<>();
-        set.add(PROP_BEGIN_LINE);
-        set.add(PROP_END_LINE);
-        set.add(PROP_BEGIN_COL);
-        set.add(PROP_END_COL);
+        set.add(CSVColumn.END_LINE.id);
+        set.add(CSVColumn.BEGIN_COLUMN.id);
+        set.add(CSVColumn.END_COLUMN.id);
         DEFAULT_OFF = Collections.unmodifiableSet(set);
     }
 
     @SuppressWarnings("unchecked")
-    private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
-        newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
-        newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
-        newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
-        newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
-        newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
-        newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
-        newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
-        newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
-        newColDescriptor(PROP_BEGIN_LINE, "Begin Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine()), false),
-        newColDescriptor(PROP_END_LINE, "End Line", (idx, rv, cr) -> Integer.toString(rv.getEndLine()), false),
-        newColDescriptor(PROP_BEGIN_COL, "Begin Column", (idx, rv, cr) -> Integer.toString(rv.getBeginColumn()), false),
-        newColDescriptor(PROP_END_COL, "End Column", (idx, rv, cr) -> Integer.toString(rv.getEndColumn()), false),
+    private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[]{
+            newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
+            newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
+            newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
+            newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
+            newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
+            newColDescriptor(CSVColumn.END_LINE.id, CSVColumn.END_LINE.title, (idx, rv, cr) -> Integer.toString(rv.getEndLine()), CSVColumn.END_LINE.enabled),
+            newColDescriptor(CSVColumn.BEGIN_COLUMN.id, CSVColumn.BEGIN_COLUMN.title, (idx, rv, cr) -> Integer.toString(rv.getBeginColumn()), CSVColumn.BEGIN_COLUMN.enabled),
+            newColDescriptor(CSVColumn.END_COLUMN.id, CSVColumn.END_COLUMN.title, (idx, rv, cr) -> Integer.toString(rv.getEndColumn()), CSVColumn.END_COLUMN.enabled),
+            newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
+            newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
+            newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
     };
 
     private static @NonNull ColumnDescriptor<RuleViolation> newColDescriptor(String id, String title, Accessor<RuleViolation> accessor) {

@@ -4,8 +4,15 @@
 
 package net.sourceforge.pmd.renderers;
 
+import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Report.ConfigurationError;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+
+import java.nio.charset.Charset;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CSVRendererTest extends AbstractRendererTest {
 
@@ -18,6 +25,18 @@ class CSVRendererTest extends AbstractRendererTest {
     String getExpected() {
         return getHeader()
                 + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + EOL;
+    }
+
+    @ParameterizedTest
+    @EnumSource(CSVRenderer.CSVColumn.class)
+    void withOptionalColumns(final CSVRenderer.CSVColumn col) throws Exception {
+        CSVRenderer renderer = new CSVRenderer();
+        renderer.setProperty((PropertyDescriptor<Boolean>) renderer.getPropertyDescriptor(col.id), true);
+        String actual = renderReport(renderer, reportOneViolation(), Charset.defaultCharset());
+
+        String expected = "\"Problem\",\"Package\",\"File\",\"Priority\",\"Line\",\"" + col.title + "\",\"Description\",\"Rule set\",\"Rule\"" + EOL
+                + "\"1\",\"\",\"" + getSourceCodeFilename() + "\",\"5\",\"1\",\"1\",\"blah\",\"RuleSet\",\"Foo\"" + EOL;
+        assertEquals(filter(expected), filter(actual));
     }
 
     @Override
