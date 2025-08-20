@@ -78,6 +78,9 @@ columns, use these CLI parameters additionally: `-property problem=false -proper
 *   file: Include file column. Default: true.
 *   priority: Include priority column. Default: true.
 *   line: Include line column. Default: true.
+*   endLine: Include end line column. Default: false.
+*   beginColumn: Include begin column. Default: false.
+*   endColumn: Include end column. Default: false.
 *   desc: Include description column. Default: true.
 *   ruleSet: Include Rule set column. Default: true.
 *   rule: Include Rule column. Default: true.
