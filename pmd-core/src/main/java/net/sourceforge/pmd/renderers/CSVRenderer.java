@@ -69,17 +69,17 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     @SuppressWarnings("unchecked")
     private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[]{
-            newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
-            newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
-            newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
-            newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
-            newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
-            newColDescriptor(CSVColumn.END_LINE.id, CSVColumn.END_LINE.title, (idx, rv, cr) -> Integer.toString(rv.getEndLine()), CSVColumn.END_LINE.enabled),
-            newColDescriptor(CSVColumn.BEGIN_COLUMN.id, CSVColumn.BEGIN_COLUMN.title, (idx, rv, cr) -> Integer.toString(rv.getBeginColumn()), CSVColumn.BEGIN_COLUMN.enabled),
-            newColDescriptor(CSVColumn.END_COLUMN.id, CSVColumn.END_COLUMN.title, (idx, rv, cr) -> Integer.toString(rv.getEndColumn()), CSVColumn.END_COLUMN.enabled),
-            newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
-            newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
-            newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
+        newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
+        newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
+        newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
+        newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
+        newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
+        newColDescriptor(CSVColumn.END_LINE.id, CSVColumn.END_LINE.title, (idx, rv, cr) -> Integer.toString(rv.getEndLine()), CSVColumn.END_LINE.enabled),
+        newColDescriptor(CSVColumn.BEGIN_COLUMN.id, CSVColumn.BEGIN_COLUMN.title, (idx, rv, cr) -> Integer.toString(rv.getBeginColumn()), CSVColumn.BEGIN_COLUMN.enabled),
+        newColDescriptor(CSVColumn.END_COLUMN.id, CSVColumn.END_COLUMN.title, (idx, rv, cr) -> Integer.toString(rv.getEndColumn()), CSVColumn.END_COLUMN.enabled),
+        newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
+        newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
+        newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
     };
 
     private static @NonNull ColumnDescriptor<RuleViolation> newColDescriptor(String id, String title, Accessor<RuleViolation> accessor) {
