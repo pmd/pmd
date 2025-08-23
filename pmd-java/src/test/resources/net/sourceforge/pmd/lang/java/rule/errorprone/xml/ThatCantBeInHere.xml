@@ -841,4 +841,18 @@ public class Test {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Map.Entry&lt;?,?&gt;</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void test(Map<Integer, String> map, Map.Entry<?,?> entry) {
+        map.get(entry.getKey());
+    }
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

@@ -253,6 +253,14 @@ public class ThatCantBeInHereRule extends AbstractJavaRulechainRule {
             return true;
         }
         
+        // Handle wildcards and captured type variables - they should be compatible with any type
+        // since they represent unknown types that could potentially be the expected type
+        if (argType instanceof JWildcardType
+                || (argType instanceof JTypeVar && ((JTypeVar) argType).isCaptured())
+        ) {
+            return true;
+        }
+        
         // Check basic convertibility using raw types (ignore generics)
         // This will cause some false-negaties, but doing this right would lead to much more complicated code
         JTypeMirror rawArgType = getRawType(argType);
