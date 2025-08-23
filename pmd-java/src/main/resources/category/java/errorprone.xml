@@ -30,6 +30,39 @@ public void bar() {
 ]]>
         </example>
     </rule>
+    <rule name="NoEmptyUUID"
+          language="java"
+          since="1.0"
+          message="UUID.toString() result is never empty or blank, check is always false"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.NoEmptyUUIDRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#noemptyuuid">
+        <description>
+            Avoid checking if a UUID's string representation is empty or blank. UUIDs always generate
+            a 36-character string in the format "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", so isEmpty(),
+            isBlank(), length() == 0, and similar checks will always return false.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+import java.util.UUID;
+
+public class Example {
+    public void testUUID() {
+        UUID id = UUID.randomUUID();
+
+        // These checks are always false and indicate a logic error
+        if (id.toString().isEmpty()) { // Always false
+            System.out.println("This will never execute");
+        }
+
+        boolean isBlank = id.toString().isBlank(); // Always false
+        boolean isEmpty = "".equals(id.toString()); // Always false
+        boolean zeroLength = id.toString().length() == 0; // Always false
+    }
+}
+]]>
+        </example>
+    </rule>
 
     <rule name="AssignmentToNonFinalStatic"
           language="java"

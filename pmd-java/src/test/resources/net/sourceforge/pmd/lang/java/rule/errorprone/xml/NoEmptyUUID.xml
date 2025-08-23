@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>UUID toString().isBlank() always returns false</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        UUID id = UUID.randomUUID();
+        boolean b = id.toString().isBlank(); // Always false
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isBlank() in if condition</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        UUID id = UUID.randomUUID();
+        if (id.toString().isBlank()) { // Always false
+            System.out.println("This will never happen");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nonsensical if condition with UUID</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        UUID id = UUID.randomUUID();
+        if (id.toString() != null && id.toString().isEmpty()) { // Always false
+            System.out.println("Dead code");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Complex nonsensical condition</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        UUID id = UUID.randomUUID();
+        if ((id.toString().length() > 0) && id.toString().isEmpty()) { // Always false
+            System.out.println("Impossible condition");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While loop with impossible condition</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        UUID id = UUID.randomUUID();
+        while (id.toString().isEmpty()) { // Always false, infinite loop won't execute
+            System.out.println("This will never run");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do-while with impossible condition</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        UUID id = UUID.randomUUID();
+        do {
+            System.out.println("This runs once but condition is always false");
+        } while (id.toString().isEmpty()); // Always false
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isBlank() with trim chaining</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        boolean b = UUID.randomUUID().toString().trim().isBlank(); // Always false
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isEmpty() after substring operation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        UUID id = UUID.randomUUID();
+        boolean b = id.toString().substring(0, 5).isEmpty(); // Always false (substring of UUID won't be empty)
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isEmpty() in method chain</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        processUUID(UUID.randomUUID().toString().isEmpty()); // Always false
+    }
+    private void processUUID(boolean isEmpty) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isBlank() in return statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public boolean test() {
+        return UUID.randomUUID().toString().isBlank(); // Always returns false
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isEmpty() in stream operation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+import java.util.List;
+public class Test {
+    public void test() {
+        List<UUID> uuids = List.of(UUID.randomUUID(), UUID.randomUUID());
+        boolean anyEmpty = uuids.stream()
+            .anyMatch(uuid -> uuid.toString().isEmpty()); // Always false
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isBlank() in stream filter</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+import java.util.List;
+public class Test {
+    public void test() {
+        List<UUID> uuids = List.of(UUID.randomUUID(), UUID.randomUUID());
+        List<UUID> emptyOnes = uuids.stream()
+            .filter(uuid -> uuid.toString().isBlank()) // Always empty list
+            .toList();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isEmpty() in switch case expression</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test(int value) {
+        switch (value) {
+            case 1 -> System.out.println(UUID.randomUUID().toString().isEmpty()); // Always false
+            default -> System.out.println("default");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>UUID isBlank() in ternary with method call</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        UUID id = UUID.randomUUID();
+        String result = id.toString().isBlank() ? getEmptyMessage() : getNonEmptyMessage(); // Always calls getNonEmptyMessage()
+    }
+    private String getEmptyMessage() { return "empty"; }
+    private String getNonEmptyMessage() { return "not empty"; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Skip valid String isEmpty checks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        String potentiallyEmpty = getStringFromSomewhere();
+        boolean validCheck = potentiallyEmpty.isEmpty(); // OK - not a UUID
+
+        UUID id = UUID.randomUUID();
+        String uuidString = id.toString();
+        boolean alsoValid = uuidString.isEmpty(); // OK - variable is String type
+    }
+    private String getStringFromSomewhere() { return ""; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Skip valid String isBlank checks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.UUID;
+public class Test {
+    public void test() {
+        String potentiallyBlank = getStringFromSomewhere();
+        boolean validCheck = potentiallyBlank.isBlank(); // OK - not a UUID
+    }
+    private String getStringFromSomewhere() { return "   "; }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
