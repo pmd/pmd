@@ -209,7 +209,7 @@ Example:
 ## csv
 
 This outputs the duplication as comma separated values. It only reports the duplication size (number
-of lines and tokens) and the number of occurrences. After that, the begin lines and filenames are reported on
+of lines and tokens) and the number of occurrences. After that, the starting lines and filenames are reported on
 after another.
 
 Example:
@@ -228,7 +228,7 @@ for each occurrence separately. While the tokens are the same, due to formatting
 different. Whitespace and comments are usually ignored when finding duplicated code.
 
 In each line, the duplication size in tokens is reported, then the number of occurrences. And after that, for each
-file, the begin line, the number of duplicated lines and the filename.
+file, the starting line, the number of duplicated lines and the filename.
 
 Example:
 
@@ -242,7 +242,7 @@ eTest.java
 
 ## vs
 
-This outputs the duplication in a format, that Visual Studio. CPD can be added as a external tool and the output
+This outputs the duplication in a format, that Visual Studio understands. CPD can be added as an external tool and the output
 is shown in the console. You can then click on the filenames to jump to the source where the duplication is located.
 
 Each occurrence of a duplication is reported in a separate line, that's why in this example, we have 5 lines.
@@ -275,7 +275,7 @@ xalan -in cpd-report-sample.xml -xsl cpdhtml.xslt -out cpd-report-sample-cpdhtml
 
 [Example](report-examples/cpdhtml.html)
 
-This stylesheet by default only consideres duplications longer than 30 lines. You can change the default value with
+This stylesheet by default only considers duplications longer than 30 lines. You can change the default value with
 the param `lines`:
 
 ```shell

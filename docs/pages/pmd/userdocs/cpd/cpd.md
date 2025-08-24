@@ -42,7 +42,7 @@ refactored out. We thus advise developers to use CPD to **help remove duplicates
 
 ### Refactoring duplicates
 
-Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of
+Once you have located some duplicates, several refactoring strategies may apply depending on the scope and extent of
 the duplication. Here's a quick summary:
 
 * If the duplication is local to a method or single class:
