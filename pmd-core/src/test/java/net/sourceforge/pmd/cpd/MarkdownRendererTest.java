@@ -37,8 +37,8 @@ class MarkdownRendererTest {
         renderer.render(builder.build(), sw);
         String report = sw.toString();
         String expectedReport = "Found a 6 line (75 tokens) duplication in the following files:\n"
-                + "Starting at line 48 of /var/Foo.java\n"
-                + "Starting at line 73 of /var/Foo.java\n"
+                + "Starting at line 48 of " + foo.getAbsolutePath() + "\n"
+                + "Starting at line 73 of " + foo.getAbsolutePath() + "\n"
                 + "\n"
                 + "```\n"
                 + "47_47_47_47_47_47_47_47_47_47_\n"
@@ -52,8 +52,8 @@ class MarkdownRendererTest {
                 + "---\n"
                 + "\n"
                 + "Found a 5 line (50 tokens) duplication in the following files:\n"
-                + "Starting at line 49 of /var/Bar.java\n"
-                + "Starting at line 74 of /var/Bar.java\n"
+                + "Starting at line 49 of " + bar.getAbsolutePath() + "\n"
+                + "Starting at line 74 of " + bar.getAbsolutePath() + "\n"
                 + "\n"
                 + "```\n"
                 + "48_48_48_48_48_48_48_48_48_48_\n"
