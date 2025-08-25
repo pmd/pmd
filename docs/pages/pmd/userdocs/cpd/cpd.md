@@ -4,7 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: July 2025 (7.16.0)
+last_updated: August 2025 (7.17.0)
 ---
 
 ## Overview
@@ -279,6 +279,7 @@ See [CPD Capable Languages](tag_CpdCapableLanguage.html) for the full list of su
 * csv
 * csv_with_linecount_per_file
 * vs
+* markdown
 
 For details, see [CPD Report Formats](pmd_userdocs_cpd_report_formats.html).
 
