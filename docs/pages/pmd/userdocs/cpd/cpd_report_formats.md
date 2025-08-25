@@ -306,6 +306,7 @@ Example:
 Found a 33 line (239 tokens) duplication in the following files: 
 Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
 Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+
 ```
 public void testOverride() {
     final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
@@ -348,6 +349,7 @@ Found a 16 line (110 tokens) duplication in the following files:
 Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
 Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
 Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+
 ```
 JaxenXPathRuleQuery query = createQuery(xpath);
 List<String> ruleChainVisits = query.getRuleChainVisits();

@@ -17,7 +17,7 @@ public class MarkdownRenderer implements CPDReportRenderer {
     private static final String SEPARATOR = "\n---\n\n";
     private static final String FOUND_DUPLICATION_TEMPLATE = "Found a %d line (%d tokens) duplication in the following files:\n";
     private static final String STARTING_AT_LINE_TEMPLATE = "Starting at line %d of %s\n";
-    private static final String CODE_BLOCK_TEMPLATE = "```\n%s```\n";
+    private static final String CODE_BLOCK_TEMPLATE = "\n```\n%s```\n";
 
     @Override
     public void render(CPDReport report, Writer writer) throws IOException {
