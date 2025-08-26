@@ -91,4 +91,14 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify message includes actual count</description>
+        <rule-property name="minimum">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>This class has 3 public methods and attributes</message>
+        </expected-messages>
+        <code-ref id="id-3-public-methods"/>
+    </test-code>
 </test-data>
