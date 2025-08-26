@@ -49,7 +49,9 @@ public class ThatCantBeInHereRule extends AbstractJavaRulechainRule {
     
     // Map methods that take value parameters
     private static final InvocationMatcher MAP_CONTAINS_VALUE = InvocationMatcher.parse("java.util.Map#containsValue(java.lang.Object)");
-    
+    private static final InvocationMatcher HASHTABLE_CONTAINS = InvocationMatcher.parse("java.util.Hashtable#contains(java.lang.Object)");
+    private static final InvocationMatcher CONCURRENT_HASHMAP_CONTAINS = InvocationMatcher.parse("java.util.concurrent.ConcurrentHashMap#contains(java.lang.Object)");
+
     // Map methods that take key-value parameters
     private static final InvocationMatcher MAP_REMOVE_TWO_PARAM = InvocationMatcher.parse("java.util.Map#remove(java.lang.Object,java.lang.Object)");
 
@@ -80,7 +82,9 @@ public class ThatCantBeInHereRule extends AbstractJavaRulechainRule {
                 || MAP_REMOVE_ONE_PARAM.matchesCall(node)
         ) {
             checkMapKeyCompatibility(node, ctx);
-        } else if (MAP_CONTAINS_VALUE.matchesCall(node)) {
+        } else if (MAP_CONTAINS_VALUE.matchesCall(node)
+                || HASHTABLE_CONTAINS.matchesCall(node)
+                || CONCURRENT_HASHMAP_CONTAINS.matchesCall(node)) {
             checkMapValueCompatibility(node, ctx);
         } else if (MAP_REMOVE_TWO_PARAM.matchesCall(node)) {
             checkMapKeyValueCompatibility(node, ctx);

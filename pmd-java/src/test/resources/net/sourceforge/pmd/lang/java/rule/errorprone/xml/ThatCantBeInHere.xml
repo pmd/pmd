@@ -855,4 +855,239 @@ public class Test {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>Findbugs test Ideas_2011_07_03</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers><!--13,17,-->21</expected-linenumbers>
+        <code><![CDATA[
+package bugIdeas;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.TreeSet;
+
+public class Ideas_2011_07_03 {
+//    public boolean test(HashSet<Integer> s1, TreeSet<Integer> s2) {
+//        return s1.equals(s2);
+//    }
+
+//    public boolean test(HashSet<Integer> s1, ArrayList<Integer> s2) {
+//        return s1.equals(s2);
+//    }
+
+//    public boolean test(HashSet<Integer> s1, HashSet<String> s2) {
+//        return s1.equals(s2);
+//    }
+
+    public boolean test2(HashSet<Integer> s1, HashSet<String> s2) {
+        return s1.removeAll(s2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Ideas_2011_07_24</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers><!--9,17,-->21,21</expected-linenumbers>
+        <code><![CDATA[
+package bugIdeas;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Random;
+
+public class Ideas_2011_07_24 {
+//    static boolean test1(HashSet<Integer> s, LinkedList<Integer> lst) {
+//        return s.equals(lst);
+//    }
+
+    static boolean test2(HashSet<Integer> s, LinkedList<Integer> lst) {
+        return s.containsAll(lst) && lst.containsAll(s);
+    }
+
+//    static boolean test3(HashSet<Integer> s, LinkedList<String> lst) {
+//        return s.equals(lst);
+//    }
+
+    static boolean test4(HashSet<Integer> s, LinkedList<String> lst) {
+        return s.containsAll(lst) && lst.containsAll(s);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Ideas_2011_10_21</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>17,25,33,41,45,49,57</expected-linenumbers>
+        <code><![CDATA[
+package bugIdeas;
+
+import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Ideas_2011_10_21 {
+
+    Hashtable<String, Integer> hashtable = new Hashtable<String, Integer>();
+
+    ConcurrentHashMap<String, Integer> concurrentHashMap = new ConcurrentHashMap<String, Integer>();
+
+    public boolean testContainsHashtable(Integer i) {
+        return hashtable.contains(i);
+    }
+
+    public boolean testContainsHashtable(String s) {
+        return hashtable.contains(s);
+    }
+
+    public boolean testContainsConcurrentHashMap(Integer i) {
+        return concurrentHashMap.contains(i);
+    }
+
+    public boolean testContainsConcurrentHashMap(String s) {
+        return concurrentHashMap.contains(s);
+    }
+
+    public boolean testContainsValueHashtable(Integer i) {
+        return hashtable.containsValue(i);
+    }
+
+    public boolean testContainsValueHashtable(String s) {
+        return hashtable.containsValue(s);
+    }
+
+    public boolean testContainsValueConcurrentHashMap(Integer i) {
+        return concurrentHashMap.containsValue(i);
+    }
+
+    public boolean testContainsValueConcurrentHashMap(String s) {
+        return concurrentHashMap.containsValue(s);
+    }
+
+    public boolean testRemove(String s) {
+        return concurrentHashMap.remove(s, s);
+    }
+
+    public boolean testRemove(Integer i) {
+        return concurrentHashMap.remove(i, i);
+    }
+
+    public boolean testRemove(String s, Integer i) {
+        return concurrentHashMap.remove(s, i);
+    }
+
+    public boolean testRemove(Integer i, String s) {
+        return concurrentHashMap.remove(i, s);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Ideas_2012_11_19</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>27,31</expected-linenumbers>
+        <code><![CDATA[
+package bugIdeas;
+
+import java.util.ArrayList;
+
+public class Ideas_2012_11_19 {
+
+    static class A<XYZ> extends ArrayList<Long> {
+        private static final long serialVersionUID = 1L;
+    }
+
+    static class B<XYZ extends Number> extends ArrayList<XYZ> {
+        private static final long serialVersionUID = 1L;
+    }
+
+    static A<String> foo = new A<String>();
+
+    static B<Long> bar = new B<Long>();
+
+    public static void OK(String args[]) {
+        foo.add(13L);
+        System.out.println(foo.contains(13L));
+        bar.add(13L);
+        System.out.println(bar.contains(13L));
+    }
+
+    public static void bad1(String args[]) {
+        System.out.println(foo.contains("13"));
+    }
+
+    public static void bad2(String args[]) {
+        System.out.println(bar.contains("13"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Bug3470297</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sfBugs;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Bug3470297 {
+
+    public <A, B> void foo(A a, Foo<A, B> foo) {
+
+        Set<B> empty = Collections.emptySet();
+        foo.remove(a, empty); // This generated a false positive because it
+                              // thinks that the second parameter should be of
+                              // type B, not Set<B>
+    }
+
+    static class Foo<X, Y> extends Bar<X, Set<Y>> {
+
+    }
+
+    static class Bar<T, S> extends ConcurrentHashMap<T, S> {
+        @Override
+        public boolean remove(Object key, Object value) {
+            return false;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Bug3470297a</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sfBugs;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Bug3470297a {
+    public static void main(String[] args) {
+        Foo<String, Long> foo = new Foo<String, Long>();
+        foo.remove("", Collections.emptySet());
+    }
+
+    static class Foo<A, B> extends Bar<A, Set<B>> {
+    }
+
+    static class Bar<X, Y> extends ConcurrentHashMap<X, Y> {
+        @Override
+        public boolean remove(final Object key, final Object value) {
+            // ...
+            return super.remove(key, value);
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
 </test-data>
