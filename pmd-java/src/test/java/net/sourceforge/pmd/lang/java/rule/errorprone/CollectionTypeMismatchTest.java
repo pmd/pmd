@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class ThatCantBeInHereTest extends PmdRuleTst {
+class CollectionTypeMismatchTest extends PmdRuleTst {
     // no additional unit tests
 }

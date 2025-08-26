@@ -26,7 +26,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * - List&lt;Integer&gt; list; list.remove("string"); // String cannot be in Integer list
  * - Map&lt;String, Integer&gt; map; map.get(42); // Integer key cannot be in String-keyed map
  */
-public class ThatCantBeInHereRule extends AbstractJavaRulechainRule {
+public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
 
     // Collection methods that take a single Object parameter
     private static final InvocationMatcher COLLECTION_CONTAINS = InvocationMatcher.parse("java.util.Collection#contains(java.lang.Object)");
@@ -55,7 +55,7 @@ public class ThatCantBeInHereRule extends AbstractJavaRulechainRule {
     // Map methods that take key-value parameters
     private static final InvocationMatcher MAP_REMOVE_TWO_PARAM = InvocationMatcher.parse("java.util.Map#remove(java.lang.Object,java.lang.Object)");
 
-    public ThatCantBeInHereRule() {
+    public CollectionTypeMismatchRule() {
         super(ASTMethodCall.class);
     }
 
