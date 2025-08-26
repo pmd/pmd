@@ -37,8 +37,21 @@ public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<AST
                 && ((ASTConstructorDeclaration) parent).getVisibility() == Visibility.V_PRIVATE;
     }
 
+    /**
+     * @deprecated since 7.17.0
+     */
     @Override
     protected boolean isViolation(ASTFormalParameters node, int reportLevel) {
-        return node.size() > reportLevel;
+        return false;
+    }
+
+    @Override
+    protected int getMetric(ASTFormalParameters node) {
+        return node.size();
+    }
+
+    @Override
+    protected boolean checkViolation(int metric, int threshold) {
+        return metric > threshold;
     }
 }

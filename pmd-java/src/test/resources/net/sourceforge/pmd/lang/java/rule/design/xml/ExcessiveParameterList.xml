@@ -53,4 +53,18 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify message includes parameter count</description>
+        <rule-property name="minimum">9</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid long parameter lists (10 parameters).</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int p01, int p02, int p03, int p04, int p05, int p06, int p07, int p08, int p09, int p10 ) { }
+}
+        ]]></code>
+    </test-code>
 </test-data>

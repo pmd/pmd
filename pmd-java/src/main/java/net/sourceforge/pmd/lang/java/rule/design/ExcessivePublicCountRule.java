@@ -39,15 +39,21 @@ public class ExcessivePublicCountRule extends AbstractJavaCounterCheckRule<ASTTy
         return 45;
     }
 
+    /**
+     * @deprecated since 7.17.0
+     */
     @Override
     protected boolean isViolation(ASTTypeDeclaration node, int reportLevel) {
-        long publicCount = node.getDeclarations()
-                               .filterIs(ModifierOwner.class)
-                               .filter(it -> it.hasModifiers(PUBLIC))
-                               // filter out constants
-                               .filter(it -> !(it instanceof ASTFieldDeclaration && it.hasModifiers(STATIC, FINAL)))
-                               .count();
+        return false;
+    }
 
-        return publicCount >= reportLevel;
+    @Override
+    protected int getMetric(ASTTypeDeclaration node) {
+        return node.getDeclarations()
+                   .filterIs(ModifierOwner.class)
+                   .filter(it -> it.hasModifiers(PUBLIC))
+                   // filter out constants
+                   .filter(it -> !(it instanceof ASTFieldDeclaration && it.hasModifiers(STATIC, FINAL)))
+                   .count();
     }
 }
