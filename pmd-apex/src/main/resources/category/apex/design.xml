@@ -206,7 +206,7 @@ public class Foo {
     <rule name="ExcessiveClassLength"
           language="apex"
           since="5.5.0"
-          message="Avoid really long classes."
+          message="Avoid really long classes ({0} lines)."
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveclasslength">
         <description>
@@ -238,7 +238,7 @@ public class Foo {
     <rule name="ExcessiveParameterList"
           language="apex"
           since="5.5.0"
-          message="Avoid long parameter lists."
+          message="Avoid long parameter lists ({0} parameters)."
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveParameterListRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveparameterlist">
         <description>
