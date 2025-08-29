@@ -49,9 +49,4 @@ public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<AST
     protected int getMetric(ASTFormalParameters node) {
         return node.size();
     }
-
-    @Override
-    protected boolean checkViolation(int metric, int threshold) {
-        return metric > threshold;
-    }
 }
