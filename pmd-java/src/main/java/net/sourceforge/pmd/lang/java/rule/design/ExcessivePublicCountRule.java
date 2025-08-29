@@ -44,7 +44,7 @@ public class ExcessivePublicCountRule extends AbstractJavaCounterCheckRule<ASTTy
      */
     @Override
     protected boolean isViolation(ASTTypeDeclaration node, int reportLevel) {
-        return false;
+        return super.isViolation(node, reportLevel);
     }
 
     @Override
