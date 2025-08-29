@@ -1481,7 +1481,10 @@ performance need (space or time).
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement/ForInit//VariableId[pmd-java:typeIs('float')]
+//ForStatement[
+    ForInit//VariableId[pmd-java:typeIs('float')]
+    or ForUpdate//VariableAccess[pmd-java:typeIs('float')]
+]
 ]]>
                 </value>
             </property>
