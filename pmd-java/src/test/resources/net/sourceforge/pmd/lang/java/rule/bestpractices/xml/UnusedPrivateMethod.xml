@@ -2781,5 +2781,28 @@ class Foo {
     </test-code>
 
 
+    <test-code>
+        <description>FP with lambda</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // should reproduce https://github.com/pmd/pmd/issues/5621#issuecomment-2849411551
+            class Test {
+                class operations_test {
+
+                    void method(long l) {
+                    }
+                    void method() {}
+
+                    void setUp() {
+                        foo(unresolved -> {
+                            method(unresolved);
+                        });
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
 
 </test-data>
