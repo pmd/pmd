@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,15 +41,15 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
 
     private static final Set<String> SERIALIZATION_METHODS =
-        setOf("readObject", "readObjectNoData", "writeObject", "readResolve", "writeReplace");
+            setOf("readObject", "readObjectNoData", "writeObject", "readResolve", "writeReplace");
 
     @Override
     protected Collection<String> defaultSuppressionAnnotations() {
         return listOf(
-            "java.lang.Deprecated",
-            "jakarta.annotation.PostConstruct",
-            "jakarta.annotation.PreDestroy",
-            "lombok.EqualsAndHashCode.Include"
+                "java.lang.Deprecated",
+                "jakarta.annotation.PostConstruct",
+                "jakarta.annotation.PreDestroy",
+                "lombok.EqualsAndHashCode.Include"
         );
     }
 
@@ -61,29 +62,62 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         Set<String> methodsUsedByAnnotations = methodsUsedByAnnotations(file);
         Map<JExecutableSymbol, ASTMethodDeclaration> candidates = findCandidates(file, methodsUsedByAnnotations);
 
+        // First, remove methods that are called from within the same class
+        removeMethodsCalledFromSameClass(file, candidates);
+
         file.descendants()
-            .crossFindBoundaries()
-            .<MethodUsage>map(asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
-            .forEach(ref -> {
-                OverloadSelectionResult selectionInfo = ref.getOverloadSelectionInfo();
-                JExecutableSymbol calledMethod = selectionInfo.getMethodType().getSymbol();
-                if (calledMethod.isUnresolved()) {
-                    handleUnresolvedCall(ref, selectionInfo, candidates);
-                    return;
-                }
-                candidates.compute(calledMethod, (sym2, reffed) -> {
-                    if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
-                        // remove mapping, but only if it is called from outside itself
-                        return null;
+                .crossFindBoundaries()
+                .<MethodUsage>map(asInstanceOf(ASTMethodCall.class, ASTMethodReference.class))
+                .forEach(ref -> {
+                    OverloadSelectionResult selectionInfo = ref.getOverloadSelectionInfo();
+                    JExecutableSymbol calledMethod = selectionInfo.getMethodType().getSymbol();
+                    if (calledMethod.isUnresolved()) {
+                        handleUnresolvedCall(ref, selectionInfo, candidates);
+                        return;
                     }
-                    return reffed;
+                    candidates.compute(calledMethod, (sym2, reffed) -> {
+                        if (reffed != null && ref.ancestors(ASTMethodDeclaration.class).first() != reffed) {
+                            // remove mapping, but only if it is called from outside itself
+                            return null;
+                        }
+                        return reffed;
+                    });
                 });
-            });
 
         for (ASTMethodDeclaration unusedMethod : candidates.values()) {
             asCtx(param).addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
         }
         return null;
+    }
+
+    /**
+     * Remove methods that are called from within the same class from the candidates map.
+     * This handles the case where private methods call other private methods in the same class.
+     */
+    private void removeMethodsCalledFromSameClass(ASTCompilationUnit file, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
+        if (candidates.isEmpty()) {
+            return;
+        }
+
+        // Create a map of method names to their symbols for faster lookup
+        Map<String, JExecutableSymbol> methodNameToSymbol = new HashMap<>();
+        for (JExecutableSymbol symbol : candidates.keySet()) {
+            methodNameToSymbol.put(symbol.getPackageName(), symbol);
+        }
+
+        // Check each candidate method for calls to other private methods in the same class
+        for (ASTMethodDeclaration method : candidates.values()) {
+            method.descendants(ASTMethodCall.class)
+                    .crossFindBoundaries()
+                    .forEach(call -> {
+                        String calledMethodName = call.getMethodName();
+                        JExecutableSymbol calledSymbol = methodNameToSymbol.get(calledMethodName);
+                        if (calledSymbol != null && candidates.containsKey(calledSymbol)) {
+                            // This method calls another private method in the same class, so remove the called method
+                            candidates.remove(calledSymbol);
+                        }
+                    });
+        }
     }
 
     private static void handleUnresolvedCall(MethodUsage ref, OverloadSelectionResult selectionInfo, Map<JExecutableSymbol, ASTMethodDeclaration> candidates) {
@@ -93,8 +127,8 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
         JTypeMirror receive = selectionInfo.getTypeToSearch();
         boolean receiverMayBeInstanceOfThisClass =
                 receive == null
-                || TypeOps.isSpecialUnresolved(receive)
-                || receive.equals(ref.getEnclosingType().getTypeMirror());
+                        || TypeOps.isSpecialUnresolved(receive)
+                        || receive.equals(ref.getEnclosingType().getTypeMirror());
 
         if (receiverMayBeInstanceOfThisClass) {
             candidates.values().removeIf(it -> it.getName().equals(ref.getMethodName()));
@@ -109,39 +143,39 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
      */
     private Map<JExecutableSymbol, ASTMethodDeclaration> findCandidates(ASTCompilationUnit file, Set<String> methodsUsedByAnnotations) {
         return file.descendants(ASTMethodDeclaration.class)
-                   .crossFindBoundaries()
-                   .filter(
-                       it -> it.getVisibility() == Visibility.V_PRIVATE
-                           && !hasIgnoredAnnotation(it)
-                           && !hasExcludedName(it)
-                           && !(it.getArity() == 0 && methodsUsedByAnnotations.contains(it.getName())))
-                   .collect(Collectors.toMap(
-                       ASTMethodDeclaration::getSymbol,
-                       m -> m
-                   ));
+                .crossFindBoundaries()
+                .filter(
+                        it -> it.getVisibility() == Visibility.V_PRIVATE
+                                && !hasIgnoredAnnotation(it)
+                                && !hasExcludedName(it)
+                                && !(it.getArity() == 0 && methodsUsedByAnnotations.contains(it.getName())))
+                .collect(Collectors.toMap(
+                        ASTMethodDeclaration::getSymbol,
+                        m -> m
+                ));
     }
 
     private static Set<String> methodsUsedByAnnotations(ASTCompilationUnit file) {
         return file.descendants(ASTAnnotation.class)
-            .crossFindBoundaries()
-            .toStream()
-            .flatMap(UnusedPrivateMethodRule::extractMethodsFromAnnotation)
-            .collect(Collectors.toSet());
+                .crossFindBoundaries()
+                .toStream()
+                .flatMap(UnusedPrivateMethodRule::extractMethodsFromAnnotation)
+                .collect(Collectors.toSet());
     }
 
     private static Stream<String> extractMethodsFromAnnotation(ASTAnnotation a) {
         return Stream.concat(
-            a.getFlatValues().toStream()
-                .map(ASTMemberValue::getConstValue)
-                .map(asInstanceOf(String.class))
-                .filter(StringUtils::isNotEmpty),
-            NodeStream.of(a)
-                .filter(it -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", it)
-                    && it.getFlatValue("value").isEmpty())
-                .ancestors(ASTMethodDeclaration.class)
-                .take(1)
-                .toStream()
-                .map(ASTMethodDeclaration::getName)
+                a.getFlatValues().toStream()
+                        .map(ASTMemberValue::getConstValue)
+                        .map(asInstanceOf(String.class))
+                        .filter(StringUtils::isNotEmpty),
+                NodeStream.of(a)
+                        .filter(it -> TypeTestUtil.isA("org.junit.jupiter.params.provider.MethodSource", it)
+                                && it.getFlatValue("value").isEmpty())
+                        .ancestors(ASTMethodDeclaration.class)
+                        .take(1)
+                        .toStream()
+                        .map(ASTMethodDeclaration::getName)
         );
     }
 
