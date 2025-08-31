@@ -25,17 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 #### ✨ New Rules
-* The new java rule {% rule java/errorprone/ModifierOrder %} finds missing
-  `hashCode()` and/or `equals()` methods on types that implement `Comparable`. This is important if
-  instances of these classes are used in collections. Failing to do so can lead to unexpected behavior in sets
-  which then do not conform to the `Set` interface. While the `Set` interface relies on
-  `equals()` to determine object equality, sorted sets like `TreeSet` use
-  `compareTo()` instead. The same issue can arise when such objects are used
-  as keys in sorted maps.  
-  This rule is very similar to {% rule java/errorprone/OverrideBothEqualsAndHashcode %} which has always been
-  skipping `Comparable` and only reports if one of the two methods is missing. The new rule will also report,
-  if both methods (hashCode and equals) are missing.  
-  The rule is referenced in the quickstart.xml ruleset for Java.
+* The new Java rule {% rule java/codestyle/ModifierOrder %} (`codestyle`) finds incorrectly ordered modifiers
+  (e.g., `static public` instead of `public static`). It ensures modifiers appear in the correct order as recommended by the Java Language Specification.
 * The new apex rule {% rule apex/codestyle/AnnotationsNamingConventions %} enforces that annotations
   are used consistently in PascalCase.  
   The rule is referenced in the quickstart.xml ruleset for Apex.
