@@ -25,6 +25,17 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 #### ✨ New Rules
+* The new java rule {% rule java/errorprone/ModifierOrder %} finds missing
+  `hashCode()` and/or `equals()` methods on types that implement `Comparable`. This is important if
+  instances of these classes are used in collections. Failing to do so can lead to unexpected behavior in sets
+  which then do not conform to the `Set` interface. While the `Set` interface relies on
+  `equals()` to determine object equality, sorted sets like `TreeSet` use
+  `compareTo()` instead. The same issue can arise when such objects are used
+  as keys in sorted maps.  
+  This rule is very similar to {% rule java/errorprone/OverrideBothEqualsAndHashcode %} which has always been
+  skipping `Comparable` and only reports if one of the two methods is missing. The new rule will also report,
+  if both methods (hashCode and equals) are missing.  
+  The rule is referenced in the quickstart.xml ruleset for Java.
 * The new apex rule {% rule apex/codestyle/AnnotationsNamingConventions %} enforces that annotations
   are used consistently in PascalCase.  
   The rule is referenced in the quickstart.xml ruleset for Apex.
@@ -103,6 +114,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5856](https://github.com/pmd/pmd/pull/6019): Fix #6019: \[java] New Rule ModifierOrder - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5822](https://github.com/pmd/pmd/pull/5822): Fix #5650: \[apex] New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5847](https://github.com/pmd/pmd/pull/5847): Fix #5770: \[java] New Rule: VariableCanBeInlined - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5856](https://github.com/pmd/pmd/pull/5856): Fix #5837: \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)

@@ -53,7 +53,8 @@ class JClassSymbolTest {
         JClassSymbol sym = impl.getSymbol(AnnotationWithNoRetention.class);
 
         for (ElementType type : ElementType.values()) {
-            assertEquals(type != ElementType.TYPE_PARAMETER, sym.annotationAppliesTo(type),
+            assertEquals(type != ElementType.TYPE_PARAMETER
+                && type != ElementType.TYPE_USE, sym.annotationAppliesTo(type),
                          "annot supports " + type);
         }
     }
