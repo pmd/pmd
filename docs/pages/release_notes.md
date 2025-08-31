@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 #### ✨ New Rules
+* The new Java rule {% rule java/codestyle/ModifierOrder %} (`codestyle`) finds incorrectly ordered modifiers
+  (e.g., `static public` instead of `public static`). It ensures modifiers appear in the correct order as recommended by the Java Language Specification.
 * The new apex rule {% rule apex/codestyle/AnnotationsNamingConventions %} enforces that annotations
   are used consistently in PascalCase.  
   The rule is referenced in the quickstart.xml ruleset for Apex.
@@ -103,6 +105,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5856](https://github.com/pmd/pmd/pull/6019): Fix #6019: \[java] New Rule ModifierOrder - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5822](https://github.com/pmd/pmd/pull/5822): Fix #5650: \[apex] New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5847](https://github.com/pmd/pmd/pull/5847): Fix #5770: \[java] New Rule: VariableCanBeInlined - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5856](https://github.com/pmd/pmd/pull/5856): Fix #5837: \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
