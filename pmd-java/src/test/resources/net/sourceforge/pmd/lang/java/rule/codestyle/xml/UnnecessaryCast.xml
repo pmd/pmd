@@ -185,6 +185,25 @@ public class MapCasts {
             ]]></code>
     </test-code>
     <test-code>
+        <description>Self cast</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            class A {
+                private Integer x;
+
+                public Integer getX() {
+                    return x;
+                }
+
+                public static class B extends A { }
+
+                public int compareTo(A arg) {
+                    return ((B) arg).getX().compareTo(getX());
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
         <description>Context is array index</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>3,4</expected-linenumbers>

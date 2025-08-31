@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
@@ -107,6 +108,13 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // the object will not implement SubItf anymore.
         } else if (isCastUnnecessary(castExpr, context, coercionType, operandType)) {
             reportCast(castExpr, data);
+        } else if (castExpr.getParent() instanceof ASTMethodCall
+                    && !coercionType.isGeneric()) {
+            ASTMethodCall call = (ASTMethodCall) castExpr.getParent();
+            if (!call.getMethodType().isGeneric()
+                    && TypeTestUtil.isA(call.getMethodType().getDeclaringType(), operandType)) {
+                reportCast(castExpr, data);
+            }
         }
         return null;
     }
