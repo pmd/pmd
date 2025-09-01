@@ -23,6 +23,6 @@ class MarkdownCodeBlockTest {
     })
     void testCodeFences(String input, String expectedCodeFence) {
         final MarkdownRenderer.MarkdownCodeBlock markdownCodeBlock = new MarkdownRenderer.MarkdownCodeBlock(input);
-        assertThat(markdownCodeBlock.toString().trim(), startsWith(expectedCodeFence));
+        assertThat(markdownCodeBlock.toString().trim(), startsWith(expectedCodeFence + "\n"));
     }
 }
