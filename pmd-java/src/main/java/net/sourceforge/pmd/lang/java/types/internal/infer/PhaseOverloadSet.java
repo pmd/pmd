@@ -74,8 +74,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
      * <p>https://docs.oracle.com/javase/specs/jls/se8/html/jls-15.html#jls-15.12.2.5
      */
     @Override
-    @SuppressWarnings("PMD.UselessOverridingMethod")
-    void add(MethodCtDecl sig) {
+    void add(MethodCtDecl sig) { // NOPMD UselessOverridingMethod
         super.add(sig);
     }
 

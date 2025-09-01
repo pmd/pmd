@@ -5,6 +5,10 @@
 
 package net.sourceforge.pmd.lang.java.ast;
 
+import java.util.Objects;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -26,7 +30,7 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  */
 // TODO make implicit formal parameter node and implement ASTExecutableDeclaration.
 // This might help UnusedAssignmentRule / DataflowPass.ReachingDefsVisitor, see also #4603
-public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner, JavadocCommentOwner {
+public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner, JavadocCommentOwner, ReturnScopeNode {
 
     private JavaccToken identToken;
 
@@ -54,10 +58,15 @@ public final class ASTCompactConstructorDeclaration extends AbstractJavaNode imp
         return visitor.visit(this, data);
     }
 
-    public ASTBlock getBody() {
-        return firstChild(ASTBlock.class);
+    @Override
+    public @NonNull ASTBlock getBody() {
+        return Objects.requireNonNull(firstChild(ASTBlock.class));
     }
 
+    /**
+     * @deprecated Since 7.14.0. This method just returns `this` and isn't useful.
+     */
+    @Deprecated
     public ASTCompactConstructorDeclaration getDeclarationNode() {
         return this;
     }

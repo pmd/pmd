@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = "com.sample.test"]
++- CompilationUnit[@Compact = false, @PackageName = "com.sample.test"]
    +- PackageDeclaration[@Name = "com.sample.test"]
    |  +- ModifierList[@EffectiveModifiers = (), @ExplicitModifiers = ()]
    +- ImportDeclaration[@ImportOnDemand = false, @ImportedName = "rx.Observable", @ImportedSimpleName = "Observable", @ModuleImport = false, @PackageName = "rx", @Static = false]

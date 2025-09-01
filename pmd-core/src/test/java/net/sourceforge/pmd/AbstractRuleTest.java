@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -15,7 +15,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-import java.util.Collections;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Test;
@@ -23,6 +22,7 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 
 import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.RulePriority;
@@ -126,8 +126,8 @@ class AbstractRuleTest {
 
     @Test
     void testRuleSuppress() {
-        DummyRootNode n = helper.parse("abc()", FileId.UNKNOWN)
-                                .withNoPmdComments(Collections.singletonMap(1, "ohio"));
+        DummyRootNode n = helper.parse("abc()", FileId.UNKNOWN);
+        n = n.withNoPmdComments(new SuppressionCommentImpl<>(n, "ohio"));
 
         FileAnalysisListener listener = mock(FileAnalysisListener.class);
         RuleContext ctx = InternalApiBridge.createRuleContext(listener, new MyRule());
@@ -160,7 +160,9 @@ class AbstractRuleTest {
     @Test
     void testEquals4() {
         MyRule myRule = new MyRule();
-        assertFalse(myRule.equals("MyRule"), "A rule cannot be equal to an object of another class");
+        @SuppressWarnings("PMD.LiteralsFirstInComparisons") // we really want to call equals on MyRule
+        boolean result = myRule.equals("MyRule");
+        assertFalse(result, "A rule cannot be equal to an object of another class");
     }
 
     @Test

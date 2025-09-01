@@ -109,7 +109,7 @@ public final class IOUtil {
      * @param reportFile the file name (optional)
      * @return
      */
-    public static Writer createWriter(Charset charset, String reportFile) {
+    public static Writer createWriter(Charset charset, @Nullable String reportFile) {
         try {
             if (StringUtils.isBlank(reportFile)) {
                 return new OutputStreamWriter(new FilterOutputStream(System.out) {
@@ -176,7 +176,7 @@ public final class IOUtil {
 
     /**
      * Ensure that the closeables are closed. In the end, throws the
-     * pending exception if not null, or the exception retuned by {@link #closeAll(Collection)}
+     * pending exception if not null, or the exception returned by {@link #closeAll(Collection)}
      * if not null. If both are non-null, adds one of them to the suppress
      * list of the other, and throws that one.
      */

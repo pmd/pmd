@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -41,6 +41,10 @@ class SourceManager implements AutoCloseable {
 
     List<TextFile> getTextFiles() {
         return textFiles;
+    }
+
+    boolean isEmpty() {
+        return textFiles.isEmpty();
     }
 
     private TextDocument load(TextFile file) {

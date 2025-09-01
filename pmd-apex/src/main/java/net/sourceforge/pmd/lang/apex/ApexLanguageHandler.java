@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -30,7 +30,7 @@ class ApexLanguageHandler implements LanguageVersionHandler {
 
     @Override
     public List<ViolationSuppressor> getExtraViolationSuppressors() {
-        return ApexViolationSuppressors.ALL_APEX_SUPPRESSORS;
+        return ApexAnnotationSuppressor.ALL_APEX_SUPPRESSORS;
     }
 
     @Override

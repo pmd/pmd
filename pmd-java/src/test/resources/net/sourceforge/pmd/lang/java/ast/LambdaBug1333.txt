@@ -1,4 +1,4 @@
-+- CompilationUnit[@PackageName = ""]
++- CompilationUnit[@Compact = false, @PackageName = ""]
    +- ClassDeclaration[@Abstract = false, @Annotation = false, @Anonymous = false, @BinaryName = "Bug1333", @CanonicalName = "Bug1333", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = true, @Interface = false, @Local = false, @Nested = false, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Bug1333", @Static = false, @TopLevel = true, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PACKAGE]
       +- ModifierList[@EffectiveModifiers = (JModifier.FINAL), @ExplicitModifiers = (JModifier.FINAL)]
       +- ClassBody[@Empty = false, @Size = 4]

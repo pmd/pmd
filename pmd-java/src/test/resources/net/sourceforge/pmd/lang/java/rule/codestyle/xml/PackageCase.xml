@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>bad</description>
@@ -29,6 +29,9 @@ package foo.BarBuz;
     <test-code>
         <description>#5452 javadoc comment and suppression NOPMD</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="4">//NOPMD</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 /**
  *  comment

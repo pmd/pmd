@@ -5,15 +5,19 @@
 package net.sourceforge.pmd.lang.visualforce.ast;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -33,8 +37,13 @@ import org.xml.sax.SAXException;
 
 import net.sourceforge.pmd.lang.visualforce.DataType;
 
+import com.google.common.reflect.ClassPath;
+
 /**
  * Responsible for storing a mapping of Fields that can be referenced from Visualforce to the type of the field.
+ *
+ * <p>SFDX and MDAPI project formats are supported.
+ * @see <a href="https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_source_file_format.htm">Salesforce DX Project Structure and Source Format</a>
  */
 class ObjectFieldTypes extends SalesforceFieldTypes {
     private static final Logger LOG = LoggerFactory.getLogger(ObjectFieldTypes.class);
@@ -44,18 +53,35 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     private static final String MDAPI_OBJECT_FILE_SUFFIX = ".object";
     private static final String SFDX_FIELD_FILE_SUFFIX = ".field-meta.xml";
 
-    private static final Map<String, DataType> STANDARD_FIELD_TYPES;
+    private static final Map<String, DataType> SYSTEM_FIELDS;
+    private static final Map<String, ClassPath.ClassInfo> SOBJECTS;
 
     static {
-        STANDARD_FIELD_TYPES = new HashMap<>();
-        STANDARD_FIELD_TYPES.put("createdbyid", DataType.Lookup);
-        STANDARD_FIELD_TYPES.put("createddate", DataType.DateTime);
-        STANDARD_FIELD_TYPES.put("id", DataType.Lookup);
-        STANDARD_FIELD_TYPES.put("isdeleted", DataType.Checkbox);
-        STANDARD_FIELD_TYPES.put("lastmodifiedbyid", DataType.Lookup);
-        STANDARD_FIELD_TYPES.put("lastmodifieddate", DataType.DateTime);
-        STANDARD_FIELD_TYPES.put("name", DataType.Text);
-        STANDARD_FIELD_TYPES.put("systemmodstamp", DataType.DateTime);
+        // see https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/system_fields.htm
+        SYSTEM_FIELDS = new HashMap<>();
+        SYSTEM_FIELDS.put("id", DataType.Lookup);
+        SYSTEM_FIELDS.put("isdeleted", DataType.Checkbox);
+        SYSTEM_FIELDS.put("createdbyid", DataType.Lookup);
+        SYSTEM_FIELDS.put("createddate", DataType.DateTime);
+        SYSTEM_FIELDS.put("lastmodifiedbyid", DataType.Lookup);
+        SYSTEM_FIELDS.put("lastmodifieddate", DataType.DateTime);
+        SYSTEM_FIELDS.put("systemmodstamp", DataType.DateTime);
+        // name is not defined as systemfield, but might occur frequently
+        SYSTEM_FIELDS.put("name", DataType.Text);
+
+        try {
+            // see https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm
+            // and https://github.com/apex-dev-tools/sobject-types
+            SOBJECTS = Collections.unmodifiableMap(
+                    ClassPath.from(ClassLoader.getSystemClassLoader())
+                            .getTopLevelClasses(com.nawforce.runforce.SObjects.Account.class.getPackage().getName())
+                            .stream()
+                            .collect(Collectors.toMap(c -> c.getSimpleName().toLowerCase(Locale.ROOT),
+                                    Function.identity()))
+            );
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -116,7 +142,7 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
             String objectName = parts[0];
             String fieldName = parts[1];
 
-            addStandardFields(objectName);
+            addSystemFields(objectName);
 
             // Attempt to find a metadata file that contains the custom field. The information will be located in a
             // file located at <objectDirectory>/<objectName>.object or in an file located at
@@ -151,6 +177,10 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
      * Sfdx projects decompose custom fields into individual files. This method will return the individual file that
      * corresponds to &lt;objectName&gt;.&lt;fieldName&gt; if it exists.
      *
+     * <p>Note: these metadata files are created not only for custom fields, but also for standard fields that
+     * are used within the project. The metadata of these standard fields (fields of standard objects) provide
+     * less explicit information. E.g. the type is not available the metadata file for these standard fields.
+     *
      * @return path to the metadata file for the Custom Field or null if not found
      */
     private Path getSfdxCustomFieldPath(Path objectsDirectory, String objectName, String fieldName) {
@@ -172,8 +202,33 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
             Document document = documentBuilder.parse(sfdxCustomFieldPath.toFile());
             Node fullNameNode = (Node) sfdxCustomFieldFullNameExpression.evaluate(document, XPathConstants.NODE);
             Node typeNode = (Node) sfdxCustomFieldTypeExpression.evaluate(document, XPathConstants.NODE);
-            String type = typeNode.getNodeValue();
-            DataType dataType = DataType.fromString(type);
+
+            DataType dataType = null;
+
+            if (typeNode != null) {
+                // custom field with a defined type
+                String type = typeNode.getNodeValue();
+                dataType = DataType.fromString(type);
+            } else {
+                // maybe a field from a standard object - the type is then not explicitly in field-meta.xml provided
+                ClassPath.ClassInfo classInfo = SOBJECTS.get(customObjectName.toLowerCase(Locale.ROOT));
+                if (classInfo != null) {
+                    Field[] fields = classInfo.load().getFields();
+                    for (Field f : fields) {
+                        if (f.getName().equalsIgnoreCase(fullNameNode.getNodeValue())) {
+                            dataType = DataType.fromTypeName(f.getType().getSimpleName());
+                            break;
+                        }
+                    }
+                    if (dataType == null) {
+                        LOG.warn("Couldn't determine data type of customObjectName={} from {}", customObjectName, sfdxCustomFieldPath);
+                        dataType = DataType.Unknown;
+                    }
+                } else {
+                    LOG.warn("Couldn't determine data type of customObjectName={} - no sobject definition found", customObjectName);
+                    dataType = DataType.Unknown;
+                }
+            }
 
             String key = customObjectName + "." + fullNameNode.getNodeValue();
             putDataType(key, dataType);
@@ -223,11 +278,13 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     }
 
     /**
-     * Add the set of standard fields which aren't present in the metadata file, but may be refernced from the
+     * Add the set of system fields which aren't present in the metadata file, but may be referenced from the
      * visualforce page.
+     *
+     * @see <a href="https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/system_fields.htm">Overview of Salesforce Objects and Fields / System Fields</a>
      */
-    private void addStandardFields(String customObjectName) {
-        for (Map.Entry<String, DataType> entry : STANDARD_FIELD_TYPES.entrySet()) {
+    private void addSystemFields(String customObjectName) {
+        for (Map.Entry<String, DataType> entry : SYSTEM_FIELDS.entrySet()) {
             putDataType(customObjectName + "." + entry.getKey(), entry.getValue());
         }
     }

@@ -16,7 +16,7 @@ public class Foo {
         Map m = new HashMap();
     }
 
-    public Map contructMap() {
+    public Map constructMap() {
         return new HashMap(); //not detected
     }
 }

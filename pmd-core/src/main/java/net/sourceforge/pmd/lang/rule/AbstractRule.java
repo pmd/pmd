@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -332,5 +332,15 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
             }
         }
         return rule;
+    }
+
+    @Override
+    @SuppressWarnings("PMD.UselessOverridingMethod")
+    public String dysfunctionReason() {
+        // This method is overridden to let subclasses remove their implementation
+        // of dysfunctionReason in a binary compatible way. For this to
+        // work one implementation has to be in a superclass, however this
+        // method only has a default implementation in the interface.
+        return super.dysfunctionReason();
     }
 }

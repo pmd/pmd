@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -93,7 +93,6 @@ public class TokenEntry implements Comparable<TokenEntry> {
         this.hashCode = hashCode;
     }
 
-    @SuppressWarnings("PMD.CompareObjectsWithEquals")
     @Override
     public boolean equals(Object o) {
         if (this == o) {

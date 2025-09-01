@@ -345,7 +345,7 @@ public class FooTest {
     </test-code>
 
     <test-code>
-        <description>#1465 False Positve UnusedImports with javadoc @link</description>
+        <description>#1465 False Positive UnusedImports with javadoc @link</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import a.b.c.d.AgentState;
@@ -366,7 +366,7 @@ public interface Foo {
     </test-code>
 
     <test-code>
-        <description>#1547 False Positve UnusedImports with javadoc for identifiers with underscores</description>
+        <description>#1547 False Positive UnusedImports with javadoc for identifiers with underscores</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.net.HttpURLConnection;
@@ -507,7 +507,7 @@ public class Derived extends FileInputStream {
         <description>#2025 False Positive in UnusedImports for params when using @see with FQCN</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import spark.Response; // flaged, should not
+import spark.Response; // flagged, should not
 
 /**
  * @see foo.bar.MyController#startTransaction(Response)
@@ -521,7 +521,7 @@ public class VendingV2PaymentRequest {
         <description>#2025 False Positive in UnusedImports for params when using @link with FQCN</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-import spark.Request; // flaged, should not
+import spark.Request; // flagged, should not
 
 /**
  * {@link foo.bar.MyController#startTransaction(Request)}
@@ -1265,7 +1265,7 @@ public class Foo {
     </test-code>
     
     <test-code>
-        <description>module import declarations (since java 23 preview, JEP 476)</description>
+        <description>module import declarations (since java 25, JEP 511)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import module java.base;
@@ -1273,11 +1273,10 @@ public class Foo {
     private File file; // imported via module import from java.base
 }
 ]]></code>
-        <source-type>java 23-preview</source-type>
     </test-code>
 
     <test-code>
-        <description>module import declarations - unnecessary (since java 23 preview, JEP 476)</description>
+        <description>module import declarations - unnecessary (since java 25, JEP 511)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <expected-messages>
@@ -1288,11 +1287,10 @@ import module java.base; // unnecessary
 public class Foo {
 }
 ]]></code>
-        <source-type>java 23-preview</source-type>
     </test-code>
 
     <test-code>
-        <description>module import declarations - duplicate 1 (since java 23 preview, JEP 476)</description>
+        <description>module import declarations - duplicate 1 (since java 25, JEP 511)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
@@ -1302,11 +1300,10 @@ public class Foo {
     private File file;
 }
 ]]></code>
-        <source-type>java 23-preview</source-type>
     </test-code>
 
     <test-code>
-        <description>module import declarations - duplicate 2 (since java 23 preview, JEP 476)</description>
+        <description>module import declarations - duplicate 2 (since java 25, JEP 511)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <expected-messages>
@@ -1319,7 +1316,6 @@ public class Foo {
     private File file;
 }
 ]]></code>
-        <source-type>java 23-preview</source-type>
     </test-code>
 
     <test-code>
@@ -1355,6 +1351,127 @@ public class C {
                 }
             }
             ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnnecessaryImport false positive for multiline @see Javadoc #5832</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * @see ArrayList#addAll(int,
+ *      Collection)
+ */
+public class Main { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedImports false positive for multiline @link Javadoc #1639</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.File;
+import java.io.FileOutputStream;
+
+public class Demo {
+    /** {@link
+     * FileOutputStream#FileOutputStream(File)} */
+    void main() {}
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand field import in javadoc</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+import static java.nio.charset.StandardCharsets.*; // Note: UTF_8 is a field in StandardCharsets and javadoc cannot reference it via static import
+public class Foo {
+    /**
+     * {@link UTF_8}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand method import in javadoc</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+import static java.util.function.Predicate.*; // Note: this would import all fields/methods from Predicate, but not Predicate itself, which is used in the javadoc
+import java.util.function.Predicate;
+public class Foo {
+    /**
+     * {@link Predicate#isEqual(Object)}}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand class import in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Map.*;
+public class Foo {
+    /**
+     * {@link Entry}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] on-demand import in javadoc</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Foo {
+    /**
+     * {@link  ArrayList  arraylist}
+     */
+    public void test() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] on-demand import in javadoc method param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Foo {
+    /**
+     * {@see Foo#someMethod(String, ArrayList)}
+     */
+    public void test() {}
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#2304: [java] static on-demand import in javadoc method param</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import static java.util.Map.*;
+
+public class Foo {
+    /**
+     * {@see Foo#someMethod(String, Entry)}
+     */
+    public void test() {}
+
+}
+        ]]></code>
     </test-code>
 
 </test-data>

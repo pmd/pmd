@@ -174,7 +174,7 @@ public final class InferenceVar implements SubstVar {
             for (JTypeMirror prev : prevBounds) {
                 // add substituted bound
                 JTypeMirror newBound = prev.subst(substitution);
-                if (newBound == prev || prevBounds.contains(newBound)) { // NOPMD CompareObjectsWithEquals
+                if (newBound == prev || prevBounds.contains(newBound)) {
                     // not actually new, don't call listeners, etc
                     newBounds.add(newBound);
                 } else {
@@ -199,7 +199,7 @@ public final class InferenceVar implements SubstVar {
 
     public boolean isEquivalentTo(JTypeMirror t) {
         return this == t || t instanceof InferenceVar
-            && ((InferenceVar) t).boundSet == this.boundSet; // NOPMD CompareObjectsWithEquals
+            && ((InferenceVar) t).boundSet == this.boundSet;
     }
 
     public boolean isSubtypeNoSideEffect(@NonNull JTypeMirror other) {

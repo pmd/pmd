@@ -107,7 +107,6 @@ public final class Slf4jSimpleConfigurationForAnt {
         }
     }
 
-    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private static Level getAntLogLevel(Project project) {
         for (final BuildListener l : project.getBuildListeners()) {
             Field declaredField = null;
@@ -148,7 +147,6 @@ public final class Slf4jSimpleConfigurationForAnt {
         return DEFAULT_LEVEL;
     }
 
-    @SuppressWarnings("PMD.AvoidAccessibilityAlteration")
     private static Level determineGradleLogLevel(Project project, BuildListener l) {
         try {
             project.log("Detected gradle AntLoggingAdapter", Project.MSG_DEBUG);

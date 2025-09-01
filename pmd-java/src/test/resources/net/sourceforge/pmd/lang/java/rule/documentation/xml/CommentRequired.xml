@@ -264,45 +264,45 @@ public class CommentRequired implements java.io.Serializable {
 package de.konsens.biene.ka.client;
 
 /**
- * Kommentar zu PmdMissingHeaderCommentTest
+ * Comment for PmdMissingHeaderCommentTest
  */
 public class PmdMissingHeaderCommentTest {
 
     /**
-     * Kommentar zu methode1()
+     * Comment for method1()
      */
-    public void methode1() {
+    public void method1() {
 
         /**
-        * Kommentar zu Local
+        * Comment for Local
         */
         class Local {
 
             /**
-             * Kommentar zu methode1()
+             * Comment for method1()
              */
-            void methode1() {
+            void method1() {
 
             }
         }
 
         Local local = new Local();
-        local.methode1();
+        local.method1();
 
         /**
-         * Kommentar zu Local2
+         * Comment for Local2
          */
         class Local2 {
 
             /**
-             * Kommentar zu methode1()
+             * Comment for method1()
              */
-            void methode1() {
+            void method1() {
             }
         }
 
         Local2 local2 = new Local2();
-        local2.methode1();
+        local2.method1();
     }
 }
         ]]></code>

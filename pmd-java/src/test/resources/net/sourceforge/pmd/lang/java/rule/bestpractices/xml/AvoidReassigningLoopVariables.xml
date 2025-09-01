@@ -673,12 +673,11 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <!-- Deactivated because this is hard to implement in the general case. -->
-    <test-code disabled="true">
+    <test-code>
         <description>#4500 violation: various conditional reassignments of 'for' loop variable, skip allowed</description>
         <rule-property name="forReassign">skip</rule-property>
-        <expected-problems>10</expected-problems>
-        <expected-linenumbers>13,14,15,16,17,18,19,20,21,22</expected-linenumbers>
+        <expected-problems>9</expected-problems>
+        <expected-linenumbers>16,17,18,19,20,21,22,23,24</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     void foo(int bar) {
@@ -692,16 +691,18 @@ public class Foo {
                 i += 1;
                 i -= 1;
                 doSomethingWith(i++);
-                i += 2;    // not OK (line 13)
-                i -= 2;    // not OK (line 14)
-                i &= 1;    // not OK (line 15)
-                i |= 1;    // not OK (line 16)
-                i *= 1;    // not OK - is not reported anymore (line 17)
-                i /= 1;    // not OK - is not reported anymore (line 18)
-                i = i + 1; // not OK - is reported with 7.0.0-rc1 (line 19)
-                i = i - 1; // not OK - is reported with 7.0.0-rc1 (line 20)
-                i = 5;     // not OK - is reported with 7.0.0-rc1 (line 21)
-                doSomethingWith(i = 5); // not OK - is reported with 7.0.0-rc1 (line 22)
+                i = i + 1;
+                i = i - 1;
+                i = 1 + i; // OK: same as i++
+                i = 1 - i; // not OK: this is not the same as i--
+                i -= 2;    // not OK
+                i += 2;    // not OK
+                i &= 1;    // not OK
+                i |= 1;    // not OK
+                i *= 1;    // not OK
+                i /= 1;    // not OK
+                i = 5;     // not OK
+                doSomethingWith(i = 5); // not OK
             }
         }
     }

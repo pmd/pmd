@@ -21,7 +21,7 @@ fi
 
 set -e
 
-# Make sure to use java11. This is already installed by build.sh
+# Make sure to use java11. This is already installed by build.yml/publish-snapshot.yml/publish-release.yml
 export JAVA_HOME=${HOME}/openjdk11
 export PATH=$JAVA_HOME/bin:$PATH
 
@@ -47,7 +47,7 @@ fi
 
 set -e
 
-# Make sure to use java11. This is already installed by build.sh
+# Make sure to use java11. This is already installed by build.yml/publish-snapshot.yml/publish-release.yml
 export JAVA_HOME=${HOME}/openjdk11
 export PATH=$JAVA_HOME/bin:$PATH
 

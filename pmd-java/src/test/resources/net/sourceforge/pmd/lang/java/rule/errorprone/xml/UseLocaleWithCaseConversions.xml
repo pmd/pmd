@@ -100,7 +100,7 @@ public class Foo {
     }
 
     private static class Ulid {
-        public Strinc toLowerCase() {
+        public String toLowerCase() {
             return null;
         }
     }

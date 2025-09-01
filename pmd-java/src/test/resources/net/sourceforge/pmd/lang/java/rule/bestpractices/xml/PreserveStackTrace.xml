@@ -149,7 +149,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>9, Excetion is cast, OK</description>
+        <description>9, Exception is cast, OK</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -1102,7 +1102,7 @@ public class SomeOtherUserDefinedException extends Exception {
                         throw v;
                     }
 
-                    // equivalent without interm. var.
+                    // equivalent without intermediate var.
                     try {
                     } catch (Throwable ex) {
                         if ("".isEmpty()) {

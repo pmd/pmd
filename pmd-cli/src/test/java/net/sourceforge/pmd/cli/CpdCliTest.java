@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.cli.internal.CliExitCode.RECOVERED_ERRORS_OR_V
 import static net.sourceforge.pmd.cli.internal.CliExitCode.VIOLATIONS_FOUND;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.Matchers.not;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
+import net.sourceforge.pmd.internal.util.IOUtil;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -225,6 +227,91 @@ class CpdCliTest extends BaseCliTest {
                     r.checkStdOut(containsPattern("System\\.out\\.println\\([ij] \\+ \"ä\"\\);"));
                 });
         });
+    }
+
+    @Test
+    void testFileList() throws Exception {
+        runCli(VIOLATIONS_FOUND,
+                "--minimum-tokens", "10",
+                "--file-list", BASE_RES_PATH + "fileList.txt",
+                "--format", "text")
+                .verify(r -> {
+                    r.checkStdErr(not(containsString("deprecated")));
+                    r.checkStdOut(containsString("Found a 5 line (13 tokens) duplication"));
+                });
+    }
+
+    @Test
+    void testExcludeFileList() throws Exception {
+        runCli(OK,
+                "--minimum-tokens", "10",
+                "--file-list", BASE_RES_PATH + "fileList.txt",
+                "--exclude-file-list", BASE_RES_PATH + "excludeFileList.txt",
+                "--format", "text", "--debug")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile.java"));
+                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile2.java"));
+                    r.checkStdErr(containsPattern("Excluding file .*GoodFile2.java"));
+                    r.checkStdErr(not(containsString("deprecated")));
+
+                    r.checkStdOut(not(containsString("Found a 5 line (13 tokens) duplication")));
+                });
+    }
+
+    @Test
+    void testExcludeFile() throws Exception {
+        runCli(OK,
+                "--minimum-tokens", "10",
+                "--file-list", BASE_RES_PATH + "fileList.txt",
+                "--exclude", BASE_RES_PATH + "badandgood/GoodFile.java", BASE_RES_PATH + "badandgood/GoodFile2.java",
+                "--format", "text", "--debug")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile.java"));
+                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile2.java"));
+                    r.checkStdErr(containsPattern("Excluding file .*GoodFile.java"));
+                    r.checkStdErr(containsPattern("Excluding file .*GoodFile2.java"));
+                    r.checkStdErr(not(containsString("deprecated")));
+
+                    r.checkStdOut(not(containsString("Found a 5 line (13 tokens) duplication")));
+                });
+    }
+
+    @Test
+    void testExcludeFileListDeprecated() throws Exception {
+        runCli(OK,
+                "--minimum-tokens", "10",
+                "--file-list", BASE_RES_PATH + "fileList.txt",
+                "--ignore-list", BASE_RES_PATH + "excludeFileList.txt",
+                "--format", "text", "--debug")
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile.java"));
+                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile2.java"));
+                    r.checkStdErr(containsPattern("Excluding file .*GoodFile2.java"));
+
+                    r.checkStdErr(containsString("deprecated. Use --exclude-file-list"));
+
+                    r.checkStdOut(not(containsString("Found a 5 line (13 tokens) duplication")));
+                });
+    }
+
+
+    @Test
+    void testReportFile(@TempDir Path tmp) throws Exception {
+        Path reportFile = tmp.resolve("report.txt");
+        runCli(VIOLATIONS_FOUND,
+                "--minimum-tokens", "10",
+                "--file-list", BASE_RES_PATH + "fileList.txt",
+                "--format", "text", "--debug", "-r", reportFile.toString())
+                .verify(r -> {
+                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile.java"));
+                    r.checkStdErr(containsPattern("Adding regular file .*GoodFile2.java"));
+                    r.checkStdErr(not(containsString("Excluding file")));
+
+                    r.checkStdOut(not(containsString("Found a 5 line (13 tokens) duplication")));
+
+                    String report = IOUtil.readFileToString(reportFile.toFile());
+                    assertThat(report, containsString("Found a 5 line (13 tokens) duplication"));
+                });
     }
 
     /**

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -292,7 +292,7 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    void stringConcatentationShouldNotBeCast() {
+    void stringConcatenationShouldNotBeCast() {
         // https://github.com/pmd/pmd/issues/1484
         String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
             + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
