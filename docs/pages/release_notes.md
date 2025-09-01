@@ -75,6 +75,7 @@ This is a {{ site.pmd.release_type }} release.
 * java
   * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
   * [#5960](https://github.com/pmd/pmd/issues/5960): \[java] Avoid/reduce duplicate error messages for some rules
+  * [#6014](https://github.com/pmd/pmd/issues/6014): \[java] Crash when encountering a java comment at the end of a file
 * java-bestpractices
   * [#2186](https://github.com/pmd/pmd/issues/2186): \[java] New rule: Reliance on default charset
   * [#4500](https://github.com/pmd/pmd/issues/4500): \[java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed
@@ -129,6 +130,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5980](https://github.com/pmd/pmd/pull/5980): chore: Fix typos - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5981](https://github.com/pmd/pmd/pull/5981): Fix #4911: \[java] AvoidRethrowingException consider supertypes in following catches - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5989](https://github.com/pmd/pmd/pull/5989): \[java] Improve performance of RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6016](https://github.com/pmd/pmd/pull/6016): \[java] Fix #6014: Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -798,7 +799,8 @@ public final class JavaAstUtils {
     }
 
     public static boolean isMarkdownComment(JavaccToken token) {
-        return token.kind == JavaTokenKinds.SINGLE_LINE_COMMENT && token.getText().charAt(2) == '/';
+        Chars text = token.getText();
+        return token.kind == JavaTokenKinds.SINGLE_LINE_COMMENT && text.length() > 2 && text.charAt(2) == '/';
     }
 
     /**
