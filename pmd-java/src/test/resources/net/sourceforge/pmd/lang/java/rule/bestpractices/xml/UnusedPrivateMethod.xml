@@ -2785,22 +2785,6 @@ class Foo {
         <description>addAllImpl</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-/*
- * Copyright (C) 2007 The Guava Authors
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -2840,8 +2824,8 @@ import java.util.stream.Collector;
 import org.jspecify.annotations.Nullable;
 
 @GwtCompatible
-public final class Multisets {
-  private Multisets() {}
+public final class addAllImpl {
+  private addAllImpl() {}
 
   /** An implementation of {@link Multiset#addAll}. */
   static <E extends @Nullable Object> boolean addAllImpl(
@@ -2863,6 +2847,65 @@ public final class Multisets {
     }
     elements.forEachEntry(self::add);
     return true;
+  }
+}
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>addAllImplFoo</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package com.google.common.collect;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.CollectPreconditions.checkNonnegative;
+import static com.google.common.collect.CollectPreconditions.checkRemove;
+import static java.lang.Math.max;
+import static java.lang.Math.min;
+import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
+
+import com.google.common.annotations.GwtCompatible;
+import com.google.common.annotations.GwtIncompatible;
+import com.google.common.annotations.J2ktIncompatible;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Multiset.Entry;
+import com.google.common.math.IntMath;
+import com.google.common.primitives.Ints;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.google.errorprone.annotations.InlineMe;
+import com.google.errorprone.annotations.concurrent.LazyInit;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
+import java.util.Spliterator;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collector;
+import org.jspecify.annotations.Nullable;
+
+@GwtCompatible
+public final class addAllImpl {
+  private addAllImpl() {}
+
+  /** An implementation of {@link Multiset#addAll}. */
+  static <E extends @Nullable Object> boolean addAllImpl(
+      Multiset<E> self, Collection<? extends E> elements) {
+    return addAllImplFoo(self, (Multiset<? extends E>) elements);
+  }
+
+  /** A specialization of {@code addAllImpl} for when {@code elements} is itself a Multiset. */
+  private static <E extends @Nullable Object> boolean addAllImplFoo(
+      Multiset<E> self, Multiset<? extends E> elements) {
   }
 }
             ]]></code>
