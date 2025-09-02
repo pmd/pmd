@@ -165,4 +165,28 @@ class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#5880: FN for DoubleCheckedLocking with more than two if statements</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+    Object baz = null;
+
+    Object bar() {
+        if (baz == null) {
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                    baz = enhanceObject(baz);
+                }
+            }
+        }
+        if (false) {
+            System.out.println("This will never print.");
+        }
+        return baz;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

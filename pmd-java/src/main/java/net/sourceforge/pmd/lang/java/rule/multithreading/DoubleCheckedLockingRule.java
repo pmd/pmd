@@ -89,19 +89,22 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             return data;
         }
 
-        List<ASTIfStatement> isl = node.descendants(ASTIfStatement.class).toList();
-        if (isl.size() == 2) {
-            ASTIfStatement outerIf = isl.get(0);
+        List<ASTIfStatement> nestedIfs = node.descendants(ASTIfStatement.class)
+                .filterNot(astIfStatement -> astIfStatement.descendants(ASTIfStatement.class).isEmpty())
+                .toList();
+
+        for (ASTIfStatement outerIf : nestedIfs) {
             if (JavaRuleUtil.isNullCheck(outerIf.getCondition(), returnVariable)) {
                 // find synchronized
                 List<ASTSynchronizedStatement> ssl = outerIf.descendants(ASTSynchronizedStatement.class).toList();
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
-                    ASTIfStatement is2 = isl.get(1);
-                    if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
-                        is2.descendants(ASTAssignmentExpression.class)
-                                .filter(assignment -> JavaAstUtils.isReferenceToVar(assignment.getLeftOperand(), returnVariable))
-                                .firstOpt()
-                                .ifPresent(ignored -> asCtx(data).addViolation(node));
+                    for (ASTIfStatement innerIf : outerIf.descendants(ASTIfStatement.class)) {
+                        if (JavaRuleUtil.isNullCheck(innerIf.getCondition(), returnVariable)) {
+                            innerIf.descendants(ASTAssignmentExpression.class)
+                                    .filter(assignment -> JavaAstUtils.isReferenceToVar(assignment.getLeftOperand(), returnVariable))
+                                    .firstOpt()
+                                    .ifPresent(ignored -> asCtx(data).addViolation(node));
+                        }
                     }
                 }
             }
