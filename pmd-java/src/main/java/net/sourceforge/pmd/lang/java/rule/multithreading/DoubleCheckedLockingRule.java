@@ -98,12 +98,10 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
                     ASTIfStatement is2 = isl.get(1);
                     if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
-                        List<ASTAssignmentExpression> assignments = is2.descendants(ASTAssignmentExpression.class).toList();
-                        if (assignments.size() == 1
-                            && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
-                            asCtx(data).addViolation(node);
-
-                        }
+                        is2.descendants(ASTAssignmentExpression.class)
+                                .filter(assignment -> JavaAstUtils.isReferenceToVar(assignment.getLeftOperand(), returnVariable))
+                                .firstOpt()
+                                .ifPresent(ignored -> asCtx(data).addViolation(node));
                     }
                 }
             }

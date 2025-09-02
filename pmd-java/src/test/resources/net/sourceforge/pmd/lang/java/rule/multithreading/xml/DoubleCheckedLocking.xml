@@ -128,11 +128,39 @@ public class Foo {
             synchronized (Foo.class) {
                 result = instance;
                 if (result == null) {
-                    result = instance = new Foo();
+                    instance = new Foo();
+                    result = instance;
                 }
             }
         }
         return result;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5880: FN for DoubleCheckedLocking with more than one assignment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+    Object baz = null;
+
+    Object bar() {
+        if (baz == null) {
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                    baz = enhanceObject(baz);
+                }
+            }
+        }
+        return baz;
+    }
+
+    private Object enhanceObject(Object obj) {
+        // do special stuff
+        return obj;
     }
 }
         ]]></code>
