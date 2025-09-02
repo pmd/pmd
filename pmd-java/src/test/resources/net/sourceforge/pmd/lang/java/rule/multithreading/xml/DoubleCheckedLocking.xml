@@ -128,8 +128,7 @@ public class Foo {
             synchronized (Foo.class) {
                 result = instance;
                 if (result == null) {
-                    instance = new Foo();
-                    result = instance;
+                    result = instance = new Foo();
                 }
             }
         }
@@ -185,6 +184,30 @@ class Foo {
             System.out.println("This will never print.");
         }
         return baz;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>volatile field is referenced indirectly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private volatile Foo instance;
+
+    public static Foo getInstance() {
+        Foo result = null;
+        result = this.instance;
+        if (result == null) {
+            synchronized (this) {
+                result = this.instance;
+                if (result == null) {
+                    result = new Foo();
+                    this.instance = result;
+                }
+            }
+        }
+        return result;
     }
 }
         ]]></code>
