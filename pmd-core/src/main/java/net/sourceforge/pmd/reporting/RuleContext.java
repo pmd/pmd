@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -44,9 +44,9 @@ public final class RuleContext {
     // they are stack-local
 
     private static final Object[] NO_ARGS = new Object[0];
-    private static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
-                                                                                ViolationSuppressor.REGEX_SUPPRESSOR,
-                                                                                ViolationSuppressor.XPATH_SUPPRESSOR);
+    static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = listOf(ViolationSuppressor.NOPMD_COMMENT_SUPPRESSOR,
+                                                                        ViolationSuppressor.REGEX_SUPPRESSOR,
+                                                                        ViolationSuppressor.XPATH_SUPPRESSOR);
 
     private final FileAnalysisListener listener;
     private final Rule rule;
@@ -168,21 +168,38 @@ public final class RuleContext {
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
-
         Node suppressionNode = getNearestNode(reportable, astInfo);
-
-        Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), suppressionNode);
-        String description = makeMessage(message, formatArgs, extraVariables);
-        RuleViolation violation = new ParametricRuleViolation(rule, location, description, extraVariables);
-
-        SuppressedViolation suppressed = suppressOrNull(suppressionNode, violation, handler);
+        RuleViolation violation = createViolation(() -> location, astInfo, suppressionNode, message, formatArgs);
+        SuppressedViolation suppressed = suppressOrNull(suppressionNode, violation, astInfo);
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);
         } else {
             listener.onRuleViolation(violation);
         }
+    }
+
+    /**
+     * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
+     */
+    @Experimental
+    public void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,
+                                String message, Object... formatArgs) {
+        Objects.requireNonNull(reportable, "Node was null");
+        Objects.requireNonNull(message, "Message was null");
+        Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
+
+        Node nearestNode = getNearestNode(reportable, astInfo);
+        RuleViolation violation = createViolation(reportable, astInfo, nearestNode, message, formatArgs);
+        listener.onRuleViolation(violation);
+    }
+
+    private RuleViolation createViolation(Reportable reportable, AstInfo<?> astInfo, Node nearestNode, String message, Object... formatArgs) {
+        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
+        Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), nearestNode);
+        String description = makeMessage(message, formatArgs, extraVariables);
+        FileLocation location = reportable.getReportLocation();
+        return new ParametricRuleViolation(rule, location, description, extraVariables);
     }
 
     private Node getNearestNode(Reportable reportable, AstInfo<?> astInfo) {
@@ -203,7 +220,8 @@ public final class RuleContext {
         return astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());
     }
 
-    private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, LanguageVersionHandler handler) {
+    private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, AstInfo<?> astInfo) {
+        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
         SuppressedViolation suppressed = ViolationSuppressor.suppressOrNull(handler.getExtraViolationSuppressors(), rv, location);
         if (suppressed == null) {
             suppressed = ViolationSuppressor.suppressOrNull(DEFAULT_SUPPRESSORS, rv, location);

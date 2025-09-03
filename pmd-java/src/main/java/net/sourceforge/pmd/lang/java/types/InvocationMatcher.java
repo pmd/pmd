@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -103,7 +104,7 @@ public final class InvocationMatcher {
     }
 
     private boolean matchQualifier(InvocationNode node) {
-        if (qualifierMatcher == TypeMatcher.ANY) { // NOPMD CompareObjectsWithEquals
+        if (qualifierMatcher == TypeMatcher.ANY) {
             return true;
         }
         if (node instanceof ASTConstructorCall) {
@@ -272,6 +273,22 @@ public final class InvocationMatcher {
         return "_".equals(name) ? TypeMatcher.ANY : new TypeMatcher(name);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        InvocationMatcher that = (InvocationMatcher) o;
+        return Objects.equals(expectedName, that.expectedName)
+                && Objects.equals(argMatchers, that.argMatchers)
+                && Objects.equals(qualifierMatcher, that.qualifierMatcher);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expectedName, argMatchers, qualifierMatcher);
+    }
+
     private static final class TypeMatcher {
 
         /** Matches any type. */
@@ -287,6 +304,20 @@ public final class InvocationMatcher {
             return name == null
                    || (exact ? TypeTestUtil.isExactlyAOrAnon(name, type) == OptionalBool.YES
                          : TypeTestUtil.isA(name, type));
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            TypeMatcher that = (TypeMatcher) o;
+            return Objects.equals(name, that.name);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(name);
         }
     }
 

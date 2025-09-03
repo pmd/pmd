@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -26,10 +25,5 @@ class QuickstartRulesetTest {
             assertFalse(quickstart.getRules().isEmpty());
         });
         assertTrue(errorOutput.isEmpty());
-    }
-
-    @Test
-    void correctEncoding() throws Exception {
-        assertTrue(AbstractRuleSetFactoryTest.hasCorrectEncoding(QUICKSTART_RULESET));
     }
 }

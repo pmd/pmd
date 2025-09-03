@@ -28,13 +28,14 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.metrics.internal.AtfdBaseVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.ClassFanOutVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor;
 import net.sourceforge.pmd.lang.java.metrics.internal.CognitiveComplexityVisitor.State;
 import net.sourceforge.pmd.lang.java.metrics.internal.CycloVisitor;
+import net.sourceforge.pmd.lang.java.metrics.internal.NPathMetricCalculator;
 import net.sourceforge.pmd.lang.java.metrics.internal.NcssVisitor;
-import net.sourceforge.pmd.lang.java.metrics.internal.NpathBaseVisitor;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
@@ -316,37 +317,81 @@ public final class JavaMetrics {
      * Methods with an NPath complexity over 200 are generally considered
      * too complex.
      *
-     * <p>We compute NPath recursively, with the following set of rules:
-     * <ul>
-     * <li>An empty block has a complexity of 1.
-     * <li>The complexity of a block is the product of the NPath complexity
-     * of its statements, calculated as follows:
-     * <ul>
-     * <li>The complexity of for, do and while statements is 1, plus the
-     * complexity of the block, plus the complexity of the guard condition.
-     * <li> The complexity of a cascading if statement ({@code if .. else if ..})
-     * is the number of if statements in the chain, plus the complexity of
-     * their guard condition, plus the complexity of the unguarded else block
-     * (or 1 if there is none).
-     * <li> The complexity of a switch statement is the number of cases,
-     * plus the complexity of each case block. It’s equivalent to the
-     * complexity of the equivalent cascade of if statements.
-     * <li> The complexity of a ternary expression ({@code ? :}) is the complexity
-     * of the guard condition, plus the complexity of both expressions.
-     * It’s equivalent to the complexity of the equivalent {@code if .. else} construct.
-     * <li> The complexity of a {@code try .. catch} statement is the complexity
-     * of the {@code try} block, plus the complexity of each catch block.
-     * <li> The complexity of a return statement is the complexity of the
-     * expression (or 1 if there is none).
-     * <li> All other statements have a complexity of 1 and are discarded
-     * from the product.
-     * </ul>
-     * </li>
-     * </ul>
+     * <p>NPath is computed through control flow analysis. We walk a block
+     * and keep track of how many control flow paths lead to the current
+     * program point. We make sure to separate paths that end abruptly
+     * (for instance because of a throw, or return). This accurately counts
+     * the number of paths that lead out of a given method. For instance:
+     * <pre>{@code
+     *  // entry
+     *  if (foo)
+     *     return foo;
+     *  doSomething();
+     *  // exit
+     * }</pre>
+     * Here there are two paths from the entry to the exit of the method:
+     * one that ends after doSomething(), and another that ends with the
+     * return statement. Complexity can snowball rapidly. For instance:
+     * <pre>{@code
+     *  // entry
+     *  if (foo) a = 1; else a = 2;
+     *  // join
+     *  if (bar) b = 3; else b = 4;
+     *  // exit
+     * }</pre>
+     * Here there are two paths from {@code entry} to {@code join}: one
+     * that goes through each branch of the if/else. Then there are two
+     * paths from {@code join} to {@code exit}, for the same reason. The
+     * total number of paths from {@code entry} to {@code exit} is
+     * {@code 2 * 2 = 4}. Since complexities multiply in this way, it
+     * can grow exponentially. This is not the case with early-return
+     * patterns for instance:
+     * <pre>{@code
+     *  // entry
+     *  if (foo) return x;
+     *  // join
+     *  if (bar) = 3;
+     *  // exit
+     * }</pre>
+     * Here there is only one path from {@code entry} to {@code join},
+     * because the {@code if} branch returns early. There are two paths
+     * from {@code join} to {@code exit} (and notice, that's true even if
+     * there is no else branch, because the path where the if condition is
+     * false must be taken into account anyway). So in total there are {@code 1*2 + 1 = 3}
+     * paths from {@code entry} to the end of the block or function (the
+     * return statement still counts).
+     *
+     * <p>Note that shortcut boolean operators are counted as control flow
+     * branches, especially if they happen in the condition of a control flow
+     * statement. For instance
+     * <pre>{@code
+     *  // entry
+     *  if (foo || bar)
+     *     return foo ? a() : b();
+     *  doSomething();
+     *  // exit
+     * }</pre>
+     * How many paths are there here? There is one path that goes from {@code entry}
+     * to {@code exit}, which is taken if {@code !foo && !bar}. There is
+     * one path that leads to the return statement if foo is true, and
+     * another if foo is false and bar is true. In the return statement,
+     * there is one path that executes a() and another that executes b().
+     * In total, there are 2 * 2 paths that start at {@code entry} and
+     * end at the return statement, and 1 path that goes from {@code entry}
+     * to {@code exit}, so the total is 5 paths.
      */
+    public static final Metric<ReturnScopeNode, Long> NPATH_COMP =
+            Metric.of(JavaMetrics::computeNpath, NodeStream.asInstanceOf(ReturnScopeNode.class),
+                    "NPath Complexity", "NPath");
+
+    /**
+     * @deprecated Since 7.14.0. Use {@link #NPATH_COMP}, which is available on more nodes,
+     *             and uses Long instead of BigInteger.
+     */
+    @Deprecated
     public static final Metric<ASTExecutableDeclaration, BigInteger> NPATH =
         Metric.of(JavaMetrics::computeNpath, asMethodOrCtor(),
-                  "NPath Complexity", "NPath");
+                  "NPath Complexity (deprecated)", "NPath");
 
     public static final Metric<ASTTypeDeclaration, Integer> NUMBER_OF_ACCESSORS =
         Metric.of(JavaMetrics::computeNoam, asClass(always()),
@@ -411,6 +456,7 @@ public final class JavaMetrics {
     }
 
     private static Function<Node, @Nullable ASTExecutableDeclaration> asMethodOrCtor() {
+
         return n -> n instanceof ASTExecutableDeclaration ? (ASTExecutableDeclaration) n : null;
     }
 
@@ -460,8 +506,12 @@ public final class JavaMetrics {
         return counter.getValue();
     }
 
-    private static BigInteger computeNpath(JavaNode node, MetricOptions ignored) {
-        return node.acceptVisitor(NpathBaseVisitor.INSTANCE, null);
+    private static BigInteger computeNpath(ASTExecutableDeclaration node, MetricOptions ignored) {
+        return BigInteger.valueOf(NPathMetricCalculator.computeNpath(node));
+    }
+
+    private static long computeNpath(ReturnScopeNode node, MetricOptions ignored) {
+        return NPathMetricCalculator.computeNpath(node);
     }
 
     private static int computeCognitive(JavaNode node, MetricOptions ignored) {

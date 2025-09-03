@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -173,56 +173,16 @@ public final class CpdAnalysis implements AutoCloseable {
         performAnalysis(r -> { });
     }
 
-    @SuppressWarnings("PMD.CloseResource")
     public void performAnalysis(Consumer<CPDReport> consumer) {
-
         try (SourceManager sourceManager = new SourceManager(files.getCollectedFiles())) {
             if (sourceManager.isEmpty()) {
                 reporter.warn("No files to analyze. Check input paths and exclude parameters, use --debug to see file collection traces.");
             }
 
-            Map<Language, CpdLexer> tokenizers =
-                sourceManager.getTextFiles().stream()
-                             .map(it -> it.getLanguageVersion().getLanguage())
-                             .distinct()
-                             .filter(it -> it instanceof CpdCapableLanguage)
-                             .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdLexer(configuration.getLanguageProperties(lang))));
-
-            Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
-
-            final List<Match> matches;
-            List<Report.ProcessingError> processingErrors;
-            {
-                TokenFileSet tokens = new TokenFileSet(sourceManager);
-                processingErrors = processAllFiles(
-                    configuration.getThreads(),
-                    sourceManager,
-                    textFile -> {
-                        try (TextDocument textDocument = sourceManager.load(textFile)) {
-                            CpdLexer lexer = tokenizers.get(textFile.getLanguageVersion().getLanguage());
-                            int newTokens = doTokenize(textDocument, lexer, tokens);
-                            synchronized (this) {
-                                numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
-                                listener.addedFile(1);
-                            }
-                            return null;
-                        } catch (IOException | FileAnalysisException e) {
-                            if (e instanceof FileAnalysisException) { // NOPMD
-                                ((FileAnalysisException) e).setFileId(textFile.getFileId());
-                            }
-                            Level level = configuration.isFailOnError() ? Level.ERROR : Level.WARN;
-                            reporter.logEx(level, "Skipping file", new Object[0], e);
-                            return new Report.ProcessingError(e, textFile.getFileId());
-                        }
-                    });
-
-                LOGGER.debug("Done lexing. CPD token count stats {}", tokens.getStats());
-                LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
-                matches = findMatches(sourceManager, listener, tokens, configuration.getMinimumTileSize());
+            CPDReport cpdReport = findMatches(sourceManager);
+            if (cpdReport == null) {
+                return;
             }
-            LOGGER.debug("Finished: {} duplicates found", matches.size());
-
-            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile, processingErrors);
 
             if (renderer != null) {
                 Path reportFilePath = configuration.getReportFilePath();
@@ -233,10 +193,60 @@ public final class CpdAnalysis implements AutoCloseable {
             }
 
             consumer.accept(cpdReport);
-        } catch (Exception e) {
+        } catch (IOException | ExecutionException | InterruptedException e) {
             reporter.errorEx("Exception while running CPD", e);
         }
         // source manager is closed and closes all text files now.
+    }
+
+    private CPDReport findMatches(SourceManager sourceManager) throws ExecutionException, InterruptedException {
+        Map<Language, CpdLexer> tokenizers =
+            sourceManager.getTextFiles().stream()
+                         .map(it -> it.getLanguageVersion().getLanguage())
+                         .distinct()
+                         .filter(it -> it instanceof CpdCapableLanguage)
+                         .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdLexer(configuration.getLanguageProperties(lang))));
+
+        // Note: tokens contains all tokens of all analyzed files which is a huge data structure.
+        // The tokens are only needed for finding the matches and can be garbage collected afterwards.
+        // The report only needs the matches. Especially, the tokens are only referenced here and in
+        // matchAlgorithm. When this method finishes, tokens should be eligible for garbage collection
+        // making it possible to free up memory for render the report if needed.
+        TokenFileSet tokens = new TokenFileSet(sourceManager);
+        Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
+        List<Report.ProcessingError> processingErrors = processAllFiles(
+            configuration.getThreads(),
+            sourceManager,
+            textFile -> {
+                try (TextDocument textDocument = sourceManager.load(textFile)) {
+                    CpdLexer lexer = tokenizers.get(textFile.getLanguageVersion().getLanguage());
+                    int newTokens = doTokenize(textDocument, lexer, tokens);
+                    synchronized (this) {
+                        numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
+                        listener.addedFile(1);
+                    }
+                    return null;
+                } catch (IOException | FileAnalysisException e) {
+                    if (e instanceof FileAnalysisException) { // NOPMD
+                        ((FileAnalysisException) e).setFileId(textFile.getFileId());
+                    }
+                    Level level = configuration.isFailOnError() ? Level.ERROR : Level.WARN;
+                    reporter.logEx(level, "Skipping file", new Object[0], e);
+                    return new Report.ProcessingError(e, textFile.getFileId());
+                }
+            });
+
+        if (!processingErrors.isEmpty() && !configuration.isSkipLexicalErrors()) {
+            reporter.error("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+            return null;
+        }
+
+        LOGGER.debug("Done lexing. CPD token count stats {}", tokens.getStats());
+        LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
+        List<Match> matches = findMatches(sourceManager, listener, tokens, configuration.getMinimumTileSize());
+        LOGGER.debug("Finished: {} duplicates found", matches.size());
+
+        return new CPDReport(sourceManager, matches, numberOfTokensPerFile, processingErrors);
     }
 
     /**

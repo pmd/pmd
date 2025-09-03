@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.startsWith;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -37,6 +38,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.commons.lang3.SystemUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -152,7 +154,7 @@ class PmdCliTest extends BaseCliTest {
         // restoring system properties: --debug might change logging properties
         SystemLambda.restoreSystemProperties(() -> {
             runCli(OK,
-                    "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--ignore", srcDir.toString(), "--debug")
+                    "--dir", srcDir.toString(), "--rulesets", DUMMY_RULESET_WITH_VIOLATIONS, "--exclude", srcDir.toString(), "--debug")
                     .verify(r -> {
                         r.checkStdErr(containsString("No files to analyze"));
                         r.checkStdOut(emptyString());
@@ -456,11 +458,39 @@ class PmdCliTest extends BaseCliTest {
                 });
     }
 
+    private static Path createSymlink(Path linkName, Path target) throws IOException {
+        assertTrue(Files.isDirectory(target), "Symbolic link target " + target + " is not a directory!");
+        try {
+            return Files.createSymbolicLink(linkName, target);
+        } catch (IOException e) {
+            if (SystemUtils.IS_OS_WINDOWS) {
+                // Creating symbolic links under Windows requires special permission "SeCreateSymbolicLinkPrivilege".
+                // GitHub Actions runners under Windows run with Administrator privileges, which allow to create
+                // symlinks. Non-admin users would need to have this privilege added or enable Developer Mode.
+                // However, we only need a symlink to a directory, and Windows supports "Directory Junctions"
+                // for this - these can be created by ordinary users without special privileges.
+                Process process = Runtime.getRuntime().exec(new String[]{"cmd", "/c", "mklink", "/J", linkName.toString(), target.toString()});
+                int exitCode;
+                try {
+                    exitCode = process.waitFor();
+                } catch (InterruptedException interrupt) {
+                    Thread.currentThread().interrupt();
+                    throw new RuntimeException(interrupt);
+                }
+                assertEquals(0, exitCode, "Error creating symlink on windows: exit code = " + exitCode);
+                assertTrue(Files.exists(linkName), "Symlink (junction) " + linkName + " doesn't exist!");
+                return linkName;
+            } else {
+                throw e;
+            }
+        }
+    }
+
     @Test
     void testRelativizeWithSymLink() throws Exception {
         // srcDir = /tmp/junit123/src
         // symlinkedSrcDir = /tmp/junit123/sources -> /tmp/junit123/src
-        Path symlinkedSrcDir = Files.createSymbolicLink(tempRoot().resolve("sources"), srcDir);
+        Path symlinkedSrcDir = createSymlink(tempRoot().resolve("sources"), srcDir);
         runCli(VIOLATIONS_FOUND, "--dir", symlinkedSrcDir.toString(), "--rulesets",
                 DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.toString())
                 .verify(result -> {
@@ -476,7 +506,7 @@ class PmdCliTest extends BaseCliTest {
         // symlinkedSrcDir = /tmp/junit-relativize-with-123 -> /tmp/junit123/src
         Path tempPath = Files.createTempDirectory("junit-relativize-with-");
         Files.delete(tempPath);
-        Path symlinkedSrcDir = Files.createSymbolicLink(tempPath, srcDir);
+        Path symlinkedSrcDir = createSymlink(tempPath, srcDir);
         // relativizing against parent of symlinkedSrcDir: /tmp
         runCli(VIOLATIONS_FOUND, "--dir", symlinkedSrcDir.toString(), "--rulesets",
                 DUMMY_RULESET_WITH_VIOLATIONS, "-z", symlinkedSrcDir.getParent().toString())
@@ -540,6 +570,25 @@ class PmdCliTest extends BaseCliTest {
         runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "1");
         runCliSuccessfully("-d", srcDir.toString(), "-f", "text", "-R", RULESET_WITH_VIOLATION, "--minimum-priority", "2");
     }
+
+    @Test
+    void defaultThreadCount() throws Exception {
+        CliExecutionResult result = runCliSuccessfully("--debug", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
+        result.checkStdErr(containsString("[DEBUG] Using " + Runtime.getRuntime().availableProcessors() + " threads for analysis"));
+    }
+
+    @Test
+    void monoThreadCount() throws Exception {
+        CliExecutionResult result = runCliSuccessfully("--debug", "--threads", "0", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
+        result.checkStdErr(containsString("[DEBUG] Using main thread for analysis"));
+    }
+
+    @Test
+    void oneThreadCount() throws Exception {
+        CliExecutionResult result = runCliSuccessfully("--debug", "--threads", "1", "--dir", srcDir.toString(), "--rulesets", RULESET_NO_VIOLATIONS);
+        result.checkStdErr(containsString("[DEBUG] Using 1 thread for analysis"));
+    }
+
 
     // utilities
     private Path tempRoot() {

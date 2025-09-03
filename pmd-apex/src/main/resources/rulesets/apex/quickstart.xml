@@ -64,6 +64,7 @@
       <priority>3</priority>
    </rule>
    <!-- <rule ref="category/apex/design.xml/CognitiveComplexity"/> -->
+   <!-- <rule ref="category/apex/design.xml/AvoidBooleanMethodParameters"/> -->
 
    <!-- PERFORMANCE -->
    <rule ref="category/apex/performance.xml/OperationWithLimitsInLoop" message="Avoid operations in loops that may hit governor limits">
@@ -112,6 +113,9 @@
       <priority>3</priority>
    </rule>
    <rule ref="category/apex/codestyle.xml/PropertyNamingConventions">
+      <priority>3</priority>
+   </rule>
+   <rule ref="category/apex/codestyle.xml/AnnotationsNamingConventions">
       <priority>3</priority>
    </rule>
 

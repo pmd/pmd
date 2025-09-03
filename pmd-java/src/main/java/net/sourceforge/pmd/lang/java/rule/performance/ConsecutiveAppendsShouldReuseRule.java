@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -77,7 +77,7 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
         while (expr instanceof ASTMethodCall && isStringBuilderAppend(expr)) {
             expr = ((ASTMethodCall) expr).getQualifier();
         }
-        return base == expr ? null : expr; // NOPMD
+        return base == expr ? null : expr;
     }
 
     private @Nullable JVariableSymbol getAssignmentLhsAsVar(@Nullable ASTExpression expr) {

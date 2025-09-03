@@ -1,9 +1,9 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 /*
- * This file is to test the JavaCC java grammer, whether we can parse specific java constructs without
+ * This file is to test the JavaCC java grammar, whether we can parse specific java constructs without
  * throwing a syntax error.
  */
 

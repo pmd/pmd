@@ -139,7 +139,7 @@ final class AstDisambiguationPass {
                 checkParentIsMember(processor, resolvedType, parent);
             }
 
-            if (resolved != name) { // NOPMD - intentional check for reference equality
+            if (resolved != name) {
                 ((AbstractJavaNode) name.getParent()).setChild((AbstractJavaNode) resolved, name.getIndexInParent());
             }
 

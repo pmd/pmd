@@ -1,10 +1,8 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.metrics.impl;
-
-import java.math.BigInteger;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.metrics.JavaMetrics;
@@ -13,24 +11,24 @@ import net.sourceforge.pmd.lang.test.AbstractMetricTestRule;
 /**
  * @author Clément Fournier
  */
-public class NPathTestRule extends AbstractMetricTestRule<BigInteger> {
+public class NPathTestRule extends AbstractMetricTestRule<Long> {
 
     public NPathTestRule() {
-        super(JavaMetrics.NPATH);
+        super(JavaMetrics.NPATH_COMP);
     }
 
     @Override
-    protected String violationMessage(Node node, BigInteger result) {
-        return AllMetricsTest.formatJavaMessage(node, result, super.violationMessage(node, result));
+    protected String violationMessage(Node node, Long result) {
+        return AllMetricsTest.formatJavaMessage(node, result);
     }
 
     @Override
-    protected BigInteger parseReportLevel(String value) {
-        return new BigInteger(value);
+    protected Long parseReportLevel(String value) {
+        return Long.parseLong(value);
     }
 
     @Override
-    protected BigInteger defaultReportLevel() {
-        return BigInteger.ZERO;
+    protected Long defaultReportLevel() {
+        return 0L;
     }
 }

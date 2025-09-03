@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -75,7 +75,8 @@ public class UnusedPrivateFieldRule extends AbstractJavaRulechainRule {
     }
 
     private boolean hasAnyAnnotation(Annotatable node) {
-        NodeStream<ASTAnnotation> declaredAnnotations = node.getDeclaredAnnotations();
+        NodeStream<ASTAnnotation> declaredAnnotations = node.getDeclaredAnnotations()
+                .filterNot(a -> TypeTestUtil.isA(SuppressWarnings.class, a));
         for (String reportAnnotation : getProperty(REPORT_FOR_ANNOTATIONS_DESCRIPTOR)) {
             for (ASTAnnotation annotation: declaredAnnotations) {
                 if (TypeTestUtil.isA(reportAnnotation, annotation)) {

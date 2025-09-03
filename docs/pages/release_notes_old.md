@@ -7,6 +7,424 @@ Previous versions of PMD can be downloaded here: [Releases - pmd/pmd (GitHub)](h
 
 
 
+## 25-July-2025 - 7.16.0
+
+The PMD team is pleased to announce PMD 7.16.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🚀 New and noteworthy](#new-and-noteworthy)
+    * [🚀 New: Java 25 Support](#new-java-25-support)
+    * [New: CPD support for CSS](#new-cpd-support-for-css)
+    * [✨ New Rules](#new-rules)
+* [🐛 Fixed Issues](#fixed-issues)
+* [🚨 API Changes](#api-changes)
+    * [Experimental APIs that are now considered stable](#experimental-apis-that-are-now-considered-stable)
+* [✨ Merged pull requests](#merged-pull-requests)
+* [📦 Dependency updates](#dependency-updates)
+* [📈 Stats](#stats)
+
+### 🚀 New and noteworthy
+
+#### 🚀 New: Java 25 Support
+This release of PMD brings support for Java 25.
+
+There are the following new standard language features:
+* [JEP 511: Module Import Declarations](https://openjdk.org/jeps/511)
+* [JEP 512: Compact Source Files and Instance Main Methods](https://openjdk.org/jeps/512)
+* [JEP 513: Flexible Constructor Bodies](https://openjdk.org/jeps/513)
+
+And one preview language feature:
+* [JEP 507: Primitive Types in Patterns, instanceof, and switch (Third Preview)](https://openjdk.org/jeps/507)
+
+In order to analyze a project with PMD that uses these preview language features,
+you'll need to enable it via the environment variable `PMD_JAVA_OPTS` and select the new language
+version `25-preview`:
+
+    export PMD_JAVA_OPTS=--enable-preview
+    pmd check --use-version java-25-preview ...
+
+Note: Support for Java 23 preview language features have been removed. The version "23-preview"
+is no longer available.
+
+#### New: CPD support for CSS
+CPD now supports CSS (Cascading Style Sheets), a language for describing the rendering of structured
+documents (such as HTML) on screen, on paper etc.  
+It is shipped with the new module `pmd-css`.
+
+#### ✨ New Rules
+* Two new rules have been added to Java's Error Prone category: [`ReplaceJavaUtilCalendar`](https://docs.pmd-code.org/pmd-doc-7.16.0/pmd_rules_java_errorprone.html#replacejavautilcalendar)
+  and [`ReplaceJavaUtilDate`](https://docs.pmd-code.org/pmd-doc-7.16.0/pmd_rules_java_errorprone.html#replacejavautildate). These rules help to migrate away from old Java APIs around
+  `java.util.Calendar` and `java.util.Date`. It is recommended to use the modern `java.time` API instead, which
+  is available since Java 8.
+
+### 🐛 Fixed Issues
+* core
+  * [#4328](https://github.com/pmd/pmd/issues/4328): \[ci] Improve Github Actions Workflows
+  * [#5597](https://github.com/pmd/pmd/issues/5597): \[core] POM Incompatibility with Maven 4
+* java
+  * [#5344](https://github.com/pmd/pmd/issues/5344): \[java] IllegalArgumentException: Invalid type reference for method or ctor type annotation: 16
+  * [#5478](https://github.com/pmd/pmd/issues/5478): \[java] Support Java 25
+* java-codestyle
+  * [#5892](https://github.com/pmd/pmd/issues/5892): \[java] ShortVariable false positive for java 22 unnamed variable `_`
+* java-design
+  * [#5858](https://github.com/pmd/pmd/issues/5858): \[java] FinalFieldCouldBeStatic false positive for array initializers
+* java-errorprone
+  * [#2862](https://github.com/pmd/pmd/issues/2862): \[java] New Rules: Avoid java.util.Date and Calendar classes
+
+### 🚨 API Changes
+
+#### Experimental APIs that are now considered stable
+* pmd-java
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.16.0/net/sourceforge/pmd/lang/java/ast/ASTImportDeclaration.html#isModuleImport()"><code>ASTImportDeclaration#isModuleImport</code></a> is now stable API.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.16.0/net/sourceforge/pmd/lang/java/ast/ASTCompilationUnit.html#isCompact()"><code>ASTCompilationUnit#isCompact</code></a> is now stable API. Note, it was previously
+    called `isSimpleCompilationUnit`.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.16.0/net/sourceforge/pmd/lang/java/ast/ASTImplicitClassDeclaration.html#"><code>ASTImplicitClassDeclaration</code></a> is now stable API.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.16.0/net/sourceforge/pmd/lang/java/ast/JavaVisitorBase.html#visit(net.sourceforge.pmd.lang.java.ast.ASTImplicitClassDeclaration,P)"><code>JavaVisitorBase#visit(ASTImplicitClassDeclaration, P)</code></a> is now
+    stable API.
+
+### ✨ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5733](https://github.com/pmd/pmd/pull/5733): \[css] Add new CPD language - [Thomas Prouvot](https://github.com/tprouvot) (@tprouvot)
+* [#5859](https://github.com/pmd/pmd/pull/5859): Fix #5858: \[java] Fix false positive in FinalFieldCouldBeStatic for array initializers - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#5872](https://github.com/pmd/pmd/pull/5872): \[java] Add Support for Java 25 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5876](https://github.com/pmd/pmd/pull/5876): chore: license header cleanup - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5883](https://github.com/pmd/pmd/pull/5883): Fix #2862: \[java] Add rules discouraging the use of java.util.Calendar and java.util.Date - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5893](https://github.com/pmd/pmd/pull/5893): chore: Fix Mockito javaagent warning for Java 21+ - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5894](https://github.com/pmd/pmd/pull/5894): chore: Fix JUnit warning about invalid test factory - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5895](https://github.com/pmd/pmd/pull/5895): Fix #5597: Move dogfood profile to separate settings.xml - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5899](https://github.com/pmd/pmd/pull/5899): Fix #5344: \[java] Just log invalid annotation target type - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5909](https://github.com/pmd/pmd/pull/5909): \[ci] Create a pre-release for snapshot builds - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5911](https://github.com/pmd/pmd/pull/5911): \[doc] Reference CPD Capable Languages in CPD CLI docu - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5914](https://github.com/pmd/pmd/pull/5914): Fix #5892: \[java] ShortVariable FP for java 22 Unnamed Variable - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5918](https://github.com/pmd/pmd/pull/5918): chore: \[cli] Improve symbolic link tests for Windows - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5920](https://github.com/pmd/pmd/pull/5920): chore: \[scala] Fix javadoc config - [Andreas Dangel](https://github.com/adangel) (@adangel)
+
+### 📦 Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5857](https://github.com/pmd/pmd/pull/5857): Bump PMD from 7.14.0 to 7.15.0
+* [#5861](https://github.com/pmd/pmd/pull/5861): Bump scalameta.version from 4.13.7 to 4.13.8
+* [#5862](https://github.com/pmd/pmd/pull/5862): Bump com.puppycrawl.tools:checkstyle from 10.25.1 to 10.26.1
+* [#5863](https://github.com/pmd/pmd/pull/5863): Bump org.apache.maven.plugins:maven-pmd-plugin from 3.26.0 to 3.27.0
+* [#5864](https://github.com/pmd/pmd/pull/5864): Bump kotlin.version from 1.9.24 to 2.2.0
+* [#5865](https://github.com/pmd/pmd/pull/5865): Bump org.junit:junit-bom from 5.13.1 to 5.13.2
+* [#5866](https://github.com/pmd/pmd/pull/5866): Bump org.jsoup:jsoup from 1.20.1 to 1.21.1
+* [#5884](https://github.com/pmd/pmd/pull/5884): Bump org.junit:junit-bom from 5.13.2 to 5.13.3
+* [#5885](https://github.com/pmd/pmd/pull/5885): Bump org.apache.maven.plugins:maven-gpg-plugin from 3.2.7 to 3.2.8
+* [#5886](https://github.com/pmd/pmd/pull/5886): Bump org.checkerframework:checker-qual from 3.49.4 to 3.49.5
+* [#5889](https://github.com/pmd/pmd/pull/5889): Bump org.apache.maven.plugins:maven-enforcer-plugin from 3.5.0 to 3.6.0
+* [#5900](https://github.com/pmd/pmd/pull/5900): Bump org.apache.commons:commons-lang3 from 3.17.0 to 3.18.0
+* [#5901](https://github.com/pmd/pmd/pull/5901): Bump io.github.apex-dev-tools:apex-parser from 4.4.0 to 4.4.1
+* [#5902](https://github.com/pmd/pmd/pull/5902): Bump log4j.version from 2.25.0 to 2.25.1
+* [#5910](https://github.com/pmd/pmd/pull/5910): Bump maven from 3.9.10 to 3.9.11
+* [#5921](https://github.com/pmd/pmd/pull/5921): Bump build-tools from 32 to 33
+* [#5926](https://github.com/pmd/pmd/pull/5926): chore(deps): bump org.apache.maven.plugins:maven-enforcer-plugin from 3.6.0 to 3.6.1
+* [#5927](https://github.com/pmd/pmd/pull/5927): chore(deps): bump ostruct from 0.6.2 to 0.6.3 in /.ci/files in the all-gems group across 1 directory
+* [#5928](https://github.com/pmd/pmd/pull/5928): chore(deps): bump marocchino/sticky-pull-request-comment from 2.9.3 to 2.9.4 in the all-actions group
+* [#5929](https://github.com/pmd/pmd/pull/5929): chore(deps): Update gems
+
+### 📈 Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 100 commits
+* 21 closed tickets & PRs
+* Days since last release: 27
+
+
+
+## 27-June-2025 - 7.15.0
+
+The PMD team is pleased to announce PMD 7.15.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🚀 New and noteworthy](#new-and-noteworthy)
+    * [✨ New Rules](#new-rules)
+* [🐛 Fixed Issues](#fixed-issues)
+* [🚨 API Changes](#api-changes)
+    * [Rule Test Schema](#rule-test-schema)
+* [💵 Financial Contributions](#financial-contributions)
+* [✨ Merged pull requests](#merged-pull-requests)
+* [📦 Dependency updates](#dependency-updates)
+* [📈 Stats](#stats)
+
+### 🚀 New and noteworthy
+
+#### ✨ New Rules
+
+* The new Apex rule [`AvoidBooleanMethodParameters`](https://docs.pmd-code.org/pmd-doc-7.15.0/pmd_rules_apex_design.html#avoidbooleanmethodparameters) finds methods that take a
+  boolean parameter. This can make method calls difficult to understand and maintain as the method is clearly
+  doing two things.
+
+### 🐛 Fixed Issues
+* apex-design
+  * [#5427](https://github.com/pmd/pmd/issues/5427): \[apex] New Rule: Avoid Boolean Method Parameters
+* apex-security
+  * [#5788](https://github.com/pmd/pmd/issues/5788): \[apex] ApexCRUDViolation unable to detect insecure SOQL if it is a direct input argument
+* doc
+  * [#5790](https://github.com/pmd/pmd/issues/5790): \[doc] Website rule reference pages are returning 404
+* java-bestpractices
+  * [#5785](https://github.com/pmd/pmd/issues/5785): \[java] UnusedPrivateField doesn't play well with UnnecessaryWarningSuppression
+  * [#5793](https://github.com/pmd/pmd/issues/5793): \[java] NonExhaustiveSwitch fails on exhaustive switch with sealed class
+* java-codestyle
+  * [#1639](https://github.com/pmd/pmd/issues/1639): \[java] UnnecessaryImport false positive for multiline @<!-- -->link Javadoc
+  * [#2304](https://github.com/pmd/pmd/issues/2304): \[java] UnnecessaryImport false positive for on-demand imports in JavaDoc
+  * [#5832](https://github.com/pmd/pmd/issues/5832): \[java] UnnecessaryImport false positive for multiline @<!-- -->see Javadoc
+* java-design
+  * [#5804](https://github.com/pmd/pmd/issues/5804): \[java] UselessOverridingMethod doesn't play well with UnnecessarySuppressWarning
+
+### 🚨 API Changes
+
+#### Rule Test Schema
+The rule test schema has been extended to support verifying suppressed violations.
+See [Testing your rules](https://docs.pmd-code.org/pmd-doc-7.15.0/pmd_userdocs_extending_testing.html) for more information.
+
+Also note, the schema [rule-tests.xsd](https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd)
+is now only in the module "pmd-test-schema". It has been removed from the old location from module "pmd-test".
+
+### 💵 Financial Contributions
+
+Many thanks to our sponsors:
+
+* [Cybozu](https://github.com/cybozu) (@cybozu)
+
+### ✨ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5738](https://github.com/pmd/pmd/pull/5738): chore: Remove unused private methods in test classes - [Pankraz76](https://github.com/Pankraz76) (@Pankraz76)
+* [#5745](https://github.com/pmd/pmd/pull/5745): \[ci] New "Publish Release" workflow - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5791](https://github.com/pmd/pmd/pull/5791): \[doc] Add a simple check whether generate rule doc pages exist - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5797](https://github.com/pmd/pmd/pull/5797): \[doc] Update sponsors - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5800](https://github.com/pmd/pmd/pull/5800): Fix #5793: \[java] NonExhaustiveSwitch should ignore "case null" - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5803](https://github.com/pmd/pmd/pull/5803): chore: Remove unnecessary suppress warnings - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5805](https://github.com/pmd/pmd/pull/5805): Fix #5804: \[java] UselessOverridingMethod needs to ignore SuppressWarnings - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5806](https://github.com/pmd/pmd/pull/5806): \[test] Verify suppressed violations in rule tests - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5814](https://github.com/pmd/pmd/pull/5814): Fix #5788: \[apex] ApexCRUDViolation - consider deeper nested Soql - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5815](https://github.com/pmd/pmd/pull/5815): Fix #5785: \[java] UnusedPrivateField should ignore SuppressWarnings - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5818](https://github.com/pmd/pmd/pull/5818): Fix #2304: \[java] UnnecessaryImport FP for on-demand imports in JavaDoc - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5821](https://github.com/pmd/pmd/pull/5821): \[apex] New Rule: Avoid boolean method parameters - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
+* [#5823](https://github.com/pmd/pmd/pull/5823): \[doc] Fix javadoc plugin configuration - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5833](https://github.com/pmd/pmd/pull/5833): Fix #1639 #5832: Use filtered comment text for UnnecessaryImport - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5851](https://github.com/pmd/pmd/pull/5851): chore: \[java] ReplaceHashtableWithMap: Fix name of test - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+
+### 📦 Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5775](https://github.com/pmd/pmd/pull/5775): Bump PMD from 7.13.0 to 7.14.0
+* [#5778](https://github.com/pmd/pmd/pull/5778): Bump the all-gems group across 2 directories with 3 updates
+* [#5779](https://github.com/pmd/pmd/pull/5779): Bump org.codehaus.mojo:exec-maven-plugin from 3.5.0 to 3.5.1
+* [#5780](https://github.com/pmd/pmd/pull/5780): Bump org.apache.maven.plugins:maven-clean-plugin from 3.4.1 to 3.5.0
+* [#5781](https://github.com/pmd/pmd/pull/5781): Bump com.google.protobuf:protobuf-java from 4.31.0 to 4.31.1
+* [#5782](https://github.com/pmd/pmd/pull/5782): Bump org.apache.groovy:groovy from 4.0.26 to 4.0.27
+* [#5783](https://github.com/pmd/pmd/pull/5783): Bump com.puppycrawl.tools:checkstyle from 10.24.0 to 10.25.0
+* [#5784](https://github.com/pmd/pmd/pull/5784): Bump org.junit:junit-bom from 5.12.2 to 5.13.0
+* [#5807](https://github.com/pmd/pmd/pull/5807): Bump maven from 3.9.8 to 3.9.10
+* [#5809](https://github.com/pmd/pmd/pull/5809): Bump org.codehaus.mojo:build-helper-maven-plugin from 3.6.0 to 3.6.1
+* [#5810](https://github.com/pmd/pmd/pull/5810): Bump org.junit:junit-bom from 5.13.0 to 5.13.1
+* [#5811](https://github.com/pmd/pmd/pull/5811): Bump junit5.platform.version from 1.13.0 to 1.13.1
+* [#5812](https://github.com/pmd/pmd/pull/5812): Bump org.checkerframework:checker-qual from 3.49.3 to 3.49.4
+* [#5813](https://github.com/pmd/pmd/pull/5813): Bump the all-gems group across 2 directories with 1 update
+* [#5828](https://github.com/pmd/pmd/pull/5828): Bump scalameta.version from 4.13.6 to 4.13.7
+* [#5829](https://github.com/pmd/pmd/pull/5829): Bump liquid from 5.8.6 to 5.8.7 in /.ci/files in the all-gems group across 1 directory
+* [#5838](https://github.com/pmd/pmd/pull/5838): Bump marocchino/sticky-pull-request-comment from 2.9.2 to 2.9.3 in the all-actions group
+* [#5839](https://github.com/pmd/pmd/pull/5839): Bump log4j.version from 2.24.3 to 2.25.0
+* [#5840](https://github.com/pmd/pmd/pull/5840): Bump com.puppycrawl.tools:checkstyle from 10.25.0 to 10.25.1
+* [#5841](https://github.com/pmd/pmd/pull/5841): Bump net.bytebuddy:byte-buddy-agent from 1.17.5 to 1.17.6
+* [#5842](https://github.com/pmd/pmd/pull/5842): Bump net.bytebuddy:byte-buddy from 1.17.5 to 1.17.6
+* [#5843](https://github.com/pmd/pmd/pull/5843): Bump org.sonatype.central:central-publishing-maven-plugin from 0.7.0 to 0.8.0
+* [#5844](https://github.com/pmd/pmd/pull/5844): Bump ostruct from 0.6.1 to 0.6.2 in /.ci/files in the all-gems group across 1 directory
+* [#5853](https://github.com/pmd/pmd/pull/5853): Bump build-tools from 30 to 32
+
+### 📈 Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 91 commits
+* 24 closed tickets & PRs
+* Days since last release: 27
+
+
+
+## 30-May-2025 - 7.14.0
+
+The PMD team is pleased to announce PMD 7.14.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🚀 New and noteworthy](#new-and-noteworthy)
+    * [PMD CLI now uses threaded execution by default](#pmd-cli-now-uses-threaded-execution-by-default)
+    * [New Rule UnnecessaryWarningSuppression (experimental)](#new-rule-unnecessarywarningsuppression-experimental)
+    * [Migrating to Central Publisher Portal](#migrating-to-central-publisher-portal)
+    * [More CLI parameters shared between PMD and CPD](#more-cli-parameters-shared-between-pmd-and-cpd)
+* [🐛 Fixed Issues](#fixed-issues)
+* [🚨 API Changes](#api-changes)
+    * [CLI](#cli)
+    * [Deprecations](#deprecations)
+    * [Experimental](#experimental)
+* [✨ Merged pull requests](#merged-pull-requests)
+* [📦 Dependency updates](#dependency-updates)
+* [📈 Stats](#stats)
+
+### 🚀 New and noteworthy
+
+#### PMD CLI now uses threaded execution by default
+
+In the PMD CLI, the `--threads` (`-t`) option can now accept a thread
+count given relative to the number of cores of the machine. For instance,
+it is now possible to write `-t 1C` to spawn one thread per core, or `-t 0.5C`
+to spawn one thread for every other core.
+
+The thread count option now defaults to `1C`, meaning parallel execution
+is used by default. You can disable this by using `-t 1`.
+
+#### New Rule UnnecessaryWarningSuppression (experimental)
+
+This new Java rule [`UnnecessaryWarningSuppression`](https://docs.pmd-code.org/pmd-doc-7.14.0/pmd_rules_java_bestpractices.html#unnecessarywarningsuppression) reports unused suppression
+annotations and comments. Violations of this rule cannot be suppressed.
+
+How to use it? Just include it in your ruleset:
+
+```xml
+<rule ref="category/java/bestpractices.xml/UnnecessaryWarningSuppression" />
+```
+
+Note: This rule is currently experimental. It is available for now only for Java.
+The rule for now only reports annotations specific to PMD, like `@SuppressWarnings("PMD")`.
+In the future we might be able to check for other common ones like `@SuppressWarnings("unchecked")` or `"fallthrough"`.
+Since violations of this rule cannot be suppressed, we opted here on the side of false-negatives and
+don't report every unused case yet.
+However, suppressing specific PMD rules is working as expected.
+
+#### Migrating to Central Publisher Portal
+
+We've now migrated to [Central Publisher Portal](https://central.sonatype.org/publish/publish-portal-guide/).
+Snapshots of PMD are still available, however the repository URL changed. To consume these with maven, you can
+use the following snippet:
+
+```xml
+<repositories>
+  <repository>
+    <name>Central Portal Snapshots</name>
+    <id>central-portal-snapshots</id>
+    <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+```
+
+Releases of PMD are available on [Maven Central](https://central.sonatype.com/) as before without change.
+
+#### More CLI parameters shared between PMD and CPD
+
+When executing PMD or CPD, the same parameters are now understood for selecting which files should
+be analyzed. See [File collection options](https://docs.pmd-code.org/pmd-doc-7.14.0/pmd_userdocs_cli_reference.html#file-collection-options)
+for a list of common, shared parameters that are valid for both commands.
+
+### 🐛 Fixed Issues
+* core
+  * [#648](https://github.com/pmd/pmd/issues/648): \[core] Warn on unneeded suppression
+  * [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis
+  * [#5705](https://github.com/pmd/pmd/issues/5705): \[cli] PMD's start script fails if PMD_HOME is set
+* java-bestpractices
+  * [#5061](https://github.com/pmd/pmd/issues/5061): \[java] UnusedLocalVariable false positive when variable is read as side effect of an assignment
+  * [#5621](https://github.com/pmd/pmd/issues/5621): \[java] UnusedPrivateMethod with method ref
+  * [#5724](https://github.com/pmd/pmd/issues/5724): \[java] ImplicitFunctionalInterface should not be reported on sealed interfaces
+* java-codestyle
+  * [#2462](https://github.com/pmd/pmd/issues/2462): \[java] LinguisticNaming must ignore setters that returns current type (Builder pattern)
+  * [#5634](https://github.com/pmd/pmd/issues/5634): \[java] CommentDefaultAccessModifier doesn't recognize /* package */ comment at expected location for constructors
+* java-design
+  * [#5568](https://github.com/pmd/pmd/issues/5568): \[java] High NPathComplexity in `switch` expression
+  * [#5647](https://github.com/pmd/pmd/issues/5647): \[java] NPathComplexity does not account for `return`s
+* java-errorprone
+  * [#5702](https://github.com/pmd/pmd/issues/5702): \[java] InvalidLogMessageFormat: Lombok @<!-- -->Slf4j annotation is not interpreted by PMD
+* java-performance
+  * [#5711](https://github.com/pmd/pmd/issues/5711): \[java] UseArraysAsList false positive with Sets
+* visualforce
+  * [#5476](https://github.com/pmd/pmd/issues/5476): \[visualforce] NPE when analyzing standard field references in visualforce page
+
+### 🚨 API Changes
+#### CLI
+* CPD now supports `--report-file` (-r) and `--exclude-file-list`.
+* PMD now supports `--exclude` and `--non-recursive`.
+* The option `--ignore-list` in PMD is renamed to `--exclude-file-list`.
+
+#### Deprecations
+* CLI
+  * The option `--ignore-list` has been deprecated. Use `--exclude-file-list` instead.
+* core
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/AstInfo.html#getSuppressionComments()"><code>AstInfo#getSuppressionComments</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/AstInfo.html#getAllSuppressionComments()"><code>getAllSuppressionComments</code></a>
+    or <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/AstInfo.html#getSuppressionComment(int)"><code>getSuppressionComment</code></a>.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/AstInfo.html#withSuppressMap()"><code>AstInfo#withSuppressMap</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/AstInfo.html#withSuppressionComments(java.util.Collection)"><code>withSuppressionComments</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#suppressMap"><code>AbstractTokenManager#suppressMap</code></a>: Don't use this map directly anymore. Instead,
+    use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressionComments()"><code>getSuppressionComments</code></a>.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressMap()"><code>AbstractTokenManager#getSuppressMap</code></a>: Use
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/impl/javacc/AbstractTokenManager.html#getSuppressionComments()"><code>getSuppressionComments</code></a> instead.
+* pmd-java
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0/net/sourceforge/pmd/lang/java/ast/ASTCompactConstructorDeclaration.html#getDeclarationNode()"><code>ASTCompactConstructorDeclaration#getDeclarationNode</code></a>: This method just returns `this` and isn't useful.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#NPATH"><code>JavaMetrics#NPATH</code></a>: Use <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.html#NPATH_COMP"><code>NPATH_COMP</code></a>, which is available on more nodes,
+    and uses Long instead of BigInteger.
+
+#### Experimental
+* core
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/ast/impl/SuppressionCommentImpl.html#"><code>SuppressionCommentImpl</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/lang/rule/impl/UnnecessaryPmdSuppressionRule.html#"><code>UnnecessaryPmdSuppressionRule</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/reporting/RuleContext.html#addViolationNoSuppress(net.sourceforge.pmd.reporting.Reportable,net.sourceforge.pmd.lang.ast.AstInfo,java.lang.String,java.lang.Object...)"><code>RuleContext#addViolationNoSuppress</code></a>
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.14.0/net/sourceforge/pmd/reporting/ViolationSuppressor.SuppressionCommentWrapper.html#"><code>ViolationSuppressor.SuppressionCommentWrapper</code></a>
+* pmd-java
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.14.0/net/sourceforge/pmd/lang/java/types/OverloadSelectionResult.html#getTypeToSearch()"><code>OverloadSelectionResult#getTypeToSearch</code></a>
+
+### ✨ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5584](https://github.com/pmd/pmd/pull/5584): \[ci] New workflow "Publish Snapshot" - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5599](https://github.com/pmd/pmd/pull/5599): \[java] Rewrite NPath complexity metric - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5609](https://github.com/pmd/pmd/pull/5609): \[core] Add rule to report unnecessary suppression comments/annotations - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5699](https://github.com/pmd/pmd/pull/5699): Fix #5702: \[java] First-class support for lombok @<!-- -->Slf4j  - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5700](https://github.com/pmd/pmd/pull/5700): \[core] Don't accidentally catch unexpected runtime exceptions in CpdAnalysis - [Elliotte Rusty Harold](https://github.com/elharo) (@elharo)
+* [#5712](https://github.com/pmd/pmd/pull/5712): Fix #5711: \[java] UseArrayAsList - only consider List.add - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5715](https://github.com/pmd/pmd/pull/5715): Fix #5476: \[visualforce] Resolve data types of standard object fields - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5716](https://github.com/pmd/pmd/pull/5716): Fix #5634: \[java] CommentDefaultAccessModifier: Comment between annotation and constructor not recognized - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5726](https://github.com/pmd/pmd/pull/5726): Fix #5724: \[java] Implicit functional interface FP with sealed interface - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5727](https://github.com/pmd/pmd/pull/5727): Fix #5621: \[java] Fix FPs with UnusedPrivateMethod - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5728](https://github.com/pmd/pmd/pull/5728): \[ci] Improvements for "Publish Pull Requests" - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5730](https://github.com/pmd/pmd/pull/5730): \[ci] Refactor git-repo-sync - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5731](https://github.com/pmd/pmd/pull/5731): \[cli] Share more CLI options between CPD and PMD - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5736](https://github.com/pmd/pmd/pull/5736): Fix #5061: \[java] UnusedLocalVariable FP when using compound assignment - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5741](https://github.com/pmd/pmd/pull/5741): \[cli] Make CLI default to multithreaded - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5742](https://github.com/pmd/pmd/pull/5742): \[ci] publish-snapshot/old build: migrate to central portal - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5743](https://github.com/pmd/pmd/pull/5743): \[ci] Make build a reuseable workflow - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5744](https://github.com/pmd/pmd/pull/5744): Fix #5705: \[cli] Always determine PMD_HOME based on script location - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5748](https://github.com/pmd/pmd/pull/5748): \[core] Reformat SarifLog to comply to coding standards - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5763](https://github.com/pmd/pmd/pull/5763): \[java] Support annotated constructor return type in symbol API - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#5764](https://github.com/pmd/pmd/pull/5764): Fix #2462: \[java] LinguisticNaming should ignore setters for Builders  - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+
+### 📦 Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#5706](https://github.com/pmd/pmd/pull/5706): Bump PMD from 7.12.0 to 7.13.0
+* [#5709](https://github.com/pmd/pmd/pull/5709): Bump com.google.code.gson:gson from 2.13.0 to 2.13.1
+* [#5710](https://github.com/pmd/pmd/pull/5710): Bump com.puppycrawl.tools:checkstyle from 10.23.0 to 10.23.1
+* [#5717](https://github.com/pmd/pmd/pull/5717): Bump scalameta.version from 4.13.4 to 4.13.5
+* [#5718](https://github.com/pmd/pmd/pull/5718): Bump org.checkerframework:checker-qual from 3.49.2 to 3.49.3
+* [#5719](https://github.com/pmd/pmd/pull/5719): Bump org.jsoup:jsoup from 1.19.1 to 1.20.1
+* [#5751](https://github.com/pmd/pmd/pull/5751): Bump scalameta.version from 4.13.5 to 4.13.6
+* [#5754](https://github.com/pmd/pmd/pull/5754): Bump com.google.protobuf:protobuf-java from 4.30.2 to 4.31.0
+* [#5766](https://github.com/pmd/pmd/pull/5766): Bump io.github.git-commit-id:git-commit-id-maven-plugin from 9.0.1 to 9.0.2
+* [#5767](https://github.com/pmd/pmd/pull/5767): Bump org.mockito:mockito-core from 5.17.0 to 5.18.0
+* [#5768](https://github.com/pmd/pmd/pull/5768): Bump com.puppycrawl.tools:checkstyle from 10.23.1 to 10.24.0
+
+### 📈 Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 165 commits
+* 33 closed tickets & PRs
+* Days since last release: 35
+
+
+
 ## 25-April-2025 - 7.13.0
 
 The PMD team is pleased to announce PMD 7.13.0.

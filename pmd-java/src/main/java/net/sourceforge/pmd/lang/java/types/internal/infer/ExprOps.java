@@ -38,7 +38,6 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.LambdaExprM
 import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror.MethodRefMirror;
 import net.sourceforge.pmd.util.CollectionUtil;
 
-@SuppressWarnings("PMD.CompareObjectsWithEquals")
 public final class ExprOps {
 
     private final Infer infer;
@@ -412,7 +411,7 @@ public final class ExprOps {
             }
 
             @Override
-            public void setCtDecl(MethodCtDecl methodType) {
+            public void setCompileTimeDecl(MethodCtDecl methodType) {
                 this.mt = methodType;
             }
 

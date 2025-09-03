@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.AbstractConfiguration;
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.PmdRootLogger;
-import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import picocli.CommandLine;
@@ -54,15 +53,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
         private URI uri;
 
 
-        boolean usesDeprecatedIgnoreOption = false;
         boolean usesDeprecatedIgnoreListOption = false;
-
-        @Option(names = "--ignore", arity = "1..*", description = "(DEPRECATED: use --exclude) Files to be excluded from the analysis")
-        @Deprecated
-        protected void setIgnoreSpecificPaths(List<Path> rootPaths) {
-            this.excludeFiles = CollectionUtil.makeUnmodifiableAndNonNull(rootPaths);
-            this.usesDeprecatedIgnoreOption = true;
-        }
 
         @Option(names = "--ignore-list",
                 description = "(DEPRECATED: use --exclude-file-list) Path to a file containing a list of files to exclude from the analysis, one path per line. "
@@ -136,9 +127,6 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             }
             configuration.setSourceEncoding(encoding);
 
-            if (usesDeprecatedIgnoreOption) {
-                configuration.getReporter().warn("Option name --ignore is deprecated. Use --exclude instead.");
-            }
             if (usesDeprecatedIgnoreListOption) {
                 configuration.getReporter().warn("Option name --ignore-list is deprecated. Use --exclude-file-list instead.");
             }

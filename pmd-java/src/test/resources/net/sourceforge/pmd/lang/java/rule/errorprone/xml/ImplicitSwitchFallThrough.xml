@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>one case, which is not empty</description>
@@ -36,7 +36,7 @@ public class Foo {
 
     <test-code>
         <description>one break, but two cases + one default case. But there is an intentional fall through -
-because there are no statemenets between case 1 and case 2.</description>
+because there are no statements between case 1 and case 2.</description>
         <!--
         Indeed if there is no statement between the two cases, then no break
         should be expected between those cases.
@@ -262,8 +262,11 @@ public class DemoMissingBreakContinue {
         ]]></code>
     </test-code>
     <test-code>
-        <description>[java] Recognize @SuppressWanings("fallthrough") for MissingBreakInSwitch #1899</description>
+        <description>[java] Recognize @SuppressWarnings("fallthrough") for MissingBreakInSwitch #1899</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="9">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class DemoMissingBreakContinue {
 
@@ -326,9 +329,9 @@ public class DemoMissingBreak {
         <code><![CDATA[
 import java.math.MathContext;
 public class DemoMissingBreak {
-    public MathContext foo(int precission) {
+    public MathContext foo(int precision) {
         MathContext mc = null;
-        switch (precission) {
+        switch (precision) {
             case 32:
                 mc = MathContext.DECIMAL32;
                 break;
@@ -339,7 +342,7 @@ public class DemoMissingBreak {
                 mc = MathContext.DECIMAL128;
                 break;
             default:
-                mc = new MathContext(precission);
+                mc = new MathContext(precision);
         }
         return mc;
     }
@@ -354,9 +357,9 @@ public class DemoMissingBreak {
         <code><![CDATA[
 import java.math.MathContext;
 public class DemoMissingBreak {
-    public MathContext foo(int precission) {
+    public MathContext foo(int precision) {
         MathContext mc = null;
-        switch (precission) {
+        switch (precision) {
             case 32:
                 mc = MathContext.DECIMAL32;
                 break;
@@ -364,7 +367,7 @@ public class DemoMissingBreak {
                 mc = MathContext.DECIMAL64;
                 break;
             default:
-                mc = new MathContext(precission);
+                mc = new MathContext(precision);
             case 128: // violation!!
                 mc = MathContext.DECIMAL128;
                 break;

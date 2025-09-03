@@ -424,7 +424,7 @@ while (true) {  // preferred approach
           message="An empty method in an abstract class should be abstract instead"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract">
         <description>
-Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate
+Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inappropriate
 usage by developers who should be implementing their own versions in the concrete subclasses.
         </description>
         <priority>1</priority>
@@ -701,11 +701,14 @@ public class Foo {
     <rule name="GenericsNaming"
           language="java"
           since="4.2.6"
+          deprecated="true"
           message="Generics names should be a one letter long and upper case."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#genericsnaming">
         <description>
 Names for references to generic values should be limited to a single uppercase letter.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule TypeParameterNamingConventions %}, which provides more comprehensive and configurable naming conventions for type parameters.
         </description>
         <priority>4</priority>
         <properties>
@@ -1115,7 +1118,7 @@ class Foo {
             specific kind (e.g. JUnit test or native method). Each regex can be
             configured through properties.
 
-            By default this rule uses the standard Java naming convention (Camel case).
+            By default, this rule uses the standard Java naming convention (Camel case).
         </description>
         <priority>1</priority>
         <example>
@@ -1199,6 +1202,45 @@ public class ClassInDefaultPackage {
             <![CDATA[
 public class Foo {
     private int num = 1000000; // should be 1_000_000
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="TypeParameterNamingConventions"
+          language="java"
+          since="7.17.0"
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.TypeParameterNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#typeparameternamingconventions">
+        <description>
+            Configurable naming conventions for type parameters in generic types and methods.
+            This rule reports type parameter declarations which do not match the configured regex.
+            Type parameters can appear on classes, interfaces, enums, records, and methods.
+
+            By default, this rule uses the standard Java naming convention (single uppercase letter).
+        </description>
+        <priority>4</priority>
+        <example>
+<![CDATA[
+// Generic types - valid
+public interface Repository<T> { }
+public class Cache<K, V> { }
+
+// Generic types - invalid
+public interface Repository<type> { }      // lowercase
+public class Cache<KEY, VALUE> { }         // multiple letters
+
+// Generic methods - valid
+public class Util {
+    public static <T> T identity(T value) { return value; }
+    public <T, R> R transform(T input, Function<T, R> mapper) { }
+}
+
+// Generic methods - invalid
+public class Util {
+    public static <element> element get(element value) { }  // lowercase
+    public <INPUT, OUTPUT> OUTPUT convert(INPUT in) { }     // multiple letters
 }
 ]]>
         </example>
@@ -1461,6 +1503,8 @@ Fields, local variables, enum constant names or parameter names that are very sh
  [not(parent::CatchParameter)]
  (: Lambda expression parameter :)
  [not(parent::LambdaParameter)]
+ (: Exclude Unnamed Variables (JEP 456) :)
+ [@Unnamed = false()]
 ]]>
                 </value>
             </property>
@@ -1763,12 +1807,16 @@ public class Foo {
 
     <rule name="UnnecessaryLocalBeforeReturn"
           language="java"
+          deprecated="true"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn">
         <description>
-Avoid the creation of unnecessary local variables
+Avoid the creation of unnecessary local variables.
+
+This rule has been deprecated since 7.17.0. Use the new rule
+{%rule VariableCanBeInlined %} instead, which additionally covers throw statements.
         </description>
         <priority>3</priority>
         <example>
@@ -1813,7 +1861,7 @@ public interface Foo {
 }
 public class Bar {
     public static interface Baz {}  // static ignored
-    public static enum FoorBar {    // static ignored
+    public static enum FooBar {    // static ignored
         FOO;
     }
 }
@@ -2061,7 +2109,7 @@ public class Foo {
     }
 
     private class Foo2 {
-        final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
+        final Foo2 myFoo2 = Foo2.this;  // Use "this" directly
     }
 }
 ]]>
@@ -2097,6 +2145,52 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
 Foo[] x = new Foo[] { ... }; // Overly verbose
 Foo[] x = { ... }; //Equivalent to above line
 ]]>
+        </example>
+    </rule>
+
+    <rule name="VariableCanBeInlined"
+          language="java"
+          since="7.17.0"
+          message="Consider simply using the value vs. storing it in local variable ''{0}''."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableCanBeInlinedRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variablecanbeinlined">
+        <description>
+            Local variables should not be declared and then immediately returned or thrown. Such
+            variable declarations add unnecessary complexity and make the code harder to read.
+            It is often simpler and cleaner to return or throw the value directly.
+
+            This rule implements SonarSource rule [S1488](https://sonarsource.github.io/rspec/#/rspec/S1488).
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+                class Foo {
+                    Object foo() {
+                        var foo = "foo";
+                        return foo;  // instead, just 'return "foo";'
+                    }
+
+                    Object bar() {
+                        var ex = getIllegalArgumentException();
+                        throw ex; // instead, just 'throw getIllegalArgumentException();'
+                    }
+
+                    Object baz() {
+                        var baz = switch (foo()) {
+                            case "foo" -> {
+                                var foo = foo();
+                                yield foo;  // Can be simplified to 'yield foo();'
+                            }
+                            case "bar" -> {
+                                var bar = bar();
+                                yield bar;  // Can be simplified to 'yield bar();'
+                            }
+                            default -> bar("baz");
+                        };
+                        return baz; // instead, just 'return switch (foo()) {...'
+                    }
+                }
+            ]]>
         </example>
     </rule>
 </ruleset>

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -51,6 +51,7 @@ import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.lang.rule.RuleSetWriter;
+import net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
@@ -64,6 +65,7 @@ public abstract class AbstractRuleSetFactoryTest {
     private static ValidateDefaultHandler validateDefaultHandler;
     private static SAXParser saxParser;
 
+    // todo rename this field to validCoreRules or something. Make private.
     protected Set<String> validXPathClassNames = new HashSet<>();
     private final Set<String> languagesToSkip = new HashSet<>();
 
@@ -81,6 +83,7 @@ public abstract class AbstractRuleSetFactoryTest {
         this.languagesToSkip.add("dummy");
         this.languagesToSkip.addAll(Arrays.asList(languagesToSkip));
         validXPathClassNames.add(XPathRule.class.getName());
+        validXPathClassNames.add(UnnecessaryPmdSuppressionRule.class.getName());
     }
 
     public AbstractRuleSetFactoryTest(Language... languagesToSkip) {
@@ -245,23 +248,11 @@ public abstract class AbstractRuleSetFactoryTest {
         assertTrue(allValid, "All XML must parse without producing validation messages.");
     }
 
-    @Test
-    void verifyCorrectXmlEncoding() throws Exception {
-        boolean allValid = true;
-        List<String> ruleSetFileNames = getRuleSetFileNames();
-        StringBuilder messages = new StringBuilder();
-        for (String fileName : ruleSetFileNames) {
-            boolean valid = hasCorrectEncoding(fileName);
-            allValid = allValid && valid;
-            if (!valid) {
-                messages.append("RuleSet ")
-                        .append(fileName)
-                        .append(" is missing XML encoding or not using UTF8\n");
-            }
-        }
-        assertTrue(allValid, "All XML must use correct XML encoding\n" + messages);
-    }
-
+    /**
+     * @deprecated Since 7.17.0. This method will be removed. PMD has the rule "MissingEncoding" for XML files that
+     *             is used instead.
+     */
+    @Deprecated
     public static boolean hasCorrectEncoding(String fileName) throws IOException {
         try (InputStream inputStream = loadResourceAsStream(fileName)) {
             // first bytes must be:

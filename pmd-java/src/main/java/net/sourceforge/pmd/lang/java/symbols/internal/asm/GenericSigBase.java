@@ -17,10 +17,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.TypePath;
 import org.objectweb.asm.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeParameterOwnerSymbol;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.ExecutableStub.CtorStub;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSet;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.TypeAnnotationHelper.TypeAnnotationSetWithReferences;
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -33,6 +36,8 @@ import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(GenericSigBase.class);
+
     /*
        Signatures must be parsed lazily, because at the point we see them
        in the file, the enclosing class might not yet have been encountered
@@ -270,6 +275,13 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                                             .map(ctx.getTypeSystem()::rawType)
                                             .collect(CollectionUtil.toUnmodifiableList());
             }
+            if (ctx instanceof CtorStub) {
+                // Is a constructor, return type of the descriptor is void.
+                // We replace the return type with the owner type. This must
+                // be done before type annotations are applied.
+                assert this.returnType.isVoid();
+                this.returnType = ctx.getTypeSystem().declaration(ctx.getEnclosingClass());
+            }
             if (typeAnnots != null) {
                 // apply type annotations here
                 // this may change type parameters
@@ -400,9 +412,18 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                 receiverAnnotations.add(path, annot);
                 return false;
             }
+            case TypeReference.CLASS_EXTENDS: {
+                // avoid exception for Java 11 bug
+                // see https://github.com/pmd/pmd/issues/5344 and https://bugs.openjdk.org/browse/JDK-8198945
+                LOGGER.debug("Invalid target type CLASS_EXTENDS of type annotation {} for method or ctor detected. "
+                        + "The annotation is ignored. Method: {}#{}. See https://github.com/pmd/pmd/issues/5344.",
+                        annot, ctx.getEnclosingClass().getCanonicalName(), ctx.getSimpleName());
+                return false;
+            }
             default:
                 throw new IllegalArgumentException(
-                    "Invalid type reference for method or ctor type annotation: " + tyRef.getSort());
+                    "Invalid target type of type annotation " + annot + " for method or ctor type annotation: "
+                            + tyRef.getSort());
             }
         }
 

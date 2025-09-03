@@ -720,7 +720,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
   [*[2]//FieldAccess[@Name = 'length']/VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
   /*[last()]/ExpressionStatement/
     MethodCall
-      [pmd-java:matchesSig('java.util.Collection#add(_)')]
+      [pmd-java:matchesSig('java.util.List#add(_)')]
       [ArgumentList/ArrayAccess
         [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
       ]
@@ -728,7 +728,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 //ForeachStatement
   [VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
   /*[last()]/ExpressionStatement/MethodCall
-      [pmd-java:matchesSig('java.util.Collection#add(_)')]
+      [pmd-java:matchesSig('java.util.List#add(_)')]
       [ArgumentList
         [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
       ]

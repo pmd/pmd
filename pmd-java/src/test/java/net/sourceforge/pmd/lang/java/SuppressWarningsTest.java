@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -113,13 +113,13 @@ class SuppressWarningsTest {
     }
 
     @Test
-    void testSpecificSuppressionMulitpleValues1() {
+    void testSpecificSuppressionMultipleValues1() {
         Report rpt = java.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES_1);
         assertSize(rpt, 0);
     }
 
     @Test
-    void testSpecificSuppressionMulitpleValues2() {
+    void testSpecificSuppressionMultipleValues2() {
         Report rpt = java.executeRule(new FooRule(), TEST9_MULTIPLE_VALUES_2);
         assertSize(rpt, 0);
     }

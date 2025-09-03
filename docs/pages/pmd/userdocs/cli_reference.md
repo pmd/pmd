@@ -5,7 +5,7 @@ tags: [userdocs]
 keywords: [command, line, options, help, formats, renderers]
 permalink: pmd_userdocs_cli_reference.html
 author: Tom Copeland <tom@infoether.com>, Xavier Le Vourch <xlv@users.sourceforge.net>, Juan Martín Sotuyo Dodero <juansotuyo@gmail.com>
-last_updated: June 2024 (7.3.0)
+last_updated: May 2025 (7.14.0)
 ---
 
 
@@ -133,9 +133,11 @@ The tool comes with a rather extensive help text, simply running with `--help`!
     %}
     {% include custom/cli_option_row.html options="--threads,-t"
                option_arg="num"
-               description="Sets the number of threads used by PMD.
-                            Set threads to `0` to disable multi-threading processing."
-               default="1"
+               description="Set the number of threads used by PMD. This can be an integer, or a float (or int) followed by the letter `C`, eg `0.5C` or `1C`. 
+                    In the latter case, the float will be multiplied by the number of cores of the host machine, and rounded down to an integer. 
+                    If the specified number of threads is zero, then PMD will use the main thread for everything. If it is `n` > 0, 
+                    PMD will spawn `n` separate analysis threads besides the main thread."
+               default="1C"
     %}
 </table>
 
@@ -173,33 +175,29 @@ least one of `--dir`, `--file-list` or `--uri` must be provided.
                option_arg="filepath+"
                description="Specify one or more paths to files that will be ignored.
                             This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
-                            It can combine with `--ignore-list`."
+                            It can combine with `--exclude-file-list`.
+                            Available for PMD since 7.14.0, for CPD since 7.0.0."
     %}
     {% include custom/cli_option_row.html options="--exclude-file-list"
                option_arg="filepath"
                description="Path to a file containing a list of files to ignore, one path per line.
                             This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
-                            It can combine with `--ignore`"
-    %}
-    {% include custom/cli_option_row.html options="--ignore"
-               option_arg="filepath+"
-               description="<span class='label label-primary'>Deprecated (6.14.0)</span>
-                            This option has been renamed `--exclude`.
-                            Specify one or more paths to files that will be ignored.
-                            This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
-                            It can combine with `--ignore-list`."
+                            It can combine with `--exclude`.
+                            Available for PMD since 7.14.0, for CPD since 7.14.0.
+                            For PMD, this option was called `--ignore-list`."
     %}
     {% include custom/cli_option_row.html options="--ignore-list"
                option_arg="filepath"
-               description="<span class='label label-primary'>Deprecated (6.14.0)</span>
+               description="<span class='label label-primary'>Deprecated (Since 7.14.0)</span>
                             This option has been renamed `--exclude-file-list`.
                             Path to file containing a list of files to ignore, one path per line.
                             This option overrides files included by any of `--dir`, `--file-list` and `--uri`.
-                            It can combine with `--ignore`"
+                            It can combine with `--exclude`."
     %}
     {% include custom/cli_option_row.html options="--non-recursive"
                description="When specified, any directory mentioned with `--dir` or in the `--file-list` will only be searched for files that are direct children.
-                            By default, subdirectories are recursively included."
+                            By default, subdirectories are recursively included.
+                            Available for PMD since 7.14.0, for CPD since 7.0.0."
     %}
     {% include custom/cli_option_row.html options="--relativize-paths-with,-z"
                option_arg="path"

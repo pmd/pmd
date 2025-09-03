@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="Test Ruleset" xmlns="http://pmd.sourceforge.net/ruleset/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0 https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
 
@@ -24,7 +24,6 @@ Just for test
         externalInfoUrl="${pmd.website.baseurl}/rules/dummy/basic.xml#SampleXPathRule">
         <description>Test</description>
         <priority>3</priority>
-        <example> </example>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
@@ -32,5 +31,6 @@ Just for test
                 ]]></value>
             </property>
         </properties>
-    </rule>"
+        <example> </example>
+    </rule>
 </ruleset>

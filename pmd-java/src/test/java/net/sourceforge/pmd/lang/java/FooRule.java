@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -20,7 +20,7 @@ public class FooRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTClassDeclaration c, Object ctx) {
-        if (c.getSimpleName().equalsIgnoreCase("Foo")) {
+        if ("Foo".equalsIgnoreCase(c.getSimpleName())) {
             asCtx(ctx).addViolation(c);
         }
         return super.visit(c, ctx);
@@ -28,7 +28,7 @@ public class FooRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTVariableId c, Object ctx) {
-        if (c.getName().equalsIgnoreCase("Foo")) {
+        if ("Foo".equalsIgnoreCase(c.getName())) {
             asCtx(ctx).addViolation(c);
         }
         return super.visit(c, ctx);

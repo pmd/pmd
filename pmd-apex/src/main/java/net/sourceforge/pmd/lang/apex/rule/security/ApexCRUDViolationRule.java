@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -327,7 +327,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(final ASTAssignmentExpression node, Object data) {
-        final ASTSoqlExpression soql = node.firstChild(ASTSoqlExpression.class);
+        final ASTSoqlExpression soql = node.descendants(ASTSoqlExpression.class).first();
         if (soql != null) {
             checkForAccessibility(soql, data);
         }
@@ -340,7 +340,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         String type = node.getType();
         addVariableToMapping(Helper.getFQVariableName(node), type);
 
-        final ASTSoqlExpression soql = node.firstChild(ASTSoqlExpression.class);
+        final ASTSoqlExpression soql = node.descendants(ASTSoqlExpression.class).first();
         if (soql != null) {
             checkForAccessibility(soql, data);
         }
@@ -363,7 +363,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             String namesString = field.getTypeName();
             addVariableToMapping(Helper.getFQVariableName(node), namesString);
         }
-        final ASTSoqlExpression soql = node.firstChild(ASTSoqlExpression.class);
+        final ASTSoqlExpression soql = node.descendants(ASTSoqlExpression.class).first();
         if (soql != null) {
             checkForAccessibility(soql, data);
         }
@@ -373,7 +373,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     @Override
     public Object visit(final ASTReturnStatement node, Object data) {
-        final ASTSoqlExpression soql = node.firstChild(ASTSoqlExpression.class);
+        final ASTSoqlExpression soql = node.descendants(ASTSoqlExpression.class).first();
         if (soql != null) {
             checkForAccessibility(soql, data);
         }

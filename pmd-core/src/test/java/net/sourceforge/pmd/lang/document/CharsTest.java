@@ -318,9 +318,9 @@ class CharsTest {
 
     @Test
     void linesStreamTest() {
-        Chars bc = Chars.wrap("aa\nb\rded\r\nlff");
+        Chars bc = Chars.wrap("aa\nb\rdid\r\nlff");
         List<String> lines = bc.lineStream().map(Chars::toString).collect(Collectors.toList());
-        assertEquals(listOf("aa", "b", "ded", "lff"), lines);
+        assertEquals(listOf("aa", "b", "did", "lff"), lines);
     }
 
     @Test

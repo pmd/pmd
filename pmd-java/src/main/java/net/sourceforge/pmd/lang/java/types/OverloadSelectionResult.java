@@ -4,10 +4,14 @@
 
 package net.sourceforge.pmd.lang.java.types;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
+import net.sourceforge.pmd.lang.java.types.internal.infer.ExprMirror;
 
 /**
  * Information about the overload-resolution for a specific
@@ -82,4 +86,20 @@ public interface OverloadSelectionResult {
      * one was chosen.
      */
     boolean isFailed();
+
+
+    /**
+     * Return the type from which the search for accessible candidates
+     * for overload resolution starts. This is just a hint as to where
+     * the candidates come from. There may actually be candidates that
+     * don't come from this type, eg in the case where this is an
+     * unqualified method call, and some candidate methods are imported.
+     * The type is null in some cases, eg, this is not implemented for
+     * constructor call expressions.
+     *
+     * @see ExprMirror.MethodUsageMirror#getTypeToSearch()
+     * @experimental Since 7.14.0
+     */
+    @Experimental
+    @Nullable JTypeMirror getTypeToSearch();
 }

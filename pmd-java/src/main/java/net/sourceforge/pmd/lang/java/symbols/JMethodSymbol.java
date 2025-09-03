@@ -10,8 +10,6 @@ import java.lang.reflect.Modifier;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.Substitution;
 
 
 /**
@@ -30,10 +28,6 @@ public interface JMethodSymbol extends JExecutableSymbol, BoundToNode<ASTMethodD
     default boolean isStatic() {
         return Modifier.isStatic(getModifiers());
     }
-
-
-    /** Returns the return type under the given substitution. */
-    JTypeMirror getReturnType(Substitution subst);
 
     /**
      * Returns the default value, if this is a constant method. See

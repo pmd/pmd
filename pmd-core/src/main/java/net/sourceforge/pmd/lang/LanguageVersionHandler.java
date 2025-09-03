@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -53,7 +53,6 @@ public interface LanguageVersionHandler {
     default List<ViolationSuppressor> getExtraViolationSuppressors() {
         return Collections.emptyList();
     }
-
 
     /**
      * Returns the metrics provider for this language version,

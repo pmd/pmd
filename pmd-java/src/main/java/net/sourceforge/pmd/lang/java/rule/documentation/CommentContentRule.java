@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -24,21 +24,21 @@ import net.sourceforge.pmd.reporting.RuleContext;
  */
 public class CommentContentRule extends AbstractJavaRulechainRule {
 
-    private static final PropertyDescriptor<Pattern> DISSALLOWED_TERMS_DESCRIPTOR =
+    private static final PropertyDescriptor<Pattern> DISALLOWED_TERMS_DESCRIPTOR =
         regexProperty("forbiddenRegex")
             .desc("Illegal terms or phrases")
             .defaultValue("idiot|jerk").build();
 
     public CommentContentRule() {
         super(ASTCompilationUnit.class);
-        definePropertyDescriptor(DISSALLOWED_TERMS_DESCRIPTOR);
+        definePropertyDescriptor(DISALLOWED_TERMS_DESCRIPTOR);
     }
 
 
     @Override
     public Object visit(ASTCompilationUnit node, Object data) {
 
-        Pattern pattern = getProperty(DISSALLOWED_TERMS_DESCRIPTOR);
+        Pattern pattern = getProperty(DISALLOWED_TERMS_DESCRIPTOR);
 
         for (JavaComment comment : node.getComments()) {
             reportIllegalTerms(asCtx(data), comment, pattern, node);

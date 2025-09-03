@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -396,7 +396,7 @@ public class DBMSMetadata {
                 }
             }
 
-            LOG.trace("Identfied={} sourceObjects", sourceObjectsList.size());
+            LOG.trace("Identified={} sourceObjects", sourceObjectsList.size());
 
             return sourceObjectsList;
         } catch (SQLException sqle) {

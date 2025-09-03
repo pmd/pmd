@@ -28,6 +28,6 @@ public abstract class JavaIntMetricTestRule extends AbstractMetricTestRule.OfInt
 
     @Override
     protected String violationMessage(Node node, Integer result) {
-        return AllMetricsTest.formatJavaMessage(node, result, super.violationMessage(node, result));
+        return AllMetricsTest.formatJavaMessage(node, result);
     }
 }

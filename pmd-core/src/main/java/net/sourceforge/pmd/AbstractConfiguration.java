@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -418,6 +418,7 @@ public abstract class AbstractConfiguration {
      * report is rendered on stdout.
      *
      * @return The file to which to render.
+     * @since 7.14.0 (was previously only available on {@link PMDConfiguration})
      */
     public @Nullable Path getReportFilePath() {
         return reportFile;
@@ -427,6 +428,7 @@ public abstract class AbstractConfiguration {
      * Set the file to which the report should render.
      *
      * @param reportFile the file to set
+     * @since 7.14.0 (was previously only available on {@link PMDConfiguration})
      */
     public void setReportFile(@Nullable Path reportFile) {
         this.reportFile = reportFile;

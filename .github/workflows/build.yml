@@ -23,12 +23,12 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
         with:
           distribution: 'temurin'
           java-version: '11'
-      - uses: actions/cache@v4
+      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -39,7 +39,7 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
             -Dmaven.repo.local=.m2/repository \
             verify -PfastSkip -DskipTests -Dcyclonedx.skip=false \
-            deploy:deploy -DdogfoodStagingRepo="$(pwd)/target/staging"
+            deploy:deploy -DaltDeploymentRepository="dogfood::file://$(pwd)/target/staging"
       - name: Cleanup local repository
         run: |
           # Cleanup local repository to not poison the shared cache with our SNAPSHOTS of the current build.
@@ -47,7 +47,7 @@ jobs:
           # version exactly is available in the staging repo. But if we rerun the build using the
           # older cache, it points to the old staging versions, which are not available anymore.
           find .m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" -and -not -path "*/pmd-designer/*" -print0 | xargs -0 rm -vrf
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: compile-artifact
           if-no-files-found: error
@@ -58,12 +58,12 @@ jobs:
             !pmd-dist/target/pmd-dist-*-src.zip
             !pmd-dist/target/pmd-*-cyclonedx.xml
             !pmd-dist/target/pmd-*-cyclonedx.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: staging-repository
           if-no-files-found: error
           path: target/staging
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: dist-artifact
           if-no-files-found: error
@@ -81,18 +81,18 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
         with:
           distribution: 'temurin'
           java-version: '11'
-      - uses: actions/cache@v4
+      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: compile-artifact
       - name: Full Build with Maven
@@ -100,7 +100,7 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
               verify -DskipTests
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: javadocs-artifact
           if-no-files-found: error
@@ -121,8 +121,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
         # under linux we execute more extensive integration tests with various java versions
         if: ${{ runner.os == 'Linux' }}
         with:
@@ -131,7 +131,7 @@ jobs:
             8
             17
             21
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
         # default java version for all os is 11
         with:
           distribution: 'temurin'
@@ -140,13 +140,13 @@ jobs:
       # Note: this works under Windows only if pom.xml files use LF, so that hashFiles('**/pom.xml')
       # gives the same result (line endings...).
       # see .gitattributes for pom.xml - it should always be using lf.
-      - uses: actions/cache/restore@v4
+      - uses: actions/cache/restore@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         # we can only reuse compile-artifacts under linux due to file timestamp issues and
         # platform specific line endings in test resource files.
         if: ${{ runner.os == 'Linux' }}
@@ -170,21 +170,21 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
         with:
           distribution: 'temurin'
           java-version: '11'
-      - uses: actions/cache@v4
+      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: compile-artifact
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: staging-repository
           path: target/staging
@@ -207,12 +207,36 @@ jobs:
           sed -i 's/<version>[0-9]\{1,\}\.[0-9]\{1,\}\.[0-9]\{1,\}.*<\/version>\( *<!-- pmd.dogfood.version -->\)/<version>'"${current_pmd_version}"'<\/version>\1/' pom.xml
           echo "::endgroup::"
 
+          echo "::group::Generate settings.xml to use dogfoodStagingRepo"
+          maven_settings_file="$(pwd)/target/staging/settings.xml"
+          cat > "${maven_settings_file}" <<EOF
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+            <profiles>
+              <profile>
+                <id>dogfood</id>
+                <pluginRepositories>
+                    <pluginRepository>
+                        <id>dogfood</id>
+                        <url>file://$(pwd)/target/staging</url>
+                        <releases><enabled>true</enabled></releases>
+                        <snapshots><enabled>true</enabled></snapshots>
+                    </pluginRepository>
+                </pluginRepositories>
+              </profile>
+            </profiles>
+          </settings>
+          EOF
+          echo "new file ${maven_settings_file}:"
+          cat "${maven_settings_file}"
+          echo "::endgroup::"
+
           echo "::group::Run ./mvnw verify"
           ./mvnw --show-version --errors --batch-mode \
+            --settings "${maven_settings_file}" \
             -Dmaven.repo.local=.m2/repository \
             verify \
-            -PfastSkip \
-            -DdogfoodStagingRepo="$(pwd)/target/staging" \
+            -PfastSkip,dogfood \
             -DskipTests \
             -Dpmd.skip=false \
             -Dcpd.skip=false
@@ -232,18 +256,18 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
         with:
           distribution: 'temurin'
           java-version: '11'
-      - uses: actions/cache@v4
+      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: compile-artifact
       - name: Generate rule docs
@@ -254,7 +278,7 @@ jobs:
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -Dassembly.skipAssembly=true
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@829114fc20da43a41d27359103ec7a63020954d4 #v1.255.0
         with:
           ruby-version: 3.3
       - name: Setup bundler
@@ -270,7 +294,7 @@ jobs:
         run: |
           cd docs
           bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6 > _site/pmd_release_notes.md
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: docs-artifact
           if-no-files-found: error
@@ -285,27 +309,27 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           fetch-depth: 2
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
         with:
           distribution: 'temurin'
           java-version: '11'
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@829114fc20da43a41d27359103ec7a63020954d4 #v1.255.0
         with:
           ruby-version: 3.3
-      - uses: actions/cache@v4
+      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           path: |
             ~/.m2/repository
             ~/.gradle/caches
             ~/work/pmd/target/repositories
             .ci/files/vendor/bundle
-          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', 'Gemfile.lock') }}
+          key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: dist-artifact
           path: pmd-dist/target
@@ -326,7 +350,7 @@ jobs:
         run: |
           echo "artifacts_path=$(realpath ..)" >> "${GITHUB_ENV}"
       - name: Upload regression tester report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: pmd-regression-tester
           if-no-files-found: error

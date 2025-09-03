@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -126,8 +126,8 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
 
             final long currentAuxClassPathChecksum;
             if (auxclassPathClassLoader instanceof URLClassLoader) {
-                // we don't want to close our aux classpath loader - we still need it...
-                @SuppressWarnings("PMD.CloseResource") final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
+                // not using try-with-resources as we don't want to close our aux classpath loader - we still need it...
+                final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
                 currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(urlClassLoader.getURLs());
 
                 if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {

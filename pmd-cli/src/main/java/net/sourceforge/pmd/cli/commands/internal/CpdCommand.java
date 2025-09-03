@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -74,7 +74,7 @@ public class CpdCommand extends AbstractAnalysisPmdSubcommand<CPDConfiguration> 
     private boolean ignoreIdentifierAndLiteralSequences;
 
     /**
-     * @deprecated Use --[no-]fail-on-error instead.
+     * @deprecated Since 7.3.0. Use --[no-]fail-on-error instead.
      */
     @Option(names = "--skip-lexical-errors",
             description = "Skip files which can't be tokenized due to invalid characters, instead of aborting with an error. Deprecated - use --[no-]fail-on-error instead.")

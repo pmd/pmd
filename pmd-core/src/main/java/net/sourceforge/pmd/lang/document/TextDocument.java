@@ -274,7 +274,6 @@ public interface TextDocument extends Closeable {
      *
      * @see TextFile#forCharSeq(CharSequence, FileId, LanguageVersion)
      */
-    @SuppressWarnings("PMD.CloseResource")
     static TextDocument readOnlyString(@NonNull CharSequence source, @NonNull FileId filename, @NonNull LanguageVersion lv) {
         TextFile textFile = TextFile.forCharSeq(source, filename, lv);
         try {

@@ -106,7 +106,7 @@ public class OtherThread implements Runnable {}
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Violation {
-    public void methode() {
+    public void method() {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -91,7 +91,6 @@ public class TypeSet {
     public static class PrimitiveTypeResolver implements Resolver {
         private Map<String, Class<?>> primitiveTypes = new HashMap<>();
 
-        @SuppressWarnings("PMD.AvoidUsingShortType")
         public PrimitiveTypeResolver() {
             primitiveTypes.put("int", int.class);
             primitiveTypes.put("float", float.class);

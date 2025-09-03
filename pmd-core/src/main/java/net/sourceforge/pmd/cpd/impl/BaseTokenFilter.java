@@ -146,7 +146,7 @@ public class BaseTokenFilter<T extends GenericToken<T>> implements TokenManager<
             @Override
             protected void computeNext() {
                 assert index >= 0;
-                if (startToken != currentToken) { // NOPMD - intentional check for reference equality
+                if (startToken != currentToken) {
                     throw new ConcurrentModificationException("Using iterator after next token has been requested.");
                 }
                 if (index < unprocessedTokens.size()) {

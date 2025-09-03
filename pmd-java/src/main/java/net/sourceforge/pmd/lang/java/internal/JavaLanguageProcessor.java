@@ -106,7 +106,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
 
     @Override
     public List<ViolationSuppressor> getExtraViolationSuppressors() {
-        return AnnotationSuppressionUtil.ALL_JAVA_SUPPRESSORS;
+        return JavaAnnotationSuppressor.ALL_JAVA_SUPPRESSORS;
     }
 
     @Override

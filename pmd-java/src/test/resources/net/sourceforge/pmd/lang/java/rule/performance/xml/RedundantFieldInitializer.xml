@@ -41,7 +41,7 @@ public class Foo {
 
     String str0;
     String str = null; // Bad
-    static String ststr = null; // Bad
+    static String stStr = null; // Bad
 
     private String sameLine = null, sameLine1 = null; // 2 Bad
     private String sameLine2, sameLine3 = null; // Bad

@@ -119,4 +119,18 @@ class Main {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Message location for multiline expression</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>2,3,3,4,5</expected-linenumbers>
+        <code><![CDATA[
+class Main {
+    final String outerString1 = ""
+            + "" + ""
+            + ""
+            + "";
+}
+        ]]></code>
+    </test-code>
 </test-data>
