@@ -130,6 +130,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5980](https://github.com/pmd/pmd/pull/5980): chore: Fix typos - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5981](https://github.com/pmd/pmd/pull/5981): Fix #4911: \[java] AvoidRethrowingException consider supertypes in following catches - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5989](https://github.com/pmd/pmd/pull/5989): \[java] Improve performance of RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5933](https://github.com/pmd/pmd/pull/5933): \[test] Fix QuickstartRulesetTests to detect deprecated rules again - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6016](https://github.com/pmd/pmd/pull/6016): \[java] Fix #6014: Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates
