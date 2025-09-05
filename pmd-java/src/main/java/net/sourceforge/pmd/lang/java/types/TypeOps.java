@@ -42,6 +42,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Common operations on types.
@@ -219,6 +220,10 @@ public final class TypeOps {
         @Override
         public Boolean visitInferenceVar(InferenceVar t, JTypeMirror s) {
             if (pure) {
+                if (s instanceof InferenceVar) {
+                    t.addBound(BoundKind.EQ, s);
+                    return true;
+                }
                 return t == s || t.getBounds(BoundKind.EQ).contains(s);
             }
 
@@ -544,7 +549,7 @@ public final class TypeOps {
 
     }
 
-    private static JTypeMirror wildUpperBound(JTypeMirror type) {
+    public static JTypeMirror wildUpperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
             JWildcardType wild = (JWildcardType) type;
             if (wild.isUpperBound()) {
@@ -2091,6 +2096,32 @@ public final class TypeOps {
         Set<JTypeMirror> tSupertypes = new HashSet<>(t.getSuperTypeSet());
         tSupertypes.retainAll(s.getSuperTypeSet());
         return !tSupertypes.equals(Collections.singleton(t.getTypeSystem().OBJECT));
+    }
+
+    /**
+     * Test whether the given type is an intersection type that is uninhabited,
+     * meaning there are no valid concrete types that can implement this type.
+     * This is the case if any bound is a final class (in which case it must also
+     * be the primary bound). Return unknown if we don't know whether
+     * there are final bounds or not.
+     *
+     * @param t A type
+     * @return Whether the type is an uninhabited intersection
+     */
+    public static OptionalBool isUninhabitedIntersection(JTypeMirror t) {
+        if (t instanceof JIntersectionType) {
+            JTypeMirror primary = ((JIntersectionType) t).getPrimaryBound();
+            JTypeDeclSymbol sym = primary.getSymbol();
+            if (sym instanceof JClassSymbol && ((JClassSymbol) sym).isFinal()) {
+                return OptionalBool.YES;
+            }
+            // We have to test all the components bc unresolved types may
+            // be any bound
+            if (((JIntersectionType) t).getComponents().stream().anyMatch(TypeOps::isUnresolved)) {
+                return OptionalBool.UNKNOWN;
+            }
+        }
+        return OptionalBool.NO;
     }
 
     /**

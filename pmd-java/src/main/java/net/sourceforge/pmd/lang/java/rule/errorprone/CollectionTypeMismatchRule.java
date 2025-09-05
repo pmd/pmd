@@ -6,16 +6,16 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
-import net.sourceforge.pmd.lang.java.types.JTypeVar;
-import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
-import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.reporting.RuleContext;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Detects method calls on collections where the passed object cannot possibly be in the collection
@@ -106,11 +106,17 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
         
         ASTExpression firstArg = getFirstArgument(node);
         JTypeMirror argType = firstArg.getTypeMirror();
-        if (!isCompatibleType(argType, elementType)) {
-            ctx.addViolation(node, argType.toString(), elementType.toString());
-        }
+        checkCompatible(node, ctx, argType, elementType);
     }
-    
+
+    private boolean checkCompatible(ASTMethodCall node, RuleContext ctx, JTypeMirror argType, JTypeMirror elementType) {
+        if (!isCompatibleType(node, argType, elementType)) {
+            ctx.addViolation(node, argType.toString(), elementType.toString());
+            return false;
+        }
+        return true;
+    }
+
     private void checkCollectionToCollectionCompatibility(ASTMethodCall node, RuleContext ctx) {
         JTypeMirror qualifierType = getQualifierType(node);
         if (!(qualifierType instanceof JClassType)) {
@@ -126,8 +132,8 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
         JTypeMirror argType = firstArg.getTypeMirror();
         if (argType instanceof JClassType && isCollectionType((JClassType) argType)) {
             JTypeMirror argElementType = getCollectionElementType((JClassType) argType);
-            if (argElementType != null && !isCompatibleType(argElementType, elementType)) {
-                ctx.addViolation(node, argElementType.toString(), elementType.toString());
+            if (argElementType != null) {
+                checkCompatible(node, ctx, argElementType, elementType);
             }
         }
     }
@@ -145,9 +151,7 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
         
         ASTExpression firstArg = getFirstArgument(node);
         JTypeMirror argType = firstArg.getTypeMirror();
-        if (!isCompatibleType(argType, keyType)) {
-            ctx.addViolation(node, argType.toString(), keyType.toString());
-        }
+        checkCompatible(node, ctx, argType, keyType);
     }
     
     private void checkMapValueCompatibility(ASTMethodCall node, RuleContext ctx) {
@@ -163,9 +167,7 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
         
         ASTExpression firstArg = getFirstArgument(node);
         JTypeMirror argType = firstArg.getTypeMirror();
-        if (!isCompatibleType(argType, valueType)) {
-            ctx.addViolation(node, argType.toString(), valueType.toString());
-        }
+        checkCompatible(node, ctx, argType, valueType);
     }
     
     private void checkMapKeyValueCompatibility(ASTMethodCall node, RuleContext ctx) {
@@ -185,11 +187,9 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
         
         JTypeMirror keyArgType = keyArg.getTypeMirror();
         JTypeMirror valueArgType = valueArg.getTypeMirror();
-        
-        if (!isCompatibleType(keyArgType, keyType)) {
-            ctx.addViolation(node, keyArgType.toString(), keyType.toString());
-        } else if (!isCompatibleType(valueArgType, valueType)) {
-            ctx.addViolation(node, valueArgType.toString(), valueType.toString());
+
+        if (checkCompatible(node, ctx, keyArgType, keyType)) {
+            checkCompatible(node, ctx, valueArgType, valueType);
         }
     }
     
@@ -228,62 +228,44 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
     }
 
     private JTypeMirror resolveWildcardBound(JTypeMirror type) {
-        // Handle captured type variables from wildcards
-        if (type instanceof JTypeVar && ((JTypeVar) type).isCaptured()) {
-            JWildcardType wildcard = ((JTypeVar) type).getCapturedOrigin();
-            if (wildcard != null) {
-                return resolveWildcard(wildcard, type.getTypeSystem());
-            }
-        }
-        
-        // Handle direct wildcard types
-        if (type instanceof JWildcardType) {
-            return resolveWildcard((JWildcardType) type, type.getTypeSystem());
-        }
-        
-        return type;
+        return TypeOps.wildUpperBound(type);
     }
     
-    private JTypeMirror resolveWildcard(JWildcardType wildcard, TypeSystem typeSystem) {
-        return wildcard.isUpperBound() 
-            ? wildcard.asUpperBound() 
-            : typeSystem.OBJECT;
-    }
-
-    private boolean isCompatibleType(JTypeMirror argType, JTypeMirror expectedType) {
+    private boolean isCompatibleType(ASTMethodCall node, JTypeMirror argType, JTypeMirror expectedType) {
         // If argType is unresolved, be conservative and assume compatibility
         // This prevents false positives when external dependencies can't be resolved
         if (TypeOps.isUnresolved(argType)) {
             return true;
         }
-        
+        Infer infer = InternalApiBridge.getInferenceEntryPoint(node);
+
+        return infer.areTypesMaybeRelated(argType.box(), expectedType.box()) != OptionalBool.NO;
+
         // Handle wildcards and captured type variables - they should be compatible with any type
         // since they represent unknown types that could potentially be the expected type
-        if (argType instanceof JWildcardType
-                || (argType instanceof JTypeVar && ((JTypeVar) argType).isCaptured())
-        ) {
-            return true;
-        }
-        
-        // Check basic convertibility using raw types (ignore generics)
-        // This will cause some false-negaties, but doing this right would lead to much more complicated code
-        JTypeMirror rawArgType = getRawType(argType);
-        JTypeMirror rawExpectedType = getRawType(expectedType);
-        
-        if (TypeOps.isConvertible(rawArgType, rawExpectedType).somehow()
-                || TypeOps.isConvertible(rawExpectedType, rawArgType).somehow()
-        ) {
-            return true;
-        }
-        
-        // Check primitive/wrapper compatibility (autoboxing/unboxing)
-        if (argType.isPrimitive()) {
-            // Check if autoboxed primitive is compatible with expected type
-            JTypeMirror boxedArgType = argType.box();
-            return TypeOps.isConvertible(boxedArgType, expectedType).somehow();
-        }
-
-        return false;
+        // if (argType instanceof JWildcardType
+        //     || argType instanceof JTypeVar && ((JTypeVar) argType).isCaptured()) {
+        //     return true;
+        // }
+        //
+        // // Check basic convertibility using raw types (ignore generics)
+        // // This will cause some false-negaties, but doing this right would lead to much more complicated code
+        // JTypeMirror rawArgType = getRawType(argType);
+        // JTypeMirror rawExpectedType = getRawType(expectedType);
+        //
+        // if (TypeOps.isConvertible(rawArgType, rawExpectedType).somehow()
+        //         || TypeOps.isConvertible(rawExpectedType, rawArgType).somehow()
+        // ) {
+        //     return true;
+        // }
+        //
+        // // Check primitive/wrapper compatibility (autoboxing/unboxing)
+        // if (argType.isPrimitive()) {
+        //     // Check if autoboxed primitive is compatible with expected type
+        //     JTypeMirror boxedArgType = argType.box();
+        //     return TypeOps.isConvertible(boxedArgType, expectedType).somehow();
+        // }
+        //
     }
     
     private JTypeMirror getRawType(JTypeMirror type) {

@@ -11,6 +11,7 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.subst;
 import static net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf.cast;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.ExprOps.isPertinentToApplicability;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.MethodResolutionPhase.INVOC_LOOSE;
+import static net.sourceforge.pmd.util.CollectionUtil.emptyList;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
@@ -28,6 +29,7 @@ import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
+import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -129,6 +131,44 @@ public final class Infer {
 
     InferenceContext newContextFor(List<JTypeVar> tvars, boolean addPrimaryBound) {
         return new InferenceContext(ts, supertypeCheckCache, tvars, LOG, addPrimaryBound);
+    }
+
+    /**
+     * Is there a type that could implement both A and B?
+     */
+    public OptionalBool areTypesMaybeRelated(JTypeMirror a, JTypeMirror b) {
+        InferenceContext ctx = newContextFor(emptyList());
+        a = mapCvarToIvar(a, ctx);
+        b = mapCvarToIvar(b, ctx);
+
+        // Now test whether an ivar that has the two
+        // supertypes is not a contradiction
+        InferenceVar ivar = ctx.addVar(null);
+        ivar.isConvertibleTo(a);
+        ivar.isConvertibleTo(b);
+        try {
+            ctx.incorporate();
+            ctx.solve();
+        } catch (ResolutionFailedException e) {
+            return OptionalBool.NO;
+        }
+        // If we succeeded, there was no contradiction.
+        // However, it may still be the case that the solution is a LUB
+        // (an intersection type), where one of the bounds is final. In
+        // that case the intersection is in fact uninhabited, there are
+        // no possible subtypes that can satisfy all the bounds.
+
+        JTypeMirror instantiation = ivar.getInst();
+        return TypeOps.isUninhabitedIntersection(instantiation).complement();
+    }
+
+    private static JTypeMirror mapCvarToIvar(JTypeMirror a, InferenceContext ctx) {
+        return TypeConversion.capture(a).subst(v -> {
+           if (v instanceof JTypeVar && ((JTypeVar) v).isCaptured()) {
+               return ctx.addVar((JTypeVar) v);
+           }
+           return v;
+        });
     }
 
     /**

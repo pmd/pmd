@@ -73,7 +73,7 @@ enum ReductionStep {
             JTypeMirror lower = !LOWER.filterBounds(uv, infCtx).isEmpty()
                                 ? LOWER.solve(uv, infCtx)
                                 : infCtx.ts.NULL_TYPE;
-
+            assert uv.getBaseVar() != null : "This is a captured var which can only be true if the base var is non-null";
             return uv.getBaseVar().cloneWithBounds(lower, upper);
         }
     },
