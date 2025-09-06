@@ -4192,6 +4192,15 @@
 ,
 
 {
+"title": "CollectionTypeMismatch (Java, Error Prone)",
+"tags": "",
+"keywords": "CollectionTypeMismatch",
+"url": "pmd_rules_java_errorprone.html#collectiontypemismatch",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
 "title": "CompareObjectsWithEquals (Java, Error Prone)",
 "tags": "",
 "keywords": "CompareObjectsWithEquals",

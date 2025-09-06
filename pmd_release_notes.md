@@ -23,6 +23,10 @@ This is a minor release.
 ### 🚀 New and noteworthy
 
 #### ✨ New Rules
+
+This release brings several new rules for both Java and Apex. Please try them out
+and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
+
 * The new apex rule [`AnnotationsNamingConventions`](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_rules_apex_codestyle.html#annotationsnamingconventions) enforces that annotations
   are used consistently in PascalCase.  
   The rule is referenced in the quickstart.xml ruleset for Apex.
@@ -54,6 +58,10 @@ This is a minor release.
   which only considered return statements. The new rule also finds unnecessary local variables
   before throw statements.  
   The rule is referenced in the quickstart.xml ruleset for Java.
+* The new java rule [`CollectionTypeMismatch`](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_rules_java_errorprone.html#collectiontypemismatch) detects calls to
+  collection methods where we suspect the types are incompatible. This happens for instance
+  when you try to remove a `String` from a `Collection<Integer>`: although it is allowed
+  to write this because `remove` takes an `Object` parameter, it is most likely a mistake.
 
 #### Deprecated Rules
 * The java rule [`GenericsNaming`](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_rules_java_codestyle.html#genericsnaming) has been deprecated for removal in favor
@@ -93,6 +101,7 @@ This is a minor release.
   * [#5837](https://github.com/pmd/pmd/issues/5837): \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable
   * [#5881](https://github.com/pmd/pmd/issues/5881): \[java] AvoidLosingExceptionInformation does not trigger when inside if-else
   * [#5915](https://github.com/pmd/pmd/issues/5915): \[java] AssignmentInOperand not raised when inside do-while loop
+  * [#5949](https://github.com/pmd/pmd/issues/5949): \[java] new rule for Collections methods that take Object as a parameter
   * [#5974](https://github.com/pmd/pmd/issues/5974): \[java] CloseResourceRule: NullPointerException while analyzing
 * test
   * [#5973](https://github.com/pmd/pmd/issues/5973): \[test] Enable XML validation for rule tests

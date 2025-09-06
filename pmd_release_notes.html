@@ -2033,6 +2033,10 @@
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
 <h4 id="-new-rules">✨ New Rules</h4>
+
+<p>This release brings several new rules for both Java and Apex. Please try them out
+and submit feedback on <a href="https://github.com/pmd/pmd/issues">our issue tracker</a>!</p>
+
 <ul>
   <li>The new apex rule <a href="pmd_rules_apex_codestyle.html#annotationsnamingconventions"><code class="language-plaintext highlighter-rouge">AnnotationsNamingConventions</code></a> enforces that annotations
 are used consistently in PascalCase.<br />
@@ -2065,6 +2069,10 @@ immediately returned or thrown. This rule replaces the old rule <a href="pmd_rul
 which only considered return statements. The new rule also finds unnecessary local variables
 before throw statements.<br />
 The rule is referenced in the quickstart.xml ruleset for Java.</li>
+  <li>The new java rule <a href="pmd_rules_java_errorprone.html#collectiontypemismatch"><code class="language-plaintext highlighter-rouge">CollectionTypeMismatch</code></a> detects calls to
+collection methods where we suspect the types are incompatible. This happens for instance
+when you try to remove a <code class="language-plaintext highlighter-rouge">String</code> from a <code class="language-plaintext highlighter-rouge">Collection&lt;Integer&gt;</code>: although it is allowed
+to write this because <code class="language-plaintext highlighter-rouge">remove</code> takes an <code class="language-plaintext highlighter-rouge">Object</code> parameter, it is most likely a mistake.</li>
 </ul>
 
 <h4 id="deprecated-rules">Deprecated Rules</h4>
@@ -2127,6 +2135,7 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
       <li><a href="https://github.com/pmd/pmd/issues/5837">#5837</a>: [java] New Rule OverrideBothEqualsAndHashCodeOnComparable</li>
       <li><a href="https://github.com/pmd/pmd/issues/5881">#5881</a>: [java] AvoidLosingExceptionInformation does not trigger when inside if-else</li>
       <li><a href="https://github.com/pmd/pmd/issues/5915">#5915</a>: [java] AssignmentInOperand not raised when inside do-while loop</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5949">#5949</a>: [java] new rule for Collections methods that take Object as a parameter</li>
       <li><a href="https://github.com/pmd/pmd/issues/5974">#5974</a>: [java] CloseResourceRule: NullPointerException while analyzing</li>
     </ul>
   </li>
