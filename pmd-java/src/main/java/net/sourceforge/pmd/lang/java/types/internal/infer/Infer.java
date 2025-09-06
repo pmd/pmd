@@ -164,10 +164,10 @@ public final class Infer {
 
     private static JTypeMirror mapCvarToIvar(JTypeMirror a, InferenceContext ctx) {
         return TypeConversion.capture(a).subst(v -> {
-           if (v instanceof JTypeVar && ((JTypeVar) v).isCaptured()) {
-               return ctx.addVar((JTypeVar) v);
-           }
-           return v;
+            if (v instanceof JTypeVar && ((JTypeVar) v).isCaptured()) {
+                return ctx.addVar((JTypeVar) v);
+            }
+            return v;
         });
     }
 
