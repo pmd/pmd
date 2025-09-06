@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * An action to execute during the incorporation phase.
@@ -116,6 +117,8 @@ abstract class IncorporationAction {
                             // mybound <: otherBound
                             checkBound(false, myBound, otherBound, ctx);
                             break;
+                        default:
+                            throw AssertionUtil.shouldNotReachHere("exhaustive switch");
                         }
                     }
                 }
