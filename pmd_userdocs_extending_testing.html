@@ -2128,7 +2128,7 @@ this test class.</p>
 <span class="nt">&lt;test-data</span>
     <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd"</span><span class="nt">&gt;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_1.xsd"</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;test-code&gt;</span>
         <span class="nt">&lt;description&gt;</span>concrete class<span class="nt">&lt;/description&gt;</span>
@@ -2162,7 +2162,7 @@ between different test cases.</p>
 <div class="alert alert-info" role="alert">
   <p><i class="fas fa-info-circle"></i>
 <strong>Note:</strong>
-The XML schema is available at <a href="https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd">rule-tests.xsd</a>.</p>
+The XML schema is available at <a href="https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_1.xsd">rule-tests.xsd</a>.</p>
 </div>
 
 <h3 id="test-code-attributes"><code class="language-plaintext highlighter-rouge">&lt;test-code&gt;</code> attributes</h3>
@@ -2215,7 +2215,9 @@ the suppressor’s id as the text content. The suppression id is optional and ca
     <span class="nt">&lt;suppressor</span> <span class="na">line=</span><span class="s">"6"</span><span class="nt">/&gt;</span>
 <span class="nt">&lt;/expected-suppressions&gt;</span>
 </code></pre></div>    </div>
-    <p>This is available since PMD 7.15.0 (rule-test schema version 1.1.0).</p>
+    <p>This is available since PMD 7.15.0 (rule-test schema version 1.1.0).<br />
+Since PMD 7.17.0 (rule-test schema version 1.1.1), an empty <code class="language-plaintext highlighter-rouge">&lt;expected-suppressions&gt;</code> element without
+<code class="language-plaintext highlighter-rouge">&lt;suppressor&gt;</code> children is allowed to test for no suppressed violations.</p>
   </li>
   <li>
     <p><strong><code class="language-plaintext highlighter-rouge">&lt;code&gt;</code></strong>: Either the <code class="language-plaintext highlighter-rouge">&lt;code&gt;</code> element or the <code class="language-plaintext highlighter-rouge">&lt;code-ref&gt;</code> element is required. It provides the actual code
@@ -2244,7 +2246,7 @@ in a “CDATA” section, so that no further XML escapes (entity references such
 <span class="nt">&lt;test-data</span>
     <span class="na">xmlns=</span><span class="s">"http://pmd.sourceforge.net/rule-tests"</span>
     <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
-    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_1_0.xsd"</span><span class="nt">&gt;</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">"http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_1_1.xsd"</span><span class="nt">&gt;</span>
 
     <span class="nt">&lt;test-code</span> <span class="na">disabled=</span><span class="s">"false"</span><span class="nt">&gt;</span>
         <span class="nt">&lt;description&gt;</span>Just a description, will be used as the test name for JUnit in the reports<span class="nt">&lt;/description&gt;</span>
@@ -2404,7 +2406,7 @@ create custom PMD rules for different languages including tests.</p>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2025 (7.15.0)<br /> Site last generated: Sep 1, 2025 <br />
+            July 2025 (7.17.0)<br /> Site last generated: Sep 6, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

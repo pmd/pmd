@@ -14,6 +14,7 @@ This is a minor release.
     * [Deprecated Rules](#deprecated-rules)
 * [🐛 Fixed Issues](#fixed-issues)
 * [🚨 API Changes](#api-changes)
+    * [Rule Test Schema](#rule-test-schema)
     * [Deprecations](#deprecations)
 * [✨ Merged pull requests](#merged-pull-requests)
 * [📦 Dependency updates](#dependency-updates)
@@ -76,11 +77,13 @@ This is a minor release.
 * java-bestpractices
   * [#2186](https://github.com/pmd/pmd/issues/2186): \[java] New rule: Reliance on default charset
   * [#4500](https://github.com/pmd/pmd/issues/4500): \[java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed
+  * [#4770](https://github.com/pmd/pmd/issues/4770): \[java] UnusedFormalParameter should ignore public constructor as same as method
   * [#5198](https://github.com/pmd/pmd/issues/5198): \[java] CheckResultSet false-positive with local variable checked in a while loop
 * java-codestyle
   * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
   * [#5770](https://github.com/pmd/pmd/issues/5770): \[java] New Rule: VariableCanBeInlined: Local variables should not be declared and then immediately returned or thrown
   * [#5948](https://github.com/pmd/pmd/issues/5948): \[java] UnnecessaryBoxing false positive when calling `List.remove(int)`
+  * [#5982](https://github.com/pmd/pmd/issues/5982): \[java] More detailed message for the UselessParentheses rule
 * java-design
   * [#4911](https://github.com/pmd/pmd/issues/4911): \[java] AvoidRethrowingException should allow rethrowing exception subclasses
   * [#5023](https://github.com/pmd/pmd/issues/5023): \[java] UseUtilityClass implementation hardcodes a message instead of using the one defined in the XML
@@ -91,8 +94,19 @@ This is a minor release.
   * [#5881](https://github.com/pmd/pmd/issues/5881): \[java] AvoidLosingExceptionInformation does not trigger when inside if-else
   * [#5915](https://github.com/pmd/pmd/issues/5915): \[java] AssignmentInOperand not raised when inside do-while loop
   * [#5974](https://github.com/pmd/pmd/issues/5974): \[java] CloseResourceRule: NullPointerException while analyzing
+* test
+  * [#5973](https://github.com/pmd/pmd/issues/5973): \[test] Enable XML validation for rule tests
 
 ### 🚨 API Changes
+
+#### Rule Test Schema
+When executing rule tests, the rule test XML file will be validated against the schema and the tests will fail
+if the XML file is invalid.
+
+There was a small bug in the schema around verifying suppressed violations: If a test wanted to verify, that there
+are _no_ suppressed violations, then this was not possible. Now the `<expected-suppression>` element may be
+empty. This is available in version 1.1.1 of the schema.
+See [Testing your rules](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_userdocs_extending_testing.html) for more information.
 
 #### Deprecations
 * test

@@ -2102,6 +2102,7 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/2186">#2186</a>: [java] New rule: Reliance on default charset</li>
       <li><a href="https://github.com/pmd/pmd/issues/4500">#4500</a>: [java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed</li>
+      <li><a href="https://github.com/pmd/pmd/issues/4770">#4770</a>: [java] UnusedFormalParameter should ignore public constructor as same as method</li>
       <li><a href="https://github.com/pmd/pmd/issues/5198">#5198</a>: [java] CheckResultSet false-positive with local variable checked in a while loop</li>
     </ul>
   </li>
@@ -2110,6 +2111,7 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
       <li><a href="https://github.com/pmd/pmd/issues/972">#972</a>: [java] Improve naming conventions rules</li>
       <li><a href="https://github.com/pmd/pmd/issues/5770">#5770</a>: [java] New Rule: VariableCanBeInlined: Local variables should not be declared and then immediately returned or thrown</li>
       <li><a href="https://github.com/pmd/pmd/issues/5948">#5948</a>: [java] UnnecessaryBoxing false positive when calling <code class="language-plaintext highlighter-rouge">List.remove(int)</code></li>
+      <li><a href="https://github.com/pmd/pmd/issues/5982">#5982</a>: [java] More detailed message for the UselessParentheses rule</li>
     </ul>
   </li>
   <li>java-design
@@ -2128,9 +2130,23 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
       <li><a href="https://github.com/pmd/pmd/issues/5974">#5974</a>: [java] CloseResourceRule: NullPointerException while analyzing</li>
     </ul>
   </li>
+  <li>test
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5973">#5973</a>: [test] Enable XML validation for rule tests</li>
+    </ul>
+  </li>
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+
+<h4 id="rule-test-schema">Rule Test Schema</h4>
+<p>When executing rule tests, the rule test XML file will be validated against the schema and the tests will fail
+if the XML file is invalid.</p>
+
+<p>There was a small bug in the schema around verifying suppressed violations: If a test wanted to verify, that there
+are <em>no</em> suppressed violations, then this was not possible. Now the <code class="language-plaintext highlighter-rouge">&lt;expected-suppression&gt;</code> element may be
+empty. This is available in version 1.1.1 of the schema.
+See <a href="pmd_userdocs_extending_testing.html">Testing your rules</a> for more information.</p>
 
 <h4 id="deprecations">Deprecations</h4>
 <ul>
@@ -2209,7 +2225,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 1, 2025 <br />
+             Site last generated: Sep 6, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
