@@ -28,8 +28,8 @@ import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
+import net.sourceforge.pmd.lang.java.types.JWildcardType;
 import net.sourceforge.pmd.lang.java.types.Substitution;
-import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
@@ -163,9 +163,23 @@ public final class Infer {
     }
 
     private static JTypeMirror mapCvarToIvar(JTypeMirror a, InferenceContext ctx) {
-        return TypeConversion.capture(a).subst(v -> {
+        return a.subst(v -> {
             if (v instanceof JTypeVar && ((JTypeVar) v).isCaptured()) {
-                return ctx.addVar((JTypeVar) v);
+                // Note, we add an ivar that is not considered as "captured".
+                // because it is not, really, we want to be more lenient than
+                // the capture check used for overload tests.
+                InferenceVar ivar = ctx.addVar(null);
+                JWildcardType wild = ((JTypeVar) v).getCapturedOrigin();
+                assert wild != null : "var is captured";
+                JTypeMirror ub = wild.asUpperBound();
+                JTypeMirror lb = wild.asLowerBound();
+                if (!ub.isTop()) {
+                    ivar.addPrimaryBound(BoundKind.UPPER, ub);
+                }
+                if (!lb.isBottom()) {
+                    ivar.addBound(BoundKind.LOWER, ub);
+                }
+                return ivar;
             }
             return v;
         });

@@ -777,10 +777,6 @@ public final class TypeOps {
                 return Convertibility.SUBTYPING;
             }
 
-            if (isSpecialUnresolved(s) || isSpecialUnresolved(t)) {
-                return Convertibility.SUBTYPING;
-            }
-
             if (s instanceof JWildcardType) {
                 JWildcardType sw = (JWildcardType) s;
 
@@ -799,8 +795,10 @@ public final class TypeOps {
                 }
             }
 
-            if (s instanceof InferenceVar && t instanceof InferenceVar) {
-                // even if they are different vars.
+            if (isSpecialUnresolved(s) || isSpecialUnresolved(t)
+                || s instanceof InferenceVar || t instanceof InferenceVar) {
+                // In these cases we still don't want to fail. It could be
+                // that adding bounds later will make the test succeed.
                 return Convertibility.SUBTYPING;
             }
 
