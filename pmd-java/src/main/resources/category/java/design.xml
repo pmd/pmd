@@ -122,23 +122,12 @@ public class Foo {
           language="java"
           since="3.8"
           message="A catch statement that catches an exception only to rethrow it should be avoided."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.design.AvoidRethrowingExceptionRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidrethrowingexception">
         <description>
 Catch blocks that merely rethrow a caught exception only add to code size and runtime complexity.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//CatchClause[
-  CatchParameter/VariableId/@Name
-= Block[@Size = 1]/ThrowStatement/VariableAccess/@Name]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public void bar() {
@@ -242,7 +231,7 @@ public class Foo {
     <rule name="AvoidThrowingRawExceptionTypes"
           language="java"
           since="1.8"
-          message="Avoid throwing raw exception types."
+          message="Avoid throwing raw exception type {0}."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidthrowingrawexceptiontypes">
         <description>
@@ -282,7 +271,7 @@ public class Foo {
     <rule name="AvoidUncheckedExceptionsInSignatures"
           since="6.13.0"
           language="java"
-          message="A method or constructor should not explicitly declare unchecked exceptions in its ''throws'' clause"
+          message="A method or constructor should not explicitly declare unchecked exception {0} in its ''throws'' clause"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoiduncheckedexceptionsinsignatures">
         <description>
@@ -716,7 +705,7 @@ public class Foo {
     <rule name="FinalFieldCouldBeStatic"
           language="java"
           since="1.1"
-          message="This final field could be made static"
+          message="The final field {0} could be made static"
           class="net.sourceforge.pmd.lang.java.rule.design.FinalFieldCouldBeStaticRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#finalfieldcouldbestatic">
         <description>
@@ -1436,7 +1425,7 @@ public class MyClass {
     public void connect(String username,
         String pssd,
         String databaseName,
-        String databaseAdress)
+        String databaseAddress)
         // Instead of those parameters object
         // would ensure a cleaner API and permit
         // to add extra data transparently (no code change):

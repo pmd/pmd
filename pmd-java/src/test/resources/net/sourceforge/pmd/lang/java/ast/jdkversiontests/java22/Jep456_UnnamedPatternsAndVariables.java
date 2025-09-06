@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  * @see <a href="https://openjdk.org/jeps/443">JEP 443: Unnamed Patterns and Variables (Preview)</a> (Java 21)
  * @see <a href="https://openjdk.org/jeps/456">JEP 456: Unnamed Variables & Patterns</a> (Java 22)
  */
-class Jep456_UnamedPatternsAndVariables {
+class Jep456_UnnamedPatternsAndVariables {
     record Point(int x, int y) { }
     enum Color { RED, GREEN, BLUE }
     record ColoredPoint(Point p, Color c) { }

@@ -339,7 +339,7 @@ class RuleSetFactoryTest extends RulesetFactoryTestBase {
      * The user should not get a deprecation warning for the whole ruleset,
      * since not all rules are deprecated in the referenced ruleset. Since the deprecated rule is excluded,
      * there should be no deprecation warning at all, although the deprecated ruleset would have been
-     * excluded by default (without explictly excluding it).
+     * excluded by default (without explicitly excluding it).
      *
      * <p>
      * In the end, we should get all non-deprecated rules of the referenced ruleset.

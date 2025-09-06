@@ -17,10 +17,12 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
@@ -28,6 +30,7 @@ import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
+import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
@@ -155,6 +158,12 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
             reason = "boxing of boxed value";
         } else if (isImplicitlyTypedLambdaReturnExpr(conversionExpr)
             || ctxType != null && conversionIsImplicitlyRealisable(sourceType, ctxType, ctx, conversionOutput)) {
+            
+            // Check if this unboxing is required for correct overload selection
+            if (sourceType.isBoxedPrimitive() && conversionOutput.isPrimitive() 
+                && isUnboxingRequiredForOverloadSelection(conversionExpr, convertedExpr)) {
+                return;
+            }
             if (sourceType.unbox().equals(conversionOutput)) {
                 reason = "explicit unboxing";
             } else if (sourceType.box().equals(conversionOutput)) {
@@ -179,6 +188,78 @@ public class UnnecessaryBoxingRule extends AbstractJavaRulechainRule {
         return conv != null
             && conv.equals(implicitConversionResult(conversionOutput, ctxType, ctx.getKind()))
             && conversionDoesNotChangesValue(sourceType, conversionOutput);
+    }
+
+    /**
+     * Check if the unboxing conversion is required for correct method overload selection.
+     * Returns true if removing the unboxing would cause a different method overload to be selected.
+     */
+    private boolean isUnboxingRequiredForOverloadSelection(ASTExpression conversionExpr, ASTExpression convertedExpr) {
+        // Find the invocation and argument index
+        JavaNode parent = conversionExpr.getParent();
+        InvocationNode invocation;
+        int argIndex;
+        
+        if (parent instanceof ASTList && parent.getParent() instanceof InvocationNode) {
+            invocation = (InvocationNode) parent.getParent();
+            argIndex = conversionExpr.getIndexInParent();
+        } else if (parent instanceof InvocationNode) {
+            invocation = (InvocationNode) parent;
+            argIndex = 0;
+        } else {
+            return false;
+        }
+        
+        // Get the method and validate we have a boxed->primitive conversion
+        JMethodSig currentMethod;
+        try {
+            currentMethod = invocation.getMethodType();
+        } catch (Exception e) {
+            return false;
+        }
+        
+        if (!convertedExpr.getTypeMirror().isBoxedPrimitive() || !conversionExpr.getTypeMirror().isPrimitive()) {
+            return false;
+        }
+        
+        // Check if there are overloads that would accept the boxed type differently
+        return hasObjectOverloadAtPosition(currentMethod, argIndex, invocation instanceof ASTConstructorCall);
+    }
+    
+    /**
+     * Check if there are other overloads that would accept the boxed type differently,
+     * making the unboxing necessary for correct overload selection.
+     */
+    private boolean hasObjectOverloadAtPosition(JMethodSig currentMethod, int argIndex, boolean isConstructor) {
+        JTypeMirror declaringType = currentMethod.getDeclaringType();
+        if (!(declaringType instanceof JClassType) || argIndex >= currentMethod.getFormalParameters().size()) {
+            return false;
+        }
+        
+        JClassType classType = (JClassType) declaringType;
+        JTypeMirror currentParamType = currentMethod.getFormalParameters().get(argIndex);
+        if (!currentParamType.isPrimitive()) {
+            return false;
+        }
+        
+        JTypeMirror boxedType = currentParamType.box();
+        
+        // Get all overloads and check if any would accept the boxed type differently
+        java.util.List<JMethodSig> overloads = isConstructor 
+            ? classType.getConstructors()
+            : classType.streamMethods(method -> method.nameEquals(currentMethod.getName()))
+                      .collect(OverloadSet.collectMostSpecific(classType));
+        
+        return overloads.stream()
+            .filter(overload -> !overload.equals(currentMethod))
+            .filter(overload -> argIndex < overload.getFormalParameters().size())
+            .map(overload -> overload.getFormalParameters().get(argIndex))
+            .anyMatch(overloadParamType -> 
+                // Boxed type is assignable to overload parameter (Object, generic, etc.)
+                boxedType.isSubtypeOf(overloadParamType) 
+                // Or overload takes reference type while current takes primitive (different conversion paths)
+                || overloadParamType.isTypeVariable() || !overloadParamType.isPrimitive() && currentParamType.isPrimitive()
+            );
     }
 
 

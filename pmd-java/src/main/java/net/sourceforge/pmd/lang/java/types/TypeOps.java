@@ -1385,7 +1385,7 @@ public final class TypeOps {
         boolean m2Gen = m2.isGeneric();
         if (m1Gen ^ m2Gen) {
             if (m1Gen) {
-                return false; // this test is assymetric
+                return false; // this test is asymmetric
             } else {
                 m2 = m2.getErasure();
             }
