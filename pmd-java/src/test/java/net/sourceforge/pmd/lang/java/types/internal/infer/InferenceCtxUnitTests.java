@@ -28,6 +28,7 @@ import java.util.Set;
 
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
@@ -191,6 +192,43 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(c, hasBoundsExactly(upper(ts.OBJECT)));
     }
 
+    @Test
+    void testDoubleUpperBoundReconciliationWithSuperType() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+        InferenceVar c = newIvar(ctx);
+
+        // 'a <: List<'b>
+        // 'a <: Collection<'c>
+        // ~> 'b = 'c
+        addSubtypeConstraint(ctx, a, listType(b));
+        addSubtypeConstraint(ctx, a, collectionType(c));
+
+        assertThat(a, hasBoundsExactly(upper(listType(b)), upper(collectionType(b))));
+        verify(ctx).onIvarMerged(same(c), same(b));
+        assertThat(b, hasBoundsExactly(upper(ts.OBJECT)));
+    }
+
+    @Test
+    void testDoubleUpperBoundReconciliationWithWildcard() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+        InferenceVar c = newIvar(ctx);
+
+        // 'a <: List<'b>
+        // 'a <: Collection<? extends 'c>
+        // ~> 'b <: 'c
+        addSubtypeConstraint(ctx, a, listType(b));
+        addSubtypeConstraint(ctx, a, collectionType(extendsWild(c)));
+
+        assertThat(a, hasBoundsExactly(upper(listType(b)), upper(collectionType(extendsWild(c)))));
+        assertThat(b, hasBoundsExactly(upper(c)));
+        verify(ctx, Mockito.never()).onIvarMerged(any(), any());
+    }
 
     @Test
     void testDoubleUpperBoundIncompatible() {
@@ -205,7 +243,36 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         subtypeConstraintShouldFail(ctx, a, listType(ts.INT.box()));
     }
 
+    @Test
+    void testDoubleUpperBoundIncompatibleWithArray() {
+        InferenceContext ctx = spy(emptyCtx());
 
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: List<Integer>
+        // 'a <: Object[]
+        // ~> this is ok, even though it yields an uninhabited type
+        addSubtypeConstraint(ctx, a, listType(ts.OBJECT));
+        addSubtypeConstraint(ctx, a, ts.arrayType(ts.OBJECT));
+
+        ctx.solve();
+
+        assertThat("solution is uninhabited: Object[] & List<Integer>",
+            TypeOps.isUninhabitedIntersection(a.getInst()).isTrue());
+    }
+
+    @Test
+    void testDoubleUpperBoundInCompatibleWithArray() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: Number
+        // 'a <: Object[]
+        // ~> contradiction, because number is not an interface.
+        addSubtypeConstraint(ctx, a, ts.declaration(ts.getClassSymbol(Number.class)));
+        subtypeConstraintShouldFail(ctx, a, ts.arrayType(ts.OBJECT));
+    }
 
     @Test
     void testDoubleUpperBoundIncompatibleWithSuperTypes() {

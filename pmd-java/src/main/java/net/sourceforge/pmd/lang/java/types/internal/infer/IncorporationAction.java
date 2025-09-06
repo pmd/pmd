@@ -57,9 +57,16 @@ abstract class IncorporationAction {
             this.myBound = bound;
         }
 
-        private static boolean isClassType(JTypeMirror bound) {
+        /** This is either a class (not interface) or array. */
+        private static boolean mayBePrimaryBound(JTypeMirror bound) {
             JTypeDeclSymbol symbol = bound.getSymbol();
             return symbol instanceof JClassSymbol && !symbol.isInterface();
+        }
+
+        /** This is either a class, interface, or array. */
+        private static boolean hasClassSymbol(JTypeMirror bound) {
+            JTypeDeclSymbol symbol = bound.getSymbol();
+            return symbol instanceof JClassSymbol;
         }
 
         /**
@@ -82,13 +89,12 @@ abstract class IncorporationAction {
                 }
             }
 
-            if (myKind == BoundKind.UPPER && myBound.isClassOrInterface()) {
+            if (myKind == BoundKind.UPPER && hasClassSymbol(myBound)) {
                 // Check that other upper bounds that are class types are related to this bound.
                 // Otherwise, GLB does not exist and its construction would fail during ReductionStep#UPPER.
 
-
                 for (JTypeMirror otherBound : ivar.getBounds(BoundKind.UPPER)) {
-                    if (otherBound != myBound && otherBound.isClassOrInterface()) { // NOPMD CompareObjectsWithEquals
+                    if (otherBound != myBound && hasClassSymbol(otherBound)) { // NOPMD CompareObjectsWithEquals
                         // So we have ivar <: myBound and ivar <: otherBound
                         // But we don't know whether myBound <: otherBound or the other way around.
                         // We will check in both directions without adding constraints first, otherwise
@@ -126,7 +132,7 @@ abstract class IncorporationAction {
         }
 
         private static boolean mustTypesHaveAnOrdering(JTypeMirror myBound, JTypeMirror otherBound) {
-            return isClassType(myBound) && isClassType(otherBound)
+            return mayBePrimaryBound(myBound) && mayBePrimaryBound(otherBound)
                    || myBound.getErasure().isConvertibleTo(otherBound.getErasure()).somehow()
                    || otherBound.getErasure().isConvertibleTo(myBound.getErasure()).somehow();
         }
