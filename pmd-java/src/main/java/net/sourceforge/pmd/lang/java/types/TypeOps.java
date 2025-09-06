@@ -220,10 +220,6 @@ public final class TypeOps {
         @Override
         public Boolean visitInferenceVar(InferenceVar t, JTypeMirror s) {
             if (pure) {
-                if (s instanceof InferenceVar) {
-                    t.addBound(BoundKind.EQ, s);
-                    return true;
-                }
                 return t == s || t.getBounds(BoundKind.EQ).contains(s);
             }
 
@@ -549,6 +545,10 @@ public final class TypeOps {
 
     }
 
+    /**
+     * If the type is a wildcard or a type var, return the upper bound.
+     * Otherwise return the type itself.
+     */
     public static JTypeMirror wildUpperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
             JWildcardType wild = (JWildcardType) type;
@@ -793,6 +793,11 @@ public final class TypeOps {
                     // Test L(S) <: L(T), we already know U(T) <: U(S), because U(S) is top
                     return this.isConvertible(sw.asLowerBound(), wildLowerBound(t));
                 }
+            }
+
+            if (s instanceof InferenceVar && t instanceof InferenceVar) {
+                // even if they are different vars.
+                return Convertibility.SUBTYPING;
             }
 
             return Convertibility.NEVER;

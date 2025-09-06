@@ -9,6 +9,8 @@ import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
@@ -82,21 +84,57 @@ abstract class IncorporationAction {
             if (myKind == BoundKind.UPPER && isClassType(myBound)) {
                 // Check that other upper bounds that are class types are related to this bound.
                 // Otherwise, GLB does not exist and its construction would fail during ReductionStep#UPPER.
+
+
                 for (JTypeMirror otherBound : ivar.getBounds(BoundKind.UPPER)) {
                     if (otherBound != myBound && isClassType(otherBound)) { // NOPMD CompareObjectsWithEquals
-                        // Since we are testing both directions we cannot let those tests add bounds on the ivars,
-                        // because they could be contradictory.
-                        boolean areRelated = TypeOps.isConvertiblePure(myBound, otherBound).somehow()
-                            || TypeOps.isConvertiblePure(otherBound, myBound).somehow();
+                        // So we have ivar <: myBound and ivar <: otherBound
+                        // But we don't know whether myBound <: otherBound or the other way around.
+                        // We will check in both directions without adding constraints first, otherwise
+                        // we risk introducing contradictions.
+                        BoundKind ordering = getOrderingBetweenBounds(myBound, otherBound);
 
-                        if (!areRelated) {
+                        if (ordering == null) {
                             throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
+                        }
+
+                        // Now that we found out the relative ordering of myBound and otherBound,
+                        // we can add constraints on them without creating extra contradictions.
+                        switch (ordering) {
+                        case UPPER:
+                            // otherBound <: myBound
+                            checkBound(false, otherBound, myBound, ctx);
+                            break;
+                        case EQ:
+                            // mybound = otherBound
+                            checkBound(true, myBound, otherBound, ctx);
+                            break;
+                        case LOWER:
+                            // mybound <: otherBound
+                            checkBound(false, myBound, otherBound, ctx);
+                            break;
                         }
                     }
                 }
             }
         }
 
+        private static @Nullable BoundKind getOrderingBetweenBounds(JTypeMirror myBound, JTypeMirror otherBound) {
+            // Since we are testing both directions we cannot let those tests add bounds on the ivars,
+            // because they could be contradictory.
+
+            if (TypeOps.isConvertiblePure(myBound, otherBound).somehow()) {
+                Convertibility otherConvertible = TypeOps.isConvertiblePure(otherBound, myBound);
+                if (otherConvertible.withoutWarnings()) {
+                    return BoundKind.EQ;
+                } else {
+                    return BoundKind.LOWER;
+                }
+            } else if (TypeOps.isConvertiblePure(otherBound, myBound).somehow()) {
+                return BoundKind.UPPER;
+            }
+            return null;
+        }
 
         /**
          * Check compatibility between this bound and another.
