@@ -79,6 +79,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-bestpractices
   * [#2186](https://github.com/pmd/pmd/issues/2186): \[java] New rule: Reliance on default charset
   * [#4500](https://github.com/pmd/pmd/issues/4500): \[java] AvoidReassigningLoopVariables - false negatives within for-loops and skip allowed
+  * [#4770](https://github.com/pmd/pmd/issues/4770): \[java] UnusedFormalParameter should ignore public constructor as same as method
   * [#5198](https://github.com/pmd/pmd/issues/5198): \[java] CheckResultSet false-positive with local variable checked in a while loop
 * java-codestyle
   * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
