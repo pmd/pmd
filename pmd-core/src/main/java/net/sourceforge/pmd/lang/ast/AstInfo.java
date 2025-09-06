@@ -95,7 +95,7 @@ public final class AstInfo<T extends RootNode> {
 
 
     /**
-     * Return the suppresson comment at the given line, or null if there is none.
+     * Return the suppression comment at the given line, or null if there is none.
      *
      * @since 7.14.0
      */

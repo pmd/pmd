@@ -239,7 +239,7 @@ public class Foo {
         if (results.first()) {
             //do a little logic
             do {
-                //this is handeling paging
+                //this is handling paging
                 if (results.getInt("RowNum") >= firstEntry && results.getInt("RowNum") <= lastEntry) {
                     answer  = results.getString("answer");
                     stringList.add(answer);

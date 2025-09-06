@@ -6,10 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-/**
- * @deprecated Since 7.17.0. See {@link UnnecessaryLocalBeforeReturnRule}.
- */
-@Deprecated
-class UnnecessaryLocalBeforeReturnTest extends PmdRuleTst {
+class VariableCanBeInlinedTest extends PmdRuleTst {
     // no additional unit tests
 }

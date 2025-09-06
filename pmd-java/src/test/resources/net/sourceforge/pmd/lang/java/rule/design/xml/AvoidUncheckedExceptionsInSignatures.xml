@@ -16,7 +16,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>method decalres a subclass of RuntimeException</description>
+        <description>method declares a subclass of RuntimeException</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[

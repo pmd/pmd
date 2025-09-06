@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-import net.sourceforge.pmd.test.lang.rule.AbstractRuleSetFactoryTest;
 
 import com.github.stefanbirkner.systemlambda.SystemLambda;
 
@@ -25,11 +24,6 @@ class QuickstartRulesetTest {
             assertNotNull(ruleset);
         });
         assertTrue(log.isEmpty(), "No Logging expected");
-    }
-
-    @Test
-    void correctEncoding() throws Exception {
-        assertTrue(AbstractRuleSetFactoryTest.hasCorrectEncoding(QUICKSTART_RULESET));
     }
 
     private RuleSetLoader rulesetLoader() {

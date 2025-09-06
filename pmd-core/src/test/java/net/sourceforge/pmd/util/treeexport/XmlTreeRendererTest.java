@@ -130,7 +130,7 @@ class XmlTreeRendererTest {
         XmlRenderingConfig strategy = new XmlRenderingConfig() {
             @Override
             public boolean takeAttribute(Node node, Attribute attribute) {
-                return attribute.getName().equals("ohio");
+                return "ohio".equals(attribute.getName());
             }
         }.lineSeparator("\n");
 

@@ -372,7 +372,7 @@ public class SomeEJB extends EJBObject implements EJBLocalHome {
 			// Neither this,
 			public class OtherThread implements Runnable {
 				// Nor this ...
-				public void methode() {
+				public void method() {
 					Runnable thread = new Thread(); thread.run();
 				}
 			}

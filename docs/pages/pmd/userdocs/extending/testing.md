@@ -3,7 +3,7 @@ title: Testing your rules
 tags: [extending, userdocs]
 summary: "Learn how to use PMD's simple test framework for unit testing rules."
 permalink: pmd_userdocs_extending_testing.html
-last_updated: June 2025 (7.15.0)
+last_updated: July 2025 (7.17.0)
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
@@ -101,7 +101,7 @@ This is a stripped down example which just contains two test cases.
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_1.xsd">
 
     <test-code>
         <description>concrete class</description>
@@ -132,7 +132,7 @@ The root element is `<test-data>`. It can contain one or more `<test-code>` and 
 Each `<test-code>` element defines a single test case. `<code-fragment>` elements are used to share code snippets
 between different test cases.
 
-{%include note.html content="The XML schema is available at [rule-tests.xsd](https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_0.xsd)." %}
+{%include note.html content="The XML schema is available at [rule-tests.xsd](https://github.com/pmd/pmd/blob/main/pmd-test-schema/src/main/resources/net/sourceforge/pmd/test/schema/rule-tests_1_1_1.xsd)." %}
 
 ### `<test-code>` attributes
 
@@ -174,7 +174,9 @@ The `<test-code>` elements understands the following optional attributes:
         <suppressor line="6"/>
     </expected-suppressions>
     ```  
-    This is available since PMD 7.15.0 (rule-test schema version 1.1.0).
+    This is available since PMD 7.15.0 (rule-test schema version 1.1.0).  
+    Since PMD 7.17.0 (rule-test schema version 1.1.1), an empty `<expected-suppressions>` element without
+    `<suppressor>` children is allowed to test for no suppressed violations.
 
 *   **`<code>`**: Either the `<code>` element or the `<code-ref>` element is required. It provides the actual code
     snippet on which the rule is executed. The code itself is usually wrapped in a "CDATA" section, so that no
@@ -201,7 +203,7 @@ in a "CDATA" section, so that no further XML escapes (entity references such as 
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_1_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.io/rule-tests_1_1_1.xsd">
 
     <test-code disabled="false">
         <description>Just a description, will be used as the test name for JUnit in the reports</description>

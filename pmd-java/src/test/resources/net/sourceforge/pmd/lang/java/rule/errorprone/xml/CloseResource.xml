@@ -742,7 +742,7 @@ public class CloseResource {
         String someSql = "select something...";
         try {
             stmt = connection.createStatement();
-            resultSet = stmt.executQuery(someSql);
+            resultSet = stmt.executeQuery(someSql);
             while (resultSet.next()) {
                 // do something
             }
@@ -2065,7 +2065,7 @@ public class CastedParameter {
     public void checkValidity(ClassLoader auxclassPathClassLoader) {
         if (auxclassPathClassLoader instanceof URLClassLoader) {
             final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
-            // doesn't need to be closed, it's still a paramter…
+            // doesn't need to be closed, it's still a parameter…
         }
     }
 }
@@ -2081,6 +2081,28 @@ import java.nio.file.FileSystems;
 public class DefaultFileSystemUsage {
     public void useDefaultFS() {
         FileSystem defaultFS = FileSystems.getDefault();
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5974: NPE with var in for-each loop</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>Ensure that resources like this FileInputStream object are closed after use</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.io.FileInputStream;
+import java.util.List;
+
+public class Foo {
+    public void bar(List<FileInputStream> streams) {
+        for (final var stream: streams) {
+            try {
+                int c = stream.in();
+            } catch (IOException ignored) {}
+        }
     }
 }
         ]]></code>
