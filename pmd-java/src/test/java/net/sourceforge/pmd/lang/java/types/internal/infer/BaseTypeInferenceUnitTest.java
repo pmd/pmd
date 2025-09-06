@@ -44,8 +44,10 @@ class BaseTypeInferenceUnitTest {
 
     protected final TypeSystem ts = JavaParsingHelper.TEST_TYPE_SYSTEM;
     protected final JClassSymbol listSym = ts.getClassSymbol(List.class);
+    protected final JClassSymbol collectionSym = ts.getClassSymbol(Collection.class);
 
     protected InferenceContext emptyCtx() {
+        // return emptyCtx(new TypeInferenceLogger.VerboseLogger(System.err));
         return emptyCtx(TypeInferenceLogger.noop());
     }
 
@@ -86,6 +88,10 @@ class BaseTypeInferenceUnitTest {
 
     @NonNull JTypeMirror listType(JTypeMirror t) {
         return ts.parameterise(listSym, listOf(t));
+    }
+
+    @NonNull JTypeMirror collectionType(JTypeMirror t) {
+        return ts.parameterise(collectionSym, listOf(t));
     }
 
     @NonNull JWildcardType extendsWild(JTypeMirror t) {

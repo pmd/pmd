@@ -12,11 +12,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
+import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -100,46 +102,52 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
     
     private void checkCollectionElementCompatibility(ASTMethodCall node, RuleContext ctx) {
         JTypeMirror elementType = getCollectionElementType(node.getQualifier());
-        JTypeMirror argType = getFirstArgument(node).getTypeMirror();
-        checkCompatible(node, ctx, argType, elementType);
+        ASTExpression firstArg = getFirstArgument(node);
+        JTypeMirror argType = firstArg.getTypeMirror();
+        checkCompatible(node, ctx, firstArg, argType, elementType);
     }
 
     private void checkCollectionToCollectionCompatibility(ASTMethodCall node, RuleContext ctx) {
         JTypeMirror elementType = getCollectionElementType(node.getQualifier());
-        JTypeMirror argElementType = getCollectionElementType(getFirstArgument(node));
-        checkCompatible(node, ctx, argElementType, elementType);
+        ASTExpression firstArg = getFirstArgument(node);
+        JTypeMirror argElementType = getCollectionElementType(firstArg);
+        checkCompatible(node, ctx, firstArg, argElementType, elementType);
     }
 
 
     private void checkMapKeyCompatibility(ASTMethodCall node, RuleContext ctx) {
 
         JTypeMirror keyType = getMapKeyType(getQualifierType(node));
-        JTypeMirror argType = getFirstArgument(node).getTypeMirror();
-        checkCompatible(node, ctx, argType, keyType);
+        ASTExpression firstArg = getFirstArgument(node);
+        JTypeMirror argType = firstArg.getTypeMirror();
+        checkCompatible(node, ctx, firstArg, argType, keyType);
     }
     
     private void checkMapValueCompatibility(ASTMethodCall node, RuleContext ctx) {
 
         JTypeMirror valueType = getMapValueType(getQualifierType(node));
-        JTypeMirror argType = getFirstArgument(node).getTypeMirror();
-        checkCompatible(node, ctx, argType, valueType);
+        ASTExpression firstArg = getFirstArgument(node);
+        JTypeMirror argType = firstArg.getTypeMirror();
+        checkCompatible(node, ctx, firstArg, argType, valueType);
     }
     
     private void checkMapKeyValueCompatibility(ASTMethodCall node, RuleContext ctx) {
         JTypeMirror qualifierType = getQualifierType(node);
 
         JTypeMirror keyType = getMapKeyType(qualifierType);
-        JTypeMirror keyArgType = getFirstArgument(node).getTypeMirror();
+        ASTExpression firstArg = getFirstArgument(node);
+        JTypeMirror keyArgType = firstArg.getTypeMirror();
 
-        if (checkCompatible(node, ctx, keyArgType, keyType)) {
-            JTypeMirror valueArgType = getSecondArgument(node).getTypeMirror();
+        if (checkCompatible(node, ctx, firstArg, keyArgType, keyType)) {
+            ASTExpression secondArg = getSecondArgument(node);
+            JTypeMirror valueArgType = secondArg.getTypeMirror();
             JTypeMirror valueType = getMapValueType(qualifierType);
-            checkCompatible(node, ctx, valueArgType, valueType);
+            checkCompatible(node, ctx, secondArg, valueArgType, valueType);
         }
     }
 
-    private boolean checkCompatible(ASTMethodCall node, RuleContext ctx, @Nullable JTypeMirror argType, @Nullable JTypeMirror expectedTy) {
-        if (argType != null && expectedTy != null && !isCompatibleType(node, argType, expectedTy)) {
+    private boolean checkCompatible(ASTMethodCall node, RuleContext ctx, ASTExpression argExpr, @Nullable JTypeMirror argType, @Nullable JTypeMirror expectedTy) {
+        if (argType != null && expectedTy != null && !isCompatibleType(node, argExpr, argType, expectedTy)) {
             ctx.addViolation(node, argType.toString(), expectedTy.toString());
             return false;
         }
@@ -183,7 +191,7 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
         return TypeOps.wildUpperBound(valueType);
     }
 
-    private boolean isCompatibleType(ASTMethodCall node, JTypeMirror argType, JTypeMirror expectedType) {
+    private boolean isCompatibleType(ASTMethodCall node, ASTExpression argExpr, JTypeMirror argType, JTypeMirror expectedType) {
         // If argType is unresolved, be conservative and assume compatibility
         // This prevents false positives when external dependencies can't be resolved
         if (TypeOps.isUnresolved(argType)) {
@@ -191,7 +199,16 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
         } else if (argType.equals(expectedType)) {
             // prune an easy case before going into inference.
             return true;
+        } else if (argExpr instanceof InvocationNode) {
+            OverloadSelectionResult info = ((InvocationNode) argExpr).getOverloadSelectionInfo();
+            if (info.isFailed() || TypeOps.isPurelyContextDependent(info.getMethodType().getSymbol())) {
+                // If it is context dependent then the Object target type may
+                // make the argument type be inferred to some random type.
+
+                return true;
+            }
         }
+
         Infer infer = InternalApiBridge.getInferenceEntryPoint(node);
 
         return infer.areTypesMaybeRelated(argType.box(), expectedType.box()) != OptionalBool.NO;

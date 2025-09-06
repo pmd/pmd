@@ -777,6 +777,10 @@ public final class TypeOps {
                 return Convertibility.SUBTYPING;
             }
 
+            if (isSpecialUnresolved(s) || isSpecialUnresolved(t)) {
+                return Convertibility.SUBTYPING;
+            }
+
             if (s instanceof JWildcardType) {
                 JWildcardType sw = (JWildcardType) s;
 
@@ -1853,6 +1857,10 @@ public final class TypeOps {
         return type.acceptVisitor(MentionsVisitor.INSTANCE, Collections.singleton(parent));
     }
 
+    public static boolean mentions(@NonNull JTypeVisitable type, @NonNull SubstVar parent) {
+        return type.acceptVisitor(MentionsVisitor.INSTANCE, Collections.singleton(parent));
+    }
+
     public static boolean mentionsAny(JTypeVisitable t, Collection<? extends SubstVar> vars) {
         return !vars.isEmpty() && t.acceptVisitor(MentionsVisitor.INSTANCE, vars);
     }
@@ -2233,12 +2241,42 @@ public final class TypeOps {
     public static boolean isContextDependent(JExecutableSymbol symbol) {
         if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {
             if (symbol instanceof JMethodSymbol) {
-                JTypeMirror returnType = ((JMethodSymbol) symbol).getReturnType(EMPTY);
+                JTypeMirror returnType = symbol.getReturnType(EMPTY);
                 return mentionsAny(returnType, symbol.getTypeParameters())
                     || mentionsAny(returnType, symbol.getEnclosingClass().getTypeParameters());
             }
             // generic ctors are context dependent
             return true;
+        }
+        return false;
+    }
+
+    /**
+     * Return true if the method is purely context dependent, which means
+     * some of its type parameters depend entirely on the target type of
+     * the call expression and not on any parameter. That's the case for
+     * methods of the style of {@link Collections#emptyList()}.
+     */
+    public static boolean isPurelyContextDependent(JExecutableSymbol symbol) {
+        if (!isContextDependent(symbol)) {
+            return false;
+        }
+        List<JTypeMirror> formals = symbol.getFormalParameterTypes(EMPTY);
+        JTypeMirror resultTy = symbol.getReturnType(EMPTY);
+        List<JTypeVar> allTypeVars = CollectionUtil.concatView(
+            symbol.getTypeParameters(), symbol.getEnclosingClass().getTypeParameters());
+        outer:
+        for (JTypeVar tvar : allTypeVars) {
+            for (JTypeMirror formalType : formals) {
+                if (mentions(formalType, tvar)) {
+                    continue outer;
+                }
+            }
+            if (mentions(resultTy, tvar)) {
+                // At least one type var is not constrained by the parameters
+                // and is therefore entirely constrained by the return type.
+                return true;
+            }
         }
         return false;
     }

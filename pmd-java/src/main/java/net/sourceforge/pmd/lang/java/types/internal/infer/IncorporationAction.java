@@ -81,13 +81,13 @@ abstract class IncorporationAction {
                 }
             }
 
-            if (myKind == BoundKind.UPPER && isClassType(myBound)) {
+            if (myKind == BoundKind.UPPER && myBound.isClassOrInterface()) {
                 // Check that other upper bounds that are class types are related to this bound.
                 // Otherwise, GLB does not exist and its construction would fail during ReductionStep#UPPER.
 
 
                 for (JTypeMirror otherBound : ivar.getBounds(BoundKind.UPPER)) {
-                    if (otherBound != myBound && isClassType(otherBound)) { // NOPMD CompareObjectsWithEquals
+                    if (otherBound != myBound && otherBound.isClassOrInterface()) { // NOPMD CompareObjectsWithEquals
                         // So we have ivar <: myBound and ivar <: otherBound
                         // But we don't know whether myBound <: otherBound or the other way around.
                         // We will check in both directions without adding constraints first, otherwise
@@ -95,7 +95,10 @@ abstract class IncorporationAction {
                         BoundKind ordering = getOrderingBetweenBounds(myBound, otherBound);
 
                         if (ordering == null) {
-                            throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
+                            if (mustTypesHaveAnOrdering(myBound, otherBound)) {
+                                throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
+                            }
+                            continue;
                         }
 
                         // Now that we found out the relative ordering of myBound and otherBound,
@@ -117,6 +120,12 @@ abstract class IncorporationAction {
                     }
                 }
             }
+        }
+
+        private static boolean mustTypesHaveAnOrdering(JTypeMirror myBound, JTypeMirror otherBound) {
+            return isClassType(myBound) && isClassType(otherBound)
+                   || myBound.getErasure().isConvertibleTo(otherBound.getErasure()).somehow()
+                   || otherBound.getErasure().isConvertibleTo(myBound.getErasure()).somehow();
         }
 
         private static @Nullable BoundKind getOrderingBetweenBounds(JTypeMirror myBound, JTypeMirror otherBound) {

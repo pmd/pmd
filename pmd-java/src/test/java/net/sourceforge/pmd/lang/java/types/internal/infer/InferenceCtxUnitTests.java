@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -170,6 +171,56 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         verify(log, times(2)).boundAdded(any(), any(), any(), any(), eq(false));
         verify(log, never()).boundAdded(any(), any(), any(), any(), eq(true));
     }
+
+    @Test
+    void testDoubleUpperBoundReconciliation() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+        InferenceVar c = newIvar(ctx);
+
+        // 'a <: List<'b>
+        // 'a <: List<'c>
+        // ~> 'b = 'c
+        addSubtypeConstraint(ctx, a, listType(b));
+        addSubtypeConstraint(ctx, a, listType(c));
+
+        assertThat(a, hasBoundsExactly(upper(listType(c))));
+        verify(ctx).onIvarMerged(same(b), same(c));
+        assertThat(c, hasBoundsExactly(upper(ts.OBJECT)));
+    }
+
+
+    @Test
+    void testDoubleUpperBoundIncompatible() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: List<Integer>
+        // 'a <: List<Object>
+        // ~> contradiction
+        addSubtypeConstraint(ctx, a, listType(ts.OBJECT));
+        subtypeConstraintShouldFail(ctx, a, listType(ts.INT.box()));
+    }
+
+
+
+    @Test
+    void testDoubleUpperBoundIncompatibleWithSuperTypes() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: List<Integer>
+        // 'a <: Collection<Object>
+        // ~> contradiction
+        addSubtypeConstraint(ctx, a, listType(ts.OBJECT));
+        addSubtypeConstraint(ctx, a, collectionType(ts.OBJECT));
+        subtypeConstraintShouldFail(ctx, a, collectionType(ts.INT.box()));
+    }
+
 
     @Test
     void testWildLowerLower() {
