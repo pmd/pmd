@@ -1027,9 +1027,8 @@ public final class Infer {
         } else if (isConvertible.withUncheckedWarning()) {
             if (site != null) {
                 site.setNeedsUncheckedConversion();
-            } else {
-                infCtx.setNeedsUncheckedConversion();
             }
+            infCtx.setNeedsUncheckedConversion();
         }
     }
 

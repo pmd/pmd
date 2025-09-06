@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.java.types.TestUtilitiesForTypesKt.captur
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.eqBound;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.lower;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.upper;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -228,6 +229,34 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(a, hasBoundsExactly(upper(listType(b)), upper(collectionType(extendsWild(c)))));
         assertThat(b, hasBoundsExactly(upper(c)));
         verify(ctx, Mockito.never()).onIvarMerged(any(), any());
+    }
+
+    static class Fbounded<T extends Fbounded<T>> {
+    }
+
+    JTypeMirror fbounded(JTypeMirror arg) {
+        return ts.parameterise(ts.getClassSymbol(Fbounded.class), listOf(arg));
+    }
+
+    @Test
+    void testDoubleUpperBoundReconciliationWithFbound() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        // Fbounded<?>
+
+        InferenceVar a = newIvar(ctx);
+        InferenceVar b = newIvar(ctx);
+
+        // 'a <: Fbounded<'a>
+        // 'a <: Fbounded<'b>
+        // ~> 'a = 'b
+        addSubtypeConstraint(ctx, a, fbounded(a));
+        addSubtypeConstraint(ctx, a, fbounded(b));
+
+        verify(ctx).onIvarMerged(same(a), same(b));
+        assertThat(b, hasBoundsExactly(upper(fbounded(b))));
+        ctx.solve();
+        assertEquals(fbounded(ts.UNBOUNDED_WILD), a.getInst());
     }
 
     @Test

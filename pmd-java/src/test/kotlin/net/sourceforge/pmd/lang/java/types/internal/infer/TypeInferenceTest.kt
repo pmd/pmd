@@ -498,4 +498,40 @@ class Main {
             info.methodType shouldBeSomeInstantiationOf ofNullable
         }
     }
+    parserTest("f:Comod exception in incorporate") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            import org.assertj.core.api.Assertions;
+            import java.time.LocalDateTime;
+//            interface LocalDateTime {
+//                LocalDateTime plusSeconds(int i);
+//                LocalDateTime withNano(int i);
+//                static LocalDateTime now() {}
+//            }
+            interface CronExpression {
+                LocalDateTime next(LocalDateTime a);
+                static CronExpression parse(String s) {}
+            }
+    
+            class Main {
+                void matchAll() {
+                    CronExpression expression = CronExpression.parse("* * * * * *");
+                
+                    LocalDateTime last = LocalDateTime.now();
+                    LocalDateTime expected = last.plusSeconds(1).withNano(0);
+                    Assertions.assertThat(expression.next(last)).isEqualTo(expected);
+                }
+            }
+            """.trimIndent()
+        )
+
+//        val (_, _, _) = acu.declaredTypeSignatures()
+//        val (ofNullable) = acu.methodDeclarations().toList { it.genericSignature }
+
+        spy.shouldBeOk {
+            acu.methodCalls().forEach {
+                it.overloadSelectionInfo::isFailed shouldBe false
+            }
+        }
+    }
 })
