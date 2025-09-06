@@ -1101,7 +1101,7 @@ class Tester {
     </test-code>
 
 
-    <test-code>
+    <test-code focused="true">
         <description>[java] UnnecessaryCast false-positive for raw types #4822</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1129,20 +1129,28 @@ class Tester {
 
     <test-code>
         <description>Cast is not found as unnecessary (for now)</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>11,13</expected-linenumbers>
         <code><![CDATA[
             import java.util.Objects;
             import java.util.List;
             import static java.util.Comparator.nullsFirst;
 
+            public interface StringList extends List<String> { }
+
             public class Foo {
                 public int compare(List<?> o1) {
-                    // note that here the cast is useless, because
-                    // List::size is also available on the generic
-                    // List<?> type. However we don't report this
-                    // as we don't analyse the usages of values for
-                    // now.
+                    String s = ((List<String>) o1).get(0);
+                    String s1 = ((StringList) o1).get(0);
+                    Object t = ((List) o1).get(0);
+                    ((List) o1).addAll(Collections.singletonList(t));
                     return ((List) o1).size();
+                }
+
+                public int generic(List o1) {
+                    String s = ((List<String>) o1).get(0);
+                    String s1 = ((StringList) o1).get(0);
+                    return ((List<?>) o1).size();
                 }
             }
             ]]></code>
