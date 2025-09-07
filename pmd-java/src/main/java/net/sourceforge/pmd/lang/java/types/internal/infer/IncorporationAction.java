@@ -93,6 +93,8 @@ abstract class IncorporationAction {
                 // Check that other upper bounds that are class types are related to this bound.
                 // Otherwise, GLB does not exist and its construction would fail during ReductionStep#UPPER.
 
+                // Since the loop body can add bounds we need to make a
+                // copy to avoid concurrent mod exceptions.
                 for (JTypeMirror otherBound : new ArrayList<>(ivar.getBounds(BoundKind.UPPER))) {
                     if (otherBound != myBound && hasClassSymbol(otherBound)) { // NOPMD CompareObjectsWithEquals
                         // So we have ivar <: myBound and ivar <: otherBound

@@ -101,7 +101,7 @@ enum ReductionStep {
         @Override
         JTypeMirror solve(InferenceVar uv, InferenceContext infCtx) {
             JTypeMirror glb = infCtx.ts.glb(uv.getBounds(BoundKind.UPPER));
-            JTypeMirror inst = glb.subst(var -> var == uv ? InternalApiBridge.freshCapture(infCtx.ts.UNBOUNDED_WILD) : var);
+            JTypeMirror inst = glb.subst(var -> var == uv ? InternalApiBridge.freshCapture(infCtx.ts.UNBOUNDED_WILD) : var); // NOPMD
 
             // These upper bounds still contain references to the original ivar,
             // which, if we replace it with the inst, will be one level deeper than
@@ -123,9 +123,9 @@ enum ReductionStep {
      */
     static final List<List<ReductionStep>> WAVES =
         listOf(
-            listOf(EQ, LOWER, UPPER, CAPTURED),
-            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED));
-    //                        ^^^^^^
+            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED)
+        //  (There used to be several waves with different steps).
+        );
 
     final BoundKind kind;
 

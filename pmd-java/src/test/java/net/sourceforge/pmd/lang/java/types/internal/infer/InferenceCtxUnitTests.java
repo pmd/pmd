@@ -231,11 +231,21 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         verify(ctx, Mockito.never()).onIvarMerged(any(), any());
     }
 
-    static class Fbounded<T extends Fbounded<T>> {
+    static class Fsuperclass<T> {
+    }
+
+    static class Fbounded<T extends Fbounded<T>> extends Fsuperclass<T> {
+    }
+
+    static class Fsubclass extends Fbounded<Fsubclass> {
     }
 
     JTypeMirror fbounded(JTypeMirror arg) {
         return ts.parameterise(ts.getClassSymbol(Fbounded.class), listOf(arg));
+    }
+
+    JTypeMirror fsuperclass(JTypeMirror arg) {
+        return ts.parameterise(ts.getClassSymbol(Fsuperclass.class), listOf(arg));
     }
 
     @Test
@@ -257,6 +267,46 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertThat(b, hasBoundsExactly(upper(fbounded(b))));
         ctx.solve();
         assertEquals(fbounded(ts.UNBOUNDED_WILD), a.getInst());
+    }
+
+    @Test
+    void testForConcurrentModificationInIncorporate() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        // We want a situation where incorporating
+        //      'a <: A   and   'a <: B
+        // causes a new upper bound to be added on 'a,
+        // which would cause a concurrent modification.
+        //
+        // First off, nothing will happen if A is unrelated to B,
+        // and if |A| = |B|, we cannot add an upper bound, only eq bounds.
+        // It must be that |A| <: |B| or |A| >: |B|, let's assume the first case.
+        // We also know that nothing interesting can happen if A and B
+        // are non-generic types. So A = Sub<X> and B = Sup<Y> with Sub <: Sup.
+        // What are type arguments X and Y such that X <= Y adds an upper bound
+        // on 'a?
+        // Well it could be an extends wildcard, like:
+        //    'a <= ? extends T ~> 'a <: T
+        // So this means that the bound set is something like
+        //      'a <: Sub<'a>    and    'a <: Sup<? extends T>
+        // which means 'a is f-bounded. For this test we will also
+        // make sure 'a <: T is consistent with the other bounds, so
+        // T must be a type that extends Sub<T> conforms to Sup<? extends T>.
+
+        InferenceVar a = newIvar(ctx);
+
+        JTypeMirror fsubclass = ts.declaration(ts.getClassSymbol(Fsubclass.class));
+        JTypeMirror superclass = fsuperclass(ts.wildcard(true, fsubclass));
+
+        // 'a <: Fbounded<'a>
+        // 'a <: Fsuperclass<? extends Fsubclass>
+        // ~> 'a <: Fsubclass
+        addSubtypeConstraint(ctx, a, fbounded(a));
+        addSubtypeConstraint(ctx, a, superclass);
+
+        Mockito.verify(ctx).onBoundAdded(same(a), eq(BoundKind.UPPER), same(fsubclass), eq(false));
+        ctx.solve();
+        assertEquals(fsubclass, a.getInst());
     }
 
     @Test
