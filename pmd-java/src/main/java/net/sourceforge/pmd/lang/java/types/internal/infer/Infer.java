@@ -164,12 +164,17 @@ public final class Infer {
 
     private static JTypeMirror mapCvarToIvar(JTypeMirror a, InferenceContext ctx) {
         return a.subst(v -> {
-            if (v instanceof JTypeVar && ((JTypeVar) v).isCaptured()) {
+            if (v instanceof JTypeVar) {
+                JTypeVar tvar = (JTypeVar) v;
+                if (!tvar.isCaptured()) {
+                    return ctx.addVar(tvar);
+                }
+
                 // Note, we add an ivar that is not considered as "captured".
                 // because it is not, really, we want to be more lenient than
                 // the capture check used for overload tests.
                 InferenceVar ivar = ctx.addVar(null);
-                JWildcardType wild = ((JTypeVar) v).getCapturedOrigin();
+                JWildcardType wild = tvar.getCapturedOrigin();
                 assert wild != null : "var is captured";
                 JTypeMirror ub = wild.asUpperBound();
                 JTypeMirror lb = wild.asLowerBound();

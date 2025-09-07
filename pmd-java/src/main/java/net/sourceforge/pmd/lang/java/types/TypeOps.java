@@ -796,7 +796,8 @@ public final class TypeOps {
             }
 
             if (isSpecialUnresolved(s) || isSpecialUnresolved(t)
-                || s instanceof InferenceVar || t instanceof InferenceVar) {
+                || s instanceof InferenceVar && !isTypeRange(t)
+                || t instanceof InferenceVar) {
                 // In these cases we still don't want to fail. It could be
                 // that adding bounds later will make the test succeed.
                 return Convertibility.SUBTYPING;

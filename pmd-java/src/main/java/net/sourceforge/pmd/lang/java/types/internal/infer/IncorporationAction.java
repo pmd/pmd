@@ -103,33 +103,31 @@ abstract class IncorporationAction {
                         // we risk introducing contradictions.
                         BoundKind ordering = getOrderingBetweenBounds(myBound, otherBound);
 
-                        if (ordering == null) {
-                            if (mustTypesHaveAnOrdering(myBound, otherBound)) {
-                                throw ResolutionFailedException.incompatibleBound(ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
-                            }
-                            continue;
-                        }
-
-                        // Now that we found out the relative ordering of myBound and otherBound,
-                        // we can add constraints on them without creating extra contradictions.
-                        switch (ordering) {
-                        case UPPER:
-                            // otherBound <: myBound
-                            checkBound(false, otherBound, myBound, ctx);
-                            break;
-                        case EQ:
-                            // mybound = otherBound
-                            checkBound(true, myBound, otherBound, ctx);
-                            break;
-                        case LOWER:
-                            // mybound <: otherBound
-                            checkBound(false, myBound, otherBound, ctx);
-                            break;
-                        default:
-                            throw AssertionUtil.shouldNotReachHere("exhaustive switch");
+                        if (ordering == null && mustTypesHaveAnOrdering(myBound, otherBound)
+                            || ordering != null && !checkRelativeOrdering(ctx, otherBound, ordering)) {
+                            throw ResolutionFailedException.incompatibleBound(
+                                ctx.logger, ivar, myKind, myBound, BoundKind.UPPER, otherBound);
                         }
                     }
                 }
+            }
+        }
+
+        private boolean checkRelativeOrdering(InferenceContext ctx, JTypeMirror otherBound, BoundKind ordering) {
+            // Now that we found out the relative ordering of myBound and otherBound,
+            // we can add constraints on them without creating extra contradictions.
+            switch (ordering) {
+            case UPPER:
+                // otherBound <: myBound
+                return checkBound(false, otherBound, myBound, ctx);
+            case EQ:
+                // mybound = otherBound
+                return checkBound(true, myBound, otherBound, ctx);
+            case LOWER:
+                // mybound <: otherBound
+                return checkBound(false, myBound, otherBound, ctx);
+            default:
+                throw AssertionUtil.shouldNotReachHere("exhaustive switch");
             }
         }
 
@@ -142,6 +140,9 @@ abstract class IncorporationAction {
         private static @Nullable BoundKind getOrderingBetweenBounds(JTypeMirror myBound, JTypeMirror otherBound) {
             // Since we are testing both directions we cannot let those tests add bounds on the ivars,
             // because they could be contradictory.
+
+            // myBound = myBound.getErasure();
+            // otherBound = otherBound.getErasure();
 
             if (TypeOps.isConvertiblePure(myBound, otherBound).somehow()) {
                 Convertibility otherConvertible = TypeOps.isConvertiblePure(otherBound, myBound);

@@ -47,8 +47,8 @@ class BaseTypeInferenceUnitTest {
     protected final JClassSymbol collectionSym = ts.getClassSymbol(Collection.class);
 
     protected InferenceContext emptyCtx() {
-        // return emptyCtx(new TypeInferenceLogger.VerboseLogger(System.err));
-        return emptyCtx(TypeInferenceLogger.noop());
+        return emptyCtx(new TypeInferenceLogger.VerboseLogger(System.err));
+        // return emptyCtx(TypeInferenceLogger.noop());
     }
 
     protected InferenceContext emptyCtx(TypeInferenceLogger log) {

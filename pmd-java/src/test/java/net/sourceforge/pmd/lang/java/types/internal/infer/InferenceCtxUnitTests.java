@@ -270,6 +270,24 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
     }
 
     @Test
+    void testGlbWithFboundAndWildcardTy() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        // Fbounded<?>
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: Fbounded<'a>
+        // 'a <: Fbounded<?>
+        addSubtypeConstraint(ctx, a, fbounded(a));
+        addSubtypeConstraint(ctx, a, fbounded(ts.UNBOUNDED_WILD));
+
+        assertThat(a, hasBoundsExactly(upper(fbounded(a)), upper(fbounded(ts.UNBOUNDED_WILD))));
+        ctx.solve();
+        assertEquals(fbounded(ts.UNBOUNDED_WILD), a.getInst());
+    }
+
+    @Test
     void testForConcurrentModificationInIncorporate() {
         InferenceContext ctx = spy(emptyCtx());
 
@@ -320,6 +338,20 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         // ~> contradiction
         addSubtypeConstraint(ctx, a, listType(ts.OBJECT));
         subtypeConstraintShouldFail(ctx, a, listType(ts.INT.box()));
+    }
+
+
+    @Test
+    void testDoubleUpperBoundCompatibleWithWild() {
+        InferenceContext ctx = spy(emptyCtx());
+
+        InferenceVar a = newIvar(ctx);
+
+        // 'a <: List<Integer>
+        // 'a <: List<? extends Integer>
+        // ~> ok.
+        addSubtypeConstraint(ctx, a, listType(ts.INT.box()));
+        addSubtypeConstraint(ctx, a, listType(extendsWild(ts.INT.box())));
     }
 
     @Test
