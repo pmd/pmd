@@ -90,7 +90,7 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
   * [#4770](https://github.com/pmd/pmd/issues/4770): \[java] UnusedFormalParameter should ignore public constructor as same as method
   * [#5198](https://github.com/pmd/pmd/issues/5198): \[java] CheckResultSet false-positive with local variable checked in a while loop
 * java-codestyle
-  * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
+  * [#972](https://github.com/pmd/pmd/issues/972):   \[java] Improve naming conventions rules
   * [#5770](https://github.com/pmd/pmd/issues/5770): \[java] New Rule: VariableCanBeInlined: Local variables should not be declared and then immediately returned or thrown
   * [#5948](https://github.com/pmd/pmd/issues/5948): \[java] UnnecessaryBoxing false positive when calling `List.remove(int)`
   * [#5982](https://github.com/pmd/pmd/issues/5982): \[java] More detailed message for the UselessParentheses rule
@@ -126,40 +126,40 @@ See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for m
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
-* [#5822](https://github.com/pmd/pmd/pull/5822): Fix #5650: \[apex] New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
-* [#5847](https://github.com/pmd/pmd/pull/5847): Fix #5770: \[java] New Rule: VariableCanBeInlined - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
-* [#5856](https://github.com/pmd/pmd/pull/5856): Fix #5837: \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
+* [#5822](https://github.com/pmd/pmd/pull/5822): \[apex] Fix #5650: New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
+* [#5847](https://github.com/pmd/pmd/pull/5847): \[java] Fix #5770: New Rule: VariableCanBeInlined - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
+* [#5856](https://github.com/pmd/pmd/pull/5856): \[java] Fix #5837: New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5907](https://github.com/pmd/pmd/pull/5907): \[java] New rule: UselessPureMethodCall - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
-* [#5922](https://github.com/pmd/pmd/pull/5922): Fix #972: \[java] Add a new rule TypeParameterNamingConventions - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#5924](https://github.com/pmd/pmd/pull/5924): Fix #5915: \[java] Fix AssignmentInOperandRule to also work an do-while loops and switch statements - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#5930](https://github.com/pmd/pmd/pull/5930): Fix #4500: \[java] Fix AvoidReassigningLoopVariablesRule to allow only simple assignments in the forReassign=skip case - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#5931](https://github.com/pmd/pmd/pull/5931): Fix #5023: \[java] Fix UseUtilityClassRule to use the message provided in design.xml - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5922](https://github.com/pmd/pmd/pull/5922): \[java] Fix #972: Add a new rule TypeParameterNamingConventions - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5924](https://github.com/pmd/pmd/pull/5924): \[java] Fix #5915: Fix AssignmentInOperandRule to also work an do-while loops and switch statements - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5930](https://github.com/pmd/pmd/pull/5930): \[java] Fix #4500: Fix AvoidReassigningLoopVariablesRule to allow only simple assignments in the forReassign=skip case - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5931](https://github.com/pmd/pmd/pull/5931): \[java] Fix #5023: Fix UseUtilityClassRule to use the message provided in design.xml - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5932](https://github.com/pmd/pmd/pull/5932): \[ci] Reuse GitHub Pre-Releases - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5933](https://github.com/pmd/pmd/pull/5933): \[test] Fix QuickstartRulesetTests to detect deprecated rules again - [Andreas Dangel](https://github.com/adangel) (@adangel)
-* [#5934](https://github.com/pmd/pmd/pull/5934): Fix #2186: \[java] New Rule: RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5934](https://github.com/pmd/pmd/pull/5934): \[java] Fix #2186: New Rule: RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5938](https://github.com/pmd/pmd/pull/5938): \[doc] Update suppression docs to reflect PMD 7 changes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
-* [#5939](https://github.com/pmd/pmd/pull/5939): Fix #5198: \[java] CheckResultSet FP when local variable is checked - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
-* [#5954](https://github.com/pmd/pmd/pull/5954): Fix #4721: \[core] Enable XML rule MissingEncoding in dogfood ruleset - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5939](https://github.com/pmd/pmd/pull/5939): \[java] Fix #5198: CheckResultSet FP when local variable is checked - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5954](https://github.com/pmd/pmd/pull/5954): \[core] Fix #4721: Enable XML rule MissingEncoding in dogfood ruleset - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5955](https://github.com/pmd/pmd/pull/5955): chore: Fix LiteralsFirstInComparison violations in test code - [Andreas Dangel](https://github.com/adangel) (@adangel)
-* [#5957](https://github.com/pmd/pmd/pull/5957): Fix #3401: \[java] Improve message/description/examples for AvoidUsingOctalValues - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#5959](https://github.com/pmd/pmd/pull/5959): Fix #5960: \[java] AddEmptyString: Improve report location - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
-* [#5961](https://github.com/pmd/pmd/pull/5961): Fix #5960: \[java] Add details to the error message for some rules - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
-* [#5965](https://github.com/pmd/pmd/pull/5965): Fix #5881: AvoidLosingException - Consider nested method calls - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5957](https://github.com/pmd/pmd/pull/5957): \[java] Fix #3401: Improve message/description/examples for AvoidUsingOctalValues - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5959](https://github.com/pmd/pmd/pull/5959): \[java] Fix #5960: AddEmptyString: Improve report location - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#5961](https://github.com/pmd/pmd/pull/5961): \[java] Fix #5960: Add details to the error message for some rules - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#5965](https://github.com/pmd/pmd/pull/5965): \[java] Fix #5881: AvoidLosingException - Consider nested method calls - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5967](https://github.com/pmd/pmd/pull/5967): \[doc]\[java] ReplaceJavaUtilDate - improve doc to mention java.sql.Date - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5968](https://github.com/pmd/pmd/pull/5968): \[doc] Add logging page to sidebar under dev docs - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5969](https://github.com/pmd/pmd/pull/5969): \[doc] Add CSS in PMD's description - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5970](https://github.com/pmd/pmd/pull/5970): chore: CI improvements - [Andreas Dangel](https://github.com/adangel) (@adangel)
-* [#5971](https://github.com/pmd/pmd/pull/5971): Fix #5948: \[java] UnnecessaryBoxingRule: Check if unboxing is required for overload resolution - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#5972](https://github.com/pmd/pmd/pull/5972): Fix #3434: \[java] False negatives in AssignmentInOperand rule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#5975](https://github.com/pmd/pmd/pull/5975): Fix #5973: \[test] Enable XML Validation for rule tests - [Andreas Dangel](https://github.com/adangel) (@adangel)
-* [#5979](https://github.com/pmd/pmd/pull/5979): Fix #5974: \[java] NPE in CloseResourceRule - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#5971](https://github.com/pmd/pmd/pull/5971): \[java] Fix #5948: UnnecessaryBoxingRule: Check if unboxing is required for overload resolution - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5972](https://github.com/pmd/pmd/pull/5972): \[java] Fix #3434: False negatives in AssignmentInOperand rule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5975](https://github.com/pmd/pmd/pull/5975): \[test] Fix #5973: Enable XML Validation for rule tests - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5979](https://github.com/pmd/pmd/pull/5979): \[java] Fix #5974: NPE in CloseResourceRule - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5980](https://github.com/pmd/pmd/pull/5980): chore: Fix typos - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
-* [#5981](https://github.com/pmd/pmd/pull/5981): Fix #4911: \[java] AvoidRethrowingException consider supertypes in following catches - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5981](https://github.com/pmd/pmd/pull/5981): \[java] Fix #4911: AvoidRethrowingException consider supertypes in following catches - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5982](https://github.com/pmd/pmd/pull/5982): \[java] More detailed message for the UselessParentheses rule - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5989](https://github.com/pmd/pmd/pull/5989): \[java] Improve performance of RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#5994](https://github.com/pmd/pmd/pull/5994): Fix #4770: \[java] UnusedFormalParameter should ignore public constructor as same as method - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#6006](https://github.com/pmd/pmd/pull/6006): Fix #5949: \[java] CollectionTypeMismatch - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#6016](https://github.com/pmd/pmd/pull/6016): Fix #6014: \[java] Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5994](https://github.com/pmd/pmd/pull/5994): \[java] Fix #4770: UnusedFormalParameter should ignore public constructor as same as method - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6006](https://github.com/pmd/pmd/pull/6006): \[java] Fix #5949: CollectionTypeMismatch - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6016](https://github.com/pmd/pmd/pull/6016): \[java] Fix #6014: Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
