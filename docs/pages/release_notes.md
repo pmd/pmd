@@ -135,6 +135,7 @@ See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for m
 * [#5930](https://github.com/pmd/pmd/pull/5930): Fix #4500: \[java] Fix AvoidReassigningLoopVariablesRule to allow only simple assignments in the forReassign=skip case - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5931](https://github.com/pmd/pmd/pull/5931): Fix #5023: \[java] Fix UseUtilityClassRule to use the message provided in design.xml - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5932](https://github.com/pmd/pmd/pull/5932): \[ci] Reuse GitHub Pre-Releases - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5933](https://github.com/pmd/pmd/pull/5933): \[test] Fix QuickstartRulesetTests to detect deprecated rules again - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5934](https://github.com/pmd/pmd/pull/5934): Fix #2186: \[java] New Rule: RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5938](https://github.com/pmd/pmd/pull/5938): \[doc] Update suppression docs to reflect PMD 7 changes - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5939](https://github.com/pmd/pmd/pull/5939): Fix #5198: \[java] CheckResultSet FP when local variable is checked - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
