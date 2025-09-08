@@ -103,7 +103,7 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
   * [#5837](https://github.com/pmd/pmd/issues/5837): \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable
   * [#5881](https://github.com/pmd/pmd/issues/5881): \[java] AvoidLosingExceptionInformation does not trigger when inside if-else
   * [#5915](https://github.com/pmd/pmd/issues/5915): \[java] AssignmentInOperand not raised when inside do-while loop
-  * [#5949](https://github.com/pmd/pmd/issues/5949): \[java] new rule for Collections methods that take Object as a parameter
+  * [#5949](https://github.com/pmd/pmd/issues/5949): \[java] New rule for Collections methods that take Object as a parameter
   * [#5974](https://github.com/pmd/pmd/issues/5974): \[java] CloseResourceRule: NullPointerException while analyzing
 * test
   * [#5973](https://github.com/pmd/pmd/issues/5973): \[test] Enable XML validation for rule tests
@@ -148,11 +148,15 @@ See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for m
 * [#5970](https://github.com/pmd/pmd/pull/5970): chore: CI improvements - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5971](https://github.com/pmd/pmd/pull/5971): Fix #5948: \[java] UnnecessaryBoxingRule: Check if unboxing is required for overload resolution - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5972](https://github.com/pmd/pmd/pull/5972): Fix #3434: \[java] False negatives in AssignmentInOperand rule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5975](https://github.com/pmd/pmd/pull/5975): Fix #5973: \[test] Enable XML Validation for rule tests - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5979](https://github.com/pmd/pmd/pull/5979): Fix #5974: \[java] NPE in CloseResourceRule - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5980](https://github.com/pmd/pmd/pull/5980): chore: Fix typos - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5981](https://github.com/pmd/pmd/pull/5981): Fix #4911: \[java] AvoidRethrowingException consider supertypes in following catches - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5982](https://github.com/pmd/pmd/pull/5982): \[java] More detailed message for the UselessParentheses rule - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5989](https://github.com/pmd/pmd/pull/5989): \[java] Improve performance of RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
-* [#6016](https://github.com/pmd/pmd/pull/6016): \[java] Fix #6014: Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5994](https://github.com/pmd/pmd/pull/5994): Fix #4770: \[java] UnusedFormalParameter should ignore public constructor as same as method - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6006](https://github.com/pmd/pmd/pull/6006): Fix #5949: \[java] CollectionTypeMismatch - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6016](https://github.com/pmd/pmd/pull/6016): Fix #6014: \[java] Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
