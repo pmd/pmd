@@ -5,7 +5,7 @@ keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for PMD"
 permalink: pmd_userdocs_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: September 2024 (7.6.0)
+last_updated: September 2025 (7.17.0)
 ---
 
 ## Overview
@@ -78,9 +78,9 @@ columns, use these CLI parameters additionally: `-property problem=false -proper
 *   file: Include file column. Default: true.
 *   priority: Include priority column. Default: true.
 *   line: Include line column. Default: true.
-*   endLine: Include end line column. Default: false.
-*   beginColumn: Include begin column. Default: false.
-*   endColumn: Include end column. Default: false.
+*   endLine: Include end line column. Default: false. Since 7.17.0.
+*   beginColumn: Include begin column. Default: false. Since 7.17.0.
+*   endColumn: Include end column. Default: false. Since 7.17.0.
 *   desc: Include description column. Default: true.
 *   ruleSet: Include Rule set column. Default: true.
 *   rule: Include Rule column. Default: true.
