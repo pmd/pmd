@@ -8,7 +8,7 @@
         <description>should be utility class since all static, public constructor</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>This utility class has a non-private constructor</message>
+            <message>All methods are static. Consider adding a private no-args constructor to prevent instantiation.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {

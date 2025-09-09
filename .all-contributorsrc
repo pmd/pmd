@@ -8176,7 +8176,9 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/15789140?v=4",
       "profile": "https://github.com/UncleOwen",
       "contributions": [
-        "code"
+        "code",
+        "bug",
+        "doc"
       ]
     },
     {
@@ -8187,6 +8189,15 @@
       "contributions": [
         "bug",
         "code"
+      ]
+    },
+    {
+      "login": "mrclmh",
+      "name": "mrclmh",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2975481?v=4",
+      "profile": "https://github.com/mrclmh",
+      "contributions": [
+        "bug"
       ]
     }
   ],

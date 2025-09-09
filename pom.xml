@@ -15,12 +15,12 @@
         (AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
 
         Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
+        Kotlin, Swift, Modelica, PL/SQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
         Scala is supported, but there are currently no Scala rules available.
 
         Additionally, it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-        Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
-        Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Rust, Salesforce.com Apex and
+        Coco, C/C++, C#, CSS, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+        Lua, Matlab, Modelica, Objective-C, Perl, PHP, PL/SQL, Python, Ruby, Rust, Salesforce.com Apex and
         Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
     </description>
 
@@ -84,7 +84,7 @@
         <kotlin.compiler.apiVersion>1.9</kotlin.compiler.apiVersion>
         <kotlin.compiler.languageVersion>1.9</kotlin.compiler.languageVersion>
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>2.2.0</kotlin.version>
+        <kotlin.version>2.2.10</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
         <junit5.version>5.13.4</junit5.version>
         <junit5.platform.version>1.13.4</junit5.platform.version>
@@ -96,7 +96,7 @@
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.27.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
-        <javadoc.plugin.version>3.11.2</javadoc.plugin.version>
+        <javadoc.plugin.version>3.11.3</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.5</saxon.version>
@@ -108,7 +108,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>33</pmd.build-tools.version>
+        <pmd.build-tools.version>34</pmd.build-tools.version>
 
         <pmd-designer.version>7.10.0</pmd-designer.version>
 
@@ -555,10 +555,10 @@
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
                                 </rulesets>
-                                <excludeRoots>
-                                    <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                                    <excludeRoot>target/generated-sources/antlr4</excludeRoot>
-                                </excludeRoots>
+                                <compileSourceRoots>
+                                    <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                                    <compileSourceRoot>${project.basedir}/src/main/resources</compileSourceRoot>
+                                </compileSourceRoots>
                             </configuration>
                         </execution>
                         <execution>
@@ -575,10 +575,17 @@
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-test-dogfood-config.xml</ruleset>
                                 </rulesets>
+                                <compileSourceRoots>
+                                    <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
+                                </compileSourceRoots>
                             </configuration>
                         </execution>
                     </executions>
                     <configuration>
+                        <includes>
+                            <include>**/*.java</include>
+                            <include>**/*.xml</include>
+                        </includes>
                         <linkXRef>false</linkXRef>
                         <targetJdk>1.${java.version}</targetJdk>
                         <skipPmdError>false</skipPmdError>
@@ -611,6 +618,11 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-xml</artifactId>
                             <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
@@ -1016,7 +1028,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.18.0</version>
+                <version>5.19.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1027,13 +1039,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.17.6</version>
+                <version>1.17.7</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.17.6</version>
+                <version>1.17.7</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1123,7 +1135,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.31.1</version>
+                <version>4.32.0</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit5 needs. E.g. 5.12.1 needs 1.12.1

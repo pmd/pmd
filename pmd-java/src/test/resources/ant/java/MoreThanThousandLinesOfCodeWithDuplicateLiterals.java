@@ -1,7 +1,7 @@
 package org.example.pmd;
 /**
  * This class with
- * <a href="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals">duplicated litterals</a>
+ * <a href="https://pmd.github.io/pmd-5.5.2/pmd-java/rules/java/strings.html#AvoidDuplicateLiterals">duplicated literals</a>
  * after more than one thousand lines should generate a warning, ending with a line number greater than 1000.
  *
  * This number is formatted with the thousand separator, and given the platform's locale, it may or not be in the ASCII

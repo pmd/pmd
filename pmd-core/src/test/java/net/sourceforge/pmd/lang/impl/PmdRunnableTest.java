@@ -164,7 +164,7 @@ class PmdRunnableTest {
                                   .addVersion(THROWS_ASSERTION_ERROR)
                                   .addVersion(THROWS_SEMANTIC_ERROR)
                                   .addVersion(PARSER_REPORTS_SEMANTIC_ERROR)
-                                  .addDefaultVersion("defalt"),
+                                  .addDefaultVersion("default"),
                   ThrowingLanguageModule::makeParser);
         }
 

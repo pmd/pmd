@@ -43,7 +43,7 @@ public class FinalFieldCouldBeStaticRule extends AbstractJavaRulechainRule {
             for (ASTVariableId field : node) {
                 ASTExpression init = field.getInitializer();
                 if (init != null && isAllowedExpression(init) && !isUsedForSynchronization(field)) {
-                    asCtx(data).addViolation(field);
+                    asCtx(data).addViolation(field, field.getName());
                 }
             }
 

@@ -292,7 +292,7 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
-    void stringConcatentationShouldNotBeCast() {
+    void stringConcatenationShouldNotBeCast() {
         // https://github.com/pmd/pmd/issues/1484
         String code = "public class Test {\n" + "    public static void main(String[] args) {\n"
             + "        System.out.println(\"X\" + (args) + \"Y\");\n" + "    }\n" + "}";
@@ -366,5 +366,10 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     @Test
     void testGithubBug4947() {
         java15.parseResource("testdata/Issue4947TextBlock.java");
+    }
+
+    @Test
+    void testGithubBug6014() {
+        java.parse("//");
     }
 }

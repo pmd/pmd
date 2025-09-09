@@ -31,10 +31,10 @@ jobs:
     outputs:
       PMD_VERSION: ${{ steps.version.outputs.PMD_VERSION }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
           java-version: '11'
@@ -85,10 +85,10 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
           java-version: '11'
@@ -97,7 +97,7 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: compile-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -131,14 +131,14 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: dist-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
           path: dist
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -250,7 +250,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -298,7 +298,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -378,7 +378,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: javadocs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -461,14 +461,14 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: dist-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
           path: dist
 
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -504,7 +504,7 @@ jobs:
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-src.zip"
           printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-doc.zip"
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b #v2.1.1
         id: pmd-actions-helper-app-token
         with:
           app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
@@ -567,7 +567,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -622,18 +622,18 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
           java-version: '11'
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@44511735964dcb71245e7e55f72539531f7bc0eb #v1.257.0
         with:
           ruby-version: 3.3
-      - uses: actions/cache@v4
+      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           path: |
             ~/.m2/repository
@@ -642,7 +642,7 @@ jobs:
             .ci/files/vendor/bundle
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: dist-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -697,7 +697,7 @@ jobs:
           cd ../../pmd
           mv ../target/reports/"${baseline_name}-baseline.zip" .
           scp "${baseline_name}-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: regression-tester-baseline
           path: ${{ format('pmd_releases_{0}-baseline.zip', needs.check-version.outputs.PMD_VERSION) }}
@@ -733,7 +733,7 @@ jobs:
               IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
           " > "$HOME/.ssh/config"
           echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
         with:
           name: regression-tester-baseline
       - name: Upload to sourceforge
@@ -748,7 +748,7 @@ jobs:
           rm -rf "${HOME}/.ssh"
 
   create-docker:
-    needs: [check-version, deploy-to-maven-central]
+    needs: [check-version, github-release]
     environment:
       name: github
       url: https://github.com/pmd/docker/actions
@@ -758,7 +758,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/create-github-app-token@v2
+      - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b #v2.1.1
         id: pmd-actions-helper-app-token
         with:
           app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}

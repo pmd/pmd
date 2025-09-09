@@ -712,7 +712,7 @@ class Scratch {
         <expected-problems>9</expected-problems>
         <code><![CDATA[
             class Scratch {
-                // they're all unecessary
+                // they're all unnecessary
                 static void m(int i, byte b, char c, short s) {
                     i = b * (int) b; // 4
                     i = (int) b * b;
@@ -958,7 +958,7 @@ class Tester {
                 <X> void bar2(L2<X, ? extends Comparable<?>> l) {}
                 <X> void bar4(L2<X, Comparable<?>> l) {}
                 <X, Q> void bar3(L2<X, Q> l) {}
-                void foor(List<String> someList) {
+                void foo(List<String> someList) {
                     bar(x -> (Comparable<?>) "something"); // redundant
                     bar2(x -> (Comparable<?>) "something"); // redundant: lambda not context dependent
                     bar4(x -> (Comparable<?>) "something"); // redundant: lambda not context dependent

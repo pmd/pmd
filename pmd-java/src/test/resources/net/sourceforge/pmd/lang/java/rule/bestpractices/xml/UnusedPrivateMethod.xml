@@ -473,7 +473,7 @@ public class ModelAndView {
     }
 
     public ModelAndView showPieChart(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-        //call private method  USAGE #2.  Method not flagg
+        //call private method  USAGE #2.  Method not flagged
         Object filter = getGraphInnateFilter(request);
 
         //PIE CHART LOGIC
@@ -2569,7 +2569,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Problem with capture of type parametr that has wildcard parameterized bound</description>
+        <description>Problem with capture of type parameter that has wildcard parameterized bound</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             class AJjtN<N, B> {}
