@@ -14,6 +14,7 @@ This is a minor release.
     * [Deprecated Rules](#deprecated-rules)
 * [🐛 Fixed Issues](#fixed-issues)
 * [🚨 API Changes](#api-changes)
+    * [PMD Report Format CSV](#pmd-report-format-csv)
     * [Rule Test Schema](#rule-test-schema)
     * [Deprecations](#deprecations)
 * [✨ Merged pull requests](#merged-pull-requests)
@@ -78,6 +79,7 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
   * [#5650](https://github.com/pmd/pmd/issues/5650): \[apex] New Rule: AnnotationsNamingConventions
 * core
   * [#4721](https://github.com/pmd/pmd/issues/4721): chore: \[core] Enable XML rule MissingEncoding in dogfood ruleset
+  * [#5958](https://github.com/pmd/pmd/issues/5958): \[core] CSVRenderer: Add begin and end for line and columns (default off)
 * java
   * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
   * [#5960](https://github.com/pmd/pmd/issues/5960): \[java] Avoid/reduce duplicate error messages for some rules
@@ -107,6 +109,16 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
   * [#5973](https://github.com/pmd/pmd/issues/5973): \[test] Enable XML validation for rule tests
 
 ### 🚨 API Changes
+
+#### PMD Report Format CSV
+The CSV report format for PMD as three new columns:
+
+* End Line
+* Begin Column
+* End Column
+
+These columns are not enabled by default, but can be activated via their respective renderer properties.
+See [Report formats for PMD](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_userdocs_report_formats.html#csv).
 
 #### Rule Test Schema
 When executing rule tests, the rule test XML file will be validated against the schema and the tests will fail
@@ -140,6 +152,7 @@ See [Testing your rules](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_u
 * [#5954](https://github.com/pmd/pmd/pull/5954): \[core] Fix #4721: Enable XML rule MissingEncoding in dogfood ruleset - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5955](https://github.com/pmd/pmd/pull/5955): chore: Fix LiteralsFirstInComparison violations in test code - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5957](https://github.com/pmd/pmd/pull/5957): \[java] Fix #3401: Improve message/description/examples for AvoidUsingOctalValues - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5958](https://github.com/pmd/pmd/pull/5958): \[core] CSVRenderer: Add begin and end for line and columns (default off) - [Jude Pereira](https://github.com/judepereira) (@judepereira)
 * [#5959](https://github.com/pmd/pmd/pull/5959): \[java] Fix #5960: AddEmptyString: Improve report location - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5961](https://github.com/pmd/pmd/pull/5961): \[java] Fix #5960: Add details to the error message for some rules - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5965](https://github.com/pmd/pmd/pull/5965): \[java] Fix #5881: AvoidLosingException - Consider nested method calls - [Andreas Dangel](https://github.com/adangel) (@adangel)

@@ -2109,6 +2109,7 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4721">#4721</a>: chore: [core] Enable XML rule MissingEncoding in dogfood ruleset</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5958">#5958</a>: [core] CSVRenderer: Add begin and end for line and columns (default off)</li>
     </ul>
   </li>
   <li>java
@@ -2160,6 +2161,18 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
+<h4 id="pmd-report-format-csv">PMD Report Format CSV</h4>
+<p>The CSV report format for PMD as three new columns:</p>
+
+<ul>
+  <li>End Line</li>
+  <li>Begin Column</li>
+  <li>End Column</li>
+</ul>
+
+<p>These columns are not enabled by default, but can be activated via their respective renderer properties.
+See <a href="pmd_userdocs_report_formats.html#csv">Report formats for PMD</a>.</p>
+
 <h4 id="rule-test-schema">Rule Test Schema</h4>
 <p>When executing rule tests, the rule test XML file will be validated against the schema and the tests will fail
 if the XML file is invalid.</p>
@@ -2198,6 +2211,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
   <li><a href="https://github.com/pmd/pmd/pull/5954">#5954</a>: [core] Fix #4721: Enable XML rule MissingEncoding in dogfood ruleset - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5955">#5955</a>: chore: Fix LiteralsFirstInComparison violations in test code - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5957">#5957</a>: [java] Fix #3401: Improve message/description/examples for AvoidUsingOctalValues - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5958">#5958</a>: [core] CSVRenderer: Add begin and end for line and columns (default off) - <a href="https://github.com/judepereira">Jude Pereira</a> (@judepereira)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5959">#5959</a>: [java] Fix #5960: AddEmptyString: Improve report location - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5961">#5961</a>: [java] Fix #5960: Add details to the error message for some rules - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5965">#5965</a>: [java] Fix #5881: AvoidLosingException - Consider nested method calls - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
@@ -2253,7 +2267,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Sep 8, 2025 <br />
+             Site last generated: Sep 9, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
