@@ -8199,6 +8199,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "judepereira",
+      "name": "Jude Pereira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/747087?v=4",
+      "profile": "https://judepereira.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
