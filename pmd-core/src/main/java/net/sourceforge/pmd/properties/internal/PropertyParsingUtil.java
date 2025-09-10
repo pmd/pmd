@@ -148,6 +148,15 @@ public final class PropertyParsingUtil {
      * "a\"   -> [ "a\"  ]   (a backslash at the end of the string is just a backslash)
      *
      * }</pre>
+     *
+     * The list may end with a separator. Any whitespace around tokens is ignored:
+     *
+     * <pre>{@code
+     * " a , c " -> [ "a", "c" ]
+     * " a , c , " -> [ "a", "c" ]
+     * }</pre>
+     *
+     *
      */
     public static <U> List<U> parseListWithEscapes(String str, char delimiter, Function<? super String, ? extends U> extractor) {
         if (str.isEmpty()) {
@@ -165,7 +174,7 @@ public final class PropertyParsingUtil {
                 inEscapeMode = false;
                 currentToken.append(c);
             } else if (c == delimiter) {
-                result.add(extractor.apply(currentToken.toString()));
+                result.add(extractor.apply(currentToken.toString().trim()));
                 currentToken = new StringBuilder();
             } else if (c == ESCAPE_CHAR && i < str.length() - 1) {
                 // this is ordered this way so that if the delimiter is
@@ -176,8 +185,9 @@ public final class PropertyParsingUtil {
             }
         }
 
-        if (currentToken.length() > 0) {
-            result.add(extractor.apply(currentToken.toString()));
+        String currentTokenString = currentToken.toString().trim();
+        if (!currentTokenString.isEmpty()) {
+            result.add(extractor.apply(currentTokenString));
         }
         return result;
     }
