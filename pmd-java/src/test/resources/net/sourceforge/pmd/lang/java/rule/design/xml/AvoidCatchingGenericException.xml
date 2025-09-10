@@ -39,7 +39,7 @@ class FooException extends RuntimeException {}
 
     <test-code>
         <description>catching another type - violation, if so configured</description>
-        <rule-property name="typesThatShouldntBeCaught">java.lang.IllegalStateException</rule-property>
+        <rule-property name="typesThatShouldNotBeCaught">java.lang.IllegalStateException</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 public class Foo {
@@ -54,7 +54,7 @@ public class Foo {
 
     <test-code>
         <description>no longer a failure, because of configuration</description>
-        <rule-property name="typesThatShouldntBeCaught">java.lang.IllegalStateException</rule-property>
+        <rule-property name="typesThatShouldNotBeCaught">java.lang.IllegalStateException</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {

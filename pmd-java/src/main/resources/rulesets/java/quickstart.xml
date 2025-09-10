@@ -127,7 +127,7 @@
     <rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod"/>
     <rule ref="category/java/design.xml/AvoidCatchingGenericException">
         <properties>
-            <property name="typesThatShouldntBeCaught" value="java.lang.Throwable,java.lang.Error" />
+            <property name="typesThatShouldNotBeCaught" value="java.lang.Throwable,java.lang.Error" />
         </properties>
     </rule>
     <!-- <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts" /> -->

@@ -76,7 +76,7 @@ Avoid catching generic exceptions in try-catch blocks. Catching overly broad exc
         <priority>3</priority>
         <properties>
             <property
-                    name="typesThatShouldntBeCaught"
+                    name="typesThatShouldNotBeCaught"
                     type="List[String]"
                     description="List of canonical type names that should trigger a violation if used in a catch clause."
             >
@@ -92,7 +92,7 @@ Avoid catching generic exceptions in try-catch blocks. Catching overly broad exc
                 <value>
 <![CDATA[
 //CatchParameter//ClassType[
-    some $type in $typesThatShouldntBeCaught
+    some $type in $typesThatShouldNotBeCaught
     satisfies pmd-java:typeIsExactly($type)]
 ]]>
                 </value>
