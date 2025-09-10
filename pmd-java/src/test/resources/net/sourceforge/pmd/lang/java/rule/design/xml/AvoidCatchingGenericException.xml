@@ -6,7 +6,7 @@
 
     <test-code>
         <description>failure case</description>
-        <expected-problems>3</expected-problems>
+        <expected-problems>5</expected-problems>
         <code><![CDATA[
 public class Foo {
     void bar() {
@@ -14,6 +14,8 @@ public class Foo {
         } catch (NullPointerException e) {
         } catch (Exception e) {
         } catch (RuntimeException e) {
+        } catch (Throwable e) {
+        } catch (Error e) {
         }
     }
 }
@@ -34,6 +36,41 @@ public class Foo {
 class FooException extends RuntimeException {}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>catching another type - violation, if so configured</description>
+        <rule-property name="typesThatShouldntBeCaught">java.lang.IllegalStateException</rule-property>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {
+        } catch (IllegalStateException e) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no longer a failure, because of configuration</description>
+        <rule-property name="typesThatShouldntBeCaught">java.lang.IllegalStateException</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {
+        } catch (NullPointerException e) {
+        } catch (Exception e) {
+        } catch (RuntimeException e) {
+        } catch (Throwable e) {
+        } catch (Error e) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>catching subclass of NPE, ok</description>
         <expected-problems>0</expected-problems>

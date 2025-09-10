@@ -58,13 +58,25 @@ Avoid catching generic exceptions such as NullPointerException, RuntimeException
         </description>
         <priority>3</priority>
         <properties>
+            <property
+                    name="typesThatShouldntBeCaught"
+                    type="List[String]"
+                    description="List of canonical type names that should trigger a violation if used in a catch clause."
+            >
+                <value>
+                    java.lang.NullPointerException,
+                    java.lang.Exception,
+                    java.lang.RuntimeException,
+                    java.lang.Throwable,
+                    java.lang.Error
+                </value>
+            </property>
             <property name="xpath">
                 <value>
 <![CDATA[
 //CatchParameter//ClassType[
-        pmd-java:typeIsExactly('java.lang.NullPointerException') or
-        pmd-java:typeIsExactly('java.lang.Exception') or
-        pmd-java:typeIsExactly('java.lang.RuntimeException')]
+    some $type in $typesThatShouldntBeCaught
+    satisfies pmd-java:typeIsExactly($type)]
 ]]>
                 </value>
             </property>
