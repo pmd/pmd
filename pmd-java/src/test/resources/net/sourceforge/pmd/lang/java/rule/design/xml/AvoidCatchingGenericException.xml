@@ -75,7 +75,7 @@ public class Foo {
         <description>validate violation message</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Avoid catching generic exception NullPointerException in try-catch block</message>
+            <message>Avoid catching NullPointerException in try-catch block</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
