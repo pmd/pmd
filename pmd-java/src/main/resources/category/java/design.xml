@@ -50,7 +50,7 @@ public abstract class Example {
     <rule name="AvoidCatchingGenericException"
           since="4.2.6"
           language="java"
-          message="Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block"
+          message="Avoid catching generic exception {0} in try-catch block"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidcatchinggenericexception">
         <description>
