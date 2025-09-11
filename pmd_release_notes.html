@@ -2089,6 +2089,9 @@ to write this because <code class="language-plaintext highlighter-rouge">remove<
 do not belong to a class, method or field. These comments are ignored by the Javadoc tool
 and should either be corrected or removed.<br />
 The rule is referenced in the quickstart.xml ruleset for Java.</li>
+  <li>The new java rule <a href="pmd_rules_java_codestyle.html#modifierorder"><code class="language-plaintext highlighter-rouge">ModifierOrder</code></a> (<code class="language-plaintext highlighter-rouge">codestyle</code>) finds incorrectly ordered modifiers
+(e.g., <code class="language-plaintext highlighter-rouge">static public</code> instead of <code class="language-plaintext highlighter-rouge">public static</code>). It ensures modifiers appear in the correct order as
+recommended by the Java Language Specification.</li>
 </ul>
 
 <h4 id="deprecated-rules">Deprecated Rules</h4>
@@ -2134,6 +2137,7 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/972">#972</a>:   [java] Improve naming conventions rules</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5601">#5601</a>: [java] New rule: ModifierOrder</li>
       <li><a href="https://github.com/pmd/pmd/issues/5770">#5770</a>: [java] New Rule: VariableCanBeInlined: Local variables should not be declared and then immediately returned or thrown</li>
       <li><a href="https://github.com/pmd/pmd/issues/5948">#5948</a>: [java] UnnecessaryBoxing false positive when calling <code class="language-plaintext highlighter-rouge">List.remove(int)</code></li>
       <li><a href="https://github.com/pmd/pmd/issues/5982">#5982</a>: [java] More detailed message for the UselessParentheses rule</li>
@@ -2164,6 +2168,19 @@ in favor of the new rule <a href="pmd_rules_java_codestyle.html#variablecanbeinl
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
+<h4 id="deprecations">Deprecations</h4>
+<ul>
+  <li>pmd-java:
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.17.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/JClassSymbol.html#annotationAppliesTo(java.lang.annotation.ElementType)"><code>JClassSymbol#annotationAppliesTo</code></a>: Use
+<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.17.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/JClassSymbol.html#annotationAppliesToContext(java.lang.annotation.ElementType,net.sourceforge.pmd.lang.LanguageVersion)"><code>JClassSymbol#annotationAppliesToContext</code></a>
+instead.
+        <h4 id="experimental-api">Experimental API</h4>
+      </li>
+    </ul>
+  </li>
+  <li>pmd-core: <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.17.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#addViolationWithPosition(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken,java.lang.String,java.lang.Object...)"><code>RuleContext#addViolationWithPosition</code></a></li>
+</ul>
 
 <h4 id="pmd-report-format-csv">PMD Report Format CSV</h4>
 <p>The CSV report format for PMD as three new columns:</p>
@@ -2186,7 +2203,7 @@ are <em>no</em> suppressed violations, then this was not possible. Now the <code
 empty. This is available in version 1.1.1 of the schema.
 See <a href="pmd_userdocs_extending_testing.html">Testing your rules</a> for more information.</p>
 
-<h4 id="deprecations">Deprecations</h4>
+<h4 id="deprecations-1">Deprecations</h4>
 <ul>
   <li>test
     <ul>
@@ -2199,6 +2216,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/5601">#5601</a>: [java] New rule: ModifierOrder - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5822">#5822</a>: [apex] Fix #5650: New Rule: AnnotationsNamingConventions - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5847">#5847</a>: [java] Fix #5770: New Rule: VariableCanBeInlined - <a href="https://github.com/Pankraz76">Vincent Potucek</a> (@Pankraz76)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5856">#5856</a>: [java] Fix #5837: New Rule OverrideBothEqualsAndHashCodeOnComparable - <a href="https://github.com/Pankraz76">Vincent Potucek</a> (@Pankraz76)</li>

@@ -14,6 +14,8 @@ This is a minor release.
     * [Deprecated Rules](#deprecated-rules)
 * [🐛 Fixed Issues](#fixed-issues)
 * [🚨 API Changes](#api-changes)
+    * [Deprecations](#deprecations)
+    * [Experimental API](#experimental-api)
     * [PMD Report Format CSV](#pmd-report-format-csv)
     * [Rule Test Schema](#rule-test-schema)
     * [Deprecations](#deprecations)
@@ -67,6 +69,9 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
   do not belong to a class, method or field. These comments are ignored by the Javadoc tool
   and should either be corrected or removed.  
   The rule is referenced in the quickstart.xml ruleset for Java.
+* The new java rule [`ModifierOrder`](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_rules_java_codestyle.html#modifierorder) (`codestyle`) finds incorrectly ordered modifiers
+  (e.g., `static public` instead of `public static`). It ensures modifiers appear in the correct order as
+  recommended by the Java Language Specification.
 
 #### Deprecated Rules
 * The java rule [`GenericsNaming`](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_rules_java_codestyle.html#genericsnaming) has been deprecated for removal in favor
@@ -95,6 +100,7 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
   * [#5198](https://github.com/pmd/pmd/issues/5198): \[java] CheckResultSet false-positive with local variable checked in a while loop
 * java-codestyle
   * [#972](https://github.com/pmd/pmd/issues/972):   \[java] Improve naming conventions rules
+  * [#5601](https://github.com/pmd/pmd/issues/5601): \[java] New rule: ModifierOrder
   * [#5770](https://github.com/pmd/pmd/issues/5770): \[java] New Rule: VariableCanBeInlined: Local variables should not be declared and then immediately returned or thrown
   * [#5948](https://github.com/pmd/pmd/issues/5948): \[java] UnnecessaryBoxing false positive when calling `List.remove(int)`
   * [#5982](https://github.com/pmd/pmd/issues/5982): \[java] More detailed message for the UselessParentheses rule
@@ -113,6 +119,13 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
   * [#5973](https://github.com/pmd/pmd/issues/5973): \[test] Enable XML validation for rule tests
 
 ### 🚨 API Changes
+#### Deprecations
+* pmd-java:
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.17.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/JClassSymbol.html#annotationAppliesTo(java.lang.annotation.ElementType)"><code>JClassSymbol#annotationAppliesTo</code></a>: Use
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.17.0-SNAPSHOT/net/sourceforge/pmd/lang/java/symbols/JClassSymbol.html#annotationAppliesToContext(java.lang.annotation.ElementType,net.sourceforge.pmd.lang.LanguageVersion)"><code>JClassSymbol#annotationAppliesToContext</code></a>
+    instead.
+#### Experimental API
+* pmd-core: <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.17.0-SNAPSHOT/net/sourceforge/pmd/reporting/RuleContext.html#addViolationWithPosition(net.sourceforge.pmd.lang.ast.Node,net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken,java.lang.String,java.lang.Object...)"><code>RuleContext#addViolationWithPosition</code></a>
 
 #### PMD Report Format CSV
 The CSV report format for PMD as three new columns:
@@ -140,6 +153,7 @@ See [Testing your rules](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_u
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5601](https://github.com/pmd/pmd/pull/5601): \[java] New rule: ModifierOrder - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5822](https://github.com/pmd/pmd/pull/5822): \[apex] Fix #5650: New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5847](https://github.com/pmd/pmd/pull/5847): \[java] Fix #5770: New Rule: VariableCanBeInlined - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5856](https://github.com/pmd/pmd/pull/5856): \[java] Fix #5837: New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce a specific coding style.">
-<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, NoPackage, UseUnderscoresInNumericLiterals, TypeParameterNamingConventions, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, VariableCanBeInlined">
+<meta name="keywords" content=" Code Style, AtLeastOneConstructor, AvoidDollarSigns, AvoidProtectedFieldInFinalClass, AvoidProtectedMethodInFinalClassNotExtending, AvoidUsingNativeCode, BooleanGetMethodName, CallSuperInConstructor, ClassNamingConventions, CommentDefaultAccessModifier, ConfusingTernary, ControlStatementBraces, EmptyMethodInAbstractClassShouldBeAbstract, EmptyControlStatement, ExtendsObject, FieldDeclarationsShouldBeAtStartOfClass, FieldNamingConventions, FinalParameterInAbstractMethod, ForLoopShouldBeWhileLoop, FormalParameterNamingConventions, GenericsNaming, IdenticalCatchBranches, LambdaCanBeMethodReference, LinguisticNaming, LocalHomeNamingConvention, LocalInterfaceSessionNamingConvention, LocalVariableCouldBeFinal, LocalVariableNamingConventions, LongVariable, MDBAndSessionBeanNamingConvention, MethodArgumentCouldBeFinal, MethodNamingConventions, ModifierOrder, NoPackage, UseUnderscoresInNumericLiterals, TypeParameterNamingConventions, OnlyOneReturn, PackageCase, PrematureDeclaration, RemoteInterfaceNamingConvention, RemoteSessionInterfaceNamingConvention, ShortClassName, ShortMethodName, ShortVariable, TooManyStaticImports, UnnecessaryAnnotationValueElement, UnnecessaryBoxing, UnnecessaryCast, UnnecessaryConstructor, UnnecessaryFullyQualifiedName, UnnecessaryImport, UnnecessaryLocalBeforeReturn, UnnecessaryModifier, UnnecessaryReturn, UnnecessarySemicolon, UseDiamondOperator, UseExplicitTypes, UselessParentheses, UselessQualifiedThis, UseShortArrayInitializer, VariableCanBeInlined">
 <title>Code Style | PMD Source Code Analyzer</title>
 
 
@@ -3788,6 +3788,82 @@ configured through properties.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"junit3TestPattern"</span> <span class="na">value=</span><span class="s">"test[A-Z0-9][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"junit4TestPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"junit5TestPattern"</span> <span class="na">value=</span><span class="s">"[a-z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="modifierorder">ModifierOrder</h2>
+
+<p><strong>Since:</strong> PMD 7.17.0</p>
+
+<p><strong>Priority:</strong> High (1)</p>
+
+<p>Enforces the modifier order recommended by the JLS. Apart from sorting modifiers,
+this rule also enforces that all annotations appear before all modifier keywords.
+By setting the property <code class="language-plaintext highlighter-rouge">typeAnnotations</code>, you can also enforce that type
+annotations appear right of the modifier keywords, next to the type they apply to.
+This property can have three values:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">on type</code>: Type annotations must be placed next to the type they apply to</li>
+  <li><code class="language-plaintext highlighter-rouge">on decl</code>: Type annotations must be placed with other annotations, before modifiers.
+This is not enforced if the type annotations syntactically appears within the type, e.g.
+in <code class="language-plaintext highlighter-rouge">public Map.@Nullable Entry&lt;K,V&gt; method()</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">anywhere</code> (default): Either position fits. They still cannot be interspersed within keyword
+modifiers. Annotations that are not type annotations are still required to be before keyword
+modifiers.</li>
+</ul>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/ModifierOrderRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.ModifierOrderRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">abstract</span> <span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span> <span class="c1">// Warn: `public` should appear before `abstract`</span>
+
+    <span class="c1">// This order is not recommended, annotations should appear before keyword modifiers,</span>
+    <span class="c1">// and may appear after if they are type annotations.</span>
+    <span class="kd">public</span>
+    <span class="nd">@Override</span>
+    <span class="kd">static</span> <span class="nf">fooStuff</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="c1">// This order is ok if property typeAnnotations is "anywhere", and enforced if it is "on decl":</span>
+    <span class="nd">@Nullable</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">fooStuff</span><span class="o">()</span> <span class="o">{}</span>
+
+    <span class="c1">// This order is ok if property typeAnnotations is "anywhere", and enforced if it is "on type":</span>
+    <span class="kd">public</span> <span class="nd">@Nullable</span> <span class="nc">Object</span> <span class="nf">fooStuff</span><span class="o">()</span> <span class="o">{}</span>
+
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>typeAnnotations</td>
+      <td>anywhere</td>
+      <td>Whether type annotations should be placed next to the type they qualify and not before modifiers.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/ModifierOrder"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/ModifierOrder"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"typeAnnotations"</span> <span class="na">value=</span><span class="s">"anywhere"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>

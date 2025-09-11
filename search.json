@@ -2125,6 +2125,15 @@
 ,
 
 {
+"title": "ModifierOrder (Java, Code Style)",
+"tags": "",
+"keywords": "ModifierOrder",
+"url": "pmd_rules_java_codestyle.html#modifierorder",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
 "title": "NoPackage (Java, Code Style)",
 "tags": "",
 "keywords": "NoPackage",
