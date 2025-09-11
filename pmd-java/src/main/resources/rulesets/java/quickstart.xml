@@ -72,6 +72,7 @@
     <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
     <!-- <rule ref="category/java/codestyle.xml/LongVariable" /> -->
     <rule ref="category/java/codestyle.xml/MethodNamingConventions"/>
+    <!-- <rule ref="category/java/codestyle.xml/ModifierOrder"/> -->
     <rule ref="category/java/codestyle.xml/PackageCase"/>
     <!-- <rule ref="category/java/codestyle.xml/ShortClassName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/ShortMethodName" /> -->
@@ -178,6 +179,7 @@
     <!-- <rule ref="category/java/documentation.xml/CommentContent" /> -->
     <!-- <rule ref="category/java/documentation.xml/CommentRequired" /> -->
     <!-- <rule ref="category/java/documentation.xml/CommentSize" /> -->
+    <rule ref="category/java/documentation.xml/DanglingJavadoc"/>
     <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor"/>
     <rule ref="category/java/documentation.xml/UncommentedEmptyMethodBody"/>
 

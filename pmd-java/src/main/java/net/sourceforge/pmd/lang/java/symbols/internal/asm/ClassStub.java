@@ -19,6 +19,7 @@ import org.objectweb.asm.Opcodes;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JElementSymbol;
@@ -41,6 +42,7 @@ import net.sourceforge.pmd.lang.java.types.LexicalScope;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 
 final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
@@ -70,6 +72,8 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
     private PSet<SymAnnot> annotations = HashTreePSet.empty();
 
     private PSet<String> annotAttributes;
+    private LanguageVersion analyzedVersion;
+    private OptionalBool mayBeTypeAnnotation;
 
     private final ParseLock parseLock;
 
@@ -366,6 +370,15 @@ final class ClassStub implements JClassSymbol, AsmStub, AnnotationOwner {
                               : HashTreePSet.empty();
         }
         return annotAttributes;
+    }
+
+    @Override
+    public OptionalBool mayBeTypeAnnotation(LanguageVersion v) {
+        if (!v.equals(analyzedVersion) || mayBeTypeAnnotation == null) {
+            mayBeTypeAnnotation = JClassSymbol.super.mayBeTypeAnnotation(v);
+            analyzedVersion = v;
+        }
+        return mayBeTypeAnnotation;
     }
 
     @Override
