@@ -64,6 +64,10 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
   collection methods where we suspect the types are incompatible. This happens for instance
   when you try to remove a `String` from a `Collection<Integer>`: although it is allowed
   to write this because `remove` takes an `Object` parameter, it is most likely a mistake.
+* The new java rule {% rule java/documentation/DanglingJavadoc %} finds Javadoc comments that
+  do not belong to a class, method or field. These comments are ignored by the Javadoc tool
+  and should either be corrected or removed.  
+  The rule is referenced in the quickstart.xml ruleset for Java.
 
 #### Deprecated Rules
 * The java rule {% rule java/codestyle/GenericsNaming %} has been deprecated for removal in favor
@@ -141,6 +145,7 @@ See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for m
 * [#5847](https://github.com/pmd/pmd/pull/5847): \[java] Fix #5770: New Rule: VariableCanBeInlined - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5856](https://github.com/pmd/pmd/pull/5856): \[java] Fix #5837: New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5907](https://github.com/pmd/pmd/pull/5907): \[java] New rule: UselessPureMethodCall - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#5916](https://github.com/pmd/pmd/pull/5916): \[java] New rule: Dangling Javadoc - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5922](https://github.com/pmd/pmd/pull/5922): \[java] Fix #972: Add a new rule TypeParameterNamingConventions - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5924](https://github.com/pmd/pmd/pull/5924): \[java] Fix #5915: Fix AssignmentInOperandRule to also work an do-while loops and switch statements - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5930](https://github.com/pmd/pmd/pull/5930): \[java] Fix #4500: Fix AvoidReassigningLoopVariablesRule to allow only simple assignments in the forReassign=skip case - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
