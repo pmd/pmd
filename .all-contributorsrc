@@ -8198,6 +8198,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "StevanWhite",
+      "name": "Steve White",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1576377?v=4",
+      "profile": "https://github.com/StevanWhite",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
