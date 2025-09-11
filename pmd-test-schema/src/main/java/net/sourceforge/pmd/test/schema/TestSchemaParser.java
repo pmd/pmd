@@ -56,14 +56,33 @@ public class TestSchemaParser {
      * @throws XmlException If parsing throws this
      */
     public RuleTestCollection parse(Rule rule, InputSource inputSource) throws IOException, XmlException {
-        // note: need to explicitly specify the writer here, so that in unit tests
-        // System.err can be swapped out and in
-        OoxmlFacade ooxml = new OoxmlFacade().withPrinter(new PrintStreamMessageHandler(System.err));
+        class ErrorHandler extends PrintStreamMessageHandler {
+            private boolean hasError = false;
+
+            ErrorHandler() {
+                // note: need to explicitly specify the writer here, so that in unit tests
+                // System.err can be swapped out and in with SystemLambda.tapSystemErr
+                super(System.err);
+            }
+
+            @Override
+            public void accept(XmlException entry) {
+                super.accept(entry);
+                hasError |= entry.getSeverity() == XmlSeverity.ERROR;
+            }
+
+            public boolean hasError() {
+                return hasError;
+            }
+        }
+
+        ErrorHandler validationHandler = new ErrorHandler();
+        OoxmlFacade ooxml = new OoxmlFacade().withPrinter(validationHandler);
         PositionedXmlDoc doc = ooxml.parse(newDocumentBuilder(), inputSource);
 
         try (PmdXmlReporterImpl err = new PmdXmlReporterImpl(ooxml, doc.getPositioner())) {
             RuleTestCollection collection = version.getParserImpl().parseDocument(rule, doc, err);
-            if (err.hasError()) {
+            if (validationHandler.hasError() || err.hasError()) {
                 // todo maybe add a way not to throw here
                 throw new IllegalStateException("Errors were encountered while parsing XML tests");
             }
@@ -121,8 +140,7 @@ public class TestSchemaParser {
     private DocumentBuilder newDocumentBuilder() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         try {
-            // don't use the schema as it adds deprecated attributes implicitly...
-            // dbf.setSchema(version.getSchema());
+            dbf.setSchema(version.getSchema());
             dbf.setNamespaceAware(true);
             return dbf.newDocumentBuilder();
         } catch (ParserConfigurationException e) {

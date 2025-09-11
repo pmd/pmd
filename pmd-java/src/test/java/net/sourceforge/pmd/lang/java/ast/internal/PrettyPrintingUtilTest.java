@@ -18,15 +18,18 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.java.BaseParserTest;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.util.StringUtil;
 
@@ -38,6 +41,16 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         ASTMethodDeclaration m = root.descendants(ASTMethodDeclaration.class).firstOrThrow();
 
         assertEquals("foo(String[][])", displaySignature(m));
+    }
+
+    @Test
+    void ppLiteral() {
+        testPrettyPrintIdentity("4", ASTLiteral.class);
+        testPrettyPrintIdentity("\"x\"", ASTLiteral.class);
+        testPrettyPrint("(4)", ASTLiteral.class, "4");
+        testPrettyPrint("(\"x\")", ASTLiteral.class, "\"x\"");
+        testPrettyPrint("(true)", ASTLiteral.class, "true");
+        testPrettyPrint("(null)", ASTLiteral.class, "null");
     }
 
     @Test
@@ -80,6 +93,8 @@ class PrettyPrintingUtilTest extends BaseParserTest {
     @Test
     void ppUnary() {
         testPrettyPrintIdentity("-+4", ASTUnaryExpression.class);
+        testPrettyPrintIdentity("j++", ASTUnaryExpression.class);
+        testPrettyPrintIdentity("++j", ASTUnaryExpression.class);
     }
 
 
@@ -95,7 +110,11 @@ class PrettyPrintingUtilTest extends BaseParserTest {
         testPrettyPrint("(1+2)*2", ASTInfixExpression.class, "(1 + 2) * 2");
     }
 
-
+    @Test
+    void ppSwitchExpression() {
+        testPrettyPrint("switch (x.toLowerCase()) { case \"a\" -> \"a\"; default -> \"o\"; }",
+            ASTSwitchExpression.class, "switch (x.toLowerCase()) { ... }");
+    }
 
     @Test
     void ppLambdaExpr() {
@@ -109,6 +128,15 @@ class PrettyPrintingUtilTest extends BaseParserTest {
     void ppLambdaBlock() {
         testPrettyPrint("(a, b) -> {return new Foo(); }", ASTLambdaExpression.class,
             "(a, b) -> { ... }");
+    }
+
+    @Test
+    void ppArrayAllocation() {
+        testPrettyPrintIdentity("new int[1]", ASTArrayAllocation.class);
+        testPrettyPrintIdentity("new int[1][2]", ASTArrayAllocation.class);
+        testPrettyPrintIdentity("new List<String>[]{}", ASTArrayAllocation.class);
+        testPrettyPrint("new int[]{1}", ASTArrayAllocation.class, "new int[]{ ... }");
+        testPrettyPrint("new int[][]{{4}}", ASTArrayAllocation.class, "new int[][]{ ... }");
     }
 
     private <T extends ASTExpression> void testPrettyPrint(String expr, Class<T> nodeTy, String expected) {
