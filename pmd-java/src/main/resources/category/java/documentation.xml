@@ -79,6 +79,40 @@ Determines whether the dimensions of non-header comments found are within the sp
         </example>
     </rule>
 
+    <rule name="DanglingJavadoc"
+          language="java"
+          since="7.17.0"
+          message="Javadoc comment does not belong to any class, method or field"
+          class="net.sourceforge.pmd.lang.java.rule.documentation.DanglingJavadocRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#danglingjavadoc">
+        <description>
+Javadoc comments that do not belong to a class, method or field are ignored by the JavaDoc tool
+and don't end up in the generated API documentation. Such comments are either misplaced
+(e.g. between annotations and method declaration) or should be block comments.
+
+In order to fix this violation, the comment should be moved to the correct place,
+converted into a block comment or removed completely.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Foo {
+  /**
+   * Public methods // wrong
+   */
+
+  /**
+   * A setter // OK
+   */
+   public void setFoo() {
+
+   }
+
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UncommentedEmptyConstructor"
           language="java"
           since="3.4"
@@ -144,34 +178,6 @@ empty methods.
         <example>
 <![CDATA[
 public void doSomething() {
-}
-]]>
-        </example>
-    </rule>
-    <rule name="DanglingJavadoc"
-          language="java"
-          since="5.0"
-          message="Javadoc not belonging to any class, method or field should be removed."
-          class="net.sourceforge.pmd.lang.java.rule.documentation.DanglingJavadocRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#danglingjavadoc">
-        <description>
-            Javadoc should belong to a class or method.
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
-public class Foo {
-  /**
-   * Public methods // wrong
-   */
-
-  /**
-   * A setter // OK
-   */
-   public void setFoo() {
-
-   }
-
 }
 ]]>
         </example>
