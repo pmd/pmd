@@ -3436,6 +3436,15 @@
 ,
 
 {
+"title": "DanglingJavadoc (Java, Documentation)",
+"tags": "",
+"keywords": "DanglingJavadoc",
+"url": "pmd_rules_java_documentation.html#danglingjavadoc",
+"summary": "\bRules\b \bthat\b \bare\b \brelated\b \bto\b \bcode\b \bdocumentation\b."
+}
+,
+
+{
 "title": "UncommentedEmptyConstructor (Java, Documentation)",
 "tags": "",
 "keywords": "UncommentedEmptyConstructor",

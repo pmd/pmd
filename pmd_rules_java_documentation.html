@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that are related to code documentation.">
-<meta name="keywords" content=" Documentation, CommentContent, CommentRequired, CommentSize, UncommentedEmptyConstructor, UncommentedEmptyMethodBody">
+<meta name="keywords" content=" Documentation, CommentContent, CommentRequired, CommentSize, DanglingJavadoc, UncommentedEmptyConstructor, UncommentedEmptyMethodBody">
 <title>Documentation | PMD Source Code Analyzer</title>
 
 
@@ -2247,6 +2247,42 @@
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maxLineLength"</span> <span class="na">value=</span><span class="s">"80"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="danglingjavadoc">DanglingJavadoc</h2>
+
+<p><strong>Since:</strong> PMD 7.17.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Javadoc comments that do not belong to a class, method or field are ignored by the JavaDoc tool
+and don’t end up in the generated API documentation. Such comments are either misplaced
+(e.g. between annotations and method declaration) or should be block comments.</p>
+
+<p>In order to fix this violation, the comment should be moved to the correct place,
+converted into a block comment or removed completely.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/documentation/DanglingJavadocRule.java">net.sourceforge.pmd.lang.java.rule.documentation.DanglingJavadocRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+  <span class="cm">/**
+   * Public methods // wrong
+   */</span>
+
+  <span class="cm">/**
+   * A setter // OK
+   */</span>
+   <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setFoo</span><span class="o">()</span> <span class="o">{</span>
+
+   <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/documentation.xml/DanglingJavadoc"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="uncommentedemptyconstructor">UncommentedEmptyConstructor</h2>

@@ -2085,6 +2085,10 @@ The rule is referenced in the quickstart.xml ruleset for Java.</li>
 collection methods where we suspect the types are incompatible. This happens for instance
 when you try to remove a <code class="language-plaintext highlighter-rouge">String</code> from a <code class="language-plaintext highlighter-rouge">Collection&lt;Integer&gt;</code>: although it is allowed
 to write this because <code class="language-plaintext highlighter-rouge">remove</code> takes an <code class="language-plaintext highlighter-rouge">Object</code> parameter, it is most likely a mistake.</li>
+  <li>The new java rule <a href="pmd_rules_java_documentation.html#danglingjavadoc"><code class="language-plaintext highlighter-rouge">DanglingJavadoc</code></a> finds Javadoc comments that
+do not belong to a class, method or field. These comments are ignored by the Javadoc tool
+and should either be corrected or removed.<br />
+The rule is referenced in the quickstart.xml ruleset for Java.</li>
 </ul>
 
 <h4 id="deprecated-rules">Deprecated Rules</h4>
@@ -2199,6 +2203,7 @@ PMD has the rule <a href="pmd_rules_xml_bestpractices.html#missingencoding"><cod
   <li><a href="https://github.com/pmd/pmd/pull/5847">#5847</a>: [java] Fix #5770: New Rule: VariableCanBeInlined - <a href="https://github.com/Pankraz76">Vincent Potucek</a> (@Pankraz76)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5856">#5856</a>: [java] Fix #5837: New Rule OverrideBothEqualsAndHashCodeOnComparable - <a href="https://github.com/Pankraz76">Vincent Potucek</a> (@Pankraz76)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5907">#5907</a>: [java] New rule: UselessPureMethodCall - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5916">#5916</a>: [java] New rule: Dangling Javadoc - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5922">#5922</a>: [java] Fix #972: Add a new rule TypeParameterNamingConventions - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5924">#5924</a>: [java] Fix #5915: Fix AssignmentInOperandRule to also work an do-while loops and switch statements - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5930">#5930</a>: [java] Fix #4500: Fix AvoidReassigningLoopVariablesRule to allow only simple assignments in the forReassign=skip case - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
