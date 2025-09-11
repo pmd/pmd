@@ -187,6 +187,7 @@ See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for m
 * [#5982](https://github.com/pmd/pmd/pull/5982): \[java] More detailed message for the UselessParentheses rule - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5989](https://github.com/pmd/pmd/pull/5989): \[java] Improve performance of RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5994](https://github.com/pmd/pmd/pull/5994): \[java] Fix #4770: UnusedFormalParameter should ignore public constructor as same as method - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#5995](https://github.com/pmd/pmd/pull/5995): \[html] Add test case that tests the end of a reported violation (test for #3951) - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6006](https://github.com/pmd/pmd/pull/6006): \[java] Fix #5949: CollectionTypeMismatch - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6016](https://github.com/pmd/pmd/pull/6016): \[java] Fix #6014: Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
