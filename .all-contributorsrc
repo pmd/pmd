@@ -8208,6 +8208,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "csrma",
+      "name": "csrma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/213656372?v=4",
+      "profile": "https://github.com/csrma",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
