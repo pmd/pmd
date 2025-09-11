@@ -8200,7 +8200,6 @@
         "bug"
       ]
     },
-    {
       "login": "judepereira",
       "name": "Jude Pereira",
       "avatar_url": "https://avatars.githubusercontent.com/u/747087?v=4",
@@ -8223,6 +8222,15 @@
       "name": "Steven Schlansker",
       "avatar_url": "https://avatars.githubusercontent.com/u/129097?v=4",
       "profile": "https://github.com/stevenschlansker",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "StevanWhite",
+      "name": "Steve White",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1576377?v=4",
+      "profile": "https://github.com/StevanWhite",
       "contributions": [
         "bug"
       ]
