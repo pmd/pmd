@@ -72,6 +72,7 @@
     <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
     <!-- <rule ref="category/java/codestyle.xml/LongVariable" /> -->
     <rule ref="category/java/codestyle.xml/MethodNamingConventions"/>
+    <!-- <rule ref="category/java/codestyle.xml/ModifierOrder"/> -->
     <rule ref="category/java/codestyle.xml/PackageCase"/>
     <!-- <rule ref="category/java/codestyle.xml/ShortClassName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/ShortMethodName" /> -->
