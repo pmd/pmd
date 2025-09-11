@@ -1133,7 +1133,7 @@ public class Foo {
 
     <rule name="ModifierOrder"
           language="java"
-          since="7.12.0"
+          since="7.17.0"
           message="Wrong modifier order (the actual message is written by the rule)"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.ModifierOrderRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#modifierorder">

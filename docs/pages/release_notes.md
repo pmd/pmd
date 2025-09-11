@@ -25,8 +25,6 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 #### ✨ New Rules
-* The new Java rule {% rule java/codestyle/ModifierOrder %} (`codestyle`) finds incorrectly ordered modifiers
-  (e.g., `static public` instead of `public static`). It ensures modifiers appear in the correct order as recommended by the Java Language Specification.
 * The new apex rule {% rule apex/codestyle/AnnotationsNamingConventions %} enforces that annotations
   are used consistently in PascalCase.  
   The rule is referenced in the quickstart.xml ruleset for Apex.
@@ -58,6 +56,9 @@ This is a {{ site.pmd.release_type }} release.
   which only considered return statements. The new rule also finds unnecessary local variables
   before throw statements.  
   The rule is referenced in the quickstart.xml ruleset for Java.
+* The new java rule {% rule java/codestyle/ModifierOrder %} (`codestyle`) finds incorrectly ordered modifiers
+  (e.g., `static public` instead of `public static`). It ensures modifiers appear in the correct order as
+  recommended by the Java Language Specification.
 
 #### Deprecated Rules
 * The java rule {% rule java/codestyle/GenericsNaming %} has been deprecated for removal in favor
@@ -85,6 +86,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#972](https://github.com/pmd/pmd/issues/972): \[java] Improve naming conventions rules
   * [#5770](https://github.com/pmd/pmd/issues/5770): \[java] New Rule: VariableCanBeInlined: Local variables should not be declared and then immediately returned or thrown
   * [#5948](https://github.com/pmd/pmd/issues/5948): \[java] UnnecessaryBoxing false positive when calling `List.remove(int)`
+  * [#5601](https://github.com/pmd/pmd/issues/5601): \[java] New rule: ModifierOrder
 * java-design
   * [#4911](https://github.com/pmd/pmd/issues/4911): \[java] AvoidRethrowingException should allow rethrowing exception subclasses
   * [#5023](https://github.com/pmd/pmd/issues/5023): \[java] UseUtilityClass implementation hardcodes a message instead of using the one defined in the XML
@@ -97,6 +99,13 @@ This is a {{ site.pmd.release_type }} release.
   * [#5974](https://github.com/pmd/pmd/issues/5974): \[java] CloseResourceRule: NullPointerException while analyzing
 
 ### 🚨 API Changes
+#### Deprecations
+* pmd-java:
+  * {%jdoc !!java::lang.java.symbols.JClassSymbol#annotationAppliesTo(java.lang.annotation.ElementType) %}: Use
+    {%jdoc !!java::lang.java.symbols.JClassSymbol#annotationAppliesToContext(java.lang.annotation.ElementType,core::lang.LanguageVersion) %}
+    instead.
+#### Experimental API
+* pmd-core: {%jdoc !!core::reporting.RuleContext#addViolationWithPosition(core::lang.ast.Node,core::lang.ast.impl.javacc.JavaccToken,java.lang.String,java.lang.Object...) %}
 
 #### Deprecations
 * test
@@ -105,7 +114,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
-* [#5856](https://github.com/pmd/pmd/pull/6019): Fix #6019: \[java] New Rule ModifierOrder - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5601](https://github.com/pmd/pmd/pull/5601): \[java] New rule: ModifierOrder - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5822](https://github.com/pmd/pmd/pull/5822): Fix #5650: \[apex] New Rule: AnnotationsNamingConventions - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#5847](https://github.com/pmd/pmd/pull/5847): Fix #5770: \[java] New Rule: VariableCanBeInlined - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)
 * [#5856](https://github.com/pmd/pmd/pull/5856): Fix #5837: \[java] New Rule OverrideBothEqualsAndHashCodeOnComparable - [Vincent Potucek](https://github.com/Pankraz76) (@Pankraz76)

@@ -336,7 +336,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Return whether annotations of this annotation type apply to the
      * given construct, as per the {@link Target} annotation. Return
      * false if this is not an annotation.
-     * @deprecated Use {@link #annotationAppliesToContext(ElementType, LanguageVersion)}
+     * @deprecated Since 7.17.0. Use {@link #annotationAppliesToContext(ElementType, LanguageVersion)}
      */
     @Deprecated
     default boolean annotationAppliesTo(ElementType elementType) {
@@ -349,6 +349,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * given construct, as per the {@link Target} annotation. Return
      * false if this is not an annotation. May return unknown if we are
      * not sure.
+     * @since 7.17.0
      */
     default OptionalBool annotationAppliesToContext(ElementType elementType, LanguageVersion javaVersion) {
         if (isUnresolved()) {
@@ -385,6 +386,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
      * Whether a specific annotation of this type is a type annotation also depends
      * on the context where it appears, as this annotation type may be applicable
      * to other contexts than {@link ElementType#TYPE_USE}.
+     * @since 7.17.0
      */
     default OptionalBool mayBeTypeAnnotation(LanguageVersion lv) {
         return annotationAppliesToContext(ElementType.TYPE_USE, lv);

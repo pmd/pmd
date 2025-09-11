@@ -35,6 +35,7 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
     /**
      * If true, the type node is null and the type was written with the "var"
      * keyword in the source.
+     * @since 7.17.0
      */
     public boolean hasVarKeyword() {
         return usesVarKw;

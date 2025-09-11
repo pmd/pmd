@@ -156,7 +156,7 @@ public final class RuleContext {
      * @param token   Report location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     * @experimental This will probably never be stabilized, will instead be
+     * @experimental Since 7.17.0. This will probably never be stabilized, will instead be
      *      replaced by a fluent API or something to report violations. Do not use
      *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
      */
@@ -177,7 +177,7 @@ public final class RuleContext {
      * @param location   Report location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     * @experimental This will probably never be stabilized, will instead be
+     * @experimental Since 7.9.0. This will probably never be stabilized, will instead be
      *      replaced by a fluent API or something to report violations. Do not use
      *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
      */

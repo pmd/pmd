@@ -29,6 +29,9 @@ import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
+/**
+ * @since 7.17.0
+ */
 public class ModifierOrderRule extends AbstractJavaRulechainRule {
 
     private static final String MSG_KEYWORD_ORDER =
