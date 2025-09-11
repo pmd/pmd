@@ -22,7 +22,7 @@ class MarkdownCodeBlockTest {
         "``````, ```````"
     })
     void testCodeFences(String input, String expectedCodeFence) {
-        final MarkdownRenderer.MarkdownCodeBlock markdownCodeBlock = new MarkdownRenderer.MarkdownCodeBlock(input);
+        final MarkdownRenderer.MarkdownCodeBlock markdownCodeBlock = new MarkdownRenderer.MarkdownCodeBlock(input, null);
         assertThat(markdownCodeBlock.toString().trim(), startsWith(expectedCodeFence + "\n"));
     }
 }

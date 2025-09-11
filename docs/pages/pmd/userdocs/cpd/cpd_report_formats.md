@@ -300,14 +300,17 @@ It requires javascript enabled and uses [Bootstrap](https://getbootstrap.com/),
 This report format outputs all duplications one after another in Markdown. Each duplication contains the complete code snippet as a code block.
 Duplications are separated by a horizontal line (`---` in Markdown).
 
-Example:
+This format is available since PMD 7.17.0.
 
-````markdown
-Found a 33 line (239 tokens) duplication in the following files: 
-Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
-Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+<details class="no-background">
+    <summary>Example (rendered)</summary>
+    <div markdown="block">
 
-```
+Found a 33 line (239 tokens) duplication in the following files:
+* Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+* Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+
+```java
 public void testOverride() {
     final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
     MockRule rule = new MockRule();
@@ -346,11 +349,85 @@ public void testOverride() {
 ---
 
 Found a 16 line (110 tokens) duplication in the following files:
-Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
-Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
-Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
 
+```java
+JaxenXPathRuleQuery query = createQuery(xpath);
+List<String> ruleChainVisits = query.getRuleChainVisits();
+Assert.assertEquals(2, ruleChainVisits.size());
+Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+// Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+// match a real node name.
+Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+RuleContext data = new RuleContext();
+data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+query.evaluate(dummy, data);
+// note: the actual xpath queries are only available after evaluating
+Assert.assertEquals(2, query.nodeNameToXPaths.size());
+Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
 ```
+</div>
+</details>
+
+<p></p>
+
+<details class="no-background">
+    <summary>Markdown source</summary>
+    <div markdown="block">
+````markdown
+Found a 33 line (239 tokens) duplication in the following files:
+* Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+* Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+
+```java
+public void testOverride() {
+    final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+    MockRule rule = new MockRule();
+    rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
+    rule.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME));
+    rule.setName("name1");
+    rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
+    rule.setMessage("message1");
+    rule.setDescription("description1");
+    rule.addExample("example1");
+    rule.setExternalInfoUrl("externalInfoUrl1");
+    rule.setPriority(RulePriority.HIGH);
+
+    final StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
+    RuleReference ruleReference = new RuleReference();
+    ruleReference.setRule(rule);
+    ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
+    ruleReference.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+    ruleReference
+            .setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
+    ruleReference
+            .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
+    ruleReference.setDeprecated(true);
+    ruleReference.setName("name2");
+    ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
+    ruleReference.setProperty(PROPERTY2_DESCRIPTOR, "value3");
+    ruleReference.setMessage("message2");
+    ruleReference.setDescription("description2");
+    ruleReference.addExample("example2");
+    ruleReference.setExternalInfoUrl("externalInfoUrl2");
+    ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
+
+    validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+```
+
+---
+
+Found a 16 line (110 tokens) duplication in the following files:
+* Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+
+```java
 JaxenXPathRuleQuery query = createQuery(xpath);
 List<String> ruleChainVisits = query.getRuleChainVisits();
 Assert.assertEquals(2, ruleChainVisits.size());
@@ -369,3 +446,6 @@ Assert.assertEquals(2, query.nodeNameToXPaths.size());
 Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
 ```
 ````
+
+</div>
+</details>

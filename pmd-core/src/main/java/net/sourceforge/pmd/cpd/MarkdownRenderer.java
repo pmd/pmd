@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +21,7 @@ public class MarkdownRenderer implements CPDReportRenderer {
     //separator must be surrounded by empty lines to be rendered properly
     private static final String SEPARATOR = "\n---\n\n";
     private static final String FOUND_DUPLICATION_TEMPLATE = "Found a %d line (%d tokens) duplication in the following files:\n";
-    private static final String STARTING_AT_LINE_TEMPLATE = "Starting at line %d of %s\n";
+    private static final String STARTING_AT_LINE_TEMPLATE = "* Starting at line %d of %s\n";
 
     @Override
     public void render(CPDReport report, Writer writer) throws IOException {
@@ -46,8 +47,15 @@ public class MarkdownRenderer implements CPDReportRenderer {
             writer.append(String.format(STARTING_AT_LINE_TEMPLATE, loc.getStartLine(), report.getDisplayName(loc.getFileId())));
         }
 
-        Chars source = report.getSourceCodeSlice(match.getFirstMark());
-        final MarkdownCodeBlock markdownCodeBlock = new MarkdownCodeBlock(source);
+        Mark firstMark = match.getFirstMark();
+        String filename = firstMark.getFileId().getFileName().toLowerCase(Locale.ROOT);
+        String highlightLanguage = null;
+        if (filename.endsWith(".java") || filename.endsWith(".jav")) {
+            highlightLanguage = "java";
+        }
+
+        Chars source = report.getSourceCodeSlice(firstMark);
+        final MarkdownCodeBlock markdownCodeBlock = new MarkdownCodeBlock(source, highlightLanguage);
         writer.append(markdownCodeBlock.toString());
     }
 
@@ -56,9 +64,11 @@ public class MarkdownRenderer implements CPDReportRenderer {
         private static final Pattern CODE_FENCE_PATTERN = Pattern.compile(String.format("`{%d,}", MIN_CODE_FENCE_LENGTH));
 
         private final CharSequence source;
+        private final String highlightLanguage;
 
-        MarkdownCodeBlock(CharSequence source) {
+        MarkdownCodeBlock(CharSequence source, String highlightLanguage) {
             this.source = source;
+            this.highlightLanguage = highlightLanguage != null ? highlightLanguage : "";
         }
 
         private int calculateFenceLength() {
@@ -81,9 +91,13 @@ public class MarkdownRenderer implements CPDReportRenderer {
         @Override
         public String toString() {
             final int codeFenceLength = calculateFenceLength();
-            final String codeFence = StringUtils.repeat("`", codeFenceLength);
+            String codeFence = StringUtils.repeat("`", codeFenceLength);
 
-            final String codeBlock = StringUtils.wrap(String.format("\n%s", source), codeFence);
+            final String codeBlock =
+                    codeFence.concat(highlightLanguage)
+                             .concat("\n")
+                             .concat(source.toString())
+                             .concat(codeFence);
             return StringUtils.wrap(codeBlock, "\n");
         }
     }
