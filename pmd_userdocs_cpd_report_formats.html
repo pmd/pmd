@@ -2235,7 +2235,7 @@ any errors occurred during analysis.</p>
 <h2 id="csv">csv</h2>
 
 <p>This outputs the duplication as comma separated values. It only reports the duplication size (number
-of lines and tokens) and the number of occurrences. After that, the begin lines and filenames are reported on
+of lines and tokens) and the number of occurrences. After that, the starting lines and filenames are reported on
 after another.</p>
 
 <p>Example:</p>
@@ -2252,7 +2252,7 @@ for each occurrence separately. While the tokens are the same, due to formatting
 different. Whitespace and comments are usually ignored when finding duplicated code.</p>
 
 <p>In each line, the duplication size in tokens is reported, then the number of occurrences. And after that, for each
-file, the begin line, the number of duplicated lines and the filename.</p>
+file, the starting line, the number of duplicated lines and the filename.</p>
 
 <p>Example:</p>
 
@@ -2264,7 +2264,7 @@ eTest.java
 
 <h2 id="vs">vs</h2>
 
-<p>This outputs the duplication in a format, that Visual Studio. CPD can be added as a external tool and the output
+<p>This outputs the duplication in a format, that Visual Studio understands. CPD can be added as an external tool and the output
 is shown in the console. You can then click on the filenames to jump to the source where the duplication is located.</p>
 
 <p>Each occurrence of a duplication is reported in a separate line, that’s why in this example, we have 5 lines.</p>
@@ -2295,7 +2295,7 @@ e.g. <code class="language-plaintext highlighter-rouge">xalan</code> (see <a hre
 
 <p><a href="report-examples/cpdhtml.html">Example</a></p>
 
-<p>This stylesheet by default only consideres duplications longer than 30 lines. You can change the default value with
+<p>This stylesheet by default only considers duplications longer than 30 lines. You can change the default value with
 the param <code class="language-plaintext highlighter-rouge">lines</code>:</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xalan <span class="nt">-in</span> cpd-report-sample.xml <span class="nt">-xsl</span> cpdhtml.xslt <span class="nt">-out</span> cpd-report-sample-cpdhtml.html <span class="nt">-param</span> lines 10
@@ -2312,6 +2312,162 @@ the param <code class="language-plaintext highlighter-rouge">lines</code>:</p>
 
 <p>It requires javascript enabled and uses <a href="https://getbootstrap.com/">Bootstrap</a>,
 <a href="https://jquery.com/">jQuery</a>, and <a href="https://datatables.net/">DataTables</a>.</p>
+
+<h2 id="markdown">markdown</h2>
+
+<p>This report format outputs all duplications one after another in Markdown. Each duplication contains the complete code snippet as a code block.
+Duplications are separated by a horizontal line (<code class="language-plaintext highlighter-rouge">---</code> in Markdown).</p>
+
+<p>This format is available since PMD 7.17.0.</p>
+
+<details class="no-background">
+    <summary>Example (rendered)</summary>
+    <div>
+
+    <p>Found a 33 line (239 tokens) duplication in the following files:</p>
+    <ul>
+      <li>Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java</li>
+      <li>Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java</li>
+    </ul>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">void</span> <span class="nf">testOverride</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="nc">StringProperty</span> <span class="no">PROPERTY1_DESCRIPTOR</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringProperty</span><span class="o">(</span><span class="s">"property1"</span><span class="o">,</span> <span class="s">"Test property"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="mi">0</span><span class="n">f</span><span class="o">);</span>
+    <span class="nc">MockRule</span> <span class="n">rule</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MockRule</span><span class="o">();</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">definePropertyDescriptor</span><span class="o">(</span><span class="no">PROPERTY1_DESCRIPTOR</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setLanguage</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="nc">Dummy2LanguageModule</span><span class="o">.</span><span class="na">NAME</span><span class="o">));</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"name1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="no">PROPERTY1_DESCRIPTOR</span><span class="o">,</span> <span class="s">"value1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"message1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setDescription</span><span class="o">(</span><span class="s">"description1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">addExample</span><span class="o">(</span><span class="s">"example1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setExternalInfoUrl</span><span class="o">(</span><span class="s">"externalInfoUrl1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">HIGH</span><span class="o">);</span>
+
+    <span class="kd">final</span> <span class="nc">StringProperty</span> <span class="no">PROPERTY2_DESCRIPTOR</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringProperty</span><span class="o">(</span><span class="s">"property2"</span><span class="o">,</span> <span class="s">"Test property"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="mi">0</span><span class="n">f</span><span class="o">);</span>
+    <span class="nc">RuleReference</span> <span class="n">ruleReference</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RuleReference</span><span class="o">();</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setRule</span><span class="o">(</span><span class="n">rule</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">definePropertyDescriptor</span><span class="o">(</span><span class="no">PROPERTY2_DESCRIPTOR</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setLanguage</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="nc">DummyLanguageModule</span><span class="o">.</span><span class="na">NAME</span><span class="o">));</span>
+    <span class="n">ruleReference</span>
+            <span class="o">.</span><span class="na">setMinimumLanguageVersion</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="nc">DummyLanguageModule</span><span class="o">.</span><span class="na">NAME</span><span class="o">).</span><span class="na">getVersion</span><span class="o">(</span><span class="s">"1.3"</span><span class="o">));</span>
+    <span class="n">ruleReference</span>
+            <span class="o">.</span><span class="na">setMaximumLanguageVersion</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="nc">DummyLanguageModule</span><span class="o">.</span><span class="na">NAME</span><span class="o">).</span><span class="na">getVersion</span><span class="o">(</span><span class="s">"1.7"</span><span class="o">));</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setDeprecated</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"name2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="no">PROPERTY1_DESCRIPTOR</span><span class="o">,</span> <span class="s">"value2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="no">PROPERTY2_DESCRIPTOR</span><span class="o">,</span> <span class="s">"value3"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"message2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setDescription</span><span class="o">(</span><span class="s">"description2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">addExample</span><span class="o">(</span><span class="s">"example2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setExternalInfoUrl</span><span class="o">(</span><span class="s">"externalInfoUrl2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">MEDIUM_HIGH</span><span class="o">);</span>
+
+    <span class="n">validateOverriddenValues</span><span class="o">(</span><span class="no">PROPERTY1_DESCRIPTOR</span><span class="o">,</span> <span class="no">PROPERTY2_DESCRIPTOR</span><span class="o">,</span> <span class="n">ruleReference</span><span class="o">);</span>
+</code></pre></div>    </div>
+
+    <hr />
+
+    <p>Found a 16 line (110 tokens) duplication in the following files:</p>
+    <ul>
+      <li>Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java</li>
+      <li>Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java</li>
+      <li>Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java</li>
+    </ul>
+
+    <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">JaxenXPathRuleQuery</span> <span class="n">query</span> <span class="o">=</span> <span class="n">createQuery</span><span class="o">(</span><span class="n">xpath</span><span class="o">);</span>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">ruleChainVisits</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="na">getRuleChainVisits</span><span class="o">();</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">ruleChainVisits</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">ruleChainVisits</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"dummyNode"</span><span class="o">));</span>
+<span class="c1">// Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't</span>
+<span class="c1">// match a real node name.</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">ruleChainVisits</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="nc">JaxenXPathRuleQuery</span><span class="o">.</span><span class="na">AST_ROOT</span><span class="o">));</span>
+
+<span class="nc">DummyNodeWithListAndEnum</span> <span class="n">dummy</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DummyNodeWithListAndEnum</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+<span class="nc">RuleContext</span> <span class="n">data</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RuleContext</span><span class="o">();</span>
+<span class="n">data</span><span class="o">.</span><span class="na">setLanguageVersion</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">findLanguageByTerseName</span><span class="o">(</span><span class="s">"dummy"</span><span class="o">).</span><span class="na">getDefaultVersion</span><span class="o">());</span>
+
+<span class="n">query</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">dummy</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+<span class="c1">// note: the actual xpath queries are only available after evaluating</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">query</span><span class="o">.</span><span class="na">nodeNameToXPaths</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">"self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]"</span><span class="o">,</span> <span class="n">query</span><span class="o">.</span><span class="na">nodeNameToXPaths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"dummyNode"</span><span class="o">).</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+</code></pre></div>    </div>
+  </div>
+</details>
+
+<p></p>
+
+<details class="no-background">
+    <summary>Markdown source</summary>
+    <div>
+    <div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Found a 33 line (239 tokens) duplication in the following files:
+<span class="p">*</span> Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+<span class="p">*</span> Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+
+<span class="p">```</span><span class="nl">java
+</span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">testOverride</span><span class="o">()</span> <span class="o">{</span>
+    <span class="kd">final</span> <span class="nc">StringProperty</span> <span class="no">PROPERTY1_DESCRIPTOR</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringProperty</span><span class="o">(</span><span class="s">"property1"</span><span class="o">,</span> <span class="s">"Test property"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="mi">0</span><span class="n">f</span><span class="o">);</span>
+    <span class="nc">MockRule</span> <span class="n">rule</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MockRule</span><span class="o">();</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">definePropertyDescriptor</span><span class="o">(</span><span class="no">PROPERTY1_DESCRIPTOR</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setLanguage</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="nc">Dummy2LanguageModule</span><span class="o">.</span><span class="na">NAME</span><span class="o">));</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"name1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="no">PROPERTY1_DESCRIPTOR</span><span class="o">,</span> <span class="s">"value1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"message1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setDescription</span><span class="o">(</span><span class="s">"description1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">addExample</span><span class="o">(</span><span class="s">"example1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setExternalInfoUrl</span><span class="o">(</span><span class="s">"externalInfoUrl1"</span><span class="o">);</span>
+    <span class="n">rule</span><span class="o">.</span><span class="na">setPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">HIGH</span><span class="o">);</span>
+
+    <span class="kd">final</span> <span class="nc">StringProperty</span> <span class="no">PROPERTY2_DESCRIPTOR</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">StringProperty</span><span class="o">(</span><span class="s">"property2"</span><span class="o">,</span> <span class="s">"Test property"</span><span class="o">,</span> <span class="kc">null</span><span class="o">,</span> <span class="mi">0</span><span class="n">f</span><span class="o">);</span>
+    <span class="nc">RuleReference</span> <span class="n">ruleReference</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RuleReference</span><span class="o">();</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setRule</span><span class="o">(</span><span class="n">rule</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">definePropertyDescriptor</span><span class="o">(</span><span class="no">PROPERTY2_DESCRIPTOR</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setLanguage</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="nc">DummyLanguageModule</span><span class="o">.</span><span class="na">NAME</span><span class="o">));</span>
+    <span class="n">ruleReference</span>
+            <span class="o">.</span><span class="na">setMinimumLanguageVersion</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="nc">DummyLanguageModule</span><span class="o">.</span><span class="na">NAME</span><span class="o">).</span><span class="na">getVersion</span><span class="o">(</span><span class="s">"1.3"</span><span class="o">));</span>
+    <span class="n">ruleReference</span>
+            <span class="o">.</span><span class="na">setMaximumLanguageVersion</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">getLanguage</span><span class="o">(</span><span class="nc">DummyLanguageModule</span><span class="o">.</span><span class="na">NAME</span><span class="o">).</span><span class="na">getVersion</span><span class="o">(</span><span class="s">"1.7"</span><span class="o">));</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setDeprecated</span><span class="o">(</span><span class="kc">true</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"name2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="no">PROPERTY1_DESCRIPTOR</span><span class="o">,</span> <span class="s">"value2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setProperty</span><span class="o">(</span><span class="no">PROPERTY2_DESCRIPTOR</span><span class="o">,</span> <span class="s">"value3"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setMessage</span><span class="o">(</span><span class="s">"message2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setDescription</span><span class="o">(</span><span class="s">"description2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">addExample</span><span class="o">(</span><span class="s">"example2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setExternalInfoUrl</span><span class="o">(</span><span class="s">"externalInfoUrl2"</span><span class="o">);</span>
+    <span class="n">ruleReference</span><span class="o">.</span><span class="na">setPriority</span><span class="o">(</span><span class="nc">RulePriority</span><span class="o">.</span><span class="na">MEDIUM_HIGH</span><span class="o">);</span>
+
+    <span class="n">validateOverriddenValues</span><span class="o">(</span><span class="no">PROPERTY1_DESCRIPTOR</span><span class="o">,</span> <span class="no">PROPERTY2_DESCRIPTOR</span><span class="o">,</span> <span class="n">ruleReference</span><span class="o">);</span>
+<span class="p">```</span>
+<span class="p">
+---
+</span>
+Found a 16 line (110 tokens) duplication in the following files:
+<span class="p">*</span> Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+<span class="p">*</span> Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+<span class="p">*</span> Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+
+<span class="p">```</span><span class="nl">java
+</span><span class="nc">JaxenXPathRuleQuery</span> <span class="n">query</span> <span class="o">=</span> <span class="n">createQuery</span><span class="o">(</span><span class="n">xpath</span><span class="o">);</span>
+<span class="nc">List</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">ruleChainVisits</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="na">getRuleChainVisits</span><span class="o">();</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">ruleChainVisits</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">ruleChainVisits</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="s">"dummyNode"</span><span class="o">));</span>
+<span class="c1">// Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't</span>
+<span class="c1">// match a real node name.</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertTrue</span><span class="o">(</span><span class="n">ruleChainVisits</span><span class="o">.</span><span class="na">contains</span><span class="o">(</span><span class="nc">JaxenXPathRuleQuery</span><span class="o">.</span><span class="na">AST_ROOT</span><span class="o">));</span>
+
+<span class="nc">DummyNodeWithListAndEnum</span> <span class="n">dummy</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">DummyNodeWithListAndEnum</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+<span class="nc">RuleContext</span> <span class="n">data</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RuleContext</span><span class="o">();</span>
+<span class="n">data</span><span class="o">.</span><span class="na">setLanguageVersion</span><span class="o">(</span><span class="nc">LanguageRegistry</span><span class="o">.</span><span class="na">findLanguageByTerseName</span><span class="o">(</span><span class="s">"dummy"</span><span class="o">).</span><span class="na">getDefaultVersion</span><span class="o">());</span>
+
+<span class="n">query</span><span class="o">.</span><span class="na">evaluate</span><span class="o">(</span><span class="n">dummy</span><span class="o">,</span> <span class="n">data</span><span class="o">);</span>
+<span class="c1">// note: the actual xpath queries are only available after evaluating</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="n">query</span><span class="o">.</span><span class="na">nodeNameToXPaths</span><span class="o">.</span><span class="na">size</span><span class="o">());</span>
+<span class="nc">Assert</span><span class="o">.</span><span class="na">assertEquals</span><span class="o">(</span><span class="s">"self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]"</span><span class="o">,</span> <span class="n">query</span><span class="o">.</span><span class="na">nodeNameToXPaths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">"dummyNode"</span><span class="o">).</span><span class="na">get</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="na">toString</span><span class="o">());</span>
+<span class="p">```</span>
+</code></pre></div>    </div>
+
+  </div>
+</details>
 
 
     <div class="tags">
@@ -2352,7 +2508,7 @@ the param <code class="language-plaintext highlighter-rouge">lines</code>:</p>
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2024 (7.3.0)<br /> Site last generated: Sep 11, 2025 <br />
+            August 2025 (7.17.0)<br /> Site last generated: Sep 11, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

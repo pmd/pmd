@@ -12,6 +12,7 @@ This is a minor release.
 * [🚀 New and noteworthy](#new-and-noteworthy)
     * [✨ New Rules](#new-rules)
     * [Deprecated Rules](#deprecated-rules)
+    * [CPD: New Markdown Report Format](#cpd-new-markdown-report-format)
 * [🐛 Fixed Issues](#fixed-issues)
 * [🚨 API Changes](#api-changes)
     * [Deprecations](#deprecations)
@@ -83,11 +84,17 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
 * The java rule [`UnnecessaryLocalBeforeReturn`](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn) has been deprecated for removal
   in favor of the new rule [`VariableCanBeInlined`](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_rules_java_codestyle.html#variablecanbeinlined).
 
+#### CPD: New Markdown Report Format
+This PMD version ships with a simple Markdown based output format for CPD. It outputs all duplications
+one after another including the code snippets as code blocks.  
+See [Report formats for CPD](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_userdocs_cpd_report_formats.html#markdown).
+
 ### 🐛 Fixed Issues
 * apex-codestyle
   * [#5650](https://github.com/pmd/pmd/issues/5650): \[apex] New Rule: AnnotationsNamingConventions
 * core
   * [#4721](https://github.com/pmd/pmd/issues/4721): chore: \[core] Enable XML rule MissingEncoding in dogfood ruleset
+  * [#5849](https://github.com/pmd/pmd/issues/5849): \[core] Support Markdown Output for CPD Reports
   * [#5958](https://github.com/pmd/pmd/issues/5958): \[core] CSVRenderer: Add begin and end for line and columns (default off)
 * java
   * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
@@ -192,6 +199,7 @@ See [Testing your rules](https://docs.pmd-code.org/pmd-doc-7.17.0-SNAPSHOT/pmd_u
 * [#5995](https://github.com/pmd/pmd/pull/5995): \[html] Add test case that tests the end of a reported violation (test for #3951) - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5996](https://github.com/pmd/pmd/pull/5996): \[java] Fix #4916: UseExplicitTypes cases where 'var' should be unobjectionable - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6006](https://github.com/pmd/pmd/pull/6006): \[java] Fix #5949: CollectionTypeMismatch - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6008](https://github.com/pmd/pmd/pull/6008): \[core] Fix #5849: Support Markdown Output for CPD Reports - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6016](https://github.com/pmd/pmd/pull/6016): \[java] Fix #6014: Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates
