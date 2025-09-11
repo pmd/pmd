@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -104,7 +104,7 @@ public class DummyLanguageModule extends SimpleLanguageModuleBase implements Cpd
         @Override
         public Parser getParser() {
             return task -> {
-                if (task.getLanguageVersion().getVersion().equals(PARSER_THROWS)) {
+                if (PARSER_THROWS.equals(task.getLanguageVersion().getVersion())) {
                     throw new ParseException("ohio");
                 }
                 return readLispNode(task);

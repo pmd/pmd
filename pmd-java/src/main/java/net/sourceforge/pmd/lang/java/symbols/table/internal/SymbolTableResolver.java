@@ -221,12 +221,11 @@ public final class SymbolTableResolver {
 
             int pushed = 0;
 
-            // Java 23 Preview
-            if (node.isSimpleCompilationUnit()) {
+            // Since Java 23 Preview, finalized with Java 25 (JEP 512)
+            if (node.isCompact()) {
                 pushed += pushOnStack(f.moduleImportJavaBase(top()));
-                pushed += pushOnStack(f.importsOnDemandJavaIo(top()));
             }
-            pushed += pushOnStack(f.moduleImports(top(), moduleImports)); // Java 23 preview
+            pushed += pushOnStack(f.moduleImports(top(), moduleImports)); // Since Java 23 preview, finalized with Java 25 (JEP 512)
             pushed += pushOnStack(f.importsOnDemand(top(), importsOnDemand));
             pushed += pushOnStack(f.javaLangSymTable(top()));
             pushed += pushOnStack(f.samePackageSymTable(top()));
@@ -513,7 +512,7 @@ public final class SymbolTableResolver {
         @Override
         public Void visit(ASTInfixExpression node, @NonNull ReferenceCtx ctx) {
             // need to account for pattern bindings.
-            // visit left operand first. Maybe it introduces bindings in the rigt operand.
+            // visit left operand first. Maybe it introduces bindings in the right operand.
 
             node.getLeftOperand().acceptVisitor(this, ctx);
 

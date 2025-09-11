@@ -18,7 +18,7 @@ import org.xml.sax.SAXException;
  * @author Clément Fournier
  */
 enum TestSchemaVersion {
-    V1("rule-tests_1_1_0.xsd", new BaseTestParserImpl.ParserV1());
+    V1("rule-tests_1_1_1.xsd", new BaseTestParserImpl.ParserV1());
 
     private final Schema schema;
     private String schemaLoc;

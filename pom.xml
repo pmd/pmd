@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.16.0-SNAPSHOT</version>
+    <version>7.17.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -15,12 +15,12 @@
         (AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
 
         Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-        Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
+        Kotlin, Swift, Modelica, PL/SQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
         Scala is supported, but there are currently no Scala rules available.
 
         Additionally, it includes CPD, the copy-paste-detector. CPD finds duplicated code in
-        Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
-        Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Rust, Salesforce.com Apex and
+        Coco, C/C++, C#, CSS, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+        Lua, Matlab, Modelica, Objective-C, Perl, PHP, PL/SQL, Python, Ruby, Rust, Salesforce.com Apex and
         Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
     </description>
 
@@ -73,7 +73,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2025-06-27T09:37:42Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-07-25T06:06:19Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -81,20 +81,22 @@
         <maven.compiler.test.target>1.8</maven.compiler.test.target>
 
 
+        <kotlin.compiler.apiVersion>1.9</kotlin.compiler.apiVersion>
+        <kotlin.compiler.languageVersion>1.9</kotlin.compiler.languageVersion>
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
-        <kotlin.version>1.9.24</kotlin.version>
+        <kotlin.version>2.2.10</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit5.version>5.13.1</junit5.version>
-        <junit5.platform.version>1.13.1</junit5.platform.version>
+        <junit5.version>5.13.4</junit5.version>
+        <junit5.platform.version>1.13.4</junit5.platform.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.3</surefire.version>
-        <checkstyle.version>10.25.1</checkstyle.version>
+        <checkstyle.version>10.26.1</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
-        <pmd.plugin.version>3.26.0</pmd.plugin.version>
+        <pmd.plugin.version>3.27.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
-        <javadoc.plugin.version>3.11.2</javadoc.plugin.version>
+        <javadoc.plugin.version>3.11.3</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
         <saxon.version>12.5</saxon.version>
@@ -106,7 +108,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>32</pmd.build-tools.version>
+        <pmd.build-tools.version>34</pmd.build-tools.version>
 
         <pmd-designer.version>7.10.0</pmd-designer.version>
 
@@ -475,6 +477,19 @@
                             </goals>
                         </execution>
                     </executions>
+                    <dependencies>
+                        <!-- Adding kotlin-compiler directly, which is a workaround to fix
+                             https://youtrack.jetbrains.com/issue/KT-73967 in dokka.
+                             While com.intellij.util.lang.JavaVersion is actually brought in via the
+                             dokka plugin "org.jetbrains.dokka:analysis-kotlin-descriptors", adding the
+                             kotlin-compiler dependency overrides this class.
+                        -->
+                        <dependency>
+                            <groupId>org.jetbrains.kotlin</groupId>
+                            <artifactId>kotlin-compiler</artifactId>
+                            <version>${kotlin.version}</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -513,7 +528,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.5.0</version>
+                    <version>3.6.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -540,10 +555,10 @@
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-dogfood-config.xml</ruleset>
                                 </rulesets>
-                                <excludeRoots>
-                                    <excludeRoot>target/generated-sources/javacc</excludeRoot>
-                                    <excludeRoot>target/generated-sources/antlr4</excludeRoot>
-                                </excludeRoots>
+                                <compileSourceRoots>
+                                    <compileSourceRoot>${project.basedir}/src/main/java</compileSourceRoot>
+                                    <compileSourceRoot>${project.basedir}/src/main/resources</compileSourceRoot>
+                                </compileSourceRoots>
                             </configuration>
                         </execution>
                         <execution>
@@ -560,10 +575,17 @@
                                 <rulesets>
                                     <ruleset>/net/sourceforge/pmd/pmd-test-dogfood-config.xml</ruleset>
                                 </rulesets>
+                                <compileSourceRoots>
+                                    <compileSourceRoot>${project.basedir}/src/test/java</compileSourceRoot>
+                                </compileSourceRoots>
                             </configuration>
                         </execution>
                     </executions>
                     <configuration>
+                        <includes>
+                            <include>**/*.java</include>
+                            <include>**/*.xml</include>
+                        </includes>
                         <linkXRef>false</linkXRef>
                         <targetJdk>1.${java.version}</targetJdk>
                         <skipPmdError>false</skipPmdError>
@@ -581,22 +603,27 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.14.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.14.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.14.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.14.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
+                        </dependency>
+                        <dependency>
+                            <groupId>net.sourceforge.pmd</groupId>
+                            <artifactId>pmd-xml</artifactId>
+                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -614,7 +641,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.18.0</version>
+                    <version>2.19.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
@@ -877,7 +904,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.49.4</version>
+                <version>3.49.5</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -887,12 +914,12 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.17.0</version>
+                <version>3.18.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-text</artifactId>
-                <version>1.13.1</version>
+                <version>1.14.0</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -912,7 +939,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>4.0.27</version>
+                <version>5.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -922,7 +949,7 @@
             <dependency>
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>
@@ -1001,7 +1028,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.18.0</version>
+                <version>5.19.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1012,13 +1039,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.17.6</version>
+                <version>1.17.7</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.17.6</version>
+                <version>1.17.7</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1100,7 +1127,7 @@
             <dependency>
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
-                <version>26.0.2</version>
+                <version>26.0.2-1</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1108,7 +1135,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.31.1</version>
+                <version>4.32.0</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit5 needs. E.g. 5.12.1 needs 1.12.1
@@ -1124,6 +1151,40 @@
     </dependencyManagement>
 
     <profiles>
+        <profile>
+            <id>Java 21+</id>
+            <activation>
+                <jdk>[21,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>dependency-properties</id>
+                                <goals>
+                                    <goal>properties</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <dependencies>
+                <dependency>
+                    <groupId>org.mockito</groupId>
+                    <artifactId>mockito-core</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+            <properties>
+                <!-- see https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3 -->
+                <extraArgLine>-javaagent:${org.mockito:mockito-core:jar}</extraArgLine>
+            </properties>
+        </profile>
+
         <profile>
             <!-- Adds an SLF4J implementation, useful when developing within an IDE -->
             <id>with-slf4j-impl</id>
@@ -1151,7 +1212,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
-                        <version>3.2.7</version>
+                        <version>3.2.8</version>
                         <configuration>
                             <bestPractices>true</bestPractices>
                         </configuration>
@@ -1246,7 +1307,7 @@
                         <plugin>
                             <groupId>org.sonarsource.scanner.maven</groupId>
                             <artifactId>sonar-maven-plugin</artifactId>
-                            <version>5.1.0.4751</version>
+                            <version>5.2.0.4988</version>
                         </plugin>
                     </plugins>
                 </pluginManagement>
@@ -1278,34 +1339,6 @@
                 <module>pmd-cli</module>
                 <module>pmd-dist</module>
             </modules>
-        </profile>
-
-        <profile>
-            <id>dogfood</id>
-            <activation>
-                <property>
-                    <name>dogfoodStagingRepo</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <configuration>
-                            <altDeploymentRepository>dogfood::file://${dogfoodStagingRepo}</altDeploymentRepository>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>dogfood</id>
-                    <url>file://${dogfoodStagingRepo}</url>
-                    <releases><enabled>true</enabled></releases>
-                    <snapshots><enabled>true</enabled></snapshots>
-                </pluginRepository>
-            </pluginRepositories>
         </profile>
 
         <profile>
@@ -1345,6 +1378,7 @@
         <module>pmd-core</module>
         <module>pmd-cpp</module>
         <module>pmd-cs</module>
+        <module>pmd-css</module>
         <module>pmd-dart</module>
         <module>pmd-doc</module>
         <module>pmd-fortran</module>

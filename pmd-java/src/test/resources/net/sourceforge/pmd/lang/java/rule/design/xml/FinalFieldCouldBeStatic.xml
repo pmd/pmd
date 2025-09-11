@@ -356,9 +356,22 @@ class Literals {
     </test-code>
 
     <test-code>
+        <description>array initializers</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class MyLiterals {
+    protected final int[] numbers = {1, 2};
+    private final boolean[] flags = {true, true};
+    private final boolean[] noFlags = {,};
+}
+]]></code>
+    </test-code>
+
+    <test-code>
         <description>Static array property length</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
 class ArrayLength {
     private static final int[] myArray = { 1, 2, 3 };
@@ -392,6 +405,19 @@ class MyConstants {
     private final byte BITARRAYMASK = (byte)0x1;
     private final int  BYTEPOWER = 3;
     private final int  BYTEMASK = (1 << BYTEPOWER) - 1; //this one cannot
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>Distinct error messages for the same line</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>The final field FOO could be made static</message>
+            <message>The final field BAR could be made static</message>
+        </expected-messages>
+        <code><![CDATA[
+class MyConstants {
+    private final int FOO=2, BAR=3;
 }
 ]]></code>
     </test-code>

@@ -27,7 +27,7 @@ public class SomeClass {
     }
     
     @MethodAnnotation
-    void anotatedMethod(final int x) {
+    void annotatedMethod(final int x) {
 
     }
 

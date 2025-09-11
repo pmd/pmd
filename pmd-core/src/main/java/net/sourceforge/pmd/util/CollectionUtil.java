@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -554,7 +554,9 @@ public final class CollectionUtil {
 
         return Collector.of(
             Holder::new,
-            (h, t) -> h.set = h.set.plus(t),
+            (h, t) -> {
+                h.set = h.set.plus(t);
+            },
             (left, right) -> {
                 left.set = left.set.plusAll(right.set);
                 return left;

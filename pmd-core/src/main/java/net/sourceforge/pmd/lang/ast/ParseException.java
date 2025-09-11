@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -22,7 +22,7 @@ public class ParseException extends FileAnalysisException {
     /**
      * This is the last token that has been consumed successfully.  If
      * this object has been created due to a parse error, the token
-     * followng this token will (therefore) be the first error token.
+     * following this token will (therefore) be the first error token.
      */
     private @Nullable FileLocation location;
 

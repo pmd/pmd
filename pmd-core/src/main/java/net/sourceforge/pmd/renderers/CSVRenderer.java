@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -19,6 +20,7 @@ import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.properties.PropertySource;
 import net.sourceforge.pmd.renderers.ColumnDescriptor.Accessor;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -39,13 +41,19 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
 
     public static final String NAME = "csv";
 
+    /** List of columns that are off by default. Can be enabled with the specific property. */
+    private static final Set<String> DEFAULT_OFF = CollectionUtil.setOf("endLine", "beginColumn", "endColumn");
+
     @SuppressWarnings("unchecked")
-    private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[] {
+    private final ColumnDescriptor<RuleViolation>[] allColumns = new ColumnDescriptor[]{
         newColDescriptor("problem", "Problem", (idx, rv, cr) -> Integer.toString(idx)),
         newColDescriptor("package", "Package", (idx, rv, cr) -> rv.getAdditionalInfo().getOrDefault(RuleViolation.PACKAGE_NAME, "")),
         newColDescriptor("file", "File", (idx, rv, cr) -> determineFileName(rv.getFileId())),
         newColDescriptor("priority", "Priority", (idx, rv, cr) -> Integer.toString(rv.getRule().getPriority().getPriority())),
         newColDescriptor("line", "Line", (idx, rv, cr) -> Integer.toString(rv.getBeginLine())),
+        newColDescriptor("endLine", "End Line", (idx, rv, cr) -> Integer.toString(rv.getEndLine())),
+        newColDescriptor("beginColumn", "Begin Column", (idx, rv, cr) -> Integer.toString(rv.getBeginColumn())),
+        newColDescriptor("endColumn", "End Column", (idx, rv, cr) -> Integer.toString(rv.getEndColumn())),
         newColDescriptor("desc", "Description", (idx, rv, cr) -> StringUtils.replaceChars(rv.getDescription(), '\"', '\'')),
         newColDescriptor("ruleSet", "Rule set", (idx, rv, cr) -> rv.getRule().getRuleSetName()),
         newColDescriptor("rule", "Rule", (idx, rv, cr) -> rv.getRule().getName()),
@@ -84,7 +92,7 @@ public class CSVRenderer extends AbstractIncrementingRenderer {
             return prop;
         }
 
-        prop = PropertyFactory.booleanProperty(id).defaultValue(true).desc("Include " + label + " column").build();
+        prop = PropertyFactory.booleanProperty(id).defaultValue(!DEFAULT_OFF.contains(id)).desc("Include " + label + " column").build();
         PROPERTY_DESCRIPTORS_BY_ID.put(id, prop);
         return prop;
     }

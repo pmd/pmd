@@ -65,7 +65,7 @@ class CpdXsltTest {
         transformer.setErrorListener(errorListener);
         transformer.transform(cpdReport, result);
 
-        assertTrue(errorListener.hasNoErrors(), "XSLT errors occured: " + errorListener);
+        assertTrue(errorListener.hasNoErrors(), "XSLT errors occurred: " + errorListener);
         return result.getWriter().toString();
     }
 

@@ -106,6 +106,46 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#5915 assignment in do-while conditional expression</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages><message>Avoid assignment to x in operand</message></expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 2;
+        do {
+            System.out.println("loop");
+        } while ((x = getX()) > 0);
+    }
+    private int getX() {return 1;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment in switch expression</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages><message>Avoid assignment to x in operand</message></expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 2;
+        switch ((x = getValue())) {
+            case 1:
+                System.out.println("one");
+                break;
+            default:
+                break;
+        }
+    }
+    private int getValue() {return 5;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>assignment in while conditional expression, allowed</description>
         <rule-property name="allowWhile">true</rule-property>
         <expected-problems>0</expected-problems>
@@ -155,6 +195,44 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>assignment in do-while conditional expression, allowed</description>
+        <rule-property name="allowDoWhile">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 2;
+        do {
+            System.out.println("loop");
+        } while ((x = getX()) > 0);
+    }
+    private int getX() {return 1;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>assignment in switch expression, allowed</description>
+        <rule-property name="allowSwitch">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 2;
+        switch ((x = getValue())) {
+            case 1:
+                System.out.println("one");
+                break;
+            default:
+                break;
+        }
+    }
+    private int getValue() {return 5;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>increment in if conditional expression, allowed</description>
         <rule-property name="allowIncrementDecrement">true</rule-property>
         <expected-problems>0</expected-problems>
@@ -167,6 +245,56 @@ public class Foo {
         }
     }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Distinct error messages for the same line</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>Avoid assignment to x in operand</message>
+            <message>Avoid assignment to y in operand</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 0;
+        int y = 0;
+        if (x++ > (y = 5)) {
+            x = 2;
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3434 Assignments in other contexts</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>4,5,9,12,13,16,17,20</expected-linenumbers>
+        <code><![CDATA[
+            class AssignmentInOperand{
+                void test(){
+                    // case1
+                    keys.contains(k = random.nextLong());
+                    Character.isJavaIdentifierPart(text.charAt(--j));
+
+                    // case2
+                    addNextStaticMember = ((staticMember.getNextStaticMember() != null) ? true : false) ;
+                    ((null == theClassMethods) ? (theClassMethods = theClass.getMethods()) : theClassMethods);
+
+                    // case3
+                    Character.isWhitespace(segment.array[offset++]);
+                    subPropMatches[i++];
+
+                    // case4
+                    (is = ia.getNext(null)).isPresent();
+                    (destFile = new File (dest, srcFO.getNameExt ())).exists();
+
+                    // case5
+                    new File(location, projectName = projectNamePrefix + "_" + num).exists();
+                }
+            }
         ]]></code>
     </test-code>
 </test-data>

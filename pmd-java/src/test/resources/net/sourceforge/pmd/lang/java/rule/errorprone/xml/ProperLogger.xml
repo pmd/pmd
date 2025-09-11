@@ -75,7 +75,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Enums shoud be accepted for declaration</description>
+        <description>Enums should be accepted for declaration</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import org.apache.commons.logging.LogFactory;
@@ -306,7 +306,7 @@ import org.apache.commons.logging.LogFactory;
 public class ProperLoggerSample {
     private final Log log;
 
-    public PropperLoggerSample() {
+    public ProperLoggerSample() {
         log = LogFactory.getLog(ProperLoggerSample.class);
     }
 }

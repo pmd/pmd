@@ -12,7 +12,7 @@ Rules to detect constructs that are either broken, extremely confusing or prone 
     <rule name="AssignmentInOperand"
           language="java"
           since="1.03"
-          message="Avoid assignments in operands"
+          message="Avoid assignment to {0} in operand"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AssignmentInOperandRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#assignmentinoperand">
         <description>
@@ -494,7 +494,7 @@ try {  // Prefer this:
     <rule name="AvoidLiteralsInIfCondition"
           language="java"
           since="4.2.6"
-          message="Avoid using literals in if statements"
+          message="Avoid using literals such as {0} in if statements"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidliteralsinifcondition">
         <description>
@@ -577,17 +577,21 @@ public void checkRequests() {
           language="java"
           message="Avoid statements in a catch block that invoke accessors on the exception without using the information"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidlosingexceptioninformation">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidlosingexceptioninformation"
+          deprecated="true">
         <description>
 Statements in a catch block that invoke accessors on the exception without using the information
 only add to code size.  Either remove the invocation, or use the return result.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UselessPureMethodCall %}.
         </description>
         <priority>2</priority>
         <properties>
             <property name="xpath">
                 <value>
 <![CDATA[
-//CatchClause/Block/ExpressionStatement/MethodCall[
+//CatchClause/Block//ExpressionStatement/MethodCall[
     pmd-java:matchesSig("java.lang.Throwable#getMessage()")
     or pmd-java:matchesSig("java.lang.Throwable#getLocalizedMessage()")
     or pmd-java:matchesSig("java.lang.Throwable#getCause()")
@@ -656,19 +660,30 @@ int j = -~7;
     <rule name="AvoidUsingOctalValues"
           language="java"
           since="3.9"
-          message="Do not start a literal by 0 unless it's an octal value"
+          message="Avoid integer literals that start with zero (interpreted as octal), remove the leading 0 to get a decimal literal (or use explicit 0x, 0b prefixes)"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.AvoidUsingOctalValuesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidusingoctalvalues">
         <description>
-Integer literals should not start with zero since this denotes that the rest of literal will be
-interpreted as an octal value.
+Integer literals that start with zero are interpreted as octal (base-8) values in Java, which can lead to 
+unexpected behavior and bugs. Most developers expect decimal (base-10) interpretation, making octal literals 
+a common source of confusion and errors. For example, 012 equals 10 in decimal, not 12 as might be expected.
+This rule helps prevent such mistakes by flagging integer literals that could be misinterpreted as decimal values. 
+Use decimal literals without leading zeros, or use explicit prefixes like 0x for hexadecimal or 0b for binary values to make the intended base clear.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-int i = 012;    // set i with 10 not 12
-int j = 010;    // set j with 8 not 10
-k = i * j;      // set k with 80 not 120
+// Bad: These look like decimal but are actually octal
+int timeout = 060;     // Actually 48 in decimal, not 60!
+int count = 012;       // Actually 10 in decimal, not 12!
+
+// Good: Use decimal literals
+int timeout = 60;      // Clear decimal value
+int count = 12;        // Clear decimal value
+
+// Good: Use explicit prefixes for other bases
+int hexValue = 0xFF;   // Clearly hexadecimal
+int binaryValue = 0b1010; // Clearly binary (Java 7+)
 ]]>
         </example>
     </rule>
@@ -1010,6 +1025,40 @@ public class Bar {
         }
     }
 }
+]]>
+        </example>
+    </rule>
+
+    <rule name="CollectionTypeMismatch"
+          language="java"
+          since="7.17.0"
+          message="Object of type ''{0}'' cannot be in collection expecting ''{1}''"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CollectionTypeMismatchRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#collectiontypemismatch">
+        <description>
+Detects method calls on collections where the passed object cannot possibly be in the collection
+due to type mismatch. This helps catch potential programming errors where incompatible types
+are used with collection methods like contains(), remove(), indexOf(), etc.
+
+Methods checked include:
+- Collection: contains(), remove(), removeAll(), retainAll(), containsAll()
+- List: indexOf(), lastIndexOf()
+- Map: containsKey(), containsValue(), get(), getOrDefault(), remove()
+- Deque: removeFirstOccurrence(), removeLastOccurrence()
+- Hashtable: contains() (legacy method that checks values)
+- ConcurrentHashMap: contains() (legacy method that checks values)
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+List<Integer> numbers = Arrays.asList(1, 2, 3);
+numbers.remove("string"); // violation: String cannot be in Integer list
+
+Map<String, Integer> map = new HashMap<>();
+map.get(42); // violation: Integer key cannot be in String-keyed map
+
+Set<String> names = new HashSet<>(); 
+names.contains(123); // violation: Integer cannot be in String set
 ]]>
         </example>
     </rule>
@@ -2330,7 +2379,16 @@ public void bar() {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashcodeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#overridebothequalsandhashcode">
         <description>
-Override both public boolean Object.equals(Object other), and public int Object.hashCode(), or override neither.  Even if you are inheriting a hashCode() from a parent class, consider implementing hashCode and explicitly delegating to your superclass.
+Override both `public boolean Object.equals(Object other)` and `public int Object.hashCode()` or override neither.
+Even if you are inheriting a `hashCode()` from a parent class, consider implementing `hashCode()` and explicitly
+delegating to your superclass.
+
+Not overriding both methods could violate the contract between `equals()` and `hashCode()`. Most importantly,
+if two instances are equal, then they must have the same hash code. Using such invalid instances in hash-based
+collections like `HashSet` or `HashMap` could lead to duplicated or missing entries.
+
+This rule does not consider types that implement `Comparable`. There is a separate rule
+{% rule OverrideBothEqualsAndHashCodeOnComparable %} for this.
         </description>
         <priority>3</priority>
         <example>
@@ -2353,6 +2411,69 @@ public class Foo {        // perfect, both methods provided
     }
     public int hashCode() {
       // return some hash value
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="OverrideBothEqualsAndHashCodeOnComparable"
+          language="java"
+          since="7.17.0"
+          message="When implementing Comparable both equals() and hashCode() should be overridden"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashCodeOnComparableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#overridebothequalsandhashcodeoncomparable">
+        <description>
+            Classes that implement `Comparable` should override both `equals()` and
+            `hashCode()` if instances of these classes are used in collections. This is
+            to ensure that the class's natural ordering is consistent with `equals()`.
+            Failing to do so can lead to unexpected behavior in sets which then do not
+            conform to the `Set` interface. While the `Set` interface relies on
+            `equals()` to determine object equality, sorted sets like `TreeSet` use
+            `compareTo()` instead. The same issue can arise when such objects are used
+            as keys in sorted maps.
+
+            Note 1: This rule is related to {% rule OverrideBothEqualsAndHashcode %}. It
+            will report missing `equals()` and/or `hashCode()` methods for classes only
+            that implement `Comparable`.
+
+            Note 2: This rule also reports records that implement `Comparable`. While
+            for records, `equals()` and `hashCode()` are generated, you still must make
+            sure that `compareTo()` is consistent with `equals()`.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Bar implements Comparable<Bar> {  // poor - missing equals() and hashCode()
+    public int compareTo(Bar other) {
+        // some comparison
+    }
+}
+
+public class Baz implements Comparable<Baz> {  // poor - missing hashCode()
+    public int compareTo(Baz other) {
+        // some comparison
+    }
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return compareTo((Baz) o) == 0;
+    }
+}
+
+public class Foo implements Comparable<Foo> {  // correct
+    public int compareTo(Foo other) {
+        // some comparison
+    }
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        return compareTo((Foo) o) == 0;
+    }
+    public int hashCode() {
+        // return hash code
     }
 }
 ]]>
@@ -2431,6 +2552,133 @@ public class Foo {
     private static final Log LOG = LogFactory.getLog(Foo.class);    // proper way
 
     protected Log LOG = LogFactory.getLog(Testclass.class);         // wrong approach
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReplaceJavaUtilCalendar"
+          language="java"
+          since="7.16.0"
+          message="Usage of java.util.Calendar should be replaced with classes from java.time"
+          minimumLanguageVersion="1.8"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#replacejavautilcalendar">
+        <description>
+The legacy `java.util.Calendar` API is error-prone, mutable, and not thread-safe. It has confusing month indexing
+(January = 0), inconsistent field semantics, and verbose usage patterns. The modern `java.time API`
+(introduced in Java 8) provides immutable, thread-safe alternatives with clear, intuitive methods.
+
+Use `LocalDate` (for date-only operations), `LocalDateTime` (for date and time), or `ZonedDateTime`
+(when timezone is important) from `java.time` package instead.
+
+Note: Since JPA 3.2 (Jakarta Persistence) usage of `java.util.Date` and `java.util.Calendar` and others is
+deprecated there as well in favour of `java.time` API.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //FormalParameter[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Calendar')]] |
+                //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Calendar')]]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
+public class Foo {
+    void problematic() {
+        // Problematic - using legacy Calendar API
+        Calendar cal = Calendar.getInstance();
+        cal.set(2024, Calendar.JANUARY, 15); // Month indexing is confusing (0-based)
+        cal.add(Calendar.DAY_OF_MONTH, 7);
+        
+        Calendar specific = new GregorianCalendar(2024, 0, 15); // Also problematic
+    }
+    
+    void preferred() {
+        // Preferred - using modern java.time API
+        LocalDate date = LocalDate.of(2024, 1, 15); // Month indexing is intuitive (1-based)
+        LocalDate weekLater = date.plusDays(7);
+        
+        LocalDateTime dateTime = LocalDateTime.now();
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ReplaceJavaUtilDate"
+          language="java"
+          since="7.16.0"
+          message="Usage of java.util.Date should be replaced with classes from java.time"
+          minimumLanguageVersion="1.8"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#replacejavautildate">
+        <description>
+The legacy `java.util.Date` class is mutable, not thread-safe, and has a confusing API. Many of its methods
+are deprecated, it doesn't handle timezones properly, and it represents both date and time even when only
+one is needed. The constructor parameters are particularly error-prone: year is "years since 1900" and
+month is 0-based (January = 0). The modern java.time API (introduced in Java 8) provides better type safety,
+immutability, and clearer semantics.
+
+Use `LocalDate` (date only), `LocalTime` (time only), `LocalDateTime` (date and time), `Instant` (timestamp),
+or `ZonedDateTime` (date-time with timezone) from `java.time` package instead.
+
+Note: This includes subtypes such as `java.sql.Date`, `java.sql.Time` and `java.sql.Timestamp`.
+Since JPA 3.2 (Jakarta Persistence) usage of `java.util.Date` and `java.util.Calendar` and others is
+deprecated there as well in favour of `java.time` API.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+                //LocalVariableDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //FormalParameter[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //FieldDeclaration[ClassType[pmd-java:typeIs('java.util.Date')]] |
+                //ConstructorCall[ClassType[pmd-java:typeIs('java.util.Date')]]
+                ]]></value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
+public class Foo {
+    void problematic() {
+        // Problematic - using legacy Date API
+        Date now = new Date();
+        Date epoch = new Date(0L);
+        Date custom = new Date(124, 0, 15); // Deprecated constructor: year=1900+124=2024, month=0=January
+        
+        // Mutable operations are error-prone
+        now.setTime(System.currentTimeMillis());
+    }
+    
+    void preferred() {
+        // Preferred - using modern java.time API
+        Instant now = Instant.now(); // For timestamps
+        LocalDate today = LocalDate.now(); // For date only
+        LocalDateTime dateTime = LocalDateTime.now(); // For date and time
+        ZonedDateTime zonedDateTime = ZonedDateTime.now(); // With timezone
+        
+        // Immutable operations are safer
+        LocalDate tomorrow = today.plusDays(1);
+        LocalDateTime nextHour = dateTime.plusHours(1);
+    }
 }
 ]]>
         </example>
@@ -2847,6 +3095,7 @@ public class CarTest {
         </example>
     </rule>
 
+
     <rule name="UnconditionalIfStatement"
           language="java"
           since="1.5"
@@ -3132,12 +3381,16 @@ public boolean test(String s) {
           since="3.5"
           message="The result of an operation on an immutable object is ignored"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessOperationOnImmutableRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable">
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselessoperationonimmutable"
+          deprecated="true">
         <description>
 An operation on an immutable object will not change the object itself since the result of the operation is a new object.
 Therefore, ignoring the result of such an operation is likely a mistake. The operation can probably be removed.
 
 This rule recognizes the types `String`, `BigDecimal`, `BigInteger` or any type from `java.time.*` as immutable.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UselessPureMethodCall %}.
         </description>
         <priority>3</priority>
         <example>
@@ -3152,6 +3405,32 @@ class Test {
     void method2() {
         BigDecimal bd=new BigDecimal(10);
         bd = bd.add(new BigDecimal(5)); // this won't trigger the rule
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UselessPureMethodCall"
+          language="java"
+          since="7.17.0"
+          message="Do not call pure method {0} if the result is not used."
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessPureMethodCallRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselesspuremethodcall">
+        <description>
+This rule detects method calls of pure methods whose result is unused. A pure method is a method without
+side effects. Therefore, ignoring the result of such a method call is likely a mistake.
+
+Either the method call can be removed or the result should be used.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+public class Something {
+    public void foo() {
+        List.of("foo").size(); // result unused
+        Stream.of("bar").map(item -> System.out.format("%s", item)); // result unused
+        Stream.of("bar").forEach(item -> System.out.format("%s", item)); // better
     }
 }
 ]]>

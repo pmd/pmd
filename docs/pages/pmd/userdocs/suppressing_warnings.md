@@ -5,7 +5,7 @@ tags: [userdocs]
 summary: "Learn how to suppress some rule violations, from the source code using annotations or comments, or globally from the ruleset"
 permalink: pmd_userdocs_suppressing_warnings.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: May 2025 (7.14.0)
+last_updated: July 2025 (7.17.0)
 ---
 
 PMD provides several methods by which Rule violations can be suppressed.
@@ -117,7 +117,7 @@ public class Foo {
     }
 }
 
-$ pmd check -d Foo.java -f text -R java-unusedcode --suppress-marker TURN_OFF_WARNINGS
+$ pmd check -d Foo.java -f text -R category/java/bestpractices.xml --suppress-marker TURN_OFF_WARNINGS
 No problems found!
 UnusedLocalVariable rule violation suppressed by //NOPMD in /home/tom/pmd/pmd/bin/Foo.java
 ```
@@ -134,7 +134,7 @@ public class Foo {
         }
     }
 }
-$ java net.sourceforge.pmd.PMD -d ~/tmp/Foo.java -f text -R java-basic
+$ java net.sourceforge.pmd.PMD -d ~/tmp/Foo.java -f text -R category/java/bestpractices.xml
 No problems found!
 ```
 
@@ -169,7 +169,7 @@ For example, to suppress reporting specifically named parameters which
 are unused:
 
 ```xml
-<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
+<rule ref="category/java/bestpractices.xml/UnusedFormalParameter">
   <properties>
     <property name="violationSuppressRegex" value=".*'mySpecialParameterName'.*"/>
   </properties>
@@ -198,9 +198,9 @@ The XPath version used by those queries is XPath 3.1 since PMD 7. Before then XP
 For example, to suppress reporting specifically "String" parameters which are unused:
 
 ```xml
-<rule ref="rulesets/java/unusedcode.xml/UnusedFormalParameter">
+<rule ref="category/java/bestpractices.xml/UnusedFormalParameter">
   <properties>
-    <property name="violationSuppressXPath" value=".[typeIs('java.lang.String')]"/>
+    <property name="violationSuppressXPath" value=".[pmd-java:typeIs('java.lang.String')]"/>
   </properties>
 </rule>
 ```

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -248,23 +248,11 @@ public abstract class AbstractRuleSetFactoryTest {
         assertTrue(allValid, "All XML must parse without producing validation messages.");
     }
 
-    @Test
-    void verifyCorrectXmlEncoding() throws Exception {
-        boolean allValid = true;
-        List<String> ruleSetFileNames = getRuleSetFileNames();
-        StringBuilder messages = new StringBuilder();
-        for (String fileName : ruleSetFileNames) {
-            boolean valid = hasCorrectEncoding(fileName);
-            allValid = allValid && valid;
-            if (!valid) {
-                messages.append("RuleSet ")
-                        .append(fileName)
-                        .append(" is missing XML encoding or not using UTF8\n");
-            }
-        }
-        assertTrue(allValid, "All XML must use correct XML encoding\n" + messages);
-    }
-
+    /**
+     * @deprecated Since 7.17.0. This method will be removed. PMD has the rule "MissingEncoding" for XML files that
+     *             is used instead.
+     */
+    @Deprecated
     public static boolean hasCorrectEncoding(String fileName) throws IOException {
         try (InputStream inputStream = loadResourceAsStream(fileName)) {
             // first bytes must be:

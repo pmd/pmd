@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -30,6 +30,9 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTConstructorDeclaration node, Object data) {
+        if (node.getVisibility() != Visibility.V_PRIVATE && !getProperty(CHECKALL_DESCRIPTOR)) {
+            return data;
+        }
         check(node, data);
         return data;
     }

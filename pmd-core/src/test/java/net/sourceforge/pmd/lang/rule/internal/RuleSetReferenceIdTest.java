@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -167,9 +167,9 @@ class RuleSetReferenceIdTest {
 
     @Test
     void testUnknownRuleSet() {
-        List<RuleSetReferenceId> references = RuleSetReferenceId.parse("nonexistant.xml");
+        List<RuleSetReferenceId> references = RuleSetReferenceId.parse("nonexistent.xml");
         assertEquals(1, references.size());
-        assertRuleSetReferenceId(true, "nonexistant.xml", true, null, "nonexistant.xml", references.get(0));
+        assertRuleSetReferenceId(true, "nonexistent.xml", true, null, "nonexistent.xml", references.get(0));
     }
 
     @Test
