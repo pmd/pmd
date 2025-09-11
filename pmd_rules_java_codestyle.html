@@ -4910,6 +4910,8 @@ is completely optional).</p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="na">@TypeInferred</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">nodeIs</span><span class="p">(</span><span class="s2">"Literal"</span><span class="p">)]])</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowLiterals</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
     </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="nt">ConstructorCall</span><span class="p">])</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowCtors</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="nt">CastExpression</span><span class="p">])</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowCasts</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+    </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">parent::</span><span class="nt">ForeachStatement</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nv">$allowLoopVariable</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>This rule has the following properties:</strong></p>
@@ -4933,6 +4935,16 @@ is completely optional).</p>
       <td>false</td>
       <td>Allow when variables are directly initialized with a constructor call</td>
     </tr>
+    <tr>
+      <td>allowCasts</td>
+      <td>false</td>
+      <td>Allow when variables are directly initialized with a the result of a cast</td>
+    </tr>
+    <tr>
+      <td>allowLoopVariable</td>
+      <td>false</td>
+      <td>Allow when variables are used as loop variables in enhanced for loops</td>
+    </tr>
   </tbody>
 </table>
 
@@ -4945,6 +4957,8 @@ is completely optional).</p>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowLiterals"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowCtors"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowCasts"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowLoopVariable"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
