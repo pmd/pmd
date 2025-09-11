@@ -198,6 +198,7 @@ See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for m
 * [#5996](https://github.com/pmd/pmd/pull/5996): \[java] Fix #4916: UseExplicitTypes cases where 'var' should be unobjectionable - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6006](https://github.com/pmd/pmd/pull/6006): \[java] Fix #5949: CollectionTypeMismatch - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6008](https://github.com/pmd/pmd/pull/6008): \[core] Fix #5849: Support Markdown Output for CPD Reports - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6009](https://github.com/pmd/pmd/pull/6009): \[java] More detailed message for AvoidInstanceofChecksInCatchClause - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6016](https://github.com/pmd/pmd/pull/6016): \[java] Fix #6014: Crash when encountering a java comment at the end of a file - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 
 ### 📦 Dependency updates

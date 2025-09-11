@@ -35,4 +35,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Distinct error messages for the same line</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>An instanceof check is being performed on the caught exception. Create a separate catch clause for NullPointerException.</message>
+            <message>An instanceof check is being performed on the caught exception. Create a separate catch clause for IndexOutOfBoundsException.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        try {
+            foo();
+        } catch (Exception e) {
+            if (e instanceof NullPointerException || e instanceof IndexOutOfBoundsException) { }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
