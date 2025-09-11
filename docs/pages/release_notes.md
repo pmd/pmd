@@ -67,11 +67,17 @@ This is a {{ site.pmd.release_type }} release.
 * The java rule {% rule java/codestyle/UnnecessaryLocalBeforeReturn %} has been deprecated for removal
   in favor of the new rule {% rule java/codestyle/VariableCanBeInlined %}.
 
+#### CPD: New Markdown Report Format
+This PMD version ships with a simple Markdown based output format for CPD. It outputs all duplications
+one after another including the code snippets as code blocks.  
+See [Report formats for CPD]({{ baseurl }}pmd_userdocs_cpd_report_formats.html#markdown).
+
 ### 🐛 Fixed Issues
 * apex-codestyle
   * [#5650](https://github.com/pmd/pmd/issues/5650): \[apex] New Rule: AnnotationsNamingConventions
 * core
   * [#4721](https://github.com/pmd/pmd/issues/4721): chore: \[core] Enable XML rule MissingEncoding in dogfood ruleset
+  * [#5849](https://github.com/pmd/pmd/issues/5849): \[core] Support Markdown Output for CPD Reports
 * java
   * [#5874](https://github.com/pmd/pmd/issues/5874): \[java] Update java regression tests with Java 25 language features
   * [#5960](https://github.com/pmd/pmd/issues/5960): \[java] Avoid/reduce duplicate error messages for some rules
@@ -129,6 +135,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5980](https://github.com/pmd/pmd/pull/5980): chore: Fix typos - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5981](https://github.com/pmd/pmd/pull/5981): Fix #4911: \[java] AvoidRethrowingException consider supertypes in following catches - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#5989](https://github.com/pmd/pmd/pull/5989): \[java] Improve performance of RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6008](https://github.com/pmd/pmd/pull/6008): \[core] Fix #5849: Support Markdown Output for CPD Reports - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

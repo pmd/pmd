@@ -16,6 +16,9 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
+/**
+ * @since 7.17.0
+ */
 public class MarkdownRenderer implements CPDReportRenderer {
 
     //separator must be surrounded by empty lines to be rendered properly
