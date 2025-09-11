@@ -127,6 +127,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#5979](https://github.com/pmd/pmd/pull/5979): Fix #5974: \[java] NPE in CloseResourceRule - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5980](https://github.com/pmd/pmd/pull/5980): chore: Fix typos - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#5989](https://github.com/pmd/pmd/pull/5989): \[java] Improve performance of RelianceOnDefaultCharset - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6009](https://github.com/pmd/pmd/pull/6009): \[java] More detailed message for AvoidInstanceofChecksInCatchClause - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
