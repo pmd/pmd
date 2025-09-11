@@ -1131,6 +1131,51 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="ModifierOrder"
+          language="java"
+          since="7.17.0"
+          message="Wrong modifier order (the actual message is written by the rule)"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.ModifierOrderRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#modifierorder">
+        <description>
+            Enforces the modifier order recommended by the JLS. Apart from sorting modifiers,
+            this rule also enforces that all annotations appear before all modifier keywords.
+            By setting the property `typeAnnotations`, you can also enforce that type
+            annotations appear right of the modifier keywords, next to the type they apply to.
+            This property can have three values:
+            - `on type`: Type annotations must be placed next to the type they apply to
+            - `on decl`: Type annotations must be placed with other annotations, before modifiers.
+            This is not enforced if the type annotations syntactically appears within the type, e.g.
+            in `public Map.@Nullable Entry&lt;K,V&gt; method()`.
+            - `anywhere` (default): Either position fits. They still cannot be interspersed within keyword
+            modifiers. Annotations that are not type annotations are still required to be before keyword
+            modifiers.
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[
+abstract public class Foo { // Warn: `public` should appear before `abstract`
+
+    // This order is not recommended, annotations should appear before keyword modifiers,
+    // and may appear after if they are type annotations.
+    public
+    @Override
+    static fooStuff() {
+    }
+
+    // This order is ok if property typeAnnotations is "anywhere", and enforced if it is "on decl":
+    @Nullable
+    public Object fooStuff() {}
+
+    // This order is ok if property typeAnnotations is "anywhere", and enforced if it is "on type":
+    public @Nullable Object fooStuff() {}
+
+
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="NoPackage"
           language="java"
           since="3.3"
@@ -2008,12 +2053,16 @@ See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/pr
         <properties>
             <property name="allowLiterals" type="Boolean" value="false" description="Allow when variables are directly initialized with literals"/>
             <property name="allowCtors" type="Boolean" value="false" description="Allow when variables are directly initialized with a constructor call"/>
+            <property name="allowCasts" type="Boolean" value="false" description="Allow when variables are directly initialized with a the result of a cast"/>
+            <property name="allowLoopVariable" type="Boolean" value="false" description="Allow when variables are used as loop variables in enhanced for loops"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
 //LocalVariableDeclaration[@TypeInferred = true()]
     [not(VariableDeclarator[*[pmd-java:nodeIs("Literal")]]) or $allowLiterals = false()]
     [not(VariableDeclarator[ConstructorCall]) or $allowCtors = false()]
+    [not(VariableDeclarator[CastExpression]) or $allowCasts = false()]
+    [not(parent::ForeachStatement) or $allowLoopVariable = false()]
 ]]>
                 </value>
             </property>

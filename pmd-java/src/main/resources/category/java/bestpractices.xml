@@ -1856,8 +1856,7 @@ Parameters whose name starts with `ignored` or `unused` are filtered out.
 
 Removing unused formal parameters from public methods could cause a ripple effect through the code base.
 Hence, by default, this rule only considers private methods. To include non-private methods, set the
-`checkAll` property to `true`.
-
+`checkAll` property to `true`. The same applies to public constructors.
         </description>
         <priority>3</priority>
         <example>
