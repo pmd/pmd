@@ -63,7 +63,8 @@ and submit feedback on [our issue tracker](https://github.com/pmd/pmd/issues)!
 * The new java rule {% rule java/errorprone/CollectionTypeMismatch %} detects calls to
   collection methods where we suspect the types are incompatible. This happens for instance
   when you try to remove a `String` from a `Collection<Integer>`: although it is allowed
-  to write this because `remove` takes an `Object` parameter, it is most likely a mistake.
+  to write this because `remove` takes an `Object` parameter, it is most likely a mistake.  
+  This rule is referenced in the quickstart.xml ruleset for Java.
 * The new java rule {% rule java/documentation/DanglingJavadoc %} finds Javadoc comments that
   do not belong to a class, method or field. These comments are ignored by the Javadoc tool
   and should either be corrected or removed.  
@@ -91,7 +92,7 @@ See [Report formats for CPD]({{ baseurl }}pmd_userdocs_cpd_report_formats.html#m
 * apex-codestyle
   * [#5650](https://github.com/pmd/pmd/issues/5650): \[apex] New Rule: AnnotationsNamingConventions
 * core
-  * [#4721](https://github.com/pmd/pmd/issues/4721): chore: \[core] Enable XML rule MissingEncoding in dogfood ruleset
+  * [#4721](https://github.com/pmd/pmd/issues/4721): \[core] chore: Enable XML rule MissingEncoding in dogfood ruleset
   * [#5849](https://github.com/pmd/pmd/issues/5849): \[core] Support Markdown Output for CPD Reports
   * [#5958](https://github.com/pmd/pmd/issues/5958): \[core] CSVRenderer: Add begin and end for line and columns (default off)
 * java
@@ -207,9 +208,42 @@ See [Testing your rules]({{ baseurl }}pmd_userdocs_extending_testing.html) for m
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#5936](https://github.com/pmd/pmd/pull/5936): Bump PMD from 7.15.0 to 7.16.0
+* [#5937](https://github.com/pmd/pmd/pull/5937): Bump pmdtester from 1.5.5 to 1.6.0
+* [#5941](https://github.com/pmd/pmd/pull/5941): chore(deps): bump org.apache.commons:commons-text from 1.13.1 to 1.14.0
+* [#5944](https://github.com/pmd/pmd/pull/5944): chore(deps): bump io.github.apex-dev-tools:apex-ls_2.13 from 5.9.0 to 5.10.0
+* [#5945](https://github.com/pmd/pmd/pull/5945): chore(deps): bump org.junit:junit-bom from 5.13.3 to 5.13.4
+* [#5946](https://github.com/pmd/pmd/pull/5946): chore(deps): bump org.apache.groovy:groovy from 4.0.27 to 4.0.28
+* [#5962](https://github.com/pmd/pmd/pull/5962): chore(deps): bump scalameta.version from 4.13.8 to 4.13.9
+* [#5963](https://github.com/pmd/pmd/pull/5963): chore(deps-dev): bump org.apache.commons:commons-compress from 1.27.1 to 1.28.0
+* [#5976](https://github.com/pmd/pmd/pull/5976): chore(deps-dev): bump all-contributors-cli from 6.20.0 to 6.26.1
+* [#5978](https://github.com/pmd/pmd/pull/5978): chore(deps-dev): bump org.assertj:assertj-core from 3.27.3 to 3.27.4
+* [#5984](https://github.com/pmd/pmd/pull/5984): chore(deps): bump actions/checkout from 4.2.2 to 5.0.0
+* [#5985](https://github.com/pmd/pmd/pull/5985): chore(deps): bump ruby/setup-ruby from 1.254.0 to 1.255.0
+* [#5986](https://github.com/pmd/pmd/pull/5986): chore(deps): bump actions/create-github-app-token from 2.0.6 to 2.1.1
+* [#5988](https://github.com/pmd/pmd/pull/5988): chore(deps): Bump build-tools from 33 to 34
+* [#5990](https://github.com/pmd/pmd/pull/5990): chore(deps): Update @<!-- -->babel/runtime from 7.16.7 to 7.28.7
+* [#5991](https://github.com/pmd/pmd/pull/5991): chore(deps): Update tmp from 0.0.33 to 0.2.5
+* [#5997](https://github.com/pmd/pmd/pull/5997): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.17.6 to 1.17.7
+* [#5998](https://github.com/pmd/pmd/pull/5998): chore(deps): bump kotlin.version from 2.2.0 to 2.2.10
+* [#5999](https://github.com/pmd/pmd/pull/5999): chore(deps): bump org.mockito:mockito-core from 5.18.0 to 5.19.0
+* [#6000](https://github.com/pmd/pmd/pull/6000): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.17.6 to 1.17.7
+* [#6001](https://github.com/pmd/pmd/pull/6001): chore(deps): bump com.google.protobuf:protobuf-java from 4.31.1 to 4.32.0
+* [#6002](https://github.com/pmd/pmd/pull/6002): chore(deps): bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.2 to 3.11.3
+* [#6013](https://github.com/pmd/pmd/pull/6013): chore(deps): bump actions/setup-java from 4.7.1 to 5.0.0
+* [#6033](https://github.com/pmd/pmd/pull/6033): chore(deps): bump ruby/setup-ruby from 1.255.0 to 1.257.0
+* [#6044](https://github.com/pmd/pmd/pull/6044): chore(deps): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.1.0.4751 to 5.2.0.4988
+* [#6045](https://github.com/pmd/pmd/pull/6045): chore(deps): bump org.jetbrains:annotations from 26.0.2 to 26.0.2-1
+* [#6046](https://github.com/pmd/pmd/pull/6046): chore(deps): bump org.apache.groovy:groovy from 4.0.28 to 5.0.0
+* [#6047](https://github.com/pmd/pmd/pull/6047): chore(deps): bump org.yaml:snakeyaml from 2.4 to 2.5
+* [#6048](https://github.com/pmd/pmd/pull/6048): chore(deps): bump org.codehaus.mojo:versions-maven-plugin from 2.18.0 to 2.19.0
+* [#6049](https://github.com/pmd/pmd/pull/6049): chore(deps): bump org.jsoup:jsoup from 1.21.1 to 1.21.2
+* [#6050](https://github.com/pmd/pmd/pull/6050): chore(deps): bump bigdecimal from 3.2.2 to 3.2.3 in /docs
 
 ### 📈 Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 188 commits
+* 65 closed tickets & PRs
+* Days since last release: 49
 
 {% endtocmaker %}
-

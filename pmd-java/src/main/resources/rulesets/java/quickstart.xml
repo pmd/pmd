@@ -217,6 +217,7 @@
     <rule ref="category/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName"/>
     <!-- <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/> deprecated since 6.35.0 -->
     <rule ref="category/java/errorprone.xml/CloseResource"/>
+    <rule ref="category/java/errorprone.xml/CollectionTypeMismatch"/>
     <!-- <rule ref="category/java/errorprone.xml/ConfusingArgumentToVarargsMethod"/> -->
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
     <rule ref="category/java/errorprone.xml/ComparisonWithNaN"/>
