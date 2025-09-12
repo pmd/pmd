@@ -229,12 +229,17 @@ void foo() {
     <rule name="AvoidCatchingNPE"
           language="java"
           since="1.8"
+          deprecated="true"
           message="Avoid catching NullPointerException; consider removing the cause of the NPE."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingnpe">
         <description>
 Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the
 original error, causing other, more subtle problems later on.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been subsumed by {% rule AvoidCatchingGenericException %},
+which is now configurable as to which exceptions cause a violation.
         </description>
         <priority>3</priority>
         <properties>
@@ -263,12 +268,17 @@ public class Foo {
     <rule name="AvoidCatchingThrowable"
           language="java"
           since="1.2"
+          deprecated="true"
           message="A catch statement should never catch throwable since it includes errors."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchingthrowable">
         <description>
 Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
 OutOfMemoryError that should be exposed and managed separately.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+This rule has been subsumed by {% rule AvoidCatchingGenericException %},
+which is now configurable as to which exceptions cause a violation.
         </description>
         <priority>3</priority>
         <properties>
