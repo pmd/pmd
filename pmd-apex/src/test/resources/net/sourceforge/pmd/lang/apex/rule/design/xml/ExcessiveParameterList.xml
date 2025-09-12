@@ -29,6 +29,21 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>Verify message includes parameter count</description>
+        <rule-property name="minimum">9</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid long parameter lists (10 parameters).</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void foo(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05, Integer p06, Integer p07, Integer p08, Integer p09, Integer p10 ) { }
+    public void bar(Integer p01, Integer p02, Integer p03, Integer p04, Integer p05 ) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
        <description>#1396 Public method with javadoc</description>
        <expected-problems>0</expected-problems>
        <code><![CDATA[
