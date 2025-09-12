@@ -991,7 +991,8 @@ public final class TypeOps {
     // relies on the fact the original list is unmodifiable or won't be
     // modified
     @SuppressWarnings("unchecked")
-    private static @NonNull <T> List<T> mapPreservingSelf(List<? extends T> ts, Function<? super T, ? extends @NonNull T> subst) {
+    @NonNull
+    private static <T> List<T> mapPreservingSelf(List<? extends T> ts, Function<? super T, ? extends @NonNull T> subst) {
         // Profiling shows, only 10% of calls to this method need to
         // create a new list. Substitution in general is a hot spot
         // of the framework, so optimizing this out is nice
