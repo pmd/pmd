@@ -104,8 +104,6 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
                 commentRequiredViolation(data, node, descriptor);
             }
             break;
-        default:
-            break;
         }
     }
 

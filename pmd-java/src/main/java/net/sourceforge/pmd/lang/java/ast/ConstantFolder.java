@@ -481,9 +481,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
             }
             return null;
         }
-        default:
-            throw AssertionUtil.shouldNotReachHere("Unknown operator '" + node.getOperator() + "' in " + node);
         }
+        throw AssertionUtil.shouldNotReachHere("Unknown operator '" + node.getOperator() + "' in " + node);
     }
 
     private static @Nullable Object compLE(Object left, Object right) {
@@ -618,9 +617,8 @@ final strictfp class ConstantFolder extends JavaVisitorBase<Void, @NonNull Const
                 return floatValue(v);
             case DOUBLE:
                 return doubleValue(v);
-            default:
-                throw AssertionUtil.shouldNotReachHere("exhaustive enum: " + target);
             }
+            throw AssertionUtil.shouldNotReachHere("exhaustive enum: " + target);
         }
         return null;
     }
