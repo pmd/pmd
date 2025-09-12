@@ -18,7 +18,7 @@ public class ExcessiveTemplateLengthRule extends AbstractVtlRule {
 
     private static final PropertyDescriptor<Integer> REPORT_LEVEL =
         CommonPropertyDescriptors.reportLevelProperty()
-                                 .desc("Threshold above which a node is reported")
+                                 .desc("Threshold at or above which a node is reported")
                                  .require(positive())
                                  .defaultValue(1000)
                                  .build();

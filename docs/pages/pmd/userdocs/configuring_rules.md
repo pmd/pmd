@@ -45,7 +45,7 @@ will cause the rule to be ignored.
 
 Properties make it easy to customise the behaviour of a rule directly from the xml. They come in several types,
 which correspond to the type of their values. For example, NPathComplexity declares a property "reportLevel",
-with an integer value type, and which corresponds to the threshold above which a method will be reported.
+with an integer value type, and which corresponds to the threshold at or above which a method will be reported.
 If you believe that its default value of 200 is too high, you could lower it to e.g. 150 in the following way:
 
 ```xml

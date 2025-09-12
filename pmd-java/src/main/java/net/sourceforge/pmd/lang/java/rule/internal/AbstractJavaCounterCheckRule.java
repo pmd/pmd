@@ -23,7 +23,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
 
     private final PropertyDescriptor<Integer> reportLevel =
         CommonPropertyDescriptors.reportLevelProperty()
-                                 .desc("Threshold above which a node is reported")
+                                 .desc("Threshold at or above which a node is reported")
                                  .require(positive())
                                  .defaultValue(defaultReportLevel()).build();
 
