@@ -137,4 +137,79 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5880: FN for DoubleCheckedLocking with more than one assignment</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+    Object baz = null;
+
+    Object bar() {
+        if (baz == null) {
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                    baz = enhanceObject(baz);
+                }
+            }
+        }
+        return baz;
+    }
+
+    private Object enhanceObject(Object obj) {
+        // do special stuff
+        return obj;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>#5880: FN for DoubleCheckedLocking with more than two if statements</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class Foo {
+    Object baz = null;
+
+    Object bar() {
+        if (baz == null) {
+            synchronized(this) {
+                if (baz == null) {
+                    baz = new Object();
+                    baz = enhanceObject(baz);
+                }
+            }
+        }
+        if (false) {
+            System.out.println("This will never print.");
+        }
+        return baz;
+    }
+}
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>volatile field is referenced indirectly</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    private volatile Foo instance;
+
+    public static Foo getInstance() {
+        Foo result = null;
+        result = this.instance;
+        if (result == null) {
+            synchronized (this) {
+                result = this.instance;
+                if (result == null) {
+                    result = new Foo();
+                    this.instance = result;
+                }
+            }
+        }
+        return result;
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
