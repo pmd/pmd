@@ -79,6 +79,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
     }
 
     @Override
+    @SuppressWarnings("PMD.OverrideBothEqualsAndHashCodeOnComparable")
     public int compareTo(AntlrToken o) {
         return getRegion().compareTo(o.getRegion());
     }
