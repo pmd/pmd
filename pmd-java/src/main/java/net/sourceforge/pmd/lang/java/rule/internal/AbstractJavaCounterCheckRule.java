@@ -42,8 +42,16 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
         return false;
     }
 
-    protected abstract boolean isViolation(T node, int reportLevel);
 
+    /**
+     * @deprecated since 7.17.0
+     */
+    protected boolean isViolation(T node, int reportLevel) {
+        int metric = getMetric(node);
+        return metric >= reportLevel;
+    }
+
+    protected abstract int getMetric(T node);
 
     @Override
     public Object visitJavaNode(JavaNode node, Object data) {
@@ -52,8 +60,10 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
         // since we only visit this node, it's ok
 
         if (!isIgnored(t)) {
-            if (isViolation(t, getProperty(reportLevel))) {
-                asCtx(data).addViolation(node);
+            int metric = getMetric(t);
+            int threshold = getProperty(reportLevel);
+            if (metric >= threshold) {
+                asCtx(data).addViolation(node, metric);
             }
         }
 
