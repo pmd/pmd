@@ -21,6 +21,10 @@ public class DanglingJavadocRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTCompilationUnit unit, Object data) {
+        if (unit.getModuleDeclaration() != null) {
+            return null;
+        }
+
         for (JavaComment comment: unit.getComments()) {
             if (comment instanceof JavadocComment && ((JavadocComment) comment).getOwner() == null) {
                 asCtx(data).addViolationWithPosition(comment.getToken(),
