@@ -124,6 +124,15 @@ class CommentAssignmentTest extends BaseParserTest {
         assertHasNoComment(constants.get(3));
     }
 
+    @Test
+    void testCommentAssignmentOnModuleInfo() {
+        final String moduleComment = "/** Module Description */";
+        ASTCompilationUnit node = java.parse(moduleComment + "\n"
+                + "module my.module {}\n");
+
+        assertCommentEquals(node.descendants(ASTModuleDeclaration.class).firstOrThrow(),
+                moduleComment);
+    }
 
     private void assertCommentEquals(JavadocCommentOwner pack, String expected) {
         assertNotNull(pack.getJavadocComment(), "null comment on " + pack);
