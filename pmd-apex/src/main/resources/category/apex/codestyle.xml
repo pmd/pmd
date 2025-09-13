@@ -70,76 +70,6 @@ public class fooClass { } // This will be reported unless you change the regex
         </example>
     </rule>
 
-    <rule name="IfElseStmtsMustUseBraces"
-          language="apex"
-          since="5.6.0"
-          message="Avoid using 'if...else' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces">
-        <description>
-Avoid using if..else statements without using surrounding braces. If the code formatting
-or indentation is lost then it becomes difficult to separate the code being controlled
-from the rest.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
-|
-//IfElseBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-// this is OK
-if (foo) x++;
-
-// but this is not
-if (foo)
-    x = x+1;
-else
-    x = x-1;
-]]>
-        </example>
-    </rule>
-
-    <rule name="IfStmtsMustUseBraces"
-          language="apex"
-          since="5.6.0"
-          message="Avoid using if statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifstmtsmustusebraces">
-        <description>
-Avoid using if statements without using braces to surround the code block. If the code
-formatting or indentation is lost then it becomes difficult to separate the code being
-controlled from the rest.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace= false()]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
- <![CDATA[
-if (foo)    // not recommended
-    x++;
-
-if (foo) {  // preferred approach
-    x++;
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="FieldDeclarationsShouldBeAtStart"
           language="apex"
           since="6.23.0"
@@ -245,6 +175,76 @@ public class Foo {
     public bar(Integer methodParameter) { } // This is in camel case, so it's ok
 
     public baz(Integer METHOD_PARAMETER) { } // This will be reported unless you change the regex
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="IfElseStmtsMustUseBraces"
+          language="apex"
+          since="5.6.0"
+          message="Avoid using 'if...else' statements without curly braces"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces">
+        <description>
+            Avoid using if..else statements without using surrounding braces. If the code formatting
+            or indentation is lost then it becomes difficult to separate the code being controlled
+            from the rest.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
+|
+//IfElseBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+// this is OK
+if (foo) x++;
+
+// but this is not
+if (foo)
+    x = x+1;
+else
+    x = x-1;
+]]>
+        </example>
+    </rule>
+
+    <rule name="IfStmtsMustUseBraces"
+          language="apex"
+          since="5.6.0"
+          message="Avoid using if statements without curly braces"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifstmtsmustusebraces">
+        <description>
+            Avoid using if statements without using braces to surround the code block. If the code
+            formatting or indentation is lost then it becomes difficult to separate the code being
+            controlled from the rest.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+if (foo)    // not recommended
+    x++;
+
+if (foo) {  // preferred approach
+    x++;
 }
 ]]>
         </example>
