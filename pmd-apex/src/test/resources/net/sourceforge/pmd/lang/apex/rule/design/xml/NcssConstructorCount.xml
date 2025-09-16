@@ -78,7 +78,7 @@ public class Foo {
         <rule-property name="minimum">13</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>The constructor has an NCSS line count of 13</message>
+            <message>The constructor has an NCSS line count of 13; current threshold is 13.</message>
         </expected-messages>
         <code-ref id="long-constructor"/>
     </test-code>
