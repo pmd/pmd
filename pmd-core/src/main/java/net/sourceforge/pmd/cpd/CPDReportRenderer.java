@@ -15,6 +15,7 @@ import java.io.Writer;
  * @see XMLRenderer
  * @see SimpleRenderer
  * @see VSRenderer
+ * @see MarkdownRenderer
  */
 public interface CPDReportRenderer {
 
