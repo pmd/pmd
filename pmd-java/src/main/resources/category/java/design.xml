@@ -623,7 +623,7 @@ public void bar() {
     <rule name="ExcessiveImports"
           language="java"
           since="1.04"
-          message="A high number of imports ({0}) can indicate a high degree of coupling within an object."
+          message="A high number of imports ({0}) can indicate a high degree of coupling within an object; current threshold is {1}."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveImportsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveimports">
         <description>
@@ -647,7 +647,7 @@ public class Foo {
     <rule name="ExcessiveParameterList"
           language="java"
           since="0.9"
-          message="Avoid long parameter lists ({0} parameters)."
+          message="Avoid long parameter lists ({0} parameters - threshold is {1})."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessiveParameterListRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessiveparameterlist">
         <description>
@@ -675,7 +675,7 @@ public void addPerson(      // preferred approach
     <rule name="ExcessivePublicCount"
           language="java"
           since="1.04"
-          message="This class has {0} public methods and attributes"
+          message="This class has {0} public methods and attributes; current threshold is {1}."
           class="net.sourceforge.pmd.lang.java.rule.design.ExcessivePublicCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#excessivepubliccount">
         <description>

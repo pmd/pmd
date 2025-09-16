@@ -97,7 +97,7 @@ public class Foo {
         <rule-property name="minimum">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>This class has 3 public methods and attributes</message>
+            <message>This class has 3 public methods and attributes; current threshold is 2.</message>
         </expected-messages>
         <code-ref id="id-3-public-methods"/>
     </test-code>

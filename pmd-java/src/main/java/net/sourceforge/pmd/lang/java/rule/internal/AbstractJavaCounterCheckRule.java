@@ -63,7 +63,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
             int metric = getMetric(t);
             int threshold = getProperty(reportLevel);
             if (metric >= threshold) {
-                asCtx(data).addViolation(node, metric);
+                asCtx(data).addViolation(node, metric, threshold);
             }
         }
 
