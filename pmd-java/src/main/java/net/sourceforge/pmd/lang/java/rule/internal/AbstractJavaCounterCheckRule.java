@@ -44,7 +44,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
 
 
     /**
-     * @deprecated since 7.17.0
+     * @deprecated since 7.18.0
      */
     protected boolean isViolation(T node, int reportLevel) {
         int metric = getMetric(node);

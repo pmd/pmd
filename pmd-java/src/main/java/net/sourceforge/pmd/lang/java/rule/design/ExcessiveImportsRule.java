@@ -29,7 +29,7 @@ public class ExcessiveImportsRule extends AbstractJavaCounterCheckRule<ASTCompil
     }
 
     /**
-     * @deprecated since 7.17.0
+     * @deprecated since 7.18.0
      */
     @Override
     protected boolean isViolation(ASTCompilationUnit node, int reportLevel) {
