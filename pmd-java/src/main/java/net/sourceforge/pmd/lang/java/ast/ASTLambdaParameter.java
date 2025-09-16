@@ -21,8 +21,24 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public final class ASTLambdaParameter extends AbstractJavaTypeNode
     implements InternalInterfaces.VariableIdOwner, ModifierOwner {
 
+    private boolean usesVarKw;
+
     ASTLambdaParameter(int id) {
         super(id);
+    }
+
+
+    void setUsesVarKw(boolean usesVarKw) {
+        this.usesVarKw = usesVarKw;
+    }
+
+    /**
+     * If true, the type node is null and the type was written with the "var"
+     * keyword in the source.
+     * @since 7.17.0
+     */
+    public boolean hasVarKeyword() {
+        return usesVarKw;
     }
 
     /**

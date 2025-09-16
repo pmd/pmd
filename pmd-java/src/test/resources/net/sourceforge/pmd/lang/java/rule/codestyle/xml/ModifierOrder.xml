@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Keyword order</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>1,2,5</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `abstract public`.</message>
+            <message>Missorted modifiers `final static`.</message>
+            <message>Missorted modifiers `final public`.</message>
+        </expected-messages>
+        <code><![CDATA[
+abstract public class Foo { // warn l1
+    final static public enum Bar {} // warn l2
+    public static final enum Bar2 {} // ok
+
+    final public static int FOO = 2; // warn l5
+}
+        ]]></code>
+    </test-code>
+
+    <code-fragment id="annotations"><![CDATA[
+            class Foo {
+                class Inner{}
+
+                @Decl
+                public @TypeA int foo; // l5
+
+                @TypeA
+                public @Decl int foo; // l8
+
+                @Decl @TypeA
+                public int foo; // l11
+
+                @Decl
+                public @TypeA static int foo; // l14
+
+                @TypeA
+                public @Decl static int foo; // l17
+
+                @Decl @TypeA
+                public static int foo; // l20
+
+                public static @Decl @TypeA int foo; // l22
+
+                public @TypeA static int foo; // l24
+
+                public int @TypeA[] foo; // never reported
+                public  Foo.@TypeA Inner foo; // never reported
+
+            }
+
+            @java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE_USE)
+            @interface TypeA {}
+
+            @interface Decl {}
+    ]]>
+    </code-fragment>
+
+
+    <test-code>
+        <description>Annotation order (property=anywhere)</description>
+        <rule-property name="typeAnnotations">anywhere</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>8,14,17,22,24</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `static @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
+        </expected-messages>
+        <code-ref id="annotations"/>
+    </test-code>
+
+    <test-code>
+        <description>Annotation order (property=ontype)</description>
+        <rule-property name="typeAnnotations">ontype</rule-property>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>7,10,14,16,19,22,24</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `static @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
+        </expected-messages>
+        <code-ref id="annotations"/>
+    </test-code>
+    
+    <test-code>
+        <description>Annotation order (property=ondecl)</description>
+        <rule-property name="typeAnnotations">ondecl</rule-property>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>5,8,14,17,22,24</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `static @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="annotations"/>
+    </test-code>
+
+    <test-code>
+        <description>Interface with missorted modifiers</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `abstract public`.</message>
+            <message>Missorted modifiers `abstract public`.</message>
+        </expected-messages>
+        <code><![CDATA[
+        static final interface MissortedInterface { // warn l1
+            int CONSTANT = 1;
+            abstract public void method(); // warn l3
+            abstract public void method2(); // warn l3
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Method with multiple missorted modifiers</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `synchronized static`.</message>
+        </expected-messages>
+        <code><![CDATA[
+        class MethodTest {
+            synchronized static void method1() {} // warn l2
+            public static synchronized void method2() {} // ok
+            final native void method3(); // warn l4
+            private abstract void method4(); // warn l6
+        }
+                ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field declarations with various modifiers</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>2,4,7</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `transient static`.</message>
+            <message>Missorted modifiers `volatile public`.</message>
+            <message>Missorted modifiers `static public`.</message>
+        </expected-messages>
+        <code><![CDATA[
+        class FieldTest {
+            transient static int field1; // warn l2
+            public static transient int field2; // ok
+            volatile public int field3; // warn l4
+            public static volatile int field4; // ok
+            static transient int field5; // warn l6
+            static public volatile int field6; // warn l8
+        }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constructor with missorted modifiers</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `strictfp public`.</message>
+            <message>Missorted modifiers `final protected`.</message>
+        </expected-messages>
+        <code><![CDATA[
+        class ConstructorTest {
+            public strictfp ConstructorTest() {} // warn l2
+            strictfp public ConstructorTest(int x) {} // ok
+            protected final ConstructorTest(String s) {} // warn l4
+            final protected ConstructorTest(double d) {} // ok
+        }
+
+        ]]></code>
+    </test-code>
+
+    <test-code disabled="true">
+        <description>Local variable with type annotations (property=anywhere)</description>
+        <rule-property name="typeAnnotations">anywhere</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `final @TypeA`. Type annotations should be placed before the type they
+                qualify.
+            </message>
+            <message>Missorted modifiers `@TypeA final`. Type annotations should be placed before the type they
+                qualify.
+            </message>
+        </expected-messages>
+        <code><![CDATA[
+        class LocalVarTest {
+            void method() {
+                final @TypeA int local1; // warn l3
+                @TypeA final int local2; // warn l5
+                @TypeA int local3; // ok
+            }
+        }
+
+        @java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE_USE)
+        @interface TypeA {}
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>No violations on correctly sorted modifiers</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `synchronized static`.</message>
+        </expected-messages>
+        <code><![CDATA[
+        public final class CorrectClass {
+            public static final int CONSTANT = 1;
+            private static final String NAME = "test";
+            protected abstract void abstractMethod();
+            public synchronized static void synchronizedMethod() {}
+            public static native void nativeMethod();
+            public strictfp void strictfpMethod() {}
+            public final void finalMethod() {}
+            @Annotation public static final int annotatedField = 1;
+        }
+
+        @interface Annotation {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Record with missorted modifiers</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `final public`.</message>
+        </expected-messages>
+        <code><![CDATA[
+        final public record Person(String name, int age) { // warn l1
+            static final int DEFAULT_AGE = 0; // warn l3
+            public static final int MAX_AGE = 120; // ok
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Enum with missorted modifiers</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,4</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `final static`.</message>
+            <message>Missorted modifiers `abstract private`.</message>
+        </expected-messages>
+        <code><![CDATA[
+        public static enum Direction {
+            NORTH, SOUTH, EAST, WEST;
+            final static int COUNT = 4; // warn l3
+            abstract private void doSomething(); // warn l5
+        }
+        ]]></code>
+    </test-code>
+
+
+</test-data>
