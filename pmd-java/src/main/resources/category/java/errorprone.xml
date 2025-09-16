@@ -237,7 +237,7 @@ void foo() {
 Code should never throw NullPointerExceptions under normal circumstances.  A catch block may hide the
 original error, causing other, more subtle problems later on.
 
-**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+**Deprecated:** This rule is deprecated since PMD 7.18.0 and will be removed with PMD 8.0.0.
 This rule has been subsumed by {% rule AvoidCatchingGenericException %},
 which is now configurable as to which exceptions cause a violation.
         </description>
@@ -276,7 +276,7 @@ public class Foo {
 Catching Throwable errors is not recommended since its scope is very broad. It includes runtime issues such as
 OutOfMemoryError that should be exposed and managed separately.
 
-**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0.
+**Deprecated:** This rule is deprecated since PMD 7.18.0 and will be removed with PMD 8.0.0.
 This rule has been subsumed by {% rule AvoidCatchingGenericException %},
 which is now configurable as to which exceptions cause a violation.
         </description>
