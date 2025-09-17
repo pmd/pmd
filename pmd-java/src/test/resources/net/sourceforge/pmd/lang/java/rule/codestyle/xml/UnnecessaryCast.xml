@@ -1101,7 +1101,7 @@ class Tester {
     </test-code>
 
 
-    <test-code focused="true">
+    <test-code>
         <description>[java] UnnecessaryCast false-positive for raw types #4822</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -1128,29 +1128,49 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>Cast is not found as unnecessary (for now)</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>11,13</expected-linenumbers>
+        <description>Cast in method call unnecessary</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>7,8,12</expected-linenumbers>
         <code><![CDATA[
-            import java.util.Objects;
             import java.util.List;
-            import static java.util.Comparator.nullsFirst;
 
             public interface StringList extends List<String> { }
 
             public class Foo {
-                public int compare(List<?> o1) {
-                    String s = ((List<String>) o1).get(0);
-                    String s1 = ((StringList) o1).get(0);
+                public int parameterized(List<?> o1) {
                     Object t = ((List) o1).get(0);
-                    ((List) o1).addAll(Collections.singletonList(t));
                     return ((List) o1).size();
                 }
 
                 public int generic(List o1) {
+                    return ((List<?>) o1).size();
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Cast in method call needed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.List;
+
+            public interface StringList extends List<String> { }
+
+            public class Foo {
+                public void parameterized(List<?> o1) {
                     String s = ((List<String>) o1).get(0);
                     String s1 = ((StringList) o1).get(0);
-                    return ((List<?>) o1).size();
+                    ((List) o1).addAll(Collections.singletonList(t));
+                }
+
+                public void generic(List o1) {
+                    String s = ((List<String>) o1).get(0);
+                    String s1 = ((StringList) o1).get(0);
+                    // the next 2 casts are not strictly needed,
+                    // ignored to reduce complexity of the rule
+                    ((StringList) o1).add("x");
+                    ((List<String>) o1).add("x");
                 }
             }
             ]]></code>

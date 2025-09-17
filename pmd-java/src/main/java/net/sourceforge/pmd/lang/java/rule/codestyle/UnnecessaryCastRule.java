@@ -112,14 +112,27 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             reportCast(castExpr, data);
         } else if (castExpr.getParent() instanceof ASTMethodCall
                     && castExpr.getIndexInParent() == 0) {
-            ASTMethodCall call = (ASTMethodCall) castExpr.getParent();
-            boolean generic = call.getMethodType().getSymbol().getFormalParameters().stream()
-                .anyMatch(fp -> isTypeExpression(fp.getTypeMirror(Substitution.EMPTY)));
-            if (!generic && TypeTestUtil.isA(call.getMethodType().getDeclaringType(), operandType)) {
+            JMethodSig methodType = ((ASTMethodCall) castExpr.getParent()).getMethodType();
+            handleMethodCall(castExpr, methodType, operandType, data);
+        }
+        return null;
+    }
+
+    private void handleMethodCall(ASTCastExpression castExpr, JMethodSig methodType,
+            JTypeMirror operandType, Object data) {
+        boolean generic = methodType.getSymbol().getFormalParameters().stream()
+            .anyMatch(fp -> isTypeExpression(fp.getTypeMirror(Substitution.EMPTY)));
+        if (!generic) {
+            JTypeMirror declaringType = methodType.getDeclaringType();
+            if (!isTypeExpression(methodType.getSymbol().getReturnType(Substitution.EMPTY))) {
+                // declaring type of List<T>::size is List<T>, but since the return type
+                // is not generic, it's enough to check that operand is a List
+                declaringType = declaringType.getErasure();
+            }
+            if (TypeTestUtil.isA(declaringType, operandType)) {
                 reportCast(castExpr, data);
             }
         }
-        return null;
     }
 
     private boolean isTypeExpression(JTypeMirror type) {
