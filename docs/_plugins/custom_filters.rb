@@ -107,16 +107,33 @@ module CustomFilters
   end
 
   def escape_json(text)
-    if text
+    if text && text.is_a?(String)
       res = text
-      res = res.gsub(/\\/, '\\\\')
+      res = res.gsub(/\\/, '\\\\\\')
       res = res.gsub(/"/, '\\"')
       res = res.gsub(/\n/, '\\n')
       res = res.gsub(/\r/, '\\r')
       res = res.gsub(/\f/, '\\f')
       res = res.gsub(/\t/, '\\t')
-      res = res.gsub(/\b/, '\\b')
+      res = res.gsub(/[\b]/, '\\b')
+    elsif text && text.is_a?(Array)
+      text.map {|s| escape_json(s) }
     end
+  end
+
+  def escape_regex(text)
+    if text && text.is_a?(String)
+      res = text
+      res = res.gsub(/\+/, '\\\+')
+      res = res.gsub(/\*/, '\*')
+      res = res.gsub(/\?/, '\?')
+    elsif text && text.is_a?(Array)
+      text.map {|s| escape_regex(s) }
+    end
+  end
+
+  def separate_words(text)
+      text.gsub(/([A-Z][a-z])/, ' \1').strip if text
   end
 
   private

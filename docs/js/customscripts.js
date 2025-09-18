@@ -66,9 +66,10 @@ $(document).ready(function () {
         resultsContainer: document.getElementById('results-container'),
         json: 'search.json',
         searchResultTemplate: '<li><a href="{url}">{title}</a></li>',
-        noResultsText: '{{site.data.strings.search_no_results_text}}',
+        noResultsText: 'No results found.',
+        exclude: ['type', 'source'],
         limit: 10,
-        fuzzy: true,
+        fuzzy: false,
     });
     // Make sure to close and empty the search results after clicking one result item.
     // This is necessary, if we don't switch the page but only jump to a anchor on the
