@@ -18,7 +18,7 @@ search: exclude
   "tags": "{{ page.tags | escape_regex | escape_json }}",
   "keywords": "{{ ruleset | escape_regex | escape_json }}",
   "url": "{{ page.url | remove: "/"}}",
-  "summary": "{{ page.summary | strip | escape_regex | escape_json }}"
+  "summary": "{{ page.summary | strip | escape_regex | escape_json | default: ' ' }}"
 },
         {%- for rule in rules offset:1 -%}
 {
@@ -28,7 +28,7 @@ search: exclude
   "tags": "{{ page.tags | escape_regex | escape_json }}",
   "keywords": "{{ rule | separate_words | escape_regex | escape_json }}",
   "url": "{{ page.url | remove: "/"}}#{{ rule | downcase }}",
-  "summary": "{{ page.summary | strip | escape_regex | escape_json }}"
+  "summary": "{{ page.summary | strip | escape_regex | escape_json | default: ' ' }}"
 }
         {%- unless forloop.last -%}{{ comma }}{%- endunless -%}
       {%- endfor -%}
@@ -40,7 +40,7 @@ search: exclude
   "tags": "{{ page.tags | escape_regex | escape_json }}",
   "keywords": "{{ page.keywords | escape_regex | escape_json }}",
   "url": "{{ page.url | remove: "/"}}",
-  "summary": "{{ page.summary | strip | escape_regex | escape_json }}"
+  "summary": "{{ page.summary | strip | escape_regex | escape_json | default: ' ' }}"
 }
     {%- endif -%}
     {%- unless forloop.last or site.posts.size > 0 -%}{{ comma }}{%- endunless -%}
@@ -53,7 +53,7 @@ search: exclude
   "tags": "{{ post.tags | escape_regex | escape_json }}",
   "keywords": "{{ post.keywords | escape_regex | escape_json }}",
   "url": "{{ post.url | remove: "/" }}",
-  "summary": "{{post.summary | strip | escape_regex | escape_json }}"
+  "summary": "{{ post.summary | strip | escape_regex | escape_json | default: ' ' }}"
 }
   {%- unless forloop.last -%}{{ comma }}{%- endunless -%}
 {%- endfor -%}

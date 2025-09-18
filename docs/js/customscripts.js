@@ -65,10 +65,10 @@ $(document).ready(function () {
         searchInput: document.getElementById('search-input'),
         resultsContainer: document.getElementById('results-container'),
         json: 'search.json',
-        searchResultTemplate: '<li><a href="{url}">{title}</a></li>',
-        noResultsText: 'No results found.',
+        searchResultTemplate: '<li><a href="{url}"><strong>{title}</strong><br>{summary}</a></li>',
+        noResultsText: '<li>No results found.</li>',
         exclude: ['type', 'source'],
-        limit: 10,
+        limit: 20,
         fuzzy: false,
     });
     // Make sure to close and empty the search results after clicking one result item.
@@ -77,6 +77,53 @@ $(document).ready(function () {
     $('#results-container').click(function() {
         $('#search-input').val('');
         $(this).empty();
+    });
+    // simple keyboard control of search results
+    $('#search-input, body').on('keyup', function(e) {
+        // arrow down: 40, arrow up: 38
+        if (e.which !== 40 && e.which !== 38) {
+            return;
+        }
+        if ($('#results-container li').length === 0) {
+            return;
+        }
+
+        var current = $('#results-container li.selected');
+        if (current.length === 0) {
+            current = $('#results-container li')[0];
+        } else {
+            current = current[0];
+            $(current).removeClass('selected');
+            if (e.which === 40) {
+                if (current.nextSibling !== null) {
+                    current = current.nextSibling;
+                }
+            } else if (e.which === 38) {
+                if (current.previousSibling !== null) {
+                    current = current.previousSibling;
+                }
+            }
+        }
+        $(current).addClass('selected');
+        $('a', current).focus();
+        e.preventDefault();
+        e.stopImmediatePropagation(); // avoid triggering another search and rerender the results
+    });
+    $('#results-container').on('mouseover', function(e) {
+        $('#results-container li.selected').removeClass('selected');
+        var selected = $(e.target).closest('li')[0];
+        $(selected).addClass('selected');
+        $('a', selected).focus();
+    });
+    $('body').on('keyup', function(e) {
+        // keyboard shortcut "s" for search
+        if (e.which === 83) { // 83 = "s"
+            $('#search-input').focus();
+        }
+        // keyboard shortcut "esc" for closing search result
+        if (e.which === 27) { // 27 = "<esc>"
+            $('#results-container').empty();
+        }
     });
 
     // Topnav toggle button for displaying/hiding nav sidebar
