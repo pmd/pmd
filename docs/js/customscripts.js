@@ -112,8 +112,10 @@ $(document).ready(function () {
     $('#results-container').on('mouseover', function(e) {
         $('#results-container li.selected').removeClass('selected');
         var selected = $(e.target).closest('li')[0];
-        $(selected).addClass('selected');
-        $('a', selected).focus();
+        if (selected) {
+            $(selected).addClass('selected');
+            $('a', selected).focus();
+        }
     });
     $('body').on('keyup', function(e) {
         // keyboard shortcut "s" for search
@@ -122,6 +124,11 @@ $(document).ready(function () {
         }
         // keyboard shortcut "esc" for closing search result
         if (e.which === 27) { // 27 = "<esc>"
+            $('#results-container').empty();
+        }
+    });
+    $('body').on('click', function(e) {
+        if ($('#results-container li').length > 0) {
             $('#results-container').empty();
         }
     });
