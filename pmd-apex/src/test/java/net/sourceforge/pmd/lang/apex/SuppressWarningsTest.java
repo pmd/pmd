@@ -146,6 +146,17 @@ class SuppressWarningsTest extends ApexParserTestBase {
     }
 
     @Test
+    void testSpecificSuppressionMulitpleValuesReverseOrder() {
+        assertNoWarningsWithFoo("@SuppressWarnings('PMD.NoBar, PMD.NoFoo')"
+            + "\n" + "public class Bar {\n"
+            + " Integer foo;\n"
+            + " void bar() {" + "\n"
+            + "  Integer foo;\n"
+            + " }\n"
+            + "}");
+    }
+
+    @Test
     void testNoSuppressionBlank() {
         assertWarningsWithFoo(2, "public class Bar {\n"
             + " Integer foo;\n"
