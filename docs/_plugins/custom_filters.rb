@@ -121,17 +121,6 @@ module CustomFilters
     end
   end
 
-  def escape_regex(text)
-    if text && text.is_a?(String)
-      res = text
-      res = res.gsub(/\+/, '\\\+')
-      res = res.gsub(/\*/, '\*')
-      res = res.gsub(/\?/, '\?')
-    elsif text && text.is_a?(Array)
-      text.map {|s| escape_regex(s) }
-    end
-  end
-
   def separate_words(text)
       text.gsub(/([A-Z][a-z])/, ' \1').strip if text
   end

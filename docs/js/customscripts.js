@@ -67,7 +67,6 @@ $(document).ready(function () {
         json: 'search.json',
         searchResultTemplate: '<li><a href="{url}"><strong>{title}</strong><br>{summary}</a></li>',
         noResultsText: '<li>No results found.</li>',
-        exclude: ['type', 'source'],
         limit: 20,
         fuzzy: false,
     });

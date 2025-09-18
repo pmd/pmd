@@ -375,6 +375,8 @@ public class RuleDocGenerator {
                         .replace("${ruleset.name}", rulesetFilename);
                 String ruleSetSourceFilepath = "../" + allRulesets.get(ruleset.getFileName());
 
+                List<Rule> sortedRules = getSortedRules(ruleset);
+
                 List<String> lines = new LinkedList<>();
                 lines.add("---");
                 lines.add("title: " + ruleset.getName());
@@ -383,12 +385,18 @@ public class RuleDocGenerator {
                 lines.add("folder: pmd/rules/" + languageTersename);
                 lines.add("sidebaractiveurl: /" + LANGUAGE_INDEX_PERMALINK_PATTERN.replace("${language.tersename}", languageTersename));
                 lines.add("editmepath: " + ruleSetSourceFilepath);
-                lines.add("keywords: " + getRuleSetKeywords(ruleset));
+                lines.add("keywords: " + ruleset.getName() + getRuleSetKeywords(sortedRules));
+                lines.add("rules:");
+                for (Rule rule : sortedRules) {
+                    lines.add("  " + rule.getName() + ": |");
+                    List<String> description = EscapeUtils.escapeLines(toLines(stripIndentation(rule.getDescription())));
+                    lines.addAll(description.stream().map(line -> "    " + line).collect(Collectors.toList()));
+                }
                 lines.add("language: " + languageName);
                 lines.add("---");
                 lines.add(GENERATED_WARNING.replace("${source}", ruleSetSourceFilepath));
 
-                for (Rule rule : getSortedRules(ruleset)) {
+                for (Rule rule : sortedRules) {
                     lines.add("## " + rule.getName());
                     lines.add("");
 
@@ -608,12 +616,16 @@ public class RuleDocGenerator {
         return languageTersename;
     }
 
-    private String getRuleSetKeywords(RuleSet ruleset) {
+    private String getRuleSetKeywords(List<Rule> rules) {
+        if (rules.isEmpty()) {
+            return "";
+        }
+
         List<String> ruleNames = new LinkedList<>();
-        for (Rule rule : ruleset.getRules()) {
+        for (Rule rule : rules) {
             ruleNames.add(rule.getName());
         }
-        return ruleset.getName() + ", " + StringUtils.join(ruleNames, ", ");
+        return ", " + StringUtils.join(ruleNames, ", ");
     }
 
     private List<Rule> getSortedRules(RuleSet ruleset) {
