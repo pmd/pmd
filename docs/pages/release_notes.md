@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀 New and noteworthy
 
 ### 🐛 Fixed Issues
+* apex
+  * [#5935](https://github.com/pmd/pmd/issues/5935): \[apex] \@SuppressWarnings - allow whitespace around comma when suppressing multiple rules
 
 ### 🚨 API Changes
 
