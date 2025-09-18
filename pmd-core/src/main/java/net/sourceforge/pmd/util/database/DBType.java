@@ -231,14 +231,6 @@ public class DBType {
     }
 
     /**
-     * Options that are specific to a type of database. E.g. things like
-     * <code>host</code>, <code>port</code> or <code>db</code>, but <b>don't</b>
-     * have a setter in this class.
-     *
-     * @param dbSpecificOptions
-     */
-
-    /**
      * Convert <code>resourceBundle</code> to usable {@link Properties}.
      *
      * @param resourceBundle

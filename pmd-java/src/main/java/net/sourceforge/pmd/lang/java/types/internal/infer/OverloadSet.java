@@ -56,8 +56,6 @@ public abstract class OverloadSet<T> {
             case UNKNOWN:
                 // neither sig is more specific
                 break;
-            default:
-                throw new AssertionError();
             }
         }
         overloads.add(sig);

@@ -32,6 +32,7 @@ import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolConfigurationNo
 import net.sourceforge.pmd.renderers.internal.sarif.SarifLog.ToolExecutionNotification;
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 public class SarifLogBuilder {
     private final List<ReportingDescriptor> rules = new ArrayList<>();
@@ -222,8 +223,8 @@ public class SarifLogBuilder {
         case MEDIUM_LOW:
         case LOW:
             return "note";
-        default:
-            return "none"; // should not occur
         }
+        // should not occur, above switch is exhaustive
+        throw AssertionUtil.shouldNotReachHere("invalid rule priority " + rulePriority);
     }
 }
