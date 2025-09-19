@@ -454,7 +454,7 @@ public interface Operation {
     <rule name="AvoidInstanceofChecksInCatchClause"
           language="java"
           since="3.0"
-          message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
+          message="An instanceof check is being performed on the caught exception. Create a separate catch clause for {0}."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause">
         <description>
@@ -468,6 +468,7 @@ Each caught exception type should be handled in its own catch clause.
 //CatchParameter
     /following-sibling::Block//InfixExpression[@Operator = 'instanceof']
         /VariableAccess[@Name = ./ancestor::Block/preceding-sibling::CatchParameter/@Name]
+            /following-sibling::TypeExpression/*
 ]]>
                 </value>
             </property>
@@ -1025,6 +1026,40 @@ public class Bar {
         }
     }
 }
+]]>
+        </example>
+    </rule>
+
+    <rule name="CollectionTypeMismatch"
+          language="java"
+          since="7.17.0"
+          message="Object of type ''{0}'' cannot be in collection expecting ''{1}''"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.CollectionTypeMismatchRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#collectiontypemismatch">
+        <description>
+Detects method calls on collections where the passed object cannot possibly be in the collection
+due to type mismatch. This helps catch potential programming errors where incompatible types
+are used with collection methods like contains(), remove(), indexOf(), etc.
+
+Methods checked include:
+- Collection: contains(), remove(), removeAll(), retainAll(), containsAll()
+- List: indexOf(), lastIndexOf()
+- Map: containsKey(), containsValue(), get(), getOrDefault(), remove()
+- Deque: removeFirstOccurrence(), removeLastOccurrence()
+- Hashtable: contains() (legacy method that checks values)
+- ConcurrentHashMap: contains() (legacy method that checks values)
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+List<Integer> numbers = Arrays.asList(1, 2, 3);
+numbers.remove("string"); // violation: String cannot be in Integer list
+
+Map<String, Integer> map = new HashMap<>();
+map.get(42); // violation: Integer key cannot be in String-keyed map
+
+Set<String> names = new HashSet<>(); 
+names.contains(123); // violation: Integer cannot be in String set
 ]]>
         </example>
     </rule>
@@ -3063,6 +3098,7 @@ public class CarTest {
 ]]>
         </example>
     </rule>
+
 
     <rule name="UnconditionalIfStatement"
           language="java"

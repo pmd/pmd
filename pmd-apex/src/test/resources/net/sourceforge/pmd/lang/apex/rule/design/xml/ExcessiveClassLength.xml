@@ -42,6 +42,16 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>Verify message includes line count</description>
+        <rule-property name="minimum">10</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid really long classes (13 lines - threshold is 10).</message>
+        </expected-messages>
+        <code-ref id="long"/>
+    </test-code>
+
+    <test-code>
         <description>long class - changed minimum</description>
         <rule-property name="minimum">2000</rule-property>
         <expected-problems>0</expected-problems>
