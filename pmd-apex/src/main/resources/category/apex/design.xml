@@ -206,7 +206,7 @@ public class Complicated {
     <rule name="ExcessiveClassLength"
           language="apex"
           since="5.5.0"
-          message="Avoid really long classes."
+          message="Avoid really long classes ({0} lines - threshold is {1})."
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveclasslength">
         <description>
@@ -238,7 +238,7 @@ public class Foo {
     <rule name="ExcessiveParameterList"
           language="apex"
           since="5.5.0"
-          message="Avoid long parameter lists."
+          message="Avoid long parameter lists ({0} parameters - threshold is {1})."
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveParameterListRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#excessiveparameterlist">
         <description>
@@ -296,7 +296,7 @@ public class Foo {
     <rule name="NcssConstructorCount"
           language="apex"
           since="5.5.0"
-          message="The constructor has an NCSS line count of {0}"
+          message="The constructor has an NCSS line count of {0}; current threshold is {1}."
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssConstructorCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncssconstructorcount">
         <description>
@@ -353,7 +353,7 @@ public class Foo extends Bar {
     <rule name="NcssTypeCount"
           language="apex"
           since="5.5.0"
-          message="The type has an NCSS line count of {0}"
+          message="The type has an NCSS line count of {0}; current threshold is {1}."
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssTypeCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncsstypecount">
         <description>
