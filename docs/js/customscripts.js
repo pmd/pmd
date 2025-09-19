@@ -113,7 +113,9 @@ $(document).ready(function () {
         var selected = $(e.target).closest('li')[0];
         if (selected) {
             $(selected).addClass('selected');
-            $('a', selected).focus();
+            if (document.activeElement !== document.getElementById('search-input')) {
+                $('a', selected).focus();
+            }
         }
     });
     $('body').on('keyup', function(e) {
