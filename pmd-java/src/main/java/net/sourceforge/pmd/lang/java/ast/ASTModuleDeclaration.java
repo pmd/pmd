@@ -18,7 +18,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * </pre>
  */
-public final class ASTModuleDeclaration extends AbstractJavaNode implements Annotatable {
+public final class ASTModuleDeclaration extends AbstractJavaNode implements Annotatable, JavadocCommentOwner {
 
     private boolean open;
 
