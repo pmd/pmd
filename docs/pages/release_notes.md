@@ -28,6 +28,14 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨 API Changes
 
+#### Deprecations
+* java
+  * The following methods have been deprecated. Due to refactoring of the internal base class, these methods are not
+    used anymore and are not required to be implemented anymore:
+    * {%jdoc !!java::lang.java.rule.design.ExcessiveImportsRule#isViolation(java::lang.java.ast.ASTCompilationUnit,int) %}
+    * {%jdoc !!java::lang.java.rule.design.ExcessiveParameterListRule#isViolation(java::lang.java.ast.ASTFormalParameters,int) %}
+    * {%jdoc !!java::lang.java.rule.design.ExcessivePublicCountRule#isViolation(java::lang.java.ast.ASTTypeDeclaration,int) %}
+
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
