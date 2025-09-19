@@ -20,7 +20,10 @@ rules:
   JumbledIncrementer: |
     Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
   MovedRule: |
-    Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span>
+    
+    The rule has been moved to another ruleset. Use instead: [JumbledIncrementer](pmd_rules_java_sample2.html#jumbledincrementer)
+    
   OverrideBothEqualsAndHashcode: |
     Override both `public boolean Object.equals(Object other)`, and `public int Object.hashCode()`, or override neither.
     Even if you are inheriting a `hashCode()` from a parent class, consider implementing hashCode and explicitly
@@ -32,13 +35,25 @@ rules:
     
     Third paragraph.
   RenamedRule1: |
-    Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span>
+    
+    This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincrementer)
+    
   RenamedRule2: |
-    Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span>
+    
+    This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincrementer)
+    
   RenamedRule3: |
-    Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span>
+    
+    This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincrementer)
+    
   RenamedRule4: |
-    Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even if intentional.
+    <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span>
+    
+    This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincrementer)
+    
   XSSInDocumentation: |
     &lt;script&gt;alert('XSS at the beginning');&lt;/script&gt; HTML tags might appear at various places.
     Sometimes they should be escaped, sometimes not:
