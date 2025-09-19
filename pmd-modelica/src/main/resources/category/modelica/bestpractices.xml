@@ -8,6 +8,42 @@
 Rules which enforce generally accepted best practices.
     </description>
 
+    <rule name="AmbiguousResolution"
+          language="modelica"
+          message="Type resolution is ambiguous: {0}"
+          since="6.21.0"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#ambiguousresolution"
+          class="net.sourceforge.pmd.lang.modelica.rule.bestpractices.AmbiguousResolutionRule">
+        <description>
+            There is multiple candidates for this type resolution. While generally this is not an error,
+            this may indicate a bug.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+package Test
+  package Inc1
+    model X
+    end X;
+    model Y
+    end Y;
+  end Inc1;
+  package Inc2
+    model Y
+    end Y;
+    model Z
+    end Z;
+  end Inc2;
+  model B
+    import Test.Inc1.*;
+    import Test.Inc2.*;
+    Y y; // Class Y is imported twice
+  end B;
+end Test;
+]]>
+        </example>
+    </rule>
+
     <rule name="ClassStartNameEqualsEndName"
           language="modelica"
           since="6.21.0"
@@ -73,39 +109,4 @@ end Example;
         </example>
     </rule>
 
-    <rule name="AmbiguousResolution"
-          language="modelica"
-          message="Type resolution is ambiguous: {0}"
-          since="6.21.0"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_modelica_bestpractices.html#ambiguousresolution"
-          class="net.sourceforge.pmd.lang.modelica.rule.bestpractices.AmbiguousResolutionRule">
-        <description>
-            There is multiple candidates for this type resolution. While generally this is not an error,
-            this may indicate a bug.
-        </description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-package Test
-  package Inc1
-    model X
-    end X;
-    model Y
-    end Y;
-  end Inc1;
-  package Inc2
-    model Y
-    end Y;
-    model Z
-    end Z;
-  end Inc2;
-  model B
-    import Test.Inc1.*;
-    import Test.Inc2.*;
-    Y y; // Class Y is imported twice
-  end B;
-end Test;
-]]>
-        </example>
-    </rule>
 </ruleset>

@@ -27,6 +27,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛 Fixed Issues
 * java-design
   * [#5569](https://github.com/pmd/pmd/issues/5569): \[java] ExcessivePublicCount should report number of public "things"
+* misc
+  * [#6012](https://github.com/pmd/pmd/issues/6012): \[pmd-rulesets] Rulesets should be in alphabetical order
 
 ### 🚨 API Changes
 
@@ -41,6 +43,7 @@ This is a {{ site.pmd.release_type }} release.
 ### ✨ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#6021](https://github.com/pmd/pmd/pull/6021): \[java] Fix #5569: ExcessiveImports/ExcessiveParameterList/ExcessivePublicCount include the metric in the message - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6023](https://github.com/pmd/pmd/pull/6023): \[test] Fix #6012: Alphabetically sort all default rules - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
