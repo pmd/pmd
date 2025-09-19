@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.TestInstance.Lifecycle.PER_CLASS;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -36,6 +37,9 @@ import javax.xml.parsers.SAXParserFactory;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.event.Level;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -60,6 +64,7 @@ import net.sourceforge.pmd.util.log.internal.MessageReporterBase;
  * Base test class to verify the language's rulesets. This class should be
  * subclassed for each language.
  */
+@TestInstance(PER_CLASS)
 public abstract class AbstractRuleSetFactoryTest {
 
     private static ValidateDefaultHandler validateDefaultHandler;
@@ -122,112 +127,120 @@ public abstract class AbstractRuleSetFactoryTest {
      * @throws Exception
      *             any error
      */
-    @Test
-    void testAllPMDBuiltInRulesMeetConventions() throws Exception {
+    @ParameterizedTest
+    @MethodSource("getRuleSetFileNames")
+    void testAllPMDBuiltInRulesMeetConventions(String fileName) throws Exception {
         int invalidSinceAttributes = 0;
         int invalidExternalInfoURL = 0;
         int invalidClassName = 0;
         int invalidRegexSuppress = 0;
         int invalidXPathSuppress = 0;
+        int invalidOrder = 0;
         StringBuilder messages = new StringBuilder();
-        List<String> ruleSetFileNames = getRuleSetFileNames();
-        for (String fileName : ruleSetFileNames) {
-            RuleSet ruleSet = loadRuleSetByFileName(fileName);
-            for (Rule rule : ruleSet.getRules()) {
+        String lastName = null;
+        RuleSet ruleSet = loadRuleSetByFileName(fileName);
+        for (Rule rule : ruleSet.getRules()) {
 
-                // Skip references
-                if (rule instanceof RuleReference) {
-                    continue;
-                }
+            // Skip references
+            if (rule instanceof RuleReference) {
+                continue;
+            }
+            if (lastName != null
+                    && String.CASE_INSENSITIVE_ORDER.compare(rule.getName(), lastName) < 0) {
+                invalidOrder++;
+                messages.append(rule.getName()).append(" should be before ")
+                    .append(lastName).append("\n");
+            }
+            lastName = rule.getName();
 
-                Language language = rule.getLanguage();
-                String group = fileName.substring(fileName.lastIndexOf('/') + 1);
-                group = group.substring(0, group.indexOf(".xml"));
-                if (group.indexOf('-') >= 0) {
-                    group = group.substring(0, group.indexOf('-'));
-                }
+            Language language = rule.getLanguage();
+            String group = fileName.substring(fileName.lastIndexOf('/') + 1);
+            group = group.substring(0, group.indexOf(".xml"));
+            if (group.indexOf('-') >= 0) {
+                group = group.substring(0, group.indexOf('-'));
+            }
 
-                // Is since missing ?
-                if (rule.getSince() == null) {
-                    invalidSinceAttributes++;
-                    messages.append("Rule ")
-                            .append(fileName)
-                            .append("/")
-                            .append(rule.getName())
-                            .append(" is missing 'since' attribute\n");
-                }
-                // Is URL valid ?
-                if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
+            // Is since missing ?
+            if (rule.getSince() == null) {
+                invalidSinceAttributes++;
+                messages.append("Rule ")
+                        .append(fileName)
+                        .append("/")
+                        .append(rule.getName())
+                        .append(" is missing 'since' attribute\n");
+            }
+            // Is URL valid ?
+            if (rule.getExternalInfoUrl() == null || "".equalsIgnoreCase(rule.getExternalInfoUrl())) {
+                invalidExternalInfoURL++;
+                messages.append("Rule ")
+                        .append(fileName)
+                        .append("/")
+                        .append(rule.getName())
+                        .append(" is missing 'externalInfoURL' attribute\n");
+            } else {
+                String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
+                        + language.getId() + "_"
+                        + IOUtil.getFilenameBase(fileName)
+                        + ".html#"
+                        + rule.getName().toLowerCase(Locale.ROOT);
+                if (rule.getExternalInfoUrl() == null
+                        || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
                     invalidExternalInfoURL++;
                     messages.append("Rule ")
                             .append(fileName)
                             .append("/")
                             .append(rule.getName())
-                            .append(" is missing 'externalInfoURL' attribute\n");
-                } else {
-                    String expectedExternalInfoURL = "https://docs.pmd-code.org/.+/pmd_rules_"
-                            + language.getId() + "_"
-                            + IOUtil.getFilenameBase(fileName)
-                            + ".html#"
-                            + rule.getName().toLowerCase(Locale.ROOT);
-                    if (rule.getExternalInfoUrl() == null
-                            || !rule.getExternalInfoUrl().matches(expectedExternalInfoURL)) {
-                        invalidExternalInfoURL++;
-                        messages.append("Rule ")
-                                .append(fileName)
-                                .append("/")
-                                .append(rule.getName())
-                                .append(" seems to have an invalid 'externalInfoURL' value (")
-                                .append(rule.getExternalInfoUrl())
-                                .append("), it should be:")
-                                .append(expectedExternalInfoURL)
-                                .append('\n');
-                    }
-                }
-                // Proper class name/packaging?
-                String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group
-                        + "." + rule.getName() + "Rule";
-                if (!rule.getRuleClass().equals(expectedClassName)
-                        && !validXPathClassNames.contains(rule.getRuleClass())) {
-                    invalidClassName++;
-                    messages.append("Rule ")
-                            .append(fileName)
-                            .append("/")
-                            .append(rule.getName())
-                            .append(" seems to have an invalid 'class' value (")
-                            .append(rule.getRuleClass())
+                            .append(" seems to have an invalid 'externalInfoURL' value (")
+                            .append(rule.getExternalInfoUrl())
                             .append("), it should be:")
-                            .append(expectedClassName)
+                            .append(expectedExternalInfoURL)
                             .append('\n');
                 }
-                // Should not have violation suppress regex property
-                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
-                    invalidRegexSuppress++;
-                    messages.append("Rule ")
-                            .append(fileName)
-                            .append("/")
-                            .append(rule.getName())
-                            .append(" should not have '")
-                            .append(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name())
-                            .append("', this is intended for end user customization only.\n");
-                }
-                // Should not have violation suppress xpath property
-                if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
-                    invalidXPathSuppress++;
-                    messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(System.lineSeparator());
-                }
+            }
+            // Proper class name/packaging?
+            String expectedClassName = "net.sourceforge.pmd.lang." + language.getId() + ".rule." + group
+                    + "." + rule.getName() + "Rule";
+            if (!rule.getRuleClass().equals(expectedClassName)
+                    && !validXPathClassNames.contains(rule.getRuleClass())) {
+                invalidClassName++;
+                messages.append("Rule ")
+                        .append(fileName)
+                        .append("/")
+                        .append(rule.getName())
+                        .append(" seems to have an invalid 'class' value (")
+                        .append(rule.getRuleClass())
+                        .append("), it should be:")
+                        .append(expectedClassName)
+                        .append('\n');
+            }
+            // Should not have violation suppress regex property
+            if (rule.getProperty(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR).isPresent()) {
+                invalidRegexSuppress++;
+                messages.append("Rule ")
+                        .append(fileName)
+                        .append("/")
+                        .append(rule.getName())
+                        .append(" should not have '")
+                        .append(Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name())
+                        .append("', this is intended for end user customization only.\n");
+            }
+            // Should not have violation suppress xpath property
+            if (rule.getProperty(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR).isPresent()) {
+                invalidXPathSuppress++;
+                messages.append("Rule ").append(fileName).append("/").append(rule.getName()).append(" should not have '").append(Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name()).append("', this is intended for end user customization only.").append(System.lineSeparator());
             }
         }
         // We do this at the end to ensure we test ALL the rules before failing
         // the test
         if (invalidSinceAttributes > 0 || invalidExternalInfoURL > 0 || invalidClassName > 0 || invalidRegexSuppress > 0
-                || invalidXPathSuppress > 0) {
+                || invalidXPathSuppress > 0 || invalidOrder > 0) {
             fail("All built-in PMD rules need 'since' attribute (" + invalidSinceAttributes
                     + " are missing), a proper ExternalURLInfo (" + invalidExternalInfoURL
                     + " are invalid), a class name meeting conventions (" + invalidClassName + " are invalid), no '"
                     + Rule.VIOLATION_SUPPRESS_REGEX_DESCRIPTOR.name() + "' property (" + invalidRegexSuppress
                     + " are invalid), and no '" + Rule.VIOLATION_SUPPRESS_XPATH_DESCRIPTOR.name() + "' property ("
-                    + invalidXPathSuppress + " are invalid)\n" + messages);
+                    + invalidXPathSuppress + " are invalid) and be alphabetically sorted ("
+                    + invalidOrder + " misplaced)\n" + messages);
         }
     }
 

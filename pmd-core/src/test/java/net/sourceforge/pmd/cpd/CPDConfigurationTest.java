@@ -30,6 +30,7 @@ class CPDConfigurationTest {
         renderersToTest.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
         renderersToTest.put("vs", VSRenderer.class);
         renderersToTest.put("text", SimpleRenderer.class);
+        renderersToTest.put("markdown", MarkdownRenderer.class);
 
         for (Map.Entry<String, Class<? extends CPDReportRenderer>> entry : renderersToTest.entrySet()) {
             CPDReportRenderer r = CPDConfiguration.createRendererByName(entry.getKey(), StandardCharsets.UTF_8);

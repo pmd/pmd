@@ -20,4 +20,15 @@
 </html>
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Github issue #3951 - violation should only cover &lt;img&gt; tag</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+<html>
+    <img src="house.jpg">
+</html>
+        ]]></code>
+    </test-code>
 </test-data>

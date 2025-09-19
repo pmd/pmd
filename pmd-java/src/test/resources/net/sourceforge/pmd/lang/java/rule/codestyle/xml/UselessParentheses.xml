@@ -663,4 +663,46 @@ public class Test {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Detailed message</description>
+        <expected-problems>11</expected-problems>
+        <expected-messages>
+            <message>Useless parentheses around `3 * 3`.</message>
+            <message>Useless parentheses around `4`.</message>
+            <message>Useless parentheses around `true ? 4 : 2`.</message>
+            <message>Useless parentheses around `k3`.</message>
+            <message>Useless parentheses around `id(k3)`.</message>
+            <message>Useless parentheses around `k5++`.</message>
+            <message>Useless parentheses around `k2 = 2`.</message>
+            <message>Duplicate parentheses around `1 + 2`.</message>
+            <message>Useless parentheses around `"very" + "long            " + "concat     split...`.</message>
+            <message>Useless parentheses around `new int[5][7]`.</message>
+            <message>Useless parentheses around `switch (k2 + k3) { ... }`.</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Parentheses {
+
+                public int id(int k) {
+                    return k;
+                }
+
+                public void run() {
+                    int k1 = (3 * 3);
+                    int k2 = (4);
+                    int k3 = (true ? 4 : 2);
+                    int k4 = id((k3));
+                    int k5 = (id(k3));
+                    int k6 = (k5++);
+                    int k7 = (k1 = (k2 = 2)) + 1;
+                    int k8 = ((1 + 2));
+                    int k9 =  (  "very" + "long            " + "concat     splitHere");
+                    int[][] k10 = (new int[5][7]);
+                    int k11 = (switch(k2 + k3) {
+                        case 1 -> 7;
+                        default -> 2;
+                    });
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

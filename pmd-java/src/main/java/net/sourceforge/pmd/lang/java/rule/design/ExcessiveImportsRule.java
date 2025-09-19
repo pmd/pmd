@@ -28,8 +28,16 @@ public class ExcessiveImportsRule extends AbstractJavaCounterCheckRule<ASTCompil
         return 30;
     }
 
-    @Override
+    /**
+     * @deprecated since 7.18.0. This method is not used anymore and shouldn't be implemented.
+     */
+    @Deprecated
     protected boolean isViolation(ASTCompilationUnit node, int reportLevel) {
-        return node.children(ASTImportDeclaration.class).count() >= reportLevel;
+        throw new UnsupportedOperationException("method is deprecated and not supported anymore.");
+    }
+
+    @Override
+    protected int getMetric(ASTCompilationUnit node) {
+        return node.children(ASTImportDeclaration.class).count();
     }
 }

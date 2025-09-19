@@ -39,15 +39,21 @@ public class ExcessivePublicCountRule extends AbstractJavaCounterCheckRule<ASTTy
         return 45;
     }
 
-    @Override
+    /**
+     * @deprecated since 7.18.0. This method is not used anymore and shouldn't be implemented.
+     */
+    @Deprecated
     protected boolean isViolation(ASTTypeDeclaration node, int reportLevel) {
-        long publicCount = node.getDeclarations()
-                               .filterIs(ModifierOwner.class)
-                               .filter(it -> it.hasModifiers(PUBLIC))
-                               // filter out constants
-                               .filter(it -> !(it instanceof ASTFieldDeclaration && it.hasModifiers(STATIC, FINAL)))
-                               .count();
+        throw new UnsupportedOperationException("method is deprecated and not supported anymore.");
+    }
 
-        return publicCount >= reportLevel;
+    @Override
+    protected int getMetric(ASTTypeDeclaration node) {
+        return node.getDeclarations()
+                   .filterIs(ModifierOwner.class)
+                   .filter(it -> it.hasModifiers(PUBLIC))
+                   // filter out constants
+                   .filter(it -> !(it instanceof ASTFieldDeclaration && it.hasModifiers(STATIC, FINAL)))
+                   .count();
     }
 }

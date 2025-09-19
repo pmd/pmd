@@ -75,7 +75,7 @@ class Java25TreeDumpTest extends BaseJavaTreeDumpTest {
         int javaVersion = Integer.parseInt(System.getProperty("java.version").split("\\.")[0].replaceAll("-ea", ""));
         assumeTrue(javaVersion >= 25, "Java " + javaVersion + " doesn't support java.lang.IO. At least Java 25 is needed for this test.");
 
-        ASTCompilationUnit compilationUnit = java25.parseResource("Jep512_CompactSourceFilesAndInstanceMainMethods.java");
+        ASTCompilationUnit compilationUnit = java25.parseResource("Jep512_CompactSourceFilesAndInstanceMainMethodsAfterJava23.java");
         assertTrue(compilationUnit.isCompact());
 
         List<ASTMethodCall> methodCalls = compilationUnit.descendants(ASTMethodCall.class).toList();
