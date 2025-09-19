@@ -2046,6 +2046,31 @@
 
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
+  <li>apex-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6022">#6022</a>: [apex] ExcessiveClassLength/ExcessiveParameterList include the metric in the message</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6029">#6029</a>: [java] Fix UnnecessaryCast false-negative in method calls</li>
+    </ul>
+  </li>
+  <li>java-design
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5569">#5569</a>: [java] ExcessivePublicCount should report number of public “things”</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5878">#5878</a>: [java] DontUseFloatTypeForLoopIndices false-negative if variable is declared before loop</li>
+    </ul>
+  </li>
+  <li>java-multithreading
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5880">#5880</a>: [java] DoubleCheckedLocking is not detected if more than 1 assignment or more than 2 if statements</li>
+    </ul>
+  </li>
   <li>misc
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6012">#6012</a>: [pmd-rulesets] Rulesets should be in alphabetical order</li>
@@ -2055,10 +2080,32 @@
 
 <h3 id="-api-changes">🚨 API Changes</h3>
 
+<h4 id="deprecations">Deprecations</h4>
+<ul>
+  <li>java
+    <ul>
+      <li>The following methods have been deprecated. Due to refactoring of the internal base class, these methods are not
+used anymore and are not required to be implemented anymore:
+        <ul>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.18.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/ExcessiveImportsRule.html#isViolation(net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit,int)"><code>ExcessiveImportsRule#isViolation</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.18.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/ExcessiveParameterListRule.html#isViolation(net.sourceforge.pmd.lang.java.ast.ASTFormalParameters,int)"><code>ExcessiveParameterListRule#isViolation</code></a></li>
+          <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.18.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/ExcessivePublicCountRule.html#isViolation(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,int)"><code>ExcessivePublicCountRule#isViolation</code></a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="-merged-pull-requests">✨ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 <ul>
+  <li><a href="https://github.com/pmd/pmd/pull/6021">#6021</a>: [java] Fix #5569: ExcessiveImports/ExcessiveParameterList/ExcessivePublicCount include the metric in the message - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6022">#6022</a>: [apex] ExcessiveClassLength/ExcessiveParameterList include the metric in the message - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6023">#6023</a>: [test] Fix #6012: Alphabetically sort all default rules - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6024">#6024</a>: [java] Fix #5878: DontUseFloatTypeForLoopIndices now checks the UpdateStatement as well - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6029">#6029</a>: [java] Fix UnnecessaryCast false-negative in method calls - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6031">#6031</a>: [java] Fix #5880: False Negatives in DoubleCheckedLocking - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6040">#6040</a>: [java,apex,plsql,velocity] Change description of “minimum” parameter - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
 </ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>

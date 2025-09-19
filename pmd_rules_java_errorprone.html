@@ -3731,7 +3731,10 @@ unless you’re certain that float provides enough precision and you have a comp
 performance need (space or time).</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ForStatement</span><span class="o">/</span><span class="nt">ForInit</span><span class="o">//</span><span class="nt">VariableId</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'float'</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ForStatement</span><span class="p">[</span><span class="w">
+    </span><span class="nt">ForInit</span><span class="o">//</span><span class="nt">VariableId</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'float'</span><span class="p">)]</span><span class="w">
+    </span><span class="ow">or</span><span class="w"> </span><span class="nt">ForUpdate</span><span class="o">//</span><span class="nt">VariableAccess</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'float'</span><span class="p">)]</span><span class="w">
+</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
