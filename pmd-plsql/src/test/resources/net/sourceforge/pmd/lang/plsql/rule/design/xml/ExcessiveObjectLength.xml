@@ -8,6 +8,9 @@
         <description>short</description>
         <rule-property name="minimum">10</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid really long Oracle object specifications and bodies (2,071 lines found, threshold is 10).</message>
+        </expected-messages>
         <code><![CDATA[
 CREATE OR REPLACE TYPE typ_unreserved_keywords AS OBJECT
     (
