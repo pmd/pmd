@@ -35,8 +35,16 @@ public class NPathComplexityRule extends AbstractCounterCheckRule<ExecutableCode
     }
 
     @Override
+    protected Object[] getViolationParameters(ExecutableCode node, int metric, int limit) {
+        return new Object[] {node.getMethodName(), metric, limit};
+    }
+
+    /**
+     * @deprecated Since 7.18.0. Use {@link #getViolationParameters(ExecutableCode, int, int)} instead.
+     */
+    @Deprecated
     protected Object[] getViolationParameters(ExecutableCode node, int metric) {
-        return new Object[] {node.getMethodName(), metric};
+        return getViolationParameters(node, metric, -1);
     }
 
     /**
