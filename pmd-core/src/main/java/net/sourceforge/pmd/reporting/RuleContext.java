@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -253,7 +254,7 @@ public final class RuleContext {
         // Escape PMD specific variable message format, specifically the {
         // in the ${, so MessageFormat doesn't bitch.
         final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
-        String formatted = MessageFormat.format(escapedMessage, args);
+        String formatted = new MessageFormat(escapedMessage, Locale.ROOT).format(args);
         return expandVariables(formatted, extraVars);
     }
 

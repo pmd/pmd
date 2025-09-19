@@ -145,7 +145,7 @@ END;
     <rule name="ExcessiveMethodLength"
           language="plsql"
           since="5.1"
-          message="Avoid really long methods ({0} lines found)."
+          message="Avoid really long methods ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveMethodLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessivemethodlength">
         <description>
@@ -170,7 +170,7 @@ END;
     <rule name="ExcessiveObjectLength"
           language="plsql"
           since="5.1"
-          message="Avoid really long Oracle object specifications and bodies ({0} lines found)."
+          message="Avoid really long Oracle object specifications and bodies ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveObjectLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessiveobjectlength">
         <description>
@@ -205,7 +205,7 @@ END;
     <rule name="ExcessivePackageBodyLength"
           language="plsql"
           since="5.1"
-          message="Avoid really long Object Type and Package bodies ({0} lines found)."
+          message="Avoid really long Object Type and Package bodies ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageBodyLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessivepackagebodylength">
         <description>
@@ -240,7 +240,7 @@ END;
     <rule name="ExcessivePackageSpecificationLength"
           language="plsql"
           since="5.1"
-          message="Avoid really long Package Specifications ({0} lines found)."
+          message="Avoid really long Package Specifications ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageSpecificationLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessivepackagespecificationlength">
         <description>
@@ -268,7 +268,7 @@ END;
     <rule name="ExcessiveParameterList"
           language="plsql"
           since="5.1"
-          message="Avoid long parameter lists."
+          message="Avoid long parameter lists ({0} parameters found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveParameterListRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessiveparameterlist">
         <description>
@@ -330,7 +330,7 @@ public class Foo {
     <rule name="ExcessiveTypeLength"
           language="plsql"
           since="5.1"
-          message="Avoid really long Object Type specifications ({0} lines found)."
+          message="Avoid really long Object Type specifications ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveTypeLengthRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#excessivetypelength">
         <description>
@@ -363,7 +363,7 @@ END;
     </rule>
 
     <rule name="NcssMethodCount"
-          message="The method {0}() has an NCSS line count of {1}"
+          message="The method {0}() has an NCSS line count of {1} (threshold is {2})"
           language="plsql"
           since="5.1"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NcssMethodCountRule"
@@ -387,7 +387,7 @@ END;
     </rule>
 
     <rule name="NcssObjectCount"
-          message="The Oracle object {0} has a NCSS line count of {1}"
+          message="The Oracle object {0} has a NCSS line count of {1} (threshold is {2})"
           language="plsql"
           since="5.1"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NcssObjectCountRule"
@@ -415,7 +415,7 @@ CREATE OR REPLACE PACKAGE pkg_
     <rule name="NPathComplexity"
           language="plsql"
           since="5.1"
-          message="The method {0}() has an NPath complexity of {1}"
+          message="The method {0}() has an NPath complexity of {1} (threshold is {2})"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NPathComplexityRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#npathcomplexity">
         <description>

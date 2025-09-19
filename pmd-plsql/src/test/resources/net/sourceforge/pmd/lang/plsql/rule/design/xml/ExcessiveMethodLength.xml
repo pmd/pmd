@@ -8,6 +8,9 @@
         <description>short</description>
         <rule-property name="minimum">10</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid really long methods (3,187 lines found, threshold is 10).</message>
+        </expected-messages>
         <code><![CDATA[
 CREATE OR REPLACE PACKAGE BODY foo AS
     PROCEDURE prc_test_unreserved_keyword IS

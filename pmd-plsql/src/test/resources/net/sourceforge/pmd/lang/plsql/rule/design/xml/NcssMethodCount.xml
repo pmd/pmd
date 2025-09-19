@@ -8,6 +8,9 @@
         <description>A too complex procedure which triggers ExcessiveNcssMethodCountRule</description>
         <rule-property name="minimum">10</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The method prc_test_unreserved_keyword() has an NCSS line count of 1,061 (threshold is 10)</message>
+        </expected-messages>
         <code><![CDATA[
 CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
     /*
