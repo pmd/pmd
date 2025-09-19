@@ -302,7 +302,7 @@ ul#results-container {
     box-shadow: 2px 3px 2px #dedede;
     padding: 0px;
     max-height: 500px;
-    overflow: scroll;
+    overflow-y: auto;
 }
 ul#results-container li {
     padding: 10px;
