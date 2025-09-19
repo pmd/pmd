@@ -18,6 +18,9 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 
@@ -42,17 +45,34 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
         String e2Name = st2.getParameter().getName();
 
         return JavaAstUtils.tokenEquals(st1.getBody(), st2.getBody(), name -> name.equals(e1Name) ? e2Name : name)
-            && areStructurallyEquivalent(st1.getBody(), st2.getBody(),
-                                         (n1, n2) -> {
-                                             if (n1 instanceof InvocationNode) {
-                                                 JExecutableSymbol sym1 = ((InvocationNode) n1).getMethodType().getSymbol();
-                                                 JExecutableSymbol sym2 = ((InvocationNode) n2).getMethodType().getSymbol();
-                                                 if (!Objects.equals(sym1, sym2)) {
-                                                     return OptionalBool.NO;
-                                                 }
-                                             }
-                                             return OptionalBool.UNKNOWN;
-                                         });
+            && areStructurallyEquivalent(st1.getBody(), st2.getBody(), this::isSameMethod);
+    }
+
+    private OptionalBool isSameMethod(JavaNode n1, JavaNode n2) {
+        if (n1 instanceof InvocationNode) {
+            JMethodSig methodType1 = ((InvocationNode) n1).getMethodType();
+            JExecutableSymbol sym1 = methodType1.getSymbol();
+            JMethodSig methodType2 = ((InvocationNode) n2).getMethodType();
+            JExecutableSymbol sym2 = methodType2.getSymbol();
+            if (Objects.equals(sym1, sym2)) {
+                return OptionalBool.UNKNOWN;
+            }
+            if (!sym1.getFormalParameters().equals(sym2.getFormalParameters())) {
+                return OptionalBool.NO;
+            }
+            JTypeMirror declaringType1 = methodType1.getDeclaringType();
+            JTypeMirror declaringType2 = methodType2.getDeclaringType();
+            boolean isOverride = declaringType2.getSuperTypeSet().stream().anyMatch(st ->
+                TypeTestUtil.isA(st, declaringType1) && st.streamDeclaredMethods(
+                    method -> method.nameEquals(methodType1.getName())
+                        && method.getFormalParameters().equals(sym1.getFormalParameters())
+                ).findAny().isPresent()
+            );
+            if (!isOverride) {
+                return OptionalBool.NO;
+            }
+        }
+        return OptionalBool.UNKNOWN;
     }
 
     /**
