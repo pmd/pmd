@@ -17,10 +17,13 @@ import java.lang.annotation.RetentionPolicy;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
+import net.sourceforge.pmd.lang.LanguageRegistry;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymImplementation.Fixture;
 import net.sourceforge.pmd.lang.java.symbols.testdata.AnnotationWithNoRetention;
 import net.sourceforge.pmd.lang.java.symbols.testdata.TypeAnnotation;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Tests that test both AST and ASM symbols.
@@ -50,10 +53,20 @@ class JClassSymbolTest {
     @EnumSource
     @ParameterizedTest
     void testAnnotWithNoTarget(SymImplementation impl) {
+        // Default retention changed several times
+        // between versions, here we only test with Java 8...
+        // See annotationAppliesToContext.
+        LanguageVersion javaVer =
+            LanguageRegistry.PMD.getLanguageById("java").getVersion("8");
+
         JClassSymbol sym = impl.getSymbol(AnnotationWithNoRetention.class);
 
         for (ElementType type : ElementType.values()) {
-            assertEquals(type != ElementType.TYPE_PARAMETER, sym.annotationAppliesTo(type),
+            boolean supportedOnJava8 =
+                type != ElementType.TYPE_PARAMETER && type != ElementType.TYPE_USE;
+            assertEquals(
+                OptionalBool.definitely(supportedOnJava8),
+                sym.annotationAppliesToContext(type, javaVer),
                          "annot supports " + type);
         }
     }

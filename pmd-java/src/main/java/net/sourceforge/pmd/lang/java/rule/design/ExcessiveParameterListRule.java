@@ -37,8 +37,16 @@ public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<AST
                 && ((ASTConstructorDeclaration) parent).getVisibility() == Visibility.V_PRIVATE;
     }
 
-    @Override
+    /**
+     * @deprecated since 7.18.0. This method is not used anymore and shouldn't be implemented.
+     */
+    @Deprecated
     protected boolean isViolation(ASTFormalParameters node, int reportLevel) {
-        return node.size() > reportLevel;
+        throw new UnsupportedOperationException("method is deprecated and not supported anymore.");
+    }
+
+    @Override
+    protected int getMetric(ASTFormalParameters node) {
+        return node.size();
     }
 }
