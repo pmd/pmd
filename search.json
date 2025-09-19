@@ -299,6 +299,15 @@
 ,
 
 {
+"title": "AmbiguousResolution (Modelica, Best Practices)",
+"tags": "",
+"keywords": "AmbiguousResolution",
+"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
 "title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
 "tags": "",
 "keywords": "ClassStartNameEqualsEndName",
@@ -312,15 +321,6 @@
 "tags": "",
 "keywords": "ConnectUsingNonConnector",
 "url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "AmbiguousResolution (Modelica, Best Practices)",
-"tags": "",
-"keywords": "AmbiguousResolution",
-"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -691,19 +691,19 @@
 ,
 
 {
-"title": "UnusedLocalVariable (Apex, Best Practices)",
+"title": "QueueableWithoutFinalizer (Apex, Best Practices)",
 "tags": "",
-"keywords": "UnusedLocalVariable",
-"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
+"keywords": "QueueableWithoutFinalizer",
+"url": "pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "QueueableWithoutFinalizer (Apex, Best Practices)",
+"title": "UnusedLocalVariable (Apex, Best Practices)",
 "tags": "",
-"keywords": "QueueableWithoutFinalizer",
-"url": "pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer",
+"keywords": "UnusedLocalVariable",
+"url": "pmd_rules_apex_bestpractices.html#unusedlocalvariable",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -1532,15 +1532,6 @@
 ,
 
 {
-"title": "MisplacedPragma (PLSQL, Code Style)",
-"tags": "",
-"keywords": "MisplacedPragma",
-"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
 "title": "ForLoopNaming (PLSQL, Code Style)",
 "tags": "",
 "keywords": "ForLoopNaming",
@@ -1554,6 +1545,15 @@
 "tags": "",
 "keywords": "LineLength",
 "url": "pmd_rules_plsql_codestyle.html#linelength",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "MisplacedPragma (PLSQL, Code Style)",
+"tags": "",
+"keywords": "MisplacedPragma",
+"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 
@@ -1727,24 +1727,6 @@
 ,
 
 {
-"title": "IfElseStmtsMustUseBraces (Apex, Code Style)",
-"tags": "",
-"keywords": "IfElseStmtsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "IfStmtsMustUseBraces (Apex, Code Style)",
-"tags": "",
-"keywords": "IfStmtsMustUseBraces",
-"url": "pmd_rules_apex_codestyle.html#ifstmtsmustusebraces",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
 "title": "FieldDeclarationsShouldBeAtStart (Apex, Code Style)",
 "tags": "",
 "keywords": "FieldDeclarationsShouldBeAtStart",
@@ -1776,6 +1758,24 @@
 "tags": "",
 "keywords": "FormalParameterNamingConventions",
 "url": "pmd_rules_apex_codestyle.html#formalparameternamingconventions",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "IfElseStmtsMustUseBraces (Apex, Code Style)",
+"tags": "",
+"keywords": "IfElseStmtsMustUseBraces",
+"url": "pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "IfStmtsMustUseBraces (Apex, Code Style)",
+"tags": "",
+"keywords": "IfStmtsMustUseBraces",
+"url": "pmd_rules_apex_codestyle.html#ifstmtsmustusebraces",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
@@ -1945,19 +1945,19 @@
 ,
 
 {
-"title": "EmptyMethodInAbstractClassShouldBeAbstract (Java, Code Style)",
+"title": "EmptyControlStatement (Java, Code Style)",
 "tags": "",
-"keywords": "EmptyMethodInAbstractClassShouldBeAbstract",
-"url": "pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract",
+"keywords": "EmptyControlStatement",
+"url": "pmd_rules_java_codestyle.html#emptycontrolstatement",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "EmptyControlStatement (Java, Code Style)",
+"title": "EmptyMethodInAbstractClassShouldBeAbstract (Java, Code Style)",
 "tags": "",
-"keywords": "EmptyControlStatement",
-"url": "pmd_rules_java_codestyle.html#emptycontrolstatement",
+"keywords": "EmptyMethodInAbstractClassShouldBeAbstract",
+"url": "pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
@@ -2143,24 +2143,6 @@
 ,
 
 {
-"title": "UseUnderscoresInNumericLiterals (Java, Code Style)",
-"tags": "",
-"keywords": "UseUnderscoresInNumericLiterals",
-"url": "pmd_rules_java_codestyle.html#useunderscoresinnumericliterals",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "TypeParameterNamingConventions (Java, Code Style)",
-"tags": "",
-"keywords": "TypeParameterNamingConventions",
-"url": "pmd_rules_java_codestyle.html#typeparameternamingconventions",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
 "title": "OnlyOneReturn (Java, Code Style)",
 "tags": "",
 "keywords": "OnlyOneReturn",
@@ -2237,6 +2219,15 @@
 "tags": "",
 "keywords": "TooManyStaticImports",
 "url": "pmd_rules_java_codestyle.html#toomanystaticimports",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "TypeParameterNamingConventions (Java, Code Style)",
+"tags": "",
+"keywords": "TypeParameterNamingConventions",
+"url": "pmd_rules_java_codestyle.html#typeparameternamingconventions",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
@@ -2372,6 +2363,15 @@
 "tags": "",
 "keywords": "UseShortArrayInitializer",
 "url": "pmd_rules_java_codestyle.html#useshortarrayinitializer",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "UseUnderscoresInNumericLiterals (Java, Code Style)",
+"tags": "",
+"keywords": "UseUnderscoresInNumericLiterals",
+"url": "pmd_rules_java_codestyle.html#useunderscoresinnumericliterals",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
@@ -2831,15 +2831,6 @@
 ,
 
 {
-"title": "AvoidDeeplyNestedIfStmts (Apex, Design)",
-"tags": "",
-"keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_apex_design.html#avoiddeeplynestedifstmts",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
 "title": "AvoidBooleanMethodParameters (Apex, Design)",
 "tags": "",
 "keywords": "AvoidBooleanMethodParameters",
@@ -2849,10 +2840,10 @@
 ,
 
 {
-"title": "CyclomaticComplexity (Apex, Design)",
+"title": "AvoidDeeplyNestedIfStmts (Apex, Design)",
 "tags": "",
-"keywords": "CyclomaticComplexity",
-"url": "pmd_rules_apex_design.html#cyclomaticcomplexity",
+"keywords": "AvoidDeeplyNestedIfStmts",
+"url": "pmd_rules_apex_design.html#avoiddeeplynestedifstmts",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
@@ -2862,6 +2853,15 @@
 "tags": "",
 "keywords": "CognitiveComplexity",
 "url": "pmd_rules_apex_design.html#cognitivecomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "CyclomaticComplexity (Apex, Design)",
+"tags": "",
+"keywords": "CyclomaticComplexity",
+"url": "pmd_rules_apex_design.html#cyclomaticcomplexity",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
@@ -3049,6 +3049,15 @@
 ,
 
 {
+"title": "CognitiveComplexity (Java, Design)",
+"tags": "",
+"keywords": "CognitiveComplexity",
+"url": "pmd_rules_java_design.html#cognitivecomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
 "title": "CollapsibleIfStatements (Java, Design)",
 "tags": "",
 "keywords": "CollapsibleIfStatements",
@@ -3062,15 +3071,6 @@
 "tags": "",
 "keywords": "CouplingBetweenObjects",
 "url": "pmd_rules_java_design.html#couplingbetweenobjects",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "CognitiveComplexity (Java, Design)",
-"tags": "",
-"keywords": "CognitiveComplexity",
-"url": "pmd_rules_java_design.html#cognitivecomplexity",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 ,
@@ -3202,6 +3202,15 @@
 ,
 
 {
+"title": "MutableStaticState (Java, Design)",
+"tags": "",
+"keywords": "MutableStaticState",
+"url": "pmd_rules_java_design.html#mutablestaticstate",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
 "title": "NcssCount (Java, Design)",
 "tags": "",
 "keywords": "NcssCount",
@@ -3323,15 +3332,6 @@
 "tags": "",
 "keywords": "UseUtilityClass",
 "url": "pmd_rules_java_design.html#useutilityclass",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "MutableStaticState (Java, Design)",
-"tags": "",
-"keywords": "MutableStaticState",
-"url": "pmd_rules_java_design.html#mutablestaticstate",
 "summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
 }
 
