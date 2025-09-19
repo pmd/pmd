@@ -92,49 +92,6 @@ END;
         ]]></example>
     </rule>
 
-    <rule name="MisplacedPragma"
-          language="plsql"
-          since="5.5.2"
-          message="Pragma should be used only inside the declaration block before 'BEGIN'."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#misplacedpragma">
-        <description>
-Oracle states that the PRAQMA AUTONOMOUS_TRANSACTION must be in the declaration block,
-but the code does not complain, when being compiled on the 11g DB.
-https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//ProgramUnit/Pragma
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-create or replace package inline_pragma_error is
-
-end;
-/
-
-create or replace package body inline_pragma_error is
-  procedure do_transaction(p_input_token        in varchar(200)) is
-  PRAGMA AUTONOMOUS_TRANSACTION; /* this is correct place for PRAGMA */
-  begin
-    PRAGMA AUTONOMOUS_TRANSACTION; /* this is the wrong place for PRAGMA -> violation */
-    /* do something */
-    COMMIT;
-   end do_transaction;
-
-end inline_pragma_error;
-/
-]]>
-        </example>
-    </rule>
-
     <rule name="ForLoopNaming"
           language="plsql"
           since="6.7.0"
@@ -142,13 +99,13 @@ end inline_pragma_error;
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#forloopnaming">
         <description>
-In case you have loops please name the loop variables more meaningful.
+            In case you have loops please name the loop variables more meaningful.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value>
-<![CDATA[
+                    <![CDATA[
 //CursorForLoopStatement[
     $allowSimpleLoops = false() or
     (Statement//CursorForLoopStatement or ancestor::CursorForLoopStatement)
@@ -168,7 +125,7 @@ In case you have loops please name the loop variables more meaningful.
             <property name="indexPattern" type="Regex" description="The pattern used for the index loop variable" value="[a-zA-Z_0-9]{5,}" />
         </properties>
         <example>
-<![CDATA[
+            <![CDATA[
 -- good example
 BEGIN
 FOR company IN (SELECT * FROM companies) LOOP
@@ -208,6 +165,49 @@ This rule checks for long lines. Please note that comments are not ignored.
 This rule is the PMD equivalent of checkstyle's [LineLength](http://checkstyle.sourceforge.net/config_sizes.html#LineLength) check.
         </description>
         <priority>3</priority>
+    </rule>
+
+    <rule name="MisplacedPragma"
+          language="plsql"
+          since="5.5.2"
+          message="Pragma should be used only inside the declaration block before 'BEGIN'."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_codestyle.html#misplacedpragma">
+        <description>
+            Oracle states that the PRAQMA AUTONOMOUS_TRANSACTION must be in the declaration block,
+            but the code does not complain, when being compiled on the 11g DB.
+            https://docs.oracle.com/cd/B28359_01/appdev.111/b28370/static.htm#BABIIHBJ
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ProgramUnit/Pragma
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+create or replace package inline_pragma_error is
+
+end;
+/
+
+create or replace package body inline_pragma_error is
+  procedure do_transaction(p_input_token        in varchar(200)) is
+  PRAGMA AUTONOMOUS_TRANSACTION; /* this is correct place for PRAGMA */
+  begin
+    PRAGMA AUTONOMOUS_TRANSACTION; /* this is the wrong place for PRAGMA -> violation */
+    /* do something */
+    COMMIT;
+   end do_transaction;
+
+end inline_pragma_error;
+/
+]]>
+        </example>
     </rule>
 
 </ruleset>

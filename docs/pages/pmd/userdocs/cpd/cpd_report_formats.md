@@ -5,7 +5,7 @@ keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for CPD"
 permalink: pmd_userdocs_cpd_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: June 2024 (7.3.0)
+last_updated: August 2025 (7.17.0)
 ---
 
 ## Overview
@@ -209,7 +209,7 @@ Example:
 ## csv
 
 This outputs the duplication as comma separated values. It only reports the duplication size (number
-of lines and tokens) and the number of occurrences. After that, the begin lines and filenames are reported on
+of lines and tokens) and the number of occurrences. After that, the starting lines and filenames are reported on
 after another.
 
 Example:
@@ -228,7 +228,7 @@ for each occurrence separately. While the tokens are the same, due to formatting
 different. Whitespace and comments are usually ignored when finding duplicated code.
 
 In each line, the duplication size in tokens is reported, then the number of occurrences. And after that, for each
-file, the begin line, the number of duplicated lines and the filename.
+file, the starting line, the number of duplicated lines and the filename.
 
 Example:
 
@@ -242,7 +242,7 @@ eTest.java
 
 ## vs
 
-This outputs the duplication in a format, that Visual Studio. CPD can be added as a external tool and the output
+This outputs the duplication in a format, that Visual Studio understands. CPD can be added as an external tool and the output
 is shown in the console. You can then click on the filenames to jump to the source where the duplication is located.
 
 Each occurrence of a duplication is reported in a separate line, that's why in this example, we have 5 lines.
@@ -275,7 +275,7 @@ xalan -in cpd-report-sample.xml -xsl cpdhtml.xslt -out cpd-report-sample-cpdhtml
 
 [Example](report-examples/cpdhtml.html)
 
-This stylesheet by default only consideres duplications longer than 30 lines. You can change the default value with
+This stylesheet by default only considers duplications longer than 30 lines. You can change the default value with
 the param `lines`:
 
 ```shell
@@ -294,3 +294,158 @@ xalan -in pmd-core-cpd-report.xml -xsl etc/xslt/cpdhtml-v2.xslt -out pmd-core-cp
 
 It requires javascript enabled and uses [Bootstrap](https://getbootstrap.com/),
 [jQuery](https://jquery.com/), and [DataTables](https://datatables.net/). 
+
+## markdown
+
+This report format outputs all duplications one after another in Markdown. Each duplication contains the complete code snippet as a code block.
+Duplications are separated by a horizontal line (`---` in Markdown).
+
+This format is available since PMD 7.17.0.
+
+<details class="no-background">
+    <summary>Example (rendered)</summary>
+    <div markdown="block">
+
+Found a 33 line (239 tokens) duplication in the following files:
+* Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+* Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+
+```java
+public void testOverride() {
+    final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+    MockRule rule = new MockRule();
+    rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
+    rule.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME));
+    rule.setName("name1");
+    rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
+    rule.setMessage("message1");
+    rule.setDescription("description1");
+    rule.addExample("example1");
+    rule.setExternalInfoUrl("externalInfoUrl1");
+    rule.setPriority(RulePriority.HIGH);
+
+    final StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
+    RuleReference ruleReference = new RuleReference();
+    ruleReference.setRule(rule);
+    ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
+    ruleReference.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+    ruleReference
+            .setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
+    ruleReference
+            .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
+    ruleReference.setDeprecated(true);
+    ruleReference.setName("name2");
+    ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
+    ruleReference.setProperty(PROPERTY2_DESCRIPTOR, "value3");
+    ruleReference.setMessage("message2");
+    ruleReference.setDescription("description2");
+    ruleReference.addExample("example2");
+    ruleReference.setExternalInfoUrl("externalInfoUrl2");
+    ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
+
+    validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+```
+
+---
+
+Found a 16 line (110 tokens) duplication in the following files:
+* Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+
+```java
+JaxenXPathRuleQuery query = createQuery(xpath);
+List<String> ruleChainVisits = query.getRuleChainVisits();
+Assert.assertEquals(2, ruleChainVisits.size());
+Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+// Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+// match a real node name.
+Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+RuleContext data = new RuleContext();
+data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+query.evaluate(dummy, data);
+// note: the actual xpath queries are only available after evaluating
+Assert.assertEquals(2, query.nodeNameToXPaths.size());
+Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
+```
+</div>
+</details>
+
+<p></p>
+
+<details class="no-background">
+    <summary>Markdown source</summary>
+    <div markdown="block">
+````markdown
+Found a 33 line (239 tokens) duplication in the following files:
+* Starting at line 32 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+* Starting at line 68 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/RuleReferenceTest.java
+
+```java
+public void testOverride() {
+    final StringProperty PROPERTY1_DESCRIPTOR = new StringProperty("property1", "Test property", null, 0f);
+    MockRule rule = new MockRule();
+    rule.definePropertyDescriptor(PROPERTY1_DESCRIPTOR);
+    rule.setLanguage(LanguageRegistry.getLanguage(Dummy2LanguageModule.NAME));
+    rule.setName("name1");
+    rule.setProperty(PROPERTY1_DESCRIPTOR, "value1");
+    rule.setMessage("message1");
+    rule.setDescription("description1");
+    rule.addExample("example1");
+    rule.setExternalInfoUrl("externalInfoUrl1");
+    rule.setPriority(RulePriority.HIGH);
+
+    final StringProperty PROPERTY2_DESCRIPTOR = new StringProperty("property2", "Test property", null, 0f);
+    RuleReference ruleReference = new RuleReference();
+    ruleReference.setRule(rule);
+    ruleReference.definePropertyDescriptor(PROPERTY2_DESCRIPTOR);
+    ruleReference.setLanguage(LanguageRegistry.getLanguage(DummyLanguageModule.NAME));
+    ruleReference
+            .setMinimumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.3"));
+    ruleReference
+            .setMaximumLanguageVersion(LanguageRegistry.getLanguage(DummyLanguageModule.NAME).getVersion("1.7"));
+    ruleReference.setDeprecated(true);
+    ruleReference.setName("name2");
+    ruleReference.setProperty(PROPERTY1_DESCRIPTOR, "value2");
+    ruleReference.setProperty(PROPERTY2_DESCRIPTOR, "value3");
+    ruleReference.setMessage("message2");
+    ruleReference.setDescription("description2");
+    ruleReference.addExample("example2");
+    ruleReference.setExternalInfoUrl("externalInfoUrl2");
+    ruleReference.setPriority(RulePriority.MEDIUM_HIGH);
+
+    validateOverriddenValues(PROPERTY1_DESCRIPTOR, PROPERTY2_DESCRIPTOR, ruleReference);
+```
+
+---
+
+Found a 16 line (110 tokens) duplication in the following files:
+* Starting at line 66 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 88 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+* Starting at line 110 of /home/pmd/source/pmd-core/src/test/java/net/sourceforge/pmd/lang/rule/xpath/JaxenXPathRuleQueryTest.java
+
+```java
+JaxenXPathRuleQuery query = createQuery(xpath);
+List<String> ruleChainVisits = query.getRuleChainVisits();
+Assert.assertEquals(2, ruleChainVisits.size());
+Assert.assertTrue(ruleChainVisits.contains("dummyNode"));
+// Note: Having AST_ROOT in the rule chain visits is probably a mistake. But it doesn't hurt, it shouldn't
+// match a real node name.
+Assert.assertTrue(ruleChainVisits.contains(JaxenXPathRuleQuery.AST_ROOT));
+
+DummyNodeWithListAndEnum dummy = new DummyNodeWithListAndEnum(1);
+RuleContext data = new RuleContext();
+data.setLanguageVersion(LanguageRegistry.findLanguageByTerseName("dummy").getDefaultVersion());
+
+query.evaluate(dummy, data);
+// note: the actual xpath queries are only available after evaluating
+Assert.assertEquals(2, query.nodeNameToXPaths.size());
+Assert.assertEquals("self::node()[(attribute::Test1 = \"false\")][(attribute::Test2 = \"true\")]", query.nodeNameToXPaths.get("dummyNode").get(0).toString());
+```
+````
+
+</div>
+</details>

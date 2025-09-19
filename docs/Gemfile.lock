@@ -18,7 +18,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     base64 (0.2.0)
     benchmark (0.4.1)
-    bigdecimal (3.2.2)
+    bigdecimal (3.2.3)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
