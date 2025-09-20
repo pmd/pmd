@@ -4,6 +4,10 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import java.util.List;
+
+import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractJavaCounterCheckRule;
@@ -39,5 +43,20 @@ public class ExcessiveImportsRule extends AbstractJavaCounterCheckRule<ASTCompil
     @Override
     protected int getMetric(ASTCompilationUnit node) {
         return node.children(ASTImportDeclaration.class).count();
+    }
+
+    @Override
+    protected FileLocation getReportLocation(ASTCompilationUnit node) {
+        List<ASTImportDeclaration> imports = node.children(ASTImportDeclaration.class).toList();
+
+        ASTImportDeclaration firstImport = imports.get(0);
+        ASTImportDeclaration lastImport = imports.get(imports.size() - 1);
+
+        TextRange2d textRange = TextRange2d.range2d(
+                firstImport.getBeginLine(), firstImport.getBeginColumn(),
+                lastImport.getEndLine(), lastImport.getEndColumn()
+        );
+
+        return FileLocation.range(node.getAstInfo().getTextDocument().getFileId(), textRange);
     }
 }
