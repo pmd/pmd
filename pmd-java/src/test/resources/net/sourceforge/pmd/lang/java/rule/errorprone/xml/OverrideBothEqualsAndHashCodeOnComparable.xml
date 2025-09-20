@@ -234,11 +234,7 @@
     </test-code>
     <test-code>
         <description>Record with Comparable and no explicit equals/hashCode</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
-        <expected-messages>
-            <message>When implementing Comparable, both equals() and hashCode() should be overridden</message>
-        </expected-messages>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
                 @Override
