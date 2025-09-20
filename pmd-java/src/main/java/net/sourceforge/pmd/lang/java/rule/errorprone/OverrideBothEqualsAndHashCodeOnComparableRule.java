@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -31,13 +30,6 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
         return !TypeTestUtil.isA(Comparable.class, node) || TypeTestUtil.isA(Enum.class, node);
     }
 
-    private static boolean isCompareToMethod(ASTMethodDeclaration method) {
-        return "compareTo".equals(method.getName())
-                && method.getArity() == 1
-                && method.getResultTypeNode().getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)
-                && !method.isStatic();
-    }
-
     private static boolean hasBrokenEqualsMethod(ASTTypeDeclaration node) {
         for (ASTMethodDeclaration m : node.getDeclarations(ASTMethodDeclaration.class)) {
             if ("equals".equals(m.getName()) && !JavaAstUtils.isEqualsMethod(m)) {
@@ -52,7 +44,7 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
     protected void maybeReport(RuleContext ctx, ASTTypeDeclaration node, ASTMethodDeclaration hashCodeMethod, ASTMethodDeclaration equalsMethod) {
         ASTMethodDeclaration compareToMethod = node
                 .getDeclarations(ASTMethodDeclaration.class)
-                .first(OverrideBothEqualsAndHashCodeOnComparableRule::isCompareToMethod);
+                .first(JavaAstUtils::isCompareToMethod);
         if (compareToMethod == null) {
             return;
         }
