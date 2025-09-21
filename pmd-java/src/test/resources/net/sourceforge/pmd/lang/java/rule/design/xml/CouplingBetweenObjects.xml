@@ -8,7 +8,7 @@
         <description>lots of coupling</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>2-2</expected-linenumbers>
         <expected-messages>
             <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
         </expected-messages>
@@ -53,7 +53,7 @@ public interface Foo {
         <description>lots of coupling in inner class in interfaces</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>2-2</expected-linenumbers>
         <expected-messages>
             <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
         </expected-messages>
@@ -73,7 +73,7 @@ public interface Foo {
         <description>[java] CouplingBetweenObjectsRule does not count attribute and local variable couplings properly #2818</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>6-6</expected-linenumbers>
         <expected-messages>
             <message>A value of 4 may denote a high amount of coupling within the class (threshold: 2)</message>
         </expected-messages>
