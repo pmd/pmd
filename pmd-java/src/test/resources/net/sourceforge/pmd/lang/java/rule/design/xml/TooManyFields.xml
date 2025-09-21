@@ -22,7 +22,7 @@ public class Foo {
         <description>3 fields, reduced max to 2</description>
         <rule-property name="maxfields">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>1-1</expected-linenumbers>
         <code-ref id="id-3-fields"/>
     </test-code>
 

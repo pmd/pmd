@@ -1303,8 +1303,8 @@ city/state/zip fields could park them within a single Address field.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassDeclaration/ClassBody
-  [count(FieldDeclaration
+//ClassDeclaration
+  [count(ClassBody/FieldDeclaration
             [not(pmd-java:modifiers() = 'final')]
             [not(pmd-java:modifiers() = 'static')]
         ) > $maxfields]
