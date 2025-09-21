@@ -1507,7 +1507,8 @@ which class a static member comes from (Sun 1.5 Language Guide).
             <property name="xpath">
                 <value>
 <![CDATA[
-.[count(ImportDeclaration[@Static = true()]) > $maximumStaticImports]
+//ImportDeclaration[last()]
+[count(../ImportDeclaration[@Static = true()]) > $maximumStaticImports]
 ]]>
                 </value>
             </property>
