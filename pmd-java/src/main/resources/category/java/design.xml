@@ -1345,8 +1345,8 @@ city/state/zip fields could park them within a single Address field.
             <property name="xpath">
                 <value>
 <![CDATA[
-//ClassDeclaration/ClassBody
-  [count(FieldDeclaration
+//ClassDeclaration
+  [count(ClassBody/FieldDeclaration
             [not(pmd-java:modifiers() = 'final')]
             [not(pmd-java:modifiers() = 'static')]
         ) > $maxfields]
@@ -1388,9 +1388,9 @@ complexity and find a way to have more fine grained objects.
             <property name="xpath">
                 <value>
 <![CDATA[
- //ClassDeclaration/ClassBody
+ //ClassDeclaration
      [
-      count(MethodDeclaration[
+      count(ClassBody/MethodDeclaration[
          not (
                 (starts-with(@Name,'get') or starts-with(@Name,'set') or starts-with(@Name,'is'))
                 and
