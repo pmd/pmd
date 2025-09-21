@@ -40,4 +40,20 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-3</expected-linenumbers>
+        <code><![CDATA[
+public class Test {
+    public static void foo() {
+        synchronized(Test.class)
+        {
+            // only a block is synchronized on Test.class
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
