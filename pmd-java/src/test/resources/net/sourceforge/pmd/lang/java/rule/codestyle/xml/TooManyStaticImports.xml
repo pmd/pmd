@@ -42,4 +42,18 @@ import static Pete; //Ok
 public class AllTheBeatles {}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5-5</expected-linenumbers>
+        <code><![CDATA[
+import static Lennon;
+import static Ringo;
+import static George;
+import static Paul;
+import static Yoko; // Too much !
+public class Split {}
+        ]]></code>
+    </test-code>
 </test-data>
