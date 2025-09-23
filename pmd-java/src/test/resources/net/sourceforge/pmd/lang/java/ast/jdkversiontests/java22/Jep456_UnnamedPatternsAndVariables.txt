@@ -126,7 +126,7 @@
          |                       |  +- StringLiteral[@CompileTimeConstant = true, @ConstValue = " ", @Empty = false, @Image = "\" \"", @Length = 1, @LiteralText = "\" \"", @ParenthesisDepth = 0, @Parenthesized = false, @TextBlock = false]
          |                       +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "y", @Name = "y", @ParenthesisDepth = 0, @Parenthesized = false]
          +- ClassDeclaration[@Abstract = true, @Annotation = false, @Anonymous = false, @BinaryName = "Jep456_UnnamedPatternsAndVariables$Ball", @CanonicalName = "Jep456_UnnamedPatternsAndVariables.Ball", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = false, @Local = false, @Nested = true, @PackageName = "", @Record = false, @RegularClass = true, @RegularInterface = false, @SimpleName = "Ball", @Static = false, @TopLevel = false, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PACKAGE]
-         |  +- ModifierList[@EffectiveModifiers = (JModifier.SEALED, JModifier.ABSTRACT), @ExplicitModifiers = (JModifier.SEALED, JModifier.ABSTRACT)]
+         |  +- ModifierList[@EffectiveModifiers = (JModifier.ABSTRACT, JModifier.SEALED), @ExplicitModifiers = (JModifier.ABSTRACT, JModifier.SEALED)]
          |  +- PermitsList[@Empty = false, @Size = 3]
          |  |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "RedBall"]
          |  |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "BlueBall"]
