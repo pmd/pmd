@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -183,9 +184,8 @@ public enum BinaryOp implements InternalInterfaces.OperatorLike {
         case DIV:
         case MOD:
             return 0;
-        default:
-            return -1;
         }
+        throw AssertionUtil.shouldNotReachHere("Invalid binary op " + this);
     }
 
 

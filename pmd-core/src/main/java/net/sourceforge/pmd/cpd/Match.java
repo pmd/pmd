@@ -60,6 +60,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
     @Override
+    @SuppressWarnings("PMD.OverrideBothEqualsAndHashCodeOnComparable")
     public int compareTo(Match other) {
         int diff = other.getTokenCount() - getTokenCount();
         if (diff != 0) {
