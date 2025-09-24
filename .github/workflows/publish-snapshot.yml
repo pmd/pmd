@@ -647,7 +647,7 @@ jobs:
           distribution: 'temurin'
           java-version: '11'
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@3fee6763234110473bd57dd4595c5199fce2c510 #v1.258.0
+        uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a #v1.263.0
         with:
           ruby-version: 3.3
       - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
