@@ -12,7 +12,7 @@
     </parent>
 
     <properties>
-        <log4j.version>2.25.1</log4j.version>
+        <log4j.version>2.25.2</log4j.version>
     </properties>
 
     <build>
