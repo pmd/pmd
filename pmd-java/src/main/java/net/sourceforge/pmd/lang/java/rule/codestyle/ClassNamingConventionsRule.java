@@ -30,7 +30,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     private final PropertyDescriptor<Pattern> utilityClassRegex = defaultProp("utility class").build();
     private final PropertyDescriptor<Pattern> testClassRegex = defaultProp("test class")
             .desc("Regex which applies to test class names. Since PMD 6.52.0.")
-            .defaultValue("^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$").build();
+            .defaultValue("^(Test|IT).*$|^[A-Z][a-zA-Z0-9]*(Test|Tests|TestCase|IT|ITCase)$").build();
 
 
     public ClassNamingConventionsRule() {

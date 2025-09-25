@@ -8244,6 +8244,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "abobov",
+      "name": "Anton Bobov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/162897?v=4",
+      "profile": "https://github.com/abobov",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
