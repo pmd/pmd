@@ -36,6 +36,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-multithreading
   * [#5880](https://github.com/pmd/pmd/issues/5880): \[java] DoubleCheckedLocking is not detected if more than 1 assignment or more than 2 if statements
 * misc
+  * [#5873](https://github.com/pmd/pmd/issues/5873): \[ci] Run integration test with Java 25
   * [#6012](https://github.com/pmd/pmd/issues/6012): \[pmd-rulesets] Rulesets should be in alphabetical order
 
 ### 🚨 API Changes
