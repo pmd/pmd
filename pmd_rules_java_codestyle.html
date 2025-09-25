@@ -2385,7 +2385,7 @@ JUnit4/5 or TestNG.</p>
     </tr>
     <tr>
       <td>testClassPattern</td>
-      <td>^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$</td>
+      <td>^(Test|IT).*$|^[A-Z][a-zA-Z0-9]*(Test|Tests|TestCase|IT|ITCase)$</td>
       <td>Regex which applies to test class names. Since PMD 6.52.0.</td>
     </tr>
   </tbody>
@@ -2404,7 +2404,7 @@ JUnit4/5 or TestNG.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enumPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"annotationPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"utilityClassPattern"</span> <span class="na">value=</span><span class="s">"[A-Z][a-zA-Z0-9]*"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testClassPattern"</span> <span class="na">value=</span><span class="s">"^Test.*$|^[A-Z][a-zA-Z0-9]*Test(s|Case)?$"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"testClassPattern"</span> <span class="na">value=</span><span class="s">"^(Test|IT).*$|^[A-Z][a-zA-Z0-9]*(Test|Tests|TestCase|IT|ITCase)$"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
