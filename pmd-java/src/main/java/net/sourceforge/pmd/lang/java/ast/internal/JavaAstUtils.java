@@ -54,6 +54,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTList;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
@@ -300,8 +301,10 @@ public final class JavaAstUtils {
      */
     public static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
         JavaNode last = expr.ancestorsOrSelf()
-                            .takeWhile(it -> it instanceof ASTExpression
-                                || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression)
+                            .takeWhile(it ->
+                                    it instanceof ASTExpression && !(it instanceof ASTLambdaExpression)
+                                        || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression
+                            )
                             .last();
         return (ASTExpression) Objects.requireNonNull(last);
     }

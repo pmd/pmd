@@ -8262,6 +8262,15 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "vzorge",
+      "name": "Vincent Zorge",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3940229?v=4",
+      "profile": "https://nl.linkedin.com/in/vincentzorge",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,
