@@ -166,11 +166,11 @@
 
 
 {
-"title": "Apex Rules",
-"tags": "rule_referencesapex",
+"title": "Apex support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_apex.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bApex\b"
+"url": "pmd_languages_apex.html",
+"summary": "\bApex\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -182,11 +182,11 @@
 
 
 {
-"title": "Apex support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Apex Rules",
+"tags": "rule_referencesapex",
 "keywords": "",
-"url": "pmd_languages_apex.html",
-"summary": "\bApex\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_apex.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bApex\b"
 }
 
 
@@ -261,95 +261,46 @@
 
 
 {
-"title": "Best Practices (PLSQL, Best Practices)",
+"title": "Best Practices (Java Server Pages, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_plsql_bestpractices.html#best practices",
+"url": "pmd_rules_jsp_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "TomKytesDespair (PLSQL, Best Practices)",
+"title": "DontNestJsfInJstlIteration (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "TomKytesDespair",
-"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Modelica, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_modelica_bestpractices.html#best practices",
+"keywords": "DontNestJsfInJstlIteration",
+"url": "pmd_rules_jsp_bestpractices.html#dontnestjsfinjstliteration",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "AmbiguousResolution (Modelica, Best Practices)",
+"title": "NoClassAttribute (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "AmbiguousResolution",
-"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
+"keywords": "NoClassAttribute",
+"url": "pmd_rules_jsp_bestpractices.html#noclassattribute",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
+"title": "NoHtmlComments (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "ClassStartNameEqualsEndName",
-"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
+"keywords": "NoHtmlComments",
+"url": "pmd_rules_jsp_bestpractices.html#nohtmlcomments",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
+"title": "NoJspForward (Java Server Pages, Best Practices)",
 "tags": "",
-"keywords": "ConnectUsingNonConnector",
-"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Kotlin, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_kotlin_bestpractices.html#best practices",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "FunctionNameTooShort (Kotlin, Best Practices)",
-"tags": "",
-"keywords": "FunctionNameTooShort",
-"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
+"keywords": "NoJspForward",
+"url": "pmd_rules_jsp_bestpractices.html#nojspforward",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -431,169 +382,37 @@
 
 
 {
-"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
+"title": "Best Practices (Modelica, Best Practices)",
 "tags": "",
 "keywords": "Best Practices",
-"url": "pmd_rules_velocity_bestpractices.html#best practices",
+"url": "pmd_rules_modelica_bestpractices.html#best practices",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
+"title": "AmbiguousResolution (Modelica, Best Practices)",
 "tags": "",
-"keywords": "AvoidReassigningParameters",
-"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
+"keywords": "AmbiguousResolution",
+"url": "pmd_rules_modelica_bestpractices.html#ambiguousresolution",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
+"title": "ClassStartNameEqualsEndName (Modelica, Best Practices)",
 "tags": "",
-"keywords": "UnusedMacroParameter",
-"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (HTML, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_html_bestpractices.html#best practices",
+"keywords": "ClassStartNameEqualsEndName",
+"url": "pmd_rules_modelica_bestpractices.html#classstartnameequalsendname",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 ,
 
 {
-"title": "AvoidInlineStyles (HTML, Best Practices)",
+"title": "ConnectUsingNonConnector (Modelica, Best Practices)",
 "tags": "",
-"keywords": "AvoidInlineStyles",
-"url": "pmd_rules_html_bestpractices.html#avoidinlinestyles",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "UnnecessaryTypeAttribute (HTML, Best Practices)",
-"tags": "",
-"keywords": "UnnecessaryTypeAttribute",
-"url": "pmd_rules_html_bestpractices.html#unnecessarytypeattribute",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "UseAltAttributeForImages (HTML, Best Practices)",
-"tags": "",
-"keywords": "UseAltAttributeForImages",
-"url": "pmd_rules_html_bestpractices.html#usealtattributeforimages",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Swift, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_swift_bestpractices.html#best practices",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
-"tags": "",
-"keywords": "ProhibitedInterfaceBuilder",
-"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "UnavailableFunction (Swift, Best Practices)",
-"tags": "",
-"keywords": "UnavailableFunction",
-"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Best Practices (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "Best Practices",
-"url": "pmd_rules_jsp_bestpractices.html#best practices",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "DontNestJsfInJstlIteration (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "DontNestJsfInJstlIteration",
-"url": "pmd_rules_jsp_bestpractices.html#dontnestjsfinjstliteration",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "NoClassAttribute (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoClassAttribute",
-"url": "pmd_rules_jsp_bestpractices.html#noclassattribute",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "NoHtmlComments (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoHtmlComments",
-"url": "pmd_rules_jsp_bestpractices.html#nohtmlcomments",
-"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
-}
-,
-
-{
-"title": "NoJspForward (Java Server Pages, Best Practices)",
-"tags": "",
-"keywords": "NoJspForward",
-"url": "pmd_rules_jsp_bestpractices.html#nojspforward",
+"keywords": "ConnectUsingNonConnector",
+"url": "pmd_rules_modelica_bestpractices.html#connectusingnonconnector",
 "summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
 }
 
@@ -1313,6 +1132,187 @@
 
 
 
+
+
+{
+"title": "Best Practices (HTML, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_html_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "AvoidInlineStyles (HTML, Best Practices)",
+"tags": "",
+"keywords": "AvoidInlineStyles",
+"url": "pmd_rules_html_bestpractices.html#avoidinlinestyles",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "UnnecessaryTypeAttribute (HTML, Best Practices)",
+"tags": "",
+"keywords": "UnnecessaryTypeAttribute",
+"url": "pmd_rules_html_bestpractices.html#unnecessarytypeattribute",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "UseAltAttributeForImages (HTML, Best Practices)",
+"tags": "",
+"keywords": "UseAltAttributeForImages",
+"url": "pmd_rules_html_bestpractices.html#usealtattributeforimages",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Swift, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_swift_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "ProhibitedInterfaceBuilder (Swift, Best Practices)",
+"tags": "",
+"keywords": "ProhibitedInterfaceBuilder",
+"url": "pmd_rules_swift_bestpractices.html#prohibitedinterfacebuilder",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "UnavailableFunction (Swift, Best Practices)",
+"tags": "",
+"keywords": "UnavailableFunction",
+"url": "pmd_rules_swift_bestpractices.html#unavailablefunction",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Kotlin, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_kotlin_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "FunctionNameTooShort (Kotlin, Best Practices)",
+"tags": "",
+"keywords": "FunctionNameTooShort",
+"url": "pmd_rules_kotlin_bestpractices.html#functionnametooshort",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (PLSQL, Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_plsql_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "TomKytesDespair (PLSQL, Best Practices)",
+"tags": "",
+"keywords": "TomKytesDespair",
+"url": "pmd_rules_plsql_bestpractices.html#tomkytesdespair",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Best Practices (Velocity Template Language (VTL), Best Practices)",
+"tags": "",
+"keywords": "Best Practices",
+"url": "pmd_rules_velocity_bestpractices.html#best practices",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "AvoidReassigningParameters (Velocity Template Language (VTL), Best Practices)",
+"tags": "",
+"keywords": "AvoidReassigningParameters",
+"url": "pmd_rules_velocity_bestpractices.html#avoidreassigningparameters",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+,
+
+{
+"title": "UnusedMacroParameter (Velocity Template Language (VTL), Best Practices)",
+"tags": "",
+"keywords": "UnusedMacroParameter",
+"url": "pmd_rules_velocity_bestpractices.html#unusedmacroparameter",
+"summary": "\bRules\b \bwhich\b \benforce\b \bgenerally\b \baccepted\b \bbest\b \bpractices\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "bld PMD Extension",
 "tags": "userdocstools",
@@ -1476,84 +1476,19 @@
 
 
 {
-"title": "Code Style (XSL, Code Style)",
+"title": "Code Style (Java Server Pages, Code Style)",
 "tags": "",
 "keywords": "Code Style",
-"url": "pmd_rules_xsl_codestyle.html#code style",
+"url": "pmd_rules_jsp_codestyle.html#code style",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 ,
 
 {
-"title": "UseConcatOnce (XSL, Code Style)",
+"title": "DuplicateJspImports (Java Server Pages, Code Style)",
 "tags": "",
-"keywords": "UseConcatOnce",
-"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (PLSQL, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_plsql_codestyle.html#code style",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "AvoidTabCharacter (PLSQL, Code Style)",
-"tags": "",
-"keywords": "AvoidTabCharacter",
-"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "CodeFormat (PLSQL, Code Style)",
-"tags": "",
-"keywords": "CodeFormat",
-"url": "pmd_rules_plsql_codestyle.html#codeformat",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "ForLoopNaming (PLSQL, Code Style)",
-"tags": "",
-"keywords": "ForLoopNaming",
-"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "LineLength (PLSQL, Code Style)",
-"tags": "",
-"keywords": "LineLength",
-"url": "pmd_rules_plsql_codestyle.html#linelength",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "MisplacedPragma (PLSQL, Code Style)",
-"tags": "",
-"keywords": "MisplacedPragma",
-"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
+"keywords": "DuplicateJspImports",
+"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 
@@ -1655,35 +1590,6 @@
 "tags": "",
 "keywords": "WhileLoopsMustUseBraces",
 "url": "pmd_rules_ecmascript_codestyle.html#whileloopsmustusebraces",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Code Style (Java Server Pages, Code Style)",
-"tags": "",
-"keywords": "Code Style",
-"url": "pmd_rules_jsp_codestyle.html#code style",
-"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
-}
-,
-
-{
-"title": "DuplicateJspImports (Java Server Pages, Code Style)",
-"tags": "",
-"keywords": "DuplicateJspImports",
-"url": "pmd_rules_jsp_codestyle.html#duplicatejspimports",
 "summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
 }
 
@@ -2394,6 +2300,100 @@
 
 
 
+
+
+{
+"title": "Code Style (PLSQL, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_plsql_codestyle.html#code style",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "AvoidTabCharacter (PLSQL, Code Style)",
+"tags": "",
+"keywords": "AvoidTabCharacter",
+"url": "pmd_rules_plsql_codestyle.html#avoidtabcharacter",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "CodeFormat (PLSQL, Code Style)",
+"tags": "",
+"keywords": "CodeFormat",
+"url": "pmd_rules_plsql_codestyle.html#codeformat",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "ForLoopNaming (PLSQL, Code Style)",
+"tags": "",
+"keywords": "ForLoopNaming",
+"url": "pmd_rules_plsql_codestyle.html#forloopnaming",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "LineLength (PLSQL, Code Style)",
+"tags": "",
+"keywords": "LineLength",
+"url": "pmd_rules_plsql_codestyle.html#linelength",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "MisplacedPragma (PLSQL, Code Style)",
+"tags": "",
+"keywords": "MisplacedPragma",
+"url": "pmd_rules_plsql_codestyle.html#misplacedpragma",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Code Style (XSL, Code Style)",
+"tags": "",
+"keywords": "Code Style",
+"url": "pmd_rules_xsl_codestyle.html#code style",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+,
+
+{
+"title": "UseConcatOnce (XSL, Code Style)",
+"tags": "",
+"keywords": "UseConcatOnce",
+"url": "pmd_rules_xsl_codestyle.html#useconcatonce",
+"summary": "\bRules\b \bwhich\b \benforce\b \ba\b \bspecific\b \bcoding\b \bstyle\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "Configuring rules",
 "tags": "userdocsgetting_started",
@@ -2561,199 +2561,6 @@
 "url": "pmd_userdocs_extending_defining_properties.html",
 "summary": "\bLearn\b \bhow\b \bto\b \bdefine\b \byour\b \bown\b \bproperties\b \bboth\b \bfor\b \bJava\b \band\b \bXPath\b \brules\b."
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (PLSQL, Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_plsql_design.html#design",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "CyclomaticComplexity (PLSQL, Design)",
-"tags": "",
-"keywords": "CyclomaticComplexity",
-"url": "pmd_rules_plsql_design.html#cyclomaticcomplexity",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveMethodLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveMethodLength",
-"url": "pmd_rules_plsql_design.html#excessivemethodlength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveObjectLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveObjectLength",
-"url": "pmd_rules_plsql_design.html#excessiveobjectlength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessivePackageBodyLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessivePackageBodyLength",
-"url": "pmd_rules_plsql_design.html#excessivepackagebodylength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessivePackageSpecificationLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessivePackageSpecificationLength",
-"url": "pmd_rules_plsql_design.html#excessivepackagespecificationlength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveParameterList (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveParameterList",
-"url": "pmd_rules_plsql_design.html#excessiveparameterlist",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveTypeLength (PLSQL, Design)",
-"tags": "",
-"keywords": "ExcessiveTypeLength",
-"url": "pmd_rules_plsql_design.html#excessivetypelength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NcssMethodCount (PLSQL, Design)",
-"tags": "",
-"keywords": "NcssMethodCount",
-"url": "pmd_rules_plsql_design.html#ncssmethodcount",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NcssObjectCount (PLSQL, Design)",
-"tags": "",
-"keywords": "NcssObjectCount",
-"url": "pmd_rules_plsql_design.html#ncssobjectcount",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NPathComplexity (PLSQL, Design)",
-"tags": "",
-"keywords": "NPathComplexity",
-"url": "pmd_rules_plsql_design.html#npathcomplexity",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "TooManyFields (PLSQL, Design)",
-"tags": "",
-"keywords": "TooManyFields",
-"url": "pmd_rules_plsql_design.html#toomanyfields",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "TooManyMethods (PLSQL, Design)",
-"tags": "",
-"keywords": "TooManyMethods",
-"url": "pmd_rules_plsql_design.html#toomanymethods",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Design (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "Design",
-"url": "pmd_rules_velocity_design.html#design",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "AvoidDeeplyNestedIfStmts (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "AvoidDeeplyNestedIfStmts",
-"url": "pmd_rules_velocity_design.html#avoiddeeplynestedifstmts",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "CollapsibleIfStatements (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "CollapsibleIfStatements",
-"url": "pmd_rules_velocity_design.html#collapsibleifstatements",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "ExcessiveTemplateLength (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "ExcessiveTemplateLength",
-"url": "pmd_rules_velocity_design.html#excessivetemplatelength",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NoInlineJavaScript (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "NoInlineJavaScript",
-"url": "pmd_rules_velocity_design.html#noinlinejavascript",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-,
-
-{
-"title": "NoInlineStyles (Velocity Template Language (VTL), Design)",
-"tags": "",
-"keywords": "NoInlineStyles",
-"url": "pmd_rules_velocity_design.html#noinlinestyles",
-"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
-}
-
-
 
 
 
@@ -3345,6 +3152,199 @@
 
 
 
+
+
+{
+"title": "Design (PLSQL, Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_plsql_design.html#design",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "CyclomaticComplexity (PLSQL, Design)",
+"tags": "",
+"keywords": "CyclomaticComplexity",
+"url": "pmd_rules_plsql_design.html#cyclomaticcomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveMethodLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveMethodLength",
+"url": "pmd_rules_plsql_design.html#excessivemethodlength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveObjectLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveObjectLength",
+"url": "pmd_rules_plsql_design.html#excessiveobjectlength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessivePackageBodyLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessivePackageBodyLength",
+"url": "pmd_rules_plsql_design.html#excessivepackagebodylength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessivePackageSpecificationLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessivePackageSpecificationLength",
+"url": "pmd_rules_plsql_design.html#excessivepackagespecificationlength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveParameterList (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveParameterList",
+"url": "pmd_rules_plsql_design.html#excessiveparameterlist",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveTypeLength (PLSQL, Design)",
+"tags": "",
+"keywords": "ExcessiveTypeLength",
+"url": "pmd_rules_plsql_design.html#excessivetypelength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NcssMethodCount (PLSQL, Design)",
+"tags": "",
+"keywords": "NcssMethodCount",
+"url": "pmd_rules_plsql_design.html#ncssmethodcount",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NcssObjectCount (PLSQL, Design)",
+"tags": "",
+"keywords": "NcssObjectCount",
+"url": "pmd_rules_plsql_design.html#ncssobjectcount",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NPathComplexity (PLSQL, Design)",
+"tags": "",
+"keywords": "NPathComplexity",
+"url": "pmd_rules_plsql_design.html#npathcomplexity",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "TooManyFields (PLSQL, Design)",
+"tags": "",
+"keywords": "TooManyFields",
+"url": "pmd_rules_plsql_design.html#toomanyfields",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "TooManyMethods (PLSQL, Design)",
+"tags": "",
+"keywords": "TooManyMethods",
+"url": "pmd_rules_plsql_design.html#toomanymethods",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Design (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "Design",
+"url": "pmd_rules_velocity_design.html#design",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "AvoidDeeplyNestedIfStmts (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "AvoidDeeplyNestedIfStmts",
+"url": "pmd_rules_velocity_design.html#avoiddeeplynestedifstmts",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "CollapsibleIfStatements (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "CollapsibleIfStatements",
+"url": "pmd_rules_velocity_design.html#collapsibleifstatements",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "ExcessiveTemplateLength (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "ExcessiveTemplateLength",
+"url": "pmd_rules_velocity_design.html#excessivetemplatelength",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NoInlineJavaScript (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "NoInlineJavaScript",
+"url": "pmd_rules_velocity_design.html#noinlinejavascript",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+,
+
+{
+"title": "NoInlineStyles (Velocity Template Language (VTL), Design)",
+"tags": "",
+"keywords": "NoInlineStyles",
+"url": "pmd_rules_velocity_design.html#noinlinestyles",
+"summary": "\bRules\b \bthat\b \bhelp\b \byou\b \bdiscover\b \bdesign\b \bissues\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "The rule designer",
 "tags": "extendinguserdocs",
@@ -3528,104 +3528,19 @@
 
 
 {
-"title": "Error Prone (Maven POM, Error Prone)",
+"title": "Error Prone (Java Server Pages, Error Prone)",
 "tags": "",
 "keywords": "Error Prone",
-"url": "pmd_rules_pom_errorprone.html#error prone",
+"url": "pmd_rules_jsp_errorprone.html#error prone",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 ,
 
 {
-"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
+"title": "JspEncoding (Java Server Pages, Error Prone)",
 "tags": "",
-"keywords": "InvalidDependencyTypes",
-"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
-"tags": "",
-"keywords": "ProjectVersionAsDependencyVersion",
-"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_plsql_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TO_DATE_TO_CHAR (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_DATE_TO_CHAR",
-"url": "pmd_rules_plsql_errorprone.html#to_date_to_char",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TO_DATEWithoutDateFormat (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_DATEWithoutDateFormat",
-"url": "pmd_rules_plsql_errorprone.html#to_datewithoutdateformat",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "TO_TIMESTAMPWithoutDateFormat (PLSQL, Error Prone)",
-"tags": "",
-"keywords": "TO_TIMESTAMPWithoutDateFormat",
-"url": "pmd_rules_plsql_errorprone.html#to_timestampwithoutdateformat",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Kotlin, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_kotlin_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
-"tags": "",
-"keywords": "OverrideBothEqualsAndHashcode",
-"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
+"keywords": "JspEncoding",
+"url": "pmd_rules_jsp_errorprone.html#jspencoding",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -3682,111 +3597,6 @@
 "tags": "",
 "keywords": "InnaccurateNumericLiteral",
 "url": "pmd_rules_ecmascript_errorprone.html#innaccuratenumericliteral",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Velocity Template Language (VTL), Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_velocity_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyForeachStmt (Velocity Template Language (VTL), Error Prone)",
-"tags": "",
-"keywords": "EmptyForeachStmt",
-"url": "pmd_rules_velocity_errorprone.html#emptyforeachstmt",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "EmptyIfStmt (Velocity Template Language (VTL), Error Prone)",
-"tags": "",
-"keywords": "EmptyIfStmt",
-"url": "pmd_rules_velocity_errorprone.html#emptyifstmt",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Swift, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_swift_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "ForceCast (Swift, Error Prone)",
-"tags": "",
-"keywords": "ForceCast",
-"url": "pmd_rules_swift_errorprone.html#forcecast",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "ForceTry (Swift, Error Prone)",
-"tags": "",
-"keywords": "ForceTry",
-"url": "pmd_rules_swift_errorprone.html#forcetry",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-
-
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Error Prone (Java Server Pages, Error Prone)",
-"tags": "",
-"keywords": "Error Prone",
-"url": "pmd_rules_jsp_errorprone.html#error prone",
-"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
-}
-,
-
-{
-"title": "JspEncoding (Java Server Pages, Error Prone)",
-"tags": "",
-"keywords": "JspEncoding",
-"url": "pmd_rules_jsp_errorprone.html#jspencoding",
 "summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
 }
 
@@ -4803,6 +4613,196 @@
 
 
 
+
+
+{
+"title": "Error Prone (Swift, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_swift_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ForceCast (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceCast",
+"url": "pmd_rules_swift_errorprone.html#forcecast",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ForceTry (Swift, Error Prone)",
+"tags": "",
+"keywords": "ForceTry",
+"url": "pmd_rules_swift_errorprone.html#forcetry",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Kotlin, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_kotlin_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "OverrideBothEqualsAndHashcode (Kotlin, Error Prone)",
+"tags": "",
+"keywords": "OverrideBothEqualsAndHashcode",
+"url": "pmd_rules_kotlin_errorprone.html#overridebothequalsandhashcode",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_plsql_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "TO_DATE_TO_CHAR (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "TO_DATE_TO_CHAR",
+"url": "pmd_rules_plsql_errorprone.html#to_date_to_char",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "TO_DATEWithoutDateFormat (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "TO_DATEWithoutDateFormat",
+"url": "pmd_rules_plsql_errorprone.html#to_datewithoutdateformat",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "TO_TIMESTAMPWithoutDateFormat (PLSQL, Error Prone)",
+"tags": "",
+"keywords": "TO_TIMESTAMPWithoutDateFormat",
+"url": "pmd_rules_plsql_errorprone.html#to_timestampwithoutdateformat",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Velocity Template Language (VTL), Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_velocity_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "EmptyForeachStmt (Velocity Template Language (VTL), Error Prone)",
+"tags": "",
+"keywords": "EmptyForeachStmt",
+"url": "pmd_rules_velocity_errorprone.html#emptyforeachstmt",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "EmptyIfStmt (Velocity Template Language (VTL), Error Prone)",
+"tags": "",
+"keywords": "EmptyIfStmt",
+"url": "pmd_rules_velocity_errorprone.html#emptyifstmt",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
+"title": "Error Prone (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "Error Prone",
+"url": "pmd_rules_pom_errorprone.html#error prone",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "InvalidDependencyTypes (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "InvalidDependencyTypes",
+"url": "pmd_rules_pom_errorprone.html#invaliddependencytypes",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
+"title": "ProjectVersionAsDependencyVersion (Maven POM, Error Prone)",
+"tags": "",
+"keywords": "ProjectVersionAsDependencyVersion",
+"url": "pmd_rules_pom_errorprone.html#projectversionasdependencyversion",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "FAQ",
 "tags": "",
@@ -4950,11 +4950,11 @@
 
 
 {
-"title": "HTML Rules",
-"tags": "rule_referenceshtml",
+"title": "HTML support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_html.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bHTML\b"
+"url": "pmd_languages_html.html",
+"summary": "\bHTML\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -4966,11 +4966,11 @@
 
 
 {
-"title": "HTML support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "HTML Rules",
+"tags": "rule_referenceshtml",
 "keywords": "",
-"url": "pmd_languages_html.html",
-"summary": "\bHTML\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_html.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bHTML\b"
 }
 
 
@@ -5094,11 +5094,11 @@
 
 
 {
-"title": "Java Rules",
-"tags": "rule_referencesjava",
+"title": "Java support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_java.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bJava\b"
+"url": "pmd_languages_java.html",
+"summary": "\bJava\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -5110,11 +5110,11 @@
 
 
 {
-"title": "Java support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Java Rules",
+"tags": "rule_referencesjava",
 "keywords": "",
-"url": "pmd_languages_java.html",
-"summary": "\bJava\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_java.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bJava\b"
 }
 
 
@@ -5142,11 +5142,11 @@
 
 
 {
-"title": "Java Server Pages Rules",
-"tags": "rule_referencesjsp",
+"title": "JSP Support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_jsp.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bJava\b \bServer\b \bPages\b"
+"url": "pmd_languages_jsp.html",
+"summary": "\bJSP\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -5158,11 +5158,11 @@
 
 
 {
-"title": "JSP Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Java Server Pages Rules",
+"tags": "rule_referencesjsp",
 "keywords": "",
-"url": "pmd_languages_jsp.html",
-"summary": "\bJSP\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_jsp.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bJava\b \bServer\b \bPages\b"
 }
 
 
@@ -5190,11 +5190,11 @@
 
 
 {
-"title": "Kotlin Rules",
-"tags": "rule_referenceskotlin",
+"title": "Kotlin Support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_kotlin.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bKotlin\b"
+"url": "pmd_languages_kotlin.html",
+"summary": "\bKotlin\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -5206,11 +5206,11 @@
 
 
 {
-"title": "Kotlin Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Kotlin Rules",
+"tags": "rule_referenceskotlin",
 "keywords": "",
-"url": "pmd_languages_kotlin.html",
-"summary": "\bKotlin\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_kotlin.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bKotlin\b"
 }
 
 
@@ -5414,11 +5414,11 @@
 
 
 {
-"title": "Modelica Rules",
-"tags": "rule_referencesmodelica",
+"title": "Modelica support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_modelica.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bModelica\b"
+"url": "pmd_languages_modelica.html",
+"summary": "\bModelica\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -5430,11 +5430,11 @@
 
 
 {
-"title": "Modelica support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Modelica Rules",
+"tags": "rule_referencesmodelica",
 "keywords": "",
-"url": "pmd_languages_modelica.html",
-"summary": "\bModelica\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_modelica.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bModelica\b"
 }
 
 
@@ -5635,35 +5635,6 @@
 "url": "pmd_languages_objectivec.html",
 "summary": "\bObjective\b-\bC\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
-
-
-
-,
-
-
-
-
-
-
-
-{
-"title": "Performance (XSL, Performance)",
-"tags": "",
-"keywords": "Performance",
-"url": "pmd_rules_xsl_performance.html#performance",
-"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
-}
-,
-
-{
-"title": "AvoidAxisNavigation (XSL, Performance)",
-"tags": "",
-"keywords": "AvoidAxisNavigation",
-"url": "pmd_rules_xsl_performance.html#avoidaxisnavigation",
-"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
-}
-
-
 
 
 
@@ -6012,6 +5983,35 @@
 
 
 
+
+
+{
+"title": "Performance (XSL, Performance)",
+"tags": "",
+"keywords": "Performance",
+"url": "pmd_rules_xsl_performance.html#performance",
+"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
+}
+,
+
+{
+"title": "AvoidAxisNavigation (XSL, Performance)",
+"tags": "",
+"keywords": "AvoidAxisNavigation",
+"url": "pmd_rules_xsl_performance.html#avoidaxisnavigation",
+"summary": "\bRules\b \bthat\b \bflag\b \bsuboptimal\b \bcode\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
 {
 "title": "Perl support",
 "tags": "languagesCpdCapableLanguage",
@@ -6045,11 +6045,11 @@
 
 
 {
-"title": "PLSQL Rules",
-"tags": "rule_referencesplsql",
+"title": "PL/SQL Support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_plsql.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bPLSQL\b"
+"url": "pmd_languages_plsql.html",
+"summary": "\bPL\b/\bSQL\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -6061,11 +6061,11 @@
 
 
 {
-"title": "PL/SQL Support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "PLSQL Rules",
+"tags": "rule_referencesplsql",
 "keywords": "",
-"url": "pmd_languages_plsql.html",
-"summary": "\bPL\b/\bSQL\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_plsql.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bPLSQL\b"
 }
 
 
@@ -6285,11 +6285,11 @@
 
 
 {
-"title": "Guidelines for standard rules",
-"tags": "devdocsextending",
+"title": "Rule guidelines",
+"tags": "extendinguserdocs",
 "keywords": "",
-"url": "pmd_devdocs_major_rule_guidelines.html",
-"summary": "\bGuidelines\b \bfor\b \brules\b \bthat\b \bare\b \bincluded\b \bin\b \bthe\b \bstandard\b \bdistribution\b"
+"url": "pmd_userdocs_extending_rule_guidelines.html",
+"summary": "\bRule\b \bGuidelines\b, \bor\b \bthe\b \blast\b \btouches\b \bto\b \ba\b \brule\b"
 }
 
 
@@ -6301,11 +6301,11 @@
 
 
 {
-"title": "Rule guidelines",
-"tags": "extendinguserdocs",
+"title": "Guidelines for standard rules",
+"tags": "devdocsextending",
 "keywords": "",
-"url": "pmd_userdocs_extending_rule_guidelines.html",
-"summary": "\bRule\b \bGuidelines\b, \bor\b \bthe\b \blast\b \btouches\b \bto\b \ba\b \brule\b"
+"url": "pmd_devdocs_major_rule_guidelines.html",
+"summary": "\bGuidelines\b \bfor\b \brules\b \bthat\b \bare\b \bincluded\b \bin\b \bthe\b \bstandard\b \bdistribution\b"
 }
 
 
@@ -6333,22 +6333,6 @@
 
 
 {
-"title": "Scala Rules",
-"tags": "rule_referencesscala",
-"keywords": "",
-"url": "pmd_rules_scala.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bScala\b"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Scala support",
 "tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
@@ -6364,50 +6348,19 @@
 
 
 
-
-
-
-
 {
-"title": "Security (Salesforce Visualforce, Security)",
-"tags": "",
-"keywords": "Security",
-"url": "pmd_rules_visualforce_security.html#security",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "VfCsrf (Salesforce Visualforce, Security)",
-"tags": "",
-"keywords": "VfCsrf",
-"url": "pmd_rules_visualforce_security.html#vfcsrf",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "VfHtmlStyleTagXss (Salesforce Visualforce, Security)",
-"tags": "",
-"keywords": "VfHtmlStyleTagXss",
-"url": "pmd_rules_visualforce_security.html#vfhtmlstyletagxss",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
-}
-,
-
-{
-"title": "VfUnescapeEl (Salesforce Visualforce, Security)",
-"tags": "",
-"keywords": "VfUnescapeEl",
-"url": "pmd_rules_visualforce_security.html#vfunescapeel",
-"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+"title": "Scala Rules",
+"tags": "rule_referencesscala",
+"keywords": "",
+"url": "pmd_rules_scala.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bScala\b"
 }
 
 
 
-
-
 ,
+
+
 
 
 
@@ -6564,6 +6517,53 @@
 
 
 {
+"title": "Security (Salesforce Visualforce, Security)",
+"tags": "",
+"keywords": "Security",
+"url": "pmd_rules_visualforce_security.html#security",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "VfCsrf (Salesforce Visualforce, Security)",
+"tags": "",
+"keywords": "VfCsrf",
+"url": "pmd_rules_visualforce_security.html#vfcsrf",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "VfHtmlStyleTagXss (Salesforce Visualforce, Security)",
+"tags": "",
+"keywords": "VfHtmlStyleTagXss",
+"url": "pmd_rules_visualforce_security.html#vfhtmlstyletagxss",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+,
+
+{
+"title": "VfUnescapeEl (Salesforce Visualforce, Security)",
+"tags": "",
+"keywords": "VfUnescapeEl",
+"url": "pmd_rules_visualforce_security.html#vfunescapeel",
+"summary": "\bRules\b \bthat\b \bflag\b \bpotential\b \bsecurity\b \bflaws\b."
+}
+
+
+
+
+
+,
+
+
+
+
+
+
+
+{
 "title": "Security (Java, Security)",
 "tags": "",
 "keywords": "Security",
@@ -6682,11 +6682,11 @@
 
 
 {
-"title": "Swift Rules",
-"tags": "rule_referencesswift",
+"title": "Swift support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_swift.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bSwift\b"
+"url": "pmd_languages_swift.html",
+"summary": "\bSwift\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -6698,11 +6698,11 @@
 
 
 {
-"title": "Swift support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "Swift Rules",
+"tags": "rule_referencesswift",
 "keywords": "",
-"url": "pmd_languages_swift.html",
-"summary": "\bSwift\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_swift.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bSwift\b"
 }
 
 
@@ -6788,22 +6788,6 @@
 
 
 {
-"title": "Velocity Template Language (VTL) Rules",
-"tags": "rule_referencesvelocity",
-"keywords": "",
-"url": "pmd_rules_velocity.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bVelocity\b \bTemplate\b \bLanguage\b (\bVTL\b)"
-}
-
-
-
-,
-
-
-
-
-
-{
 "title": "Velocity Template Language (VTL) support",
 "tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
@@ -6820,11 +6804,11 @@
 
 
 {
-"title": "Salesforce Visualforce Rules",
-"tags": "rule_referencesvisualforce",
+"title": "Velocity Template Language (VTL) Rules",
+"tags": "rule_referencesvelocity",
 "keywords": "",
-"url": "pmd_rules_visualforce.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bSalesforce\b \bVisualforce\b"
+"url": "pmd_rules_velocity.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bVelocity\b \bTemplate\b \bLanguage\b (\bVTL\b)"
 }
 
 
@@ -6841,6 +6825,22 @@
 "keywords": "",
 "url": "pmd_languages_visualforce.html",
 "summary": "\bVisualforce\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+}
+
+
+
+,
+
+
+
+
+
+{
+"title": "Salesforce Visualforce Rules",
+"tags": "rule_referencesvisualforce",
+"keywords": "",
+"url": "pmd_rules_visualforce.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bSalesforce\b \bVisualforce\b"
 }
 
 
@@ -6932,11 +6932,11 @@
 
 
 {
-"title": "XML Rules",
-"tags": "rule_referencesxml",
+"title": "XML support",
+"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
 "keywords": "",
-"url": "pmd_rules_xml.html",
-"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bXML\b"
+"url": "pmd_languages_xml.html",
+"summary": "\bXML\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
 }
 
 
@@ -6948,11 +6948,11 @@
 
 
 {
-"title": "XML support",
-"tags": "languagesPmdCapableLanguageCpdCapableLanguage",
+"title": "XML Rules",
+"tags": "rule_referencesxml",
 "keywords": "",
-"url": "pmd_languages_xml.html",
-"summary": "\bXML\b-\bspecific\b \bfeatures\b \band\b \bguidance\b"
+"url": "pmd_rules_xml.html",
+"summary": "\bIndex\b \bof\b \ball\b \bbuilt\b-\bin\b \brules\b \bavailable\b \bfor\b \bXML\b"
 }
 
 
