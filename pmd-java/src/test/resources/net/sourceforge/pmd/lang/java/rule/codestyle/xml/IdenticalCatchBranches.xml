@@ -207,6 +207,63 @@ class Foo {
 
 
             }
-            ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Overridden method call: common supertype #6079</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,9</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                public void bar() {
+                    try {
+                        // nothing
+                    } catch (NullPointerException ex1) {
+                        System.out.println(ex1.getMessage());
+                    } catch (CustomException ex2) {
+                        System.out.println(ex2.getMessage());
+                    } catch (RuntimeException ex3) {
+                        System.out.println(ex3.getMessage());
+                    }
+                }
+
+                public static class CustomException extends RuntimeException {
+                    @Override public String getMessage() {
+                        return "";
+                    }
+                }
+            }
+
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Overridden method call: unrelated types</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            <![CDATA[
+            public class Foo {
+                public void bar() {
+                    try {
+                        // nothing
+                    } catch (CustomException1 ex1) {
+                        ex1.report();
+                    } catch (CustomException2 ex2) {
+                        ex2.report();
+                    }
+                }
+
+                public static class CustomException1 extends RuntimeException {
+                    public void report() { }
+                }
+
+                public static class CustomException2 extends RuntimeException {
+                    public void report() { }
+                }
+            }
+
+            ]]>
+        </code>
     </test-code>
 </test-data>
