@@ -211,7 +211,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Overridden method call: common supertype</description>
+        <description>Overridden method call: common supertype #6079</description>
         <expected-problems>2</expected-problems>
         <expected-linenumbers>7,9</expected-linenumbers>
         <code><![CDATA[
