@@ -3,10 +3,6 @@
 topnav:
 - title: Topnav
   items:
-    - title: Download
-      external_url: https://github.com/pmd/pmd/releases/latest
-    - title: Fork us on github
-      external_url: https://github.com/pmd/pmd
 
 #Topnav dropdowns
 topnav_dropdowns:

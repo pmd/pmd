@@ -12,17 +12,8 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                {% for entry in site.data.topnav.topnav %}
-                    {% for item in entry.items %}
-                        {% if item.external_url %}
-                            <li class="nav-item"><a class="nav-link" href="{{item.external_url}}" target="_blank">{{item.title}}</a></li>
-                        {% elsif page.url contains item.url %}
-                            <li class="nav-item active"><a class="nav-link" href="{{item.url | remove: "/"}}">{{item.title}}</a></li>
-                        {% else %}
-                            <li class="nav-item"><a class="nav-link" href="{{item.url | remove: "/"}}">{{item.title}}</a></li>
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F{{ site.pmd.version }}" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
                 {% for entry in site.data.topnav.topnav_dropdowns %}
