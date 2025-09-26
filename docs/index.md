@@ -13,7 +13,6 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 
 additional_js:
  - assets/Shuffle-5.2.3/dist/shuffle.min.js
- - assets/jquery-ui-1.12.1/jquery-ui.min.js
  - js/shuffle.js
 ---
 
