@@ -15,11 +15,14 @@ $(document).ready(function () {
         listType: 'ul',
         showSpeed: 0,
         headers: 'h2,h3,h4',
+        noBackToTopLinks: true,
     });
 
     /**
      * AnchorJS
      */
+    anchors.options.icon='';
+    anchors.options.class='fas fa-link fa-xs';
     anchors.add('h2,h3,h4,h5');
 
     // Add an "Edit on GitHub" button to each header (except h1)
@@ -30,7 +33,7 @@ $(document).ready(function () {
             .append(
                 '  <a class="edit-header" target="_blank" href=' +
                     url +
-                    ' role="button">✏️️</a>'
+                    ' role="button" data-toggle="tooltip" data-placement="top" title="Edit on GitHub"><i class="fas fa-edit fa-xs"></i>️</a>'
             );
     }
 
