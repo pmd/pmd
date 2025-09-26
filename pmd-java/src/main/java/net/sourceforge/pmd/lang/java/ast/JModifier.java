@@ -26,27 +26,25 @@ public enum JModifier {
     PROTECTED(Modifier.PROTECTED),
     PRIVATE(Modifier.PRIVATE),
 
+    ABSTRACT(Modifier.ABSTRACT),
+    DEFAULT(0),
+    STATIC(Modifier.STATIC),
+    FINAL(Modifier.FINAL),
+
     /** Modifier {@code "sealed"} (since Java 17). */
     SEALED(0),
     /** Modifier {@code "non-sealed"} (since Java 17). */
     NON_SEALED("non-sealed", 0),
 
-    ABSTRACT(Modifier.ABSTRACT),
-    STATIC(Modifier.STATIC),
-    FINAL(Modifier.FINAL),
-
+    // for fields
+    TRANSIENT(Modifier.TRANSIENT),
+    VOLATILE(Modifier.VOLATILE),
     // for methods
     SYNCHRONIZED(Modifier.SYNCHRONIZED),
     NATIVE(Modifier.NATIVE),
-    DEFAULT(0),
 
     // not for fields
-    STRICTFP(Modifier.STRICT),
-
-    // for fields
-    TRANSIENT(Modifier.TRANSIENT),
-    VOLATILE(Modifier.VOLATILE);
-
+    STRICTFP(Modifier.STRICT);
 
     private final String token;
     private final int reflect;
