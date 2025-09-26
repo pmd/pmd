@@ -37,7 +37,7 @@ jobs:
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
           cache: 'maven'
       - name: Determine Version
         id: version
@@ -91,7 +91,7 @@ jobs:
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
@@ -628,7 +628,9 @@ jobs:
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: |
+            11
+            17
       - name: Set up Ruby 3.3
         uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a #v1.263.0
         with:

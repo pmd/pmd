@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -85,7 +85,7 @@ jobs:
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -129,13 +129,13 @@ jobs:
           distribution: 'temurin'
           java-version: |
             8
-            17
+            11
             21
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
-        # default java version for all os is 11
+        # default java version for all os is 17
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       # only restore the cache, don't create a new cache
       # Note: this works under Windows only if pom.xml files use LF, so that hashFiles('**/pom.xml')
       # gives the same result (line endings...).
@@ -159,7 +159,7 @@ jobs:
               verify \
               -PfastSkip -Dcyclonedx.skip=false \
               -Djava8.home="${JAVA_HOME_8_X64}" \
-              -Djava17.home="${JAVA_HOME_17_X64}" \
+              -Djava11.home="${JAVA_HOME_11_X64}" \
               -Djava21.home="${JAVA_HOME_21_X64}"
 
   dogfood:
@@ -174,7 +174,7 @@ jobs:
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -260,7 +260,7 @@ jobs:
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
       - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -315,7 +315,9 @@ jobs:
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: |
+            11
+            17
       - name: Set up Ruby 3.3
         uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a #v1.263.0
         with:
