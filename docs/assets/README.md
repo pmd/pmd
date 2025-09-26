@@ -26,11 +26,6 @@ https://github.com/bryanbraun/anchorjs/releases/tag/4.2.2
 
 https://github.com/tefra/navgoco/releases/tag/0.2.1
 
-## JQuery UI
-
-https://jqueryui.com/
-https://jqueryui.com/resources/download/jquery-ui-1.12.1.zip
-
 ## Simple Jekyll Search
 
 https://github.com/neilboyd/Simple-Jekyll-Search
