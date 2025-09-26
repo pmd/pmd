@@ -73,64 +73,66 @@ $(document).ready(function () {
     // Make sure to close and empty the search results after clicking one result item.
     // This is necessary, if we don't switch the page but only jump to a anchor on the
     // same page.
-    $('#results-container').click(function() {
-        $('#search-input').val('');
-        $(this).empty();
+    document.getElementById('results-container').addEventListener('click', e => {
+        document.getElementById('search-input').value = '';
+        e.target.innerHTML = '';
     });
     // simple keyboard control of search results
-    $('#search-input, body').on('keyup', function(e) {
-        // arrow down: 40, arrow up: 38
-        if (e.which !== 40 && e.which !== 38) {
-            return;
-        }
-        if ($('#results-container li').length === 0) {
-            return;
-        }
+    document.querySelectorAll('#search-input, body').forEach(element => {
+        element.addEventListener('keyup', e => {
+            if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp') {
+                return;
+            }
+            if (document.querySelectorAll('#results-container li').length === 0) {
+                return;
+            }
 
-        var current = $('#results-container li.selected');
-        if (current.length === 0) {
-            current = $('#results-container li')[0];
-        } else {
-            current = current[0];
-            $(current).removeClass('selected');
-            if (e.which === 40) {
-                if (current.nextSibling !== null) {
-                    current = current.nextSibling;
-                }
-            } else if (e.which === 38) {
-                if (current.previousSibling !== null) {
-                    current = current.previousSibling;
+            let current = document.querySelector('#results-container li.selected');
+            if (!current) {
+                current = document.querySelector('#results-container li');
+            } else {
+                current.classList.remove('selected');
+                if (e.key === 'ArrowDown') {
+                    if (current.nextSibling != null) {
+                        current = current.nextSibling;
+                    }
+                } else if (e.key === 'ArrowUp') {
+                    if (current.previousSibling !== null) {
+                        current = current.previousSibling;
+                    }
                 }
             }
-        }
-        $(current).addClass('selected');
-        $('a', current).focus();
-        e.preventDefault();
-        e.stopImmediatePropagation(); // avoid triggering another search and rerender the results
+            current.classList.add('selected');
+            current.querySelector('a').focus();
+            e.preventDefault();
+            e.stopImmediatePropagation(); // avoid triggering another search and rerender the results
+        });
     });
-    $('#results-container').on('mouseover', function(e) {
-        $('#results-container li.selected').removeClass('selected');
-        var selected = $(e.target).closest('li')[0];
+    document.getElementById('results-container').addEventListener('mouseover', e => {
+        let selected = document.getElementById('results-container').querySelector('li.selected')
         if (selected) {
-            $(selected).addClass('selected');
+            selected.classList.remove('selected');
+        }
+        let newSelected = e.target.closest('li');
+        if (newSelected) {
+            newSelected.classList.add('selected');
             if (document.activeElement !== document.getElementById('search-input')) {
-                $('a', selected).focus();
+                newSelected.querySelector('a').focus();
             }
         }
     });
-    $('body').on('keyup', function(e) {
-        // keyboard shortcut "s" for search
-        if (e.which === 83) { // 83 = "s"
-            $('#search-input').focus();
+    document.body.addEventListener('keyup', e => {
+        if (e.key === 's') {
+            document.getElementById('search-input').focus();
         }
-        // keyboard shortcut "esc" for closing search result
-        if (e.which === 27) { // 27 = "<esc>"
-            $('#results-container').empty();
+        if (e.key === 'Escape') {
+            document.getElementById('results-container').innerHTML = '';
         }
     });
-    $('body').on('click', function(e) {
-        if ($('#results-container li').length > 0) {
-            $('#results-container').empty();
+    document.body.addEventListener('click', e => {
+        const resultsContainer = document.getElementById('results-container');
+        if (resultsContainer.querySelectorAll('li').length > 0) {
+            resultsContainer.innerHTML = '';
         }
     });
 
