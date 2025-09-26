@@ -1272,6 +1272,14 @@ a.edit-header {
     font-size: 15px;
 }
 
+.copy-anchor-url {
+    opacity: 0;
+}
+:hover > .copy-anchor-url {
+    opacity: 1;
+    cursor: pointer;
+}
+
 .language-info {
     margin: 2em;
 }
