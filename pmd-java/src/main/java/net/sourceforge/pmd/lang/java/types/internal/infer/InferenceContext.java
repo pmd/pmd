@@ -21,7 +21,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Supplier;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.types.JClassType;
@@ -158,6 +157,9 @@ final class InferenceContext {
     }
 
     private void addPrimaryBound(InferenceVar ivar) {
+        if (ivar.getBaseVar() == null) {
+            return;
+        }
         for (JTypeMirror ui : asList(ivar.getBaseVar().getUpperBound())) {
             ivar.addPrimaryBound(BoundKind.UPPER, mapToIVars(ui));
         }
@@ -166,7 +168,7 @@ final class InferenceContext {
     /**
      * Add a variable to this context.
      */
-    InferenceVar addVar(JTypeVar tvar) {
+    InferenceVar addVar(@Nullable JTypeVar tvar) {
         InferenceVar ivar = addVarImpl(tvar);
         addPrimaryBound(ivar);
 
@@ -180,11 +182,13 @@ final class InferenceContext {
     /**
      * Add a variable to this context.
      */
-    private InferenceVar addVarImpl(@NonNull JTypeVar tvar) {
+    private InferenceVar addVarImpl(@Nullable JTypeVar tvar) {
         InferenceVar ivar = new InferenceVar(this, tvar, varId++);
         freeVars.add(ivar);
         inferenceVars.add(ivar);
-        mapping = mapping.plus(tvar, ivar);
+        if (tvar != null) {
+            mapping = mapping.plus(tvar, ivar);
+        }
         return ivar;
     }
 
@@ -459,8 +463,9 @@ final class InferenceContext {
         }
 
         logger.ivarMerged(this, prev, delegate);
-
-        mapping = mapping.plus(prev.getBaseVar(), delegate);
+        if (prev.getBaseVar() != null) {
+            mapping = mapping.plus(prev.getBaseVar(), delegate);
+        }
         incorporationActions.addFirst(new SubstituteInst(prev, delegate));
     }
 
