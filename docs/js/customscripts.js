@@ -61,7 +61,7 @@ $(document).ready(function () {
     });
 
     // Initialize jekyll search in topnav.
-    SimpleJekyllSearch.init({
+    var sjs = SimpleJekyllSearch({
         searchInput: document.getElementById('search-input'),
         resultsContainer: document.getElementById('results-container'),
         json: 'search.json',
