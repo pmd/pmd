@@ -1276,5 +1276,5 @@ a.edit-header {
     font-weight: bold;
 }
 #toc a.active:before {
-    content: '>> '
+    content: '» '
 }
