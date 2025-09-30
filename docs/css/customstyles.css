@@ -297,25 +297,29 @@ ul#results-container {
     position: absolute;
     top: 50px; /* if you change anything about the nav, you'll prob. need to reset the top and left values here.*/
     z-index: -1;
-    width: 223px;
+    max-width: 500px;
     border-left: 1px solid #dedede;
     box-shadow: 2px 3px 2px #dedede;
     padding: 0px;
+    max-height: 500px;
+    overflow-y: auto;
 }
-
+ul#results-container li {
+    padding: 10px;
+    border-bottom: 1px black solid;
+}
+ul#results-container li:hover, ul#results-container li.selected {
+    background-color: #d8ffde;
+}
 ul#results-container a {
     background-color: transparent;
-}
-
-ul#results-container a:hover {
+    text-decoration: none;
     color: black;
+    display: block;
 }
-
-ul#results-container li a {
-    border-top:1px solid whitesmoke;
-    margin:10px;
+ul#results-container a > strong {
+    color: #007bff;
 }
-
 /* end search */
 
 .filter-options {
