@@ -7,9 +7,11 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.sql.ResultSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
@@ -56,12 +58,14 @@ public class CheckResultSetRule extends AbstractJavaRule {
     }
 
     private boolean isCheckedIndirectly(ASTMethodCall node) {
-        if (!(node.getParent() instanceof ASTVariableDeclarator)) {
+        final NodeStream<ASTVariableDeclarator> variableDeclarators = node.ancestors(ASTVariableDeclarator.class);
+        if (variableDeclarators.isEmpty()) {
             return false;
         }
 
-        final ASTVariableDeclarator declarator = (ASTVariableDeclarator) node.getParent();
-        final List<ASTAssignableExpr.ASTNamedReferenceExpr> usages = declarator.getVarId().getLocalUsages();
+        final List<ASTAssignableExpr.ASTNamedReferenceExpr> usages = variableDeclarators.firstOpt()
+                .map(varDecl -> varDecl.getVarId().getLocalUsages())
+                .orElse(Collections.emptyList());
         //check that the result is used and its first usage is not overwriting the result
         return !usages.isEmpty() && usages.get(0).getAccessType() == ASTAssignableExpr.AccessType.READ;
     }

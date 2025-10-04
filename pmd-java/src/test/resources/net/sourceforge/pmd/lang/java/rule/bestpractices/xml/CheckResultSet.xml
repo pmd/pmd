@@ -381,4 +381,26 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#4122: CheckResultSet false-positive with local variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.sql.Connection;
+            import java.sql.ResultSet;
+
+            class Scratch {
+                public void bar(Connection c, String tableName) throws Exception {
+                      ResultSet created = c.getMetaData().getTables(null, null, tableName, null); // <--- false positive here
+                      boolean missing = !created.next();
+                      reportTableName(tableName, !missing);
+                }
+
+                private void reportTableName(String tableName, boolean alreadyExisting) {
+                    if (!alreadyExisting) {
+                        System.out.println("Table " + tableName + " is available");
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
