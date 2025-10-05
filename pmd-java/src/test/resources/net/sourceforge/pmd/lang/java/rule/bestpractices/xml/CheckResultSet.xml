@@ -390,7 +390,7 @@ public class Foo {
 
             class Scratch {
                 public void bar(Connection c, String tableName) throws Exception {
-                      ResultSet created = c.getMetaData().getTables(null, null, tableName, null); // <--- false positive here
+                      ResultSet created = c.getMetaData().getTables(null, null, tableName, null);
                       boolean missing = !created.next();
                       reportTableName(tableName, !missing);
                 }
@@ -399,6 +399,31 @@ public class Foo {
                     if (!alreadyExisting) {
                         System.out.println("Table " + tableName + " is available");
                     }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CheckResultSet in lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+            import java.sql.*;
+            import java.util.function.Consumer;
+
+            class Foo {
+                public void bar(ResultSet resultSet) {
+                    int x = consumeResultSet(resultSet, rs -> {
+                        rs.next();
+                    });
+
+                    System.out.println(x);
+                }
+
+                private static int consumeResultSet(ResultSet resultSet, Consumer<ResultSet> consumer) throws Exception {
+                    consumer.accept(resultSet);
+                    return rs.getInt(0);
                 }
             }
         ]]></code>

@@ -14,6 +14,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
@@ -58,7 +59,10 @@ public class CheckResultSetRule extends AbstractJavaRule {
     }
 
     private boolean isCheckedIndirectly(ASTMethodCall node) {
-        final NodeStream<ASTVariableDeclarator> variableDeclarators = node.ancestors(ASTVariableDeclarator.class);
+        final NodeStream<ASTVariableDeclarator> variableDeclarators = node.ancestors()
+                .takeWhile(n -> !(n instanceof ASTLambdaExpression))
+                .filterIs(ASTVariableDeclarator.class);
+
         if (variableDeclarators.isEmpty()) {
             return false;
         }
