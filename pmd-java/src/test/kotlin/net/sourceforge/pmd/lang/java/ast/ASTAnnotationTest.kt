@@ -8,8 +8,7 @@ import io.kotest.matchers.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Earliest
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_3
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_5
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 
 /**
  * @author Clément Fournier
@@ -17,14 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_5
  */
 class ASTAnnotationTest : ParserTestSpec({
 
-    parserTestContainer("Test annot fails before JDK 1.4", javaVersions = Earliest..J1_3) {
-        inContext(AnnotationParsingCtx) {
-            "@F" shouldNot parse()
-            "@F(a=1)" shouldNot parse()
-        }
-    }
-
-    parserTestContainer("Marker annotations", javaVersions = J1_5..Latest) {
+    parserTestContainer("Marker annotations", javaVersions = J1_8..Latest) {
         inContext(AnnotationParsingCtx) {
             "@F" should parseAs {
                 child<ASTAnnotation> {
@@ -64,7 +56,7 @@ class ASTAnnotationTest : ParserTestSpec({
         }
     }
 
-    parserTestContainer("Single-value shorthand", javaVersions = J1_5..Latest) {
+    parserTestContainer("Single-value shorthand", javaVersions = J1_8..Latest) {
         inContext(AnnotationParsingCtx) {
             "@F(\"ohio\")" should parseAs {
                 child<ASTAnnotation> {
@@ -132,7 +124,7 @@ class ASTAnnotationTest : ParserTestSpec({
         }
     }
 
-    parserTestContainer("Normal annotation", javaVersions = J1_5..Latest) {
+    parserTestContainer("Normal annotation", javaVersions = J1_8..Latest) {
         inContext(AnnotationParsingCtx) {
             "@F(a=\"ohio\")" should parseAs {
                 child<ASTAnnotation> {

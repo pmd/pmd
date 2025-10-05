@@ -380,19 +380,11 @@ class JavaParserImpl {
   // Note that this can't be replaced with a syntactic lookahead
   // since "assert" isn't a string literal token
   private boolean isAssertStart() {
-    if (jdkVersion <= 3) {
-      return false;
-    }
-
     return getToken(1).getImageCs().contentEquals("assert");
   }
 
   private boolean isRecordStart() {
     return isRecordTypeSupported() && isKeyword("record") && isToken(2, IDENTIFIER);
-  }
-
-  private boolean isEnumStart() {
-    return jdkVersion >= 5 && isKeyword("enum");
   }
 
   /**
@@ -461,7 +453,7 @@ class JavaParserImpl {
   }
 
   private boolean localTypeDeclGivenNextIsIdent() {
-      return localTypesSupported() && (isRecordStart() || isEnumStart());
+      return localTypesSupported() && (isRecordStart() || isKeyword("enum"));
   }
 
   /**

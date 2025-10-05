@@ -477,20 +477,7 @@ $delim
         }
     }
 
-    parserTestContainer("Binary numeric literals - pre java1.7", javaVersions = Earliest..J1_6) {
-        // binary literals were introduced in 1.7
-
-        inContext(ExpressionParsingCtx) {
-            "0b011" shouldNot parse()
-            "0B011" shouldNot parse()
-            "0B0_1__1" shouldNot parse()
-
-            "0B0_1__1l" shouldNot parse()
-            "0b0_11L" shouldNot parse()
-        }
-    }
-
-    parserTestContainer("Binary numeric literals - java1.7+", javaVersions = J1_7..Latest) {
+    parserTestContainer("Binary numeric literals - java1.7+", javaVersions = J1_8..Latest) {
         fun binaryThree(type: PrimitiveTypeKind): NodeSpec<*> = {
             number(type) {
                 it::getValueAsDouble shouldBe 3.0

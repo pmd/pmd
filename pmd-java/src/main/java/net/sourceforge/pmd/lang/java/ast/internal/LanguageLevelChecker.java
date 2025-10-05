@@ -13,15 +13,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTAssertStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
-import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTImplicitClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -33,7 +29,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTModuleDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTPatternExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
@@ -47,10 +42,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchLabel;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeArguments;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTTypePattern;
 import net.sourceforge.pmd.lang.java.ast.ASTUnnamedPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
@@ -269,23 +262,6 @@ public class LanguageLevelChecker<T> {
 
     /** Those use a min valid version. */
     private enum RegularLanguageFeature implements LanguageFeature {
-
-        ASSERT_STATEMENTS(4),
-
-        STATIC_IMPORT(5),
-        ENUMS(5),
-        GENERICS(5),
-        ANNOTATIONS(5),
-        FOREACH_LOOPS(5),
-        VARARGS_PARAMETERS(5),
-        HEXADECIMAL_FLOATING_POINT_LITERALS(5),
-
-        UNDERSCORES_IN_NUMERIC_LITERALS(7),
-        BINARY_NUMERIC_LITERALS(7),
-        TRY_WITH_RESOURCES(7),
-        COMPOSITE_CATCH_CLAUSES(7),
-        DIAMOND_TYPE_ARGUMENTS(7),
-
         DEFAULT_METHODS(8),
         RECEIVER_PARAMETERS(8),
         TYPE_ANNOTATIONS(8),
@@ -461,9 +437,6 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTImportDeclaration node, T data) {
-            if (node.isStatic()) {
-                check(node, RegularLanguageFeature.STATIC_IMPORT, data);
-            }
             if (node.isModuleImport()) {
                 check(node, PreviewFeature.MODULE_IMPORT_DECLARATIONS, data);
             }
@@ -491,33 +464,12 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTConstructorCall node, T data) {
             if (node.usesDiamondTypeArgs()) {
-                if (check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS, data) && node.isAnonymousClass()) {
+                if (node.isAnonymousClass()) {
                     check(node, RegularLanguageFeature.DIAMOND_TYPE_ARGUMENTS_FOR_ANONYMOUS_CLASSES, data);
                 }
             }
             return null;
         }
-
-        @Override
-        public Void visit(ASTTypeArguments node, T data) {
-            check(node, RegularLanguageFeature.GENERICS, data);
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTTypeParameters node, T data) {
-            check(node, RegularLanguageFeature.GENERICS, data);
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTFormalParameter node, T data) {
-            if (node.isVarargs()) {
-                check(node, RegularLanguageFeature.VARARGS_PARAMETERS, data);
-            }
-            return null;
-        }
-
 
         @Override
         public Void visit(ASTReceiverParameter node, T data) {
@@ -529,35 +481,13 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTAnnotation node, T data) {
             if (node.getParent() instanceof ASTType) {
                 check(node, RegularLanguageFeature.TYPE_ANNOTATIONS, data);
-            } else {
-                check(node, RegularLanguageFeature.ANNOTATIONS, data);
             }
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTForeachStatement node, T data) {
-            check(node, RegularLanguageFeature.FOREACH_LOOPS, data);
             return null;
         }
 
         @Override
         public Void visit(ASTEnumDeclaration node, T data) {
-            check(node, RegularLanguageFeature.ENUMS, data);
             visitTypeDecl(node, data);
-            return null;
-        }
-
-        @Override
-        public Void visit(ASTNumericLiteral node, T data) {
-            int base = node.getBase();
-            if (base == 16 && !node.isIntegral()) {
-                check(node, RegularLanguageFeature.HEXADECIMAL_FLOATING_POINT_LITERALS, data);
-            } else if (base == 2) {
-                check(node, RegularLanguageFeature.BINARY_NUMERIC_LITERALS, data);
-            } else if (node.getLiteralText().indexOf('_') >= 0) {
-                check(node, RegularLanguageFeature.UNDERSCORES_IN_NUMERIC_LITERALS, data);
-            }
             return null;
         }
 
@@ -597,12 +527,6 @@ public class LanguageLevelChecker<T> {
         }
 
         @Override
-        public Void visit(ASTAssertStatement node, T data) {
-            check(node, RegularLanguageFeature.ASSERT_STATEMENTS, data);
-            return null;
-        }
-
-        @Override
         public Void visit(ASTTypePattern node, T data) {
             check(node, RegularLanguageFeature.TYPE_PATTERNS_IN_INSTANCEOF, data);
             return null;
@@ -623,12 +547,10 @@ public class LanguageLevelChecker<T> {
         @Override
         public Void visit(ASTTryStatement node, T data) {
             if (node.isTryWithResources()) {
-                if (check(node, RegularLanguageFeature.TRY_WITH_RESOURCES, data)) {
-                    for (ASTResource resource : node.getResources()) {
-                        if (resource.isConciseResource()) {
-                            check(node, RegularLanguageFeature.CONCISE_RESOURCE_SYNTAX, data);
-                            break;
-                        }
+                for (ASTResource resource : node.getResources()) {
+                    if (resource.isConciseResource()) {
+                        check(node, RegularLanguageFeature.CONCISE_RESOURCE_SYNTAX, data);
+                        break;
                     }
                 }
             }
@@ -640,15 +562,6 @@ public class LanguageLevelChecker<T> {
         public Void visit(ASTIntersectionType node, T data) {
             if (node.getParent() instanceof ASTCastExpression) {
                 check(node, RegularLanguageFeature.INTERSECTION_TYPES_IN_CASTS, data);
-            }
-            return null;
-        }
-
-
-        @Override
-        public Void visit(ASTCatchClause node, T data) {
-            if (node.getParameter().isMulticatch()) {
-                check(node, RegularLanguageFeature.COMPOSITE_CATCH_CLAUSES, data);
             }
             return null;
         }

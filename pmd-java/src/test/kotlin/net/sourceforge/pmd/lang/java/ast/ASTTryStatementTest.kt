@@ -5,7 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_7
+import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
  * @since 7.0.0
  */
 class ASTTryStatementTest : ParserTestSpec({
-    parserTestContainer("Test try with resources", javaVersions = J1_7..Latest) {
+    parserTestContainer("Test try with resources", javaVersions = J1_8..Latest) {
         inContext(StatementParsingCtx) {
             "try (Foo a = 2){}" should parseAs {
                 tryStmt {

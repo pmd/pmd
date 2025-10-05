@@ -6,7 +6,6 @@ package net.sourceforge.pmd.lang.java.ast
 
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.Latest
-import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_5
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
 
 /**
@@ -14,7 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaVersion.J1_8
  * @since 7.0.0
  */
 class ASTWildcardTypeTest : ParserTestSpec({
-    parserTestContainer("Test simple names", javaVersions = J1_5..Latest) {
+    parserTestContainer("Test simple names", javaVersions = J1_8..Latest) {
         inContext(TypeParsingCtx) {
             "List<? extends B>" should parseAs {
                 classType("List") {

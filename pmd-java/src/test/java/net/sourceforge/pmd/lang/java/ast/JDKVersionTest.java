@@ -22,209 +22,181 @@ import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
 
 class JDKVersionTest extends BaseJavaTreeDumpTest {
 
-    private final JavaParsingHelper java3 = JavaParsingHelper.DEFAULT
-        .withDefaultVersion("1.3")
+    private final JavaParsingHelper java8 = JavaParsingHelper.DEFAULT
+        .withDefaultVersion("1.8")
         .withResourceContext(JDKVersionTest.class, "jdkversiontests/");
 
-    private final JavaParsingHelper java4 = java3.withDefaultVersion("1.4");
-    private final JavaParsingHelper java5 = java3.withDefaultVersion("1.5");
-    private final JavaParsingHelper java7 = java3.withDefaultVersion("1.7");
-    private final JavaParsingHelper java8 = java3.withDefaultVersion("1.8");
-    private final JavaParsingHelper java9 = java3.withDefaultVersion("9");
+    private final JavaParsingHelper java9 = java8.withDefaultVersion("9");
 
     // enum keyword/identifier
     @Test
     void testEnumAsKeywordShouldFailWith14() {
-        assertThrows(ParseException.class, () -> java5.parseResource("jdk14_enum.java"));
-    }
-
-    @Test
-    void testEnumAsIdentifierShouldPassWith14() {
-        java4.parseResource("jdk14_enum.java");
+        assertThrows(ParseException.class, () -> java8.parseResource("jdk14_enum.java"));
     }
 
     @Test
     void testEnumAsKeywordShouldPassWith15() {
-        java5.parseResource("jdk15_enum.java");
+        java8.parseResource("jdk15_enum.java");
     }
 
-    @Test
-    void testEnumAsIdentifierShouldFailWith15() {
-        assertThrows(ParseException.class, () -> java5.parseResource("jdk14_enum.java"));
-    }
     // enum keyword/identifier
 
     // assert keyword/identifier
     @Test
     void testAssertAsKeywordVariantsSucceedWith14() {
-        java4.parseResource("assert_test1.java");
-        java4.parseResource("assert_test2.java");
-        java4.parseResource("assert_test3.java");
-        java4.parseResource("assert_test4.java");
+        java8.parseResource("assert_test1.java");
+        java8.parseResource("assert_test2.java");
+        java8.parseResource("assert_test3.java");
+        java8.parseResource("assert_test4.java");
     }
 
     @Test
     void testAssertAsVariableDeclIdentifierFailsWith14() {
-        assertThrows(ParseException.class, () -> java4.parseResource("assert_test5.java"));
+        assertThrows(ParseException.class, () -> java8.parseResource("assert_test5.java"));
     }
 
     @Test
     void testAssertAsMethodNameIdentifierFailsWith14() {
-        assertThrows(ParseException.class, () -> java4.parseResource("assert_test7.java"));
-    }
-
-    @Test
-    void testAssertAsIdentifierSucceedsWith13() {
-        java3.parseResource("assert_test5.java");
+        assertThrows(ParseException.class, () -> java8.parseResource("assert_test7.java"));
     }
 
     @Test
     void testAssertAsKeywordFailsWith13() {
-        assertThrows(ParseException.class, () -> java3.parseResource("assert_test6.java"));
+        java8.parseResource("assert_test6.java");
     }
     // assert keyword/identifier
 
     @Test
     void testVarargsShouldPassWith15() {
-        java5.parseResource("jdk15_varargs.java");
+        java8.parseResource("jdk15_varargs.java");
     }
 
     @Test
     void testGenericCtorCalls() {
-        java5.parseResource("java5/generic_ctors.java");
+        java8.parseResource("java5/generic_ctors.java");
     }
 
     @Test
     void testGenericSuperCtorCalls() {
-        java5.parseResource("java5/generic_super_ctor.java");
+        java8.parseResource("java5/generic_super_ctor.java");
     }
 
     @Test
     void testAnnotArrayInitializer() {
-        java5.parseResource("java5/annotation_array_init.java");
-    }
-
-    @Test
-    void testVarargsShouldFailWith14() {
-        assertThrows(ParseException.class, () -> java4.parseResource("jdk15_varargs.java"));
+        java8.parseResource("java5/annotation_array_init.java");
     }
 
     @Test
     void testJDK15ForLoopSyntaxShouldPassWith15() {
-        java5.parseResource("jdk15_forloop.java");
+        java8.parseResource("jdk15_forloop.java");
     }
 
     @Test
     void testJDK15ForLoopSyntaxWithModifiers() {
-        java5.parseResource("jdk15_forloop_with_modifier.java");
-    }
-
-    @Test
-    void testJDK15ForLoopShouldFailWith14() {
-        assertThrows(ParseException.class, () -> java4.parseResource("jdk15_forloop.java"));
+        java8.parseResource("jdk15_forloop_with_modifier.java");
     }
 
     @Test
     void testJDK15GenericsSyntaxShouldPassWith15() {
-        java5.parseResource("jdk15_generics.java");
+        java8.parseResource("jdk15_generics.java");
     }
 
     @Test
     void testVariousParserBugs() {
-        java5.parseResource("fields_bug.java");
-        java5.parseResource("gt_bug.java");
-        java5.parseResource("annotations_bug.java");
-        java5.parseResource("constant_field_in_annotation_bug.java");
-        java5.parseResource("generic_in_field.java");
+        java8.parseResource("fields_bug.java");
+        java8.parseResource("gt_bug.java");
+        java8.parseResource("annotations_bug.java");
+        java8.parseResource("constant_field_in_annotation_bug.java");
+        java8.parseResource("generic_in_field.java");
     }
 
     @Test
     void testNestedClassInMethodBug() {
-        java5.parseResource("inner_bug.java");
-        java5.parseResource("inner_bug2.java");
+        java8.parseResource("inner_bug.java");
+        java8.parseResource("inner_bug2.java");
     }
 
     @Test
     void testGenericsInMethodCall() {
-        java5.parseResource("generic_in_method_call.java");
+        java8.parseResource("generic_in_method_call.java");
     }
 
     @Test
     void testGenericINAnnotation() {
-        java5.parseResource("generic_in_annotation.java");
+        java8.parseResource("generic_in_annotation.java");
     }
 
     @Test
     void testGenericReturnType() {
-        java5.parseResource("generic_return_type.java");
+        java8.parseResource("generic_return_type.java");
     }
 
     @Test
     void testMultipleGenerics() {
         // See java/lang/concurrent/CopyOnWriteArraySet
-        java5.parseResource("funky_generics.java");
+        java8.parseResource("funky_generics.java");
         // See java/lang/concurrent/ConcurrentHashMap
-        java5.parseResource("multiple_generics.java");
+        java8.parseResource("multiple_generics.java");
     }
 
     @Test
     void testAnnotatedParams() {
-        java5.parseResource("annotated_params.java");
+        java8.parseResource("annotated_params.java");
     }
 
     @Test
     void testAnnotatedLocals() {
-        java5.parseResource("annotated_locals.java");
+        java8.parseResource("annotated_locals.java");
     }
 
     @Test
-    void testAssertAsIdentifierSucceedsWith13Test2() {
-        java3.parseResource("assert_test5_a.java");
+    void testAssertAsIdentifierFailsJava8() {
+        assertThrows(ParseException.class, () -> java8.parseResource("assert_test5_a.java"));
     }
 
     @Test
     void testBinaryAndUnderscoresInNumericalLiterals() {
-        java7.parseResource("jdk17_numerical_literals.java");
+        java8.parseResource("jdk17_numerical_literals.java");
     }
 
     @Test
     void testStringInSwitch() {
-        java7.parseResource("jdk17_string_in_switch.java");
+        java8.parseResource("jdk17_string_in_switch.java");
     }
 
     @Test
     void testGenericDiamond() {
-        java7.parseResource("jdk17_generic_diamond.java");
+        java8.parseResource("jdk17_generic_diamond.java");
     }
 
     @Test
     void testTryWithResources() {
-        java7.parseResource("jdk17_try_with_resources.java");
+        java8.parseResource("jdk17_try_with_resources.java");
     }
 
     @Test
     void testTryWithResourcesSemi() {
-        java7.parseResource("jdk17_try_with_resources_semi.java");
+        java8.parseResource("jdk17_try_with_resources_semi.java");
     }
 
     @Test
     void testTryWithResourcesMulti() {
-        java7.parseResource("jdk17_try_with_resources_multi.java");
+        java8.parseResource("jdk17_try_with_resources_multi.java");
     }
 
     @Test
     void testTryWithResourcesWithAnnotations() {
-        java7.parseResource("jdk17_try_with_resources_with_annotations.java");
+        java8.parseResource("jdk17_try_with_resources_with_annotations.java");
     }
 
     @Test
     void testMulticatch() {
-        java7.parseResource("jdk17_multicatch.java");
+        java8.parseResource("jdk17_multicatch.java");
     }
 
     @Test
     void testMulticatchWithAnnotations() {
-        java7.parseResource("jdk17_multicatch_with_annotations.java");
+        java8.parseResource("jdk17_multicatch_with_annotations.java");
     }
 
     @Test
@@ -299,7 +271,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
 
     @Test
     void jdk7PrivateMethodInnerClassInterface1() {
-        ASTCompilationUnit acu = java7.parseResource("private_method_in_inner_class_interface1.java");
+        ASTCompilationUnit acu = java8.parseResource("private_method_in_inner_class_interface1.java");
         List<ASTMethodDeclaration> methods = acu.descendants(ASTMethodDeclaration.class).crossFindBoundaries().toList();
         assertEquals(3, methods.size());
         for (ASTMethodDeclaration method : methods) {
@@ -309,7 +281,7 @@ class JDKVersionTest extends BaseJavaTreeDumpTest {
 
     @Test
     void jdk7PrivateMethodInnerClassInterface2() {
-        ParseException thrown = assertThrows(ParseException.class, () -> java7.parseResource("private_method_in_inner_class_interface2.java"));
+        ParseException thrown = assertThrows(ParseException.class, () -> java8.parseResource("private_method_in_inner_class_interface2.java"));
         assertThat(thrown.getMessage(), containsString("line 19"));
     }
 

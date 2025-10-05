@@ -13,7 +13,7 @@ import net.sourceforge.pmd.lang.java.types.*
  * @author Clément Fournier
  */
 class Java7InferenceTest : ProcessorTestSpec({
-    parserTest("Java 7 uses return constraints only if args are not enough", javaVersion = J1_7) {
+    parserTest("Java 7 uses return constraints only if args are not enough", javaVersion = J1_8) {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> {
@@ -57,7 +57,7 @@ class Java7InferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Java 7 uses return constraints if needed", javaVersion = J1_7) {
+    parserTest("Java 7 uses return constraints if needed", javaVersion = J1_8) {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> {
@@ -78,7 +78,7 @@ class Java7InferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Java 7 doesn't let context flow through ternary", javaVersion = J1_7) {
+    parserTest("Java 7 doesn't let context flow through ternary", javaVersion = J1_8) {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> extends Sup<T> {
@@ -109,7 +109,7 @@ class Java7InferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Java 7 doesn't use invocation context", javaVersion = J1_7) {
+    parserTest("Java 7 doesn't use invocation context", javaVersion = J1_8) {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> extends Sup<T> {
@@ -146,7 +146,7 @@ class Java7InferenceTest : ProcessorTestSpec({
         }
     }
 
-    parserTest("Java 7 doesn't use invocation context (2)", javaVersion = J1_7) {
+    parserTest("Java 7 doesn't use invocation context (2)", javaVersion = J1_8) {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
             class Gen<T> extends Sup<T> {

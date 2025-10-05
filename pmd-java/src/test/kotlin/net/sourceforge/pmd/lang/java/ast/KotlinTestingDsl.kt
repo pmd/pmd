@@ -28,7 +28,7 @@ import java.util.*
  * Represents the different Java language versions.
  */
 enum class JavaVersion : Comparable<JavaVersion> {
-    J1_3, J1_4, J1_5, J1_6, J1_7, J1_8, J9, J10, J11,
+    J1_8, J9, J10, J11,
     J12,
     J13,
     J14,

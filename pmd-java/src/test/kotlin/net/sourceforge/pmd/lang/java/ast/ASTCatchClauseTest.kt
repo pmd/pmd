@@ -13,15 +13,8 @@ import java.io.IOException
 
 
 class ASTCatchClauseTest : ParserTestSpec({
-    parserTestContainer("Test crash on multicatch", javaVersions = Earliest..J1_6) {
-        inContext(StatementParsingCtx) {
-            "try { } catch (IOException | AssertionError e) { }" should throwParseException {
-                it.message.shouldContain("Composite catch clauses are a feature of Java 1.7, you should select your language version accordingly")
-            }
-        }
-    }
 
-    parserTestContainer("Test single type", javaVersions = J1_5..Latest) {
+    parserTestContainer("Test single type", javaVersions = J1_8..Latest) {
         importedTypes += IOException::class.java
 
         inContext(StatementParsingCtx) {
@@ -44,7 +37,7 @@ class ASTCatchClauseTest : ParserTestSpec({
         }
     }
 
-    parserTestContainer("Test multicatch", javaVersions = J1_7..Latest) {
+    parserTestContainer("Test multicatch", javaVersions = J1_8..Latest) {
         importedTypes += IOException::class.java
 
         inContext(StatementParsingCtx) {

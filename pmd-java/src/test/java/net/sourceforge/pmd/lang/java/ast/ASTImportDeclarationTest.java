@@ -36,11 +36,6 @@ class ASTImportDeclarationTest extends BaseParserTest {
         assertTrue(i.isStatic());
     }
 
-    @Test
-    void testStaticImportFailsWithJDK14() {
-        assertThrows(ParseException.class, () -> java.parse(TEST3, "1.4"));
-    }
-
     private static final String TEST1 = "import foo.bar.*;\npublic class Foo {}";
 
     private static final String TEST2 = "import foo.bar.Baz;\npublic class Foo {}";
