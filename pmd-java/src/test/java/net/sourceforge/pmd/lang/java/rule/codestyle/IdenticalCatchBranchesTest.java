@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
+/**
+ * Test for {@link IdenticalCatchBranchesRule}.
+ */
 class IdenticalCatchBranchesTest extends PmdRuleTst {
     // no additional unit tests
 }
