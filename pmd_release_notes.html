@@ -2044,6 +2044,11 @@
 
 <h3 id="-new-and-noteworthy">🚀 New and noteworthy</h3>
 
+<h4 id="build-requirement-is-java-17">Build Requirement is Java 17</h4>
+<p>From now on, Java 17 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
+so that it still can be used in a pure Java 8 environment. This allows us to use the latest
+checkstyle version during the build.</p>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>core
@@ -2126,6 +2131,7 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6040">#6040</a>: [java,apex,plsql,velocity] Change description of “minimum” parameter - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6043">#6043</a>: [java] Reactivate deactivated test in LocalVariableCouldBeFinal - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6059">#6059</a>: [java] Fix #6058: DanglingJavadoc FP in module-info files - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6061">#6061</a>: [core] chore: Bump minimum Java version required for building to 17 - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6071">#6071</a>: [java] Fix #5919: Add integration tests to ClassNamingConventions testClassRegex - <a href="https://github.com/abobov">Anton Bobov</a> (@abobov)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6074">#6074</a>: [apex] Fix @<!-- -->SuppressWarnings with whitespace around comma - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6078">#6078</a>: [java] Fix #6075: Fix FP in AssignmentInOperandRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
@@ -2166,7 +2172,7 @@ used anymore and are not required to be implemented anymore:
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 1, 2025 <br />
+             Site last generated: Oct 7, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
