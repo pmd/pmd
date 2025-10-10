@@ -39,7 +39,8 @@ public interface RuleViolation {
 
     /**
      * Key in {@link #getAdditionalInfo()} for the name of the class in
-     * which the violation was identified.
+     * which the violation was identified. If the class is a nested class,
+     * the name also contains the enclosing class.
      */
     String CLASS_NAME = "className";
     /**

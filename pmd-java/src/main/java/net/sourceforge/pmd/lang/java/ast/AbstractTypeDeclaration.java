@@ -56,7 +56,7 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
 
     @Override
     public @Nullable String getCanonicalName() {
-        assert binaryName != null : "Canonical name wasn't set";
+        assert binaryName != null : "binary name and canonical name weren't set";
         return canonicalName;
     }
 
