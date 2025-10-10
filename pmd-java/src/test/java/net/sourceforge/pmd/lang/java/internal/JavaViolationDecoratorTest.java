@@ -10,6 +10,8 @@ import static net.sourceforge.pmd.reporting.RuleViolation.PACKAGE_NAME;
 import static net.sourceforge.pmd.reporting.RuleViolation.VARIABLE_NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
@@ -27,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
@@ -258,4 +261,16 @@ class JavaViolationDecoratorTest {
         assertThat(decorate(expressions.get(1)), hasEntry(VARIABLE_NAME, "x"));
     }
 
+    @Test
+    void variableNameForStringLiterals() {
+        ASTCompilationUnit ast = parse("class Foo { { String var1 = new String(\"var1\"); new String(\"var2\"); } }");
+        List<ASTStringLiteral> literals = ast.descendants(ASTStringLiteral.class).toList();
+        assertEquals(2, literals.size());
+
+        assertThat(decorate(literals.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(literals.get(0)), hasEntry(VARIABLE_NAME, "var1"));
+
+        assertThat(decorate(literals.get(1)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(literals.get(1)), not(hasKey(VARIABLE_NAME)));
+    }
 }

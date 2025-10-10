@@ -150,4 +150,19 @@ public class Foo {
         <expected-problems>15</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
+
+    <test-code>
+        <description>#6127 missing var name in message</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Do not hard code the IP address address</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.net.InetAddress;
+class TestCase {
+    InetAddress address = InetAddress.getByName("0.0.0.0");
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -119,7 +119,7 @@ final class JavaViolationDecorator implements ViolationDecorator {
         } else if (node instanceof ASTFormalParameter) {
             return getVariableNameIfExists(node.firstChild(ASTVariableId.class));
         } else if (node instanceof ASTExpression) {
-            return getVariableNameIfExists(node.getParent());
+            return getVariableNameIfExists(node.ancestors(ASTVariableDeclarator.class).first());
         }
         return null;
     }
