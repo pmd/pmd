@@ -26,14 +26,13 @@ import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
  * @author Philip Graf
  */
 class JavaViolationDecoratorTest {
-
-    // TODO there are no tests for anon or local classes
 
     @Test
     void testASTFormalParameterVariableName() {
@@ -60,7 +59,7 @@ class JavaViolationDecoratorTest {
         assertThat(decorate(md), hasEntry(METHOD_NAME, "bar"));
     }
 
-    static Map<String, String> decorate(JavaNode md) {
+    private static Map<String, String> decorate(JavaNode md) {
         Map<String, String> result = new HashMap<>();
         JavaViolationDecorator.INSTANCE.decorate(md, result);
         return result;
@@ -118,7 +117,7 @@ class JavaViolationDecoratorTest {
     }
 
     @Test
-    void testDefaultPackageAndClassName() {
+    void testDefaultPackageAndClassNameOnImports() {
         ASTCompilationUnit ast = parse("import java.util.List; public class Foo { }");
         ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
@@ -128,7 +127,7 @@ class JavaViolationDecoratorTest {
     }
 
     @Test
-    void testPackageAndMultipleClassesName() {
+    void testPackageAndMultipleClassesNameOnImports() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { } public class Bar { }");
         ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
@@ -153,18 +152,65 @@ class JavaViolationDecoratorTest {
      */
     @Test
     void testInnerClass() {
-        ASTCompilationUnit ast = parse("class Foo { int a; class Bar { int a; } }");
-        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).toList();
+        ASTCompilationUnit ast = parse("class Foo { int a; class Bar { int a; class Baz { int a; } } }");
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(3, classes.size());
+
+        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo.Bar"));
+        assertThat(decorate(classes.get(2)), hasEntry(CLASS_NAME, "Foo.Bar.Baz"));
+
+        List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(3, fields.size());
+
+        assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Foo.Bar"));
+        assertThat(decorate(fields.get(2)), hasEntry(CLASS_NAME, "Foo.Bar.Baz"));
+    }
+
+    @Test
+    void testInnerClassIncludingPackage() {
+        ASTCompilationUnit ast = parse("package pkg; class Foo { class Bar {} }");
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
         assertEquals(2, classes.size());
 
         assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
-        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Bar"));
+        assertThat(decorate(classes.get(0)), hasEntry(PACKAGE_NAME, "pkg"));
+
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo.Bar"));
+        assertThat(decorate(classes.get(1)), hasEntry(PACKAGE_NAME, "pkg"));
+    }
+
+    @Test
+    void localClasses() {
+        ASTCompilationUnit ast = parse("class Foo { int a; void m() { class Local { int a; }; } }");
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(2, classes.size());
+
+        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo.Local"));
 
         List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
         assertEquals(2, fields.size());
 
         assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
-        assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Bar"));
+        assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Foo.Local"));
+    }
+
+    @Test
+    void anonymousClasses() {
+        ASTCompilationUnit ast = parse("class Foo { int a; void m() { new Object() { int a; }; } }");
+        List<ASTTypeDeclaration> classes = ast.descendants(ASTTypeDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(2, classes.size());
+
+        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo")); // anonymous classes are unnamed
+
+        List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(2, fields.size());
+
+        assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Foo")); // anonymous classes are unnamed
     }
 
     @Test

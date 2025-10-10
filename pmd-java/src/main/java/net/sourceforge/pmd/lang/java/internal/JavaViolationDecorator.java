@@ -57,7 +57,21 @@ final class JavaViolationDecorator implements ViolationDecorator {
             enclosing = javaNode.getRoot().getTypeDeclarations().first();
         }
         if (enclosing != null) {
-            return enclosing.getSimpleName();
+            String className;
+            if (enclosing.isLocal()) {
+                className = enclosing.getEnclosingType().getCanonicalName() + "." + enclosing.getSimpleName();
+            } else if (enclosing.isAnonymous()) {
+                className = enclosing.getEnclosingType().getCanonicalName();
+            } else {
+                className = enclosing.getCanonicalName();
+            }
+
+            String packageName = enclosing.getPackageName();
+            if (className != null && !packageName.isEmpty()) {
+                assert className.startsWith(packageName);
+                className = className.substring(packageName.length() + 1);
+            }
+            return className;
         }
         return null;
     }
