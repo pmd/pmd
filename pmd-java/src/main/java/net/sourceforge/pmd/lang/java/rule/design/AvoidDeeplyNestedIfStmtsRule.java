@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -36,14 +37,20 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
 
     @Override
     public Object visit(ASTIfStatement node, Object data) {
-        if (!node.hasElse()) {
-            depth++;
-        }
-        super.visit(node, data);
-        if (depth == depthLimit) {
+        if (depth + 1 == depthLimit) {
             asCtx(data).addViolation(node);
+            // return early so that if-else chains are only reported once
+            return data;
         }
+        // deep ifs if in condition are highly unlikely, but possible via lambdas
+        node.getCondition().acceptVisitor(this, data);
+        depth++;
+        node.getThenBranch().acceptVisitor(this, data);
         depth--;
+        ASTStatement elseBranch = node.getElseBranch();
+        if (elseBranch != null) {
+            elseBranch.acceptVisitor(this, data);
+        }
         return data;
     }
 }
