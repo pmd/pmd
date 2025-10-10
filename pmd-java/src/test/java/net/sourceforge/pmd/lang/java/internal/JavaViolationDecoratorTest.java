@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
@@ -183,7 +184,7 @@ class JavaViolationDecoratorTest {
 
     @Test
     void localClasses() {
-        ASTCompilationUnit ast = parse("class Foo { int a; void m() { class Local { int a; }; } }");
+        ASTCompilationUnit ast = parse("class Foo { int a; void m() { class Local { int a; Local() {} }; } }");
         List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
         assertEquals(2, classes.size());
 
@@ -195,6 +196,37 @@ class JavaViolationDecoratorTest {
 
         assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
         assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Foo.Local"));
+
+        List<ASTConstructorDeclaration> ctors = ast.descendants(ASTConstructorDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(1, ctors.size());
+
+        assertThat(decorate(ctors.get(0)), hasEntry(CLASS_NAME, "Foo.Local"));
+    }
+
+    @Test
+    void localClassesNested() {
+        ASTCompilationUnit ast = parse("package pkg1.pkg2; class Foo { static void fooMethod() { class Local1 { void local1Method() { class Local2 { int field2; Local2() {} } } } } }");
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(3, classes.size());
+
+        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.get(0)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo.Local1"));
+        assertThat(decorate(classes.get(1)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+        assertThat(decorate(classes.get(2)), hasEntry(CLASS_NAME, "Foo.Local1.Local2"));
+        assertThat(decorate(classes.get(2)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+
+        List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(1, fields.size());
+
+        assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo.Local1.Local2"));
+        assertThat(decorate(fields.get(0)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+
+        List<ASTConstructorDeclaration> ctors = ast.descendants(ASTConstructorDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(1, ctors.size());
+
+        assertThat(decorate(ctors.get(0)), hasEntry(CLASS_NAME, "Foo.Local1.Local2"));
+        assertThat(decorate(ctors.get(0)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
     }
 
     @Test
