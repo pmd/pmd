@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -358,7 +359,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
             try {
                 // No try-with-resources, do not want to close STDERR
                 @SuppressWarnings("PMD.CloseResource")
-                final Writer writer = new OutputStreamWriter(System.err);
+                final Writer writer = new OutputStreamWriter(System.err, Charset.defaultCharset());
                 renderer.render(timingReport, writer);
             } catch (final IOException e) {
                 pmdReporter.errorEx("Error producing benchmark report", e);

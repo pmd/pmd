@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.Charset;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -121,7 +122,7 @@ public class ClasspathClassLoader extends URLClassLoader {
     }
 
     private void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(fileURL.openStream()))) {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(fileURL.openStream(), Charset.defaultCharset()))) {
             String line;
             while ((line = in.readLine()) != null) {
                 LOG.debug("Read classpath entry line: <{}>", line);
