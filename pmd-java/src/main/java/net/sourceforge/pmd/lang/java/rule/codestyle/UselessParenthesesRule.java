@@ -11,12 +11,15 @@ import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRul
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.definitely;
 import static net.sourceforge.pmd.lang.java.rule.codestyle.UselessParenthesesRule.Necessity.necessaryIf;
 
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTPrimaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
@@ -111,9 +114,14 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
             return NEVER;
         }
 
-        if (inner instanceof ASTPrimaryExpression
-            || inner instanceof ASTSwitchExpression) {
+        if (inner instanceof ASTPrimaryExpression) {
             return NEVER;
+        }
+        if (inner instanceof ASTSwitchExpression) {
+            return (outer instanceof ASTMethodCall
+                || outer instanceof ASTArrayAccess
+                || outer instanceof ASTFieldAccess) && inner.getIndexInParent() == 0
+                    ? ALWAYS : NEVER;
         }
 
         if (outer instanceof ASTLambdaExpression) {
