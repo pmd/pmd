@@ -86,8 +86,7 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>2.2.10</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit5.version>5.13.4</junit5.version>
-        <junit5.platform.version>1.13.4</junit5.platform.version>
+        <junit.version>6.0.0</junit.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
@@ -377,7 +376,7 @@
                         <dependency>
                             <groupId>org.junit.platform</groupId>
                             <artifactId>junit-platform-launcher</artifactId>
-                            <version>${junit5.platform.version}</version>
+                            <version>${junit.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -1013,7 +1012,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>${junit5.version}</version>
+                <version>${junit.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -1138,13 +1137,13 @@
                 <version>4.32.1</version>
             </dependency>
 
-            <!-- Make sure to use the correct version that JUnit5 needs. E.g. 5.12.1 needs 1.12.1
+            <!-- Make sure to use the correct version that JUnit6 needs.
                  Kotest might bring a different version.
-                 see junit5.version / junit5.platform.version -->
+                 see junit.version -->
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-commons</artifactId>
-                <version>${junit5.platform.version}</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
