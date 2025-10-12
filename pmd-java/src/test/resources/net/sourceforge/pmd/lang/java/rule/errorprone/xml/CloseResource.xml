@@ -1260,6 +1260,34 @@ public class CloseResourceFP {
         ]]></code>
     </test-code>
 
+    <test-code focused="true">
+        <description>#5042 [java] CloseResource false positive for pattern match</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+
+public class CloseResourceFP {
+    public void check(AutoCloseable in) {
+        if (in instanceof FileInputStream fin) {
+            doCheck(fin);
+        } else if (in instanceof ByteArrayInputStream bin) {
+            doCheck(bin);
+        } else {
+            BufferedInputStream buf = new BufferedInputStream((InputStream) in);
+            doCheck(buf);
+        }
+    }
+    public void checkSwitch(AutoCloseable in) {
+        switch (in) {
+            case FileInputStream fin -> doCheck(fin);
+            case ByteArrayInputStream bin -> doCheck(bin);
+            default -> doCheck(new BufferedInputStream((InputStream) in));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>#1967 [java] CloseResource false positive with late assignment of variable</description>
         <expected-problems>0</expected-problems>
