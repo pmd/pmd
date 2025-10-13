@@ -405,9 +405,9 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>CheckResultSet in lambda</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>7</expected-linenumbers>
+        <description>CheckResultSet in lambda and anonymous class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,14</expected-linenumbers>
         <code><![CDATA[
             import java.sql.*;
             import java.util.function.Consumer;
@@ -417,8 +417,15 @@ public class Foo {
                     int x = consumeResultSet(resultSet, rs -> {
                         rs.next();
                     });
-
                     System.out.println(x);
+
+                    int y = consumeResultSet(resultSet, new Consumer<ResultSet>() {
+                        @Override
+                        public void accept(ResultSet rs) {
+                            rs.next();
+                        }
+                    });
+                    System.out.println(y);
                 }
 
                 private static int consumeResultSet(ResultSet resultSet, Consumer<ResultSet> consumer) throws Exception {
