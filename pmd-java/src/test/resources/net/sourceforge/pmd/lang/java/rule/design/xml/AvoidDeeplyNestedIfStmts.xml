@@ -43,4 +43,118 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Deep ifs with else</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+        public class Tester {
+            public void foo() {
+                if (true) {
+                } else {
+                    if (true) {
+                        if (true) {
+                            if (true) {
+                                // violation
+                            }
+                        } else {
+
+                        }
+                    } else {
+
+                    }
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Sibling ifs reported separately</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,6</expected-linenumbers>
+        <code><![CDATA[
+        public class Tester {
+            public void foo() {
+                if (true) {
+                    if (true) {
+                        if (true) { }
+                        if (true) { }
+                    }
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>If-else reported once</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+        public class Tester {
+            public void foo() {
+                if (true) {
+                    if (true) {
+                        if (true) { }
+                        else if (true) { }
+                    }
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Chained ifs, not deep enough</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Tester {
+            public void foo() {
+                if (true) {
+                } else if (true) {
+                   if (true) {
+
+                   }
+                } else if (true) {
+                   if (true) {
+
+                   }
+                } else if (true) {
+                   if (true) {
+
+                   }
+                } else if (true) {
+                   if (true) {
+
+                   }
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Deep ifs in lambda</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+        import java.util.stream.Stream;
+        public class Tester {
+            public void foo() {
+                if (Stream.of("").anyMatch(s -> {
+                    if (true) {
+                        if (true) {
+                            if (true) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                })) {
+                    // do nothing
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
 </test-data>
