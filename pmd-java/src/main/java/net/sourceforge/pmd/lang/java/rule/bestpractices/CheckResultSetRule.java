@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
+import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -56,12 +57,15 @@ public class CheckResultSetRule extends AbstractJavaRule {
     }
 
     private boolean isCheckedIndirectly(ASTMethodCall node) {
-        if (!(node.getParent() instanceof ASTVariableDeclarator)) {
+        final ASTVariableDeclarator variableDeclarator = node.ancestors()
+                .takeWhile(n -> !(n instanceof ReturnScopeNode))
+                .first(ASTVariableDeclarator.class);
+
+        if (variableDeclarator == null) {
             return false;
         }
 
-        final ASTVariableDeclarator declarator = (ASTVariableDeclarator) node.getParent();
-        final List<ASTAssignableExpr.ASTNamedReferenceExpr> usages = declarator.getVarId().getLocalUsages();
+        final List<ASTAssignableExpr.ASTNamedReferenceExpr> usages = variableDeclarator.getVarId().getLocalUsages();
         //check that the result is used and its first usage is not overwriting the result
         return !usages.isEmpty() && usages.get(0).getAccessType() == ASTAssignableExpr.AccessType.READ;
     }
