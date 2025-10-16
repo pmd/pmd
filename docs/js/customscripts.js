@@ -60,24 +60,6 @@ $(document).ready(function () {
         }
     });
 
-    // Initialize jekyll search in topnav.
-    SimpleJekyllSearch.init({
-        searchInput: document.getElementById('search-input'),
-        resultsContainer: document.getElementById('results-container'),
-        json: 'search.json',
-        searchResultTemplate: '<li><a href="{url}">{title}</a></li>',
-        noResultsText: '{{site.data.strings.search_no_results_text}}',
-        limit: 10,
-        fuzzy: true,
-    });
-    // Make sure to close and empty the search results after clicking one result item.
-    // This is necessary, if we don't switch the page but only jump to a anchor on the
-    // same page.
-    $('#results-container').click(function() {
-        $('#search-input').val('');
-        $(this).empty();
-    });
-
     // Topnav toggle button for displaying/hiding nav sidebar
     $("#tg-sb-link").click(function(event) {
         $("#tg-sb-sidebar").toggle();
