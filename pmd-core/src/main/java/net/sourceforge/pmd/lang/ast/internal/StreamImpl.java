@@ -222,8 +222,7 @@ public final class StreamImpl {
         }
 
         @Override
-        @NonNull
-        protected <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<N, DescendantNodeStream<? extends R>> mapper) {
+        protected @NonNull <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<N, DescendantNodeStream<? extends R>> mapper) {
             return StreamImpl.empty();
         }
 
