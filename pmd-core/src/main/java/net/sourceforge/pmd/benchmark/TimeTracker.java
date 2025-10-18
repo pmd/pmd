@@ -207,10 +207,10 @@ public final class TimeTracker {
         /* package */ long accumulate(final TimerEntry timerEntry, final long extraData) {
             final long delta = System.nanoTime() - timerEntry.start;
 
-            totalTimeNanos.getAndAdd(delta);
-            selfTimeNanos.getAndAdd(delta - timerEntry.inNestedOperationsNanos);
-            callCount.getAndIncrement(); // NOPMD: UselessPureMethodCall false-positive #6055
-            extraDataCounter.getAndAdd(extraData);
+            totalTimeNanos.addAndGet(delta);
+            selfTimeNanos.addAndGet(delta - timerEntry.inNestedOperationsNanos);
+            callCount.incrementAndGet();
+            extraDataCounter.addAndGet(extraData);
 
             return delta;
         }
@@ -220,8 +220,8 @@ public final class TimeTracker {
          * @param timedResult The {@link TimedResult} to merge
          */
         /* package */ void mergeTimes(final TimedResult timedResult) {
-            totalTimeNanos.getAndAdd(timedResult.totalTimeNanos.get());
-            selfTimeNanos.getAndAdd(timedResult.selfTimeNanos.get());
+            totalTimeNanos.addAndGet(timedResult.totalTimeNanos.get());
+            selfTimeNanos.addAndGet(timedResult.selfTimeNanos.get());
         }
     }
 
