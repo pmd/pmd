@@ -705,4 +705,63 @@ public class Test {
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>Switch expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Main {
+
+            public static String foo(final int k) {
+                int f = (switch (k) {
+                    default -> new int[1];
+                })[0];
+                int length = (switch (k) {
+                    default -> new int[0];
+                }).length;
+                return (switch (e) {
+                    default -> "bar";
+                }).toUpperCase();
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expression unnecessary</description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+        import java.util.function.Supplier;
+
+        public class Tester {
+            public void foo(int k1, int k2, int k3, int k4, int k5, int k6, int k7, int k8) {
+                String.format("%s", (switch (k1) {
+                    default -> new int[1];
+                }));
+                boolean flag = !(switch (k2) {
+                    default -> true;
+                });
+                int num = ~(switch (k3) {
+                    default -> 0;
+                });
+                double cast = (double) (switch (k4) {
+                     default -> 0;
+                });
+                Supplier<Integer> factory = () -> (switch (k5) {
+                    default -> 0;
+                });
+                int nest = switch (k6) {
+                    default -> (switch (k6) {
+                        default -> 4;
+                    });
+                };
+                boolean check = (switch (k7) {
+                    default -> "5";
+                }) instanceof String;
+                int[] ints = {1,2};
+                int first = ints[(switch (k8) {
+                    default -> 0;
+                })];
+            }
+        }
+        ]]></code>
+    </test-code>
 </test-data>

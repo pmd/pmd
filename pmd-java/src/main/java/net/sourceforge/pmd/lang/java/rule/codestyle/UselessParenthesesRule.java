@@ -111,9 +111,12 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
             return NEVER;
         }
 
-        if (inner instanceof ASTPrimaryExpression
-            || inner instanceof ASTSwitchExpression) {
+        if (inner instanceof ASTPrimaryExpression) {
             return NEVER;
+        }
+        if (inner instanceof ASTSwitchExpression) {
+            return outer instanceof ASTPrimaryExpression && inner.getIndexInParent() == 0
+                    ? ALWAYS : NEVER;
         }
 
         if (outer instanceof ASTLambdaExpression) {
