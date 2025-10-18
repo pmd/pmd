@@ -1287,10 +1287,7 @@ private void CompactConstructorDeclarationLookahead() #void:
 void CompactConstructorDeclaration():
 {}
 {
-  <IDENTIFIER> {
-    jjtThis.setFirstToken(jjtree.peekNode().getFirstToken());
-    jjtThis.setIdentToken(token);
-  }
+  <IDENTIFIER> { jjtThis.setIdentToken(token); }
   Block()
 }
 
