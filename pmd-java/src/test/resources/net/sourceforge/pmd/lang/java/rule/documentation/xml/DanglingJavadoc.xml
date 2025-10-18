@@ -94,4 +94,25 @@ module my.module.name {
 }
     ]]></code>
     </test-code>
+    <test-code>
+        <description>Record compact constructor #6103</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            /**
+             * Represents a position in source code with line and column information.
+             *
+             * @param line the line number (1-based)
+             * @param column the column number (1-based)
+             */
+            public record SourcePosition(int line, int column) {
+                /**
+                * Compact constructor validating line and column are positive.
+                */
+                public SourcePosition {
+                    requireThat(line, "line").isPositive();
+                    requireThat(column, "column").isPositive();
+                }
+            }
+        </code>
+    </test-code>
 </test-data>

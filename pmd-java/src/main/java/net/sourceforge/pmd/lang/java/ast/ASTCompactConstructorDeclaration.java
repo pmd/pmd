@@ -30,7 +30,8 @@ import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
  */
 // TODO make implicit formal parameter node and implement ASTExecutableDeclaration.
 // This might help UnusedAssignmentRule / DataflowPass.ReachingDefsVisitor, see also #4603
-public final class ASTCompactConstructorDeclaration extends AbstractJavaNode implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner, JavadocCommentOwner, ReturnScopeNode {
+public final class ASTCompactConstructorDeclaration extends AbstractJavaNode
+    implements ASTBodyDeclaration, SymbolDeclaratorNode, ModifierOwner, JavadocCommentOwner, ReturnScopeNode, LeftRecursiveNode {
 
     private JavaccToken identToken;
 

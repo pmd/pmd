@@ -24,4 +24,17 @@ class ASTCompactConstructorDeclarationTest extends BaseParserTest {
                 .get(0);
         assertEquals(1, compactConstructor.getBody().getNumChildren());
     }
+
+    @Test
+    void compactConstructorRange() {
+        ASTCompactConstructorDeclaration compactConstructor = java.getNodes(ASTCompactConstructorDeclaration.class,
+                    "record RecordWithDocumentation(String foo) {"
+                    + "/** JavaDoc */"
+                    + "     RecordWithDocumentation {"
+                    + "         assert foo != null;"
+                    + "     }"
+                    + "}")
+            .get(0);
+        assertEquals("/** JavaDoc */", compactConstructor.getFirstToken().getImage());
+    }
 }
