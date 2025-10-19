@@ -614,4 +614,104 @@ class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>Instanceof pattern</description>
+        <expected-problems>1</expected-problems>
+        <code>
+            public class Tester {
+                public void foo(Object arg) {
+                    if (arg instanceof String s) {
+                    }
+                    if (arg instanceof String s) {
+                        System.out.println(s);
+                    }
+                }
+            }
+        </code>
+    </test-code>
+    <test-code>
+        <description>Type pattern in switch</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            public class Switcher {
+                public static void foo(Object r) {
+                    switch (r) {
+                        case String s -> System.out.println("a string");
+                        default -> System.out.println("not a string");
+                    }
+                }
+            }
+        </code>
+        <source-type>java 21</source-type>
+    </test-code>
+    <test-code>
+        <description>Type pattern in switch, Java 22</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Switcher {
+                public static void foo(Object r) {
+                    switch (r) {
+                        case String s -> System.out.println("a string");
+                        default -> System.out.println("not a string");
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+    <test-code>
+        <description>Record pattern Java 21</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Switcher {
+                public record Wrap(int k) {
+                }
+                public static void foo(Object r) {
+                    switch (r) {
+                        case Wrap(int k) -> System.out.println("a wrapped int");
+                        default -> System.out.println("not a wrapped int");
+                    }
+                    if (r instanceof Wrap(int k)) {
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 21</source-type>
+    </test-code>
+    <test-code>
+        <description>Record pattern Java 22</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public class Switcher {
+                public record Wrap(int k) {
+                }
+                public static void foo(Object r) {
+                    switch (r) {
+                        case Wrap(int k) -> System.out.println("a wrapped int");
+                        default -> System.out.println("not a wrapped int");
+                    }
+                    if (r instanceof Wrap(int k)) {
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+    <test-code>
+        <description>Record pattern with guard Java 22</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Switcher {
+                public record Wrap(int k) {
+                }
+                public static void foo(Object r) {
+                    switch (r) {
+                        case Wrap(int n) when n < 0 -> System.out.println("a wrapped negative int");
+                        default -> System.out.println("not a wrapped int");
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
 </test-data>

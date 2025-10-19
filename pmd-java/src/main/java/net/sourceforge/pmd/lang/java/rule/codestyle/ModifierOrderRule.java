@@ -62,9 +62,8 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
                 return "ondecl";
             case ANYWHERE:
                 return "anywhere";
-            default:
-                throw AssertionUtil.shouldNotReachHere("exhaustive switch");
             }
+            throw AssertionUtil.shouldNotReachHere("exhaustive switch");
         }
     }
 
