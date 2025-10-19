@@ -72,6 +72,7 @@ public class GroovyToken implements GenericToken<GroovyToken> {
     }
 
     @Override
+    @SuppressWarnings("PMD.OverrideBothEqualsAndHashCodeOnComparable")
     public int compareTo(GroovyToken o) {
         return getRegion().compareTo(o.getRegion());
     }
