@@ -120,7 +120,7 @@ public class PLSQLNameOccurrence implements NameOccurrence {
      * thirdChild).getImage().indexOf('.') == -1; }
      */
 
-    /**
+    /*
      * Assert it the occurrence is a self assignment such as:
      * <code>
      * i += 3;

@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>${scalaVersion}.16</version>
+            <version>${scalaVersion}.17</version>
         </dependency>
         <dependency>
             <groupId>org.scalameta</groupId>

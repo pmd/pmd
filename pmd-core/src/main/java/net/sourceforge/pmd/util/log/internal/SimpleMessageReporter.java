@@ -7,6 +7,7 @@ package net.sourceforge.pmd.util.log.internal;
 import org.slf4j.Logger;
 import org.slf4j.event.Level;
 
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
@@ -35,9 +36,9 @@ public class SimpleMessageReporter extends MessageReporterBase implements PmdRep
             return backend.isDebugEnabled();
         case TRACE:
             return backend.isTraceEnabled();
-        default:
-            return false;
         }
+        // should not occur, above switch is exhaustive
+        throw AssertionUtil.shouldNotReachHere("Invalid log level: " + level);
     }
 
     @Override
@@ -58,8 +59,6 @@ public class SimpleMessageReporter extends MessageReporterBase implements PmdRep
         case TRACE:
             backend.trace(message);
             break;
-        default:
-            throw new AssertionError("Invalid log level: " + level);
         }
     }
 }
