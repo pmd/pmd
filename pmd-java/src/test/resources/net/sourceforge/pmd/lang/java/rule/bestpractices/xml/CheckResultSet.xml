@@ -381,4 +381,58 @@ public class Foo {
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#4122: CheckResultSet false-positive with local variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.sql.Connection;
+            import java.sql.ResultSet;
+
+            class Scratch {
+                public void bar(Connection c, String tableName) throws Exception {
+                      ResultSet created = c.getMetaData().getTables(null, null, tableName, null);
+                      boolean missing = !created.next();
+                      reportTableName(tableName, !missing);
+                }
+
+                private void reportTableName(String tableName, boolean alreadyExisting) {
+                    if (!alreadyExisting) {
+                        System.out.println("Table " + tableName + " is available");
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CheckResultSet in lambda and anonymous class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,14</expected-linenumbers>
+        <code><![CDATA[
+            import java.sql.*;
+            import java.util.function.Consumer;
+
+            class Foo {
+                public void bar(ResultSet resultSet) {
+                    int x = consumeResultSet(resultSet, rs -> {
+                        rs.next();
+                    });
+                    System.out.println(x);
+
+                    int y = consumeResultSet(resultSet, new Consumer<ResultSet>() {
+                        @Override
+                        public void accept(ResultSet rs) {
+                            rs.next();
+                        }
+                    });
+                    System.out.println(y);
+                }
+
+                private static int consumeResultSet(ResultSet resultSet, Consumer<ResultSet> consumer) throws Exception {
+                    consumer.accept(resultSet);
+                    return rs.getInt(0);
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>
