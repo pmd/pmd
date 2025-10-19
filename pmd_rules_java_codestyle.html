@@ -2504,6 +2504,10 @@ property "ignoredAnnotations" to customize the recognized annotations.</p>
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
 as "does the error case go first?" or "does the common case go first?".</p>
 
+<p>Since null checks are commonly considered a positive condition, they are by default ignored
+by this rule. This means both <code class="language-plaintext highlighter-rouge">a == null</code> and <code class="language-plaintext highlighter-rouge">a != null</code> are allowed. If you want
+to enforce either style and disallow the other, use the property <code class="language-plaintext highlighter-rouge">nullCheckBranch</code>.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/codestyle/ConfusingTernaryRule.java">net.sourceforge.pmd.lang.java.rule.codestyle.ConfusingTernaryRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -2529,6 +2533,11 @@ as "does the error case go first?" or "does the common case go first?".</p>
       <td>false</td>
       <td>Ignore conditions with an else-if case</td>
     </tr>
+    <tr>
+      <td>nullCheckBranch</td>
+      <td>Any</td>
+      <td>One of <code class="language-plaintext highlighter-rouge">Any</code>, <code class="language-plaintext highlighter-rouge">Then</code>, <code class="language-plaintext highlighter-rouge">Else</code>. For <code class="language-plaintext highlighter-rouge">Any</code> null checks may have any form, for <code class="language-plaintext highlighter-rouge">Then</code> only <code class="language-plaintext highlighter-rouge">foo == null</code> is allowed, for <code class="language-plaintext highlighter-rouge">Else</code> only <code class="language-plaintext highlighter-rouge">foo != null</code> is allowed</td>
+    </tr>
   </tbody>
 </table>
 
@@ -2540,6 +2549,7 @@ as "does the error case go first?" or "does the common case go first?".</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/ConfusingTernary"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoreElseIf"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"nullCheckBranch"</span> <span class="na">value=</span><span class="s">"Any"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -5293,7 +5303,7 @@ It is often simpler and cleaner to return or throw the value directly.</p>
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 16, 2025 <br />
+             Site last generated: Oct 19, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
