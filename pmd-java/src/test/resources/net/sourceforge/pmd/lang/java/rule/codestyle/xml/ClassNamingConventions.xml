@@ -436,7 +436,34 @@ import junit.framework.TestCase;
 public class ExampleTestCase extends TestCase { }
 ]]></code>
     </test-code>
-    
+
+    <test-code>
+        <description>Integration test class with IT suffix should be valid #5919</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class ExampleIT extends TestCase { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Integration test class with ITCase suffix should be valid #5919</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class ExampleITCase extends TestCase { }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Integration test class with IT prefix should be valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import junit.framework.TestCase;
+public class ITExample extends TestCase { }
+]]></code>
+    </test-code>
+
     <test-code>
         <description>[java] ClassNamingConventions: interfaces are identified as abstract classes (regression in 7.0.0) #4881</description>
         <rule-property name="abstractClassPattern">Abstract[A-Z][a-zA-Z0-9]*</rule-property>

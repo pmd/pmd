@@ -8244,6 +8244,33 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "abobov",
+      "name": "Anton Bobov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/162897?v=4",
+      "profile": "https://github.com/abobov",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "AndrewStopchenko-SO",
+      "name": "AndrewStopchenko-SO",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63401193?v=4",
+      "profile": "https://github.com/AndrewStopchenko-SO",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "vzorge",
+      "name": "Vincent Zorge",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3940229?v=4",
+      "profile": "https://nl.linkedin.com/in/vincentzorge",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

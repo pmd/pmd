@@ -12,6 +12,7 @@ import javax.xml.namespace.QName;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionDefinition;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathFunctionException;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 import net.sf.saxon.expr.Expression;
 import net.sf.saxon.expr.StaticContext;
@@ -53,9 +54,9 @@ public class SaxonExtensionFunctionDefinitionAdapter extends ExtensionFunctionDe
         case STRING_SEQUENCE: return SequenceType.STRING_SEQUENCE;
         case OPTIONAL_STRING: return SequenceType.OPTIONAL_STRING;
         case OPTIONAL_DECIMAL: return SequenceType.OPTIONAL_DECIMAL;
-        default:
-            throw new UnsupportedOperationException("Type " + type + " is not supported");
         }
+        // should not occur, above switch is exhaustive
+        throw AssertionUtil.shouldNotReachHere("Type " + type + " is not supported");
     }
 
     private SequenceType[] convertToSequenceTypes(XPathFunctionDefinition.Type[] types) {

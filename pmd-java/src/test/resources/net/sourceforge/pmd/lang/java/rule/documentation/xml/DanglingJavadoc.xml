@@ -78,4 +78,20 @@ public class Foo {
 /// violation
     ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6058: javadoc in module-info</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * My Modules Documentation.
+ *
+ * @since 1.0
+ */
+module my.module.name {
+  exports my.module.name;
+  requires org.jspecify;
+}
+    ]]></code>
+    </test-code>
 </test-data>

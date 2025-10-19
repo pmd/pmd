@@ -41,7 +41,7 @@ final class ApexAnnotationSuppressor extends AbstractAnnotationSuppressor<ASTAnn
 
                 if (image != null) {
                     for (String part : image.split(",")) {
-                        if (callbacks.processNode(param, part)) {
+                        if (callbacks.processNode(param, part.trim())) {
                             return true;
                         }
                     }

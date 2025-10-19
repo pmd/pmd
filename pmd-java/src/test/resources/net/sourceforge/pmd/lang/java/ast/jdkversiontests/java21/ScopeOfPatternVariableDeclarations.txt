@@ -22,7 +22,7 @@
          |        |  |  +- Guard[]
          |        |  |     +- InfixExpression[@CompileTimeConstant = false, @Operator = BinaryOp.EQ, @ParenthesisDepth = 0, @Parenthesized = false]
          |        |  |        +- MethodCall[@CompileTimeConstant = false, @Image = "charValue", @MethodName = "charValue", @ParenthesisDepth = 0, @Parenthesized = false]
-         |        |  |        |  +- AmbiguousName[@CompileTimeConstant = false, @Image = "c", @Name = "c", @ParenthesisDepth = 0, @Parenthesized = false]
+         |        |  |        |  +- VariableAccess[@AccessType = AccessType.READ, @CompileTimeConstant = false, @Image = "c", @Name = "c", @ParenthesisDepth = 0, @Parenthesized = false]
          |        |  |        |  +- ArgumentList[@Empty = true, @Size = 0]
          |        |  |        +- NumericLiteral[@Base = 10, @CompileTimeConstant = true, @DoubleLiteral = false, @FloatLiteral = false, @Image = "7", @IntLiteral = true, @Integral = true, @LiteralText = "7", @LongLiteral = false, @ParenthesisDepth = 0, @Parenthesized = false, @ValueAsDouble = 7.0, @ValueAsFloat = 7.0, @ValueAsInt = 7, @ValueAsLong = 7]
          |        |  +- ExpressionStatement[]

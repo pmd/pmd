@@ -83,7 +83,7 @@ public class Foo {
         ]]></code>
     </test-code>
 
-    <test-code disabled="true">
+    <test-code>
         <description>#3122 Blank uninitialized local var</description>
         <expected-problems>3</expected-problems>
         <expected-linenumbers>3,4,5</expected-linenumbers>
@@ -94,6 +94,7 @@ public class Foo {
         int b = 0;
         int c ;
         c = a + b;
+        System.out.println(c);
     }
 }
         ]]></code>
