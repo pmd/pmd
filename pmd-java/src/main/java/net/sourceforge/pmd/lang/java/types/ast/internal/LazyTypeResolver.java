@@ -94,6 +94,7 @@ import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Resolves types of expressions. This is used as the implementation of
@@ -467,10 +468,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             } else {
                 return binaryNumericPromotion(lhs, rhs);
             }
-
-        default:
-            throw new AssertionError("Unknown operator for " + node);
         }
+        throw AssertionUtil.shouldNotReachHere("Unknown operator for " + node);
     }
 
     private boolean isUnresolved(JTypeMirror t) {
@@ -495,9 +494,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         case POST_INCREMENT:
         case POST_DECREMENT:
             return node.getOperand().getTypeMirror(ctx);
-        default:
-            throw new AssertionError("Unknown operator for " + node);
         }
+        throw AssertionUtil.shouldNotReachHere("Unknown operator for " + node);
     }
 
     @Override

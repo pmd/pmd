@@ -11,7 +11,7 @@
          |  |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "A"]
          |  +- ClassBody[@Empty = true, @Size = 0]
          +- ClassDeclaration[@Abstract = true, @Annotation = false, @Anonymous = false, @BinaryName = "RecordPatternsExhaustiveSwitch$I", @CanonicalName = "RecordPatternsExhaustiveSwitch.I", @EffectiveVisibility = Visibility.V_PACKAGE, @Enum = false, @Final = false, @Interface = true, @Local = false, @Nested = true, @PackageName = "", @Record = false, @RegularClass = false, @RegularInterface = true, @SimpleName = "I", @Static = true, @TopLevel = false, @UnnamedToplevelClass = false, @Visibility = Visibility.V_PACKAGE]
-         |  +- ModifierList[@EffectiveModifiers = (JModifier.SEALED, JModifier.ABSTRACT, JModifier.STATIC), @ExplicitModifiers = (JModifier.SEALED)]
+         |  +- ModifierList[@EffectiveModifiers = (JModifier.ABSTRACT, JModifier.STATIC, JModifier.SEALED), @ExplicitModifiers = (JModifier.SEALED)]
          |  +- PermitsList[@Empty = false, @Size = 2]
          |  |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "C"]
          |  |  +- ClassType[@FullyQualified = false, @PackageQualifier = null, @SimpleName = "D"]
