@@ -38,6 +38,7 @@ checkstyle version during the build.
   * [#6022](https://github.com/pmd/pmd/issues/6022): \[apex] ExcessiveClassLength/ExcessiveParameterList include the metric in the message
 * java-bestpractices
   * [#4122](https://github.com/pmd/pmd/issues/4122): \[java] CheckResultSet false-positive with local variable
+  * [#6124](https://github.com/pmd/pmd/issues/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching
 * java-codestyle
   * [#5919](https://github.com/pmd/pmd/issues/5919): \[java] ClassNamingConventions: Include integration tests in testClassPattern by default
   * [#6029](https://github.com/pmd/pmd/issues/6029): \[java] Fix UnnecessaryCast false-negative in method calls
