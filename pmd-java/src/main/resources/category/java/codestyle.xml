@@ -343,6 +343,10 @@ Avoid negation within an "if" expression with an "else" clause.  For example, re
 Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
 as "does the error case go first?" or "does the common case go first?".
+
+Since null checks are commonly considered a positive condition, they are by default ignored
+by this rule. This means both `a == null` and `a != null` are allowed. If you want
+to enforce either style and disallow the other, use the property `nullCheckBranch`.
         </description>
         <priority>3</priority>
         <example>

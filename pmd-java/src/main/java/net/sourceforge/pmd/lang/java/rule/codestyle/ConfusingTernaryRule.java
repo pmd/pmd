@@ -112,12 +112,12 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         }
         ASTInfixExpression infix = (ASTInfixExpression) node;
         // look for "x != y"
-        if (infix.getOperator().equals(BinaryOp.NE)) {
+        if (infix.getOperator() == BinaryOp.NE) {
             return !isNullComparison(infix)
                 || getProperty(NULL_CHECK_BRANCH) == NullCheckBranch.Then;
 
         }
-        return infix.getOperator().equals(BinaryOp.EQ)
+        return infix.getOperator() == BinaryOp.EQ
             && isNullComparison(infix)
             && getProperty(NULL_CHECK_BRANCH) == NullCheckBranch.Else;
     }
