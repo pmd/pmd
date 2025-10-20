@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
 /**
- * Test for {@link UselessConditionRule}.
+ * Test for {@link IdenticalConditionalBranchesRule}.
  */
-class UselessConditionTest extends PmdRuleTst {
+class IdenticalConditionalBranchesTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -1882,6 +1882,36 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="IdenticalConditionalBranches"
+          language="java"
+          since="7.18"
+          message="Conditional statement ignores the condition"
+          class="net.sourceforge.pmd.lang.java.rule.errorprone.IdenticalConditionalBranchesRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#identicalconditionalbranches">
+        <description>
+            Conditional statement that does the same thing when the condition is true and false
+            is either incorrect (one of the branches should be changed) or redundant
+            (can be replaced by one of its branches).
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+class Test {
+    int method1() {
+        if (Math.random() > 0.5) {
+            return 1;
+        } else {
+            return 1;
+        }
+    }
+    int method2() {
+        return Math.random() > 0.5 ? 1 : 1;
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="ImplicitSwitchFallThrough"
           language="java"
           since="3.0"
@@ -3461,36 +3491,6 @@ public boolean test(String s) {
     if (s == "one") return true;        // unreliable
     if ("two".equals(s)) return true;   // better
     return false;
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="UselessCondition"
-          language="java"
-          since="3.5"
-          message="Conditional statement ignores the condition"
-          class="net.sourceforge.pmd.lang.java.rule.errorprone.UselessConditionRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#uselesscondition">
-        <description>
-            Conditional statement that does the same thing when the condition is true and false
-            is either incorrect (one of the branches should be changed) or redundant
-            (can be replaced by one of its branches).
-        </description>
-        <priority>3</priority>
-        <example>
-            <![CDATA[
-class Test {
-    int method1() {
-        if (Math.random() > 0.5) {
-            return 1;
-        } else {
-            return 1;
-        }
-    }
-    int method2() {
-        return Math.random() > 0.5 ? 1 : 1;
-    }
 }
 ]]>
         </example>
