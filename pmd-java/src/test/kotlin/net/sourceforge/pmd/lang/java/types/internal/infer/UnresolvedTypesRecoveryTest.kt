@@ -885,4 +885,66 @@ class C {
             acu.varId("result") shouldHaveType ts.UNKNOWN
         }
     }
+
+    parserTest("Constraints like 'a = Bar and 'a = (*unknown*) should not be considered incompatible") {
+        // todo not sure how to test that if this always resolves 'a to Bar and not to (*unknown*)
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+                class Bar {}
+                public class Foo {
+
+                  static {
+                      Iterable<Bar> local = filter(unknown(), input -> input.debug());
+                  }
+
+                  public static <T> Iterable<T> filter(final Iterable<T> unfiltered,
+                    final java.util.function.Predicate<? super T> retainIfTrue) {
+                    return null;
+                  }
+                }
+            """.trimIndent()
+        )
+
+        val (barClass) = acu.declaredTypeSignatures()
+        val (filterCall, unknownCall, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
+        val (filter) = acu.methodDeclarations().toList { it.genericSignature }
+
+        with(acu.typeDsl) {
+            filterCall shouldHaveType java.lang.Iterable::class[barClass]
+            filterCall.methodType shouldBeSomeInstantiationOf filter
+            spy.shouldHaveNoErrors()
+            debugCall.qualifier!! shouldHaveType barClass
+            debugCall shouldHaveType ts.UNKNOWN
+        }
+    }
+    parserTest("Constraints like 'a = Bar and 'a = (*unknown*) should not be considered incompatible: with no context there is no Bar hint") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+                class Bar {}
+                public class Foo {
+
+                  static {
+                      var local = filter(unknown(), input -> input.debug());
+                  }
+
+                  public static <T> Iterable<T> filter(final Iterable<T> unfiltered,
+                    final java.util.function.Predicate<? super T> retainIfTrue) {
+                    return null;
+                  }
+                }
+            """.trimIndent()
+        )
+
+        val (barClass) = acu.declaredTypeSignatures()
+        val (filterCall, unknownCall, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
+        val (filter) = acu.methodDeclarations().toList { it.genericSignature }
+
+        with(acu.typeDsl) {
+            filterCall shouldHaveType java.lang.Iterable::class[ts.UNKNOWN]
+            filterCall.methodType shouldBeSomeInstantiationOf filter
+            spy.shouldHaveNoErrors()
+            debugCall.qualifier!! shouldHaveType ts.UNKNOWN
+            debugCall shouldHaveType ts.UNKNOWN
+        }
+    }
 })
