@@ -15,9 +15,9 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.slf4j.event.Level;
 
 public final class Slf4jSimpleConfiguration {
-    private static final String SIMPLE_LOGGER_FACTORY_CLASS = "org.slf4j.impl.SimpleLoggerFactory";
-    private static final String SIMPLE_LOGGER_CLASS = "org.slf4j.impl.SimpleLogger";
-    private static final String SIMPLE_LOGGER_CONFIGURATION = "org.slf4j.impl.SimpleLoggerConfiguration";
+    private static final String SIMPLE_LOGGER_FACTORY_CLASS = "org.slf4j.simple.SimpleLoggerFactory";
+    private static final String SIMPLE_LOGGER_CLASS = "org.slf4j.simple.SimpleLogger";
+    private static final String SIMPLE_LOGGER_CONFIGURATION = "org.slf4j.simple.SimpleLoggerConfiguration";
     private static final String PMD_ROOT_LOGGER = "net.sourceforge.pmd";
 
     private Slf4jSimpleConfiguration() { }
