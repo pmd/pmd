@@ -40,15 +40,10 @@ enum ReductionStep {
             // 1. they are ERROR and another type (including UNKNOWN): return ERROR
             // 2. they are UNKNOWN and another type (including UNKNOWN): return the other type.
             TypeSystem ts = inferenceContext.ts;
-            if (types.contains(ts.ERROR)) {
-                return ts.ERROR;
-            }
             if (types.contains(ts.UNKNOWN) && types.size() == 2) {
                 types.remove(ts.UNKNOWN);
-                return types.get(0);
+                return types.get(0); // (this might be error)
             }
-
-            // there shouldn't be any other case but in that case we return error.
             return ts.ERROR;
         }
     },
