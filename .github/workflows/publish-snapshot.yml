@@ -649,7 +649,7 @@ jobs:
             11
             17
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@0481980f17b760ef6bca5e8c55809102a0af1e5a #v1.263.0
+        uses: ruby/setup-ruby@ab177d40ee5483edb974554986f56b33477e21d0 #v1.265.0
         with:
           ruby-version: 3.3
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
