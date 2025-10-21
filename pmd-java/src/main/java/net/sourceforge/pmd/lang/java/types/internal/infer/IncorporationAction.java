@@ -127,6 +127,7 @@ abstract class IncorporationAction {
                 // mybound <: otherBound
                 return checkBound(false, myBound, otherBound, ctx);
             }
+            throw AssertionUtil.shouldNotReachHere("switch is exhaustive");
         }
 
         private static boolean mustTypesHaveAnOrdering(JTypeMirror myBound, JTypeMirror otherBound) {
