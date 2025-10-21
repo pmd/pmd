@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+    <description>Dangling javadoc</description>
+    <expected-problems>5</expected-problems>
+    <expected-linenumbers>1,9,13,25,29</expected-linenumbers>
+    <code><![CDATA[
+/**
+ * Dangling class-level comment.
+ */
+
+/**
+ * Class level comment.
+ */
+public class Foo {
+    /** Dangling member-level comment */
+    /** the bar counter. */
+    public int bar;
+
+   /**
+    * Another dangling comment.
+    */
+    /**
+    * This is the comment for the constructor
+    */
+    public Foo() {}
+
+   /**
+    * This is the comment for the first method
+    */
+    public void doNothing() {
+        /**
+         * Dangling comment inside a method.
+         */
+    }
+    /**
+     * Dangling again.
+     */
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Inline comments</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>1,3</expected-linenumbers>
+        <code><![CDATA[
+public /** no doc */ class Foo {
+
+    public /** no doc */ Foo() {}
+}
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Markdown</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>6,15</expected-linenumbers>
+        <code><![CDATA[
+/// valid
+  /// class doc
+/// indentation ignored
+public class Foo {
+
+    /// dangling
+
+    /// valid constructor doc
+    public  Foo() {}
+
+    /// two lines
+    /// valid comment
+    public void bar() {}
+}
+/// violation
+    ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6058: javadoc in module-info</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * My Modules Documentation.
+ *
+ * @since 1.0
+ */
+module my.module.name {
+  exports my.module.name;
+  requires org.jspecify;
+}
+    ]]></code>
+    </test-code>
+    <test-code>
+        <description>Record compact constructor #6103</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            /**
+             * Represents a position in source code with line and column information.
+             *
+             * @param line the line number (1-based)
+             * @param column the column number (1-based)
+             */
+            public record SourcePosition(int line, int column) {
+                /**
+                * Compact constructor validating line and column are positive.
+                */
+                public SourcePosition {
+                    requireThat(line, "line").isPositive();
+                    requireThat(column, "column").isPositive();
+                }
+            }
+        </code>
+    </test-code>
+</test-data>

@@ -57,9 +57,28 @@ final class JavaViolationDecorator implements ViolationDecorator {
             enclosing = javaNode.getRoot().getTypeDeclarations().first();
         }
         if (enclosing != null) {
-            return enclosing.getSimpleName();
+            String className = determineCanoncialName(enclosing);
+            String packageName = enclosing.getPackageName();
+            if (className != null && !packageName.isEmpty()) {
+                assert className.startsWith(packageName);
+                className = className.substring(packageName.length() + 1);
+            }
+            return className;
         }
         return null;
+    }
+
+    private String determineCanoncialName(ASTTypeDeclaration type) {
+        final String canonicalName;
+        ASTTypeDeclaration enclosingType = type.getEnclosingType();
+        if (type.isLocal()) {
+            canonicalName = determineCanoncialName(enclosingType) + "." + type.getSimpleName();
+        } else if (type.isAnonymous()) {
+            canonicalName = determineCanoncialName(enclosingType);
+        } else {
+            canonicalName = type.getCanonicalName();
+        }
+        return canonicalName;
     }
 
     private void setIfNonNull(String key, String value, Map<String, String> additionalInfo) {

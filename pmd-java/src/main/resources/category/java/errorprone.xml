@@ -454,7 +454,7 @@ public interface Operation {
     <rule name="AvoidInstanceofChecksInCatchClause"
           language="java"
           since="3.0"
-          message="An instanceof check is being performed on the caught exception.  Create a separate catch clause for this exception type."
+          message="An instanceof check is being performed on the caught exception. Create a separate catch clause for {0}."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidinstanceofchecksincatchclause">
         <description>
@@ -468,6 +468,7 @@ Each caught exception type should be handled in its own catch clause.
 //CatchParameter
     /following-sibling::Block//InfixExpression[@Operator = 'instanceof']
         /VariableAccess[@Name = ./ancestor::Block/preceding-sibling::CatchParameter/@Name]
+            /following-sibling::TypeExpression/*
 ]]>
                 </value>
             </property>
@@ -1515,7 +1516,10 @@ performance need (space or time).
             <property name="xpath">
                 <value>
 <![CDATA[
-//ForStatement/ForInit//VariableId[pmd-java:typeIs('float')]
+//ForStatement[
+    ForInit//VariableId[pmd-java:typeIs('float')]
+    or ForUpdate//VariableAccess[pmd-java:typeIs('float')]
+]
 ]]>
                 </value>
             </property>

@@ -3,14 +3,14 @@ title: Building PMD General Info
 tags: [devdocs]
 permalink: pmd_devdocs_building_general.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2025 (7.10.0)
+last_updated: September 2025 (7.18.0)
 ---
 
 ## Before Development
 
-1. Ensure that [Git](https://git-scm.com/) and Java JDK >= 11 are installed.  
+1. Ensure that [Git](https://git-scm.com/) and Java JDK >= 17 are installed.  
    You can get a OpenJDK distribution from e.g. [Adoptium](https://adoptium.net/).  
-   **Note:**  While Java 11 is required for building, running PMD only requires Java 8.
+   **Note:**  While Java 17 is required for building, running PMD only requires Java 8.
 2. Fork the [PMD repository](https://github.com/pmd/pmd) on GitHub as explained in [Fork a repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo).
 3. Clone your forked repository to your computer:
    ```shell

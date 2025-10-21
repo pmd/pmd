@@ -264,27 +264,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UnusedLocalVariable"
-          since="6.23.0"
-          language="apex"
-          message="Variable ''{0}'' defined but not used"
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
-        <description>
-Detects when a local variable is declared and/or assigned but not used.
-        </description>
-        <example>
-<![CDATA[
-    public Boolean bar(String z) {
-        String x = 'some string'; // not used
-
-        String y = 'some other string'; // used in the next line
-        return z.equals(y);
-    }
-]]>
-        </example>
-    </rule>
-
     <rule name="QueueableWithoutFinalizer"
           since="7.8.0"
           language="apex"
@@ -292,13 +271,13 @@ Detects when a local variable is declared and/or assigned but not used.
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.QueueableWithoutFinalizerRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer">
         <description>
-Detects when the Queueable interface is used but a Finalizer is not attached.
-It is best practice to call the `System.attachFinalizer(Finalizer f)` method within the `execute` method of a class which implements the `Queueable` interface.
-Without attaching a Finalizer, there is no way of designing error recovery actions should the Queueable action fail.
+            Detects when the Queueable interface is used but a Finalizer is not attached.
+            It is best practice to call the `System.attachFinalizer(Finalizer f)` method within the `execute` method of a class which implements the `Queueable` interface.
+            Without attaching a Finalizer, there is no way of designing error recovery actions should the Queueable action fail.
         </description>
         <priority>5</priority>
         <example>
-<![CDATA[
+            <![CDATA[
 // Incorrect code, does not attach a finalizer.
 public class UserUpdater implements Queueable {
     public List<User> usersToUpdate;
@@ -333,6 +312,27 @@ public class UserUpdater implements Queueable, Finalizer {
         }
     }
 }
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedLocalVariable"
+          since="6.23.0"
+          language="apex"
+          message="Variable ''{0}'' defined but not used"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
+        <description>
+Detects when a local variable is declared and/or assigned but not used.
+        </description>
+        <example>
+<![CDATA[
+    public Boolean bar(String z) {
+        String x = 'some string'; // not used
+
+        String y = 'some other string'; // used in the next line
+        return z.equals(y);
+    }
 ]]>
         </example>
     </rule>

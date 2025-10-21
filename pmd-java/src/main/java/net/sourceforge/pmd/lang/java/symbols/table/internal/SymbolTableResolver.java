@@ -391,15 +391,16 @@ public final class SymbolTableResolver {
                          .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
+                int pushBindings = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
                 setTopSymbolTableAndVisit(label, ctx);
 
                 if (branch instanceof ASTSwitchArrowBranch) {
-                    pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
+                    pushed = pushBindings;
                     setTopSymbolTableAndVisit(((ASTSwitchArrowBranch) branch).getRightHandSide(), ctx);
                     popStack(pushed);
                     pushed = 0;
                 } else if (branch instanceof ASTSwitchFallthroughBranch) {
-                    pushed += pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
+                    pushed += pushBindings;
                     pushed += visitBlockLike(((ASTSwitchFallthroughBranch) branch).getStatements(), ctx);
                 }
             }

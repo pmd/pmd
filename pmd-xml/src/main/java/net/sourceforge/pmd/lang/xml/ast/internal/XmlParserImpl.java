@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.xml.ast.XmlNode;
 
 public final class XmlParserImpl {
     // never throws on unresolved resource
-    private static final EntityResolver SILENT_ENTITY_RESOLVER = (publicId, systemId) -> new InputSource(new ByteArrayInputStream("".getBytes()));
+    private static final EntityResolver SILENT_ENTITY_RESOLVER = (publicId, systemId) -> new InputSource(new ByteArrayInputStream(new byte[0]));
 
     private final Map<org.w3c.dom.Node, XmlNode> nodeCache = new HashMap<>();
 

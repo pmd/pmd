@@ -174,5 +174,19 @@ public class DeterministicOutputListenerWrapper implements GlobalAnalysisListene
         public int compareTo(ReportWrapper o) {
             return Integer.compare(this.idx, o.idx);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ReportWrapper that = (ReportWrapper) o;
+            return idx == that.idx && Objects.equals(report, that.report) && Objects.equals(textFile, that.textFile);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(report, textFile, idx);
+        }
     }
 }

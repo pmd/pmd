@@ -7,12 +7,12 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.17.0-SNAPSHOT</version>
+        <version>7.18.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
-        <log4j.version>2.25.1</log4j.version>
+        <log4j.version>2.25.2</log4j.version>
     </properties>
 
     <build>
@@ -280,7 +280,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-            <version>3.27.4</version>
+            <version>3.27.6</version>
             <scope>test</scope>
         </dependency>
         <dependency>

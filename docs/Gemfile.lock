@@ -18,7 +18,7 @@ GEM
       public_suffix (>= 2.0.2, < 7.0)
     base64 (0.2.0)
     benchmark (0.4.1)
-    bigdecimal (3.2.2)
+    bigdecimal (3.3.0)
     coffee-script (2.4.1)
       coffee-script-source
       execjs
@@ -247,7 +247,7 @@ GEM
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
-    rexml (3.4.1)
+    rexml (3.4.4)
     rouge (3.30.0)
     rubyzip (2.4.1)
     safe_yaml (1.0.5)
