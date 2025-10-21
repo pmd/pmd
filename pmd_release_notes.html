@@ -2049,6 +2049,12 @@
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.</p>
 
+<h3 id="-changed-rules">🌟 Changed Rules</h3>
+<ul>
+  <li><a href="pmd_rules_java_codestyle.html#confusingternary"><code class="language-plaintext highlighter-rouge">ConfusingTernary</code></a> has a new property <code class="language-plaintext highlighter-rouge">nullCheckBranch</code> to control, whether null-checks
+should be allowed (the default case) or should lead to a violation.</li>
+</ul>
+
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
   <li>core
@@ -2080,6 +2086,7 @@ checkstyle version during the build.</p>
   <li>java-codestyle
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5919">#5919</a>: [java] ClassNamingConventions: Include integration tests in testClassPattern by default</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6004">#6004</a>: [java] Make ConfusingTernary != null configurable</li>
       <li><a href="https://github.com/pmd/pmd/issues/6029">#6029</a>: [java] Fix UnnecessaryCast false-negative in method calls</li>
       <li><a href="https://github.com/pmd/pmd/issues/6057">#6057</a>: [java] ModifierOrder false positive on “abstract sealed class”</li>
       <li><a href="https://github.com/pmd/pmd/issues/6079">#6079</a>: [java] IdenticalCatchBranches: False negative for overriden method calls</li>
@@ -2152,6 +2159,14 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6071">#6071</a>: [java] Fix #5919: Add integration tests to ClassNamingConventions testClassRegex - <a href="https://github.com/abobov">Anton Bobov</a> (@abobov)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6074">#6074</a>: [apex] Fix @<!-- -->SuppressWarnings with whitespace around comma - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6078">#6078</a>: [java] Fix #6075: Fix FP in AssignmentInOperandRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6080">#6080</a>: [java] Fix #6079: IdenticalCatchBranches for overriden method calls - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6085">#6085</a>: [java] Fix false positive for ModifierOrder - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6100">#6100</a>: [java] AvoidDeeplyNestedIfStmts: fix false negative with if-else - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6112">#6112</a>: [java] DanglingJavadoc: fix false positive for compact constructors - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6114">#6114</a>: [java] Fix #4122: CheckResultSet false-positive with local variable - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6116">#6116</a>: [java] ConfusingTernary: add configuration property for null checks - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6124">#6124</a>: [java] UnusedLocalVariable: fix false negatives in pattern matching - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6130">#6130</a>: [java] UselessParentheses: fix false positives for switch expressions - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
 </ul>
 
 <h3 id="-dependency-updates">📦 Dependency updates</h3>
@@ -2189,7 +2204,7 @@ used anymore and are not required to be implemented anymore:
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 19, 2025 <br />
+             Site last generated: Oct 21, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
