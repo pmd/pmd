@@ -32,6 +32,13 @@ abstract class BaseFunctionalMirror<N extends FunctionalExpression> extends Base
         }
     }
 
+    @Override
+    public void groundTree() {
+        if (mayMutateAst() && inferredMethod != null) {
+            InternalApiBridge.setFunctionalMethod(myNode, ExprMirror.ensureNoTypeVariables(inferredMethod));
+        }
+    }
+
     protected JMethodSig getInferredMethod() {
         return inferredMethod;
     }

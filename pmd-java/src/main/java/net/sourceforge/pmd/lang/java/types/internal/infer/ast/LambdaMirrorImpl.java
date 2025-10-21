@@ -51,6 +51,11 @@ class LambdaMirrorImpl extends BaseFunctionalMirror<ASTLambdaExpression> impleme
     }
 
     @Override
+    public void setInferredType(JTypeMirror mirror) {
+        super.setInferredType(mirror);
+    }
+
+    @Override
     public boolean isEquivalentToUnderlyingAst() {
         JTypeMirror inferredType = getInferredType();
         JMethodSig inferredMethod = getInferredMethod();

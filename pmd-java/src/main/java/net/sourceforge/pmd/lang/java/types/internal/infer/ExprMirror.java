@@ -126,6 +126,36 @@ public interface ExprMirror {
      */
     boolean isEquivalentToUnderlyingAst();
 
+
+    /**
+     * Ground this expression and any expressions that might have been
+     * assigned a type/ other data during type inference of this node.
+     * This is called when inference in a parent expression failed, to
+     * clean up partial data like type inference.
+     *
+     * <p>This is only called if the invocation fails, not when testing
+     * for applicability. The reason is that this is really only relevant
+     * for lambdas (to reset the type of their parameters), and those are
+     * not relevant to applicability.
+     */
+    default void groundTree() {
+        setInferredType(ensureNoTypeVariables(getInferredType()));
+    }
+
+    static JTypeMirror ensureNoTypeVariables(JTypeMirror ty) {
+        if (ty == null) {
+            return null;
+        }
+        return ty.subst(InferenceContext.finalGroundSubst());
+    }
+
+    static JMethodSig ensureNoTypeVariables(JMethodSig ty) {
+        if (ty == null) {
+            return null;
+        }
+        return ty.subst(InferenceContext.finalGroundSubst());
+    }
+
     /** A general category of types. */
     enum TypeSpecies {
         PRIMITIVE,
@@ -475,6 +505,7 @@ public interface ExprMirror {
         default @Nullable JTypeMirror getTypeToSearch() {
             return getReceiverType();
         }
+
 
         /**
          * Information about the overload-resolution for a specific method.

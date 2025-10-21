@@ -605,7 +605,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
                 // then the type of the parameter depends on the type
                 // of the lambda, which most likely depends on the overload
                 // resolution of an enclosing invocation context
-                resultMirror = id.getTypeMirror();
+                resultMirror = id.getTypeMirror(ctx);
             }
         }
 

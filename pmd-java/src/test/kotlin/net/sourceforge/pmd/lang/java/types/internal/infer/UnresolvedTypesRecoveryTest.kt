@@ -906,7 +906,7 @@ class C {
         )
 
         val (barClass) = acu.declaredTypeSignatures()
-        val (filterCall, unknownCall, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
+        val (filterCall, _, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
         val (filter) = acu.methodDeclarations().toList { it.genericSignature }
 
         with(acu.typeDsl) {
@@ -935,8 +935,7 @@ class C {
             """.trimIndent()
         )
 
-        val (barClass) = acu.declaredTypeSignatures()
-        val (filterCall, unknownCall, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
+        val (filterCall, _, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
         val (filter) = acu.methodDeclarations().toList { it.genericSignature }
 
         with(acu.typeDsl) {
@@ -945,6 +944,41 @@ class C {
             spy.shouldHaveNoErrors()
             debugCall.qualifier!! shouldHaveType ts.UNKNOWN
             debugCall shouldHaveType ts.UNKNOWN
+        }
+    }
+
+    parserTest("Invocation failure when there is a lambda should clean up the type of lambda parameters properly") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+                class Bar {}
+                class Baz {}
+                public class Foo {
+
+                  static {
+                      // Here we need a method that is applicable, but where
+                      // invocation fails because of the target type.
+                      Iterable<Bar> local = filter(unknown(), input -> input.debug());
+                  }
+                  
+
+                  public static <T> Iterable<T> filter(final Iterable<T> unfiltered,
+                    final java.util.function.Predicate<? super T> retainIfTrue) {
+                    return null;
+                  }
+                  
+                  static Iterable<Baz> unknown() {} 
+                }
+            """.trimIndent()
+        )
+
+        val (filterCall, _, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
+        val (filter) = acu.methodDeclarations().toList { it.genericSignature }
+
+        with(acu.typeDsl) {
+            filterCall shouldHaveType java.lang.Iterable::class[ts.ERROR]
+            filterCall.methodType shouldBeSomeInstantiationOf filter
+            spy.shouldUseFallback(filterCall)
+            debugCall.qualifier!! shouldHaveType ts.ERROR
         }
     }
 })
