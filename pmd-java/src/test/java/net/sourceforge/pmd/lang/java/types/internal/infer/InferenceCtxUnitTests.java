@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.lang.java.types.TestUtilitiesForTypesKt.captur
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.eqBound;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.lower;
 import static net.sourceforge.pmd.lang.java.types.internal.infer.BaseTypeInferenceUnitTest.Bound.upper;
+import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
@@ -28,6 +29,7 @@ import java.util.Set;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
@@ -126,6 +128,39 @@ class InferenceCtxUnitTests extends BaseTypeInferenceUnitTest {
         assertEquals(ts.OBJECT, v2.getInst());
         assertEquals(listType(ts.OBJECT), v1.getInst());
     }
+
+    @Test
+    void testEqBoundWithErrorYieldsError() {
+        testEqBoundMerging(listOf(ts.UNKNOWN, ts.ERROR), ts.ERROR);
+        testEqBoundMerging(listOf(ts.ERROR, ts.UNKNOWN), ts.ERROR);
+
+        testEqBoundMerging(listOf(listType(ts.OBJECT), ts.ERROR), ts.ERROR);
+        testEqBoundMerging(listOf(ts.ERROR, listType(ts.OBJECT)), ts.ERROR);
+    }
+
+    @Test
+    void testEqBoundWithUnknownYieldsOtherType() {
+        testEqBoundMerging(listOf(listType(ts.OBJECT), ts.UNKNOWN), listType(ts.OBJECT));
+        testEqBoundMerging(listOf(ts.UNKNOWN, listType(ts.OBJECT)), listType(ts.OBJECT));
+    }
+
+    void testEqBoundMerging(List<JTypeMirror> eqBounds, JTypeMirror result) {
+        TypeInferenceLogger log = spy(TypeInferenceLogger.noop());
+        InferenceContext ctx = emptyCtx(log);
+
+        InferenceVar v1 = newIvar(ctx);
+
+        for (JTypeMirror eq : eqBounds) {
+            InternalApiBridge.isSameTypeInInference(v1, eq);
+        }
+
+        ctx.incorporate();
+        ctx.solve();
+
+        assertEquals(result, v1.getInst());
+    }
+
+
 
 
     @Test
