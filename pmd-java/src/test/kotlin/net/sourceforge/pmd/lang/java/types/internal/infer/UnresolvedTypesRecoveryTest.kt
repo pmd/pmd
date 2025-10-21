@@ -230,7 +230,8 @@ class C {
     static {
         // Creates bounds: `T >: ooo.Foo` and `T <: ooo.Bound`
         // Should not be deemed incompatible
-        id(foo()); 
+        id(foo());
+
     }
 }
             """.trimIndent()
@@ -347,9 +348,10 @@ class C {
         // Select the most general overload, append(Object)?
         // Just inverting the specificity relation, to select the most general,
         // would not work well when there are several parameters.
-        // Note that /*unresolved*/ and /*error*/ are the only types for which 
+        // Note that /*unresolved*/ and /*error*/ are the only types for which
+
         // there is ambiguity
-        
+
         // For now, report an ambiguity error
         new StringBuilder().append(Unresolved.SOMETHING);
     }
@@ -581,7 +583,6 @@ class C {
         }
     }
 
-
     parserTest("Wrong syntax, return with expr in void method") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
@@ -641,7 +642,7 @@ class C {
             }
             interface Stream<T> {
                 <U> Stream<U> map(Function<? super T, ? extends U> fun);
-                
+
                 // the point of this test is there is an ambiguity between both of these overloads
                 static <U> Stream<U> of(U u) {}
                 static <U> Stream<U> of(U... u) {}
@@ -959,14 +960,14 @@ class C {
                       // invocation fails because of the target type.
                       Iterable<Bar> local = filter(unknown(), input -> input.debug());
                   }
-                  
 
                   public static <T> Iterable<T> filter(final Iterable<T> unfiltered,
                     final java.util.function.Predicate<? super T> retainIfTrue) {
                     return null;
                   }
-                  
-                  static Iterable<Baz> unknown() {} 
+
+                  static Iterable<Baz> unknown() {}
+
                 }
             """.trimIndent()
         )
