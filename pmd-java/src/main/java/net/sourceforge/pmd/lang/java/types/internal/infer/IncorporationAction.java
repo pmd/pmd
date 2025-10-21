@@ -126,8 +126,6 @@ abstract class IncorporationAction {
             case LOWER:
                 // mybound <: otherBound
                 return checkBound(false, myBound, otherBound, ctx);
-            default:
-                throw AssertionUtil.shouldNotReachHere("exhaustive switch");
             }
         }
 
