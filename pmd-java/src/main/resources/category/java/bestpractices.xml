@@ -1908,6 +1908,44 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnusedLabel"
+          language="java"
+          since="7.18.0"
+          message="Avoid unused labels such as ''{0}''."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedlabel">
+        <description>
+Unused labeled are unnecessary and may be confusing as you might be wondering what this label is used for.
+To improve readability the unused label should simply be removed.
+
+This rule implements SonarSource rule [S1065](https://sonarsource.github.io/rspec/#/rspec/S1065).
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//LabeledStatement[let $label := @Label return
+      not( (.//BreakStatement | .//ContinueStatement)[@Label = $label] )
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Example {
+    void main() {
+        lbl1: {                     // violation: Label "lbl1" is not nused
+            int x = 1;
+            System.out.println(x);
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnusedLocalVariable"
           language="java"
           since="0.1"
