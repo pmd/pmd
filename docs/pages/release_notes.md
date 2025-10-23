@@ -77,6 +77,7 @@ checkstyle version during the build.
   * [#6127](https://github.com/pmd/pmd/issues/6127): \[java] Incorrect variable name in violation
   * [#6146](https://github.com/pmd/pmd/issues/6146): \[java] ClassCastException: class InferenceVarSym cannot be cast to class JClassSymbol
 * java-bestpractices
+  * [#2928](https://github.com/pmd/pmd/issues/2928): \[java] New rules about labeled statements
   * [#4122](https://github.com/pmd/pmd/issues/4122): \[java] CheckResultSet false-positive with local variable
   * [#6124](https://github.com/pmd/pmd/issues/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching
 * java-codestyle
@@ -125,6 +126,7 @@ checkstyle version during the build.
 * [#6031](https://github.com/pmd/pmd/pull/6031): \[java] Fix #5880: False Negatives in DoubleCheckedLocking - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6039](https://github.com/pmd/pmd/pull/6039): \[core] Fix #4714: trim token before feeding it to the extractor - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6040](https://github.com/pmd/pmd/pull/6040): \[java,apex,plsql,velocity] Change description of "minimum" parameter - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6042](https://github.com/pmd/pmd/pull/6042): \[java] Fix #2928: New Rules UnusedLabel and LabeledStatement - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6043](https://github.com/pmd/pmd/pull/6043): \[java] Reactivate deactivated test in LocalVariableCouldBeFinal - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6051](https://github.com/pmd/pmd/pull/6051): \[java] Fix #6038: Make AvoidCatchingGenericException configurable - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6056](https://github.com/pmd/pmd/pull/6056): chore: fix dogfood issues from new rules - [Andreas Dangel](https://github.com/adangel) (@adangel)
