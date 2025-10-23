@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class AvoidLoopLabelsTest extends PmdRuleTst {
+class LabeledStatementTest extends PmdRuleTst {
     // no additional unit tests
 }
