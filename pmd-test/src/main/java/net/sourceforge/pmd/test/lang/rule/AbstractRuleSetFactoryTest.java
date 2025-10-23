@@ -375,7 +375,8 @@ public abstract class AbstractRuleSetFactoryTest {
         RuleSet ruleSet = InternalApiBridge.withReporter(new RuleSetLoader(), new Reporter())
                 .loadFromResource(ruleSetFileName);
 
-        String allMessages = messages.toString();
+        // normalize all line-endings to \n - in case we run under Windows...
+        String allMessages = messages.toString().replaceAll("\\R", "\n");
 
         if (expectedMessagesPerRuleset.containsKey(ruleSetFileName)) {
             for (String expectedMessage : expectedMessagesPerRuleset.get(ruleSetFileName)) {
