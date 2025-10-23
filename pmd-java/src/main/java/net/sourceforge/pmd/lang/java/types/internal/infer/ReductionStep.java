@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import net.sourceforge.pmd.lang.java.types.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
@@ -73,7 +74,7 @@ enum ReductionStep {
             JTypeMirror lower = !LOWER.filterBounds(uv, infCtx).isEmpty()
                                 ? LOWER.solve(uv, infCtx)
                                 : infCtx.ts.NULL_TYPE;
-
+            assert uv.getBaseVar() != null : "This is a captured var which can only be true if the base var is non-null";
             return uv.getBaseVar().cloneWithBounds(lower, upper);
         }
     },
@@ -99,7 +100,21 @@ enum ReductionStep {
 
         @Override
         JTypeMirror solve(InferenceVar uv, InferenceContext infCtx) {
-            return infCtx.ts.glb(TypeOps.erase(uv.getBounds(BoundKind.UPPER)));
+            JTypeMirror glb = infCtx.ts.glb(uv.getBounds(BoundKind.UPPER));
+            JTypeMirror inst = glb.subst(var -> var == uv ? InternalApiBridge.freshCapture(infCtx.ts.UNBOUNDED_WILD) : var); // NOPMD
+
+            // These upper bounds still contain references to the original ivar,
+            // which, if we replace it with the inst, will be one level deeper than
+            // we want (eg Enum<Enum<?>> instead of Enum<?>). We can delete them though,
+            // because we don't need to check them. We know the inst is compatible because
+            // we derived it directly from those bounds.
+            uv.getBounds(BoundKind.UPPER).clear();
+
+            if (infCtx.needsUncheckedConversion()) {
+                return inst.getErasure();
+            }
+            // project to remove captures
+            return TypeOps.projectUpwards(inst);
         }
     };
 
@@ -108,9 +123,9 @@ enum ReductionStep {
      */
     static final List<List<ReductionStep>> WAVES =
         listOf(
-            listOf(EQ, LOWER, UPPER, CAPTURED),
-            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED));
-    //                        ^^^^^^
+            listOf(EQ, LOWER, FBOUND, UPPER, CAPTURED)
+        //  (There used to be several waves with different steps).
+        );
 
     final BoundKind kind;
 

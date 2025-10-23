@@ -7,9 +7,9 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class UncheckedInferenceTest : ProcessorTestSpec({
     parserTest("Test raw type in argument erases result") {
@@ -118,9 +118,10 @@ class C {
 class C {
 
     static <T extends Enum<T>> T valueOf(Class<T> k) { return null; } 
-
+    enum E {}
     static {
         var c = valueOf((Class) Object.class);
+        var d = valueOf(Enum.class);
     }
 }
             """.trimIndent()
@@ -128,20 +129,21 @@ class C {
 
         val (t_C) = acu.descendants(ASTTypeDeclaration::class.java).toList { it.typeMirror }
 
-        val call = acu.descendants(ASTMethodCall::class.java).firstOrThrow()
-        val id = acu.descendants(ASTVariableId::class.java).first { it.name == "c" }!!
 
 
         spy.shouldBeOk {
-            call.methodType.shouldMatchMethod(
-                named = "valueOf",
-                declaredIn = t_C,
-                withFormals = listOf(Class::class[gen.t_Enum]),
-                returning = gen.t_Enum
-            )
-            call shouldHaveType gen.t_Enum
-            id shouldHaveType gen.t_Enum
-            call.shouldUseUncheckedConversion()
+            for (decl in acu.descendants(ASTVariableDeclarator::class.java)) {
+                val call = decl.initializer as ASTMethodCall
+                call.shouldUseUncheckedConversion()
+                call.methodType.shouldMatchMethod(
+                    named = "valueOf",
+                    declaredIn = t_C,
+                    withFormals = listOf(Class::class[gen.t_Enum]),
+                    returning = gen.t_Enum
+                )
+                call shouldHaveType gen.t_Enum
+                decl.varId shouldHaveType gen.t_Enum
+            }
         }
     }
 
