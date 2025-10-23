@@ -125,11 +125,6 @@
 
 
     <rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod"/>
-    <rule ref="category/java/design.xml/AvoidCatchingGenericException">
-        <properties>
-            <property name="typesThatShouldNotBeCaught" value="java.lang.Throwable,java.lang.Error" />
-        </properties>
-    </rule>
     <!-- <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidRethrowingException" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException" /> -->
@@ -199,6 +194,16 @@
     <!-- <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier" /> -->
     <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidCallingFinalize" /> -->
+    <rule ref="category/java/errorprone.xml/AvoidCatchingGenericException">
+        <!-- with PMD 7.18.0 the rule AvoidCatchingThrowable has been merged into AvoidCatchingGenericException.
+             Just enabling AvoidCatchingGenericException would find more cases.
+             In order to keep the same behavior of the quickstart ruleset, the rule is configured explicitly here
+             to only find Throwable, as before (and additionally Error now).
+          -->
+        <properties>
+            <property name="typesThatShouldNotBeCaught" value="java.lang.Throwable,java.lang.Error" />
+        </properties>
+    </rule>
     <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals" /> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier" /> -->

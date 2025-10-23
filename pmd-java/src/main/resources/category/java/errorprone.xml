@@ -226,6 +226,82 @@ void foo() {
         </example>
     </rule>
 
+    <rule name="AvoidCatchingGenericException"
+          since="4.2.6"
+          language="java"
+          message="Avoid catching {0} in try-catch block"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#avoidcatchinggenericexception">
+        <description>
+Avoid catching generic exceptions in try-catch blocks. Catching overly broad exception types makes it difficult
+to understand what can actually go wrong in your code and can hide real problems.
+
+**Why these exceptions should not be caught:**
+
+* **Exception**: This is the base class for all checked exceptions. Catching it means you're handling all possible
+  checked exceptions the same way, which is rarely appropriate and makes error handling less precise.
+
+* **RuntimeException**: These represent programming errors (like logic bugs) that should typically be fixed in
+  code rather than caught and handled. Catching them can hide bugs that should be addressed during development.
+
+* **NullPointerException**: This usually indicates a programming error (accessing null references). Rather than
+  catching it, code should be written to avoid null pointer dereferences through null checks or defensive programming.
+
+* **Throwable**: This is the superclass of all errors and exceptions. Catching it means you're trying to handle
+  both recoverable exceptions and serious errors (like OutOfMemoryError) the same way, which is dangerous.
+
+* **Error**: These represent serious problems that applications should not try to handle (like OutOfMemoryError,
+  StackOverflowError). Catching Error can prevent the JVM from properly terminating when it encounters unrecoverable situations.
+
+**Better approaches:**
+- Catch specific exception types that you can meaningfully handle
+- Use multiple catch blocks for different exception types that require different handling
+- Consider using defensive programming techniques to prevent exceptions rather than catching them
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property
+                    name="typesThatShouldNotBeCaught"
+                    type="List[String]"
+                    description="List of canonical type names that should trigger a violation if used in a catch clause."
+            >
+                <value>
+                    java.lang.NullPointerException,
+                    java.lang.Exception,
+                    java.lang.RuntimeException,
+                    java.lang.Throwable,
+                    java.lang.Error
+                </value>
+            </property>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//CatchParameter//ClassType[
+    some $type in $typesThatShouldNotBeCaught
+    satisfies pmd-java:typeIsExactly($type)]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class PrimitiveType {
+    public void downCastPrimitiveType(int i) {
+        try {
+            System.out.println(" i [" + i + "]");
+        } catch(NullPointerException e) {
+            e.printStackTrace();
+        } catch(RuntimeException e) {
+            e.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidCatchingNPE"
           language="java"
           since="1.8"
