@@ -29,9 +29,25 @@ From now on, Java 17 or newer is required to build PMD. PMD itself still remains
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.
 
-### 🌟 Changed Rules
+### 🌟 Rules changes
+
+#### Modified rules
 * {%rule java/codestyle/ConfusingTernary %} has a new property `nullCheckBranch` to control, whether null-checks
   should be allowed (the default case) or should lead to a violation.
+* {%rule java/errorprone/AvoidCatchingGenericException %} is now configurable with the new property
+  `typesThatShouldNotBeCaught`.  
+  ⚠️ The rule has also been moved from category "Design" to category "Error Prone". If you are currently bulk-adding
+  all the rules from the "Design" category into your custom ruleset, then you need to add the rule explicitly
+  again (otherwise it won't be included anymore):
+  ```xml
+  <rule ref="category/java/errorprone.xml/AvoidCatchingGenericException" />
+  ```
+
+#### Deprecated rules
+* The Java rule {% rule java/errorprone/AvoidCatchingNPE %} has been deprecated in favor of the updated rule
+  {% rule java/errorprone/AvoidCatchingGenericException %}, which is now configurable.
+* The Java rule {% rule java/errorprone/AvoidCatchingThrowable %} has been deprecated in favor of the updated rule
+  {% rule java/errorprone/AvoidCatchingGenericException %}, which is now configurable.
 
 ### 🐛 Fixed Issues
 * core
@@ -60,6 +76,7 @@ checkstyle version during the build.
   * [#6103](https://github.com/pmd/pmd/issues/6103): \[java] DanglingJavadoc false positive on record compact constructors
 * java-errorprone
   * [#5878](https://github.com/pmd/pmd/issues/5878): \[java] DontUseFloatTypeForLoopIndices false-negative if variable is declared before loop
+  * [#6038](https://github.com/pmd/pmd/issues/6038): \[java] Merge AvoidCatchingNPE and AvoidCatchingThrowable into AvoidCatchingGenericException
   * [#6075](https://github.com/pmd/pmd/issues/6075): \[java] AssignmentInOperand false positive with lambda expressions
 * java-multithreading
   * [#5880](https://github.com/pmd/pmd/issues/5880): \[java] DoubleCheckedLocking is not detected if more than 1 assignment or more than 2 if statements
@@ -87,6 +104,7 @@ checkstyle version during the build.
 * [#6039](https://github.com/pmd/pmd/pull/6039): \[core] Fix #4714: trim token before feeding it to the extractor - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6040](https://github.com/pmd/pmd/pull/6040): \[java,apex,plsql,velocity] Change description of "minimum" parameter - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6043](https://github.com/pmd/pmd/pull/6043): \[java] Reactivate deactivated test in LocalVariableCouldBeFinal - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6051](https://github.com/pmd/pmd/pull/6051): \[java] Fix #6038: Make AvoidCatchingGenericException configurable - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6056](https://github.com/pmd/pmd/pull/6056): chore: fix dogfood issues from new rules - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6059](https://github.com/pmd/pmd/pull/6059): \[java] Fix #6058: DanglingJavadoc FP in module-info files - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6061](https://github.com/pmd/pmd/pull/6061): \[core] chore: Bump minimum Java version required for building to 17 - [Andreas Dangel](https://github.com/adangel) (@adangel)
