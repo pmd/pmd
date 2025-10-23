@@ -28,6 +28,7 @@
     <!-- <rule ref="category/java/bestpractices.xml/JUnit4SuitesShouldUseSuiteAnnotation" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnit5TestShouldBePackagePrivate" /> -->
     <!-- <rule ref="category/java/bestpractices.xml/JUnitUseExpected" /> -->
+    <!-- <rule ref="category/java/bestpractices.xml/LabeledStatement" /> -->
     <rule ref="category/java/bestpractices.xml/LiteralsFirstInComparisons" />
     <rule ref="category/java/bestpractices.xml/LooseCoupling"/>
     <!-- <rule ref="category/java/bestpractices.xml/MethodReturnsInternalArray" /> -->

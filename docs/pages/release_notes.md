@@ -33,6 +33,9 @@ checkstyle version during the build.
 #### New Rules
 * The new Java rule {% rule java/errorprone/IdenticalConditionalBranches %} finds conditional statements
   that do the same thing when the condition is true and false. This is either incorrect or redundant.
+* The new Java rule {%rule java/bestpractices/LabeledStatement %} finds labeled statements in code.
+  Labels make control flow difficult to understand and should be avoided. By default, the rule allows labeled
+  loops (do, while, for). But it has a property to flag also those labeled loops.
 * The new Java rule {%rule java/bestpractices/UnusedLabel %} finds unused labels which are unnecessary and
   only make the code hard to read. This new rule will be part of the quickstart ruleset.
 
