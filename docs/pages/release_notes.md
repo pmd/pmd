@@ -52,6 +52,7 @@ checkstyle version during the build.
 * java
   * [#4904](https://github.com/pmd/pmd/issues/4904): \[java] Renderers output wrong class qualified name for nested classes
 * java-bestpractices
+  * [#2928](https://github.com/pmd/pmd/issues/2928): \[java] New rules about labeled statements
   * [#4122](https://github.com/pmd/pmd/issues/4122): \[java] CheckResultSet false-positive with local variable
   * [#6124](https://github.com/pmd/pmd/issues/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching
 * java-codestyle
@@ -95,6 +96,7 @@ checkstyle version during the build.
 * [#6031](https://github.com/pmd/pmd/pull/6031): \[java] Fix #5880: False Negatives in DoubleCheckedLocking - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6039](https://github.com/pmd/pmd/pull/6039): \[core] Fix #4714: trim token before feeding it to the extractor - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6040](https://github.com/pmd/pmd/pull/6040): \[java,apex,plsql,velocity] Change description of "minimum" parameter - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6042](https://github.com/pmd/pmd/pull/6042): \[java] Fix #2928: New Rules UnusedLabel and LabeledStatement - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6043](https://github.com/pmd/pmd/pull/6043): \[java] Reactivate deactivated test in LocalVariableCouldBeFinal - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6056](https://github.com/pmd/pmd/pull/6056): chore: fix dogfood issues from new rules - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6059](https://github.com/pmd/pmd/pull/6059): \[java] Fix #6058: DanglingJavadoc FP in module-info files - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
