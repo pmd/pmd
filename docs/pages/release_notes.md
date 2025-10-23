@@ -29,12 +29,14 @@ From now on, Java 17 or newer is required to build PMD. PMD itself still remains
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.
 
-### 🌟 Rules changes
+### 🌟 New and Changed Rules
 #### New Rules
 * The new Java rule {% rule java/errorprone/IdenticalConditionalBranches %} finds conditional statements
   that do the same thing when the condition is true and false. This is either incorrect or redundant.
+* The new Java rule {%rule java/bestpractices/UnusedLabel %} finds unused labels which are unnecessary and
+  only make the code hard to read. This new rule will be part of the quickstart ruleset.
 
-#### Modified rules
+#### Changed Rules
 * {%rule java/codestyle/ConfusingTernary %} has a new property `nullCheckBranch` to control, whether null-checks
   should be allowed (the default case) or should lead to a violation.
 * {%rule java/errorprone/AvoidCatchingGenericException %} is now configurable with the new property
