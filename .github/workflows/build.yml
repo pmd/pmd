@@ -161,7 +161,7 @@ jobs:
               -PfastSkip -Dcyclonedx.skip=false \
               -Djava8.home="${JAVA_HOME_8_X64}" \
               -Djava11.home="${JAVA_HOME_11_X64}" \
-              -Djava21.home="${JAVA_HOME_21_X64}"
+              -Djava21.home="${JAVA_HOME_21_X64}" \
               -Djava25.home="${JAVA_HOME_25_X64}"
 
   dogfood:
