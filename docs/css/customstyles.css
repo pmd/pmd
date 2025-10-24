@@ -1269,7 +1269,23 @@ h4.panel-title {
 }
 
 a.edit-header {
-    font-size: 15px;
+    opacity: 0;
+}
+:hover > a.edit-header {
+    text-decoration: none !important;
+    opacity: 1;
+    cursor: pointer;
+}
+a.edit-header::after {
+  content: '' !important; /* hide the external link marker */
+}
+
+.copy-anchor-url {
+    opacity: 0;
+}
+:hover > .copy-anchor-url {
+    opacity: 1;
+    cursor: pointer;
 }
 
 .language-info {
