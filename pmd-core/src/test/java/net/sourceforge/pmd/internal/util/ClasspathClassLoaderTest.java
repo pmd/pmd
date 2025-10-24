@@ -18,11 +18,14 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -36,6 +39,29 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class ClasspathClassLoaderTest {
+
+    /*
+     * Create fake "pmd" protocol that allows checking how many times is a Jar accessed
+     */
+    static {
+        URL.setURLStreamHandlerFactory(protocol -> "pmd".equals(protocol) ? new URLStreamHandler() {
+            protected URLConnection openConnection(URL url) throws IOException {
+                return new URLConnection(url) {
+                    public void connect() throws IOException {
+                       // not needed
+                    }
+
+                    public InputStream getInputStream() throws IOException {
+                        USED_PMD_PROTOCOL_URLS.add(url.toString());
+                        return Files.newInputStream(Paths.get(url.getFile()));
+                    }
+                };
+            }
+        } : null);
+    }
+
+    private static final List<String> USED_PMD_PROTOCOL_URLS = new ArrayList<>();
+
     @TempDir
     private Path tempDir;
 
@@ -96,6 +122,22 @@ class ClasspathClassLoaderTest {
                 String s = IOUtil.readToString(in, StandardCharsets.UTF_8);
                 assertEquals(CUSTOM_JAR_RESOURCE_CONTENT, s);
             }
+        }
+    }
+
+    @Test
+    void loadFromJarCached() throws IOException {
+        Path jarPath = prepareCustomJar();
+        try (ClasspathClassLoader loader = new ClasspathClassLoader(new URL("jar:pmd:" + jarPath + "!/"), null)) {
+            for (int i = 0; i < 5; i++) {
+                try (InputStream in = loader.getResourceAsStream(CUSTOM_JAR_RESOURCE)) {
+                    assertNotNull(in);
+                    String s = IOUtil.readToString(in, StandardCharsets.UTF_8);
+                    assertEquals(CUSTOM_JAR_RESOURCE_CONTENT, s);
+                }
+            }
+            String absolute = "pmd:" + jarPath.toAbsolutePath();
+            assertEquals(Arrays.asList(absolute + "#runtime", absolute), USED_PMD_PROTOCOL_URLS);
         }
     }
 
