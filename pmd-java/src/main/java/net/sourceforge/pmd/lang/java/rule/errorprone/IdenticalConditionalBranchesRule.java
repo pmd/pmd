@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 
 /**
  * Detects conditional expressions and statements where both branches are equal.
- * @since 7.18
+ * @since 7.18.0
  */
 public class IdenticalConditionalBranchesRule extends AbstractJavaRulechainRule {
 

@@ -1884,7 +1884,7 @@ public class Foo {
 
     <rule name="IdenticalConditionalBranches"
           language="java"
-          since="7.18"
+          since="7.18.0"
           message="Conditional statement ignores the condition"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.IdenticalConditionalBranchesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#identicalconditionalbranches">
