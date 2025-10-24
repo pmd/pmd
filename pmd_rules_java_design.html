@@ -2073,41 +2073,103 @@ protected constructor in order to prevent instantiation than make the class misl
 
 <h2 id="avoidcatchinggenericexception">AvoidCatchingGenericException</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
+<p>The rule has been moved to another ruleset. Use instead: <a href="pmd_rules_java_errorprone.html#avoidcatchinggenericexception">AvoidCatchingGenericException</a></p>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 4.2.6</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block.</p>
+<p>Avoid catching generic exceptions in try-catch blocks. Catching overly broad exception types makes it difficult
+to understand what can actually go wrong in your code and can hide real problems.</p>
+
+<p><strong>Why these exceptions should not be caught:</strong></p>
+
+<ul>
+  <li>
+    <p><strong>Exception</strong>: This is the base class for all checked exceptions. Catching it means you’re handling all possible
+checked exceptions the same way, which is rarely appropriate and makes error handling less precise.</p>
+  </li>
+  <li>
+    <p><strong>RuntimeException</strong>: These represent programming errors (like logic bugs) that should typically be fixed in
+code rather than caught and handled. Catching them can hide bugs that should be addressed during development.</p>
+  </li>
+  <li>
+    <p><strong>NullPointerException</strong>: This usually indicates a programming error (accessing null references). Rather than
+catching it, code should be written to avoid null pointer dereferences through null checks or defensive programming.</p>
+  </li>
+  <li>
+    <p><strong>Throwable</strong>: This is the superclass of all errors and exceptions. Catching it means you’re trying to handle
+both recoverable exceptions and serious errors (like OutOfMemoryError) the same way, which is dangerous.</p>
+  </li>
+  <li>
+    <p><strong>Error</strong>: These represent serious problems that applications should not try to handle (like OutOfMemoryError,
+StackOverflowError). Catching Error can prevent the JVM from properly terminating when it encounters unrecoverable situations.</p>
+  </li>
+</ul>
+
+<p><strong>Better approaches:</strong></p>
+<ul>
+  <li>Catch specific exception types that you can meaningfully handle</li>
+  <li>Use multiple catch blocks for different exception types that require different handling</li>
+  <li>Consider using defensive programming techniques to prevent exceptions rather than catching them</li>
+</ul>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">CatchParameter</span><span class="o">//</span><span class="nt">ClassType</span><span class="p">[</span><span class="w">
-        </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.NullPointerException'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
-        </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.Exception'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w">
-        </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="s1">'java.lang.RuntimeException'</span><span class="p">)]</span><span class="w">
+    </span><span class="kr">some</span><span class="w"> </span><span class="nv">$type</span><span class="w"> </span><span class="kr">in</span><span class="w"> </span><span class="nv">$typesThatShouldNotBeCaught</span><span class="w">
+    </span><span class="kr">satisfies</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIsExactly</span><span class="p">(</span><span class="nv">$type</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.igate.primitive</span><span class="o">;</span>
-
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrimitiveType</span> <span class="o">{</span>
-
-    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">downCastPrimitiveType</span><span class="o">()</span> <span class="o">{</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PrimitiveType</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">downCastPrimitiveType</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span>
         <span class="k">try</span> <span class="o">{</span>
             <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">" i ["</span> <span class="o">+</span> <span class="n">i</span> <span class="o">+</span> <span class="s">"]"</span><span class="o">);</span>
-        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">NullPointerException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
         <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">RuntimeException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">NullPointerException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span> <span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
             <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
         <span class="o">}</span>
     <span class="o">}</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p><strong>Use this rule by referencing it:</strong></p>
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>typesThatShouldNotBeCaught</td>
+      <td>java.lang.NullPointerException , java.lang.Exception , java.lang.RuntimeException , java.lang.Throwable , java.lang.Error</td>
+      <td>List of canonical type names that should trigger a violation if used in a catch clause.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/AvoidCatchingGenericException"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/AvoidCatchingGenericException"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"typesThatShouldNotBeCaught"</span> <span class="na">value=</span><span class="s">"java.lang.NullPointerException,java.lang.Exception,java.lang.RuntimeException,java.lang.Throwable,java.lang.Error"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
 <h2 id="avoiddeeplynestedifstmts">AvoidDeeplyNestedIfStmts</h2>
@@ -4075,7 +4137,7 @@ remember to add a private constructor to prevent instantiation.
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Oct 23, 2025 <br />
+             Site last generated: Oct 24, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

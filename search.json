@@ -3831,6 +3831,15 @@
 ,
 
 {
+"title": "AvoidCatchingGenericException (Java, Error Prone)",
+"tags": "",
+"keywords": "AvoidCatchingGenericException",
+"url": "pmd_rules_java_errorprone.html#avoidcatchinggenericexception",
+"summary": "\bRules\b \bto\b \bdetect\b \bconstructs\b \bthat\b \bare\b \beither\b \bbroken\b, \bextremely\b \bconfusing\b \bor\b \bprone\b \bto\b \bruntime\b \berrors\b."
+}
+,
+
+{
 "title": "AvoidCatchingNPE (Java, Error Prone)",
 "tags": "",
 "keywords": "AvoidCatchingNPE",
