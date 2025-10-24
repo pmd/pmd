@@ -2127,6 +2127,8 @@ again (otherwise it won’t be included anymore):
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5878">#5878</a>: [java] DontUseFloatTypeForLoopIndices false-negative if variable is declared before loop</li>
       <li><a href="https://github.com/pmd/pmd/issues/6038">#6038</a>: [java] Merge AvoidCatchingNPE and AvoidCatchingThrowable into AvoidCatchingGenericException</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6055">#6055</a>: [java] UselessPureMethodCall false positive with AtomicInteger::getAndIncrement</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6060">#6060</a>: [java] UselessPureMethodCall false positive on ZipInputStream::getNextEntry</li>
       <li><a href="https://github.com/pmd/pmd/issues/6075">#6075</a>: [java] AssignmentInOperand false positive with lambda expressions</li>
     </ul>
   </li>
@@ -2180,6 +2182,7 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6074">#6074</a>: [apex] Fix @<!-- -->SuppressWarnings with whitespace around comma - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6078">#6078</a>: [java] Fix #6075: Fix FP in AssignmentInOperandRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6080">#6080</a>: [java] Fix #6079: IdenticalCatchBranches for overriden method calls - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6082">#6082</a>: [java] Fix false positives in UselessPureMethodCall for streams and atomics - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6085">#6085</a>: [java] Fix false positive for ModifierOrder - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6100">#6100</a>: [java] AvoidDeeplyNestedIfStmts: fix false negative with if-else - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6112">#6112</a>: [java] DanglingJavadoc: fix false positive for compact constructors - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
