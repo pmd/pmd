@@ -1275,3 +1275,10 @@ a.edit-header {
 .language-info {
     margin: 2em;
 }
+
+#toc a.active {
+    font-weight: bold;
+}
+#toc a.active:before {
+    content: '» '
+}
