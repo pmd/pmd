@@ -86,7 +86,7 @@ public class CommentDefaultAccessModifierRule extends AbstractJavaRulechainRule 
     
     @Override
     public Object visit(final ASTMethodDeclaration decl, final Object data) {
-        if (shouldReportNonTopLevel(decl)) {
+        if (shouldReportNonTopLevel(decl) && !decl.isMainMethod()) {
             report((RuleContext) data, decl, "method", PrettyPrintingUtil.displaySignature(decl));
         }
         return data;
