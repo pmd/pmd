@@ -6,6 +6,7 @@ package net.sourceforge.pmd.internal;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 
 import org.slf4j.ILoggerFactory;
@@ -15,15 +16,33 @@ import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.slf4j.event.Level;
 
 public final class Slf4jSimpleConfiguration {
-    private static final String SIMPLE_LOGGER_FACTORY_CLASS = "org.slf4j.simple.SimpleLoggerFactory";
-    private static final String SIMPLE_LOGGER_CLASS = "org.slf4j.simple.SimpleLogger";
-    private static final String SIMPLE_LOGGER_CONFIGURATION = "org.slf4j.simple.SimpleLoggerConfiguration";
+    private static final LoggerClassNames SLFJ2 = new LoggerClassNames(
+        "org.slf4j.simple.SimpleLoggerFactory",
+        "org.slf4j.simple.SimpleLogger",
+        "org.slf4j.simple.SimpleLoggerConfiguration");
+    private static final LoggerClassNames SLFJ1 = new LoggerClassNames(
+        "org.slf4j.impl.SimpleLoggerFactory",
+        "org.slf4j.impl.SimpleLogger",
+        "org.slf4j.impl.SimpleLoggerConfiguration");
     private static final String PMD_ROOT_LOGGER = "net.sourceforge.pmd";
+
+    private static final class LoggerClassNames {
+        private final String factory;
+        private final String logger;
+        private final String loggerConfiguration;
+
+        private LoggerClassNames(String factoryClass, String logger, String loggerConfiguration) {
+            this.factory = factoryClass;
+            this.logger = logger;
+            this.loggerConfiguration = loggerConfiguration;
+        }
+    }
 
     private Slf4jSimpleConfiguration() { }
 
     public static void reconfigureDefaultLogLevel(Level level) {
-        if (!isSimpleLogger()) {
+        LoggerClassNames loggerClassNames = getAvailableLoggerClassNames();
+        if (loggerClassNames == null) {
             // do nothing, not even set system properties, if not Simple Logger is in use
             return;
         }
@@ -42,7 +61,7 @@ public final class Slf4jSimpleConfiguration {
         ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
         ClassLoader classLoader = loggerFactory.getClass().getClassLoader();
         try {
-            Class<?> simpleLoggerClass = classLoader.loadClass(SIMPLE_LOGGER_CLASS);
+            Class<?> simpleLoggerClass = classLoader.loadClass(loggerClassNames.logger);
             Method initMethod = simpleLoggerClass.getDeclaredMethod("init");
             initMethod.setAccessible(true);
             initMethod.invoke(null);
@@ -55,7 +74,7 @@ public final class Slf4jSimpleConfiguration {
             Method levelStringMethod = simpleLoggerClass.getDeclaredMethod("recursivelyComputeLevelString");
             levelStringMethod.setAccessible(true);
 
-            Method stringToLevelMethod = classLoader.loadClass(SIMPLE_LOGGER_CONFIGURATION)
+            Method stringToLevelMethod = classLoader.loadClass(loggerClassNames.loggerConfiguration)
                     .getDeclaredMethod("stringToLevel", String.class);
             stringToLevelMethod.setAccessible(true);
 
@@ -64,7 +83,7 @@ public final class Slf4jSimpleConfiguration {
             // then set the log level field of each logger via reflection.
             // The new log level is determined similar to the constructor of SimpleLogger, that
             // means, configuration params are being considered.
-            Class<?> loggerFactoryClass = classLoader.loadClass(SIMPLE_LOGGER_FACTORY_CLASS);
+            Class<?> loggerFactoryClass = classLoader.loadClass(loggerClassNames.factory);
             Field loggerMapField = loggerFactoryClass.getDeclaredField("loggerMap");
             loggerMapField.setAccessible(true);
             // we checked previously, that loggerFactory instanceof SimpleLoggerFactory
@@ -129,14 +148,24 @@ public final class Slf4jSimpleConfiguration {
     }
 
     public static boolean isSimpleLogger() {
-        try {
-            ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
-            Class<?> loggerFactoryClass = loggerFactory.getClass().getClassLoader().loadClass(SIMPLE_LOGGER_FACTORY_CLASS);
-            return loggerFactoryClass.isAssignableFrom(loggerFactory.getClass());
-        } catch (ClassNotFoundException e) {
-            // not slf4j simple logger
-            return false;
+        return getAvailableLoggerClassNames() != null;
+    }
+
+    @SuppressWarnings("PMD.EmptyCatchBlock")
+    private static LoggerClassNames getAvailableLoggerClassNames() {
+        for (LoggerClassNames loggerClassNames : Arrays.asList(SLFJ1, SLFJ2)) {
+            try {
+                ILoggerFactory loggerFactory = LoggerFactory.getILoggerFactory();
+                Class<?> loggerFactoryClass = loggerFactory.getClass().getClassLoader()
+                    .loadClass(loggerClassNames.factory);
+                if (loggerFactoryClass.isAssignableFrom(loggerFactory.getClass())) {
+                    return loggerClassNames;
+                }
+            } catch (ClassNotFoundException e) {
+                // not slf4j simple logger
+            }
         }
+        return null;
     }
 
     public static void installJulBridge() {
