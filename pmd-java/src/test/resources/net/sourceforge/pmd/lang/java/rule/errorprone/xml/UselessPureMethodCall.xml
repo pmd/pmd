@@ -419,7 +419,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>Atomic increments</description>
+        <description>#6055 Atomic increments</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 
@@ -439,7 +439,7 @@ class Tester {
     </test-code>
 
     <test-code>
-        <description>Stream methods with side-effects</description>
+        <description>#6060 Stream methods with side-effects</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 
