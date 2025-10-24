@@ -94,6 +94,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.ast.AstLocalVarSym;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -733,6 +734,13 @@ public final class JavaAstUtils {
         return "hashCode".equals(node.getName())
             && node.getArity() == 0
             && !node.isStatic();
+    }
+
+    public static boolean isCompareToMethod(ASTMethodDeclaration method) {
+        return "compareTo".equals(method.getName())
+                && method.getArity() == 1
+                && method.getResultTypeNode().getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)
+                && !method.isStatic();
     }
 
     public static boolean isArrayLengthFieldAccess(ASTExpression node) {
