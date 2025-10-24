@@ -31,7 +31,7 @@ checkstyle version during the build.
 
 ### 🌟 Rules changes
 #### New Rules
-* The new Java rule {% java/errorprone/IdenticalConditionalBranches %} finds conditional statements
+* The new Java rule {% rule java/errorprone/IdenticalConditionalBranches %} finds conditional statements
   that do the same thing when the condition is true and false. This is either incorrect or redundant.
 
 #### Modified rules
