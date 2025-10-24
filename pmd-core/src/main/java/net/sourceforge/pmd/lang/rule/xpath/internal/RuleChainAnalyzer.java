@@ -77,13 +77,18 @@ public class RuleChainAnalyzer extends SaxonExprVisitor {
 
         Expression step = visit(e.getStep());
 
-        if (!(e.getStart() instanceof RootExpression)) {
+        if (!(getStart(e) instanceof RootExpression)) {
             // restore
             rootElement = elt;
             rootElementReplaced = replaced;
         }
 
         return new SlashExpression(start, step);
+    }
+
+    private Object getStart(SlashExpression e) {
+        Expression ex = e.getStart();
+        return ex instanceof SlashExpression ? getStart((SlashExpression) ex) : ex;
     }
 
     @Override
