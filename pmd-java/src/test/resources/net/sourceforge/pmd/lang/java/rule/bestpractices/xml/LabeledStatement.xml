@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="example">
+<![CDATA[
+class Scratch {
+    public static void main(String[] args) {
+        int x = 1;
+        lbl1: while (true) {          // violation: labeled statement on loop (when property allowLoops=false)
+            lbl2: if (x == 3) {       // violation: labeled statement
+                x++;
+                break lbl2;
+            }
+            lbl3: if (x == 4) {
+                break lbl1;
+            }
+            System.out.println(x);
+            x++;
+        }
+    }
+}
+]]>
+    </code-fragment>
+
+    <test-code>
+        <description>Example</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid using labeled statements such as 'lbl2'.</message>
+        </expected-messages>
+        <code-ref id="example"/>
+    </test-code>
+
+    <test-code>
+        <description>Example (allowLoops=false)</description>
+        <rule-property name="allowLoops">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,5</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid using labeled statements such as 'lbl1'.</message>
+            <message>Avoid using labeled statements such as 'lbl2'.</message>
+        </expected-messages>
+        <code-ref id="example"/>
+    </test-code>
+
+    <test-code>
+        <description>violation: labeled break in for loop</description>
+        <rule-property name="allowLoops">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid using labeled statements such as 'outer'.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        outer:
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                break outer; // violation
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: labeled continue in nested for loops</description>
+        <rule-property name="allowLoops">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid using labeled statements such as 'outer'.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        outer:
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                continue outer; // violation
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: labeled break in while loop</description>
+        <rule-property name="allowLoops">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        boolean condition = true;
+        outer:
+        while (condition) {
+            while (condition) {
+                break outer; // violation
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: labeled continue in do-while loop</description>
+        <rule-property name="allowLoops">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        boolean condition = true;
+        outer:
+        do {
+            do {
+                continue outer; // violation
+            } while (condition);
+        } while (condition);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: labeled break in enhanced for loop</description>
+        <rule-property name="allowLoops">false</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int[] array = {1, 2, 3};
+        outer:
+        for (int i : array) {
+            for (int j : array) {
+                break outer; // violation
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>violation: multiple labeled breaks targeting different loops</description>
+        <rule-property name="allowLoops">false</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        outer:
+        for (int i = 0; i < 10; i++) {
+            middle:
+            for (int j = 0; j < 10; j++) {
+                for (int k = 0; k < 10; k++) {
+                    if (k > 5) {
+                        break middle; // violation
+                    }
+                    break outer;  // violation
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: unlabeled break in for loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                break; // OK - no label
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: unlabeled continue in while loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        boolean condition = true;
+        while (condition) {
+            while (condition) {
+                continue; // OK - no label
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: break in switch statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo(int x) {
+        switch (x) {
+            case 1:
+                break; // OK - switch break
+            case 2:
+                break; // OK - switch break
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: labeled statement without break/continue (unused label)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        label:  // this unused label would be detected by rule UnusedLabel
+        {
+            int x = 5;
+            System.out.println(x);
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>no violation: mixed loops with unlabeled controls</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        for (int i = 0; i < 10; i++) {
+            while (i < 5) {
+                break; // OK - unlabeled
+            }
+            for (int j = 0; j < 10; j++) {
+                continue; // OK - unlabeled
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

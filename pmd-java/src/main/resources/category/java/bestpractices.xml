@@ -865,6 +865,81 @@ public class MyTest {
         </example>
     </rule>
 
+    <rule name="LabeledStatement"
+          language="java"
+          since="7.18.0"
+          message="Avoid using labeled statements such as ''{0}''."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#labeledstatement">
+        <description>
+This rule detects the use of labeled statements. By default, it allows labeled loops so that you can
+use `break` / `continue` with labels. This can be changed with the property `allowLoops` to flag any
+labels.
+
+Labels make control flow difficult to understand and should be avoided. They can be confused
+with the goto statement and make code harder to read and maintain.
+
+If you really need to jump out of an inner loop, think about refactoring the multiple
+loops into a function - that way, you can replace the break with a return.
+
+This rule implements SonarSource rule [S1119](https://sonarsource.github.io/rspec/#/rspec/S1119).
+
+To detect unused labels, use the rule {% rule UnusedLabel %}.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+if ($allowLoops) then
+    //LabeledStatement[not(DoStatement|WhileStatement|ForStatement|ForeachStatement)][let $label := @Label return
+          (.//BreakStatement | .//ContinueStatement)[@Label = $label]
+    ]
+else
+    //LabeledStatement[let $label := @Label return
+          (.//BreakStatement | .//ContinueStatement)[@Label = $label]
+    ]
+]]>
+                </value>
+            </property>
+            <property name="allowLoops" type="Boolean"
+                      description="Whether to allow or not allow labels before loop statements (do, while, for)"
+                      value="true" />
+        </properties>
+        <example>
+<![CDATA[
+class Scratch {
+    public static void main(String[] args) {
+        int x = 1;
+        lbl1: while (true) {          // violation: labeled statement on loop (when property allowLoops=false)
+            lbl2: if (x == 3) {       // violation: labeled statement
+                x++;
+                break lbl2;
+            }
+            lbl3: if (x == 4) {
+                break lbl1;
+            }
+            System.out.println(x);
+            x++;
+        }
+    }
+}
+]]>
+        </example>
+        <example>
+            <![CDATA[
+// Bad
+outer:
+for (int i = 0; i < 10; i++) {
+    for (int j = 0; j < 10; j++) {
+        break outer; // violation - labeled break (when allowLoops=false)
+        continue outer; // violation - labeled continue (when allowLoops=false)
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="LiteralsFirstInComparisons"
           language="java"
           since="6.24.0"
@@ -1864,6 +1939,44 @@ Hence, by default, this rule only considers private methods. To include non-priv
 public class Foo {
     private void bar(String howdy) {
         // howdy is not used
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedLabel"
+          language="java"
+          since="7.18.0"
+          message="Avoid unused labels such as ''{0}''."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedlabel">
+        <description>
+Unused labeled are unnecessary and may be confusing as you might be wondering what this label is used for.
+To improve readability the unused label should simply be removed.
+
+This rule implements SonarSource rule [S1065](https://sonarsource.github.io/rspec/#/rspec/S1065).
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//LabeledStatement[let $label := @Label return
+      not( (.//BreakStatement | .//ContinueStatement)[@Label = $label] )
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Example {
+    void main() {
+        lbl1: {                     // violation: Label "lbl1" is not nused
+            int x = 1;
+            System.out.println(x);
+        }
     }
 }
 ]]>
