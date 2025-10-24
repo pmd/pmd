@@ -22,14 +22,14 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### 🚀 New and noteworthy
+### 🚀️ New and noteworthy
 
 #### Build Requirement is Java 17
 From now on, Java 17 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.
 
-### 🌟 New and Changed Rules
+### 🌟️ New and Changed Rules
 #### New Rules
 * The new Java rule {% rule java/errorprone/IdenticalConditionalBranches %} finds conditional statements
   that do the same thing when the condition is true and false. This is either incorrect or redundant.
@@ -51,13 +51,13 @@ checkstyle version during the build.
   <rule ref="category/java/errorprone.xml/AvoidCatchingGenericException" />
   ```
 
-#### Deprecated rules
+#### Deprecated Rules
 * The Java rule {% rule java/errorprone/AvoidCatchingNPE %} has been deprecated in favor of the updated rule
   {% rule java/errorprone/AvoidCatchingGenericException %}, which is now configurable.
 * The Java rule {% rule java/errorprone/AvoidCatchingThrowable %} has been deprecated in favor of the updated rule
   {% rule java/errorprone/AvoidCatchingGenericException %}, which is now configurable.
 
-### 🐛 Fixed Issues
+### 🐛️ Fixed Issues
 * general
   * [#4714](https://github.com/pmd/pmd/issues/4714): \[core] Allow trailing commas in multivalued properties
   * [#5873](https://github.com/pmd/pmd/issues/5873): \[ci] Run integration test with Java 25
@@ -108,7 +108,7 @@ checkstyle version during the build.
 * plsql-design
   * [#6077](https://github.com/pmd/pmd/issues/6077): \[plsql] Excessive\*/Ncss\*Count/NPathComplexity include the metric
 
-### 🚨 API Changes
+### 🚨️ API Changes
 
 #### Deprecations
 * java
@@ -118,7 +118,7 @@ checkstyle version during the build.
     * {%jdoc !!java::lang.java.rule.design.ExcessiveParameterListRule#isViolation(java::lang.java.ast.ASTFormalParameters,int) %}
     * {%jdoc !!java::lang.java.rule.design.ExcessivePublicCountRule#isViolation(java::lang.java.ast.ASTTypeDeclaration,int) %}
 
-### ✨ Merged pull requests
+### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#6021](https://github.com/pmd/pmd/pull/6021): \[java] Fix #5569: ExcessiveImports/ExcessiveParameterList/ExcessivePublicCount include the metric in the message - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6022](https://github.com/pmd/pmd/pull/6022): \[apex] ExcessiveClassLength/ExcessiveParameterList include the metric in the message - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
@@ -162,10 +162,10 @@ checkstyle version during the build.
 * [#6170](https://github.com/pmd/pmd/pull/6170): \[java] Fix #6169: AvoidUsingHardCodedIP - mention address in message - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6171](https://github.com/pmd/pmd/pull/6171): \[java] AvoidUsingHardCodedIP: fix false positive for IPv6 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
-### 📦 Dependency updates
+### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📈 Stats
+### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
