@@ -38,7 +38,7 @@ PULL_ITEM="${PULL_ITEM//${search}/${replacement}}"
 RELEASE_NOTES_FILE="${BASEDIR}/docs/pages/release_notes.md"
 RELEASE_NOTES=$(cat "$RELEASE_NOTES_FILE")
 
-line="$(echo "$RELEASE_NOTES" | grep -n "### 📦 Dependency updates" | cut -d ":" -f 1)"
+line="$(echo "$RELEASE_NOTES" | grep -n "### 📦️ Dependency updates" | cut -d ":" -f 1)"
 RELEASE_NOTES="$(echo "$RELEASE_NOTES" | head -n "$((line - 1))")
 $PULL_ITEM
 $(echo "$RELEASE_NOTES" | tail -n "+$((line - 1))")

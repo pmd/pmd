@@ -275,19 +275,19 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### 🚀 New and noteworthy
+### 🚀️ New and noteworthy
 
-### 🐛 Fixed Issues
+### 🐛️ Fixed Issues
 
-### 🚨 API Changes
+### 🚨️ API Changes
 
-### ✨ Merged pull requests
+### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📦 Dependency updates
+### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📈 Stats
+### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
