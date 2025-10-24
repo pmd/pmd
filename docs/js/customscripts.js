@@ -69,6 +69,36 @@ $(document).ready(function () {
         $("#tg-sb-icon").toggleClass('fa-toggle-off');
         event.preventDefault();
     });
+
+    // PMD Versions Dropdown in topnav
+    const versionsList = document.querySelector("#pmdVersions");
+    const releasesRequest = new Request("https://api.github.com/repos/pmd/pmd/releases?per_page=5&page=1");
+    window
+        .fetch(releasesRequest)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((response) => response.map((r) => r.tag_name.replace('pmd_releases/', '')))
+        .then((versions) => {
+            versions.push('6.55.0');
+            return versions.map((version) => {
+                if (version.endsWith('-SNAPSHOT')) {
+                    return `<a class="dropdown-item" href="https://docs.pmd-code.org/snapshot/" target="_blank">${version}</a>`;
+                } else {
+                    return `<a class="dropdown-item" href="https://docs.pmd-code.org/pmd-doc-${version}/" target="_blank">${version}</a>`;
+                }
+            });
+        })
+        .then((items) => {
+            versionsList.innerHTML = items.join();
+        })
+        .catch((error) => {
+            versionsList.innerHTML = "Couldn't download releases from api.github.com";
+            console.log(error);
+        });
 });
 
 // Check if TOC needs to be moved on window resizing
