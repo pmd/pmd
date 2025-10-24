@@ -12,6 +12,7 @@ import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
+import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -27,7 +28,23 @@ enum ReductionStep {
     EQ(BoundKind.EQ) {
         @Override
         JTypeMirror solve(InferenceVar uv, InferenceContext inferenceContext) {
-            return filterBounds(uv, inferenceContext).get(0);
+            List<JTypeMirror> types = filterBounds(uv, inferenceContext);
+            if (types.size() == 1) {
+                return types.get(0);
+            }
+
+            // If there are several EQ bounds, then they must be different
+            // types for Object#equals, but since incorporation did not fail,
+            // this means IncorporationAction#checkBound considers them compatible.
+            // This must mean either:
+            // 1. they are ERROR and another type (including UNKNOWN): return ERROR
+            // 2. they are UNKNOWN and another type (including UNKNOWN): return the other type.
+            TypeSystem ts = inferenceContext.ts;
+            if (types.contains(ts.UNKNOWN) && types.size() == 2) {
+                types.remove(ts.UNKNOWN);
+                return types.get(0); // (this might be error)
+            }
+            return ts.ERROR;
         }
     },
 

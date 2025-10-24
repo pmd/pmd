@@ -224,6 +224,10 @@ public final class Infer {
 
         JMethodSig fallback = deleteTypeParams(cast(ctdecl.getMethodType()).adaptedMethod());
         LOG.fallbackInvocation(fallback, site);
+        // When we fail in invocation we need to clean-up partial
+        // data from the tree. This means erasing inference variables
+        // from the types stored in AST nodes.
+        site.getExpr().groundTree();
 
         return ctdecl.withMethod(fallback, true);
     }

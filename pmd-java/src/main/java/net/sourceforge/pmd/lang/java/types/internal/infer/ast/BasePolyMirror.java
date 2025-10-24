@@ -40,6 +40,13 @@ abstract class BasePolyMirror<T extends JavaNode> extends BaseExprMirror<T> impl
     }
 
     @Override
+    public void groundTree() {
+        if (inferredType != null) {
+            setInferredType(ExprMirror.ensureNoTypeVariables(inferredType));
+        }
+    }
+
+    @Override
     public JTypeMirror getInferredType() {
         return inferredType;
     }

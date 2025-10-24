@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
-import net.sourceforge.pmd.lang.java.symbols.JTypeParameterSymbol;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
@@ -272,17 +271,16 @@ public final class TypeTestUtil {
         AssertionUtil.requireParamNotNull("canonicalName", canonicalName);
 
         JTypeDeclSymbol sym = node.getSymbol();
-        if (sym == null || sym instanceof JTypeParameterSymbol) {
+        if (!(sym instanceof JClassSymbol)) {
             return OptionalBool.NO;
         }
-
-        canonicalName = StringUtils.deleteWhitespace(canonicalName);
 
         JClassSymbol klass = (JClassSymbol) sym;
         String canonical = klass.getCanonicalName();
         if (canonical == null) {
             return OptionalBool.UNKNOWN; // anonymous
         }
+        canonicalName = StringUtils.deleteWhitespace(canonicalName);
         return OptionalBool.definitely(canonical.equals(canonicalName));
     }
 

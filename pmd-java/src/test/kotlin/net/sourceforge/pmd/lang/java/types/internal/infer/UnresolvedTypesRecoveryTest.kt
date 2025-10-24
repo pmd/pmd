@@ -230,7 +230,8 @@ class C {
     static {
         // Creates bounds: `T >: ooo.Foo` and `T <: ooo.Bound`
         // Should not be deemed incompatible
-        id(foo()); 
+        id(foo());
+
     }
 }
             """.trimIndent()
@@ -347,9 +348,10 @@ class C {
         // Select the most general overload, append(Object)?
         // Just inverting the specificity relation, to select the most general,
         // would not work well when there are several parameters.
-        // Note that /*unresolved*/ and /*error*/ are the only types for which 
+        // Note that /*unresolved*/ and /*error*/ are the only types for which
+
         // there is ambiguity
-        
+
         // For now, report an ambiguity error
         new StringBuilder().append(Unresolved.SOMETHING);
     }
@@ -581,7 +583,6 @@ class C {
         }
     }
 
-
     parserTest("Wrong syntax, return with expr in void method") {
         val (acu, spy) = parser.parseWithTypeInferenceSpy(
             """
@@ -641,7 +642,7 @@ class C {
             }
             interface Stream<T> {
                 <U> Stream<U> map(Function<? super T, ? extends U> fun);
-                
+
                 // the point of this test is there is an ambiguity between both of these overloads
                 static <U> Stream<U> of(U u) {}
                 static <U> Stream<U> of(U... u) {}
@@ -883,6 +884,102 @@ class C {
             lambda.varAccesses("b").forEach { it shouldHaveType ts.UNKNOWN }
 
             acu.varId("result") shouldHaveType ts.UNKNOWN
+        }
+    }
+
+    parserTest("Constraints like 'a = Bar and 'a = (*unknown*) should not be considered incompatible") {
+        // todo not sure how to test that if this always resolves 'a to Bar and not to (*unknown*)
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+                class Bar {}
+                public class Foo {
+
+                  static {
+                      Iterable<Bar> local = filter(unknown(), input -> input.debug());
+                  }
+
+                  public static <T> Iterable<T> filter(final Iterable<T> unfiltered,
+                    final java.util.function.Predicate<? super T> retainIfTrue) {
+                    return null;
+                  }
+                }
+            """.trimIndent()
+        )
+
+        val (barClass) = acu.declaredTypeSignatures()
+        val (filterCall, _, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
+        val (filter) = acu.methodDeclarations().toList { it.genericSignature }
+
+        with(acu.typeDsl) {
+            filterCall shouldHaveType java.lang.Iterable::class[barClass]
+            filterCall.methodType shouldBeSomeInstantiationOf filter
+            spy.shouldHaveNoErrors()
+            debugCall.qualifier!! shouldHaveType barClass
+            debugCall shouldHaveType ts.UNKNOWN
+        }
+    }
+    parserTest("Constraints like 'a = Bar and 'a = (*unknown*) should not be considered incompatible: with no context there is no Bar hint") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+                class Bar {}
+                public class Foo {
+
+                  static {
+                      var local = filter(unknown(), input -> input.debug());
+                  }
+
+                  public static <T> Iterable<T> filter(final Iterable<T> unfiltered,
+                    final java.util.function.Predicate<? super T> retainIfTrue) {
+                    return null;
+                  }
+                }
+            """.trimIndent()
+        )
+
+        val (filterCall, _, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
+        val (filter) = acu.methodDeclarations().toList { it.genericSignature }
+
+        with(acu.typeDsl) {
+            filterCall shouldHaveType java.lang.Iterable::class[ts.UNKNOWN]
+            filterCall.methodType shouldBeSomeInstantiationOf filter
+            spy.shouldHaveNoErrors()
+            debugCall.qualifier!! shouldHaveType ts.UNKNOWN
+            debugCall shouldHaveType ts.UNKNOWN
+        }
+    }
+
+    parserTest("Invocation failure when there is a lambda should clean up the type of lambda parameters properly") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+                class Bar {}
+                class Baz {}
+                public class Foo {
+
+                  static {
+                      // Here we need a method that is applicable, but where
+                      // invocation fails because of the target type.
+                      Iterable<Bar> local = filter(unknown(), input -> input.debug());
+                  }
+
+                  public static <T> Iterable<T> filter(final Iterable<T> unfiltered,
+                    final java.util.function.Predicate<? super T> retainIfTrue) {
+                    return null;
+                  }
+
+                  static Iterable<Baz> unknown() {}
+
+                }
+            """.trimIndent()
+        )
+
+        val (filterCall, _, debugCall) = acu.methodCalls().crossFindBoundaries().toList()
+        val (filter) = acu.methodDeclarations().toList { it.genericSignature }
+
+        with(acu.typeDsl) {
+            filterCall shouldHaveType java.lang.Iterable::class[ts.ERROR]
+            filterCall.methodType shouldBeSomeInstantiationOf filter
+            spy.shouldUseFallback(filterCall)
+            debugCall.qualifier!! shouldHaveType ts.ERROR
         }
     }
 })

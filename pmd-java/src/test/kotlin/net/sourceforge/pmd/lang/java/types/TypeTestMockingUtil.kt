@@ -28,7 +28,7 @@ fun JavaParsingHelper.parseWithTypeInferenceSpy(code: String): Pair<ASTCompilati
  * @property spy A [Mockito.spy], you can call methods of mockito there
  */
 data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSystem) {
-    private fun shouldHaveNoErrors() {
+    fun shouldHaveNoErrors() {
         // note that inexact method ref selection may call noApplicableCandidates
         // or noCompileTimeDeclaration sometimes I think.
         verify(spy, never()).ambiguityError(any(), any(), any())
@@ -45,6 +45,11 @@ data class TypeInferenceSpy(private val spy: TypeInferenceLogger, val ts: TypeSy
     fun shouldHaveMissingCtDecl(node: InvocationNode) {
         verify(spy, times(1))
             .noCompileTimeDeclaration(argThat { it.expr.location == node })
+    }
+
+    fun shouldUseFallback(node: InvocationNode) {
+        verify(spy, atLeastOnce())
+            .fallbackInvocation(any(), argThat { it.expr.location == node })
     }
 
     fun shouldHaveNoApplicableMethods(node: InvocationNode) {
