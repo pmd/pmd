@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.test.lang.rule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -73,9 +74,15 @@ public abstract class AbstractRuleSetFactoryTest {
     // todo rename this field to validCoreRules or something. Make private.
     protected Set<String> validXPathClassNames = new HashSet<>();
     private final Set<String> languagesToSkip = new HashSet<>();
+    private final Map<String, Set<String>> expectedMessagesPerRuleset = new HashMap<>();
 
     public AbstractRuleSetFactoryTest() {
         this(new String[0]);
+    }
+
+    public AbstractRuleSetFactoryTest(Map<String, Set<String>> expectedMessagesPerRuleset) {
+        this();
+        this.expectedMessagesPerRuleset.putAll(expectedMessagesPerRuleset);
     }
 
     /**
@@ -368,8 +375,20 @@ public abstract class AbstractRuleSetFactoryTest {
         RuleSet ruleSet = InternalApiBridge.withReporter(new RuleSetLoader(), new Reporter())
                 .loadFromResource(ruleSetFileName);
 
-        assertThat("There should be no warnings while loading the ruleset",
-                messages.toString(), emptyString());
+        // normalize all line-endings to \n - in case we run under Windows...
+        String allMessages = messages.toString().replaceAll("\\R", "\n");
+
+        if (expectedMessagesPerRuleset.containsKey(ruleSetFileName)) {
+            for (String expectedMessage : expectedMessagesPerRuleset.get(ruleSetFileName)) {
+                assertThat(allMessages, containsString(expectedMessage));
+                allMessages = allMessages.replace(expectedMessage, "");
+            }
+            assertThat("There should be no other warnings while loading the ruleset, but found: " + allMessages,
+                    allMessages, emptyString());
+        } else {
+            assertThat("There should be no warnings while loading the ruleset, but found: " + allMessages,
+                    allMessages, emptyString());
+        }
 
         return ruleSet;
     }
