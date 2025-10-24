@@ -88,6 +88,8 @@ checkstyle version during the build.
   * [#6083](https://github.com/pmd/pmd/issues/6083): \[java] New rule IdenticalConditionalBranches
 * java-multithreading
   * [#5880](https://github.com/pmd/pmd/issues/5880): \[java] DoubleCheckedLocking is not detected if more than 1 assignment or more than 2 if statements
+* plsql-design
+  * [#6077](https://github.com/pmd/pmd/issues/6077): \[plsql] Excessive\*/Ncss\*Count/NPathComplexity include the metric
 
 ### 🚨 API Changes
 
@@ -117,6 +119,7 @@ checkstyle version during the build.
 * [#6071](https://github.com/pmd/pmd/pull/6071): \[java] Fix #5919: Add integration tests to ClassNamingConventions testClassRegex - [Anton Bobov](https://github.com/abobov) (@abobov)
 * [#6073](https://github.com/pmd/pmd/pull/6073): \[doc] Search improvements - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6074](https://github.com/pmd/pmd/pull/6074): \[apex] Fix @<!-- -->SuppressWarnings with whitespace around comma - [Juan Martín Sotuyo Dodero](https://github.com/jsotuyod) (@jsotuyod)
+* [#6077](https://github.com/pmd/pmd/pull/6077): \[plsql] Excessive*/Ncss*Count/NPathComplexity include the metric - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6078](https://github.com/pmd/pmd/pull/6078): \[java] Fix #6075: Fix FP in AssignmentInOperandRule - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6080](https://github.com/pmd/pmd/pull/6080): \[java] Fix #6079: IdenticalCatchBranches for overriden method calls - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6082](https://github.com/pmd/pmd/pull/6082): \[java] Fix false positives in UselessPureMethodCall for streams and atomics - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
