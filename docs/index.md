@@ -19,7 +19,7 @@ additional_js:
 
 
 
-## 💡 Overview
+## 💡️ Overview
 
 <!--  You can link to an individual panel, the id is determined from the title of the panel -->
 <!--  See custom/shuffle_panel.html for the details -->
@@ -56,19 +56,19 @@ things, PMD can be run:
 **CPD**, the **copy-paste detector**, is also distributed with PMD. You can use it
 in a variety of ways, which are [documented here](pmd_userdocs_cpd.html).
 
-## 💾 Download
+## 💾️ Download
 
 The latest release of PMD can be downloaded from our [Github releases page](https://github.com/pmd/pmd/releases/latest).
 
 The Logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
 
-## 📖 Documentation
+## 📖️ Documentation
 
 The rest of this page exposes the contents of the documentation site thematically,
 which you can further scope down using the blue filter buttons. To navigate the site,
 you may also use the search bar in the top right, or the sidebar on the left.
 
-## ✨ Contributors
+## ✨️ Contributors
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
 Contributions of any kind welcome!

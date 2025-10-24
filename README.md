@@ -28,7 +28,7 @@ Coco, C/C++, C#, CSS, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript
 Lua, Matlab, Modelica, Objective-C, Perl, PHP, PL/SQL, Python, Ruby, Salesforce.com Apex and
 Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
 
-## 🚀 Installation and Usage
+## 🚀️ Installation and Usage
 
 Download the latest binary zip from the [releases](https://github.com/pmd/pmd/releases/latest)
 and extract it somewhere.
@@ -58,7 +58,7 @@ See [Tools / Integrations](https://docs.pmd-code.org/latest/pmd_userdocs_tools.h
     or our [PMD Guru at Gurubase](https://gurubase.io/g/pmd).
 *   Where's your documentation? -- <https://docs.pmd-code.org/latest/>
 
-## 🤝 Contributing
+## 🤝️ Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
@@ -70,17 +70,17 @@ The rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd
 Please see [its README](https://github.com/pmd/pmd-designer#contributing) for
 developer documentation.
 
-## 💵 Financial Contributors
+## 💵️ Financial Contributors
 
 Become a financial contributor and help us sustain our community. [Contribute](https://opencollective.com/pmd/contribute)
 
-## ✨ Contributors
+## ✨️ Contributors
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
 Contributions of any kind welcome!
 
 See [credits](docs/pages/pmd/projectdocs/credits.md) for the complete list.
 
-## 📝 License
+## 📝️ License
 
 [BSD Style](LICENSE)

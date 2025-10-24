@@ -85,7 +85,7 @@ echo "Found $(echo "$ISSUES_JSON" | jq length) issues/pull requests"
 
 FIXED_ISSUES_JSON="$(echo "$ISSUES_JSON" | jq 'map(select(has("pull_request") | not))')"
 FIXED_ISSUES="$(echo "$FIXED_ISSUES_JSON" | jq --raw-output '.[] | "* [#\(.number)](https://github.com/pmd/pmd/issues/\(.number)): \(.title | gsub("@"; "@<!-- -->") | gsub("\\["; "\\["))"')"
-FIXED_ISSUES="### 🐛 Fixed Issues
+FIXED_ISSUES="### 🐛️ Fixed Issues
 <!-- content will be automatically generated, see /do-release.sh -->
 $FIXED_ISSUES
 "
@@ -106,7 +106,7 @@ for login in $AUTHORS; do
     PULL_REQUESTS="${PULL_REQUESTS//${search}/${replacement}}"
 done
 
-PULL_REQUESTS="### ✨ Merged pull requests
+PULL_REQUESTS="### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 $PULL_REQUESTS
 "
@@ -115,7 +115,7 @@ DEPENDENCY_UPDATES_JSON="$(echo "$ISSUES_JSON" | jq 'map(select(has("pull_reques
 DEPENDENCY_UPDATES="$(echo "$DEPENDENCY_UPDATES_JSON" | jq --raw-output '.[] | "* [#\(.number)](https://github.com/pmd/pmd/pull/\(.number)): \(.title | gsub("@"; "@<!-- -->") | gsub("\\["; "\\["))"')"
 DEPENDENCY_UPDATES_COUNT=$(echo "$DEPENDENCY_UPDATES_JSON" | jq length)
 if [ -z "$DEPENDENCY_UPDATES" ]; then DEPENDENCY_UPDATES="No dependency updates."; fi
-DEPENDENCY_UPDATES="### 📦 Dependency updates
+DEPENDENCY_UPDATES="### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
 $DEPENDENCY_UPDATES
 "
@@ -123,7 +123,7 @@ $DEPENDENCY_UPDATES
 # calculating stats for release notes (excluding dependency updates)
 STATS_CLOSED_ISSUES=$(echo "$MILESTONE_JSON" | jq .closed_issues)
 STATS=$(
-echo "### 📈 Stats"
+echo "### 📈️ Stats"
 echo "<!-- content will be automatically generated, see /do-release.sh -->"
 echo "* $(git log pmd_releases/"${LAST_VERSION}"..HEAD --oneline --no-merges |wc -l) commits"
 echo "* $((STATS_CLOSED_ISSUES - DEPENDENCY_UPDATES_COUNT)) closed tickets & PRs"
@@ -155,9 +155,9 @@ RELEASE_NOTES_FILE="${BASEDIR}/docs/pages/release_notes.md"
 echo "Updating $RELEASE_NOTES_FILE now..."
 
 RELEASE_NOTES=$(cat "$RELEASE_NOTES_FILE")
-#RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### 🐛 Fixed Issues" "### ✨ Merged pull requests" "$FIXED_ISSUES")"
-RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### ✨ Merged pull requests" "### 📦 Dependency updates" "$PULL_REQUESTS")"
-RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### 📦 Dependency updates" "### 📈 Stats" "$DEPENDENCY_UPDATES")"
-RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### 📈 Stats" "{% endtocmaker %}" "$STATS")"
+#RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### 🐛️ Fixed Issues" "### ✨️ Merged pull requests" "$FIXED_ISSUES")"
+RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### ✨️ Merged pull requests" "### 📦️ Dependency updates" "$PULL_REQUESTS")"
+RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### 📦️ Dependency updates" "### 📈️ Stats" "$DEPENDENCY_UPDATES")"
+RELEASE_NOTES="$(insert "$RELEASE_NOTES" "### 📈️ Stats" "{% endtocmaker %}" "$STATS")"
 
 echo "$RELEASE_NOTES" > "$RELEASE_NOTES_FILE"

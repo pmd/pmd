@@ -22,14 +22,14 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### 🚀 New and noteworthy
+### 🚀️ New and noteworthy
 
 #### Build Requirement is Java 17
 From now on, Java 17 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.
 
-### 🌟 Rules changes
+### 🌟️ Rules changes
 #### New Rules
 * The new Java rule {% rule java/errorprone/IdenticalConditionalBranches %} finds conditional statements
   that do the same thing when the condition is true and false. This is either incorrect or redundant.
@@ -52,7 +52,7 @@ checkstyle version during the build.
 * The Java rule {% rule java/errorprone/AvoidCatchingThrowable %} has been deprecated in favor of the updated rule
   {% rule java/errorprone/AvoidCatchingGenericException %}, which is now configurable.
 
-### 🐛 Fixed Issues
+### 🐛️ Fixed Issues
 * general
   * [#4714](https://github.com/pmd/pmd/issues/4714): \[core] Allow trailing commas in multivalued properties
   * [#6012](https://github.com/pmd/pmd/issues/6012): \[pmd-rulesets] Rulesets should be in alphabetical order
@@ -89,7 +89,7 @@ checkstyle version during the build.
 * java-multithreading
   * [#5880](https://github.com/pmd/pmd/issues/5880): \[java] DoubleCheckedLocking is not detected if more than 1 assignment or more than 2 if statements
 
-### 🚨 API Changes
+### 🚨️ API Changes
 
 #### Deprecations
 * java
@@ -99,7 +99,7 @@ checkstyle version during the build.
     * {%jdoc !!java::lang.java.rule.design.ExcessiveParameterListRule#isViolation(java::lang.java.ast.ASTFormalParameters,int) %}
     * {%jdoc !!java::lang.java.rule.design.ExcessivePublicCountRule#isViolation(java::lang.java.ast.ASTTypeDeclaration,int) %}
 
-### ✨ Merged pull requests
+### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#6021](https://github.com/pmd/pmd/pull/6021): \[java] Fix #5569: ExcessiveImports/ExcessiveParameterList/ExcessivePublicCount include the metric in the message - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6022](https://github.com/pmd/pmd/pull/6022): \[apex] ExcessiveClassLength/ExcessiveParameterList include the metric in the message - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
@@ -129,10 +129,10 @@ checkstyle version during the build.
 * [#6124](https://github.com/pmd/pmd/pull/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6130](https://github.com/pmd/pmd/pull/6130): \[java] UselessParentheses: fix false positives for switch expressions - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
-### 📦 Dependency updates
+### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📈 Stats
+### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
