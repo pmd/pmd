@@ -58,7 +58,7 @@
                 
             </ul>
             <form class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" placeholder="search..." id="search-input">
+                <input class="form-control mr-sm-2" type="search" placeholder="🔍️ Type 's' to search..." id="search-input" autocomplete="off">
                 <ul id="results-container"></ul>
             </form>
         </div>
@@ -2080,9 +2080,11 @@ again (otherwise it won’t be included anymore):
 
 <h3 id="-fixed-issues">🐛 Fixed Issues</h3>
 <ul>
-  <li>core
+  <li>general
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/4714">#4714</a>: [core] Allow trailing commas in multivalued properties</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6012">#6012</a>: [pmd-rulesets] Rulesets should be in alphabetical order</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6073">#6073</a>: [doc] Search improvements</li>
     </ul>
   </li>
   <li>apex
@@ -2143,11 +2145,6 @@ again (otherwise it won’t be included anymore):
       <li><a href="https://github.com/pmd/pmd/issues/5880">#5880</a>: [java] DoubleCheckedLocking is not detected if more than 1 assignment or more than 2 if statements</li>
     </ul>
   </li>
-  <li>misc
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6012">#6012</a>: [pmd-rulesets] Rulesets should be in alphabetical order</li>
-    </ul>
-  </li>
 </ul>
 
 <h3 id="-api-changes">🚨 API Changes</h3>
@@ -2185,6 +2182,7 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6059">#6059</a>: [java] Fix #6058: DanglingJavadoc FP in module-info files - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6061">#6061</a>: [core] chore: Bump minimum Java version required for building to 17 - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6071">#6071</a>: [java] Fix #5919: Add integration tests to ClassNamingConventions testClassRegex - <a href="https://github.com/abobov">Anton Bobov</a> (@abobov)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6073">#6073</a>: [doc] Search improvements - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6074">#6074</a>: [apex] Fix @<!-- -->SuppressWarnings with whitespace around comma - <a href="https://github.com/jsotuyod">Juan Martín Sotuyo Dodero</a> (@jsotuyod)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6078">#6078</a>: [java] Fix #6075: Fix FP in AssignmentInOperandRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6080">#6080</a>: [java] Fix #6079: IdenticalCatchBranches for overriden method calls - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
@@ -2265,10 +2263,11 @@ used anymore and are not required to be implemented anymore:
 <script type="application/javascript" src="assets/anchorjs-4.2.2/anchor.min.js"></script>
 <script type="application/javascript" src="assets/navgoco-0.2.1/src/jquery.navgoco.min.js"></script>
 <script type="application/javascript" src="assets/bootstrap-4.5.2-dist/js/bootstrap.bundle.min.js"></script>
-<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.0.8/dest/jekyll-search.js"></script>
+<script type="application/javascript" src="assets/Simple-Jekyll-Search-1.14.0/dest/simple-jekyll-search.min.js"></script>
 <script type="application/javascript" src="assets/jekyll-table-of-contents/toc.js"></script>
 <script type="application/javascript" src="js/tabstate.js"></script>
 <script type="application/javascript" src="js/customscripts.js"></script>
+<script type="application/javascript" src="js/search.js"></script>
 
 
 

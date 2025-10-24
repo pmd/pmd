@@ -1044,25 +1044,7 @@
   
   
   <url>
-    <loc>https://docs.pmd-code.org/latest/news.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2025-10-24</lastmod>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://docs.pmd-code.org/latest/pmd_projectdocs_trivia_news.html</loc>
-    <priority>0.8</priority>
-    <changefreq>monthly</changefreq>
-    <lastmod>2025-10-24</lastmod>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://docs.pmd-code.org/latest/news_archive.html</loc>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
     <lastmod>2025-10-24</lastmod>
