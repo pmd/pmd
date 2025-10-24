@@ -2050,6 +2050,11 @@ so that it still can be used in a pure Java 8 environment. This allows us to use
 checkstyle version during the build.</p>
 
 <h3 id="-rules-changes">🌟 Rules changes</h3>
+<h4 id="new-rules">New Rules</h4>
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#identicalconditionalbranches"><code class="language-plaintext highlighter-rouge">IdenticalConditionalBranches</code></a> finds conditional statements
+that do the same thing when the condition is true and false. This is either incorrect or redundant.</li>
+</ul>
 
 <h4 id="modified-rules">Modified rules</h4>
 <ul>
@@ -2130,6 +2135,7 @@ again (otherwise it won’t be included anymore):
       <li><a href="https://github.com/pmd/pmd/issues/6055">#6055</a>: [java] UselessPureMethodCall false positive with AtomicInteger::getAndIncrement</li>
       <li><a href="https://github.com/pmd/pmd/issues/6060">#6060</a>: [java] UselessPureMethodCall false positive on ZipInputStream::getNextEntry</li>
       <li><a href="https://github.com/pmd/pmd/issues/6075">#6075</a>: [java] AssignmentInOperand false positive with lambda expressions</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6083">#6083</a>: [java] New rule IdenticalConditionalBranches</li>
     </ul>
   </li>
   <li>java-multithreading
@@ -2183,6 +2189,7 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6078">#6078</a>: [java] Fix #6075: Fix FP in AssignmentInOperandRule - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6080">#6080</a>: [java] Fix #6079: IdenticalCatchBranches for overriden method calls - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6082">#6082</a>: [java] Fix false positives in UselessPureMethodCall for streams and atomics - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6083">#6083</a>: [java] New rule IdenticalConditionalBranches - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6085">#6085</a>: [java] Fix false positive for ModifierOrder - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6100">#6100</a>: [java] AvoidDeeplyNestedIfStmts: fix false negative with if-else - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6112">#6112</a>: [java] DanglingJavadoc: fix false positive for compact constructors - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingGenericException, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CollectionTypeMismatch, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonCaseLabelInSwitch, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader">
+<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingGenericException, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CollectionTypeMismatch, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, IdenticalConditionalBranches, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitchStatement, NonCaseLabelInSwitch, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -4112,6 +4112,38 @@ other classes may invoke it at inappropriate times.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/IdempotentOperations"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="identicalconditionalbranches">IdenticalConditionalBranches</h2>
+
+<p><strong>Since:</strong> PMD 7.18.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Conditional statement that does the same thing when the condition is true and false
+is either incorrect (one of the branches should be changed) or redundant
+(can be replaced by one of its branches).</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/IdenticalConditionalBranchesRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.IdenticalConditionalBranchesRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="nf">method1</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="nc">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="mi">1</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kt">int</span> <span class="nf">method2</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">Math</span><span class="o">.</span><span class="na">random</span><span class="o">()</span> <span class="o">&gt;</span> <span class="mf">0.5</span> <span class="o">?</span> <span class="mi">1</span> <span class="o">:</span> <span class="mi">1</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/IdenticalConditionalBranches"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="implicitswitchfallthrough">ImplicitSwitchFallThrough</h2>
