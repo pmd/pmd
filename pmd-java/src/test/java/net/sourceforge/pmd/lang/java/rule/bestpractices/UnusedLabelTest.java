@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-public class UnusedLabelTest extends PmdRuleTst {
+class UnusedLabelTest extends PmdRuleTst {
     // no additional unit tests
 }
