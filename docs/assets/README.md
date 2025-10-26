@@ -33,7 +33,7 @@ https://jqueryui.com/resources/download/jquery-ui-1.12.1.zip
 
 ## Simple Jekyll Search
 
-https://github.com/christian-fei/Simple-Jekyll-Search
+https://github.com/neilboyd/Simple-Jekyll-Search
 
 ## Shuffle
 

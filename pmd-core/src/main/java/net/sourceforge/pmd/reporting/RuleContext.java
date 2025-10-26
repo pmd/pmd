@@ -8,6 +8,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -146,6 +147,26 @@ public final class RuleContext {
     }
 
     /**
+     * Record a new violation of the contextual rule, at the given token location.
+     * The position is refined using the given begin and end line numbers.
+     * The given violation message ({@link Rule#getMessage()}) is treated
+     * as a format string for a {@link MessageFormat} and should hence use
+     * appropriate escapes. The given formatting arguments are used.
+     *
+     * @param node Location of the violation (node or token) - only used to determine suppression
+     * @param token   Report location of the violation
+     * @param message    Violation message
+     * @param formatArgs Format arguments for the message
+     * @experimental Since 7.17.0. This will probably never be stabilized, will instead be
+     *      replaced by a fluent API or something to report violations. Do not use
+     *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
+     */
+    @Experimental
+    public void addViolationWithPosition(Node node, JavaccToken token, String message, Object... formatArgs) {
+        addViolationWithPosition(node, node.getAstInfo(), token.getReportLocation(), message, formatArgs);
+    }
+
+    /**
      * Record a new violation of the contextual rule, at the given location (node or token).
      * The position is refined using the given begin and end line numbers.
      * The given violation message ({@link Rule#getMessage()}) is treated
@@ -157,7 +178,7 @@ public final class RuleContext {
      * @param location   Report location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     * @experimental This will probably never be stabilized, will instead be
+     * @experimental Since 7.9.0. This will probably never be stabilized, will instead be
      *      replaced by a fluent API or something to report violations. Do not use
      *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
      */
@@ -233,7 +254,7 @@ public final class RuleContext {
         // Escape PMD specific variable message format, specifically the {
         // in the ${, so MessageFormat doesn't bitch.
         final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
-        String formatted = MessageFormat.format(escapedMessage, args);
+        String formatted = new MessageFormat(escapedMessage, Locale.ROOT).format(args);
         return expandVariables(formatted, extraVars);
     }
 

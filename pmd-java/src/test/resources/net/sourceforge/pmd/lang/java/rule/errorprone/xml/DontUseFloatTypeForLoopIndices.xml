@@ -37,4 +37,23 @@ public class Count {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>float variable declared before loop - issue #5878</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class BuggyLoop {
+    public static void main(String[] args) {
+        float i = 0.0f;
+        for (; i < 10.0f; i += 0.5f) { // should raise DontUseFloatTypeForLoopIndices
+            System.out.println(i);
+            if (i > 5.0f)
+                break;
+        }
+        System.out.println("Loop completed at level: " + i);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

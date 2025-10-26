@@ -72,6 +72,7 @@
     <rule ref="category/java/codestyle.xml/LocalVariableNamingConventions"/>
     <!-- <rule ref="category/java/codestyle.xml/LongVariable" /> -->
     <rule ref="category/java/codestyle.xml/MethodNamingConventions"/>
+    <!-- <rule ref="category/java/codestyle.xml/ModifierOrder"/> -->
     <rule ref="category/java/codestyle.xml/PackageCase"/>
     <!-- <rule ref="category/java/codestyle.xml/ShortClassName" /> -->
     <!-- <rule ref="category/java/codestyle.xml/ShortMethodName" /> -->
@@ -124,7 +125,6 @@
 
 
     <rule ref="category/java/design.xml/AbstractClassWithoutAnyMethod"/>
-    <!-- <rule ref="category/java/design.xml/AvoidCatchingGenericException" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidDeeplyNestedIfStmts" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidRethrowingException" /> -->
     <!-- <rule ref="category/java/design.xml/AvoidThrowingNewInstanceOfSameException" /> -->
@@ -178,6 +178,7 @@
     <!-- <rule ref="category/java/documentation.xml/CommentContent" /> -->
     <!-- <rule ref="category/java/documentation.xml/CommentRequired" /> -->
     <!-- <rule ref="category/java/documentation.xml/CommentSize" /> -->
+    <rule ref="category/java/documentation.xml/DanglingJavadoc"/>
     <rule ref="category/java/documentation.xml/UncommentedEmptyConstructor"/>
     <rule ref="category/java/documentation.xml/UncommentedEmptyMethodBody"/>
 
@@ -193,8 +194,16 @@
     <!-- <rule ref="category/java/errorprone.xml/AvoidAssertAsIdentifier" /> -->
     <rule ref="category/java/errorprone.xml/AvoidBranchingStatementAsLastInLoop"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidCallingFinalize" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/AvoidCatchingNPE" /> -->
-    <rule ref="category/java/errorprone.xml/AvoidCatchingThrowable"/>
+    <rule ref="category/java/errorprone.xml/AvoidCatchingGenericException">
+        <!-- with PMD 7.18.0 the rule AvoidCatchingThrowable has been merged into AvoidCatchingGenericException.
+             Just enabling AvoidCatchingGenericException would find more cases.
+             In order to keep the same behavior of the quickstart ruleset, the rule is configured explicitly here
+             to only find Throwable, as before (and additionally Error now).
+          -->
+        <properties>
+            <property name="typesThatShouldNotBeCaught" value="java.lang.Throwable,java.lang.Error" />
+        </properties>
+    </rule>
     <rule ref="category/java/errorprone.xml/AvoidDecimalLiteralsInBigDecimalConstructor"/>
     <!-- <rule ref="category/java/errorprone.xml/AvoidDuplicateLiterals" /> -->
     <!-- <rule ref="category/java/errorprone.xml/AvoidEnumAsIdentifier" /> -->
@@ -215,6 +224,7 @@
     <rule ref="category/java/errorprone.xml/CloneMethodReturnTypeMustMatchClassName"/>
     <!-- <rule ref="category/java/errorprone.xml/CloneThrowsCloneNotSupportedException"/> deprecated since 6.35.0 -->
     <rule ref="category/java/errorprone.xml/CloseResource"/>
+    <rule ref="category/java/errorprone.xml/CollectionTypeMismatch"/>
     <!-- <rule ref="category/java/errorprone.xml/ConfusingArgumentToVarargsMethod"/> -->
     <rule ref="category/java/errorprone.xml/CompareObjectsWithEquals"/>
     <rule ref="category/java/errorprone.xml/ComparisonWithNaN"/>
@@ -234,6 +244,7 @@
     <!-- <rule ref="category/java/errorprone.xml/FinalizeOverloaded" /> -->
     <!-- <rule ref="category/java/errorprone.xml/FinalizeShouldBeProtected" /> -->
     <rule ref="category/java/errorprone.xml/IdempotentOperations"/>
+    <!-- <rule ref="category/java/errorprone.xml/IdenticalConditionalBranches"/> -->
     <rule ref="category/java/errorprone.xml/ImplicitSwitchFallThrough"/>
     <rule ref="category/java/errorprone.xml/InstantiationToGetClass"/>
     <!-- <rule ref="category/java/errorprone.xml/InvalidLogMessageFormat" /> -->

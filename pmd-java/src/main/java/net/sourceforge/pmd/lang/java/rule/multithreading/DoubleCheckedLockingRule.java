@@ -10,6 +10,7 @@ import java.util.List;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -89,21 +90,21 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
             return data;
         }
 
-        List<ASTIfStatement> isl = node.descendants(ASTIfStatement.class).toList();
-        if (isl.size() == 2) {
-            ASTIfStatement outerIf = isl.get(0);
+        List<ASTIfStatement> nestedIfs = node.descendants(ASTIfStatement.class)
+                .filterNot(astIfStatement -> astIfStatement.descendants(ASTIfStatement.class).isEmpty())
+                .filter(astIfStatement -> astIfStatement.ancestors(ASTIfStatement.class).isEmpty())
+                .toList();
+
+        for (ASTIfStatement outerIf : nestedIfs) {
             if (JavaRuleUtil.isNullCheck(outerIf.getCondition(), returnVariable)) {
                 // find synchronized
                 List<ASTSynchronizedStatement> ssl = outerIf.descendants(ASTSynchronizedStatement.class).toList();
                 if (ssl.size() == 1 && ssl.get(0).ancestors().any(it -> it == outerIf)) {
-                    ASTIfStatement is2 = isl.get(1);
-                    if (JavaRuleUtil.isNullCheck(is2.getCondition(), returnVariable)) {
-                        List<ASTAssignmentExpression> assignments = is2.descendants(ASTAssignmentExpression.class).toList();
-                        if (assignments.size() == 1
-                            && JavaAstUtils.isReferenceToVar(assignments.get(0).getLeftOperand(), returnVariable)) {
-                            asCtx(data).addViolation(node);
-
-                        }
+                    NodeStream<ASTAssignmentExpression> assignments = outerIf.descendants(ASTIfStatement.class)
+                        .filter(innerIf -> JavaRuleUtil.isNullCheck(innerIf.getCondition(), returnVariable))
+                        .flatMap(innerIf -> innerIf.descendants(ASTAssignmentExpression.class));
+                    if (assignments.all(assignment -> JavaAstUtils.isReferenceToVar(assignment.getLeftOperand(), returnVariable))) {
+                        assignments.firstOpt().ifPresent(ignored -> asCtx(data).addViolation(node));
                     }
                 }
             }

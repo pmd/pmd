@@ -8,6 +8,9 @@
         <description>A too complex procedure which triggers NcssObjectCountRule</description>
         <rule-property name="minimum">1</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>The Oracle object pkg_test_unreserved_keyword has a NCSS line count of 1,061 (threshold is 1)</message>
+        </expected-messages>
         <code><![CDATA[
 CREATE OR REPLACE PACKAGE BODY pkg_test_unreserved_keyword AS
     /** Unreserved Keyword Word FALSE **/

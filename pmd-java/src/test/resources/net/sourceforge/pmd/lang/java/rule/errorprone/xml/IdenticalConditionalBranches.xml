@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
+
+    <test-code>
+        <description>Useless if</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        class Test {
+            int method1() {
+                if (Math.random() > 0.5) {
+                    return 1;
+                } else {
+                    return 1;
+                }
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Useless conditional expression</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+        class Test {
+            int method1() {
+                return Math.random() < 0.5 ? 1 : 1;
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Useless if with empty statements</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+        class Test {
+            void method1() {
+                if (true) ; else ;
+                if (true) ; else {}
+                if (true) {} else ;
+                if (true) {;} else {}
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Useless if with wrapped statements</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+        class Test {
+            int method1() {
+                if (true) return 1; else { return 1;}
+                if (true) {return 1;} else return 1;
+            }
+        }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Useless if with comments</description>
+        <expected-problems>4</expected-problems>
+        <code><![CDATA[
+        class Test {
+            int a;
+            void method1() {
+                if (true) {/*a*/} else {/*b*/}
+                if (true) /*b*/ ; else {/*a*/}
+                if (true) {/*a*/ a++;} else {/*b*/ a++;}
+                if (true) {/*a*/ a++;} else {/*b*/ a++; /*c*/}
+            }
+        }
+        ]]></code>
+    </test-code>
+</test-data>

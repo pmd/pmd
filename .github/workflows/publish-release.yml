@@ -34,10 +34,10 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
+      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
           cache: 'maven'
       - name: Determine Version
         id: version
@@ -88,10 +88,10 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
+      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: '17'
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
@@ -504,7 +504,7 @@ jobs:
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-src.zip"
           printenv MAVEN_GPG_PASSPHRASE | gpg --pinentry-mode loopback --passphrase-fd 0 --batch --no-tty \
             --status-fd 1 --armor --detach-sign --sign "pmd-dist-${PMD_VERSION}-doc.zip"
-      - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b #v2.1.1
+      - uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 #v2.1.4
         id: pmd-actions-helper-app-token
         with:
           app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
@@ -625,15 +625,17 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 #v5.0.0
         with:
           ref: ${{ github.event.workflow_run.head_branch }}
-      - uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 #v4.7.1
+      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
         with:
           distribution: 'temurin'
-          java-version: '11'
+          java-version: |
+            11
+            17
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@829114fc20da43a41d27359103ec7a63020954d4 #v1.255.0
+        uses: ruby/setup-ruby@ab177d40ee5483edb974554986f56b33477e21d0 #v1.265.0
         with:
           ruby-version: 3.3
-      - uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 #v4.2.4
+      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
         with:
           path: |
             ~/.m2/repository
@@ -758,7 +760,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/create-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b #v2.1.1
+      - uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 #v2.1.4
         id: pmd-actions-helper-app-token
         with:
           app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}

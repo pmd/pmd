@@ -8177,6 +8177,7 @@
       "profile": "https://github.com/UncleOwen",
       "contributions": [
         "code",
+        "bug",
         "doc"
       ]
     },
@@ -8195,6 +8196,78 @@
       "name": "mrclmh",
       "avatar_url": "https://avatars.githubusercontent.com/u/2975481?v=4",
       "profile": "https://github.com/mrclmh",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "judepereira",
+      "name": "Jude Pereira",
+      "avatar_url": "https://avatars.githubusercontent.com/u/747087?v=4",
+      "profile": "https://judepereira.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "csrma",
+      "name": "csrma",
+      "avatar_url": "https://avatars.githubusercontent.com/u/213656372?v=4",
+      "profile": "https://github.com/csrma",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "stevenschlansker",
+      "name": "Steven Schlansker",
+      "avatar_url": "https://avatars.githubusercontent.com/u/129097?v=4",
+      "profile": "https://github.com/stevenschlansker",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "StevanWhite",
+      "name": "Steve White",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1576377?v=4",
+      "profile": "https://github.com/StevanWhite",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "malik-n",
+      "name": "Malik",
+      "avatar_url": "https://avatars.githubusercontent.com/u/160581225?v=4",
+      "profile": "https://github.com/malik-n",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "abobov",
+      "name": "Anton Bobov",
+      "avatar_url": "https://avatars.githubusercontent.com/u/162897?v=4",
+      "profile": "https://github.com/abobov",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "AndrewStopchenko-SO",
+      "name": "AndrewStopchenko-SO",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63401193?v=4",
+      "profile": "https://github.com/AndrewStopchenko-SO",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "vzorge",
+      "name": "Vincent Zorge",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3940229?v=4",
+      "profile": "https://nl.linkedin.com/in/vincentzorge",
       "contributions": [
         "bug"
       ]

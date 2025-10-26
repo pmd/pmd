@@ -8,6 +8,9 @@
         <description>A too complex procedure which triggers ExcessivePackageBodyLengthRule</description>
         <rule-property name="minimum">1</rule-property>
         <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid really long Object Type and Package bodies (33 lines found, threshold is 1).</message>
+        </expected-messages>
         <code><![CDATA[
 CREATE OR REPLACE PACKAGE BODY foo AS
     PROCEDURE bar AS BEGIN          -- this is something more complex than it needs to be,

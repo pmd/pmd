@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
@@ -43,7 +44,9 @@ import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeConversion;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
@@ -107,8 +110,33 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
             // the object will not implement SubItf anymore.
         } else if (isCastUnnecessary(castExpr, context, coercionType, operandType)) {
             reportCast(castExpr, data);
+        } else if (castExpr.getParent() instanceof ASTMethodCall
+                    && castExpr.getIndexInParent() == 0) {
+            JMethodSig methodType = ((ASTMethodCall) castExpr.getParent()).getMethodType();
+            handleMethodCall(castExpr, methodType, operandType, data);
         }
         return null;
+    }
+
+    private void handleMethodCall(ASTCastExpression castExpr, JMethodSig methodType,
+            JTypeMirror operandType, Object data) {
+        boolean generic = methodType.getSymbol().getFormalParameters().stream()
+            .anyMatch(fp -> isTypeExpression(fp.getTypeMirror(Substitution.EMPTY)));
+        if (!generic) {
+            JTypeMirror declaringType = methodType.getDeclaringType();
+            if (!isTypeExpression(methodType.getSymbol().getReturnType(Substitution.EMPTY))) {
+                // declaring type of List<T>::size is List<T>, but since the return type
+                // is not generic, it's enough to check that operand is a List
+                declaringType = declaringType.getErasure();
+            }
+            if (TypeTestUtil.isA(declaringType, operandType)) {
+                reportCast(castExpr, data);
+            }
+        }
+    }
+
+    private boolean isTypeExpression(JTypeMirror type) {
+        return type.isGeneric() || type instanceof JTypeVar;
     }
 
     private boolean isCastUnnecessary(ASTCastExpression castExpr, @NonNull ExprContext context, JTypeMirror coercionType, JTypeMirror operandType) {

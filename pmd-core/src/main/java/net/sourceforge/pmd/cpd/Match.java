@@ -116,6 +116,7 @@ public class Match implements Comparable<Match>, Iterable<Mark> {
     }
 
     @Override
+    @SuppressWarnings("PMD.OverrideBothEqualsAndHashCodeOnComparable")
     public int compareTo(Match other) {
         int cmp = getFirstMark().compareTo(other.getFirstMark());
         cmp = cmp != 0 ? cmp : getSecondMark().compareTo(other.getSecondMark());

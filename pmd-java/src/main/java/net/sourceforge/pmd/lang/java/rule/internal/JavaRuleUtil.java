@@ -44,7 +44,6 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
-import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
 /**
@@ -73,6 +72,13 @@ public final class JavaRuleUtil {
         "java.time.Duration#_(_*)",
         "java.time.Period#_(_*)"
     );
+
+    private static final CompoundInvocationMatcher KNOWN_SIDE_EFFECT_METHODS =
+            InvocationMatcher.parseAll(
+                "_#getAndIncrement()",
+                "_#getAndDecrement()",
+                "_#getNextEntry()"
+            );
 
     public static final Set<String> LOMBOK_ANNOTATIONS = immutableSetOf(
         "lombok.Data",
@@ -404,18 +410,19 @@ public final class JavaRuleUtil {
      */
     public static boolean isKnownPure(ASTMethodCall call) {
         return isGetterCall(call)
-                    && hasPureGetters(call.getMethodType().getDeclaringType())
+                    && isPureGetter(call)
             || KNOWN_PURE_METHODS.anyMatch(call) && !call.getMethodType().getReturnType().isVoid();
     }
 
-    private static boolean hasPureGetters(JTypeMirror type) {
-        JTypeDeclSymbol symbol = type.getSymbol();
+    private static boolean isPureGetter(ASTMethodCall call) {
+        JTypeDeclSymbol symbol = call.getMethodType().getDeclaringType().getSymbol();
         if (symbol == null) {
             return false;
         }
         String pkg = symbol.getPackageName();
         return pkg.startsWith("java.")
-            && !pkg.startsWith("java.nio") && !pkg.startsWith("java.net");
+            && !pkg.startsWith("java.nio") && !pkg.startsWith("java.net")
+            && !KNOWN_SIDE_EFFECT_METHODS.anyMatch(call);
     }
 
     public static @Nullable ASTVariableId getReferencedNode(ASTNamedReferenceExpr expr) {

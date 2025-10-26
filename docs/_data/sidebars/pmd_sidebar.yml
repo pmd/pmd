@@ -583,6 +583,9 @@ entries:
     - title: How PMD works
       url: /pmd_devdocs_how_pmd_works.html
       output: web, pdf
+    - title: Logging
+      url: /pmd_devdocs_logging.html
+      output: web, pdf
     - title: Pmdtester
       url: /pmd_devdocs_pmdtester.html
       output: web, pdf

@@ -4,26 +4,15 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.rule.RuleSet;
-import net.sourceforge.pmd.lang.rule.RuleSetLoader;
-
-import com.github.stefanbirkner.systemlambda.SystemLambda;
+import net.sourceforge.pmd.test.RuleSetAssertions;
 
 class QuickstartRulesetTest {
     private static final String QUICKSTART_RULESET = "rulesets/java/quickstart.xml";
 
     @Test
-    void noDeprecations() throws Exception {
-        RuleSetLoader ruleSetLoader = new RuleSetLoader();
-        String errorOutput = SystemLambda.tapSystemErr(() -> {
-            RuleSet quickstart = ruleSetLoader.loadFromResource(QUICKSTART_RULESET);
-            assertFalse(quickstart.getRules().isEmpty());
-        });
-        assertTrue(errorOutput.isEmpty());
+    void noDeprecations() {
+        RuleSetAssertions.assertNoWarnings(QUICKSTART_RULESET);
     }
 }

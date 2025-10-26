@@ -27,11 +27,8 @@ public class Foo {
 }
         ]]></code>
     </test-code>
-
-    <test-code>
-        <description>null check, ok (if) - #278</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
+<code-fragment id="nullCheckIfElse">
+    <![CDATA[
 public class Foo {
     String bar2(Object a) {
         if (a != null)
@@ -40,7 +37,66 @@ public class Foo {
             return null;
     }
 }
-        ]]></code>
+        ]]>
+</code-fragment>
+    <code-fragment id="nullCheckIfThen">
+        <![CDATA[
+public class Foo {
+    String bar2(Object a) {
+        if (a == null)
+            return null;
+        else
+            return a.toString();
+    }
+}
+        ]]>
+    </code-fragment>
+    <test-code>
+        <description>null check, ok (if) - #278</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="nullCheckIfElse"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, ok (if) - any branch</description>
+        <rule-property name="nullCheckBranch">Any</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="nullCheckIfElse"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, ok (if) - else branch</description>
+        <rule-property name="nullCheckBranch">Else</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="nullCheckIfElse"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, not ok (if) - then branch</description>
+        <rule-property name="nullCheckBranch">Then</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="nullCheckIfElse"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, ok (if) - any branch</description>
+        <rule-property name="nullCheckBranch">Any</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="nullCheckIfThen"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, not ok (if) - else branch</description>
+        <rule-property name="nullCheckBranch">Else</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="nullCheckIfThen"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, ok (if) - then branch</description>
+        <rule-property name="nullCheckBranch">Then</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="nullCheckIfThen"/>
     </test-code>
 
     <test-code>
