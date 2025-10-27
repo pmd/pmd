@@ -273,4 +273,24 @@ class JavaViolationDecoratorTest {
         assertThat(decorate(literals.get(1)), hasEntry(CLASS_NAME, "Foo"));
         assertThat(decorate(literals.get(1)), not(hasKey(VARIABLE_NAME)));
     }
+
+    @Test
+    void noVariableNameForStringLiteralsInsideLambda() {
+        ASTCompilationUnit ast = parse("class Foo {\n"
+                + "  void foo() {\n"
+                + "    int otherVariable = 1;\n"
+                + "    Runnable run = () -> {\n"
+                + "      System.out.println(\"noVar\");\n"
+                + "    };\n"
+                + "  }\n"
+                + "}\n");
+        List<ASTStringLiteral> literals = ast.descendants(ASTStringLiteral.class).crossFindBoundaries().toList();
+        assertEquals(1, literals.size());
+
+        Map<String, String> decorated = decorate(literals.get(0));
+        assertThat(decorated, hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorated, hasEntry(METHOD_NAME, "foo"));
+        assertThat(decorated, not(hasEntry(VARIABLE_NAME, "run")));
+        assertThat(decorated, not(hasKey(VARIABLE_NAME)));
+    }
 }
