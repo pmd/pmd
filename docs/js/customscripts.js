@@ -15,16 +15,14 @@ $(document).ready(function () {
         listType: 'ul',
         showSpeed: 0,
         headers: 'h2,h3,h4',
-    });
-
-    // activate tooltips. although this is a bootstrap js function, it must be activated this way in your theme.
-    $('[data-toggle="tooltip"]').tooltip({
-        placement: 'top',
+        noBackToTopLinks: true,
     });
 
     /**
      * AnchorJS
      */
+    anchors.options.icon='';
+    anchors.options.class='fas fa-link fa-xs';
     anchors.add('h2,h3,h4,h5');
 
     // Add an "Edit on GitHub" button to each header (except h1)
@@ -35,9 +33,44 @@ $(document).ready(function () {
             .append(
                 '  <a class="edit-header" target="_blank" href=' +
                     url +
-                    ' role="button">✏️️</a>'
+                    ' role="button" data-toggle="tooltip" data-placement="top" title="Edit on GitHub"><i class="fas fa-edit fa-xs"></i>️</a>'
             );
     }
+
+    // Add an "copy url" button to each header
+    document.querySelectorAll('.anchorjs-link')
+            .forEach(e => {
+                const template = document.createElement('template');
+                template.innerHTML = '<a class="copy-anchor-url" href="#" data-toggle="tooltip" data-placement="top" title="Copy URL"><i class="fas fa-copy fa-xs"></i></a>';
+                e.parentNode.append(template.content.firstChild);
+            });
+    document.addEventListener('click', event => {
+        let target = null;
+        if (event.target.classList.contains('copy-anchor-url')) {
+            target = event.target;
+        } else if (event.target.parentNode.classList.contains('copy-anchor-url')) {
+            target = event.target.parentNode;
+        }
+
+        if (target) {
+            if (navigator.clipboard) {
+                const url = new URL(location.href);
+                url.hash = event.target.parentNode.id;
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                navigator.clipboard.writeText(url)
+                         .then(() => {
+                            target.firstChild.classList.remove('fa-copy');
+                            target.firstChild.classList.add('fa-check');
+                            window.setTimeout(() => {
+                                target.firstChild.classList.remove('fa-check');
+                                target.firstChild.classList.add('fa-copy');
+                            }, 500);
+                         });
+            }
+        }
+    });
 
     // Check if TOC needs to be moved on page load
     moveToc();
@@ -99,6 +132,11 @@ $(document).ready(function () {
             versionsList.innerHTML = "Couldn't download releases from api.github.com";
             console.log(error);
         });
+
+    // activate tooltips. although this is a bootstrap js function, it must be activated this way in your theme.
+    $('[data-toggle="tooltip"]').tooltip({
+        placement: 'top',
+    });
 });
 
 // Check if TOC needs to be moved on window resizing
