@@ -1291,3 +1291,10 @@ a.edit-header::after {
 .language-info {
     margin: 2em;
 }
+
+#toc a.active {
+    font-weight: bold;
+}
+#toc a.active:before {
+    content: '>> '
+}
