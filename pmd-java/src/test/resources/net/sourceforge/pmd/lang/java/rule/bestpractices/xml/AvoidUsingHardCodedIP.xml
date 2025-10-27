@@ -67,7 +67,7 @@ public class Foo {
         <description>Common basic case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Do not hard code the IP address badIdea</message>
+            <message>Do not hard code the IP address '127.0.0.1'</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
