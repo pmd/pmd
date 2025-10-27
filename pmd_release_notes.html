@@ -42,20 +42,14 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                
-                    
-                        
-                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/latest" target="_blank">Download</a></li>
-                        
-                    
-                        
-                            <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">Fork us on github</a></li>
-                        
-                    
-                
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.18.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
-                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
-                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.18.0-SNAPSHOT<b class="caret"></b></a>
+                    <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
+                    </div>
+                </li>
             </ul>
             <form class="form-inline my-2 my-lg-0">
                 <input class="form-control mr-sm-2" type="search" placeholder="🔍️ Type 's' to search..." id="search-input" autocomplete="off">
@@ -2086,6 +2080,8 @@ again (otherwise it won’t be included anymore):
       <li><a href="https://github.com/pmd/pmd/issues/5873">#5873</a>: [ci] Run integration test with Java 25</li>
       <li><a href="https://github.com/pmd/pmd/issues/6012">#6012</a>: [pmd-rulesets] Rulesets should be in alphabetical order</li>
       <li><a href="https://github.com/pmd/pmd/issues/6073">#6073</a>: [doc] Search improvements</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6097">#6097</a>: [doc] Add PMD versions dropdown</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6098">#6098</a>: [doc] Add a copy URL button</li>
     </ul>
   </li>
   <li>apex
@@ -2197,6 +2193,8 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6083">#6083</a>: [java] New rule IdenticalConditionalBranches - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6085">#6085</a>: [java] Fix false positive for ModifierOrder - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6093">#6093</a>: [ci] Fix #5873: Run integration tests with Java 25 additionally - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6097">#6097</a>: [doc] Add PMD versions dropdown - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6098">#6098</a>: [doc] Add a copy URL button - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6100">#6100</a>: [java] AvoidDeeplyNestedIfStmts: fix false negative with if-else - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6112">#6112</a>: [java] DanglingJavadoc: fix false positive for compact constructors - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6114">#6114</a>: [java] Fix #4122: CheckResultSet false-positive with local variable - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
