@@ -118,6 +118,16 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#6171 Not an IPv6 address</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    String s = ":4:81";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Comprehensive, check IPv4, IPv6, and IPv4 mapped IPv6</description>
         <expected-problems>21</expected-problems>
         <code-ref id="addresses"/>
