@@ -1260,7 +1260,7 @@ public class CloseResourceFP {
         ]]></code>
     </test-code>
 
-    <test-code focused="true">
+    <test-code>
         <description>#5042 [java] CloseResource false positive for pattern match</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
