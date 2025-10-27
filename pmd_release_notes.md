@@ -60,6 +60,7 @@ checkstyle version during the build.
   * [#6073](https://github.com/pmd/pmd/issues/6073): \[doc] Search improvements
   * [#6097](https://github.com/pmd/pmd/issues/6097): \[doc] Add PMD versions dropdown
   * [#6098](https://github.com/pmd/pmd/issues/6098): \[doc] Add a copy URL button
+  * [#6101](https://github.com/pmd/pmd/issues/6101): \[doc] Highlight current header in TOC
 * apex
   * [#5935](https://github.com/pmd/pmd/issues/5935): \[apex] @<!-- -->SuppressWarnings - allow whitespace around comma when suppressing multiple rules
 * apex-design
@@ -132,6 +133,7 @@ checkstyle version during the build.
 * [#6097](https://github.com/pmd/pmd/pull/6097): \[doc] Add PMD versions dropdown - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6098](https://github.com/pmd/pmd/pull/6098): \[doc] Add a copy URL button - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6100](https://github.com/pmd/pmd/pull/6100): \[java] AvoidDeeplyNestedIfStmts: fix false negative with if-else - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6101](https://github.com/pmd/pmd/pull/6101): \[doc] Highlight current header in TOC - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6112](https://github.com/pmd/pmd/pull/6112): \[java] DanglingJavadoc: fix false positive for compact constructors - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6114](https://github.com/pmd/pmd/pull/6114): \[java] Fix #4122: CheckResultSet false-positive with local variable - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6116](https://github.com/pmd/pmd/pull/6116): \[java] ConfusingTernary: add configuration property for null checks - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
