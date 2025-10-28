@@ -174,8 +174,8 @@ class SaxonXPathRuleQueryTest {
         assertEquals(1, ruleChainVisits.size());
         assertTrue(ruleChainVisits.contains("dummyNode"));
         assertEquals(2, query.nodeNameToXPaths.size());
-        assertExpression("self::node()[Q{http://pmd.sourceforge.net/pmd-dummy}imageIs(exactly-one(convertTo_xs:string(data(attribute::attribute(Image)))))]", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
-        assertExpression("((/)/descendant::element(Q{}dummyNode))[Q{http://pmd.sourceforge.net/pmd-dummy}imageIs(exactly-one(convertTo_xs:string(data(attribute::attribute(Image)))))]", query.getFallbackExpr());
+        assertExpression("self::node()[imageIs(exactly-one(convertTo_xs:string(data(((.) treat as node())/attribute::attribute(Image)))))]", query.getExpressionsForLocalNameOrDefault("dummyNode").get(0));
+        assertExpression("docOrder(((/)/descendant-or-self::node())/(child::element(dummyNode)[imageIs(exactly-one(convertTo_xs:string(data(((.) treat as node())/attribute::attribute(Image)))))]))", query.getFallbackExpr());
     }
 
     /**
@@ -328,7 +328,7 @@ class SaxonXPathRuleQueryTest {
         assertEquals(1, ruleChainVisits.size());
         assertTrue(ruleChainVisits.contains("dummyNode"));
         assertEquals(2, query.nodeNameToXPaths.size());
-        assertExpression("let $v0 := imageIs(bar) return ((self::node()[ends-with(zero-or-one(convertTo_xs:string(data(attribute::attribute(Image)))), foo)])[$v0])", query.nodeNameToXPaths.get("dummyNode").get(0));
+        assertExpression("let $v0 := imageIs(bar) return ((self::node()[ends-with(zero-or-one(convertTo_xs:string(data(((.) treat as node())/attribute::attribute(Image)))), foo)])[$v0])", query.nodeNameToXPaths.get("dummyNode").get(0));
     }
 
     @Test
@@ -370,7 +370,7 @@ class SaxonXPathRuleQueryTest {
         assertTrue(ruleChainVisits.contains("WhileStatement"));
         assertTrue(ruleChainVisits.contains("DoStatement"));
 
-        final String expectedSubexpression = "(self::node()/descendant::element(dummyNode))[imageIs(exactly-one(convertTo_xs:string(data(attribute::attribute(Image)))))]";
+        final String expectedSubexpression = "((self::node()/descendant-or-self::node())/child::element(dummyNode))[imageIs(exactly-one(convertTo_xs:string(data(((.) treat as node())/attribute::attribute(Image)))))]";
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("ForStatement").get(0));
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("WhileStatement").get(0));
         assertExpression(expectedSubexpression, query.nodeNameToXPaths.get("DoStatement").get(0));

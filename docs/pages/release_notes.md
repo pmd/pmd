@@ -141,6 +141,7 @@ checkstyle version during the build.
 * [#6124](https://github.com/pmd/pmd/pull/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6130](https://github.com/pmd/pmd/pull/6130): \[java] UselessParentheses: fix false positives for switch expressions - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6133](https://github.com/pmd/pmd/pull/6133): \[java] Fix #5042: CloseResource: fix false positive with pattern matching - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6152](https://github.com/pmd/pmd/pull/6152): chore(deps): Update Saxon-HE from 12.5 to 12.9 - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
