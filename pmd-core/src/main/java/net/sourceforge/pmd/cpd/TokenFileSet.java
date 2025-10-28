@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
@@ -481,6 +482,20 @@ final class TokenFileSet {
         @Override
         public String toString() {
             return "Token(file=" + fileId + ", index=" + indexInFile + ")";
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof SmallTokenEntry)) {
+                return false;
+            }
+            SmallTokenEntry that = (SmallTokenEntry) o;
+            return fileId == that.fileId && indexInFile == that.indexInFile;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(fileId, indexInFile);
         }
 
         boolean hasSamePrevToken(SmallTokenEntry other) {

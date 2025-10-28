@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -151,6 +152,20 @@ public final class Report {
                 return cmp;
             }
             return getMsg().compareTo(o.getMsg());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof ProcessingError)) {
+                return false;
+            }
+            ProcessingError that = (ProcessingError) o;
+            return Objects.equals(error, that.error) && Objects.equals(file, that.file);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(error, file);
         }
     }
 

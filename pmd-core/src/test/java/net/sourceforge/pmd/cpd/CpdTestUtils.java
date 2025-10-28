@@ -111,7 +111,9 @@ final class CpdTestUtils {
         }
 
         CpdReportBuilder addMatch(Mark mark1, Mark mark2) {
-            return addMatch(new Match.MatchBuilder().addMark(mark1).addMark(mark2).build());
+            Match match = new Match.MatchBuilder().addMark(mark1).addMark(mark2).build();
+            assert match != null;
+            return addMatch(match);
         }
 
         Mark createMark(String image, FileId fileId, int beginLine, int lineCount, int beginColumn, int endColumn) {

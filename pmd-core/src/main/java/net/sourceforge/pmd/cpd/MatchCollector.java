@@ -81,7 +81,7 @@ class MatchCollector {
             The diagonal does not need to be computed, and neither does the lower half because of symmetry.
             Now since we proceed row major (for cache reuse) we will first compute row A, that is preflen(A, x) for x in {B, C, D}.
             Given the second fact above, we know that preflen(B,C) >= min(preflen(A,B), preflen(B,C)) = min(2, 3) = 2.
-            This is stored in the table off as a lower bound on preflen(B,C).
+            This is stored in the table lb as a lower bound on preflen(B,C).
             When computing the second row, for preflen(B,C), we can avoid checking the first two tokens of B and C,
             as we know they have them in common with A, so they must have them in common together as well.
             At each row i, we use the first pair (i, i+1) as a pivot to compute the lower bounds for row i+1.
@@ -94,7 +94,7 @@ class MatchCollector {
             only one comparison is necessary.
          */
 
-        int[] off = new int[marks.size()];
+        int[] lb = new int[marks.size()];
 
         /*
             Duplicates create a Match in this array. The same Match object is put in the cell of both indices that matched,
@@ -102,7 +102,7 @@ class MatchCollector {
             match AB and then BC, then you end up with a match ABC that is in the cells of A, B and C. But only A is set
             to "not aliased", so only it will be reported in the end, because it is the same object as the others.
          */
-        @Nullable Match.MatchBuilder[] matches = new Match.MatchBuilder[marks.size()];
+        Match.@Nullable MatchBuilder[] matches = new Match.MatchBuilder[marks.size()];
         BitSet isAliased = new BitSet(marks.size());
 
         for (int i = 0; i < marks.size() - 1; i++) {
@@ -110,20 +110,20 @@ class MatchCollector {
             SmallTokenEntry mark1 = marks.get(i);
             SmallTokenEntry mark2 = marks.get(j);
 
-            int firstDups = off[j] + tokens.countDupTokens(mark1, mark2, off[j]);
+            int dupesIIp1 = lb[j] + tokens.countDupTokens(mark1, mark2, lb[j]);
 
-            if (isDuplicate(mark1, mark2, firstDups)) {
-                handleDuplicate(i, j, mark1, mark2, firstDups, matches, isAliased);
+            if (isDuplicate(mark1, mark2, dupesIIp1)) {
+                handleDuplicate(i, j, mark1, mark2, dupesIIp1, matches, isAliased);
             }
 
             for (j = i + 2; j < marks.size(); j++) {
                 mark2 = marks.get(j);
 
-                int dupes = off[j] + tokens.countDupTokens(mark1, mark2, off[j]);
-                off[j] = Math.min(firstDups, dupes);
+                int dupesIJ = lb[j] + tokens.countDupTokens(mark1, mark2, lb[j]);
+                lb[j] = Math.min(dupesIIp1, dupesIJ);
 
-                if (isDuplicate(mark1, mark2, dupes)) {
-                    handleDuplicate(i, j, mark1, mark2, dupes, matches, isAliased);
+                if (isDuplicate(mark1, mark2, dupesIJ)) {
+                    handleDuplicate(i, j, mark1, mark2, dupesIJ, matches, isAliased);
                 }
             }
         }
@@ -142,7 +142,7 @@ class MatchCollector {
         }
     }
 
-    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, @Nullable Match.MatchBuilder[] matches, BitSet isAliased) {
+    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, Match.@Nullable MatchBuilder[] matches, BitSet isAliased) {
         Match.MatchBuilder builder = matches[i];
         if (builder == null) {
             builder = matches[j];
@@ -244,7 +244,7 @@ class MatchCollector {
         //            return true;
         //        }
         //
-        ////
+        //
         //        int distance = Math.abs(mark2.indexInFile - mark1.indexInFile);
         //        // check that they do not overlap
         //        return distance >= minTileSize
