@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer;
 
 import static net.sourceforge.pmd.lang.java.types.TypeOps.isConvertible;
+import static net.sourceforge.pmd.lang.java.types.TypeOps.isSpecialUnresolved;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -124,9 +125,15 @@ abstract class IncorporationAction {
          * If 'eq', checks that {@code T = S}, else checks that {@code T <: S}.
          */
         static boolean checkBound(boolean eq, JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
+            if (!eq) {
+                return checkSubtype(t, s, ctx);
+            }
             // eq bounds are so rare we shouldn't care if they're cached
-            return eq ? InternalApiBridge.isSameTypeInInference(t, s)
-                      : checkSubtype(t, s, ctx);
+            if (InternalApiBridge.isSameTypeInInference(t, s)) {
+                return true;
+            }
+            // don't fail if one of those is (*unknown*) or (*error*)
+            return isSpecialUnresolved(t) || isSpecialUnresolved(s);
         }
 
         private static boolean checkSubtype(JTypeMirror t, JTypeMirror s, InferenceContext ctx) {
