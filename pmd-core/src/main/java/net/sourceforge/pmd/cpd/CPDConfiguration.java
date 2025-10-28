@@ -45,7 +45,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
         RENDERERS.put("vs", VSRenderer.class);
         RENDERERS.put("markdown", MarkdownRenderer.class);
-        RENDERERS.put("none", EmptyRenderer.class);
+        RENDERERS.put("empty", EmptyRenderer.class);
     }
 
     /**
