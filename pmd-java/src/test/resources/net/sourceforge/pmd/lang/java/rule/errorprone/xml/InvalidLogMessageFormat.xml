@@ -1330,4 +1330,22 @@ public class InvalidLogMessageFormat{
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#6146 [java] ClassCastException: class InferenceVarSym cannot be cast to class JClassSymbol</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Foo {
+
+
+                static {
+                    Iterable<Bar> local = filter(unknown(), input -> input.debug());
+                }
+
+                public static <T> Iterable<T> filter(final Iterable<T> unfiltered,
+                                                     final java.util.function.Predicate<? super T> retainIfTrue) {
+                    return null;
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

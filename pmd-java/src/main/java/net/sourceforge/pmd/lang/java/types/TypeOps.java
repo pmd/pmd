@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -181,7 +182,11 @@ public final class TypeOps {
 
         @Override
         public Boolean visit(JTypeMirror t, JTypeMirror s) {
-            // for sentinel types
+            throw AssertionUtil.shouldNotReachHere("other overload should be chosen");
+        }
+
+        @Override
+        public Boolean visitSentinel(JTypeMirror t, JTypeMirror s) {
             return t == s;
         }
 
