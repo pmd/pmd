@@ -61,6 +61,7 @@ checkstyle version during the build.
   * [#6097](https://github.com/pmd/pmd/issues/6097): \[doc] Add PMD versions dropdown
   * [#6098](https://github.com/pmd/pmd/issues/6098): \[doc] Add a copy URL button
   * [#6101](https://github.com/pmd/pmd/issues/6101): \[doc] Highlight current header in TOC
+  * [#6149](https://github.com/pmd/pmd/issues/6149): \[doc] Reproducible Build Documentation is outdated - PMD is now built using Java 17
   * [#6150](https://github.com/pmd/pmd/issues/6150): \[core] Reduce memory usage of CPD's MatchCollector
 * apex
   * [#5935](https://github.com/pmd/pmd/issues/5935): \[apex] @<!-- -->SuppressWarnings - allow whitespace around comma when suppressing multiple rules
@@ -148,6 +149,7 @@ checkstyle version during the build.
 * [#6150](https://github.com/pmd/pmd/pull/6150): \[core] Reduce memory usage of CPD's MatchCollector - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6152](https://github.com/pmd/pmd/pull/6152): chore(deps): Update Saxon-HE from 12.5 to 12.9 - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6156](https://github.com/pmd/pmd/pull/6156): \[java] Fix #6146: ClassCastException in TypeTestUtil - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6164](https://github.com/pmd/pmd/pull/6164): \[doc] Update reproducible build info with Java 17 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦 Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
