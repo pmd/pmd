@@ -185,8 +185,6 @@ public class ApexDocRule extends AbstractApexRule {
         ASTFormalComment comment = node.firstChild(ASTFormalComment.class);
         if (comment != null) {
             String token = comment.getImage();
-
-            // Find the main description: text before the first ApexDoc tag
             boolean hasDescription = hasMainDescription(token);
             boolean hasReturn = RETURN_PATTERN.matcher(token).find();
 
