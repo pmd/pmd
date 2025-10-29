@@ -92,7 +92,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: compile-artifact
       - name: Full Build with Maven
@@ -147,7 +147,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         # we can only reuse compile-artifacts under linux due to file timestamp issues and
         # platform specific line endings in test resource files.
         if: ${{ runner.os == 'Linux' }}
@@ -183,10 +183,10 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: compile-artifact
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: staging-repository
           path: target/staging
@@ -269,7 +269,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: compile-artifact
       - name: Generate rule docs
@@ -333,7 +333,7 @@ jobs:
             .ci/files/vendor/bundle
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: dist-artifact
           path: pmd-dist/target
