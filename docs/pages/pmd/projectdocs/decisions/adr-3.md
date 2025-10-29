@@ -70,6 +70,31 @@ of several maven modules.
 * All other modules use the base package `net.sourceforge.pmd.<module>`,
   E.g. `pmd-cli` uses the package `net.sourceforge.pmd.cli`.
 
+#### Java module names
+
+The java module name for the main jar of a maven module correspond to the name of the principal exported API package by the artifact.
+The java module name of a test jar is the main module name with '.tests' appended.
+
+Currently that means the following names for the corresponding maven modules:
+
+* pmd-apex: net.sourceforge.pmd.lang.apex
+* pmd-ant: net.sourceforge.pmd.ant
+* pmd-css: net.sourceforge.pmd.lang.css
+* pmd-go: net.sourceforge.pmd.lang.go
+* pmd-cs: net.sourceforge.pmd.lang.cs
+* pmd-groovy: net.sourceforge.pmd.lang.groovy
+* pmd-gherkin: net.sourceforge.pmd.lang.gherkin
+* pmd-coco: net.sourceforge.pmd.lang.coco
+* pmd-test: net.sourceforge.pmd.test
+* pmd:core: net.sourceforge.pmd for the main and net.sourceforge.pmd.tests for the test artifact
+* pmd-lang-test: net.sourceforge.pmd.lang.test
+* pmd-cpp: net.sourceforge.pmd.lang.cpp
+* pmd-fortran: net.sourceforge.pmd.lang.fortran
+* pmd-dart: net.sourceforge.pmd.lang.dart
+* pmd-html: net.sourceforge.pmd.lang.html
+* pmd-java: net.sourceforge.pmd.lang.java
+* pmd-test-schema: net.sourceforge.pmd.test.schema
+
 ### Criteria for public API
 
 Public API is
