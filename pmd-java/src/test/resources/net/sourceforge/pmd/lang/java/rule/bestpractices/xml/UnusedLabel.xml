@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
+
+    <test-code>
+        <description>Example</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid unused labels such as 'lbl1'.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Example {
+    void main() {
+        lbl1: {                     // violation: Label "lbl1" is not nused
+            int x = 1;
+            System.out.println(x);
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Used label</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Example {
+    void main() {
+        int x = 1;
+        lbl1: while(true) {
+            System.out.println(x);
+            x++;
+            if (x == 3) {
+                break lbl1;
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
+</test-data>

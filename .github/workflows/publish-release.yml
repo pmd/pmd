@@ -97,7 +97,7 @@ jobs:
           server-password: MAVEN_PASSWORD
           gpg-passphrase: MAVEN_GPG_PASSPHRASE
           gpg-private-key: ${{ secrets.PMD_CI_GPG_PRIVATE_KEY }}
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: compile-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -131,14 +131,14 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: dist-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
           path: dist
 
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -250,7 +250,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -298,7 +298,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -378,7 +378,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: javadocs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -461,14 +461,14 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: dist-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
           run-id: ${{ github.event.workflow_run.id }}
           path: dist
 
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -567,7 +567,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: docs-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -632,7 +632,7 @@ jobs:
             11
             17
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@ab177d40ee5483edb974554986f56b33477e21d0 #v1.265.0
+        uses: ruby/setup-ruby@d5126b9b3579e429dd52e51e68624dda2e05be25 #v1.267.0
         with:
           ruby-version: 3.3
       - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
@@ -644,7 +644,7 @@ jobs:
             .ci/files/vendor/bundle
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: dist-artifact
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -699,7 +699,7 @@ jobs:
           cd ../../pmd
           mv ../target/reports/"${baseline_name}-baseline.zip" .
           scp "${baseline_name}-baseline.zip" pmd@pmd-code.org:/httpdocs/pmd-regression-tester/
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
         with:
           name: regression-tester-baseline
           path: ${{ format('pmd_releases_{0}-baseline.zip', needs.check-version.outputs.PMD_VERSION) }}
@@ -735,7 +735,7 @@ jobs:
               IdentityFile=$HOME/.ssh/web.sourceforge.net_deploy_key
           " > "$HOME/.ssh/config"
           echo "${WEB_SF_KNOWN_HOSTS}" > "$HOME/.ssh/known_hosts"
-      - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 #v5.0.0
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
         with:
           name: regression-tester-baseline
       - name: Upload to sourceforge

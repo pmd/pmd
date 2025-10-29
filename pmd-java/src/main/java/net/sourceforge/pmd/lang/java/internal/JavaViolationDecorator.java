@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
+import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.util.IteratorUtil;
@@ -119,7 +120,13 @@ final class JavaViolationDecorator implements ViolationDecorator {
         } else if (node instanceof ASTFormalParameter) {
             return getVariableNameIfExists(node.firstChild(ASTVariableId.class));
         } else if (node instanceof ASTExpression) {
-            return getVariableNameIfExists(node.getParent());
+            for (JavaNode n : node.ancestors()) {
+                if (n instanceof ReturnScopeNode) {
+                    return null;
+                } else if (n instanceof ASTVariableDeclarator) {
+                    return getVariableNameIfExists(n);
+                }
+            }
         }
         return null;
     }
