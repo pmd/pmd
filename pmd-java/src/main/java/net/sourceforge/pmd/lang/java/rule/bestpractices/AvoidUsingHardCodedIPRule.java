@@ -72,7 +72,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
         // Note: We used to check the addresses using
         // InetAddress.getByName(String), but that's extremely slow,
         // so we created more robust checking methods.
-        if (image.length() > 0) {
+        if (!image.isEmpty()) {
             final char firstChar = Character.toUpperCase(image.charAt(0));
 
             boolean checkIPv4 = kindsToCheck.contains(AddressKinds.IPV4);
@@ -80,7 +80,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
             boolean checkIPv4MappedIPv6 = kindsToCheck.contains(AddressKinds.IPV4_MAPPED_IPV6);
 
             if (checkIPv4 && isIPv4(firstChar, image) || isIPv6(firstChar, image, checkIPv6, checkIPv4MappedIPv6)) {
-                asCtx(data).addViolation(node);
+                asCtx(data).addViolation(node, image);
             }
         }
         return data;

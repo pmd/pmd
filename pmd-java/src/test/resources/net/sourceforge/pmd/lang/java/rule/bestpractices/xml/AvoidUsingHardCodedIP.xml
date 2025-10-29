@@ -67,7 +67,7 @@ public class Foo {
         <description>Common basic case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Do not hard code the IP address badIdea</message>
+            <message>Do not hard code the IP address '127.0.0.1'</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -149,20 +149,5 @@ public class Foo {
         <rule-property name="checkAddressTypes">IPv6,IPv4 mapped IPv6</rule-property>
         <expected-problems>15</expected-problems>
         <code-ref id="addresses"/>
-    </test-code>
-
-    <test-code>
-        <description>#6127 missing var name in message</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
-        <expected-messages>
-            <message>Do not hard code the IP address address</message>
-        </expected-messages>
-        <code><![CDATA[
-import java.net.InetAddress;
-class TestCase {
-    InetAddress address = InetAddress.getByName("0.0.0.0");
-}
-]]></code>
     </test-code>
 </test-data>
