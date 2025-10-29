@@ -9,7 +9,7 @@
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /*
- * @description Foo
+ * Foo
  */
 public class Foo { }
         ]]></code>
@@ -62,7 +62,7 @@ private class Foo { }
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <expected-messages>
-            <message>Missing ApexDoc @description</message>
+            <message>Missing ApexDoc main description</message>
         </expected-messages>
         <code><![CDATA[
 /**
@@ -76,7 +76,7 @@ public class Foo { }
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo { }
         ]]></code>
@@ -87,7 +87,7 @@ public class Foo { }
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 @Deprecated
 public class Foo { }
@@ -142,7 +142,7 @@ public interface Foo { }
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public interface Foo { }
         ]]></code>
@@ -153,7 +153,7 @@ public interface Foo { }
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 @Deprecated
 public interface Foo { }
@@ -169,7 +169,7 @@ public interface Foo { }
         </expected-messages>
         <code><![CDATA[
 /**
- * @description My Interface
+ * My Interface
  */
 public interface MyInterface {
     void func();
@@ -182,7 +182,7 @@ public interface MyInterface {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     public void bar() { }
@@ -195,7 +195,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     global void bar() { }
@@ -208,7 +208,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     private void bar() { }
@@ -223,7 +223,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     private void bar() { }
@@ -236,7 +236,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     protected void bar() { }
@@ -251,7 +251,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     protected void bar() { }
@@ -264,7 +264,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     public override void bar() { }
@@ -277,7 +277,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
@@ -292,11 +292,11 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      */
     public Object bar() { return null; }
 }
@@ -308,11 +308,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Foo
+     * Foo
      */
     public Foo() { }
 }
@@ -324,11 +324,11 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      */
     public void bar(String foo) { }
 }
@@ -340,11 +340,11 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      * @param foo1 Foo
      */
     public void bar(String foo) { }
@@ -357,11 +357,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      */
     public void bar() { }
 }
@@ -373,11 +373,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      * @return Bar
      */
     public Object bar() { return null; }
@@ -390,11 +390,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      * @param foo1 Foo1
      * @param foo2 Foo2
      */
@@ -408,11 +408,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      */
     @Deprecated
     public void bar() { }
@@ -425,7 +425,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     public Object Bar { get; set; }
@@ -438,7 +438,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     global Object Bar { get; set; }
@@ -451,7 +451,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     private Object Bar { get; set; }
@@ -465,7 +465,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     private Object Bar { get; set; }
@@ -478,7 +478,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     protected Object Bar { get; set; }
@@ -492,7 +492,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     protected Object Bar { get; set; }
@@ -505,7 +505,7 @@ public class Foo {
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     public Object Bar { get; set; }
@@ -518,11 +518,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      */
     public Object Bar { get; set; }
 }
@@ -534,11 +534,11 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * @description Bar
+     * Bar
      */
     @Deprecated
     public Object Bar { get; set; }
@@ -551,18 +551,18 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
 
     /**
-     * @description Foo
+     * Foo
      */
     public Foo() {
     }
 
     /**
-     * @description Bar
+     * Bar
      */
     public class Bar {
     }
@@ -576,12 +576,12 @@ public class Foo {
         <expected-linenumbers>12</expected-linenumbers>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
 
     /**
-     * @description Foo
+     * Foo
      */
     public Foo() {
     }
@@ -598,12 +598,10 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 /**
- * No at-description tag provided.
  */
 public class Foo {
 
     /**
-     * No at-description tag provided.
      */
     public Foo() {
     }
@@ -617,12 +615,10 @@ public class Foo {
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 /**
- * No at-description tag provided.
  */
 public class Foo {
 
     /**
-     * No at-description tag provided.
      */
     public Foo() {
     }
@@ -636,12 +632,10 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * No at-description tag provided.
  */
 public class Foo {
 
     /**
-     * No at-description tag provided.
      */
     public Foo() {
     }
@@ -656,7 +650,7 @@ public class Foo {
         <expected-linenumbers>5</expected-linenumbers>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     global Object Bar { get; set; }
@@ -668,14 +662,13 @@ public class Foo {
         <description>property with missing description</description>
         <rule-property name="reportProperty">false</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
+        <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     /**
-     * the property bar
      */
     global Object Bar { get; set; }
 }
@@ -688,7 +681,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description Foo
+ * Foo
  */
 public class Foo {
     global Object Bar { get; set; }
@@ -701,7 +694,7 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description My Class
+ * My Class
  */
 public class MyClass {
   static {
@@ -716,12 +709,12 @@ public class MyClass {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description My Class
+ * My Class
  */
 public class MyClass {
   /**
    * Missing description... but that's no problem. Fields are not considered (yet) by ApexDoc.
-   **/
+   */
   public static Integer Test;
 
   static {
@@ -736,15 +729,104 @@ public class MyClass {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
- * @description       : rest service
- **/
+ * rest service
+ */
 @RestResource(urlMapping='/api/v1/get/*')
 global without sharing class TestService {
     /**
-     * @description Bar
+     * Bar
      */
     public void bar() { return; }
 }
 ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method with params but missing main description</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * Foo
+ */
+public class Foo {
+    /**
+     * @param accountName The account name
+     */
+    public void createAccount(String accountName) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method with return but missing main description</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * Foo
+ */
+public class Foo {
+    /**
+     * @return The created account
+     */
+    public Account createAccount() { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method with params and return but missing main description</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>10</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * Foo
+ */
+public class Foo {
+    /**
+     * @param accountName The account name
+     * @param industry The industry
+     * @return The newly created Account
+     */
+    public Account createAccount(String accountName, String industry) { return null; }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method with param but missing main description</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+/**
+ * Foo
+ */
+public class Foo {
+    /**
+     * @param accountName The desired name for the new account. Cannot be null or empty.
+     */
+    public void createAccount(String accountName) { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>method with complete documentation including main description</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+/**
+ * Foo
+ */
+public class Foo {
+    /**
+     * Creates a new Account sObject with the given name and industry.
+     * @param accountName The desired name for the new account. Cannot be null or empty.
+     * @param industry The industry classification for the new account.
+     * @return The newly created Account sObject with its ID populated.
+     */
+    public Account createAccount(String accountName, String industry) { return null; }
+}
+        ]]></code>
     </test-code>
 </test-data>
