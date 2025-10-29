@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +41,16 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 final class TokenFileSet {
 
     static final int MOD = 37;
-    /** A list of token files that are valid (tokenizer did not error). */
-    private final List<TokenFile> files = new ArrayList<>();
+    /**
+     * A list of token files. The internal ID of a token file is the
+     * index in this list. IDs are preassigned before lexing, if a
+     * tokenizer errors, then its entry in this list will be null.
+     */
+    private List<@Nullable TokenFile> files;
+
     /** Global map of string (token images) to an integer identifier. */
     private ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
+
     /**
      * Common images that are allocated in a separate map to avoid contending on
      * the main concurrent hashmap. This includes the images of common tokens like
@@ -51,6 +58,8 @@ final class TokenFileSet {
      * between all threads as read-only, without contention.
      */
     private Object2IntMap<String> preallocatedImages = new Object2IntOpenHashMap<>();
+
+    /** Stores references to the files being lexed. */
     private final SourceManager sourceManager;
 
     // The first ID is 1, 0 is the ID of the EOF token.
@@ -77,6 +86,7 @@ final class TokenFileSet {
 
     TokenFileSet(SourceManager sourceManager) {
         this.sourceManager = sourceManager;
+        this.files = new ArrayList<>(Collections.nCopies(sourceManager.size(), null));
     }
 
     private void checkState(CpdState expectedState, String mname) {
@@ -88,12 +98,16 @@ final class TokenFileSet {
     void setState(CpdState newState) {
         assert this.state.compareTo(newState) < 0 : "Cannot change state of " + this.state + " to " + newState;
         if (newState == CpdState.BUILDING) {
+            checkState(CpdState.INIT, "setState(BUILDING)");
             // We need to share this non-concurrent map safely among threads.
             this.preallocatedImages = Object2IntMaps.unmodifiable(this.preallocatedImages);
         } else if (newState == CpdState.HASHING) {
+            checkState(CpdState.BUILDING, "setState(HASHING)");
             // At this point we will never use the images anymore so we
             // null them out to free memory
-            this.images = null;
+            // this.images = null;
+        } else if (newState == CpdState.MATCHING) {
+            checkState(CpdState.HASHING, "setState(HASHING)");
         }
         this.state = newState;
     }
@@ -172,7 +186,7 @@ final class TokenFileSet {
         checkState(CpdState.HASHING, "hashAll");
 
         int lastMod = computeTrailingModulus(minTileSize);
-        int totalNumTokens = files.parallelStream().mapToInt(TokenFile::size).sum();
+        int totalNumTokens = (int) tokenFileStats.getSum();
         TokenHashMap map = new TokenHashMap(totalNumTokens);
         for (TokenFile file : files) {
             file.computeHashes(minTileSize, lastMod, map);
@@ -191,21 +205,23 @@ final class TokenFileSet {
 
     public TokenEntry toTokenEntry(SmallTokenEntry fstTok) {
         checkState(CpdState.MATCHING, "toTokenEntry");
-        return files.get(fstTok.fileId).getTokenEntry(fstTok.indexInFile, sourceManager);
+        TokenFile tokenFile = Objects.requireNonNull(files.get(fstTok.fileId));
+        return tokenFile.getTokenEntry(fstTok.indexInFile, sourceManager);
     }
 
     public TokenEntry getEndToken(TokenEntry token, int matchLen) {
         checkState(CpdState.MATCHING, "getEndToken");
 
-        TokenFile tokenFile = files.get(token.getFileIdInternal());
+        TokenFile tokenFile = Objects.requireNonNull(files.get(token.getFileIdInternal()));
         return tokenFile.getTokenEntry(token.getLocalIndex() + matchLen - 1, sourceManager);
     }
 
     /** This is called during building. May be called by parallel threads. */
-    TokenFile tokenize(TextDocument textDocument, CpdLexer cpdLexer) throws IOException {
+    TokenFile tokenize(TextDocument textDocument, CpdLexer cpdLexer, int index) throws IOException {
         checkState(CpdState.BUILDING, "tokenize");
+        assert index >= 0 && index < files.size();
 
-        try (TokenFileFactory tf = new TokenFileFactory(textDocument)) {
+        try (TokenFileFactory tf = new TokenFileFactory(textDocument, index)) {
             // This tokenize method may throw, in which case the file is not added to this tokenfileset
             cpdLexer.tokenize(textDocument, tf);
             this.recordFile(tf.tokenFile);
@@ -215,9 +231,7 @@ final class TokenFileSet {
 
     private void recordFile(TokenFile file) {
         synchronized (files) {
-            int id = files.size();
-            file.setInternalId(id);
-            files.add(file);
+            files.set(file.internalId, file);
             tokenFileStats.accept(file.size);
         }
     }
@@ -239,10 +253,10 @@ final class TokenFileSet {
         private final TextDocument file;
         final TokenFile tokenFile;
 
-        TokenFileFactory(TextDocument file) {
+        TokenFileFactory(TextDocument file, int index) {
             this.fileId = file.getFileId();
             this.file = file;
-            this.tokenFile = new TokenFile(fileId);
+            this.tokenFile = new TokenFile(fileId, index);
         }
 
         @Override
@@ -290,7 +304,7 @@ final class TokenFileSet {
          * placed in the list. This is not stable from run to run because the files
          * may be lexed in parallel.
          */
-        private int internalId = -1;
+        private final int internalId;
         private final FileId fileId;
         private int size = 0;
         private static final int BASE_SIZE = 1024;
@@ -305,12 +319,9 @@ final class TokenFileSet {
         private int[] coordinates = new int[0];
         private OptionalBool offsetCoordinates = OptionalBool.UNKNOWN;
 
-        TokenFile(FileId fileId) {
+        TokenFile(FileId fileId, int index) {
             this.fileId = fileId;
-        }
-
-        void setInternalId(int internalId) {
-            this.internalId = internalId;
+            this.internalId = index;
         }
 
         void addToken(int identifier, int beginLine, int beginColumn, int endLine, int endColumn) {

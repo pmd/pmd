@@ -15,9 +15,8 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.IntStream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -25,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
 
-import net.sourceforge.pmd.cpd.TokenFileSet.CpdState;
 import net.sourceforge.pmd.cpd.TokenFileSet.TokenFile;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
@@ -124,12 +122,12 @@ public final class CpdAnalysis implements AutoCloseable {
 
     static List<Match> findMatches(SourceManager sourceManager, @NonNull CPDListener cpdListener, TokenFileSet tokens, int minTileSize) {
         cpdListener.phaseUpdate(CPDListener.HASH);
-        tokens.setState(CpdState.HASHING);
+        tokens.setState(TokenFileSet.CpdState.HASHING);
         List<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
 
         MatchCollector matchCollector = new MatchCollector(sourceManager, tokens, minTileSize);
         cpdListener.phaseUpdate(CPDListener.MATCH);
-        tokens.setState(CpdState.MATCHING);
+        tokens.setState(TokenFileSet.CpdState.MATCHING);
         markGroups.forEach(matchCollector::collect);
 
         cpdListener.phaseUpdate(CPDListener.DONE);
@@ -163,9 +161,9 @@ public final class CpdAnalysis implements AutoCloseable {
         this.listener = cpdListener;
     }
 
-    private int doTokenize(TextDocument document, CpdLexer cpdLexer, TokenFileSet tokens) throws IOException, LexException {
+    private int doTokenize(TextDocument document, CpdLexer cpdLexer, TokenFileSet tokens, int index) throws IOException, LexException {
         LOGGER.trace("Tokenizing {}", document.getFileId().getAbsolutePath());
-        TokenFile tokenFile = tokens.tokenize(document, cpdLexer);
+        TokenFile tokenFile = tokens.tokenize(document, cpdLexer, index);
         return tokenFile.size();
     }
 
@@ -216,16 +214,17 @@ public final class CpdAnalysis implements AutoCloseable {
         for (CpdLexer tokenizer : tokenizers.values()) {
             tokens.preallocImages(tokenizer.commonImages());
         }
-        tokens.setState(CpdState.BUILDING);
+        sourceManager.size();
+        tokens.setState(TokenFileSet.CpdState.BUILDING);
 
         Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
         List<Report.ProcessingError> processingErrors = processAllFiles(
             configuration.getThreads(),
             sourceManager,
-            textFile -> {
+            (textFile, index) -> {
                 try (TextDocument textDocument = sourceManager.load(textFile)) {
                     CpdLexer lexer = tokenizers.get(textFile.getLanguageVersion().getLanguage());
-                    int newTokens = doTokenize(textDocument, lexer, tokens);
+                    int newTokens = doTokenize(textDocument, lexer, tokens, index);
                     synchronized (this) {
                         numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
                         listener.addedFile(1);
@@ -259,12 +258,14 @@ public final class CpdAnalysis implements AutoCloseable {
      * Errors are returned by the callback, not thrown.
      */
     private static List<ProcessingError> processAllFiles(
-            int threads,
-            SourceManager sourceManager,
-            Function<TextFile, @Nullable ProcessingError> processFile)
+        int threads, SourceManager sourceManager, ProcessFileFunc processFile)
         throws InterruptedException, ExecutionException {
+
+        List<TextFile> textFiles = sourceManager.getTextFiles();
+        IntStream indexStream = IntStream.range(0, textFiles.size());
+
         if (threads == 0) {
-            return processWithStream(sourceManager.getTextFiles().stream(), processFile);
+            return processWithStream(indexStream, textFiles, processFile);
         }
 
         // To make parallel streams use a custom ForkJoinPool, we need
@@ -274,23 +275,28 @@ public final class CpdAnalysis implements AutoCloseable {
         ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
         try {
             return forkJoinPool
-                    .submit(() -> processWithStream(
-                            sourceManager.getTextFiles().parallelStream(), processFile))
-                    .get();
+                .submit(() -> processWithStream(indexStream, textFiles, processFile))
+                .get();
         } finally {
             forkJoinPool.shutdown();
         }
     }
 
     /** Process all files with the given callback. Errors are collected into the result list. */
-    private static List<ProcessingError> processWithStream(Stream<TextFile> files, Function<TextFile, @Nullable ProcessingError> processFile) {
-        return files
-                .map(processFile)
+    private static List<ProcessingError> processWithStream(
+        IntStream indexStream, List<TextFile> files, ProcessFileFunc processFile) {
+
+        return indexStream.mapToObj(index -> processFile.process(files.get(index), index))
                 .filter(Objects::nonNull)
                 .sorted()
                 .collect(Collectors.toList());
     }
 
+    @FunctionalInterface
+    private interface ProcessFileFunc {
+        @Nullable
+        ProcessingError process(TextFile file, int id);
+    }
 
     @Override
     public void close() throws IOException {

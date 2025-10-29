@@ -39,11 +39,13 @@ class TokenFileSetTest {
             TextDocument doc = TextDocument.create(file)) {
 
             TokenFileSet set = new TokenFileSet(sources);
+            sources.size();
+            set.setState(CpdState.BUILDING);
 
             TokenFile tokenFile = set.tokenize(doc, (doc2, factory) -> {
                 factory.recordToken("a", 0, 1);
                 factory.recordToken("b", 2, 3);
-            });
+            }, 0);
 
             assertEquals(tokenFile.size(), 2);
             assertFalse(tokenFile.isEmpty());
@@ -72,7 +74,7 @@ class TokenFileSetTest {
             TokenFile tokenFile = set.tokenize(doc, (doc2, factory) -> {
                 factory.recordToken("a", 1, 1, 2, 4);
                 factory.recordToken("b", 2, 3, 4, 5);
-            });
+            }, 0);
 
             assertEquals(tokenFile.size(), 2);
             assertFalse(tokenFile.isEmpty());
@@ -88,7 +90,7 @@ class TokenFileSetTest {
     @ParameterizedTest
     @EnumSource
     void testGrowTokenFile(TokenStyle style) {
-        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID);
+        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID, 0);
         style.addDummyToken(file, 0, 1);
         assertEquals(file.size(), 1);
         file.trimToSize(); // trim to have size 1
@@ -102,7 +104,7 @@ class TokenFileSetTest {
 
     @Test
     void testCloseAfterAddingZeroTokens() {
-        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID);
+        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID, 0);
         file.finish();
         assertEquals(file.size(), 0);
     }
@@ -112,7 +114,7 @@ class TokenFileSetTest {
     @ParameterizedTest
     @EnumSource
     void testAddingTokensWithDifferentStyleNotSupported(TokenStyle style) {
-        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID);
+        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID, 0);
         style.addDummyToken(file, 0, 1);
         Assertions.assertThrows(IllegalStateException.class, () -> style.opposite().addDummyToken(file, 1, 2));
     }
@@ -120,7 +122,7 @@ class TokenFileSetTest {
 
     @Test
     void testHashFile() {
-        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID);
+        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID, 0);
         for (int i = 0; i < 40; i++) {
             file.addTokenByOffsets(i, i * 10, i * 10 + 1);
         }
@@ -134,7 +136,7 @@ class TokenFileSetTest {
 
     @Test
     void testHashFileSmallerThanTileSize() {
-        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID);
+        TokenFile file = new TokenFile(CpdTestUtils.FOO_FILE_ID, 0);
         for (int i = 0; i < 40; i++) {
             file.addTokenByOffsets(i, i * 10, i * 10 + 1);
         }
