@@ -70,6 +70,7 @@ class TokenFileSetTest {
             TextDocument doc = TextDocument.create(file)) {
 
             TokenFileSet set = new TokenFileSet(sources);
+            set.setState(CpdState.BUILDING);
 
             TokenFile tokenFile = set.tokenize(doc, (doc2, factory) -> {
                 factory.recordToken("a", 1, 1, 2, 4);

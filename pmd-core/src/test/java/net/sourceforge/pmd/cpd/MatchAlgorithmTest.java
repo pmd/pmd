@@ -56,6 +56,7 @@ class MatchAlgorithmTest {
         TextFile textFile = TextFile.forCharSeq(getSampleCode(), fileName, dummy.getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         TokenFileSet tokens = new TokenFileSet(sourceManager);
+        tokens.setState(TokenFileSet.CpdState.BUILDING);
         TextDocument sourceCode = sourceManager.get(textFile.getFileId());
         TokenFileSet.TokenFile file = tokens.tokenize(sourceCode, cpdLexer, 0);
         assertEquals(43, file.size());
@@ -86,6 +87,7 @@ class MatchAlgorithmTest {
         TextFile textFile = TextFile.forCharSeq(getMultipleRepetitionsCode(), fileName, dummy.getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         TokenFileSet tokens = new TokenFileSet(sourceManager);
+        tokens.setState(TokenFileSet.CpdState.BUILDING);
         TextDocument sourceCode = sourceManager.get(textFile.getFileId());
         tokens.tokenize(sourceCode, cpdLexer, 0);
 

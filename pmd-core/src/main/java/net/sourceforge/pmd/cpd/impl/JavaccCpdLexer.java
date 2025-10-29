@@ -24,8 +24,8 @@ public abstract class JavaccCpdLexer extends CpdLexerBase<JavaccToken> {
         Set<String> images = new HashSet<>();
         for (String name : javaccTokenNames()) {
             if (name.startsWith("\"") && name.endsWith("\"")) {
-                name = StringUtil.removeSurrounding(name, '"');
-                images.add(name);
+                String literal = StringUtil.removeSurrounding(name, '"');
+                images.add(literal);
             }
             // other tokens have names like <token > but no quotes.
         }

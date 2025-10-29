@@ -30,7 +30,7 @@ class MarkdownRendererTest {
 
         int lineCount2 = 5;
         Mark mark3 = builder.createMark("public", bar, 49, lineCount2, 15, 15);
-        Mark mark4 = builder.createMark("void", bar, 74, lineCount2,  15, 15);
+        Mark mark4 = builder.createMark("void", bar, 74, lineCount2, 15, 15);
         builder.addMatch(mark3, mark4);
 
         StringWriter sw = new StringWriter();
