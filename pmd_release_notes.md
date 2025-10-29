@@ -9,27 +9,27 @@ This is a minor release.
 
 ### Table Of Contents
 
-* [🚀 New and noteworthy](#new-and-noteworthy)
+* [🚀️ New and noteworthy](#new-and-noteworthy)
     * [Build Requirement is Java 17](#build-requirement-is-java-17)
-* [🌟 New and Changed Rules](#new-and-changed-rules)
+* [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
-    * [Deprecated rules](#deprecated-rules)
-* [🐛 Fixed Issues](#fixed-issues)
-* [🚨 API Changes](#api-changes)
+    * [Deprecated Rules](#deprecated-rules)
+* [🐛️ Fixed Issues](#fixed-issues)
+* [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
-* [✨ Merged pull requests](#merged-pull-requests)
-* [📦 Dependency updates](#dependency-updates)
-* [📈 Stats](#stats)
+* [✨️ Merged pull requests](#merged-pull-requests)
+* [📦️ Dependency updates](#dependency-updates)
+* [📈️ Stats](#stats)
 
-### 🚀 New and noteworthy
+### 🚀️ New and noteworthy
 
 #### Build Requirement is Java 17
 From now on, Java 17 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.
 
-### 🌟 New and Changed Rules
+### 🌟️ New and Changed Rules
 #### New Rules
 * The new Java rule [`IdenticalConditionalBranches`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_errorprone.html#identicalconditionalbranches) finds conditional statements
   that do the same thing when the condition is true and false. This is either incorrect or redundant.
@@ -51,13 +51,13 @@ checkstyle version during the build.
   <rule ref="category/java/errorprone.xml/AvoidCatchingGenericException" />
   ```
 
-#### Deprecated rules
+#### Deprecated Rules
 * The Java rule [`AvoidCatchingNPE`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_errorprone.html#avoidcatchingnpe) has been deprecated in favor of the updated rule
   [`AvoidCatchingGenericException`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_errorprone.html#avoidcatchinggenericexception), which is now configurable.
 * The Java rule [`AvoidCatchingThrowable`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_errorprone.html#avoidcatchingthrowable) has been deprecated in favor of the updated rule
   [`AvoidCatchingGenericException`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_errorprone.html#avoidcatchinggenericexception), which is now configurable.
 
-### 🐛 Fixed Issues
+### 🐛️ Fixed Issues
 * general
   * [#4714](https://github.com/pmd/pmd/issues/4714): \[core] Allow trailing commas in multivalued properties
   * [#5873](https://github.com/pmd/pmd/issues/5873): \[ci] Run integration test with Java 25
@@ -80,6 +80,8 @@ checkstyle version during the build.
   * [#2928](https://github.com/pmd/pmd/issues/2928): \[java] New rules about labeled statements
   * [#4122](https://github.com/pmd/pmd/issues/4122): \[java] CheckResultSet false-positive with local variable
   * [#6124](https://github.com/pmd/pmd/issues/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching
+  * [#6169](https://github.com/pmd/pmd/issues/6169): \[java] AvoidUsingHardCodedIP: violation message should mention the hard coded address
+  * [#6171](https://github.com/pmd/pmd/issues/6171): \[java] AvoidUsingHardCodedIP: fix false positive for IPv6
 * java-codestyle
   * [#5919](https://github.com/pmd/pmd/issues/5919): \[java] ClassNamingConventions: Include integration tests in testClassPattern by default
   * [#6004](https://github.com/pmd/pmd/issues/6004): \[java] Make ConfusingTernary != null configurable
@@ -106,7 +108,7 @@ checkstyle version during the build.
 * plsql-design
   * [#6077](https://github.com/pmd/pmd/issues/6077): \[plsql] Excessive\*/Ncss\*Count/NPathComplexity include the metric
 
-### 🚨 API Changes
+### 🚨️ API Changes
 
 #### Deprecations
 * java
@@ -116,7 +118,7 @@ checkstyle version during the build.
     * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.18.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/ExcessiveParameterListRule.html#isViolation(net.sourceforge.pmd.lang.java.ast.ASTFormalParameters,int)"><code>ExcessiveParameterListRule#isViolation</code></a>
     * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.18.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/design/ExcessivePublicCountRule.html#isViolation(net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration,int)"><code>ExcessivePublicCountRule#isViolation</code></a>
 
-### ✨ Merged pull requests
+### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 * [#6021](https://github.com/pmd/pmd/pull/6021): \[java] Fix #5569: ExcessiveImports/ExcessiveParameterList/ExcessivePublicCount include the metric in the message - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6022](https://github.com/pmd/pmd/pull/6022): \[apex] ExcessiveClassLength/ExcessiveParameterList include the metric in the message - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
@@ -157,11 +159,14 @@ checkstyle version during the build.
 * [#6152](https://github.com/pmd/pmd/pull/6152): chore(deps): Update Saxon-HE from 12.5 to 12.9 - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6156](https://github.com/pmd/pmd/pull/6156): \[java] Fix #6146: ClassCastException in TypeTestUtil - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#6164](https://github.com/pmd/pmd/pull/6164): \[doc] Update reproducible build info with Java 17 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6166](https://github.com/pmd/pmd/pull/6166): \[doc] Use emoji variants - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6170](https://github.com/pmd/pmd/pull/6170): \[java] Fix #6169: AvoidUsingHardCodedIP - mention address in message - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6171](https://github.com/pmd/pmd/pull/6171): \[java] AvoidUsingHardCodedIP: fix false positive for IPv6 - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
-### 📦 Dependency updates
+### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📈 Stats
+### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
 
 
