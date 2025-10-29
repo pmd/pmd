@@ -275,7 +275,7 @@ public final class CpdAnalysis implements AutoCloseable {
         ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
         try {
             return forkJoinPool
-                .submit(() -> processWithStream(indexStream, textFiles, processFile))
+                .submit(() -> processWithStream(indexStream.parallel(), textFiles, processFile))
                 .get();
         } finally {
             forkJoinPool.shutdown();
