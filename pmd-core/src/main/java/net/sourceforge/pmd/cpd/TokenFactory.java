@@ -19,20 +19,6 @@ import net.sourceforge.pmd.lang.document.TextRegion;
 public interface TokenFactory extends AutoCloseable {
 
     /**
-     * Record a token given its coordinates. Coordinates must match the
-     * requirements of {@link FileLocation}, ie, be 1-based and ordered
-     * properly.
-     *
-     * @param image     Image of the token. This will be taken into account
-     *                  to determine the hash value of the token.
-     * @param startLine Start line of the token
-     * @param startCol  Start column of the token
-     * @param endLine   End line of the token
-     * @param endCol    End column of the token
-     */
-    void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol);
-
-    /**
      * Record a token given its offset coordinates. This is more
      * space-efficient as start/end line/col coordinates, so it is
      * recommended your lexer use this overload. You cannot mix
@@ -72,6 +58,20 @@ public interface TokenFactory extends AutoCloseable {
     default void recordToken(@NonNull String image, TextRegion region) {
         recordToken(image, region.getStartOffset(), region.getEndOffset());
     }
+
+    /**
+     * Record a token given its coordinates. Coordinates must match the
+     * requirements of {@link FileLocation}, ie, be 1-based and ordered
+     * properly.
+     *
+     * @param image     Image of the token. This will be taken into account
+     *                  to determine the hash value of the token.
+     * @param startLine Start line of the token
+     * @param startCol  Start column of the token
+     * @param endLine   End line of the token
+     * @param endCol    End column of the token
+     */
+    void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol);
 
     /**
      * Record a token given its coordinates. Coordinates must match the

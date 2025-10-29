@@ -58,6 +58,7 @@ final class TokenFileSet {
      * between all threads as read-only, without contention.
      */
     private Object2IntMap<String> preallocatedImages = new Object2IntOpenHashMap<>();
+    private ThreadLocal<Object2IntMap<String>> threadLocalCache = ThreadLocal.withInitial(Object2IntOpenHashMap::new);
 
     /** Stores references to the files being lexed. */
     private final SourceManager sourceManager;
@@ -121,8 +122,11 @@ final class TokenFileSet {
             // in Java programs, 2/3 of the tokens have a known image.
             return prealloc;
         }
-        // If it's not a known token, hit the concurrent map.
-        return images.computeIfAbsent(newImage, this.getNextImage);
+        return threadLocalCache.get().computeIfAbsent(newImage,
+            // If it's not a known token, hit the concurrent map.
+            k -> images.computeIfAbsent(newImage, this.getNextImage)
+        );
+
     }
 
     String getImage(TokenEntry entry) {

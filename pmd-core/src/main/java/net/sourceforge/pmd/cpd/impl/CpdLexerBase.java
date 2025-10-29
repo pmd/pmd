@@ -24,7 +24,7 @@ public abstract class CpdLexerBase<T extends GenericToken<T>> implements CpdLexe
     }
 
     protected void processToken(TokenFactory tokenEntries, T currentToken) {
-        tokenEntries.recordToken(getImage(currentToken), currentToken.getReportLocation());
+        tokenEntries.recordToken(getImage(currentToken), currentToken.getRegion());
     }
 
     protected String getImage(T token) {

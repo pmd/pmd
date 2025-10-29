@@ -92,7 +92,7 @@ public class CppCpdLexer extends JavaccCpdLexer {
             image = CppTokenKinds.describe(kind);
         }
 
-        tokenEntries.recordToken(image, currentToken.getReportLocation());
+        tokenEntries.recordToken(image, currentToken.getInputRegion());
     }
 
     private static class CppTokenFilter extends JavaCCTokenFilter {
