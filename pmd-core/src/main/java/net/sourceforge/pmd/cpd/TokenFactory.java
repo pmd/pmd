@@ -31,10 +31,33 @@ public interface TokenFactory extends AutoCloseable {
      */
     void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol);
 
+    /**
+     * Record a token given its offset coordinates. This is more
+     * space-efficient as start/end line/col coordinates, so it is
+     * recommended your lexer use this overload. You cannot mix
+     * calls to this method and calls to {@link #recordToken(String, int, int, int, int)},
+     * you need to pick one of the two coordinate modes.
+     *
+     * @implNote The default implementation throws an exception, please
+     * implement it. This method will be made abstract in a future version of CPD.
+     *
+     * @param image       Image of the token. This will be taken into account
+     *                    to determine the hash value of the token.
+     * @param startOffset Start offset
+     * @param endOffset   End offset
+     */
     default void recordToken(@NonNull String image, int startOffset, int endOffset) {
-        throw new UnsupportedOperationException();
+        throw new UnsupportedOperationException("TODO next major version: make this abstract.");
     }
 
+    /**
+     * Record a token using its offset coordinates.
+     *
+     * @param image  Image of the token. This will be taken into account
+     *               to determine the hash value of the token.
+     * @param region Text region for the coordinates
+     * @see #recordToken(String, int, int)
+     */
     default void recordToken(@NonNull String image, TextRegion region) {
         recordToken(image, region.getStartOffset(), region.getEndOffset());
     }

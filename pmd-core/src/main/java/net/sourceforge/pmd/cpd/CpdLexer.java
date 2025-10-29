@@ -5,6 +5,8 @@
 package net.sourceforge.pmd.cpd;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Set;
 
 import net.sourceforge.pmd.lang.document.TextDocument;
 
@@ -19,6 +21,19 @@ public interface CpdLexer {
      * Tokenize the source code and record tokens using the provided token factory.
      */
     void tokenize(TextDocument document, TokenFactory tokens) throws IOException;
+
+    /**
+     * A set of token images that are common in programs of this language.
+     * These may be e.g. the images of keywords and punctuation of the language.
+     * This is an optional method, if implemented, it allows reducing contention
+     * on token image ID assignment. It is highly recommended to implement it though.
+     * For instance in Java programs, two thirds of all tokens are either keywords
+     * or punctuation or operators, whose image is known beforehand.
+     */
+    default Set<String> commonImages() {
+        return Collections.emptySet();
+    }
+
 
     /**
      * Wraps a call to {@link #tokenize(TextDocument, TokenFactory)} to properly

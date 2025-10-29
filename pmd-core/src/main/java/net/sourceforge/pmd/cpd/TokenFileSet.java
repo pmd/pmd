@@ -11,6 +11,7 @@ import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
@@ -24,6 +25,10 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.util.OptionalBool;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 /**
  * Stores the lexed tokens by file (one {@link TokenFile} per file). Token files can be lexed in parallel and recorded
@@ -39,18 +44,35 @@ final class TokenFileSet {
     private final List<TokenFile> files = new ArrayList<>();
     /** Global map of string (token images) to an integer identifier. */
     private ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
+    /**
+     * Common images that are allocated in a separate map to avoid contending on
+     * the main concurrent hashmap. This includes the images of common tokens like
+     * "public" "static", etc. Is populated during initialization and then shared
+     * between all threads as read-only, without contention.
+     */
+    private Object2IntMap<String> preallocatedImages = new Object2IntOpenHashMap<>();
     private final SourceManager sourceManager;
 
     // The first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
-    private CpdState state = CpdState.BUILDING;
+    private CpdState state = CpdState.INIT;
     // This is shared to save memory on the lambda allocation, which is significant
     private final Function<String, Integer> getNextImage = k -> curImageId++;
     // Collect stats about token file sizes.
     private final IntSummaryStatistics tokenFileStats = new IntSummaryStatistics();
 
     enum CpdState {
-        BUILDING, HASHING, MATCHING
+        /** Initialization phase on the main thread. */
+        INIT,
+        /**
+         * Building the TokenFiles. May happen in parallel
+         * so those operations need to be thread-safe.
+         */
+        BUILDING,
+        /** Hashing tokens and building a match map. */
+        HASHING,
+        /** Processing hash collisions and finding matches among them. */
+        MATCHING
     }
 
     TokenFileSet(SourceManager sourceManager) {
@@ -63,8 +85,27 @@ final class TokenFileSet {
         }
     }
 
+    void setState(CpdState newState) {
+        assert this.state.compareTo(newState) < 0 : "Cannot change state of " + this.state + " to " + newState;
+        if (newState == CpdState.BUILDING) {
+            // We need to share this non-concurrent map safely among threads.
+            this.preallocatedImages = Object2IntMaps.unmodifiable(this.preallocatedImages);
+        } else if (newState == CpdState.HASHING) {
+            // At this point we will never use the images anymore so we
+            // null them out to free memory
+            this.images = null;
+        }
+        this.state = newState;
+    }
+
+
     int getImageId(String newImage) {
         checkState(CpdState.BUILDING, "getImage");
+        int prealloc = preallocatedImages.getOrDefault(newImage, -1);
+        if (prealloc >= 0) {
+            return prealloc;
+        }
+        // If it's not a known token, hit the concurrent map.
         return images.computeIfAbsent(newImage, this.getNextImage);
     }
 
@@ -102,14 +143,20 @@ final class TokenFileSet {
         return i;
     }
 
-    void setState(CpdState newState) {
-        assert this.state.compareTo(newState) < 0 : "Cannot change state of " + this.state + " to " + newState;
-        if (newState == CpdState.HASHING) {
-            // At this point we will never use the images anymore so we
-            // null them out to free memory
-            this.images = null;
+    /**
+     * Preallocate IDs for images. Must be called before we start building,
+     * before we start parallel processing.
+     *
+     * @param constantImages Set of images for which to preallocate an ID
+     */
+    void preallocImages(Set<String> constantImages) {
+        checkState(CpdState.INIT, "preallocImages");
+        int i = this.curImageId;
+        for (String image : constantImages) {
+            preallocatedImages.put(image, i++);
+            images.put(image, i);
         }
-        this.state = newState;
+        this.curImageId = i;
     }
 
     /**

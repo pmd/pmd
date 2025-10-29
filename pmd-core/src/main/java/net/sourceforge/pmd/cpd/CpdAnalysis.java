@@ -213,6 +213,11 @@ public final class CpdAnalysis implements AutoCloseable {
         // matchAlgorithm. When this method finishes, tokens should be eligible for garbage collection
         // making it possible to free up memory for render the report if needed.
         TokenFileSet tokens = new TokenFileSet(sourceManager);
+        for (CpdLexer tokenizer : tokenizers.values()) {
+            tokens.preallocImages(tokenizer.commonImages());
+        }
+        tokens.setState(CpdState.BUILDING);
+
         Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
         List<Report.ProcessingError> processingErrors = processAllFiles(
             configuration.getThreads(),
