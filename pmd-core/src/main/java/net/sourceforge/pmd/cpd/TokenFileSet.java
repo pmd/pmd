@@ -103,6 +103,8 @@ final class TokenFileSet {
         checkState(CpdState.BUILDING, "getImage");
         int prealloc = preallocatedImages.getOrDefault(newImage, -1);
         if (prealloc >= 0) {
+            // Avoid contending on the concurrent map. This is a common path,
+            // in Java programs, 2/3 of the tokens have a known image.
             return prealloc;
         }
         // If it's not a known token, hit the concurrent map.
