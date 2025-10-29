@@ -46,7 +46,7 @@ final class TokenFileSet {
      * index in this list. IDs are preassigned before lexing, if a
      * tokenizer errors, then its entry in this list will be null.
      */
-    private List<@Nullable TokenFile> files;
+    private final List<@Nullable TokenFile> files;
 
     /** Global map of string (token images) to an integer identifier. */
     private ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
@@ -143,8 +143,8 @@ final class TokenFileSet {
 
         // todo in Java 9+, use Arrays.mismatch, which is vectorized and faster than this
 
-        TokenFile tf1 = files.get(fst.fileId);
-        TokenFile tf2 = files.get(snd.fileId);
+        TokenFile tf1 = Objects.requireNonNull(files.get(fst.fileId));
+        TokenFile tf2 = Objects.requireNonNull(files.get(snd.fileId));
 
         final int[] f1 = tf1.identifiers;
         final int[] f2 = tf2.identifiers;
@@ -189,7 +189,9 @@ final class TokenFileSet {
         int totalNumTokens = (int) tokenFileStats.getSum();
         TokenHashMap map = new TokenHashMap(totalNumTokens);
         for (TokenFile file : files) {
-            file.computeHashes(minTileSize, lastMod, map);
+            if (file != null) {
+                file.computeHashes(minTileSize, lastMod, map);
+            }
         }
 
         return map.getFinalMatches();
@@ -244,7 +246,8 @@ final class TokenFileSet {
      * Return the file id from an internal id.
      */
     FileId getFileId(int internalId) {
-        return files.get(internalId).fileId;
+        TokenFile tokenFile = Objects.requireNonNull(files.get(internalId));
+        return tokenFile.fileId;
     }
 
     final class TokenFileFactory implements TokenFactory {
