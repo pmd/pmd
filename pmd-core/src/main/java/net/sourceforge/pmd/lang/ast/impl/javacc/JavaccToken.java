@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -160,6 +161,25 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     @Override
     public final TextRegion getRegion() {
         return TextRegion.fromBothOffsets(startOffset, endOffset);
+    }
+
+    /**
+     * Return the region corresponding to this token in the source
+     * document (before escape translation). You should only use this
+     * when you don't have access to the translated TextDocument and
+     * need to slice the untranslated one yourself. The use case for
+     * now is CPD internals. If you are using this from within PMD's
+     * AST, you will not need to use this and should prefer
+     * {@link #getRegion()}.
+     *
+     * @experimental The only use case for now is CPD internals, and
+     *     this method may be confused with the usually more appropriate
+     *     {@link #getRegion()}. Maybe we will manage to remove this
+     *     method.
+     */
+    @Experimental
+    public final TextRegion getInputRegion() {
+        return document.getTextDocument().inputRegion(getRegion());
     }
 
     int getStartOffset() {

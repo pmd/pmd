@@ -269,7 +269,12 @@ final class TokenFileSet {
 
         @Override
         public void recordToken(@NonNull String image, int startOffset, int endOffset) {
-            tokenFile.addTokenByOffsets(getImageId(image), startOffset, endOffset);
+            recordToken(image, TextRegion.fromBothOffsets(startOffset, endOffset));
+        }
+
+        @Override
+        public void recordToken(@NonNull String image, TextRegion region) {
+            tokenFile.addTokenByOffsets(getImageId(image), region.getStartOffset(), region.getEndOffset());
         }
 
         @Override

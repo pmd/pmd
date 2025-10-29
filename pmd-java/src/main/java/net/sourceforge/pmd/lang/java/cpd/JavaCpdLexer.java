@@ -75,8 +75,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
 
         constructorDetector.get().processToken(javaToken);
 
-
-        tokenEntries.recordToken(image, javaToken.getRegion());
+        tokenEntries.recordToken(image, javaToken.getInputRegion());
     }
 
     /**
