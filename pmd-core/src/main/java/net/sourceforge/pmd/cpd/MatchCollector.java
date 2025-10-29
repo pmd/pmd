@@ -91,7 +91,8 @@ class MatchCollector {
             computation takes tile size into account, it is very likely that tokens having the same hash have a preflen
             greater than the tile size. Since the tile size is routinely hundreds of tokens, we are saving at least that
             many unnecessary comparisons _per cell_ (and number of cell is quadratic). In particular for perfect matches
-            only one comparison is necessary.
+            only one comparison is necessary. I measured that depending on the analysed sources, anywhere from 35 to 65%
+            of comparisons can be eliminated with this trick.
          */
 
         int[] lb = new int[marks.size()];
