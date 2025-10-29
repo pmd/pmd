@@ -10,6 +10,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
 
@@ -23,6 +25,10 @@ class MatchCollector {
     private final TokenFileSet tokens;
     private final int minTileSize;
 
+    static final Logger LOG = LoggerFactory.getLogger(MatchCollector.class);
+
+    long numCmpSaved = 0;
+    long totalCmp = 0;
 
     MatchCollector(SourceManager sourceManager, TokenFileSet tokens, int minTileSize) {
         this.sourceManager = sourceManager;
@@ -52,6 +58,7 @@ class MatchCollector {
             SmallTokenEntry fst = marks.get(0);
             SmallTokenEntry snd = marks.get(1);
             int dupes = tokens.countDupTokens(fst, snd, 0);
+            totalCmp += dupes + 1;
             SmallTokenEntry bestMark = bestDuplicate(fst, snd, dupes);
             if (bestMark != null) {
                 dupes = bestMark.prevToken;
@@ -111,7 +118,9 @@ class MatchCollector {
             SmallTokenEntry mark1 = marks.get(i);
             SmallTokenEntry mark2 = marks.get(j);
 
+            numCmpSaved += lb[j];
             int dupesIIp1 = lb[j] + tokens.countDupTokens(mark1, mark2, lb[j]);
+            totalCmp += dupesIIp1 + 1;
 
             if (isDuplicate(mark1, mark2, dupesIIp1)) {
                 handleDuplicate(i, j, mark1, mark2, dupesIIp1, matches, isAliased);
@@ -120,8 +129,10 @@ class MatchCollector {
             for (j = i + 2; j < marks.size(); j++) {
                 mark2 = marks.get(j);
 
+                numCmpSaved += lb[j];
                 int dupesIJ = lb[j] + tokens.countDupTokens(mark1, mark2, lb[j]);
                 lb[j] = Math.min(dupesIIp1, dupesIJ);
+                totalCmp += dupesIJ + 1;
 
                 if (isDuplicate(mark1, mark2, dupesIJ)) {
                     handleDuplicate(i, j, mark1, mark2, dupesIJ, matches, isAliased);
@@ -263,4 +274,8 @@ class MatchCollector {
         return matchList;
     }
 
+    void finish() {
+        int percent = (int) (100 * (numCmpSaved / (double) totalCmp));
+        LOG.debug("Opt saved {} comparisons of {} total comparisons ({}%)", numCmpSaved, totalCmp, percent);
+    }
 }

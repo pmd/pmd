@@ -129,6 +129,7 @@ public final class CpdAnalysis implements AutoCloseable {
         cpdListener.phaseUpdate(CPDListener.MATCH);
         tokens.setState(TokenFileSet.CpdState.MATCHING);
         markGroups.forEach(matchCollector::collect);
+        matchCollector.finish();
 
         cpdListener.phaseUpdate(CPDListener.DONE);
         return matchCollector.getMatches();
