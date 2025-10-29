@@ -2043,14 +2043,19 @@
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.</p>
 
-<h3 id="-rules-changes">🌟 Rules changes</h3>
+<h3 id="-new-and-changed-rules">🌟 New and Changed Rules</h3>
 <h4 id="new-rules">New Rules</h4>
 <ul>
   <li>The new Java rule <a href="pmd_rules_java_errorprone.html#identicalconditionalbranches"><code class="language-plaintext highlighter-rouge">IdenticalConditionalBranches</code></a> finds conditional statements
 that do the same thing when the condition is true and false. This is either incorrect or redundant.</li>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#labeledstatement"><code class="language-plaintext highlighter-rouge">LabeledStatement</code></a> finds labeled statements in code.
+Labels make control flow difficult to understand and should be avoided. By default, the rule allows labeled
+loops (do, while, for). But it has a property to flag also those labeled loops.</li>
+  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#unusedlabel"><code class="language-plaintext highlighter-rouge">UnusedLabel</code></a> finds unused labels which are unnecessary and
+only make the code hard to read. This new rule will be part of the quickstart ruleset.</li>
 </ul>
 
-<h4 id="modified-rules">Modified rules</h4>
+<h4 id="changed-rules">Changed Rules</h4>
 <ul>
   <li><a href="pmd_rules_java_codestyle.html#confusingternary"><code class="language-plaintext highlighter-rouge">ConfusingTernary</code></a> has a new property <code class="language-plaintext highlighter-rouge">nullCheckBranch</code> to control, whether null-checks
 should be allowed (the default case) or should lead to a violation.</li>
@@ -2106,6 +2111,7 @@ again (otherwise it won’t be included anymore):
   </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/2928">#2928</a>: [java] New rules about labeled statements</li>
       <li><a href="https://github.com/pmd/pmd/issues/4122">#4122</a>: [java] CheckResultSet false-positive with local variable</li>
       <li><a href="https://github.com/pmd/pmd/issues/6124">#6124</a>: [java] UnusedLocalVariable: fix false negatives in pattern matching</li>
     </ul>
@@ -2184,6 +2190,7 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6031">#6031</a>: [java] Fix #5880: False Negatives in DoubleCheckedLocking - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6039">#6039</a>: [core] Fix #4714: trim token before feeding it to the extractor - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6040">#6040</a>: [java,apex,plsql,velocity] Change description of “minimum” parameter - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6042">#6042</a>: [java] Fix #2928: New Rules UnusedLabel and LabeledStatement - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6043">#6043</a>: [java] Reactivate deactivated test in LocalVariableCouldBeFinal - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6051">#6051</a>: [java] Fix #6038: Make AvoidCatchingGenericException configurable - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6056">#6056</a>: chore: fix dogfood issues from new rules - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>

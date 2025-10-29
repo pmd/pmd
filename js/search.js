@@ -1708,6 +1708,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "LabeledStatement (Java, Best Practices)",
+  "tags": "",
+  "keywords": "Labeled Statement",
+  "url": "pmd_rules_java_bestpractices.html#labeledstatement",
+  "summary": "This rule detects the use of labeled statements. By default, it allows labeled loops so..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
   "title": "LiteralsFirstInComparisons (Java, Best Practices)",
   "tags": "",
   "keywords": "Literals First In Comparisons",
@@ -1905,6 +1913,14 @@ let pmd_doc_search_index = [
   "keywords": "Unused Formal Parameter",
   "url": "pmd_rules_java_bestpractices.html#unusedformalparameter",
   "summary": "Reports parameters of methods and constructors that are not referenced them in the method body...."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "UnusedLabel (Java, Best Practices)",
+  "tags": "",
+  "keywords": "Unused Label",
+  "url": "pmd_rules_java_bestpractices.html#unusedlabel",
+  "summary": "Unused labeled are unnecessary and may be confusing as you might be wondering what this..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",

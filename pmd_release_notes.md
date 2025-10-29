@@ -11,9 +11,9 @@ This is a minor release.
 
 * [🚀 New and noteworthy](#new-and-noteworthy)
     * [Build Requirement is Java 17](#build-requirement-is-java-17)
-* [🌟 Rules changes](#rules-changes)
+* [🌟 New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
-    * [Modified rules](#modified-rules)
+    * [Changed Rules](#changed-rules)
     * [Deprecated rules](#deprecated-rules)
 * [🐛 Fixed Issues](#fixed-issues)
 * [🚨 API Changes](#api-changes)
@@ -29,12 +29,17 @@ From now on, Java 17 or newer is required to build PMD. PMD itself still remains
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.
 
-### 🌟 Rules changes
+### 🌟 New and Changed Rules
 #### New Rules
 * The new Java rule [`IdenticalConditionalBranches`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_errorprone.html#identicalconditionalbranches) finds conditional statements
   that do the same thing when the condition is true and false. This is either incorrect or redundant.
+* The new Java rule [`LabeledStatement`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_bestpractices.html#labeledstatement) finds labeled statements in code.
+  Labels make control flow difficult to understand and should be avoided. By default, the rule allows labeled
+  loops (do, while, for). But it has a property to flag also those labeled loops.
+* The new Java rule [`UnusedLabel`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_bestpractices.html#unusedlabel) finds unused labels which are unnecessary and
+  only make the code hard to read. This new rule will be part of the quickstart ruleset.
 
-#### Modified rules
+#### Changed Rules
 * [`ConfusingTernary`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_codestyle.html#confusingternary) has a new property `nullCheckBranch` to control, whether null-checks
   should be allowed (the default case) or should lead to a violation.
 * [`AvoidCatchingGenericException`](https://docs.pmd-code.org/pmd-doc-7.18.0-SNAPSHOT/pmd_rules_java_errorprone.html#avoidcatchinggenericexception) is now configurable with the new property
@@ -72,6 +77,7 @@ checkstyle version during the build.
   * [#6127](https://github.com/pmd/pmd/issues/6127): \[java] Incorrect variable name in violation
   * [#6146](https://github.com/pmd/pmd/issues/6146): \[java] ClassCastException: class InferenceVarSym cannot be cast to class JClassSymbol
 * java-bestpractices
+  * [#2928](https://github.com/pmd/pmd/issues/2928): \[java] New rules about labeled statements
   * [#4122](https://github.com/pmd/pmd/issues/4122): \[java] CheckResultSet false-positive with local variable
   * [#6124](https://github.com/pmd/pmd/issues/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching
 * java-codestyle
@@ -120,6 +126,7 @@ checkstyle version during the build.
 * [#6031](https://github.com/pmd/pmd/pull/6031): \[java] Fix #5880: False Negatives in DoubleCheckedLocking - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6039](https://github.com/pmd/pmd/pull/6039): \[core] Fix #4714: trim token before feeding it to the extractor - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6040](https://github.com/pmd/pmd/pull/6040): \[java,apex,plsql,velocity] Change description of "minimum" parameter - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6042](https://github.com/pmd/pmd/pull/6042): \[java] Fix #2928: New Rules UnusedLabel and LabeledStatement - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6043](https://github.com/pmd/pmd/pull/6043): \[java] Reactivate deactivated test in LocalVariableCouldBeFinal - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6051](https://github.com/pmd/pmd/pull/6051): \[java] Fix #6038: Make AvoidCatchingGenericException configurable - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
 * [#6056](https://github.com/pmd/pmd/pull/6056): chore: fix dogfood issues from new rules - [Andreas Dangel](https://github.com/adangel) (@adangel)

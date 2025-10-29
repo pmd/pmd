@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -3465,6 +3465,98 @@ with messages provide the developer a clearer idea of what the test does.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/JUnitUseExpected"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="labeledstatement">LabeledStatement</h2>
+
+<p><strong>Since:</strong> PMD 7.18.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule detects the use of labeled statements. By default, it allows labeled loops so that you can
+use <code class="language-plaintext highlighter-rouge">break</code> / <code class="language-plaintext highlighter-rouge">continue</code> with labels. This can be changed with the property <code class="language-plaintext highlighter-rouge">allowLoops</code> to flag any
+labels.</p>
+
+<p>Labels make control flow difficult to understand and should be avoided. They can be confused
+with the goto statement and make code harder to read and maintain.</p>
+
+<p>If you really need to jump out of an inner loop, think about refactoring the multiple
+loops into a function - that way, you can replace the break with a return.</p>
+
+<p>This rule implements SonarSource rule <a href="https://sonarsource.github.io/rspec/#/rspec/S1119">S1119</a>.</p>
+
+<p>To detect unused labels, use the rule <a href="pmd_rules_java_bestpractices.html#unusedlabel"><code class="language-plaintext highlighter-rouge">UnusedLabel</code></a>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="nv">$allowLoops</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span><span class="w">
+    </span><span class="o">//</span><span class="nt">LabeledStatement</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="nt">DoStatement</span><span class="p">|</span><span class="nt">WhileStatement</span><span class="p">|</span><span class="nt">ForStatement</span><span class="p">|</span><span class="nt">ForeachStatement</span><span class="p">)][</span><span class="ow">le</span><span class="nt">t</span><span class="w"> </span><span class="nv">$label</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="na">@Label</span><span class="w"> </span><span class="kr">return</span><span class="w">
+          </span><span class="p">(.</span><span class="o">//</span><span class="nt">BreakStatement</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">ContinueStatement</span><span class="p">)[</span><span class="na">@Label</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nv">$label</span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span><span class="kr">else</span><span class="w">
+    </span><span class="o">//</span><span class="nt">LabeledStatement</span><span class="p">[</span><span class="ow">le</span><span class="nt">t</span><span class="w"> </span><span class="nv">$label</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="na">@Label</span><span class="w"> </span><span class="kr">return</span><span class="w">
+          </span><span class="p">(.</span><span class="o">//</span><span class="nt">BreakStatement</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">ContinueStatement</span><span class="p">)[</span><span class="na">@Label</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nv">$label</span><span class="p">]</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Scratch</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+        <span class="nl">lbl1:</span> <span class="k">while</span> <span class="o">(</span><span class="kc">true</span><span class="o">)</span> <span class="o">{</span>          <span class="c1">// violation: labeled statement on loop (when property allowLoops=false)</span>
+            <span class="nl">lbl2:</span> <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">3</span><span class="o">)</span> <span class="o">{</span>       <span class="c1">// violation: labeled statement</span>
+                <span class="n">x</span><span class="o">++;</span>
+                <span class="k">break</span> <span class="n">lbl2</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="nl">lbl3:</span> <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="mi">4</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">break</span> <span class="n">lbl1</span><span class="o">;</span>
+            <span class="o">}</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">x</span><span class="o">);</span>
+            <span class="n">x</span><span class="o">++;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bad</span>
+<span class="nl">outer:</span>
+<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+        <span class="k">break</span> <span class="n">outer</span><span class="o">;</span> <span class="c1">// violation - labeled break (when allowLoops=false)</span>
+        <span class="k">continue</span> <span class="n">outer</span><span class="o">;</span> <span class="c1">// violation - labeled continue (when allowLoops=false)</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>allowLoops</td>
+      <td>true</td>
+      <td>Whether to allow or not allow labels before loop statements (do, while, for)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/LabeledStatement"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/LabeledStatement"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowLoops"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
 <h2 id="literalsfirstincomparisons">LiteralsFirstInComparisons</h2>
 
 <p><strong>Since:</strong> PMD 6.24.0</p>
@@ -4706,6 +4798,39 @@ Hence, by default, this rule only considers private methods. To include non-priv
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkAll"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unusedlabel">UnusedLabel</h2>
+
+<p><strong>Since:</strong> PMD 7.18.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Unused labeled are unnecessary and may be confusing as you might be wondering what this label is used for.
+To improve readability the unused label should simply be removed.</p>
+
+<p>This rule implements SonarSource rule <a href="https://sonarsource.github.io/rspec/#/rspec/S1065">S1065</a>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">LabeledStatement</span><span class="p">[</span><span class="ow">le</span><span class="nt">t</span><span class="w"> </span><span class="nv">$label</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="na">@Label</span><span class="w"> </span><span class="kr">return</span><span class="w">
+      </span><span class="ow">not</span><span class="p">(</span><span class="w"> </span><span class="p">(.</span><span class="o">//</span><span class="nt">BreakStatement</span><span class="w"> </span><span class="p">|</span><span class="w"> </span><span class="p">.</span><span class="o">//</span><span class="nt">ContinueStatement</span><span class="p">)[</span><span class="na">@Label</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nv">$label</span><span class="p">]</span><span class="w"> </span><span class="p">)</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Example</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">main</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nl">lbl1:</span> <span class="o">{</span>                     <span class="c1">// violation: Label "lbl1" is not nused</span>
+            <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">x</span><span class="o">);</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/UnusedLabel"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="unusedlocalvariable">UnusedLocalVariable</h2>
