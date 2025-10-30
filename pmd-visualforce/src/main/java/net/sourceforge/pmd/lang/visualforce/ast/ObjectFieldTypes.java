@@ -299,7 +299,7 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     @Override
     protected DataType putDataType(String name, DataType dataType) {
         DataType previousType = super.putDataType(name, dataType);
-        if (previousType != null && !previousType.equals(dataType)) {
+        if (previousType != null && previousType != dataType) {
             // It should not be possible to have conflicting types for CustomFields
             throw new RuntimeException("Conflicting types for "
                     + name
