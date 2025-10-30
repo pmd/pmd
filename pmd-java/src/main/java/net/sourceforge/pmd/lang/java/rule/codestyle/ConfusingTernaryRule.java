@@ -103,7 +103,7 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     private static boolean isUnaryNot(ASTExpression node) {
         // look for "!x"
         return node instanceof ASTUnaryExpression
-            && ((ASTUnaryExpression) node).getOperator().equals(UnaryOp.NEGATION);
+            && ((ASTUnaryExpression) node).getOperator() == UnaryOp.NEGATION;
     }
 
     private boolean isNotEquals(ASTExpression node) {
