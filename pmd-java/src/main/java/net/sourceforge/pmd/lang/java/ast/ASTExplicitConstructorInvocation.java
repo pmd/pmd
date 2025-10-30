@@ -41,8 +41,7 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
 
 
     @Override
-    @NonNull
-    public ASTArgumentList getArguments() {
+    public @NonNull ASTArgumentList getArguments() {
         return (ASTArgumentList) getLastChild();
     }
 
@@ -85,8 +84,7 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
     }
 
     @Override
-    @Nullable
-    public ASTTypeArguments getExplicitTypeArguments() {
+    public @Nullable ASTTypeArguments getExplicitTypeArguments() {
         return firstChild(ASTTypeArguments.class);
     }
 
@@ -94,8 +92,7 @@ public final class ASTExplicitConstructorInvocation extends AbstractJavaTypeNode
      * Returns the qualifying expression if this is a {@linkplain #isQualified() qualified superclass
      * constructor invocation}.
      */
-    @Nullable
-    public ASTExpression getQualifier() {
+    public @Nullable ASTExpression getQualifier() {
         return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
     }
 

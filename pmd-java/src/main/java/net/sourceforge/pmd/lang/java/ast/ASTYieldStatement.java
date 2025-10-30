@@ -41,8 +41,7 @@ public class ASTYieldStatement extends AbstractStatement {
      * Returns the switch expression to which this statement yields a
      * value.
      */
-    @NonNull
-    public ASTSwitchExpression getYieldTarget() {
+    public @NonNull ASTSwitchExpression getYieldTarget() {
         return Objects.requireNonNull(ancestors(ASTSwitchExpression.class).first(),
                                       "Yield statements should only be parsable inside switch expressions");
     }

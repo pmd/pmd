@@ -380,8 +380,7 @@ final class SymTableFactory {
         return typesInPackage(parent, thisPackage, ScopeInfo.SAME_PACKAGE);
     }
 
-    @NonNull
-    private JSymbolTable typesInPackage(JSymbolTable parent, String packageName, ScopeInfo scopeTag) {
+    private @NonNull JSymbolTable typesInPackage(JSymbolTable parent, String packageName, ScopeInfo scopeTag) {
         assert isValidJavaPackageName(packageName) : "Not a package name: " + packageName;
 
         return SymbolTableImpl.withTypes(

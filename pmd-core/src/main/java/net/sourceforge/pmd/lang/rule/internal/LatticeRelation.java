@@ -156,8 +156,7 @@ class LatticeRelation<K, @NonNull V, C> {
         n.addValueTransitive(val);
     }
 
-    @NonNull
-    private IllegalStateException cycleError(@NonNull Deque<LNode> preds, K k) {
+    private @NonNull IllegalStateException cycleError(@NonNull Deque<LNode> preds, K k) {
         List<String> toStrings = map(toMutableList(), preds, n -> keyToString.apply(n.key));
         toStrings.add(keyToString.apply(k));
         return new IllegalStateException("Cycle in graph: " + String.join(" -> ", toStrings));
@@ -201,8 +200,7 @@ class LatticeRelation<K, @NonNull V, C> {
      *
      * @throws NullPointerException If the key is null
      */
-    @NonNull
-    public C get(@NonNull K key) {
+    public @NonNull C get(@NonNull K key) {
         AssertionUtil.requireParamNotNull("key", key);
         LNode n = nodes.get(key);
         return n == null ? emptyValue : n.computeValue();

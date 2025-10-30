@@ -54,8 +54,7 @@ public final class DomainConversion {
         }
     }
 
-    @NonNull
-    public static AtomicSequence convert(Object obj) {
+    public static @NonNull AtomicSequence convert(Object obj) {
         if (obj instanceof Collection) {
             return getSequenceRepresentation((Collection<?>) obj);
         }
@@ -122,8 +121,7 @@ public final class DomainConversion {
      *
      * @return The converted AtomicValue
      */
-    @NonNull
-    public static AtomicValue getAtomicRepresentation(final Object value) {
+    public static @NonNull AtomicValue getAtomicRepresentation(final Object value) {
 
         /*
         FUTURE When supported, we should consider refactor this implementation to use Pattern Matching

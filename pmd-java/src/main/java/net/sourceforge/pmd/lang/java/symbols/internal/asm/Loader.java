@@ -14,8 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 abstract class Loader {
 
 
-    @Nullable
-    abstract InputStream getInputStream() throws IOException;
+    abstract @Nullable InputStream getInputStream() throws IOException;
 
 
     static class FailedLoader extends Loader {

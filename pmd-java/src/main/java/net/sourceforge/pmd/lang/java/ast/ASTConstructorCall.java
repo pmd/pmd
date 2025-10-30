@@ -97,8 +97,7 @@ public final class ASTConstructorCall extends AbstractInvocationExpr implements 
     }
 
 
-    @Nullable
-    public ASTAnonymousClassDeclaration getAnonymousClassDeclaration() {
+    public @Nullable ASTAnonymousClassDeclaration getAnonymousClassDeclaration() {
         return isAnonymousClass()
                ? (ASTAnonymousClassDeclaration) getLastChild()
                : null;
