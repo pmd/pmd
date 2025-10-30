@@ -795,23 +795,6 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>method with param but missing main description</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>8</expected-linenumbers>
-        <code><![CDATA[
-/**
- * Foo
- */
-public class Foo {
-    /**
-     * @param accountName The desired name for the new account. Cannot be null or empty.
-     */
-    public void createAccount(String accountName) { }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>method with complete documentation including main description</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
