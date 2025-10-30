@@ -541,6 +541,47 @@ return a;
         </example>
     </rule>
 
+    <rule name="EnumComparison"
+          language="java"
+          since="7.19.0"
+          message="Enums should be compared using =="
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#enumcomparison">
+        <description>
+When comparing enums, `equals()` should be avoided and `==` should be preferred.
+
+Using `==` has some advantages:
+* same semantic as `equals()`
+* less problematic with possible null pointer exceptions
+* supports static type check: If you compare two incompatible enum types, the compiler will tell you.
+  When using equals, you'll only get noticed at runtime or not at all.
+
+This rule implements SonarSource rule [S4551](https://sonarsource.github.io/rspec/#/rspec/S4551).
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//MethodCall[pmd-java:matchesSig("_#equals(java.lang.Object)")]
+  [*[pmd-java:typeIs("java.lang.Enum")]]
+  [ArgumentList[*[pmd-java:typeIs("java.lang.Enum")]]]
+]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+enum Color { RED, GREEN, BLUE }
+class ColorTester {
+  boolean isRed(Color color) {
+    return color.equals(Color.RED); // violation
+  }
+
+  boolean isGreen(Color color) {
+    return color == Color.GREEN; // preferred
+  }
+}
+]]></example>
+    </rule>
+
     <rule name="ExhaustiveSwitchHasDefault"
           language="java"
           since="7.10.0"
