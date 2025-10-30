@@ -74,6 +74,8 @@ public class SimpleRenderer implements CPDReportRenderer {
 
         writer.println(); // add a line to separate the source from the desc above
 
+        FileLocation firstLoc = match.getFirstMark().getLocation();
+        writeColumnMarker(true, firstLoc.getStartColumn(), writer);
         Chars source = report.getSourceCodeSlice(match.getFirstMark());
 
         if (trimLeadingWhitespace) {
@@ -81,11 +83,29 @@ public class SimpleRenderer implements CPDReportRenderer {
                 line.writeFully(writer);
                 writer.println();
             }
-            return;
+        } else {
+            source.writeFully(writer);
+            if (!source.endsWith("\n")) {
+                writer.println();
+            }
         }
-
-        source.writeFully(writer);
-        writer.println();
+        writeColumnMarker(false, firstLoc.getEndColumn(), writer);
     }
 
+    private static void writeColumnMarker(boolean start, int col, PrintWriter writer) {
+        if (!start) {
+            // end col is exclusive
+            col--;
+        }
+        char marker = start ? 'v' : '^';
+        String hinweis = start ? " starting from here (col " + col + ")"
+                               : " ending here (col " + col + ")";
+
+        StringBuilder sb = new StringBuilder(col + hinweis.length());
+        for (int i = 0; i < col - 1; i++) {
+            sb.append('-');
+        }
+        sb.append(marker).append(hinweis);
+        writer.append(sb).println();
+    }
 }
