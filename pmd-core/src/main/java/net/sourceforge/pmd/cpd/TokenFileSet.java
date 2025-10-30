@@ -44,7 +44,7 @@ final class TokenFileSet {
     private final SourceManager sourceManager;
 
     /** ID repository mapping String -> int. */
-    private TokenImageMap imageMap;
+    private final TokenImageMap imageMap = new TokenImageMap();
 
     private CpdState state = CpdState.INIT;
 
@@ -66,17 +66,8 @@ final class TokenFileSet {
     }
 
     TokenFileSet(SourceManager sourceManager) {
-        this(sourceManager, new TokenImageMap.MultithreadedImageMap());
-    }
-
-    private TokenFileSet(SourceManager sourceManager, TokenImageMap imageMap) {
         this.sourceManager = sourceManager;
         this.files = new ArrayList<>(Collections.nCopies(sourceManager.size(), null));
-        this.imageMap = Objects.requireNonNull(imageMap);
-    }
-
-    static TokenFileSet create(SourceManager sourceManager, int numThreads) {
-        return new TokenFileSet(sourceManager, new TokenImageMap.SingleThreadedImageMap());
     }
 
     private void checkState(CpdState expectedState, String mname) {
