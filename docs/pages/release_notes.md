@@ -92,6 +92,7 @@ checkstyle version during the build.
   * [#6057](https://github.com/pmd/pmd/issues/6057): \[java] ModifierOrder false positive on "abstract sealed class"
   * [#6079](https://github.com/pmd/pmd/issues/6079): \[java] IdenticalCatchBranches: False negative for overriden method calls
   * [#6123](https://github.com/pmd/pmd/issues/6123): \[java] UselessParentheses FP around switch expression
+  * [#6131](https://github.com/pmd/pmd/issues/6131): \[java] ModifierOrder: wrong enum values documented, indirectly causing xml parse errors
 * java-design
   * [#1499](https://github.com/pmd/pmd/issues/1499): \[java] AvoidDeeplyNestedIfStmts violations can be unintentionally undetected
   * [#5569](https://github.com/pmd/pmd/issues/5569): \[java] ExcessivePublicCount should report number of public "things"
