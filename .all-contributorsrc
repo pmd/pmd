@@ -8271,6 +8271,51 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "Jallibad",
+      "name": "Jordan Alligood",
+      "avatar_url": "https://avatars.githubusercontent.com/u/568244?v=4",
+      "profile": "https://github.com/Jallibad",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "bmeier-pros",
+      "name": "bmeier-pros",
+      "avatar_url": "https://avatars.githubusercontent.com/u/141971923?v=4",
+      "profile": "https://github.com/bmeier-pros",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "delanym",
+      "name": "Delany",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5310238?v=4",
+      "profile": "https://github.com/delanym",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "pkozuchowski",
+      "name": "Piotr Kożuchowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4470967?v=4",
+      "profile": "https://github.com/pkozuchowski",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "rubenporras",
+      "name": "rubenporras",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43636626?v=4",
+      "profile": "https://github.com/rubenporras",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7,

@@ -122,4 +122,21 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>[java] Hardcoded constant in parent interface #6191</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import javax.crypto.spec.SecretKeySpec;
+import net.sourceforge.pmd.lang.java.rule.security.HardCodedCryptoKeyTest;
+
+class CryptoBaseTest implements HardCodedCryptoKeyTest.Constants {
+    public void foo() {
+        SecretKeySpec keySpec1 = new SecretKeySpec(SOME_STRING.getBytes(), "DES");
+        SecretKeySpec keySpec2 = new SecretKeySpec(DYNAMIC_STRING.getBytes(), "DES");
+    }
+}
+        ]]>
+
+        </code>
+    </test-code>
 </test-data>

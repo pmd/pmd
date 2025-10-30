@@ -8,7 +8,8 @@ Many thanks to all our sponsors:
 * John Kuhl via opencollective (11/2023)
 * [flxbl-io](https://github.com/flxbl-io) (@flxbl-io) (12/2024 till 05/2025)
 * [Jonathan Gillespie](https://github.com/jongpie) (@jongpie) (12/2024 till 04/2025)
-* [Cybozu](https://github.com/cybozu) (@cybozu) (since 05/2025)
+* [Cybozu](https://github.com/cybozu) (@cybozu) (05/2025 till 09/2025)
+* [Cybozu](https://opencollective.com/cybozu) via opencollective (since 10/2025)
 
 If you also want to sponsor PMD, you have two options:
 

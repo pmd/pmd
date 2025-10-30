@@ -82,9 +82,6 @@ final class TokenFileSet {
             checkState(CpdState.INIT, "setState(BUILDING)");
         } else if (newState == CpdState.HASHING) {
             checkState(CpdState.BUILDING, "setState(HASHING)");
-            // At this point we will never use the images anymore so we
-            // null them out to free memory
-            // this.imageMap = null;
         } else if (newState == CpdState.MATCHING) {
             checkState(CpdState.HASHING, "setState(HASHING)");
         }

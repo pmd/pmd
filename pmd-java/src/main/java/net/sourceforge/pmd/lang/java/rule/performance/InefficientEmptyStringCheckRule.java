@@ -48,8 +48,8 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
 
     @Override
     public Object visit(ASTMethodCall call, Object data) {
-        if (isTrimCall(call.getQualifier())
-            && (isLengthZeroCheck(call) || isIsEmptyCall(call))) {
+        if (isTrimOrStripCall(call.getQualifier())
+            && (isLengthZeroCheck(call) || isIsEmptyOrIsBlankCall(call))) {
             asCtx(data).addViolation(call);
         }
         return null;
@@ -57,26 +57,28 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
 
     private static boolean isLengthZeroCheck(ASTMethodCall call) {
         return "length".equals(call.getMethodName())
-            && call.getArguments().size() == 0
+            && call.getArguments().isEmpty()
             && JavaRuleUtil.isZeroChecked(call);
     }
 
-    private static boolean isTrimCall(ASTExpression expr) {
+    private static boolean isTrimOrStripCall(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expr;
-            return "trim".equals(call.getMethodName())
-                && call.getArguments().size() == 0
+            String methodName = call.getMethodName();
+            return ("trim".equals(methodName) || "strip".equals(methodName))
+                && call.getArguments().isEmpty()
                 && TypeTestUtil.isA(String.class, call.getQualifier());
         }
         return false;
     }
 
 
-    private static boolean isIsEmptyCall(ASTExpression expr) {
+    private static boolean isIsEmptyOrIsBlankCall(ASTExpression expr) {
         if (expr instanceof ASTMethodCall) {
             ASTMethodCall call = (ASTMethodCall) expr;
-            return "isEmpty".equals(call.getMethodName())
-                && call.getArguments().size() == 0;
+            String methodName = call.getMethodName();
+            return ("isEmpty".equals(methodName) || "isBlank".equals(methodName))
+                && call.getArguments().isEmpty();
         }
         return false;
     }
