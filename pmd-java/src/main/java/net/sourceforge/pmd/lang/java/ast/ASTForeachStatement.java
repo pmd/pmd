@@ -33,8 +33,7 @@ public final class ASTForeachStatement extends AbstractStatement implements Inte
 
 
     @Override
-    @NonNull
-    public ASTVariableId getVarId() {
+    public @NonNull ASTVariableId getVarId() {
         // in case of destructuring record patterns, there might be multiple vars
         return getFirstChild().descendants(ASTVariableId.class).first();
     }
@@ -43,8 +42,7 @@ public final class ASTForeachStatement extends AbstractStatement implements Inte
      * Returns the expression that evaluates to the {@link Iterable}
      * being looped upon.
      */
-    @NonNull
-    public ASTExpression getIterableExpr() {
+    public @NonNull ASTExpression getIterableExpr() {
         return firstChild(ASTExpression.class);
     }
 

@@ -24,8 +24,7 @@ public final class ASTThisExpression extends AbstractJavaExpr implements ASTPrim
     }
 
 
-    @Nullable
-    public ASTClassType getQualifier() {
+    public @Nullable ASTClassType getQualifier() {
         return getNumChildren() > 0 ? (ASTClassType) getChild(0) : null;
     }
 

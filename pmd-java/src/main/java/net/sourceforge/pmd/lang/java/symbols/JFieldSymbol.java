@@ -44,8 +44,7 @@ public interface JFieldSymbol extends JVariableSymbol, JAccessibleElementSymbol 
 
 
     @Override
-    @NonNull
-    default String getPackageName() {
+    default @NonNull String getPackageName() {
         return getEnclosingClass().getPackageName();
     }
 
