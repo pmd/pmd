@@ -75,6 +75,7 @@ checkstyle version during the build.
 * java
   * [#4904](https://github.com/pmd/pmd/issues/4904): \[java] Renderers output wrong class qualified name for nested classes
   * [#6127](https://github.com/pmd/pmd/issues/6127): \[java] Incorrect variable name in violation
+  * [#6132](https://github.com/pmd/pmd/issues/6132): \[java] Implement main method launch protocol priorities
   * [#6146](https://github.com/pmd/pmd/issues/6146): \[java] ClassCastException: class InferenceVarSym cannot be cast to class JClassSymbol
 * java-bestpractices
   * [#2928](https://github.com/pmd/pmd/issues/2928): \[java] New rules about labeled statements
@@ -154,6 +155,7 @@ checkstyle version during the build.
 * [#6124](https://github.com/pmd/pmd/pull/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6129](https://github.com/pmd/pmd/pull/6129): \[java] Fix #6127: Correct var name in violation decorator - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6130](https://github.com/pmd/pmd/pull/6130): \[java] UselessParentheses: fix false positives for switch expressions - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6132](https://github.com/pmd/pmd/pull/6132): \[java] Implement main method launch protocol priorities - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6133](https://github.com/pmd/pmd/pull/6133): \[java] Fix #5042: CloseResource: fix false positive with pattern matching - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6150](https://github.com/pmd/pmd/pull/6150): \[core] Reduce memory usage of CPD's MatchCollector - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6152](https://github.com/pmd/pmd/pull/6152): chore(deps): Update Saxon-HE from 12.5 to 12.9 - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
