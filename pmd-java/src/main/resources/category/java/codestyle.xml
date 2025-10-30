@@ -1150,7 +1150,7 @@ public class Foo {
             - `ontype`: Type annotations must be placed next to the type they apply to
             - `ondecl`: Type annotations must be placed with other annotations, before modifiers.
             This is not enforced if the type annotations syntactically appears within the type, e.g.
-            in `public Map.@Nullable Entry&lt;K,V&gt; method()`.
+            in `public Map.@Nullable Entry&lt;K,V&gt; method()` or `public &lt;T&gt; @NonNull T method()`.
             - `anywhere` (default): Either position fits. They still cannot be interspersed within keyword
             modifiers. Annotations that are not type annotations are still required to be before keyword
             modifiers.
