@@ -2358,7 +2358,7 @@
   <li><a href="pmd_rules_java_performance.html#bigintegerinstantiation">BigIntegerInstantiation</a>: Don’t create instances of already existing BigInteger (‘BigInteger.ZERO’, ‘BigInteger.ONE’), for …</li>
   <li><a href="pmd_rules_java_performance.html#consecutiveappendsshouldreuse">ConsecutiveAppendsShouldReuse</a>: Consecutive calls to StringBuffer/StringBuilder .append should be chained, reusing the target obj…</li>
   <li><a href="pmd_rules_java_performance.html#consecutiveliteralappends">ConsecutiveLiteralAppends</a>: Consecutively calling StringBuffer/StringBuilder.append(…) with literals should be avoided. Sin…</li>
-  <li><a href="pmd_rules_java_performance.html#inefficientemptystringcheck">InefficientEmptyStringCheck</a>: String.trim().length() == 0 (or String.trim().isEmpty() for the same reason) is an inefficient wa…</li>
+  <li><a href="pmd_rules_java_performance.html#inefficientemptystringcheck">InefficientEmptyStringCheck</a>: Checking the length of ‘string.trim()’ or ‘string.strip()’ is an inefficient way to decide if a s…</li>
   <li><a href="pmd_rules_java_performance.html#inefficientstringbuffering">InefficientStringBuffering</a>: Avoid concatenating non-literals in a StringBuffer constructor or append() since intermediate buf…</li>
   <li><a href="pmd_rules_java_performance.html#insufficientstringbufferdeclaration">InsufficientStringBufferDeclaration</a>: Failing to pre-size a StringBuffer or StringBuilder properly could cause it to re-size many times…</li>
   <li><a href="pmd_rules_java_performance.html#optimizabletoarraycall">OptimizableToArrayCall</a>: Calls to a collection’s ‘toArray(E[])’ method should specify a target array of zero size. This al…</li>

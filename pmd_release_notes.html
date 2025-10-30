@@ -2132,6 +2132,7 @@ again (otherwise it won’t be included anymore):
       <li><a href="https://github.com/pmd/pmd/issues/6057">#6057</a>: [java] ModifierOrder false positive on “abstract sealed class”</li>
       <li><a href="https://github.com/pmd/pmd/issues/6079">#6079</a>: [java] IdenticalCatchBranches: False negative for overriden method calls</li>
       <li><a href="https://github.com/pmd/pmd/issues/6123">#6123</a>: [java] UselessParentheses FP around switch expression</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6131">#6131</a>: [java] ModifierOrder: wrong enum values documented, indirectly causing xml parse errors</li>
     </ul>
   </li>
   <li>java-design
@@ -2160,6 +2161,16 @@ again (otherwise it won’t be included anymore):
   <li>java-multithreading
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/5880">#5880</a>: [java] DoubleCheckedLocking is not detected if more than 1 assignment or more than 2 if statements</li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6172">#6172</a>: [java] InefficientEmptyStringCheck should include String#strip</li>
+    </ul>
+  </li>
+  <li>java-security
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6191">#6191</a>: [java] HardCodedCryptoKey: NPE when constants from parent class are used</li>
     </ul>
   </li>
   <li>plsql-design
@@ -2222,6 +2233,7 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6114">#6114</a>: [java] Fix #4122: CheckResultSet false-positive with local variable - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6116">#6116</a>: [java] ConfusingTernary: add configuration property for null checks - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6124">#6124</a>: [java] UnusedLocalVariable: fix false negatives in pattern matching - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6128">#6128</a>: [java] Fix #4904: Correct class name in violation decorator - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6129">#6129</a>: [java] Fix #6127: Correct var name in violation decorator - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6130">#6130</a>: [java] UselessParentheses: fix false positives for switch expressions - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6132">#6132</a>: [java] Implement main method launch protocol priorities - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
@@ -2233,7 +2245,10 @@ used anymore and are not required to be implemented anymore:
   <li><a href="https://github.com/pmd/pmd/pull/6166">#6166</a>: [doc] Use emoji variants - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6170">#6170</a>: [java] Fix #6169: AvoidUsingHardCodedIP - mention address in message - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6171">#6171</a>: [java] AvoidUsingHardCodedIP: fix false positive for IPv6 - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6172">#6172</a>: [java] InefficientEmptyStringCheck should include String#strip - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6185">#6185</a>: [java] Fix #6131: Correct enum values for ModifierOrder - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6190">#6190</a>: [apex] Update ApexDoc rule to match the published specification - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6191">#6191</a>: [java] HardCodedCryptoKey: NPE when constants from parent class are used - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>

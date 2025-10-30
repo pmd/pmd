@@ -3816,7 +3816,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Inefficient Empty String Check",
   "url": "pmd_rules_java_performance.html#inefficientemptystringcheck",
-  "summary": "String.trim().length() == 0 (or String.trim().isEmpty() for the same reason) is an inefficient way to check..."
+  "summary": "Checking the length of `string.trim()` or `string.strip()` is an inefficient way to decide if a..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/performance.md",

@@ -92,6 +92,7 @@ checkstyle version during the build.
   * [#6057](https://github.com/pmd/pmd/issues/6057): \[java] ModifierOrder false positive on "abstract sealed class"
   * [#6079](https://github.com/pmd/pmd/issues/6079): \[java] IdenticalCatchBranches: False negative for overriden method calls
   * [#6123](https://github.com/pmd/pmd/issues/6123): \[java] UselessParentheses FP around switch expression
+  * [#6131](https://github.com/pmd/pmd/issues/6131): \[java] ModifierOrder: wrong enum values documented, indirectly causing xml parse errors
 * java-design
   * [#1499](https://github.com/pmd/pmd/issues/1499): \[java] AvoidDeeplyNestedIfStmts violations can be unintentionally undetected
   * [#5569](https://github.com/pmd/pmd/issues/5569): \[java] ExcessivePublicCount should report number of public "things"
@@ -108,6 +109,10 @@ checkstyle version during the build.
   * [#6083](https://github.com/pmd/pmd/issues/6083): \[java] New rule IdenticalConditionalBranches
 * java-multithreading
   * [#5880](https://github.com/pmd/pmd/issues/5880): \[java] DoubleCheckedLocking is not detected if more than 1 assignment or more than 2 if statements
+* java-performance
+  * [#6172](https://github.com/pmd/pmd/issues/6172): \[java] InefficientEmptyStringCheck should include String#strip
+* java-security
+  * [#6191](https://github.com/pmd/pmd/issues/6191): \[java] HardCodedCryptoKey: NPE when constants from parent class are used
 * plsql-design
   * [#6077](https://github.com/pmd/pmd/issues/6077): \[plsql] Excessive\*/Ncss\*Count/NPathComplexity include the metric
 
@@ -155,6 +160,7 @@ checkstyle version during the build.
 * [#6114](https://github.com/pmd/pmd/pull/6114): \[java] Fix #4122: CheckResultSet false-positive with local variable - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6116](https://github.com/pmd/pmd/pull/6116): \[java] ConfusingTernary: add configuration property for null checks - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6124](https://github.com/pmd/pmd/pull/6124): \[java] UnusedLocalVariable: fix false negatives in pattern matching - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6128](https://github.com/pmd/pmd/pull/6128): \[java] Fix #4904: Correct class name in violation decorator - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6129](https://github.com/pmd/pmd/pull/6129): \[java] Fix #6127: Correct var name in violation decorator - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6130](https://github.com/pmd/pmd/pull/6130): \[java] UselessParentheses: fix false positives for switch expressions - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6132](https://github.com/pmd/pmd/pull/6132): \[java] Implement main method launch protocol priorities - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
@@ -166,7 +172,10 @@ checkstyle version during the build.
 * [#6166](https://github.com/pmd/pmd/pull/6166): \[doc] Use emoji variants - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6170](https://github.com/pmd/pmd/pull/6170): \[java] Fix #6169: AvoidUsingHardCodedIP - mention address in message - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6171](https://github.com/pmd/pmd/pull/6171): \[java] AvoidUsingHardCodedIP: fix false positive for IPv6 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6172](https://github.com/pmd/pmd/pull/6172): \[java] InefficientEmptyStringCheck should include String#strip - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6185](https://github.com/pmd/pmd/pull/6185): \[java] Fix #6131: Correct enum values for ModifierOrder - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6190](https://github.com/pmd/pmd/pull/6190): \[apex] Update ApexDoc rule to match the published specification - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
+* [#6191](https://github.com/pmd/pmd/pull/6191): \[java] HardCodedCryptoKey: NPE when constants from parent class are used - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

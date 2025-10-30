@@ -2445,26 +2445,23 @@ can be appended in a single method call.</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>String.trim().length() == 0 (or String.trim().isEmpty() for the same reason) is an inefficient
-way to check if a String is really blank, as it creates a new String object just to check its size.
-Consider creating a static function that loops through a string, checking Character.isWhitespace()
-on each character and returning false if a non-whitespace character is found. A Smarter code to
-check for an empty string would be:</p>
+<p>Checking the length of <code class="language-plaintext highlighter-rouge">string.trim()</code> or <code class="language-plaintext highlighter-rouge">string.strip()</code> is an inefficient way
+to decide if a string is really blank, as it creates a new <code class="language-plaintext highlighter-rouge">String</code> object just to check its size.
+As of Java 11 you can use <code class="language-plaintext highlighter-rouge">string.isBlank()</code> to decide if a string consists only of whitespace,
+that check is equivalent to <code class="language-plaintext highlighter-rouge">string.strip().isEmpty()</code>. To get the semantic of
+<code class="language-plaintext highlighter-rouge">string.trim().isEmpty()</code>, you can loop through the characters and compare them to 0x20:</p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kt">boolean</span> <span class="nf">checkTrimEmpty</span><span class="o">(</span><span class="nc">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">str</span><span class="o">.</span><span class="na">length</span><span class="o">();</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-        <span class="k">if</span><span class="o">(!</span><span class="nc">Character</span><span class="o">.</span><span class="na">isWhitespace</span><span class="o">(</span><span class="n">str</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">i</span><span class="o">)))</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-    <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="k">return</span> <span class="n">str</span><span class="o">.</span><span class="na">chars</span><span class="o">().</span><span class="na">allMatch</span><span class="o">(</span><span class="n">c</span> <span class="o">-&gt;</span> <span class="n">c</span> <span class="o">&lt;=</span> <span class="mh">0x20</span><span class="o">);</span>
 <span class="o">}</span>
 </code></pre></div></div>
 
-<p>You can refer to Apache’s StringUtils#isBlank (in commons-lang),
-Spring’s StringUtils#hasText (in the Spring framework) or Google’s
-CharMatcher#whitespace (in Guava) for existing implementations (some might
-include the check for != null).</p>
+<p>You can also consider using library functions that include a null check
+(e.g. Apache’s <code class="language-plaintext highlighter-rouge">StringUtils#isBlank</code> in commons-lang,
+Spring’s <code class="language-plaintext highlighter-rouge">StringUtils#hasText</code> in the Spring framework) or use a different definition of whitespace
+(e.g. Google’s <code class="language-plaintext highlighter-rouge">CharMatcher#whitespace</code> in Guava).</p>
+
+<p>Calling <code class="language-plaintext highlighter-rouge">string.strip().isBlank()</code> is also redundant and should be simplified to <code class="language-plaintext highlighter-rouge">string.isBlank()</code>.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/performance/InefficientEmptyStringCheckRule.java">net.sourceforge.pmd.lang.java.rule.performance.InefficientEmptyStringCheckRule</a></p>
 
