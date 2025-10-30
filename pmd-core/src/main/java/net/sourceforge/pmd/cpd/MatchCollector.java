@@ -92,7 +92,7 @@ class MatchCollector {
             greater than the tile size. Since the tile size is routinely hundreds of tokens, we are saving at least that
             many unnecessary comparisons _per cell_ (and number of cell is quadratic). In particular for perfect matches
             only one comparison is necessary. I measured that depending on the analysed sources, anywhere from 35 to 65%
-            of comparisons can be eliminated with this trick.
+            of comparisons can be eliminated with this trick (but keep in mind, runtime is dominated by lexing anyway).
          */
 
         int[] lb = new int[marks.size()];
@@ -113,7 +113,7 @@ class MatchCollector {
 
             int dupesIIp1 = lb[j] + tokens.countDupTokens(mark1, mark2, lb[j]);
 
-            if (isDuplicate(mark1, mark2, dupesIIp1)) {
+            if (isDuplicate(dupesIIp1)) {
                 handleDuplicate(i, j, mark1, mark2, dupesIIp1, matches, isAliased);
             }
 
@@ -123,7 +123,7 @@ class MatchCollector {
                 int dupesIJ = lb[j] + tokens.countDupTokens(mark1, mark2, lb[j]);
                 lb[j] = Math.min(dupesIIp1, dupesIJ);
 
-                if (isDuplicate(mark1, mark2, dupesIJ)) {
+                if (isDuplicate(dupesIJ)) {
                     handleDuplicate(i, j, mark1, mark2, dupesIJ, matches, isAliased);
                 }
             }
@@ -233,23 +233,10 @@ class MatchCollector {
     }
 
 
-    private boolean isDuplicate(SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes) { // NOPMD
-        // "match too small" check
-        if (dupes < minTileSize) { // NOPMD
-            return false;
-        }
-        return true;
-
-        //        boolean sameFile = mark1.fileId == mark2.fileId;
-        //        if (!sameFile) {
-        //            return true;
-        //        }
-        //
-        //
-        //        int distance = Math.abs(mark2.indexInFile - mark1.indexInFile);
-        //        // check that they do not overlap
-        //        return distance >= minTileSize
-        //            && dupes < distance + 1;
+    private boolean isDuplicate(int dupes) {
+        // "match too small" check. We don't check for overlap anymore as
+        // the match builder deals with overlapping marks now.
+        return dupes >= minTileSize;
     }
 
     private void recordMatch(Match match) {

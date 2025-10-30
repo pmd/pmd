@@ -10,12 +10,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.IntSummaryStatistics;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -26,10 +22,6 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.util.OptionalBool;
-
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
 /**
  * Stores the lexed tokens by file (one {@link TokenFile} per file). Token files can be lexed in parallel and recorded
@@ -48,26 +40,14 @@ final class TokenFileSet {
      */
     private final List<@Nullable TokenFile> files;
 
-    /** Global map of string (token images) to an integer identifier. */
-    private ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
-
-    /**
-     * Common images that are allocated in a separate map to avoid contending on
-     * the main concurrent hashmap. This includes the images of common tokens like
-     * "public" "static", etc. Is populated during initialization and then shared
-     * between all threads as read-only, without contention.
-     */
-    private Object2IntMap<String> preallocatedImages = new Object2IntOpenHashMap<>();
-    private ThreadLocal<Object2IntMap<String>> threadLocalCache = ThreadLocal.withInitial(Object2IntOpenHashMap::new);
-
     /** Stores references to the files being lexed. */
     private final SourceManager sourceManager;
 
-    // The first ID is 1, 0 is the ID of the EOF token.
-    private int curImageId = 1;
+    /** ID repository mapping String -> int. */
+    private TokenImageMap imageMap;
+
     private CpdState state = CpdState.INIT;
-    // This is shared to save memory on the lambda allocation, which is significant
-    private final Function<String, Integer> getNextImage = k -> curImageId++;
+
     // Collect stats about token file sizes.
     private final IntSummaryStatistics tokenFileStats = new IntSummaryStatistics();
 
@@ -86,8 +66,17 @@ final class TokenFileSet {
     }
 
     TokenFileSet(SourceManager sourceManager) {
+        this(sourceManager, new TokenImageMap.MultithreadedImageMap());
+    }
+
+    private TokenFileSet(SourceManager sourceManager, TokenImageMap imageMap) {
         this.sourceManager = sourceManager;
         this.files = new ArrayList<>(Collections.nCopies(sourceManager.size(), null));
+        this.imageMap = Objects.requireNonNull(imageMap);
+    }
+
+    static TokenFileSet create(SourceManager sourceManager, int numThreads) {
+        return new TokenFileSet(sourceManager, new TokenImageMap.SingleThreadedImageMap());
     }
 
     private void checkState(CpdState expectedState, String mname) {
@@ -100,13 +89,11 @@ final class TokenFileSet {
         assert this.state.compareTo(newState) < 0 : "Cannot change state of " + this.state + " to " + newState;
         if (newState == CpdState.BUILDING) {
             checkState(CpdState.INIT, "setState(BUILDING)");
-            // We need to share this non-concurrent map safely among threads.
-            this.preallocatedImages = Object2IntMaps.unmodifiable(this.preallocatedImages);
         } else if (newState == CpdState.HASHING) {
             checkState(CpdState.BUILDING, "setState(HASHING)");
             // At this point we will never use the images anymore so we
             // null them out to free memory
-            // this.images = null;
+            // this.imageMap = null;
         } else if (newState == CpdState.MATCHING) {
             checkState(CpdState.HASHING, "setState(HASHING)");
         }
@@ -116,17 +103,7 @@ final class TokenFileSet {
 
     int getImageId(String newImage) {
         checkState(CpdState.BUILDING, "getImage");
-        int prealloc = preallocatedImages.getOrDefault(newImage, -1);
-        if (prealloc >= 0) {
-            // Avoid contending on the concurrent map. This is a common path,
-            // in Java programs, 2/3 of the tokens have a known image.
-            return prealloc;
-        }
-        return threadLocalCache.get().computeIfAbsent(newImage,
-            // If it's not a known token, hit the concurrent map.
-            k -> images.computeIfAbsent(newImage, this.getNextImage)
-        );
-
+        return imageMap.getImageId(newImage);
     }
 
     String getImage(TokenEntry entry) {
@@ -135,7 +112,7 @@ final class TokenFileSet {
 
     String imageFromId(int i) {
         checkState(CpdState.BUILDING, "getImage");
-        return images.entrySet().stream().filter(it -> it.getValue() == i).findFirst().map(Map.Entry::getKey).orElse(null);
+        return imageMap.imageFromId(i);
     }
 
     /**
@@ -171,12 +148,7 @@ final class TokenFileSet {
      */
     void preallocImages(Set<String> constantImages) {
         checkState(CpdState.INIT, "preallocImages");
-        int i = this.curImageId;
-        for (String image : constantImages) {
-            preallocatedImages.put(image, i++);
-            images.put(image, i);
-        }
-        this.curImageId = i;
+        imageMap.preallocImages(constantImages);
     }
 
     /**
