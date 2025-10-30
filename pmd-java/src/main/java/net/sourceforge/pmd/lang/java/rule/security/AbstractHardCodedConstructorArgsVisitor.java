@@ -65,8 +65,13 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
         if (varAccess != null && varAccess.getSignature() != null && varAccess.getSignature().getSymbol() != null) {
             // named variable or method call on named variable found
             ASTVariableId varDecl = varAccess.getSignature().getSymbol().tryGetNode();
-            validateProperKeyArgument(data, varDecl.getInitializer());
-            validateVarUsages(data, varDecl);
+            if (varDecl != null) {
+                validateProperKeyArgument(data, varDecl.getInitializer());
+                validateVarUsages(data, varDecl);
+            } else if (varAccess.isCompileTimeConstant()
+                    && varAccess.getConstValue() instanceof String) {
+                asCtx(data).addViolation(varAccess);
+            }
         } else if (firstArgumentExpression instanceof ASTArrayAllocation) {
             // hard coded array
             ASTArrayInitializer arrayInit = ((ASTArrayAllocation) firstArgumentExpression).getArrayInitializer();
