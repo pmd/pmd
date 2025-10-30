@@ -72,6 +72,8 @@ checkstyle version during the build.
   * [#5935](https://github.com/pmd/pmd/issues/5935): \[apex] @<!-- -->SuppressWarnings - allow whitespace around comma when suppressing multiple rules
 * apex-design
   * [#6022](https://github.com/pmd/pmd/issues/6022): \[apex] ExcessiveClassLength/ExcessiveParameterList include the metric in the message
+* apex-documentation
+  * [#6189](https://github.com/pmd/pmd/issues/6189): \[apex] ApexDoc rule doesn't match published Salesforce ApexDoc specification
 * java
   * [#4904](https://github.com/pmd/pmd/issues/4904): \[java] Renderers output wrong class qualified name for nested classes
   * [#6127](https://github.com/pmd/pmd/issues/6127): \[java] Incorrect variable name in violation
@@ -164,6 +166,7 @@ checkstyle version during the build.
 * [#6166](https://github.com/pmd/pmd/pull/6166): \[doc] Use emoji variants - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6170](https://github.com/pmd/pmd/pull/6170): \[java] Fix #6169: AvoidUsingHardCodedIP - mention address in message - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6171](https://github.com/pmd/pmd/pull/6171): \[java] AvoidUsingHardCodedIP: fix false positive for IPv6 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6190](https://github.com/pmd/pmd/pull/6190): \[apex] Update ApexDoc rule to match the published specification - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->

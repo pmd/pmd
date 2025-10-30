@@ -2045,7 +2045,7 @@
 overrides and test classes (as well as the contents of test classes).</li>
   <li>ApexDoc comments are present for classes, methods, and properties that are protected or private, depending
 on the properties <code class="language-plaintext highlighter-rouge">reportPrivate</code> and <code class="language-plaintext highlighter-rouge">reportProtected</code>.</li>
-  <li>ApexDoc comments should contain @description depending on the property <code class="language-plaintext highlighter-rouge">reportMissingDescription</code>.</li>
+  <li>ApexDoc comments should contain a main description depending on the property <code class="language-plaintext highlighter-rouge">reportMissingDescription</code>.</li>
   <li>ApexDoc comments on non-void, non-constructor methods should contain @return.</li>
   <li>ApexDoc comments on void or constructor methods should not contain @return.</li>
   <li>ApexDoc comments on methods with parameters should contain @param for each parameter, in the same
@@ -2061,11 +2061,11 @@ By setting <code class="language-plaintext highlighter-rouge">reportProperty</co
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
- * @description Hello World
+ * Hello World
  */</span>
 <span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld</span> <span class="o">{</span>
     <span class="cm">/**
-     * @description Bar
+     * Bar
      * @return Bar
      */</span>
     <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">bar</span><span class="o">()</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span> <span class="o">}</span>
@@ -2096,7 +2096,7 @@ By setting <code class="language-plaintext highlighter-rouge">reportProperty</co
     <tr>
       <td>reportMissingDescription</td>
       <td>true</td>
-      <td>Report missing @description</td>
+      <td>Report missing main description</td>
     </tr>
     <tr>
       <td>reportProperty</td>
