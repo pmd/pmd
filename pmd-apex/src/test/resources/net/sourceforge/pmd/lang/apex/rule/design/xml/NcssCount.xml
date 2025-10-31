@@ -113,10 +113,10 @@ public class Foo extends Bar {
         <rule-property name="methodReportLevel">5</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
-            <message>The class 'Foo' has a NCSS line count of 59 (Highest = 21).</message>
-            <message>The constructor '&lt;init&gt;(int)' has a NCSS line count of 10.</message>
-            <message>The method 'foo()' has a NCSS line count of 11.</message>
-            <message>The method 'main(String[])' has a NCSS line count of 21.</message>
+            <message>The class 'Foo' has a NCSS line count of 59 (highest = 21, limit = 40).</message>
+            <message>The constructor '&lt;init&gt;(int)' has a NCSS line count of 10 (limit = 5).</message>
+            <message>The method 'foo()' has a NCSS line count of 11 (limit = 5).</message>
+            <message>The method 'main(String[])' has a NCSS line count of 21 (limit = 5).</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
