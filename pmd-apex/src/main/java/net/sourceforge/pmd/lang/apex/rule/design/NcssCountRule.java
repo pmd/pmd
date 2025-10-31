@@ -38,14 +38,14 @@ public final class NcssCountRule extends AbstractApexRule {
         PropertyFactory.intProperty("methodReportLevel")
                        .desc("NCSS reporting threshold for methods")
                        .require(positive())
-                       .defaultValue(60)
+                       .defaultValue(40)
                        .build();
 
     private static final PropertyDescriptor<Integer> CLASS_REPORT_LEVEL_DESCRIPTOR =
         PropertyFactory.intProperty("classReportLevel")
                        .desc("NCSS reporting threshold for classes")
                        .require(positive())
-                       .defaultValue(1500)
+                       .defaultValue(500)
                        .build();
 
     public NcssCountRule() {
