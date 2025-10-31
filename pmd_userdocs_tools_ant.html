@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.18.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.19.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.18.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.19.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.18.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 31-October-2025</div>
+    <li class="sidebarTitle">PMD 7.19.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 28-November-2025</div>
     
     
     
@@ -2045,12 +2045,12 @@ Then you can either copy all “*.jar” files from PMD’s lib folder into one 
 (<code class="language-plaintext highlighter-rouge">ANT_HOME/lib</code>, <code class="language-plaintext highlighter-rouge">${user.home}/.ant/lib</code>) or using the <code class="language-plaintext highlighter-rouge">-lib</code> command line parameter.</p>
 
 <p>However, the preferred way is to define a <code class="language-plaintext highlighter-rouge">&lt;classpath&gt;</code> for pmd itself and use this classpath when
-adding the PMD Task. Assuming, you have extracted the PMD zip file to <code class="language-plaintext highlighter-rouge">/home/joe/pmd-bin-7.18.0-SNAPSHOT</code>,
+adding the PMD Task. Assuming, you have extracted the PMD zip file to <code class="language-plaintext highlighter-rouge">/home/joe/pmd-bin-7.19.0-SNAPSHOT</code>,
 then you can make use of the PMD Task like this:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask"&gt;
     &lt;classpath&gt;
-        &lt;fileset dir="/home/joe/pmd-bin-7.18.0-SNAPSHOT/lib"&gt;
+        &lt;fileset dir="/home/joe/pmd-bin-7.19.0-SNAPSHOT/lib"&gt;
             &lt;include name="*.jar"/&gt;
         &lt;/fileset&gt;
     &lt;/classpath&gt;
@@ -2060,7 +2060,7 @@ then you can make use of the PMD Task like this:</p>
 <p>Alternatively, a path can be defined and used via <code class="language-plaintext highlighter-rouge">classpathref</code>:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
-    &lt;fileset dir="/home/joe/pmd-bin-7.18.0-SNAPSHOT/lib"&gt;
+    &lt;fileset dir="/home/joe/pmd-bin-7.19.0-SNAPSHOT/lib"&gt;
         &lt;include name="*.jar"/&gt;
     &lt;/fileset&gt;
 &lt;/path&gt;
@@ -2292,7 +2292,7 @@ make sure you use the XML formatter in the PMD task invocation, i.e.:</p>
 need to be configured when defining the task:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;path id="pmd.classpath"&gt;
-    &lt;fileset dir="/home/joe/pmd-bin-7.18.0-SNAPSHOT/lib"&gt;
+    &lt;fileset dir="/home/joe/pmd-bin-7.19.0-SNAPSHOT/lib"&gt;
         &lt;include name="*.jar"/&gt;
     &lt;/fileset&gt;
     &lt;!-- the custom renderer is expected to be in /home/joe/pmd-addons/com/company/MyRenderer.class --&gt;
@@ -2323,7 +2323,7 @@ Your project needs to be compiled first which happens in the target “compile�
         &lt;pathelement location="lib/xyz.jar"/&gt;
     &lt;/path&gt;
     &lt;path id="pmd.classpath"&gt;
-        &lt;fileset dir="/home/joe/pmd-bin-7.18.0-SNAPSHOT/lib"&gt;
+        &lt;fileset dir="/home/joe/pmd-bin-7.19.0-SNAPSHOT/lib"&gt;
             &lt;include name="*.jar"/&gt;
         &lt;/fileset&gt;
     &lt;/path&gt;
@@ -2478,7 +2478,7 @@ To prevent this from happening, increase the maximum memory usable by ant using 
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2025 (7.16.0)<br /> Site last generated: Oct 30, 2025 <br />
+            July 2025 (7.16.0)<br /> Site last generated: Oct 31, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.18.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.19.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.18.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.19.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.18.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 31-October-2025</div>
+    <li class="sidebarTitle">PMD 7.19.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 28-November-2025</div>
     
     
     
@@ -2037,7 +2037,7 @@ You can use the signatures to verify that the downloads you have not been tamper
 <p>Download the binary zip file and the corresponding <code class="language-plaintext highlighter-rouge">asc</code> file from the release assets from <a href="https://github.com/pmd/pmd/releases">GitHub Releases</a>
 into the same directory. Then use <code class="language-plaintext highlighter-rouge">gpg</code> to verify the download:</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--verify</span> pmd-dist-7.18.0-SNAPSHOT-bin.zip.asc pmd-dist-7.18.0-SNAPSHOT-bin.zip
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gpg <span class="nt">--verify</span> pmd-dist-7.19.0-SNAPSHOT-bin.zip.asc pmd-dist-7.19.0-SNAPSHOT-bin.zip
 </code></pre></div></div>
 
 <p>If you do not currently have PMD’s public release signing key you will get a message such as this:</p>
@@ -2128,9 +2128,9 @@ are signed with the same key.</p>
 
 <p>You can manually verify the artifacts with the same method:</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/7.18.0-SNAPSHOT/pmd-core-7.18.0-SNAPSHOT.jar
-wget https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/7.18.0-SNAPSHOT/pmd-core-7.18.0-SNAPSHOT.jar.asc
-gpg <span class="nt">--verify</span> pmd-core-7.18.0-SNAPSHOT.jar.asc pmd-core-7.18.0-SNAPSHOT.jar
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wget https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/7.19.0-SNAPSHOT/pmd-core-7.19.0-SNAPSHOT.jar
+wget https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/7.19.0-SNAPSHOT/pmd-core-7.19.0-SNAPSHOT.jar.asc
+gpg <span class="nt">--verify</span> pmd-core-7.19.0-SNAPSHOT.jar.asc pmd-core-7.19.0-SNAPSHOT.jar
 </code></pre></div></div>
 
 <p>This gives you e.g.</p>
@@ -2180,7 +2180,7 @@ gpg: Good signature from "PMD Release Signing Key &lt;releases@pmd-code.org&gt;"
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2025 (7.11.0)<br /> Site last generated: Oct 30, 2025 <br />
+            February 2025 (7.11.0)<br /> Site last generated: Oct 31, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
