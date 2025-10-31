@@ -6,6 +6,7 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.Node;
 
+//TODO: deprecate! not used by ApexTreeBuilder...
 public final class ASTStatement extends AbstractApexNode.Single<Node> {
 
     ASTStatement(Node statement) {

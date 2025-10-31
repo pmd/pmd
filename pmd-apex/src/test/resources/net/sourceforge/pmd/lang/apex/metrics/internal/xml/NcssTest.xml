@@ -3,21 +3,8 @@
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
-    <!-- All these tests have been validated against JavaNCSS. -->
 
     <code-fragment id="full-example"><![CDATA[
-package com
-        .company
-        .money;
-
-import com
-        .company
-        .money.Bar;
-import com.company.Carrot;
-import com.company.ScaryException;
-import com.company.ThemAll;
-import java.util.Random;
-
 public class Foo extends Bar {
     int y, z, t;
     String q;
@@ -25,13 +12,13 @@ public class Foo extends Bar {
     {
         bar();
         int x;
-        switch
-        (x) {
-        case 1: foo(); break;
-        case 2:
-        case 3: bar();
-            break;
-        default: break;
+        switch on
+        x {
+        when 1 { foo(); break; }
+        when 2 { }
+        when 3 { bar();
+            break; }
+        when else { break; }
         }
     }
 
@@ -42,15 +29,15 @@ public class Foo extends Bar {
     public Foo(int z) {
 
         Random r = new Random();
-        label: for (int j = -12; i < z; i++) {
-            theNonsense: for (int k = -20; k < 20; k += j) {
+        for (int j = -12; i < z; i++) {
+            for (int k = -20; k < 20; k += j) {
                 if (r.nextInt() == 42) {
                     System
                             .out
-                            .println("Bye");
-                    break label;
+                            .println('Bye');
+                    break;
                 } else if (k > 12) {
-                    continue theNonsense;
+                    continue;
                 }
             }
         }
@@ -60,25 +47,21 @@ public class Foo extends Bar {
 
     public void foo() {
         int x = 0;
-        synchronized (x) {
-            x++;
-        }
+        x++;
 
         do {
             if (x == 0) {
-                synchronized (x) {
-                    x++;
-                }
+                x++;
             } else if (x == 1) {
                 x = 0;
             } else {
-                System.out.println("Bonjour");
-                throw new ScaryException("Surprise!");
+                System.out.println('Bonjour');
+                throw new ScaryException('Surprise!');
             }
         } while (x != 2);
     }
 
-    public static void main(String args[]) throws ScaryException {
+    public static void main(String[] args) {
         String k, l, m;
         int x;
 
@@ -97,7 +80,7 @@ public class Foo extends Bar {
         }
 
         {
-            x++;;;;;
+            x++;
         }
 
         int p =
@@ -125,42 +108,31 @@ public class Foo extends Bar {
     ]]></code-fragment>
 
     <test-code>
-        <description>Full example - Standard version</description>
-        <rule-property name="reportClasses">true</rule-property>
+        <description>Full example</description>
         <expected-problems>5</expected-problems>
         <expected-messages>
-            <message>'com.company.money.Foo' has value 66.</message>
-            <message>'com.company.money.Foo#Foo()' has value 2.</message>
-            <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
-            <message>'com.company.money.Foo#foo()' has value 14.</message>
-            <message>'com.company.money.Foo#main(String[])' has value 21.</message>
+            <message>'Foo' has value 59.</message>
+            <message>'Foo#Foo()' has value 2.</message>
+            <message>'Foo#Foo(int)' has value 10.</message>
+            <message>'Foo#foo()' has value 11.</message>
+            <message>'Foo#main(String[])' has value 21.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
 
     <test-code>
-        <description>Full example - JavaNcss version</description>
-        <rule-property name="reportClasses">true</rule-property>
-        <rule-property name="metricOptions">countImports</rule-property>
-        <expected-problems>5</expected-problems>
+        <description>Empty ctor and method</description>
+        <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>'com.company.money.Foo' has value 72.</message>
-            <message>'com.company.money.Foo#Foo()' has value 2.</message>
-            <message>'com.company.money.Foo#Foo(int)' has value 13.</message>
-            <message>'com.company.money.Foo#foo()' has value 14.</message>
-            <message>'com.company.money.Foo#main(String[])' has value 21.</message>
-        </expected-messages>
-        <code-ref id="full-example"/>
-    </test-code>
-
-    <test-code>
-        <description>Empty method</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
+            <message>'Foo' has value 3.</message>
+            <message>'Foo#Foo()' has value 1.</message>
             <message>'Foo#foo()' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
+    Foo() {
+        // Comment not counted
+    }
     void foo() {
         // Comment not counted
     }
@@ -169,34 +141,37 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Empty class</description>
-        <rule-property name="reportClasses">true</rule-property>
+        <description>Field Declarations</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo' has value 1.</message>
+            <message>'Foo' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
+    private int field1;
+    private int field2,
+                field3;
 }
-        ]]></code>
+]]></code>
     </test-code>
 
     <test-code>
-        <description>Switch</description>
-        <expected-problems>1</expected-problems>
+        <description>Switch statement</description>
+        <expected-problems>2</expected-problems>
         <expected-messages>
+            <message>'Foo' has value 12.</message>
             <message>'Foo#foo()' has value 11.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
     void foo() {
         int x;
-        switch (x) {
-            case 1:
-            case 2:
-            case 3:
-            case 4: foo(); break;
-            default: break;
+        switch on x {
+            when 1 {}
+            when 2, 3 {}
+            when 5 { foo(); break; }
+            when Foo f {}
+            when else { break; }
         }
     }
 }
@@ -205,8 +180,9 @@ public class Foo {
 
     <test-code>
         <description>Multiple local variable declarations</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
+            <message>'Foo' has value 3.</message>
             <message>'Foo#foo()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
@@ -220,15 +196,16 @@ public class Foo {
 
     <test-code>
         <description>Try is not counted, only catch clauses and finally</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
+            <message>'Foo' has value 5.</message>
             <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
     void foo() {
         try {
-        } catch (java.io.IOException e) {
+        } catch (MyException e) {
         } catch (Exception e) {
         } finally {
         }
@@ -238,27 +215,10 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Empty statements are not counted</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>'Boo#foo()' has value 2.</message>
-        </expected-messages>
-        <code><![CDATA[
-public class Boo {
-    void foo() {
-        foo();;;
-        ;
-        ;
-        ;
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>Blocks are not counted</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
+            <message>'Boo' has value 4.</message>
             <message>'Boo#foo()' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
@@ -277,8 +237,9 @@ public class Boo {
 
     <test-code>
         <description>For initialisations are not counted</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
+            <message>'Hoo' has value 4.</message>
             <message>'Hoo#foo()' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
@@ -298,13 +259,12 @@ public class Hoo {
 
     <test-code>
         <description>Nested classes are counted</description>
-        <rule-property name="reportClasses">true</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
             <message>'Boo' has value 8.</message>
             <message>'Boo#foo()' has value 2.</message>
-            <message>'Boo$Barnabee' has value 5.</message>
-            <message>'Boo$Barnabee#getX()' has value 2.</message>
+            <message>'Boo.Barnabee' has value 5.</message>
+            <message>'Boo.Barnabee#getX()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
 public class Boo {
@@ -326,35 +286,22 @@ public class Boo {
 
     <test-code>
         <description>Enum constants are not counted</description>
-        <rule-property name="reportClasses">true</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
             <message>'Shoo' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
 public enum Shoo {
-    BAR, NA, BEE;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Annotation declarations are counted</description>
-        <rule-property name="reportClasses">true</rule-property>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>'Moo' has value 1.</message>
-        </expected-messages>
-        <code><![CDATA[
-public @interface Moo {
+    BAR, NA, BEE
 }
         ]]></code>
     </test-code>
 
     <test-code>
         <description>Abstract methods are counted</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
         <expected-messages>
+            <message>'Koo' has value 2.</message>
             <message>'Koo#bar()' has value 1.</message>
         </expected-messages>
         <code><![CDATA[
@@ -365,45 +312,7 @@ public abstract class Koo {
     </test-code>
 
     <test-code>
-        <description>Lambdas themselves don't count, only the code within</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>'Koo#bar()' has value 2.</message>
-        </expected-messages>
-        <code><![CDATA[
-import java.util.function.Consumer;
-public abstract class Koo {
-    void bar() {
-        Consumer<Integer> i = i -> {
-
-        };
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Code inside lambdas is counted by default</description>
-        <expected-problems>1</expected-problems>
-        <expected-messages>
-            <message>'Koo#bar()' has value 4.</message>
-        </expected-messages>
-        <code><![CDATA[
-import java.util.function.Consumer;
-public abstract class Koo {
-    void bar() {
-        Consumer<Integer> i = i -> {
-            int j = 0;
-            j = i;
-        };
-    }
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
         <description>While/do-while loops</description>
-        <rule-property name="reportClasses">true</rule-property>
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'Foo' has value 4.</message>

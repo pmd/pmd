@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClassOrInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.metrics.internal.CognitiveComplexityVisitor;
 import net.sourceforge.pmd.lang.apex.metrics.internal.CognitiveComplexityVisitor.State;
+import net.sourceforge.pmd.lang.apex.metrics.internal.NcssVisitor;
 import net.sourceforge.pmd.lang.apex.metrics.internal.StandardCycloVisitor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.metrics.Metric;
@@ -96,6 +97,10 @@ public final class ApexMetrics {
         Metric.of(ApexMetrics::computeCognitiveComp, isRegularApexNode(),
                   "Cognitive Complexity");
 
+    // TODO: javadoc
+    public static final Metric<ApexNode<?>, Integer> NCSS =
+        Metric.of(ApexMetrics::computeNcss, isRegularApexNode(),
+                  "Non-commenting source statements", "NCSS");
 
     /**
      * Sum of the statistical complexity of the operations in the class.
@@ -133,6 +138,11 @@ public final class ApexMetrics {
         return state.getComplexity();
     }
 
+    private static int computeNcss(ApexNode<?> node, MetricOptions ignored) {
+        MutableInt result = new MutableInt(0);
+        node.acceptVisitor(new NcssVisitor(), result);
+        return result.intValue();
+    }
 
 
     private static int computeWmc(ASTUserClassOrInterface<?> node, MetricOptions options) {
