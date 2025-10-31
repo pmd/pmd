@@ -6,7 +6,10 @@ package net.sourceforge.pmd.lang.apex.ast;
 
 import com.google.summit.ast.Node;
 
-//TODO: deprecate! not used by ApexTreeBuilder...
+/**
+ * @deprecated Since 7.19.0. This AST node is not used and doesn't appear in the tree.
+ */
+@Deprecated
 public final class ASTStatement extends AbstractApexNode.Single<Node> {
 
     ASTStatement(Node statement) {

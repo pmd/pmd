@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -138,11 +137,6 @@ abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCoun
         @Override
         public Integer visit(ASTThrowStatement node, Void data) {
             return countNodeChildren(node, data) + 1;
-        }
-
-        @Override
-        public Integer visit(ASTStatement node, Void data) {
-            return 1;
         }
 
         @Override
