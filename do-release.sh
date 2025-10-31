@@ -134,7 +134,7 @@ echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
 echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the version, that will be released"
-echo "    later in this process. ⚠ WARNING! This does not work. You need to select an already released version."
+echo "    later in this process. ⚠️ WARNING! This does not work. You need to select an already released version."
 echo "    See <https://github.com/pmd/pmd-designer/blob/main/releasing.md>."
 echo
 echo "Press enter to continue..."
