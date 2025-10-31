@@ -32,7 +32,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
  *
  * @author ported from Java original of Jason Bennett
+ * @deprecated Since 7.19.0.
  */
+@Deprecated
 abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
 
