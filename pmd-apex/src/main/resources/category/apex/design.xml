@@ -205,6 +205,7 @@ public class Complicated {
 
     <rule name="ExcessiveClassLength"
           language="apex"
+          deprecated="true"
           since="5.5.0"
           message="Avoid really long classes ({0} lines - threshold is {1})."
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule"
@@ -212,7 +213,9 @@ public class Complicated {
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big classes.
         </description>
         <priority>3</priority>
         <example>
