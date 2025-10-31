@@ -97,7 +97,51 @@ public final class ApexMetrics {
         Metric.of(ApexMetrics::computeCognitiveComp, isRegularApexNode(),
                   "Cognitive Complexity");
 
-    // TODO: javadoc
+    /**
+     * Number of statements in a class or operation. That’s roughly
+     * equivalent to counting the number of semicolons and opening braces
+     * in the program. Comments and blank lines are ignored, and statements
+     * spread on multiple lines count as only one (e.g. {@code int\n a;}
+     * counts a single statement).
+     *
+     * <p>The standard version of the metric is based off [JavaNCSS](http://www.kclee.de/clemens/java/javancss/):
+     * <ul>
+     * <li>+1 for any of the following statements: {@code if}, {@code else},
+     * {@code while}, {@code do}, {@code for}, {@code switch}, {@code break},
+     * {@code continue}, {@code return}, {@code throw},
+     * {@code catch}, {@code finally}.
+     * <li>+1 for each assignment, variable declaration (except for loop initializers)
+     * or statement expression. We count variables declared on the same line (e.g.
+     * {@code int a, b, c;}) as a single statement.
+     * <li>Contrary to Sonarqube, but as JavaNCSS, we count type declarations (class, interface, enum, annotation),
+     * and method and field declarations.
+     * </ul>
+     *
+     * <pre>{@code
+     * class Foo {                         // +1, total Ncss = 12
+     *
+     *   public void bigMethod()           // +1
+     *   {
+     *     int x = 0, y = 2;               // +1
+     *     boolean a = false, b = true;    // +1
+     *
+     *     if (a || b) {                   // +1
+     *       try {                         // +1
+     *         do {                        // +1
+     *           x += 2;                   // +1
+     *         } while (x < 12);
+     *
+     *         System.exit(0);             // +1
+     *       } catch (IOException ioe) {   // +1
+     *         throw new PatheticFailException(ioe); // +1
+     *       }
+     *     } else {
+     *       System.out.println('false');  // +1
+     *     }
+     *   }
+     * }
+     * }</pre>
+     */
     public static final Metric<ApexNode<?>, Integer> NCSS =
         Metric.of(ApexMetrics::computeNcss, isRegularApexNode(),
                   "Non-commenting source statements", "NCSS");
