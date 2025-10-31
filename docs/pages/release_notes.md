@@ -179,9 +179,64 @@ checkstyle version during the build.
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6034](https://github.com/pmd/pmd/pull/6034): chore(deps): bump com.puppycrawl.tools:checkstyle from 10.26.1 to 11.0.1
+* [#6054](https://github.com/pmd/pmd/pull/6054): Bump PMD from 7.16.0 to 7.17.0
+* [#6062](https://github.com/pmd/pmd/pull/6062): chore(deps): bump surefire.version from 3.5.3 to 3.5.4
+* [#6063](https://github.com/pmd/pmd/pull/6063): chore(deps): bump ruby/setup-ruby from 1.257.0 to 1.258.0
+* [#6064](https://github.com/pmd/pmd/pull/6064): chore(deps): bump com.google.code.gson:gson from 2.13.1 to 2.13.2
+* [#6065](https://github.com/pmd/pmd/pull/6065): chore(deps): bump actions/create-github-app-token from 2.1.1 to 2.1.4
+* [#6066](https://github.com/pmd/pmd/pull/6066): chore(deps): bump org.apache.groovy:groovy from 5.0.0 to 5.0.1
+* [#6067](https://github.com/pmd/pmd/pull/6067): chore(deps): bump org.apache.maven.plugins:maven-shade-plugin from 3.6.0 to 3.6.1
+* [#6068](https://github.com/pmd/pmd/pull/6068): chore(deps): bump scalameta.version from 4.13.9 to 4.13.10
+* [#6076](https://github.com/pmd/pmd/pull/6076): Bump pmdtester from 1.6.0 to 1.6.1
+* [#6086](https://github.com/pmd/pmd/pull/6086): chore(deps): bump ruby/setup-ruby from 1.258.0 to 1.263.0
+* [#6087](https://github.com/pmd/pmd/pull/6087): chore(deps-dev): bump log4j.version from 2.25.1 to 2.25.2
+* [#6088](https://github.com/pmd/pmd/pull/6088): chore(deps): bump org.mockito:mockito-core from 5.19.0 to 5.20.0
+* [#6089](https://github.com/pmd/pmd/pull/6089): chore(deps): bump org.apache.maven.plugins:maven-javadoc-plugin from 3.11.3 to 3.12.0
+* [#6090](https://github.com/pmd/pmd/pull/6090): chore(deps): bump org.codehaus.mojo:versions-maven-plugin from 2.19.0 to 2.19.1
+* [#6091](https://github.com/pmd/pmd/pull/6091): chore(deps): bump org.apache.maven.plugins:maven-compiler-plugin from 3.14.0 to 3.14.1
+* [#6094](https://github.com/pmd/pmd/pull/6094): chore(deps): Bump rexml from 3.4.1 to 3.4.4
+* [#6104](https://github.com/pmd/pmd/pull/6104): chore(deps): bump actions/cache from 4.2.4 to 4.3.0
+* [#6105](https://github.com/pmd/pmd/pull/6105): chore(deps): bump org.scala-lang:scala-library from 2.13.16 to 2.13.17
+* [#6106](https://github.com/pmd/pmd/pull/6106): chore(deps): bump junit.version from 5.13.4 to 6.0.0
+* [#6107](https://github.com/pmd/pmd/pull/6107): chore(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.5.1 to 3.6.0
+* [#6108](https://github.com/pmd/pmd/pull/6108): chore(deps): bump com.puppycrawl.tools:checkstyle from 10.26.1 to 11.1.0
+* [#6109](https://github.com/pmd/pmd/pull/6109): chore(deps-dev): bump org.assertj:assertj-core from 3.27.4 to 3.27.6
+* [#6110](https://github.com/pmd/pmd/pull/6110): chore(deps): bump org.sonatype.central:central-publishing-maven-plugin from 0.8.0 to 0.9.0
+* [#6118](https://github.com/pmd/pmd/pull/6118): chore(deps): bump com.google.protobuf:protobuf-java from 4.32.0 to 4.32.1
+* [#6119](https://github.com/pmd/pmd/pull/6119): chore(deps): bump com.github.hazendaz.maven:coveralls-maven-plugin from 4.7.0 to 5.0.0
+* [#6120](https://github.com/pmd/pmd/pull/6120): chore(deps): bump org.scala-lang:scala-reflect from 2.13.16 to 2.13.17
+* [#6121](https://github.com/pmd/pmd/pull/6121): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.23.1 to 0.24.1
+* [#6122](https://github.com/pmd/pmd/pull/6122): chore(deps): bump bigdecimal from 3.2.3 to 3.3.0 in /docs
+* [#6136](https://github.com/pmd/pmd/pull/6136): chore(deps): bump ruby/setup-ruby from 1.263.0 to 1.265.0
+* [#6137](https://github.com/pmd/pmd/pull/6137): chore(deps): bump org.apache.maven.plugins:maven-enforcer-plugin from 3.6.1 to 3.6.2
+* [#6138](https://github.com/pmd/pmd/pull/6138): chore(deps): bump scalameta.version from 4.13.10 to 4.14.0
+* [#6139](https://github.com/pmd/pmd/pull/6139): chore(deps): bump com.puppycrawl.tools:checkstyle from 11.1.0 to 12.0.1
+* [#6140](https://github.com/pmd/pmd/pull/6140): chore(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.6.0 to 3.6.1
+* [#6141](https://github.com/pmd/pmd/pull/6141): chore(deps): bump org.ow2.asm:asm from 9.8 to 9.9
+* [#6142](https://github.com/pmd/pmd/pull/6142): chore(deps): bump org.apache.commons:commons-lang3 from 3.18.0 to 3.19.0
+* [#6143](https://github.com/pmd/pmd/pull/6143): chore(deps): bump bigdecimal from 3.3.0 to 3.3.1 in /docs
+* [#6152](https://github.com/pmd/pmd/pull/6152): chore(deps): Update Saxon-HE from 12.5 to 12.9
+* [#6157](https://github.com/pmd/pmd/pull/6157): chore(deps-dev): bump com.google.guava:guava from 33.4.8-jre to 33.5.0-jre
+* [#6158](https://github.com/pmd/pmd/pull/6158): chore(deps): bump scalameta.version from 4.14.0 to 4.14.1
+* [#6159](https://github.com/pmd/pmd/pull/6159): chore(deps): bump org.apache.maven.plugins:maven-dependency-plugin from 3.8.1 to 3.9.0
+* [#6160](https://github.com/pmd/pmd/pull/6160): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.24.1 to 0.24.2
+* [#6161](https://github.com/pmd/pmd/pull/6161): chore(deps): bump org.apache.maven.plugins:maven-pmd-plugin from 3.27.0 to 3.28.0
+* [#6162](https://github.com/pmd/pmd/pull/6162): chore(deps): bump org.apache.maven.plugins:maven-antrun-plugin from 3.1.0 to 3.2.0
+* [#6165](https://github.com/pmd/pmd/pull/6165): Bump pmdtester from 1.6.1 to 1.6.2
+* [#6173](https://github.com/pmd/pmd/pull/6173): chore(deps): bump actions/upload-artifact from 4.6.2 to 5.0.0
+* [#6174](https://github.com/pmd/pmd/pull/6174): chore(deps): bump ruby/setup-ruby from 1.265.0 to 1.267.0
+* [#6175](https://github.com/pmd/pmd/pull/6175): chore(deps): bump actions/download-artifact from 5.0.0 to 6.0.0
+* [#6178](https://github.com/pmd/pmd/pull/6178): chore(deps): bump org.checkerframework:checker-qual from 3.49.5 to 3.51.1
+* [#6179](https://github.com/pmd/pmd/pull/6179): chore(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.6.1 to 3.6.2
+* [#6180](https://github.com/pmd/pmd/pull/6180): chore(deps): bump io.github.apex-dev-tools:apex-ls_2.13 from 5.10.0 to 6.0.1
+* [#6181](https://github.com/pmd/pmd/pull/6181): chore(deps): bump org.apache.groovy:groovy from 5.0.1 to 5.0.2
+* [#6182](https://github.com/pmd/pmd/pull/6182): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.17.7 to 1.17.8
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 233 commits
+* 76 closed tickets & PRs
+* Days since last release: 49
 
 {% endtocmaker %}
-
