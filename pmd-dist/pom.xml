@@ -14,6 +14,7 @@
 
     <properties>
         <pmd.dist.bin.baseDirectory>pmd-bin-${project.version}</pmd.dist.bin.baseDirectory>
+        <Automatic-Module-Name>net.sourceforge.pmd.dist</Automatic-Module-Name>
     </properties>
 
     <build>

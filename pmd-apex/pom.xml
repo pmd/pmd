@@ -10,6 +10,9 @@
         <version>7.19.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+    <properties>
+        <Automatic-Module-Name>net.sourceforge.pmd.lang.apex</Automatic-Module-Name>
+    </properties>
 
     <build>
         <resources>

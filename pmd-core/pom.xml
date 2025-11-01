@@ -10,8 +10,8 @@
         <version>7.19.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-
     <properties>
+        <Automatic-Module-Name>net.sourceforge.pmd.core</Automatic-Module-Name>
         <!-- default values for the properties provided by git-commit-id-maven-plugin -->
         <git.commit.id>unknown</git.commit.id>
         <git.commit.time>unknown</git.commit.time>
@@ -64,6 +64,13 @@
                         <goals>
                             <goal>test-jar</goal>
                         </goals>
+                        <configuration>
+                            <archive>
+                                <manifestEntries>
+                                    <Automatic-Module-Name>net.sourceforge.pmd.core.tests</Automatic-Module-Name>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -74,6 +81,7 @@
                 <configuration>
                     <!-- overrides the configuration from parent pom: we have here no offline links yet -->
                     <offlineLinks combine.self="override"></offlineLinks>
+                    <excludePackageNames>net.sourceforge.pmd.cache</excludePackageNames>
                 </configuration>
             </plugin>
 

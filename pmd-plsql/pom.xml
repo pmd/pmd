@@ -11,6 +11,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <Automatic-Module-Name>net.sourceforge.pmd.lang.plsql</Automatic-Module-Name>
+    </properties>
+
     <build>
         <resources>
             <resource>
