@@ -12,6 +12,7 @@
     </parent>
 
     <properties>
+        <Automatic-Module-Name>net.sourceforge.pmd.lang.kotlin</Automatic-Module-Name>
         <antlr4.visitor>true</antlr4.visitor>
     </properties>
 

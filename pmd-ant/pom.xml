@@ -14,7 +14,9 @@
     <artifactId>pmd-ant</artifactId>
     <name>PMD Ant Integration</name>
     <description>Apache Ant integration for PMD.</description>
-
+    <properties>
+        <Automatic-Module-Name>net.sourceforge.pmd.ant</Automatic-Module-Name>
+    </properties>
     <build>
         <plugins>
             <plugin>

@@ -77,23 +77,49 @@ The java module name of a test jar is the main module name with '.tests' appende
 
 Currently that means the following names for the corresponding maven modules:
 
-* pmd-apex: net.sourceforge.pmd.lang.apex
 * pmd-ant: net.sourceforge.pmd.ant
-* pmd-css: net.sourceforge.pmd.lang.css
-* pmd-go: net.sourceforge.pmd.lang.go
-* pmd-cs: net.sourceforge.pmd.lang.cs
-* pmd-groovy: net.sourceforge.pmd.lang.groovy
-* pmd-gherkin: net.sourceforge.pmd.lang.gherkin
+* pmd-apex: net.sourceforge.pmd.lang.apex
+* pmd-cli: net.sourceforge.pmd.cli
 * pmd-coco: net.sourceforge.pmd.lang.coco
-* pmd-test: net.sourceforge.pmd.test
-* pmd:core: net.sourceforge.pmd for the main and net.sourceforge.pmd.tests for the test artifact
-* pmd-lang-test: net.sourceforge.pmd.lang.test
+* pmd-core: net.sourceforge.pmd.core
+* pmd-core (test artifact): net.sourceforge.pmd.core.tests
 * pmd-cpp: net.sourceforge.pmd.lang.cpp
-* pmd-fortran: net.sourceforge.pmd.lang.fortran
+* pmd-cs: net.sourceforge.pmd.lang.cs
+* pmd-css: net.sourceforge.pmd.lang.css
 * pmd-dart: net.sourceforge.pmd.lang.dart
+* pmd-dist: net.sourceforge.pmd.dist
+* pmd-doc: net.sourceforge.pmd.doc
+* pmd-fortran: net.sourceforge.pmd.lang.fortran
+* pmd-gherkin: net.sourceforge.pmd.lang.gherkin
+* pmd-go: net.sourceforge.pmd.lang.go
+* pmd-groovy: net.sourceforge.pmd.lang.groovy
 * pmd-html: net.sourceforge.pmd.lang.html
 * pmd-java: net.sourceforge.pmd.lang.java
+* pmd-javascript: net.sourceforge.pmd.lang.javascript
+* pmd-jsp: net.sourceforge.pmd.lang.jsp
+* pmd-julia: net.sourceforge.pmd.lang.julia
+* pmd-kotlin: net.sourceforge.pmd.lang.kotlin
+* pmd-lang-test: net.sourceforge.pmd.lang.test
+* pmd-lua: net.sourceforge.pmd.lang.lua
+* pmd-matlab: net.sourceforge.pmd.lang.matlab
+* pmd-modelica: net.sourceforge.pmd.lang.modelica
+* pmd-objectivec: net.sourceforge.pmd.lang.objectivec
+* pmd-perl: net.sourceforge.pmd.lang.perl
+* pmd-php: net.sourceforge.pmd.lang.php
+* pmd-plsql: net.sourceforge.pmd.lang.plsql
+* pmd-python: net.sourceforge.pmd.lang.python
+* pmd-ruby: net.sourceforge.pmd.lang.ruby
+* pmd-rust: net.sourceforge.pmd.lang.rust
+* pmd-scala_2.12:
+* pmd-scala_2.13:
+* pmd-swift: net.sourceforge.pmd.lang.swift
+* pmd-test: net.sourceforge.pmd.test
 * pmd-test-schema: net.sourceforge.pmd.test.schema
+* pmd-tsql: net.sourceforge.pmd.lang.tsql
+* pmd-velocity: net.sourceforge.pmd.lang.velocity
+* pmd-visualforce:
+* pmd-xml: net.sourceforge.pmd.lang.xml
+
 
 ### Criteria for public API
 

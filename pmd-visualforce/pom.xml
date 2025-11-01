@@ -24,6 +24,13 @@
         </resources>
         <plugins>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration >
+                    <archive combine.self="override"/>
+                </configuration>
+            </plugin>
+            <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <configuration>
                     <useDefaultDelimiters>false</useDefaultDelimiters>
