@@ -4,10 +4,10 @@
 
 package net.sourceforge.pmd.cpd;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 final class TokenImageMap {
 
     /** Central "source of truth" containing IDs for all the images encountered so far. */
-    private final ConcurrentMap<String, Integer> images = new ConcurrentHashMap<>();
+    private final Map<String, Integer> images;
 
     /**
      * Common images that are allocated in a separate map to avoid contending on
@@ -39,8 +39,15 @@ final class TokenImageMap {
     private int curImageId = 1;
 
     // This is shared to save memory on the lambda allocation, which is significant
-    protected final Function<String, Integer> getNextImage = k -> curImageId++;
+    private final Function<String, Integer> getNextImage = k -> curImageId++;
 
+    TokenImageMap(int numThreads) {
+        if (numThreads <= 1) {
+            images = new HashMap<>();
+        } else {
+            images = new ConcurrentHashMap<>();
+        }
+    }
 
     /**
      * Preallocate IDs for images. Must be called before we start building,

@@ -44,7 +44,7 @@ final class TokenFileSet {
     private final SourceManager sourceManager;
 
     /** ID repository mapping String -> int. */
-    private final TokenImageMap imageMap = new TokenImageMap();
+    private final TokenImageMap imageMap;
 
     private CpdState state = CpdState.INIT;
 
@@ -66,7 +66,12 @@ final class TokenFileSet {
     }
 
     TokenFileSet(SourceManager sourceManager) {
+        this(sourceManager, 2);
+    }
+
+    TokenFileSet(SourceManager sourceManager, int numThreads) {
         this.sourceManager = sourceManager;
+        this.imageMap = new TokenImageMap(numThreads);
         this.files = new ArrayList<>(Collections.nCopies(sourceManager.size(), null));
     }
 
