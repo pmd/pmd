@@ -45,15 +45,15 @@ class SimpleRendererTest {
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
         String report = sw.toString();
-        assertEquals("Found a 2 line (2 tokens) duplication in the following files: \n" +
-                     "Starting at line 2 of /var/Foo.java\n" +
-                     "Starting at line 4 of /var/Foo.java\n" +
-                     "Starting at line 6 of /var/Foo.java\n" +
-                     "\n" +
-                     "------------------------v starting from here (col 25)\n" +
-                     "  1, 1, 1, 1, 1, 1, 1, 1,\n" +
-                     "  0, 0, 0, 0, 0, 0, 0, 0,\n" +
-                     "------------------------^ ending here (col 25)\n",
+        assertEquals("Found a 2 line (2 tokens) duplication in the following files: \n"
+                     + "Starting at line 2 of /var/Foo.java\n"
+                     + "Starting at line 4 of /var/Foo.java\n"
+                     + "Starting at line 6 of /var/Foo.java\n"
+                     + "\n"
+                     + "------------------------v starting from here (col 25)\n"
+                     + "  1, 1, 1, 1, 1, 1, 1, 1,\n"
+                     + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+                     + "------------------------^ ending here (col 25)\n",
             report
         );
     }
