@@ -56,7 +56,7 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR =
             booleanProperty("allowIncrementDecrement")
-                    .desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement")
+                    .desc("Allow increment or decrement operators in any context")
                     .defaultValue(false).build();
 
 
