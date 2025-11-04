@@ -11,22 +11,22 @@ import java.util.function.BiFunction;
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
 import net.sourceforge.pmd.util.AssertionUtil;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 /**
  * @author Clément Fournier
  */
 class TokenHashMap {
 
-    private final Int2ObjectMap<Object> markGroups;
+    private final Long2ObjectMap<Object> markGroups;
     //    private final Map<Integer, Object> markGroups;
     private final List<List<SmallTokenEntry>> listSink;
     // this is shared to save memory on the lambda allocation, which is significant
     private final BiFunction<Object, Object, Object> mergeFunction = this::mergeEntries;
 
     TokenHashMap(int size) {
-        markGroups = new Int2ObjectOpenHashMap<>(size);
+        markGroups = new Long2ObjectOpenHashMap<>(size);
         //        markGroups = new HashMap<>(size);
         listSink = new ArrayList<>();
     }
@@ -46,7 +46,7 @@ class TokenHashMap {
      * @param hash      Hash of the current token
      * @param thisEntry The current token
      */
-    void addTokenToHashTable(int hash, SmallTokenEntry thisEntry) {
+    void addTokenToHashTable(long hash, SmallTokenEntry thisEntry) {
         markGroups.merge(hash, thisEntry, this.mergeFunction);
     }
 
@@ -69,6 +69,8 @@ class TokenHashMap {
             boolean hadMatch = list.removeIf(newEntry::hasSamePrevToken);
             if (!hadMatch) {
                 list.add(newEntry);
+            } else if (list.isEmpty()) {
+                return null;
             }
             return list;
         }

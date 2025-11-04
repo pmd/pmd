@@ -15,6 +15,8 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
@@ -31,8 +33,11 @@ import net.sourceforge.pmd.util.OptionalBool;
  * <p>This is a more space-efficient replacement for {@link Tokens}, also Tokens never had the ability to lex in parallel.
  */
 final class TokenFileSet {
+    private static final Logger LOG = LoggerFactory.getLogger(TokenFileSet.class);
 
-    static final int MOD = 37;
+    private static final int MOD = 911382323;
+    private static final int MOD2 = 972663749;
+
     /**
      * A list of token files. The internal ID of a token file is the
      * index in this list. IDs are preassigned before lexing, if a
@@ -154,24 +159,29 @@ final class TokenFileSet {
     List<List<SmallTokenEntry>> hashAll(int minTileSize) {
         checkState(CpdState.HASHING, "hashAll");
 
-        int lastMod = computeTrailingModulus(minTileSize);
+        long lastMod = computeTrailingModulus(minTileSize);
         int totalNumTokens = (int) tokenFileStats.getSum();
-        TokenHashMap map = new TokenHashMap(totalNumTokens);
+        TokenHashMap map = new TokenHashMap(totalNumTokens / 16);
         for (TokenFile file : files) {
             if (file != null) {
                 file.computeHashes(minTileSize, lastMod, map);
             }
         }
 
-        return map.getFinalMatches();
+        List<List<SmallTokenEntry>> finalMatches = map.getFinalMatches();
+        finalMatches.removeIf(it -> it.size() < 2);
+        LOG.debug("computeHashes produced {} potential matches", finalMatches.size());
+        return finalMatches;
     }
 
-    private static int computeTrailingModulus(int minTileSize) {
-        int lastMod = 1;
+    private static long computeTrailingModulus(int minTileSize) {
+        int m1 = 1;
+        int m2 = 1;
         for (int i = 0; i < minTileSize; i++) {
-            lastMod *= MOD;
+            m1 *= MOD;
+            m2 *= MOD2;
         }
-        return lastMod;
+        return (long) m1 << 32 | m2;
     }
 
     public TokenEntry toTokenEntry(SmallTokenEntry fstTok) {
@@ -388,30 +398,30 @@ final class TokenFileSet {
         }
 
         /**
-         * Hash the entire file and put the hashed tokens into the hashmap (key is hash, value is token or list of tokens).
+         * Hash the entire file and put the hashed tokens into the hashmap
+         * (key is hash, value is token or list of tokens).
          */
-        private void computeHashes(final int tileSize, final int lastMod, TokenHashMap map) {
+        private void computeHashes(final int tileSize, final long lastMod, TokenHashMap map) {
+            // The property we want of this hash function is:
+            //   If tokens `t1` and t2 are followed by `tileSize` identical tokens,
+            //   then `h(t1) = h(t2)`.
+
+            int hiMod = (int) (lastMod >>> 32);
+            int loMod = (int) (lastMod & 0xFFFFFFFFL);
+
             final int size = this.size;
             if (size < tileSize) {
                 // nothing to do, the file does not contain a full tile
                 return;
             }
 
-            final int[] hashCodes = new int[size];
             int hash = 0;
-
+            int hash2 = 0;
             int last = size - tileSize;
             for (int i = size - 1; i >= last; i--) {
                 int id = this.identifiers[i];
                 hash = MOD * hash + id;
-                hashCodes[i] = hash;
-            }
-
-            for (int i = last - 1; i >= 0; i--) {
-                int thisId = identifiers[i];
-                int lastId = identifiers[i + tileSize];
-                hash = MOD * hash + thisId - lastMod * lastId;
-                hashCodes[i] = hash;
+                hash2 = MOD2 * hash2 + id;
             }
 
             // Note we don't put the last `tileSize` tokens in the hashmap
@@ -425,11 +435,17 @@ final class TokenFileSet {
             // will repeatedly kill each other in the map until the last two (leftmost ones)
             // that do not have a common previous token survive, and go on
             // to the match algorithm.
-            for (int i = size - tileSize - 1; i >= 0; i--) {
-                int h = hashCodes[i];
+            for (int i = last - 1; i >= 0; i--) {
+                int thisId = identifiers[i];
+                int lastId = identifiers[i + tileSize];
+                hash = MOD * hash + thisId - hiMod * lastId;
+                hash2 = MOD2 * hash2 + thisId - loMod * lastId;
+
+                long combinedHash = (long) hash << 32 | hash2;
+
                 int prevToken = i == 0 ? 0 : identifiers[i - 1];
                 SmallTokenEntry thisEntry = new SmallTokenEntry(this.internalId, i, prevToken);
-                map.addTokenToHashTable(h, thisEntry);
+                map.addTokenToHashTable(combinedHash, thisEntry);
             }
         }
 

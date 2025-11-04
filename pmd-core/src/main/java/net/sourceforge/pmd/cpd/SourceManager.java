@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ class SourceManager implements AutoCloseable {
 
     SourceManager(List<? extends TextFile> files) {
         textFiles = new ArrayList<>(files);
+        textFiles.sort(Comparator.comparing(TextFile::getFileId));
         files.forEach(f -> fileByPathId.put(f.getFileId(), f));
     }
 
