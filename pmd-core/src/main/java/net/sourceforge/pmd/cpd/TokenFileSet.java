@@ -35,8 +35,7 @@ import net.sourceforge.pmd.util.OptionalBool;
 final class TokenFileSet {
     private static final Logger LOG = LoggerFactory.getLogger(TokenFileSet.class);
 
-    private static final int MOD = 911382323;
-    private static final int MOD2 = 972663749;
+    private static final long MOD = 911382323;
 
     /**
      * A list of token files. The internal ID of a token file is the
@@ -159,29 +158,26 @@ final class TokenFileSet {
     List<List<SmallTokenEntry>> hashAll(int minTileSize) {
         checkState(CpdState.HASHING, "hashAll");
 
-        long lastMod = computeTrailingModulus(minTileSize);
+        long powMod = computeTrailingModulus(minTileSize);
         int totalNumTokens = (int) tokenFileStats.getSum();
         TokenHashMap map = new TokenHashMap(totalNumTokens / 16);
         for (TokenFile file : files) {
             if (file != null) {
-                file.computeHashes(minTileSize, lastMod, map);
+                file.computeHashes(minTileSize, powMod, map);
             }
         }
 
         List<List<SmallTokenEntry>> finalMatches = map.getFinalMatches();
-        finalMatches.removeIf(it -> it.size() < 2);
         LOG.debug("computeHashes produced {} potential matches", finalMatches.size());
         return finalMatches;
     }
 
     private static long computeTrailingModulus(int minTileSize) {
-        int m1 = 1;
-        int m2 = 1;
+        long powMod = 1;
         for (int i = 0; i < minTileSize; i++) {
-            m1 *= MOD;
-            m2 *= MOD2;
+            powMod *= MOD;
         }
-        return (long) m1 << 32 | m2;
+        return powMod;
     }
 
     public TokenEntry toTokenEntry(SmallTokenEntry fstTok) {
@@ -406,22 +402,17 @@ final class TokenFileSet {
             //   If tokens `t1` and t2 are followed by `tileSize` identical tokens,
             //   then `h(t1) = h(t2)`.
 
-            int hiMod = (int) (lastMod >>> 32);
-            int loMod = (int) (lastMod & 0xFFFFFFFFL);
-
             final int size = this.size;
             if (size < tileSize) {
                 // nothing to do, the file does not contain a full tile
                 return;
             }
 
-            int hash = 0;
-            int hash2 = 0;
+            long hash = 0;
             int last = size - tileSize;
             for (int i = size - 1; i >= last; i--) {
                 int id = this.identifiers[i];
                 hash = MOD * hash + id;
-                hash2 = MOD2 * hash2 + id;
             }
 
             // Note we don't put the last `tileSize` tokens in the hashmap
@@ -438,14 +429,11 @@ final class TokenFileSet {
             for (int i = last - 1; i >= 0; i--) {
                 int thisId = identifiers[i];
                 int lastId = identifiers[i + tileSize];
-                hash = MOD * hash + thisId - hiMod * lastId;
-                hash2 = MOD2 * hash2 + thisId - loMod * lastId;
-
-                long combinedHash = (long) hash << 32 | hash2;
+                hash = MOD * hash + thisId - lastMod * lastId;
 
                 int prevToken = i == 0 ? 0 : identifiers[i - 1];
                 SmallTokenEntry thisEntry = new SmallTokenEntry(this.internalId, i, prevToken);
-                map.addTokenToHashTable(combinedHash, thisEntry);
+                map.addTokenToHashTable(hash, thisEntry);
             }
         }
 

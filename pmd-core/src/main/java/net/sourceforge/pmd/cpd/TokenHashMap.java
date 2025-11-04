@@ -32,6 +32,7 @@ class TokenHashMap {
     }
 
     public List<List<SmallTokenEntry>> getFinalMatches() {
+        listSink.removeIf(it -> it.size() < 2);
         return listSink;
     }
 
