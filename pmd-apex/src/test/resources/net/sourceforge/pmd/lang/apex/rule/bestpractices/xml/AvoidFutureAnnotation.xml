@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Problematic apex method - @Future annotation should be avoided</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class FutureExample {
+    @Future
+    public static void futureMethod(String accountId) {
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple @Future methods should be detected</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <code><![CDATA[
+public class MultipleFutureExample {
+    @Future
+    public static void futureMethod1(String accountId) {
+        Account acc = [SELECT Id FROM Account WHERE Id = :accountId];
+    }
+
+    @Future
+    public static void futureMethod2(String contactId) {
+        Contact con = [SELECT Id FROM Contact WHERE Id = :contactId];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case insensitivity - @future in lowercase should be detected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class FutureExample {
+    @future
+    public static void futureMethod(String accountId) {
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Test case insensitivity - @FUTURE in uppercase should be detected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class FutureExample {
+    @FUTURE
+    public static void futureMethod(String accountId) {
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@Future with callout parameter should be detected</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class FutureCalloutExample {
+    @Future(callout=true)
+    public static void futureMethod(String accountId) {
+        // Make HTTP callout
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Recommended Queueable implementation should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class QueueableExample implements Queueable {
+    private String accountId;
+    
+    public QueueableExample(String accountId) {
+        this.accountId = accountId;
+    }
+    
+    public void execute(QueueableContext context) {
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Regular methods without @Future should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class RegularExample {
+    public static void regularMethod(String accountId) {
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+    }
+    
+    public void instanceMethod() {
+        System.debug('Hello');
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Methods with other annotations should not be flagged</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OtherAnnotationsExample {
+    @AuraEnabled
+    public static void auraMethod(String accountId) {
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+    }
+    
+    @IsTest
+    public static void myTestMethod() {
+        System.assert(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Mixed scenario - @Future should be flagged, Queueable should not</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+public class MixedExample {
+    @Future
+    public static void futureMethod(String accountId) {
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>@Future annotation on methods with different access modifiers</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,7</expected-linenumbers>
+        <code><![CDATA[
+public class FutureAccessModifiers {
+    @Future
+    public static void publicFutureMethod(String id) {
+    }
+    
+    @Future
+    global static void globalFutureMethod(String id) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+</test-data>
+
