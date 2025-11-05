@@ -172,6 +172,68 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidFutureAnnotation"
+          since="7.19.0"
+          language="apex"
+          message="Usage of @Future annotation should be limited. Consider implementing the Queueable interface instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidfutureannotation">
+        <description>
+Usage of the `@Future` annotation should be limited. The `@Future` annotation is a legacy way to execute asynchronous Apex code, but it has several limitations:
+- Methods must be static
+- Only primitive data types, primitive arrays, or collections of primitive data types can be parameters
+- No way to monitor job status or handle failures
+- No support for chaining jobs
+
+Consider implementing the `Queueable` interface instead, which provides:
+- Better error handling and monitoring capabilities
+- Support for more complex data types
+- Ability to chain jobs
+
+See more here: &lt;https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_queueing_jobs.htm&gt;
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Method[ModifierNode/Annotation[lower-case(@Name) = 'future']]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+// Not recommended: Using @Future annotation
+public class FutureExample {
+    @Future
+    public static void futureMethod(String accountId) {
+        // Process account asynchronously
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+        // ... process account
+    }
+}
+
+// Recommended: Using Queueable interface
+public class QueueableExample implements Queueable {
+    private String accountId;
+    
+    public QueueableExample(String accountId) {
+        this.accountId = accountId;
+    }
+    
+    public void execute(QueueableContext context) {
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+        // ... process account
+    }
+}
+
+// Usage:
+// System.enqueueJob(new QueueableExample(accountId));
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidGlobalModifier"
           language="apex"
           since="5.5.0"
@@ -333,68 +395,6 @@ Detects when a local variable is declared and/or assigned but not used.
         String y = 'some other string'; // used in the next line
         return z.equals(y);
     }
-]]>
-        </example>
-    </rule>
-
-    <rule name="AvoidFutureAnnotation"
-          since="7.19.0"
-          language="apex"
-          message="Usage of @Future annotation should be limited. Consider implementing the Queueable interface instead."
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidfutureannotation">
-        <description>
-Usage of the `@Future` annotation should be limited. The `@Future` annotation is a legacy way to execute asynchronous Apex code, but it has several limitations:
-- Methods must be static
-- Only primitive data types, primitive arrays, or collections of primitive data types can be parameters
-- No way to monitor job status or handle failures
-- No support for chaining jobs
-
-Consider implementing the `Queueable` interface instead, which provides:
-- Better error handling and monitoring capabilities
-- Support for more complex data types
-- Ability to chain jobs
-
-See more here: &lt;https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_queueing_jobs.htm&gt;
-        </description>
-        <priority>4</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//Method[ModifierNode/Annotation[lower-case(@Name) = 'future']]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-            <![CDATA[
-// Not recommended: Using @Future annotation
-public class FutureExample {
-    @Future
-    public static void futureMethod(String accountId) {
-        // Process account asynchronously
-        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
-        // ... process account
-    }
-}
-
-// Recommended: Using Queueable interface
-public class QueueableExample implements Queueable {
-    private String accountId;
-    
-    public QueueableExample(String accountId) {
-        this.accountId = accountId;
-    }
-    
-    public void execute(QueueableContext context) {
-        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
-        // ... process account
-    }
-}
-
-// Usage:
-// System.enqueueJob(new QueueableExample(accountId));
 ]]>
         </example>
     </rule>
