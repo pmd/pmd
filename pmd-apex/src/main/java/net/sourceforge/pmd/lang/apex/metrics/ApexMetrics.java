@@ -126,7 +126,7 @@ public final class ApexMetrics {
      *     boolean a = false, b = true;    // +1
      *
      *     if (a || b) {                   // +1
-     *       try {                         // +1
+     *       try {
      *         do {                        // +1
      *           x += 2;                   // +1
      *         } while (x < 12);
@@ -135,7 +135,7 @@ public final class ApexMetrics {
      *       } catch (IOException ioe) {   // +1
      *         throw new PatheticFailException(ioe); // +1
      *       }
-     *     } else {
+     *     } else {                        // +1
      *       System.out.println('false');  // +1
      *     }
      *   }

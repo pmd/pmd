@@ -202,12 +202,12 @@ public class Foo {
             <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
-public class Foo {
-    void foo() {
+public class Foo {                // +1
+    void foo() {                  // +1
         try {
-        } catch (MyException e) {
-        } catch (Exception e) {
-        } finally {
+        } catch (MyException e) { // +1
+        } catch (Exception e) {   // +1
+        } finally {               // +1
         }
     }
 }
@@ -346,7 +346,7 @@ class Foo {                         // +1, total Ncss = 12
     boolean a = false, b = true;    // +1
 
     if (a || b) {                   // +1
-      try {                         // +1
+      try {
         do {                        // +1
           x += 2;                   // +1
         } while (x < 12);
@@ -355,7 +355,7 @@ class Foo {                         // +1, total Ncss = 12
       } catch (IOException ioe) {   // +1
         throw new PatheticFailException(ioe); // +1
       }
-    } else {
+    } else {                        // +1
       System.out.println('false');  // +1
     }
   }
