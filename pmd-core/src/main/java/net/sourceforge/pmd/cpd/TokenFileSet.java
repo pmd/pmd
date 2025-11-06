@@ -35,7 +35,8 @@ import net.sourceforge.pmd.util.OptionalBool;
 final class TokenFileSet {
     private static final Logger LOG = LoggerFactory.getLogger(TokenFileSet.class);
 
-    private static final long MOD = 911382323;
+
+    private static final long MOD = 37;
 
     /**
      * A list of token files. The internal ID of a token file is the
@@ -411,14 +412,13 @@ final class TokenFileSet {
             long hash = 0;
             int last = size - tileSize;
             for (int i = size - 1; i >= last; i--) {
-                int id = this.identifiers[i];
+                long id = this.identifiers[i];
                 hash = MOD * hash + id;
             }
 
             // Note we don't put the last `tileSize` tokens in the hashmap
             // because by definition they cannot be followed by at least tileSize tokens
-            // and so will never be a match. Additionally, since their hash is incomplete
-            // they will often collide and form large buckets.
+            // and so will never be a match.
 
             // Also note that the right-to-left direction of this loop is
             // meant to allow maximum match detection in a repeated cyclic
@@ -427,8 +427,8 @@ final class TokenFileSet {
             // that do not have a common previous token survive, and go on
             // to the match algorithm.
             for (int i = last - 1; i >= 0; i--) {
-                int thisId = identifiers[i];
-                int lastId = identifiers[i + tileSize];
+                long thisId = identifiers[i];
+                long lastId = identifiers[i + tileSize];
                 hash = MOD * hash + thisId - lastMod * lastId;
 
                 int prevToken = i == 0 ? 0 : identifiers[i - 1];

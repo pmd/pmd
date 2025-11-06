@@ -20,18 +20,16 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 class TokenHashMap {
 
     private final Long2ObjectMap<Object> markGroups;
-    //    private final Map<Integer, Object> markGroups;
     private final List<List<SmallTokenEntry>> listSink;
     // this is shared to save memory on the lambda allocation, which is significant
     private final BiFunction<Object, Object, Object> mergeFunction = this::mergeEntries;
 
     TokenHashMap(int size) {
         markGroups = new Long2ObjectOpenHashMap<>(size);
-        //        markGroups = new HashMap<>(size);
         listSink = new ArrayList<>();
     }
 
-    public List<List<SmallTokenEntry>> getFinalMatches() {
+    List<List<SmallTokenEntry>> getFinalMatches() {
         listSink.removeIf(it -> it.size() < 2);
         return listSink;
     }

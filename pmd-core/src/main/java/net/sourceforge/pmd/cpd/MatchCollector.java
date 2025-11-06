@@ -7,11 +7,13 @@ package net.sourceforge.pmd.cpd;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Comparator;
+import java.util.IdentityHashMap;
 import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.cpd.TokenFileSet.SmallTokenEntry;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Collect matches by computing the similarity between different tokens that had the same hash.
@@ -129,6 +131,8 @@ class MatchCollector {
             }
         }
 
+        verifyAliasBits(matches, isAliased);
+
         // report all non-aliased matches
         for (int i = isAliased.nextClearBit(0); i < matches.length; i = isAliased.nextClearBit(i + 1)) {
             Match.MatchBuilder builder = matches[i];
@@ -143,24 +147,55 @@ class MatchCollector {
         }
     }
 
-    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, Match.@Nullable MatchBuilder[] matches, BitSet isAliased) {
-        Match.MatchBuilder builder = matches[i];
-        if (builder == null) {
-            builder = matches[j];
-        }
-        if (builder == null) {
-            builder = new Match.MatchBuilder();
-        }
-        matches[i] = builder;
-        matches[j] = builder;
 
-        builder.addMark(makeMark(mark1, dupes));
-        builder.addMark(makeMark(mark2, dupes));
+    private void handleDuplicate(int i, int j, SmallTokenEntry mark1, SmallTokenEntry mark2, int dupes, Match.@Nullable MatchBuilder[] matches, BitSet isAliased) {
+        assert i < j;
+        // We want always the leftmost match to be the nonaliased one.
+        Match.MatchBuilder match = matches[i];
+        if (match == null) {
+            match = matches[j];
+        }
+        if (match == null) {
+            match = new Match.MatchBuilder();
+        }
+        matches[i] = match;
+        matches[j] = match;
+
+        match.addMark(makeMark(mark1, dupes));
+        match.addMark(makeMark(mark2, dupes));
 
         if (isAliased.get(j)) {
             isAliased.set(i);
         } else {
             isAliased.set(j);
+        }
+    }
+
+    /**
+     * Verification loop to test whether the alias bit setting works.
+     * If the same builder is recorded at multiple indices, we want the
+     * leftmost index to be marked as non-aliased and all the others to
+     * be marked as aliased.
+     */
+    private static void verifyAliasBits(Match.@Nullable MatchBuilder[] matches, BitSet isAliased) {
+        if (!AssertionUtil.isAssertEnabled()) {
+            return;
+        }
+
+        IdentityHashMap<Match.MatchBuilder, Void> identitySet = new IdentityHashMap<>();
+        for (int i = 0; i < matches.length; i++) {
+            Match.MatchBuilder builder = matches[i];
+            if (builder == null) {
+                continue;
+            }
+
+            if (identitySet.containsKey(builder)) {
+                assert isAliased.get(i) : "Aliased match has no aliased bit";
+            } else {
+                assert !isAliased.get(i) : "Non aliased match has aliased bit";
+            }
+
+            identitySet.put(builder, null);
         }
     }
 
@@ -203,7 +238,7 @@ class MatchCollector {
     but only has 5 tokens in common so is a worse candidate. We stop and report (D1,D3).
     */
     private SmallTokenEntry bestDuplicate(final SmallTokenEntry mark1, final SmallTokenEntry mark2, final int dupes) {
-        if (dupes < minTileSize) {
+        if (!isDuplicate(dupes)) {
             // not a good enough duplicate
             return null;
         }
