@@ -362,4 +362,171 @@ class Foo {                         // +1, total Ncss = 12
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Differences to old NcssTypeCount / NcssMethodCount rules</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 48.</message>
+            <message>'Foo#start(Id)' has value 47.</message>
+        </expected-messages>
+        <code><![CDATA[
+/*
+ * Note: The old implementation for NcssTypeCount / NcssMethodCount counted too many
+ * and the results were too high.
+ * The new metric NCSS is correct.
+ *
+ * new == new NCSS metric -> net.sourceforge.pmd.lang.apex.metrics.internal.NcssVisitor
+ * old == old AbstractNcssCountRule (base for NcssTypeCount and NcssMethodCount)
+ *
+ * sums (type):   new = 48 | old = 68
+ * sums (method): new = 47 | old = 67
+ *
+ * Some helper XPaths to help count the nodes:
+ (: for old AbstractNcssCountRule :)
+//Method[1+13+16+5+32 =
+      count(.//WhileLoopStatement)
+    + count(.//ForLoopStatement)
+    + count(.//ForEachStatement)
+    + count(.//DoLoopStatement)
+    + count(.//BreakStatement)
+    + count(.//ContinueStatement)
+    + count(.//ThrowStatement)
+    + count(.//FieldDeclaration)
+    + count(.//TryCatchFinallyBlockStatement) (: 1 :)
+    + count(.//IfBlockStatement) (: 13 :)
+    + 2*count(.//IfElseBlockStatement) (: 2*8=16 :)
+    + count(.//ReturnStatement) (: 5 :)
+    + count(.//MethodCallExpression[not(.//MethodCallExpression)]) (: 32 :)
+]
+| //IfBlockStatement (: for manual verification :)
+
+ (: for new NCSS metric :)
+//Method[13+2+1+5+22+3 =
+      count(.//ForLoopStatement)
+    + count(.//ForEachStatement)
+    + count(.//DoLoopStatement)
+    + count(.//IfBlockStatement) (: 13 :)
+    + count(.//IfElseBlockStatement[@ElseStatement = true()]) (: 2 :)
+    + count(.//WhileLoopStatement)
+    + count(.//BreakStatement)
+    + count(.//TryCatchFinallyBlockStatement[*[last()][local-name() != 'CatchBlockStatement']])
+    + count(.//CatchBlockStatement) (: 1 :)
+    + count(.//ContinueStatement)
+    + count(.//ReturnStatement) (: 5 :)
+    + count(.//ThrowStatement)
+    + count(.//SwitchStatement)
+    + count(.//ValueWhenBlock)
+    + count(.//ElseWhenBlock)
+    + count(.//TypeWhenBlock)
+    + count(.//ExpressionStatement) (: 22 :)
+    + count(.//VariableDeclarationStatements) (: 3 :)
+]
+| //ExpressionStatement (: for manual verification :)
+ */
+class Foo {                                     // new: +1 | old: +1
+    void start(Id jobId) {                      // new: +1 | old: +0
+        System.abortJob(jobId);                 // new: +1 | old: +1
+
+        try {                                   // new: +0 | old: +1
+            this.entry = [                      // new: +1 | old: +0
+              SELECT
+                Name,
+                AnonymousCode__c,
+                AsyncApexJobId__c,
+                BatchSize__c,
+                Class__c,
+                DailyEnd__c,
+                DailyStartDateTime__c,
+                End__c,
+                Flow__c,
+                IsBatchable__c,
+                IsDaily__c,
+                IsSchedulable__c,
+                NumberOfExecutions__c,
+                RepeatInterval__c,
+                RescheduleInterval__c,
+                Start__c,
+                OwnerId,
+                Owner.IsActive
+              FROM SchedulomaticEntry__c
+              WHERE Id = :entryId
+            ];
+
+            if (!this.entry.Owner.IsActive) {       // new: +1 | old: +2 +1
+                logExecutionError(entryId, EXECUTION_ERROR_INACTIVE_OWNER); // new: +1 | old: +1
+                return;                             // new: +1 | old: +1
+            } else if (!hasPermission(this.entry.OwnerId)) {              // new: +1 | old: +1 +1
+                logExecutionError(entryId, EXECUTION_ERROR_MISSING_PERMISSIONS); // new: +1 | old: +1
+                return;                             // new: +1 | old: +1
+            }
+        } catch (QueryException e) {            // new: +1 | old: +0
+            return;                             // new: +1 | old: +1
+        }
+
+        if (isBeforeOrNoEndDateTime()) {                // new: +1 | old: +2 +1 +1
+            if (String.isNotBlank(entry.Class__c)) {    // new: +1 | old: +2 +1 +1
+                String c = entry.Class__c;              // new: +1 | old: +0
+                String namespacePrefix;                 // new: +1 | old: +0
+                String name;                            // new: +1 | old: +0
+
+                if (c.contains('__')) {                             // new: +1 | old: +2 +1 +1
+                      namespacePrefix = c.substringBefore('__');    // new: +1 | old: +1
+                      name = c.substringAfter('__');                // new: +1 | old: +1
+                } else {                                            // new: +1 | old: +0
+                      namespacePrefix = null;                       // new: +1 | old: +0
+                      name = c;                                     // new: +1 | old: +0
+                }
+
+                classToExecute = Test.isRunningTest()           // new: +1 | old: +1
+                    ? BATCHABLE_TYPE                            // new: +0 | old: +0
+                    : Type.forName(namespacePrefix, name);      // new: +0 | old: +1
+
+                if (classToExecute == null) {                   // new: +1 | old: +2 +1
+                    logExecutionError(entry.Id, EXECUTION_ERROR_INVALID_CLASS); // new: +1 | old: +1
+                    return;                                     // new: +1 | old: +1
+                } else if (                                     // new: +1 | old: +1
+                    !(entry.IsBatchable__c &&
+                    BATCHABLE_TYPE.isAssignableFrom(classToExecute) || // new: +0 | old: +1
+                    entry.IsSchedulable__c &&
+                    SCHEDULABLE_TYPE.isAssignableFrom(classToExecute)) // new: +0 | old: +1
+                ) {
+                    logExecutionError(entry.Id, EXECUTION_ERROR_INVALID_CLASS);   // new: +1 | old: +1
+                    return;                                                       // new: +1 | old: +1
+                }
+            }
+
+            if (                                          // new: +1 | old: +2 +1
+                String.isNotBlank(entry.Class__c) ||      // new: +0 | old: +1
+                String.isNotBlank(entry.Flow__c) ||       // new: +0 | old: +1
+                String.isNotBlank(entry.AnonymousCode__c) // new: +0 | old: +1
+            ) {
+                if (canStartMore()) {                     // new: +1 | old: +2 +1 +1
+                    executeJob();                         // new: +1 | old: +1
+
+                    if (isPositiveInteger(entry.RepeatInterval__c)) {   // new: +1 | old: +2 +1 +1
+                        entry.Start__c = Datetime.now()                     // new: +1 | old: +1
+                          .addMinutes((Integer) entry.RepeatInterval__c);
+                        incrementExecutions();                              // new: +1 | old: +1
+                        reschedule();                                       // new: +1 | old: +1
+                    } else if (entry.IsDaily__c) {                          // new: +1 | old: +1
+                        incrementExecutions();                              // new: +1 | old: +1
+                        rescheduleForTomorrow();                            // new: +1 | old: +1
+                    } else {                                                // new: +1 | old: +0
+                        incrementExecutions();                              // new: +1 | old: +1
+                        updateEntry();                                      // new: +1 | old: +1
+                    }
+                } else if (isPositiveInteger(entry.RescheduleInterval__c)) {    // new: +1 | old: +1 +1
+                    entry.Start__c = Datetime.now()                             // new: +1 | old: +1
+                        .addMinutes((Integer) entry.RescheduleInterval__c);
+                    reschedule();                                               // new: +1 | old: +1
+                }
+            }
+        } else if (entry.IsDaily__c) {          // new: +1 | old: +1
+            rescheduleForTomorrow();            // new: +1 | old: +1
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -30,7 +30,12 @@ This is a {{ site.pmd.release_type }} release.
   "NcssConstructorCount", "NcssMethodCount", and "NcssTypeCount". The new rule uses the metrics framework
   to achieve the same. It has two properties, to define the report level for method and class sizes separately.
   Constructors and methods are considered the same.  
-  The rule has been added to the quickstart ruleset.
+  The rule has been added to the quickstart ruleset.  
+  Note: The new metric is implemented more correct than in the old rules. E.g. it considers now also
+  switch statements and correctly counts if-statements only once and ignores method calls that are
+  part of an expression and not a statement on their own. This leads to different numbers. Keep in mind,
+  that NCSS counts statements and not lines of code. Statements that are split on multiple lines are
+  still counted as one.
 
 #### Deprecated Rules
 * The Apex rule {% rule apex/design/ExcessiveClassLength %} has been deprecated. Use {%rule apex/design/NcssCount %} to
