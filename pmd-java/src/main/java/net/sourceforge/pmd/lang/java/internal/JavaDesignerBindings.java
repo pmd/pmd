@@ -113,8 +113,7 @@ public final class JavaDesignerBindings extends DefaultDesignerBindings {
         return info;
     }
 
-    @NonNull
-    private String formatModifierSet(Set<JModifier> modifierSet) {
+    private @NonNull String formatModifierSet(Set<JModifier> modifierSet) {
         return modifierSet.stream().map(JModifier::toString).collect(Collectors.joining(", ", "(", ")"));
     }
 

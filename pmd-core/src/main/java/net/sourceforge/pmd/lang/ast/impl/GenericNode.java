@@ -38,14 +38,12 @@ public interface GenericNode<N extends GenericNode<N>> extends Node {
     N getParent();
 
     @Override
-    @Nullable
-    default N getFirstChild() {
+    default @Nullable N getFirstChild() {
         return getNumChildren() > 0 ? getChild(0) : null;
     }
 
     @Override
-    @Nullable
-    default N getLastChild() {
+    default @Nullable N getLastChild() {
         return getNumChildren() > 0 ? getChild(getNumChildren() - 1) : null;
     }
 

@@ -84,14 +84,12 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * returns {@code int}, and this method returns the dimensions that follow
      * the variable ID. Returns null if there are no such dimensions.
      */
-    @Nullable
-    public ASTArrayDimensions getExtraDimensions() {
+    public @Nullable ASTArrayDimensions getExtraDimensions() {
         return children(ASTArrayDimensions.class).first();
     }
 
-    @NonNull
     @Override
-    public ASTModifierList getModifiers() {
+    public @NonNull ASTModifierList getModifiers() {
         // delegates modifiers
         return getModifierOwnerParent().getModifiers();
     }
@@ -304,8 +302,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
     /**
      * Returns the initializer of the variable, or null if it doesn't exist.
      */
-    @Nullable
-    public ASTExpression getInitializer() {
+    public @Nullable ASTExpression getInitializer() {
         if (getParent() instanceof ASTVariableDeclarator) {
             return ((ASTVariableDeclarator) getParent()).getInitializer();
         }
@@ -318,8 +315,7 @@ public final class ASTVariableId extends AbstractTypedSymbolDeclarator<JVariable
      * type.
      */
     // TODO unreliable, not typesafe and not useful, should be deprecated
-    @Nullable
-    public Node getTypeNameNode() {
+    public @Nullable Node getTypeNameNode() {
         return getTypeNode();
     }
 
