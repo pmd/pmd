@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data xmlns="http://pmd.sourceforge.net/rule-tests"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Example</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-4</expected-linenumbers>
+        <code><![CDATA[
+enum Color { RED, GREEN, BLUE }
+class ColorTester {
+  boolean isRed(Color color) {
+    return color.equals(Color.RED); // violation
+  }
+
+  boolean isGreen(Color color) {
+    return color == Color.GREEN; // preferred
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Example 2</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-3</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+  void method(Thread.State state1, Thread.State state2) {
+    if (state1.equals(state2)) { }  // violation
+
+    if (state1 == state2) {}  // correct
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Four different cases, at least one enum</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>6-6,7-7,10-10,11-11</expected-linenumbers>
+        <code><![CDATA[
+import java.lang.annotation.RetentionPolicy;
+
+class Foo {
+    void method() {
+        Object x = new Object();
+        if (RetentionPolicy.CLASS.equals(x)) {} // violation, line 6
+        if (x.equals(RetentionPolicy.CLASS)) {} // violation, line 7
+
+        RetentionPolicy y = RetentionPolicy.CLASS;
+        if (x.equals(y)) {} // violation, line 10
+        if (y.equals(x)) {} // violation, line 11
+
+        String s = "a";
+        if (x.equals(s)) {} // no violation, no enums involved
+        if (s.equals(x)) {} // no violation, no enums involved
+    }
+}
+]]></code>
+    </test-code>
+    
+    <test-code>
+        <description>Incompatible enums</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>9-9,10-10</expected-linenumbers>
+        <code><![CDATA[
+import java.lang.annotation.ElementType;
+import java.lang.annotation.RetentionPolicy;
+
+class Foo {
+    void method() {
+        ElementType x = ElementType.TYPE_USE;
+        RetentionPolicy y = RetentionPolicy.CLASS;
+
+        if (x.equals(y)) {} // violation, line 9
+        if (y.equals(x)) {} // violation, ine 10
+
+        // note: this is compilation error (incompatible types)
+        if (x == y) {}
+    }
+}
+]]></code>
+    </test-code>
+</test-data>
