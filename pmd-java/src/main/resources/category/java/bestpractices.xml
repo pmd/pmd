@@ -557,14 +557,18 @@ Using `==` has some advantages:
   When using equals, you'll only get noticed at runtime or not at all.
 
 This rule implements SonarSource rule [S4551](https://sonarsource.github.io/rspec/#/rspec/S4551).
+
+Note, that only primitive types and enums should be compared using `==`. To compare other
+objects, `equals()` is the correct way. See {%rule java/errorprone/CompareObjectsWithEquals %}
+and {%rule java/errorprone/UseEqualsToCompareStrings %}.
         </description>
         <priority>3</priority>
         <properties>
             <property name="xpath">
                 <value><![CDATA[
 //MethodCall[pmd-java:matchesSig("_#equals(java.lang.Object)")]
-  [*[pmd-java:typeIs("java.lang.Enum")]]
-  [ArgumentList[*[pmd-java:typeIs("java.lang.Enum")]]]
+  [*[pmd-java:typeIs("java.lang.Enum")] or
+   ArgumentList[*[pmd-java:typeIs("java.lang.Enum")]]]
 ]]></value>
             </property>
         </properties>
