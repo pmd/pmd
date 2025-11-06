@@ -87,7 +87,7 @@
         <kotlin.version>2.2.10</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
         <junit.version>6.0.1</junit.version>
-        <dokka.version>2.0.0</dokka.version>
+        <dokka.version>2.1.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.4</surefire.version>
