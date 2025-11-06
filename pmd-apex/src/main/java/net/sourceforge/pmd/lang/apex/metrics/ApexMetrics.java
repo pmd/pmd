@@ -141,6 +141,7 @@ public final class ApexMetrics {
      *   }
      * }
      * }</pre>
+     * @since 7.19.0
      */
     public static final Metric<ApexNode<?>, Integer> NCSS =
         Metric.of(ApexMetrics::computeNcss, isRegularApexNode(),
