@@ -330,7 +330,7 @@ public class Foo extends Bar {
 
     <rule name="NcssCount"
           language="apex"
-          message="The {0} ''{1}'' has a NCSS line count of {2}."
+          message="The {0} ''{1}'' has a NCSS line count of {2} (limit: {3})."
           since="7.19.0"
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncsscount">

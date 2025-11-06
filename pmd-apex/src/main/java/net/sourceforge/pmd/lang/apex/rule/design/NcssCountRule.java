@@ -83,11 +83,8 @@ public final class NcssCountRule extends AbstractApexRule {
             int classHighest = (int) MetricsUtil.computeStatistics(ApexMetrics.NCSS, node.getMethods()).getMax();
 
             if (classSize >= level) {
-                String[] messageParams = {getPrintableNodeKind(node),
-                                          node.getSimpleName(),
-                                          classSize + " (highest = " + classHighest + ", limit = " + level + ")", };
-
-                asCtx(data).addViolation(node, (Object[]) messageParams);
+                asCtx(data).addViolation(node, getPrintableNodeKind(node),
+                        node.getSimpleName(), classSize, level + ", highest: " + classHighest);
             }
         }
     }
@@ -114,7 +111,7 @@ public final class NcssCountRule extends AbstractApexRule {
             int methodSize = MetricsUtil.computeMetric(ApexMetrics.NCSS, node);
             if (methodSize >= level) {
                 asCtx(data).addViolation(node, node.isConstructor() ? "constructor" : "method",
-                                         displaySignature(node), methodSize + " (limit = " + level + ")");
+                                         displaySignature(node), methodSize, level);
             }
         }
     }
