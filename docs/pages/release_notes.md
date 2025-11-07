@@ -24,6 +24,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+#### CPD performance improvements
+
+CPD has been refactored internally to be more efficient. It now uses less
+memory (as much as 10 times less on some benchmarks), and can process source
+files in parallel for much faster results. CPD now supports the `--threads`
+(`-t`) option. The default is `1C`, meaning 1 thread per core.
+
+Note: if you have written you own CpdLexer implementations:
+- Make sure they are thread-safe, as they can now be used in a threaded context.
+- You are advised to use the new overloads of {% jdoc core::cpd.TokenFactory#recordToken(java.lang.String,int,int) %}.
+These are more memory-efficient as the node coordinates require only two ints
+to be saved instead of four.
+
 ### 🐛️ Fixed Issues
 
 ### 🚨️ API Changes
