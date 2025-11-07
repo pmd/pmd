@@ -422,7 +422,7 @@ final class TokenFileSet {
 
             // Also note that the right-to-left direction of this loop is
             // meant to allow maximum match detection in a repeated cyclic
-            // duplicate, eg when you have a chain of 0,0,0,0. The entries
+            // duplicate, e.g. when you have a chain of 0,0,0,0. The entries
             // will repeatedly kill each other in the map until the last two (leftmost ones)
             // that do not have a common previous token survive, and go on
             // to the match algorithm.
@@ -431,7 +431,7 @@ final class TokenFileSet {
                 long lastId = identifiers[i + tileSize];
                 hash = MOD * hash + thisId - lastMod * lastId;
 
-                int prevToken = i == 0 ? 0 : identifiers[i - 1];
+                int prevToken = i == 0 ? -1 : identifiers[i - 1];
                 SmallTokenEntry thisEntry = new SmallTokenEntry(this.internalId, i, prevToken);
                 map.addTokenToHashTable(hash, thisEntry);
             }

@@ -250,17 +250,27 @@ class MatchCollector {
                 // are bigger than the tile size.
                 return null;
             }
-            if (distance < dupes && dupes % distance == 0) {
-                // Then probably cyclic repetition of length "distance"
-                // To report a non-overlapping match we take half of the
-                // total duplicated range.
-                int probableBest = (distance + dupes) / 2;
-                SmallTokenEntry best = mark1.getNext(probableBest);
-                int bestDups = tokens.countDupTokens(mark1, best, 0);
-                if (bestDups == probableBest) {
-                    best.prevToken = bestDups;
-                    return best;
+
+            if (distance < dupes) {
+                // Then probably cyclic repetition of length "distance".
+                SmallTokenEntry bestMark = mark2;
+                mark2.prevToken = dupes;
+                for (int i = 1; ; i++) {
+                    SmallTokenEntry maybeBetter = mark2.getNext(i * distance);
+                    int newDupes = tokens.countDupTokens(mark1, maybeBetter, 0);
+                    if (newDupes >= minTileSize) {
+                        bestMark = maybeBetter;
+                        bestMark.prevToken = newDupes;
+                    } else {
+                        // We have the "maximal" mark, but both still overlap
+                        break;
+                    }
+                    if (mark1.indexInFile + dupes < bestMark.indexInFile) {
+                        // they don't overlap anymore
+                        break;
+                    }
                 }
+                return bestMark;
             }
         }
         mark2.prevToken = dupes;
