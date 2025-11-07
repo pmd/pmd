@@ -377,9 +377,9 @@ lines of code that are split are counted as one.
         <example>
 <![CDATA[
 CREATE OR REPLACE PACKAGE BODY AS
- FUNCTION methd RETURN INTEGER IS
+ FUNCTION method RETURN INTEGER IS
  BEGIN
-   RETURN 1;;
+   RETURN 1;
  END;
 END;
 ]]>
@@ -400,14 +400,14 @@ lines of code that are split are counted as one.
         <priority>3</priority>
         <example>
 <![CDATA[
-CREATE OR REPLACE PACKAGE pkg_
+CREATE OR REPLACE PACKAGE pkg_ IS
  PROCEDURE Foo IS
  BEGIN
  --this class only has 6 NCSS lines
      super();
      super();
- END;
-}
+ END Foo;
+END;
 ]]>
         </example>
     </rule>
