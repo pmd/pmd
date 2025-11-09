@@ -79,6 +79,16 @@ With TCA you have PMD analysis out-of-the-box, and it is open source under the M
 * Documentation: <https://tencent.github.io/CodeAnalysis>
 * Maintainer: TCA
 
+### Blue Cave
+[Blue Cave](https://bluecave.io) is a code quality and test coverage reporting platform, focused on large monorepos. 
+It integrates directly with GitHub to provide Pull Request merge checks and supports GitHub Actions amongst other CI using
+[native plugins](https://docs.bluecave.io/languages/java/) for Gradle, Maven and Bazel. 
+
+Blue Cave uses PMD for static analysis of Java code, enhancing it with code coverage and other features.
+
+* Homepage: <https://bluecave.io>
+* Documentation: <https://docs.bluecave.io>
+
 ## Others
 
 ### MegaLinter
