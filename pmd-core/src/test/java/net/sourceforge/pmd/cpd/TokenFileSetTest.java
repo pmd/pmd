@@ -6,7 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -132,7 +132,7 @@ class TokenFileSetTest {
         TokenHashMap map = Mockito.mock(TokenHashMap.class);
         file.computeHashesTestOnly(4, map);
 
-        Mockito.verify(map, times(36)).addTokenToHashTable(anyInt(), notNull());
+        Mockito.verify(map, times(36)).addTokenToHashTable(anyLong(), notNull());
     }
 
     @Test
@@ -146,7 +146,7 @@ class TokenFileSetTest {
         TokenHashMap map = Mockito.mock(TokenHashMap.class);
         file.computeHashesTestOnly(100, map);
 
-        Mockito.verify(map, never()).addTokenToHashTable(anyInt(), notNull());
+        Mockito.verify(map, never()).addTokenToHashTable(anyLong(), notNull());
     }
 
 
