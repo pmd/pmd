@@ -88,7 +88,7 @@ public class CppCpdLexer extends JavaccCpdLexer {
             image = CppTokenKinds.describe(kind);
         }
 
-        if (ignoreIdentifiers && (kind == CppTokenKinds.ID)) {
+        if (ignoreIdentifiers && kind == CppTokenKinds.ID) {
             image = CppTokenKinds.describe(kind);
         }
 
