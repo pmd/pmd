@@ -37,6 +37,7 @@ final class TokenFileSet {
 
 
     private static final long MOD = 37;
+    private static final int NO_PREV_TOKEN = -1;
 
     /**
      * A list of token files. The internal ID of a token file is the
@@ -431,7 +432,7 @@ final class TokenFileSet {
                 long lastId = identifiers[i + tileSize];
                 hash = MOD * hash + thisId - lastMod * lastId;
 
-                int prevToken = i == 0 ? -1 : identifiers[i - 1];
+                int prevToken = i == 0 ? NO_PREV_TOKEN : identifiers[i - 1];
                 SmallTokenEntry thisEntry = new SmallTokenEntry(this.internalId, i, prevToken);
                 map.addTokenToHashTable(hash, thisEntry);
             }
@@ -497,7 +498,7 @@ final class TokenFileSet {
         final int fileId;
         final int indexInFile;
         /** This is here to do quick checks for containment in another match during hashing. */
-        int prevToken;
+        final int prevToken;
 
         SmallTokenEntry(int fileId, int indexInFile, int prevToken) {
             this.fileId = fileId;
@@ -517,7 +518,7 @@ final class TokenFileSet {
         }
 
         SmallTokenEntry getNext(int distance) {
-            return new SmallTokenEntry(fileId, indexInFile + distance, 0);
+            return new SmallTokenEntry(fileId, indexInFile + distance, NO_PREV_TOKEN);
         }
 
         @Override
@@ -542,9 +543,7 @@ final class TokenFileSet {
         boolean hasSamePrevToken(SmallTokenEntry other) {
             // If this is the first token in the file, then prevToken
             // does not have a useful value
-            return this.indexInFile > 0
-                && other.indexInFile > 0
-                && this.prevToken == other.prevToken;
+            return this.prevToken == other.prevToken && this.prevToken != NO_PREV_TOKEN;
         }
     }
 

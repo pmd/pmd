@@ -55,10 +55,10 @@ class MatchCollector {
             SmallTokenEntry fst = marks.get(0);
             SmallTokenEntry snd = marks.get(1);
             int dupes = tokens.countDupTokens(fst, snd, 0);
-            SmallTokenEntry bestMark = bestDuplicate(fst, snd, dupes);
-            if (bestMark != null) {
-                dupes = bestMark.prevToken;
-                recordMatch(Match.of(makeMark(fst, dupes), makeMark(bestMark, dupes)));
+            MatchRefinement refinement = bestDuplicate(fst, snd, dupes);
+            if (refinement != null) {
+                dupes = refinement.dupes;
+                recordMatch(Match.of(makeMark(fst, dupes), makeMark(refinement.mark2, dupes)));
             }
             return;
         }
@@ -234,11 +234,10 @@ class MatchCollector {
     between D1 and D2 (=4). That means that their common token sequence overlaps on 9 tokens.
     In this case we try to look 4 tokens away from D2 (=D3) and again compare with D1.
     We find they have 9 tokens in common, and do not overlap. (D1,D3) is therefore a
-    better candidate than (D1,D2).
-    Next we check 4 tokens away from D3, ie we check (D1,D4). This has no overlap
-    but only has 5 tokens in common so is a worse candidate. We stop and report (D1,D3).
+    better candidate than (D1,D2). There is no need to check further as we could only
+    get a smaller prefix length. The match is maximal (D1,D3).
     */
-    private SmallTokenEntry bestDuplicate(final SmallTokenEntry mark1, final SmallTokenEntry mark2, final int dupes) {
+    private MatchRefinement bestDuplicate(final SmallTokenEntry mark1, final SmallTokenEntry mark2, final int dupes) {
         if (!isDuplicate(dupes)) {
             // not a good enough duplicate
             return null;
@@ -255,13 +254,13 @@ class MatchCollector {
             if (distance < dupes) {
                 // Then probably cyclic repetition of length "distance".
                 SmallTokenEntry bestMark = mark2;
-                mark2.prevToken = dupes;
+                int bestDupes = dupes;
                 for (int i = 1; ; i++) {
                     SmallTokenEntry maybeBetter = mark2.getNext(i * distance);
                     int newDupes = tokens.countDupTokens(mark1, maybeBetter, 0);
                     if (newDupes >= minTileSize) {
                         bestMark = maybeBetter;
-                        bestMark.prevToken = newDupes;
+                        bestDupes = newDupes;
                     } else {
                         // We have the "maximal" mark, but both still overlap
                         break;
@@ -271,11 +270,20 @@ class MatchCollector {
                         break;
                     }
                 }
-                return bestMark;
+                return new MatchRefinement(bestMark, bestDupes);
             }
         }
-        mark2.prevToken = dupes;
-        return mark2;
+        return new MatchRefinement(mark2, dupes);
+    }
+
+    private static final class MatchRefinement {
+        final SmallTokenEntry mark2;
+        final int dupes;
+
+        private MatchRefinement(SmallTokenEntry mark2, int dupes) {
+            this.mark2 = mark2;
+            this.dupes = dupes;
+        }
     }
 
 

@@ -136,11 +136,11 @@ class MatchCollectorTest {
         assertEquals(54, mark2.getLength());
     }
 
-    private static List<Match> getMatches(String CyclicRepetitionCode, int minTileSize) throws IOException {
+    private static List<Match> getMatches(String code, int minTileSize) throws IOException {
         DummyLanguageModule dummy = DummyLanguageModule.getInstance();
         CpdLexer cpdLexer = dummy.createCpdLexer(dummy.newPropertyBundle());
         FileId fileName = FileId.fromPathLikeString("Foo.dummy");
-        TextFile textFile = TextFile.forCharSeq(CyclicRepetitionCode, fileName, dummy.getDefaultVersion());
+        TextFile textFile = TextFile.forCharSeq(code, fileName, dummy.getDefaultVersion());
         SourceManager sourceManager = new SourceManager(listOf(textFile));
         TokenFileSet tokens = new TokenFileSet(sourceManager);
         tokens.setState(TokenFileSet.CpdState.BUILDING);
