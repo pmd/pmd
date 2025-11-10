@@ -271,7 +271,7 @@ public final class CpdAnalysis implements AutoCloseable {
         // To make parallel streams use a custom ForkJoinPool, we need
         // to execute it in its "context" using submit.
 
-        ForkJoinPool forkJoinPool = new ForkJoinPool(threads); // NOPMD CloseResource: ForkJoinPool is only AutoCloseable since Java 19
+        ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
         try {
             return forkJoinPool
                 .submit(() -> processWithStream(indexStream.parallel(), textFiles, processFile))
