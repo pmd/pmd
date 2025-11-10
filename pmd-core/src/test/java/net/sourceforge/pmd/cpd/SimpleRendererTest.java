@@ -6,55 +6,122 @@ package net.sourceforge.pmd.cpd;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.lang.document.FileId;
-
 class SimpleRendererTest {
 
-    private static String getMultipleRepetitionsCode() {
-        return "var x = [\n"
-               + "  1, 1, 1, 1, 1, 1, 1, 1,\n"
-               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-               + "  2, 2, 2, 2, 2, 2, 2, 2,\n"
-               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-               + "  3, 3, 3, 3, 3, 3, 3, 3,\n"
-               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-               + "  4, 4, 4, 4, 4, 4, 4, 4\n"
-               + "];";
-    }
+    @Test
+    void dupTest() throws IOException, URISyntaxException {
+        CPDConfiguration config = new CPDConfiguration();
+        Path path1 = Paths.get(getClass().getResource("files/dup1.txt").toURI());
+        Path path2 = Paths.get(getClass().getResource("files/dup2.txt").toURI());
 
+        config.addInputPath(path1);
+        config.addInputPath(path2);
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+
+            cpd.performAnalysis(report -> {
+                StringWriter sw = new StringWriter();
+                SimpleRenderer renderer = new SimpleRenderer();
+                try {
+                    renderer.render(report, sw);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                assertEquals("Found a 14 line (95 tokens) duplication in the following files: \n"
+                             + "Starting at line 5 of " + path1 + "\n"
+                             + "Starting at line 5 of " + path2 + "\n"
+                             + "\n"
+                             + "------------------v starting from here (col 19)\n"
+                             + "public class dup1 {\n"
+                             + "\n"
+                             + "    public static void main(String[] args) {\n"
+                             + "        System.out.println(\"Test1\");\n"
+                             + "        System.out.println(\"Test2\");\n"
+                             + "        System.out.println(\"Test3\");\n"
+                             + "        System.out.println(\"Test4\");\n"
+                             + "        System.out.println(\"Test5\");\n"
+                             + "        System.out.println(\"Test6\");\n"
+                             + "        System.out.println(\"Test7\");\n"
+                             + "        System.out.println(\"Test8\");\n"
+                             + "        System.out.println(\"Test9\");\n"
+                             + "    }\n"
+                             + "}\n"
+                             + "^ ending here (col 1)\n",
+                    sw.toString()
+                );
+            });
+        }
+    }
 
     @Test
     void testWithOneDuplicationThreeMarks() throws Exception {
-        CPDReportRenderer renderer = new SimpleRenderer();
-        CpdTestUtils.CpdReportBuilder builder = new CpdTestUtils.CpdReportBuilder();
-        FileId foo1 = CpdTestUtils.FOO_FILE_ID;
+        CPDConfiguration config = new CPDConfiguration();
+        config.setMinimumTileSize(8);
+        Path path1 = Paths.get(getClass().getResource("files/dupWithinFile.txt").toURI());
+        config.addInputPath(path1);
 
-        builder.setFileContent(foo1, getMultipleRepetitionsCode());
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
 
-
-        Mark mark1 = builder.createMark(",", foo1, 2, 2, 25, 26);
-        Mark mark2 = builder.createMark(",", foo1, 4, 2, 25, 26);
-        Mark mark3 = builder.createMark(",", foo1, 6, 2, 25, 26);
-
-        builder.addMatch(mark1, mark2, mark3);
-
-        StringWriter sw = new StringWriter();
-        renderer.render(builder.build(), sw);
-        String report = sw.toString();
-        assertEquals("Found a 2 line (2 tokens) duplication in the following files: \n"
-                     + "Starting at line 2 of /var/Foo.java\n"
-                     + "Starting at line 4 of /var/Foo.java\n"
-                     + "Starting at line 6 of /var/Foo.java\n"
-                     + "\n"
-                     + "------------------------v starting from here (col 25)\n"
-                     + "  1, 1, 1, 1, 1, 1, 1, 1,\n"
-                     + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-                     + "------------------------^ ending here (col 25)\n",
-            report
-        );
+            cpd.performAnalysis(report -> {
+                StringWriter sw = new StringWriter();
+                SimpleRenderer renderer = new SimpleRenderer();
+                try {
+                    renderer.render(report, sw);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                assertEquals("Found a 2 line (17 tokens) duplication in the following files: \n"
+                             + "Starting at line 2 of " + path1 + "\n"
+                             + "Starting at line 4 of " + path1 + "\n"
+                             + "Starting at line 6 of " + path1 + "\n"
+                             + "\n"
+                             + "------------------------v starting from here (col 25)\n"
+                             + "  1, 1, 1, 1, 1, 1, 1, 1,\n"
+                             + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+                             + "------------------------^ ending here (col 25)\n",
+                    sw.toString()
+                );
+            });
+        }
     }
+
+    @Test
+    void testWithOneDuplicationThreeMarksWithDiffMinMax() throws Exception {
+        CPDConfiguration config = new CPDConfiguration();
+        config.setMinimumTileSize(8);
+        Path path1 = Paths.get(getClass().getResource("files/dupWithMinMax.txt").toURI());
+        config.addInputPath(path1);
+
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+
+            cpd.performAnalysis(report -> {
+                StringWriter sw = new StringWriter();
+                SimpleRenderer renderer = new SimpleRenderer();
+                try {
+                    renderer.render(report, sw);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                assertEquals("Found a 2 line (17..20 tokens) duplication in the following files: \n"
+                             + "Starting at line 2 of " + path1 + "\n"
+                             + "Starting at line 4 of " + path1 + "\n"
+                             + "Starting at line 6 of " + path1 + "\n"
+                             + "\n"
+                             + "------------------------v starting from here (col 25)\n"
+                             + "  1, 1, 1, 1, 1, 1, 1, 1,\n"
+                             + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+                             + "------------------------^ ending here (col 25)\n",
+                    sw.toString()
+                );
+            });
+        }
+    }
+
 }

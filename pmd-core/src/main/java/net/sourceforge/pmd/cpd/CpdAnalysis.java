@@ -92,6 +92,9 @@ public final class CpdAnalysis implements AutoCloseable {
             config.getLanguageVersionDiscoverer(),
             reporter
         );
+        if (config.getMinimumTileSize() < 1) {
+            throw new IllegalArgumentException("Minimum tile size must be greater than 0.");
+        }
 
         this.renderer = config.getCPDReportRenderer();
 

@@ -61,7 +61,7 @@ public class CPDConfiguration extends AbstractConfiguration {
     }
 
 
-    private int minimumTileSize;
+    private int minimumTileSize = 64;
 
     private boolean skipDuplicates;
 

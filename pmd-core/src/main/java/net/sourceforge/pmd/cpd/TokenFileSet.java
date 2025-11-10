@@ -190,6 +190,7 @@ final class TokenFileSet {
 
     public TokenEntry getEndToken(TokenEntry token, int matchLen) {
         checkState(CpdState.MATCHING, "getEndToken");
+        assert matchLen > 0: "Match length should be > 0, got " + matchLen;
 
         TokenFile tokenFile = Objects.requireNonNull(files.get(token.getFileIdInternal()));
         return tokenFile.getTokenEntry(token.getLocalIndex() + matchLen - 1, sourceManager);
