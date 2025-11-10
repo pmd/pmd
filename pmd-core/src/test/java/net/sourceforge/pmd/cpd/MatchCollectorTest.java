@@ -21,7 +21,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 
-class MatchAlgorithmTest {
+class MatchCollectorTest {
 
     private static final String LINE_1 = "public class Foo { ";
     private static final String LINE_2 = " public void bar() {";
@@ -81,22 +81,11 @@ class MatchAlgorithmTest {
 
     @Test
     void testMultipleMatches() throws IOException {
-        DummyLanguageModule dummy = DummyLanguageModule.getInstance();
-        CpdLexer cpdLexer = dummy.createCpdLexer(dummy.newPropertyBundle());
-        FileId fileName = FileId.fromPathLikeString("Foo.dummy");
-        TextFile textFile = TextFile.forCharSeq(getMultipleRepetitionsCode(), fileName, dummy.getDefaultVersion());
-        SourceManager sourceManager = new SourceManager(listOf(textFile));
-        TokenFileSet tokens = new TokenFileSet(sourceManager);
-        tokens.setState(TokenFileSet.CpdState.BUILDING);
-        TextDocument sourceCode = sourceManager.get(textFile.getFileId());
-        tokens.tokenize(sourceCode, cpdLexer, 0);
-
-        List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, 15);
-        SimpleRenderer.printlnReport(System.out, new CPDReport(sourceManager, matches, Collections.emptyMap(), emptyList()));
+        List<Match> matches = getMatches(getMultipleRepetitionsCode(), 15);
         assertEquals(1, matches.size());
         Match match = matches.get(0);
-        assertEquals(match.getMinTokenCount(), 17);
-        assertEquals(match.getMaxTokenCount(), 17);
+        assertEquals(17, match.getMinTokenCount());
+        assertEquals(17, match.getMaxTokenCount());
 
         List<Mark> marks = match.getMarks();
         assertThat(marks, hasSize(3));
@@ -105,12 +94,62 @@ class MatchAlgorithmTest {
         Mark mark3 = marks.get(2);
 
         assertEquals(2, mark1.getLocation().getStartLine());
-        assertEquals(mark1.getLength(), 17);
+        assertEquals(17, mark1.getLength());
 
         assertEquals(4, mark2.getLocation().getStartLine());
-        assertEquals(mark2.getLength(), 17);
+        assertEquals(17, mark2.getLength());
 
         assertEquals(6, mark3.getLocation().getStartLine());
-        assertEquals(mark3.getLength(), 17);
+        assertEquals(17, mark3.getLength());
     }
+
+    private static String getCyclicRepetitionCode() {
+        return "var x = [\n"
+               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+               + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
+               + "];";
+    }
+
+    @Test
+    void testCyclicRepetitions() throws IOException {
+        List<Match> matches = getMatches(getCyclicRepetitionCode(), 10);
+
+        assertEquals(1, matches.size());
+        Match match = matches.get(0);
+        assertEquals(54, match.getMinTokenCount());
+        assertEquals(54, match.getMaxTokenCount());
+
+        List<Mark> marks = match.getMarks();
+        assertThat(marks, hasSize(2));
+        Mark mark1 = marks.get(0);
+        Mark mark2 = marks.get(1);
+
+        assertEquals(2, mark1.getLocation().getStartLine());
+        assertEquals(54, mark1.getLength());
+
+        assertEquals(5, mark2.getLocation().getStartLine());
+        assertEquals(54, mark2.getLength());
+    }
+
+    private static List<Match> getMatches(String CyclicRepetitionCode, int minTileSize) throws IOException {
+        DummyLanguageModule dummy = DummyLanguageModule.getInstance();
+        CpdLexer cpdLexer = dummy.createCpdLexer(dummy.newPropertyBundle());
+        FileId fileName = FileId.fromPathLikeString("Foo.dummy");
+        TextFile textFile = TextFile.forCharSeq(CyclicRepetitionCode, fileName, dummy.getDefaultVersion());
+        SourceManager sourceManager = new SourceManager(listOf(textFile));
+        TokenFileSet tokens = new TokenFileSet(sourceManager);
+        tokens.setState(TokenFileSet.CpdState.BUILDING);
+        TextDocument sourceCode = sourceManager.get(textFile.getFileId());
+        tokens.tokenize(sourceCode, cpdLexer, 0);
+
+        List<Match> matches = CpdAnalysis.findMatches(sourceManager, new CPDNullListener(), tokens, minTileSize);
+        SimpleRenderer.printlnReport(System.out, new CPDReport(sourceManager, matches, Collections.emptyMap(), emptyList()));
+        return matches;
+    }
+
 }

@@ -39,10 +39,10 @@ class CppCpdTest {
                 // There should only be 1 duplication, and it should be maximal
                 assertEquals(1, matches.getMatches().size());
                 Match match = matches.getMatches().get(0);
-                assertEquals(128, match.getMinTokenCount());
+                assertEquals(126, match.getMinTokenCount());
                 assertEquals(2, match.getMarkCount());
                 assertEquals(20, match.getFirstMark().getLocation().getStartLine());
-                assertEquals(24, match.getSecondMark().getLocation().getStartLine());
+                assertEquals(25, match.getSecondMark().getLocation().getStartLine());
             });
         }
     }

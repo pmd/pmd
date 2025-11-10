@@ -266,7 +266,7 @@ class MatchCollector {
                         // We have the "maximal" mark, but both still overlap
                         break;
                     }
-                    if (mark1.indexInFile + dupes < bestMark.indexInFile) {
+                    if (mark1.indexInFile + newDupes < bestMark.indexInFile) {
                         // they don't overlap anymore
                         break;
                     }
