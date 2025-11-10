@@ -9,6 +9,7 @@ import java.util.BitSet;
 import java.util.Comparator;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -182,7 +183,7 @@ class MatchCollector {
             return;
         }
 
-        IdentityHashMap<Match.MatchBuilder, Void> identitySet = new IdentityHashMap<>();
+        Map<Match.MatchBuilder, Void> identitySet = new IdentityHashMap<>();
         for (int i = 0; i < matches.length; i++) {
             Match.MatchBuilder builder = matches[i];
             if (builder == null) {
