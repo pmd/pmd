@@ -178,6 +178,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
      *     method.
      */
     @Experimental
+    @Override
     public final TextRegion getInputRegion() {
         return document.getTextDocument().inputRegion(getRegion());
     }
