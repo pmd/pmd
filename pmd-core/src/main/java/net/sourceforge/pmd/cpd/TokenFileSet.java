@@ -286,9 +286,6 @@ final class TokenFileSet {
     static final class TokenFile {
         /**
          * This is the index of this file in the containing TokenFileSet's list.
-         * Only set if the tokenization did not error, as only then is the TokenFile
-         * placed in the list. This is not stable from run to run because the files
-         * may be lexed in parallel.
          */
         private final int internalId;
         private final FileId fileId;

@@ -18,6 +18,7 @@ public class SimpleRenderer implements CPDReportRenderer {
 
     private String separator;
     private boolean trimLeadingWhitespace;
+    private boolean printAllMarks = false;
 
     public static final String DEFAULT_SEPARATOR = "=====================================================================";
 
@@ -32,6 +33,10 @@ public class SimpleRenderer implements CPDReportRenderer {
 
     public SimpleRenderer(String theSeparator) {
         separator = theSeparator;
+    }
+
+    public void setPrintAllMarks(boolean printAllMarks) {
+        this.printAllMarks = printAllMarks;
     }
 
     static void printlnReport(PrintStream out, CPDReport report) throws IOException {
@@ -74,9 +79,22 @@ public class SimpleRenderer implements CPDReportRenderer {
 
         writer.println(); // add a line to separate the source from the desc above
 
-        FileLocation firstLoc = match.getFirstMark().getLocation();
+        if (printAllMarks) {
+            for (Mark mark : match) {
+                writer.println(mark.getLocation().startPosToStringWithFile());
+                printMark(report, writer, mark);
+                writer.println();
+            }
+        } else {
+            Mark firstMark = match.getFirstMark();
+            printMark(report, writer, firstMark);
+        }
+    }
+
+    private void printMark(CPDReport report, PrintWriter writer, Mark firstMark) throws IOException {
+        FileLocation firstLoc = firstMark.getLocation();
         writeColumnMarker(true, firstLoc.getStartColumn(), writer);
-        Chars source = report.getSourceCodeSlice(match.getFirstMark());
+        Chars source = report.getSourceCodeSlice(firstMark);
 
         if (trimLeadingWhitespace) {
             for (Chars line : StringUtil.linesWithTrimIndent(source)) {

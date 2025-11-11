@@ -109,15 +109,62 @@ class SimpleRendererTest {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                assertEquals("Found a 2 line (17..20 tokens) duplication in the following files: \n"
+                assertEquals("Found a 2 line (17..23 tokens) duplication in the following files: \n"
                              + "Starting at line 2 of " + path1 + "\n"
                              + "Starting at line 4 of " + path1 + "\n"
                              + "Starting at line 6 of " + path1 + "\n"
                              + "\n"
-                             + "------------------------v starting from here (col 25)\n"
-                             + "  1, 1, 1, 1, 1, 1, 1, 1,\n"
-                             + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-                             + "------------------------^ ending here (col 25)\n",
+                             + "---------------v starting from here (col 16)\n"
+                             + "1,1,1,1,1,1,1,1,\n"
+                             + "0,0,0,0,0,0,0,0,\n"
+                             + "---------------^ ending here (col 16)\n",
+                    sw.toString()
+                );
+            });
+        }
+    }
+
+    @Test
+    void testWithOneDuplicationThreeMarksWithDiffMinMaxPrintAllMarks() throws Exception {
+        CPDConfiguration config = new CPDConfiguration();
+        config.setMinimumTileSize(8);
+        Path path1 = Paths.get(getClass().getResource("files/dupWithMinMax.txt").toURI());
+        config.addInputPath(path1);
+
+        try (CpdAnalysis cpd = CpdAnalysis.create(config)) {
+
+            cpd.performAnalysis(report -> {
+                StringWriter sw = new StringWriter();
+                SimpleRenderer renderer = new SimpleRenderer();
+                renderer.setPrintAllMarks(true);
+                try {
+                    renderer.render(report, sw);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                assertEquals("Found a 2 line (17..23 tokens) duplication in the following files: \n"
+                             + "Starting at line 2 of " + path1 + "\n"
+                             + "Starting at line 4 of " + path1 + "\n"
+                             + "Starting at line 6 of " + path1 + "\n"
+                             + "\n"
+                             + path1 + ":2:16\n"
+                             + "---------------v starting from here (col 16)\n"
+                             + "1,1,1,1,1,1,1,1,\n"
+                             + "0,0,0,0,0,0,0,0,\n"
+                             + "---------------^ ending here (col 16)\n"
+                             + "\n"
+                             + path1 + ":4:16\n"
+                             + "---------------v starting from here (col 16)\n"
+                             + "2,2,2,2,2,2,2,2,\n"
+                             + "0,0,0,0,0,0,0,0,0,0,0,\n"
+                             + "---------------------^ ending here (col 22)\n"
+                             + "\n"
+                             + path1 + ":6:16\n"
+                             + "---------------v starting from here (col 16)\n"
+                             + "3,3,3,3,3,3,3,3,\n"
+                             + "0,0,0,0,0,0,0,0,0,0,0,\n"
+                             + "---------------------^ ending here (col 22)\n"
+                             + "\n",
                     sw.toString()
                 );
             });

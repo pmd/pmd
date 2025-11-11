@@ -114,6 +114,7 @@ class MatchCollector {
             SmallTokenEntry mark1 = marks.get(i);
             SmallTokenEntry mark2 = marks.get(j);
 
+
             int dupesIIp1 = lb[j] + tokens.countDupTokens(mark1, mark2, lb[j]);
 
             if (isDuplicate(dupesIIp1)) {
@@ -130,6 +131,14 @@ class MatchCollector {
                     handleDuplicate(i, j, mark1, mark2, dupesIJ, matches, isAliased);
                 }
             }
+            // for (int k = 0; k < marks.size(); k++) {
+            //     if (k <= i) {
+            //         System.out.printf("%4d", 0);
+            //     } else {
+            //         System.out.printf("%4d", lb[k]);
+            //     }
+            // }
+            // System.out.println();
         }
 
         verifyAliasBits(matches, isAliased);
