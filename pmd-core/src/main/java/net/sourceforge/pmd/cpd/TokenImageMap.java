@@ -4,10 +4,11 @@
 
 package net.sourceforge.pmd.cpd;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -36,14 +37,14 @@ final class TokenImageMap {
     private final Object2IntMap<String> preallocatedImages = new Object2IntOpenHashMap<>();
 
     // The first ID is 1, 0 is the ID of the EOF token.
-    private int curImageId = 1;
+    private final AtomicInteger curImageId = new AtomicInteger(1);
 
     // This is shared to save memory on the lambda allocation, which is significant
-    private final Function<String, Integer> getNextImage = k -> curImageId++;
+    private final Function<String, Integer> getNextImage = k -> curImageId.getAndIncrement();
 
     TokenImageMap(int numThreads) {
         if (numThreads <= 1) {
-            images = new HashMap<>();
+            images = new LinkedHashMap<>();
         } else {
             images = new ConcurrentHashMap<>();
         }
@@ -57,7 +58,7 @@ final class TokenImageMap {
      */
     void preallocImages(Set<String> constantImages) {
         for (String image : constantImages) {
-            int id = curImageId++;
+            int id = curImageId.getAndIncrement();
             preallocatedImages.put(image, id);
             images.put(image, id);
         }

@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -110,7 +111,10 @@ final class TokenFileSet {
     }
 
     String imageFromId(int i) {
-        checkState(CpdState.BUILDING, "getImage");
+        if (imageMap == null) {
+            checkState(CpdState.BUILDING, "getImage");
+            throw AssertionUtil.shouldNotReachHere("checkState should have thrown");
+        }
         return imageMap.imageFromId(i);
     }
 
