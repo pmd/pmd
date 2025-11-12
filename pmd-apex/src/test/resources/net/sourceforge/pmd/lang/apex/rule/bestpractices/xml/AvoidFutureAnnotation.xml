@@ -7,7 +7,7 @@
     <test-code>
         <description>Problematic apex method - @Future annotation should be avoided</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class FutureExample {
     @Future
@@ -21,7 +21,7 @@ public class FutureExample {
     <test-code>
         <description>Multiple @Future methods should be detected</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-linenumbers>2,7</expected-linenumbers>
         <code><![CDATA[
 public class MultipleFutureExample {
     @Future
@@ -40,7 +40,7 @@ public class MultipleFutureExample {
     <test-code>
         <description>Test case insensitivity - @future in lowercase should be detected</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class FutureExample {
     @future
@@ -54,7 +54,7 @@ public class FutureExample {
     <test-code>
         <description>Test case insensitivity - @FUTURE in uppercase should be detected</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class FutureExample {
     @FUTURE
@@ -68,7 +68,7 @@ public class FutureExample {
     <test-code>
         <description>@Future with callout parameter should be detected</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class FutureCalloutExample {
     @Future(callout=true)
@@ -134,7 +134,7 @@ public class OtherAnnotationsExample {
     <test-code>
         <description>Mixed scenario - @Future should be flagged, Queueable should not</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
+        <expected-linenumbers>2</expected-linenumbers>
         <code><![CDATA[
 public class MixedExample {
     @Future
@@ -148,7 +148,7 @@ public class MixedExample {
     <test-code>
         <description>@Future annotation on methods with different access modifiers</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>3,7</expected-linenumbers>
+        <expected-linenumbers>2,6</expected-linenumbers>
         <code><![CDATA[
 public class FutureAccessModifiers {
     @Future

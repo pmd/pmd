@@ -197,7 +197,7 @@ See more here: &lt;https://developer.salesforce.com/docs/atlas.en-us.apexcode.me
             <property name="xpath">
                 <value>
 <![CDATA[
-//Method[ModifierNode/Annotation[lower-case(@Name) = 'future']]
+//Method/ModifierNode/Annotation[lower-case(@Name) = 'future']
 ]]>
                 </value>
             </property>
@@ -214,8 +214,8 @@ public class FutureExample {
     }
 }
 
-// Recommended: Using Queueable interface
-public class QueueableExample implements Queueable {
+// Recommended: Using Queueable interface with Finalizer to detect and handle job failure
+public class QueueableExample implements Queueable, Finalizer {
     private String accountId;
     
     public QueueableExample(String accountId) {
@@ -223,8 +223,17 @@ public class QueueableExample implements Queueable {
     }
     
     public void execute(QueueableContext context) {
+        System.attachFinalizer(this);
         Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
         // ... process account
+    }
+
+    public void execute(FinalizerContext ctx) {
+        if (ctx.getResult() == ParentJobResult.SUCCESS) {
+            // Handle success
+        } else {
+            // Handle failure
+        }
     }
 }
 
