@@ -23,7 +23,6 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRegion;
-import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -51,7 +50,7 @@ final class TokenFileSet {
     private final SourceManager sourceManager;
 
     /** ID repository mapping String -> int. */
-    private final TokenImageMap imageMap;
+    private TokenImageMap imageMap;
 
     private CpdState state = CpdState.INIT;
 
@@ -72,6 +71,7 @@ final class TokenFileSet {
         MATCHING
     }
 
+    // test only
     TokenFileSet(SourceManager sourceManager) {
         this(sourceManager, 2);
     }
@@ -80,6 +80,10 @@ final class TokenFileSet {
         this.sourceManager = sourceManager;
         this.imageMap = new TokenImageMap(numThreads);
         this.files = new ArrayList<>(Collections.nCopies(sourceManager.size(), null));
+    }
+
+    private boolean isDebugMode() {
+        return LOG.isDebugEnabled();
     }
 
     private void checkState(CpdState expectedState, String mname) {
@@ -94,6 +98,15 @@ final class TokenFileSet {
             checkState(CpdState.INIT, "setState(BUILDING)");
         } else if (newState == CpdState.HASHING) {
             checkState(CpdState.BUILDING, "setState(HASHING)");
+            if (!isDebugMode()) {
+                // The images are not needed from that point, so we
+                // null them out to free memory.
+                // This is only done if debug logging is disabled.
+                // If you are debugging CPD, turn the --debug flag on
+                // to not null out the map and be able to inspect token
+                // images.
+                this.imageMap = null;
+            }
         } else if (newState == CpdState.MATCHING) {
             checkState(CpdState.HASHING, "setState(HASHING)");
         }
@@ -111,9 +124,8 @@ final class TokenFileSet {
     }
 
     String imageFromId(int i) {
-        if (imageMap == null) {
+        if (!isDebugMode()) {
             checkState(CpdState.BUILDING, "getImage");
-            throw AssertionUtil.shouldNotReachHere("checkState should have thrown");
         }
         return imageMap.imageFromId(i);
     }
