@@ -34,7 +34,7 @@ class SimpleRendererTest {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                assertEquals("Found a 14 line (95 tokens) duplication in the following files: \n"
+                assertEquals(("Found a 14 line (95 tokens) duplication in the following files: \n"
                              + "Starting at line 5 of " + path1 + "\n"
                              + "Starting at line 5 of " + path2 + "\n"
                              + "\n"
@@ -53,7 +53,7 @@ class SimpleRendererTest {
                              + "        System.out.println(\"Test9\");\n"
                              + "    }\n"
                              + "}\n"
-                             + "^ ending here (col 1)\n",
+                             + "^ ending here (col 1)\n").replace("\n", System.lineSeparator()),
                     sw.toString()
                 );
             });
@@ -77,7 +77,7 @@ class SimpleRendererTest {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                assertEquals("Found a 2 line (17 tokens) duplication in the following files: \n"
+                assertEquals(("Found a 2 line (17 tokens) duplication in the following files: \n"
                              + "Starting at line 2 of " + path1 + "\n"
                              + "Starting at line 4 of " + path1 + "\n"
                              + "Starting at line 6 of " + path1 + "\n"
@@ -85,7 +85,7 @@ class SimpleRendererTest {
                              + "------------------------v starting from here (col 25)\n"
                              + "  1, 1, 1, 1, 1, 1, 1, 1,\n"
                              + "  0, 0, 0, 0, 0, 0, 0, 0,\n"
-                             + "------------------------^ ending here (col 25)\n",
+                             + "------------------------^ ending here (col 25)\n").replace("\n", System.lineSeparator()),
                     sw.toString()
                 );
             });
@@ -109,7 +109,7 @@ class SimpleRendererTest {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                assertEquals("Found a 2 line (17..23 tokens) duplication in the following files: \n"
+                assertEquals(("Found a 2 line (17..23 tokens) duplication in the following files: \n"
                              + "Starting at line 2 of " + path1 + "\n"
                              + "Starting at line 4 of " + path1 + "\n"
                              + "Starting at line 6 of " + path1 + "\n"
@@ -117,7 +117,7 @@ class SimpleRendererTest {
                              + "---------------v starting from here (col 16)\n"
                              + "1,1,1,1,1,1,1,1,\n"
                              + "0,0,0,0,0,0,0,0,\n"
-                             + "---------------^ ending here (col 16)\n",
+                             + "---------------^ ending here (col 16)\n").replace("\n", System.lineSeparator()),
                     sw.toString()
                 );
             });
@@ -142,7 +142,7 @@ class SimpleRendererTest {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                assertEquals("Found a 2 line (17..23 tokens) duplication in the following files: \n"
+                assertEquals(("Found a 2 line (17..23 tokens) duplication in the following files: \n"
                              + "Starting at line 2 of " + path1 + "\n"
                              + "Starting at line 4 of " + path1 + "\n"
                              + "Starting at line 6 of " + path1 + "\n"
@@ -164,7 +164,7 @@ class SimpleRendererTest {
                              + "3,3,3,3,3,3,3,3,\n"
                              + "0,0,0,0,0,0,0,0,0,0,0,\n"
                              + "---------------------^ ending here (col 22)\n"
-                             + "\n",
+                             + "\n").replace("\n", System.lineSeparator()),
                     sw.toString()
                 );
             });

@@ -102,7 +102,10 @@ public class SimpleRenderer implements CPDReportRenderer {
                 writer.println();
             }
         } else {
-            source.writeFully(writer);
+            for (Chars line : source.lines()) {
+                line.writeFully(writer);
+                writer.println();
+            }
             if (!source.endsWith("\n")) {
                 writer.println();
             }
