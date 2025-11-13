@@ -1058,6 +1058,50 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="PublicMemberInNonPublicType"
+          language="java"
+          since="7.19.0"
+          message="A member in a non-public type should not be public"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#publicmemberinnonpublictype">
+        <description>
+A package-private type should not contain members that are public. Their effective visibility will
+be package-private anyway, so declaring them "public" is just confusing. If the type is later
+made public, then suddenly all members are public as well, which might not be intended.
+
+These members should be made package-private as well or even private.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value><![CDATA[
+//(MethodDeclaration|ConstructorDeclaration|CompactConstructorDeclaration|
+   FieldDeclaration|
+   ClassDeclaration|EnumDeclaration|AnnotationTypeDeclaration)
+  [@EffectiveVisibility != 'public']
+  [@Visibility = 'public']
+  [@Overridden = false() or not(@Overridden)]
+]]></value>
+            </property>
+        </properties>
+        <example><![CDATA[
+class Wrong {
+    public void method() {} // violation
+    public int field; // violation
+}
+
+class Correct {
+    void method() {}
+    // or even
+    private void privateMethod() {}
+
+    int field;
+    // or even
+    private int privateField;
+}
+]]></example>
+    </rule>
+
     <rule name="SignatureDeclareThrowsException"
           language="java"
           since="1.2"

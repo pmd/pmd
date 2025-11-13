@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Rule example</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,3</expected-linenumbers>
+        <code><![CDATA[
+class Wrong {
+    public void method() {} // violation
+    public int field; // violation
+}
+
+class Correct {
+    void method() {}
+    // or even
+    private void privateMethod() {}
+
+    int field;
+    // or even
+    private int privateField;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>More declarations</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>2,3,8,10,11,14,15,19</expected-linenumbers>
+        <code><![CDATA[
+class PackagePrivateClass {
+  public PackagePrivateClass() {} // violation, line 2
+  public void publicMethod() {} // violation, line 3
+  void packageMethod() {}
+  private void privateMethod() {}
+  public int hashCode() {} // no violation, inherited/overridden
+
+  public int field; // violation, line 8
+
+  public class Nested {} // violation, line 10
+  public enum Foo { // violation, line 11
+    A
+  }
+  public interface Intf {} // violation, line 14
+  public @interface Annotation {} // violation, line 15
+}
+
+record MyRecord(String a) {
+  public MyRecord { // violation, line 19
+  }
+}
+]]></code>
+    </test-code>
+</test-data>
