@@ -254,6 +254,11 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
+    void testGitHubBug() {
+      doTest("GitHubBug", java15);
+    }
+
+    @Test
     void testLambda2783() {
         java8.parseResource("LambdaBug2783.java");
     }
