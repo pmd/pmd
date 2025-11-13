@@ -76,14 +76,14 @@ public final class NcssCountRule extends AbstractApexRule {
 
     private void visitTypeDecl(ASTUserClassOrInterface<?> node,
                                int level,
-                               RuleContext data) {
+                               RuleContext ruleContext) {
 
         if (ApexMetrics.NCSS.supports(node)) {
             int classSize = MetricsUtil.computeMetric(ApexMetrics.NCSS, node);
             int classHighest = (int) MetricsUtil.computeStatistics(ApexMetrics.NCSS, node.getMethods()).getMax();
 
             if (classSize >= level) {
-                asCtx(data).addViolation(node, getPrintableNodeKind(node),
+                ruleContext.addViolation(node, getPrintableNodeKind(node),
                         node.getSimpleName(), classSize, level + ", highest: " + classHighest);
             }
         }
@@ -105,12 +105,12 @@ public final class NcssCountRule extends AbstractApexRule {
 
     private void visitMethod(ASTMethod node,
                              int level,
-                             RuleContext data) {
+                             RuleContext ruleContext) {
 
         if (ApexMetrics.NCSS.supports(node)) {
             int methodSize = MetricsUtil.computeMetric(ApexMetrics.NCSS, node);
             if (methodSize >= level) {
-                asCtx(data).addViolation(node, node.isConstructor() ? "constructor" : "method",
+                ruleContext.addViolation(node, node.isConstructor() ? "constructor" : "method",
                                          displaySignature(node), methodSize, level);
             }
         }
