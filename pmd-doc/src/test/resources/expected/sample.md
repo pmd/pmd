@@ -5,7 +5,7 @@ permalink: pmd_rules_java_sample.html
 folder: pmd/rules/java
 sidebaractiveurl: /pmd_rules_java.html
 editmepath: ../rulesets/ruledoctest/sample.xml
-keywords: Sample, DeprecatedSample, JumbledIncrementer, MovedRule, OverrideBothEqualsAndHashcode, RenamedRule1, RenamedRule2, RenamedRule3, RenamedRule4, XSSInDocumentation
+keywords: Sample, DeprecatedSample, JumbledIncrementer, MovedRule, OverrideBothEqualsAndHashcode, RenamedRule1, RenamedRule2, RenamedRule3, RenamedRule4, SampleRuleWithEnumProperties, XSSInDocumentation
 rules:
   DeprecatedSample: |
     Just some description of a deprecated rule.
@@ -54,6 +54,8 @@ rules:
     
     This rule has been renamed. Use instead: [JumbledIncrementer](#jumbledincrementer)
     
+  SampleRuleWithEnumProperties: |
+    This rule is for testing enum properties
   XSSInDocumentation: |
     &lt;script&gt;alert('XSS at the beginning');&lt;/script&gt; HTML tags might appear at various places.
     Sometimes they should be escaped, sometimes not:
@@ -586,6 +588,38 @@ Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even 
 </rule>
 ```
 
+## SampleRuleWithEnumProperties
+
+**Since:** PMD 7.19.0
+
+**Priority:** Medium (3)
+
+This rule is for testing enum properties
+
+**This rule is defined by the following Java class:** [net.sourceforge.pmd.doc.internal.SampleRuleWithEnumPropertiesRule](https://github.com/pmd/pmd/blob/main/net/sourceforge/pmd/doc/internal/SampleRuleWithEnumPropertiesRule.java)
+
+**This rule has the following properties:**
+
+|Name|Default Value|Description|
+|----|-------------|-----------|
+|enumProperty|OPTION\_ONE|Description<br>One of: `OPTION\_ONE`, `OPTION\_TWO`|
+|enumListProperty||Description<br>One or more of: `OPTION\_ONE`, `OPTION\_TWO`|
+
+**Use this rule with the default properties by just referencing it:**
+``` xml
+<rule ref="category/java/sample.xml/SampleRuleWithEnumProperties" />
+```
+
+**Use this rule and customize it:**
+``` xml
+<rule ref="category/java/sample.xml/SampleRuleWithEnumProperties">
+    <properties>
+        <property name="enumProperty" value="OPTION_ONE" />
+        <property name="enumListProperty" value="" />
+    </properties>
+</rule>
+```
+
 ## XSSInDocumentation
 
 **Since:** PMD 0.1
@@ -664,7 +698,7 @@ if (0 > 1 && 0 < 1) {
 <rule ref="category/java/sample.xml/XSSInDocumentation">
     <properties>
         <property name="sampleRegexProperty" value="\/\*\s+(default|package)\s+\*\/" />
-        <property name="XSSpropertyTest" value="&lt;script&gt;alert('XSS');&lt;/script&gt;" />
+        <property name="XSSpropertyTest" value="&lt;script&gt;alert(&apos;XSS&apos;);&lt;/script&gt;" />
         <property name="escapingNeeded" value="this is escaped: |" />
     </properties>
 </rule>
