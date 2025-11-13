@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* general
+  * [#5701](https://github.com/pmd/pmd/issues/5701): \[core] net.sourceforge.pmd.cpd.SourceManager has public methods
 
 ### 🚨️ API Changes
 
