@@ -362,6 +362,47 @@ END;
         </example>
     </rule>
 
+    <rule name="NcssCount"
+          language="plsql"
+          message="The {0} ''{1}'' has a NCSS line count of {2} (limit: {3})."
+          since="7.19.0"
+          class="net.sourceforge.pmd.lang.plsql.rule.design.NcssCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#ncsscount">
+        <description>
+            This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
+            of code in a plsql type or method. NCSS ignores comments, blank lines, and only counts actual
+            statements. For more details on the calculation, see the documentation
+            {% jdoc plsql::lang.plsql.metrics.PlsqlMetrics#NCSS %}.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+DECLARE                                     -- total Ncss: 14
+    PROCEDURE bigMethod IS
+        x NUMBER;
+        y NUMBER := 2;                      -- +1
+        a BOOLEAN := FALSE;                 -- +1
+        b BOOLEAN := TRUE;                  -- +1
+    BEGIN
+        IF (a OR b) THEN                    -- +2
+            LOOP                            -- +1
+                x := x + 2;                 -- +1
+                EXIT WHEN x >= 12;          -- +2
+            END LOOP;
+
+            DBMS_OUTPUT.PUT_LINE('done');   -- +1
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('false');  -- +1
+        END IF;
+    EXCEPTION
+        WHEN PROGRAM_ERROR THEN DBMS_OUTPUT.PUT_LINE('Error Occurred'); -- +2
+    END bigMethod;
+BEGIN
+    bigMethod();                            -- +1
+END;
+]]>
+        </example>
+    </rule>
+
     <rule name="NcssMethodCount"
           message="The method {0}() has an NCSS line count of {1} (threshold is {2})"
           language="plsql"
