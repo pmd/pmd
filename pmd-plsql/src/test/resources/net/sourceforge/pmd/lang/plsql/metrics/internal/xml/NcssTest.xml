@@ -5,6 +5,19 @@
         xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <code-fragment id="full-example"><![CDATA[
+/*
+Simple XPath Expression to count the statements:
+
+//PackageSpecification |
+//ProgramUnit |
+//VariableOrConstantDeclaration |
+//ExceptionDeclaration |
+//PackageBody |
+//Statement |
+//ElsifClause |
+//ElseClause[parent::IfStatement]
+
+*/
 CREATE PACKAGE foo AS
     PROCEDURE foo ();
     y NUMBER;
@@ -111,14 +124,14 @@ END foo;
         <description>Full example</description>
         <expected-problems>8</expected-problems>
         <expected-messages>
-            <message>'(Input)' has value 63.</message>
-            <message>'(PackageSpecification) foo' has value 0.</message>
-            <message>'(ProgramUnit) foo' has value 0.</message>
-            <message>'(PackageBody) foo' has value 63.</message>
-            <message>'(ProgramUnit) init' has value 14.</message>
-            <message>'(ProgramUnit) init' has value 15.</message>
-            <message>'(ProgramUnit) foo' has value 13.</message>
-            <message>'(ProgramUnit) main' has value 21.</message>
+            <message>'(Input)' has value 64.</message>
+            <message>'(PackageSpecification) foo' has value 5.</message>
+            <message>'(ProgramUnit) foo()' has value 1.</message>
+            <message>'(PackageBody) foo' has value 59.</message>
+            <message>'(ProgramUnit) init()' has value 8.</message>
+            <message>'(ProgramUnit) init(z)' has value 13.</message>
+            <message>'(ProgramUnit) foo()' has value 13.</message>
+            <message>'(ProgramUnit) main()' has value 24.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -147,7 +160,7 @@ END;
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'(Input)' has value 5.</message>
-            <message>'(ProgramUnit) foo' has value 5.</message>
+            <message>'(ProgramUnit) foo(name, company)' has value 5.</message>
         </expected-messages>
         <code><![CDATA[
 DECLARE
@@ -173,8 +186,8 @@ END;
         <description>Case statement</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
-            <message>'(Input)' has value 14.</message>
-            <message>'(ProgramUnit) foo' has value 14.</message>
+            <message>'(Input)' has value 8.</message>
+            <message>'(ProgramUnit) foo()' has value 8.</message>
         </expected-messages>
         <code><![CDATA[
 DECLARE
@@ -199,28 +212,28 @@ END;
         <expected-problems>2</expected-problems>
         <expected-messages>
             <message>'(Input)' has value 14.</message>
-            <message>'(ProgramUnit) bigMethod' has value 13.</message>
+            <message>'(ProgramUnit) bigMethod()' has value 13.</message>
         </expected-messages>
         <code><![CDATA[
 DECLARE                                     -- total Ncss: 14
-    PROCEDURE bigMethod IS
-        x NUMBER;
+    PROCEDURE bigMethod IS                  -- +1
+        x NUMBER;                           -- +1
         y NUMBER := 2;                      -- +1
         a BOOLEAN := FALSE;                 -- +1
         b BOOLEAN := TRUE;                  -- +1
     BEGIN
-        IF (a OR b) THEN                    -- +2
+        IF (a OR b) THEN                    -- +1
             LOOP                            -- +1
                 x := x + 2;                 -- +1
-                EXIT WHEN x >= 12;          -- +2
+                EXIT WHEN x >= 12;          -- +1
             END LOOP;
 
             DBMS_OUTPUT.PUT_LINE('done');   -- +1
-        ELSE
+        ELSE                                -- +1
             DBMS_OUTPUT.PUT_LINE('false');  -- +1
         END IF;
     EXCEPTION
-        WHEN PROGRAM_ERROR THEN DBMS_OUTPUT.PUT_LINE('Error Occurred'); -- +2
+        WHEN PROGRAM_ERROR THEN DBMS_OUTPUT.PUT_LINE('Error Occurred'); -- +1
     END bigMethod;
 BEGIN
     bigMethod();                            -- +1
@@ -232,15 +245,15 @@ END;
         <description>Rule example from NcssObjectCount</description>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>'(Input)' has value 2.</message>
-            <message>'(PackageSpecification) pkg_' has value 2.</message>
-            <message>'(ProgramUnit) Foo' has value 2.</message>
+            <message>'(Input)' has value 4.</message>
+            <message>'(PackageSpecification) pkg_' has value 4.</message>
+            <message>'(ProgramUnit) Foo()' has value 3.</message>
         </expected-messages>
         <code><![CDATA[
+-- this package only has 4 NCSS lines
 CREATE OR REPLACE PACKAGE pkg_ IS
  PROCEDURE Foo IS
  BEGIN
- --this class only has 6 NCSS lines
      super();
      super();
  END Foo;
@@ -253,9 +266,9 @@ END;
         <description>Rule example from NcssMethodCount</description>
         <expected-problems>3</expected-problems>
         <expected-messages>
-            <message>'(Input)' has value 2.</message>
-            <message>'(PackageSpecification) BODY' has value 2.</message>
-            <message>'(ProgramUnit) method' has value 2.</message>
+            <message>'(Input)' has value 3.</message>
+            <message>'(PackageSpecification) BODY' has value 3.</message>
+            <message>'(ProgramUnit) method()' has value 2.</message>
         </expected-messages>
         <code><![CDATA[
 CREATE OR REPLACE PACKAGE BODY AS

@@ -113,11 +113,11 @@ END foo;
         <rule-property name="methodReportLevel">5</rule-property>
         <expected-problems>5</expected-problems>
         <expected-messages>
-            <message>The PackageBody 'foo' has a NCSS line count of 63 (limit: 40, highest: 21).</message>
-            <message>The ProgramUnit 'init()' has a NCSS line count of 14 (limit: 5).</message>
-            <message>The ProgramUnit 'init(z NUMBER)' has a NCSS line count of 15 (limit: 5).</message>
+            <message>The PackageBody 'foo' has a NCSS line count of 59 (limit: 40, highest: 24).</message>
+            <message>The ProgramUnit 'init()' has a NCSS line count of 8 (limit: 5).</message>
+            <message>The ProgramUnit 'init(z NUMBER)' has a NCSS line count of 13 (limit: 5).</message>
             <message>The ProgramUnit 'foo()' has a NCSS line count of 13 (limit: 5).</message>
-            <message>The ProgramUnit 'main()' has a NCSS line count of 21 (limit: 5).</message>
+            <message>The ProgramUnit 'main()' has a NCSS line count of 24 (limit: 5).</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>

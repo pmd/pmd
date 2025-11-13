@@ -28,31 +28,32 @@ public final class PlsqlMetrics {
      * NCSS (Non-commenting source statements) counts the
      * number of statements in a source file, oracle object or operation.
      * That’s roughly equivalent to counting the number of semicolons in
-     * the program.
+     * the source file.
      * Comments and blank lines are ignored, and statements
      * spread on multiple lines count as only one.
+     * Declarations (variables, methods or types) count as one.
      *
      *
      * <pre>{@code
      * DECLARE                                     -- total Ncss: 14
-     *     PROCEDURE bigMethod IS
-     *         x NUMBER;
+     *     PROCEDURE bigMethod IS                  -- +1
+     *         x NUMBER;                           -- +1
      *         y NUMBER := 2;                      -- +1
      *         a BOOLEAN := FALSE;                 -- +1
      *         b BOOLEAN := TRUE;                  -- +1
      *     BEGIN
-     *         IF (a OR b) THEN                    -- +2
+     *         IF (a OR b) THEN                    -- +1
      *             LOOP                            -- +1
      *                 x := x + 2;                 -- +1
-     *                 EXIT WHEN x >= 12;          -- +2
+     *                 EXIT WHEN x >= 12;          -- +1
      *             END LOOP;
      *
      *             DBMS_OUTPUT.PUT_LINE('done');   -- +1
-     *         ELSE
+     *         ELSE                                -- +1
      *             DBMS_OUTPUT.PUT_LINE('false');  -- +1
      *         END IF;
      *     EXCEPTION
-     *         WHEN PROGRAM_ERROR THEN DBMS_OUTPUT.PUT_LINE('Error Occurred'); -- +2
+     *         WHEN PROGRAM_ERROR THEN DBMS_OUTPUT.PUT_LINE('Error Occurred'); -- +1
      *     END bigMethod;
      * BEGIN
      *     bigMethod();                            -- +1
