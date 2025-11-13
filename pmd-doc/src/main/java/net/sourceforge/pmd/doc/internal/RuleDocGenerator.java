@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.regex.Matcher;
@@ -490,14 +491,35 @@ public class RuleDocGenerator {
                                 description = description.substring(DEPRECATED_RULE_PROPERTY_MARKER.length());
                             }
 
-                            String defaultValue = determineDefaultValueAsString(propertyDescriptor, rule, true);
+                            String enumValuesDescription = "";
+                            Set<?> enumValues = propertyDescriptor.serializer().enumeratedValues();
+                            if (!enumValues.isEmpty()) {
+                                if (propertyDescriptor.serializer().isCollection()) {
+                                    enumValuesDescription = "<br>One or more of: ";
+                                    enumValues = enumValues.stream().map(Collections::singleton).collect(Collectors.toSet());
+                                } else {
+                                    enumValuesDescription = "<br>One of: ";
+                                }
+                                enumValuesDescription += enumValues.stream()
+                                        .map(v -> EscapeUtils.escapeMarkdown(determinePropertyValueAsString(propertyDescriptor, v)))
+                                        .map(v -> "`" + v + "`")
+                                        .sorted()
+                                        .collect(Collectors.joining(", "));
+                            }
+
+                            String defaultValue = determinePropertyValueAsString(propertyDescriptor, propertyDescriptor.defaultValue());
+                            if (propertyDescriptor.serializer().isCollection()) {
+                                // surround the delimiter of multi property with spaces, so that the browser can wrap the value nicely
+                                defaultValue = defaultValue.replaceAll(",", " , ");
+                            }
 
                             lines.add("|"
                                     + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(propertyDescriptor.name()))
                                     + "|"
-                                    + EscapeUtils.escapeMarkdown(defaultValue)
+                                    + EscapeUtils.escapeMarkdown(StringEscapeUtils.escapeHtml4(defaultValue))
                                     + "|"
                                     + EscapeUtils.escapeMarkdown((isDeprecated ? DEPRECATION_LABEL_SMALL : "") + StringEscapeUtils.escapeHtml4(description))
+                                    + enumValuesDescription
                                     + "|"
                             );
                         }
@@ -521,7 +543,8 @@ public class RuleDocGenerator {
                         lines.add("    <properties>");
                         for (PropertyDescriptor<?> propertyDescriptor : properties) {
                             if (!isDeprecated(propertyDescriptor)) {
-                                String defaultValue = determineDefaultValueAsString(propertyDescriptor, rule, false);
+                                String defaultValue = determinePropertyValueAsString(propertyDescriptor, propertyDescriptor.defaultValue());
+                                defaultValue = StringEscapeUtils.escapeXml10(defaultValue);
                                 lines.add("        <property name=\"" + propertyDescriptor.name() + "\" value=\""
                                               + defaultValue + "\" />");
                             }
@@ -594,20 +617,8 @@ public class RuleDocGenerator {
             && propertyDescriptor.description().toLowerCase(Locale.ROOT).startsWith(DEPRECATED_RULE_PROPERTY_MARKER);
     }
 
-    private <T> String determineDefaultValueAsString(PropertyDescriptor<T> propertyDescriptor, Rule rule, boolean pad) {
-        String defaultValue = "";
-        T realDefaultValue = rule.getProperty(propertyDescriptor);
-
-        if (realDefaultValue != null) {
-            defaultValue = propertyDescriptor.serializer().toString(realDefaultValue);
-            if (pad && realDefaultValue instanceof Collection) {
-                // surround the delimiter with spaces, so that the browser can wrap
-                // the value nicely
-                defaultValue = defaultValue.replaceAll(",", " , ");
-            }
-        }
-        defaultValue = StringEscapeUtils.escapeHtml4(defaultValue);
-        return defaultValue;
+    private <T> String determinePropertyValueAsString(PropertyDescriptor<T> propertyDescriptor, Object value) {
+        return propertyDescriptor.serializer().toString((T) value);
     }
 
     private static String stripIndentation(String description) {
