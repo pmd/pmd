@@ -144,6 +144,7 @@ END;
 
     <rule name="ExcessiveMethodLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long methods ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveMethodLengthRule"
@@ -153,6 +154,8 @@ When methods are excessively long this usually indicates that the method is doin
 name/signature might suggest. They also become challenging for others to digest since excessive
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big methods.
         </description>
         <priority>3</priority>
         <example>
@@ -169,6 +172,7 @@ END;
 
     <rule name="ExcessiveObjectLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long Oracle object specifications and bodies ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveObjectLengthRule"
@@ -176,7 +180,9 @@ END;
         <description>
 Excessive object line lengths are usually indications that the object may be burdened with excessive
 responsibilities that could be provided by other objects. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big objects.
         </description>
         <priority>3</priority>
         <example>
@@ -204,6 +210,7 @@ END;
 
     <rule name="ExcessivePackageBodyLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long Object Type and Package bodies ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageBodyLengthRule"
@@ -211,7 +218,9 @@ END;
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big objects.
         </description>
         <priority>3</priority>
         <example>
@@ -239,6 +248,7 @@ END;
 
     <rule name="ExcessivePackageSpecificationLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long Package Specifications ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageSpecificationLengthRule"
@@ -246,7 +256,9 @@ END;
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big objects.
         </description>
         <priority>3</priority>
         <example>
@@ -329,6 +341,7 @@ public class Foo {
 
     <rule name="ExcessiveTypeLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long Object Type specifications ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveTypeLengthRule"
@@ -336,7 +349,9 @@ public class Foo {
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big objects.
         </description>
         <priority>3</priority>
         <example>

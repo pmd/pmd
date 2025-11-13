@@ -114,6 +114,10 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
         return data;
     }
 
+    /**
+     * @deprecated Since 7.19.0.
+     */
+    @Deprecated
     abstract static class AbstractLineLengthCheckRule<T extends PLSQLNode> extends AbstractCounterCheckRule<T> {
 
         AbstractLineLengthCheckRule(Class<T> nodeType) {
