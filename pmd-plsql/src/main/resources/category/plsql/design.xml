@@ -406,6 +406,7 @@ END;
     <rule name="NcssMethodCount"
           message="The method {0}() has an NCSS line count of {1} (threshold is {2})"
           language="plsql"
+          deprecated="true"
           since="5.1"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NcssMethodCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#ncssmethodcount">
@@ -413,6 +414,8 @@ END;
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {% rule NcssCount %} instead.
         </description>
         <priority>3</priority>
         <example>
@@ -430,6 +433,7 @@ END;
     <rule name="NcssObjectCount"
           message="The Oracle object {0} has a NCSS line count of {1} (threshold is {2})"
           language="plsql"
+          deprecated="true"
           since="5.1"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NcssObjectCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#ncssobjectcount">
@@ -437,6 +441,8 @@ END;
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given Oracle object. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {% rule NcssCount %} instead.
         </description>
         <priority>3</priority>
         <example>
