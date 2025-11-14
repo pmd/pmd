@@ -6,6 +6,7 @@ package net.sourceforge.pmd.properties;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -53,5 +54,18 @@ public abstract class PropertySerializer<T> {
      */
     public abstract @NonNull String toString(T value);
 
+    /**
+     * Whether this property allows multiple values.
+     * @since 7.19.0
+     */
+    public abstract boolean isCollection();
 
+    /**
+     * If this property only allows specific enumerated values, this set contains
+     * all possible values. This is useful for documentation.
+     * If this property doesn't represent an enumerated property, then the returned
+     * set will be empty.
+     * @since 7.19.0
+     */
+    public abstract Set<?> enumeratedValues();
 }

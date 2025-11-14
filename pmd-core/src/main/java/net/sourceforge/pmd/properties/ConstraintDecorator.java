@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.properties;
 
 import java.util.List;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -43,6 +44,16 @@ class ConstraintDecorator<T> extends PropertySerializer<T> {
         // perform constraint validation
         PropertyParsingUtil.checkConstraintsThrow(t, constraints);
         return t;
+    }
+
+    @Override
+    public boolean isCollection() {
+        return propertySerializer.isCollection();
+    }
+
+    @Override
+    public Set<?> enumeratedValues() {
+        return propertySerializer.enumeratedValues();
     }
 
     @Override
