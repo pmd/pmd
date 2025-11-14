@@ -31,7 +31,9 @@ import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
  * the Java version of the rule.
  *
  * @apiNote Internal API
+ * @deprecated Since 7.19.0.
  */
+@Deprecated
 abstract class AbstractNcssCountRule<T extends PLSQLNode> extends AbstractCounterCheckRule<T> {
 
 

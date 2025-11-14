@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example"><![CDATA[
+/*
+Simple XPath Expression to count the statements:
+
+//PackageSpecification |
+//ProgramUnit |
+//VariableOrConstantDeclaration |
+//ExceptionDeclaration |
+//PackageBody |
+//Statement |
+//ElsifClause |
+//ElseClause[parent::IfStatement]
+
+*/
+CREATE PACKAGE foo AS
+    PROCEDURE foo ();
+    y NUMBER;
+    z NUMBER;
+    q VARCHAR2;
+END foo;
+/
+CREATE PACKAGE BODY foo AS
+    PROCEDURE init () IS
+        x NUMBER;
+    BEGIN
+        bar();
+        CASE x
+            WHEN 1 THEN foo();
+            WHEN 2 THEN DBMS_OUTPUT.PUT_LINE('A');
+            WHEN 3 THEN bar();
+            ELSE DBMS_OUTPUT.PUT_LINE('B');
+        END CASE;
+    END;
+
+    PROCEDURE init (z NUMBER) IS
+        r NUMBER;
+        j NUMBER;
+        k NUMBER;
+    BEGIN
+        r := Random();
+        FOR j IN 1..3 LOOP
+            FOR k IN -20..20 LOOP
+                IF r.nextInt() = 42 THEN
+                    DBMS_OUTPUT.PUT_LINE('Bye');
+                    EXIT;
+                ELSIF k > 12 THEN
+                    CONTINUE;
+                END IF;
+            END LOOP;
+        END LOOP;
+        f(z);
+    END;
+
+    PROCEDURE foo () IS
+        x NUMBER := 0;
+        scary EXCEPTION;
+    BEGIN
+        x := x +1;
+        LOOP
+            IF x = 0 THEN
+                x := x + 1;
+            ELSIF x = 1 THEN
+                x := 0;
+            ELSE
+                DBMS_OUTPUT.PUT_LINE('Bonjour');
+                RAISE scary;
+            END IF;
+            EXIT WHEN x = 2;
+        END LOOP;
+    END;
+
+    PROCEDURE main IS
+        k VARCHAR2;
+        l VARCHAR2;
+        m VARCHAR2;
+        x NUMBER;
+        i NUMBER;
+        p NUMBER;
+        ThemAll EXCEPTION;
+    BEGIN
+        bar;
+
+        LOOP
+            x := x + 1;
+            EXIT WHEN x > 2;
+        END LOOP;
+
+        WHILE X < 4 LOOP
+            x := x + 1;
+        END LOOP;
+
+        FOR i IN 1..5 LOOP
+            x := x + 1;
+        END LOOP;
+
+        x := x + 1;
+
+        p :=
+            2 + 4 + 5;
+
+        x := x + 1;
+
+        bar();
+        x := bar();
+        /*
+         * This is
+         * a comment
+         */
+        x.foobar();
+    EXCEPTION
+        WHEN ACCESS_INTO_NULL THEN DBMS_OUTPUT.PUT_LINE('Ups');
+        WHEN ThemAll THEN DBMS_OUTPUT.PUT_LINE('Dang');
+    END;
+END foo;
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Full example</description>
+        <expected-problems>8</expected-problems>
+        <expected-messages>
+            <message>'(Input)' has value 64.</message>
+            <message>'(PackageSpecification) foo' has value 5.</message>
+            <message>'(ProgramUnit) foo()' has value 1.</message>
+            <message>'(PackageBody) foo' has value 59.</message>
+            <message>'(ProgramUnit) init()' has value 8.</message>
+            <message>'(ProgramUnit) init(z)' has value 13.</message>
+            <message>'(ProgramUnit) foo()' has value 13.</message>
+            <message>'(ProgramUnit) main()' has value 24.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Variable declarations</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'(Input)' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+DECLARE
+  a INTEGER := 1;
+  b INTEGER := 1
+    + 2
+    + 3;
+BEGIN
+    -- comments don't count
+END;
+/
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Variable declarations procedure</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'(Input)' has value 5.</message>
+            <message>'(ProgramUnit) foo(name, company)' has value 5.</message>
+        </expected-messages>
+        <code><![CDATA[
+DECLARE
+    PROCEDURE foo (
+        name VARCHAR2,
+        company VARCHAR2
+    ) IS
+        message VARCHAR2 := 'Hello';
+    BEGIN
+        message := message || ' ' || name || '@' || company;
+        DBMS_OUTPUT.PUT_LINE(message);
+    EXCEPTION
+        WHEN VALUE_ERROR THEN
+            DBMS_OUTPUT.PUT_LINE('error');
+    END foo;
+BEGIN
+END;
+/
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Case statement</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'(Input)' has value 8.</message>
+            <message>'(ProgramUnit) foo()' has value 8.</message>
+        </expected-messages>
+        <code><![CDATA[
+DECLARE
+    PROCEDURE foo () IS
+        x NUMBER;
+    BEGIN
+        CASE x
+            WHEN 1 THEN DBMS_OUTPUT.PUT_LINE('1');
+            WHEN 2 THEN DBMS_OUTPUT.PUT_LINE('2');
+            WHEN 5 THEN foo(); EXIT;
+            ELSE DBMS_OUTPUT.PUT_LINE('bar');
+        END CASE;
+    END foo;
+BEGIN
+END;
+/
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Example from javadoc net.sourceforge.pmd.lang.plsql.metrics.PlsqlMetrics.NCSS</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'(Input)' has value 14.</message>
+            <message>'(ProgramUnit) bigMethod()' has value 13.</message>
+        </expected-messages>
+        <code><![CDATA[
+DECLARE                                     -- total Ncss: 14
+    PROCEDURE bigMethod IS                  -- +1
+        x NUMBER;                           -- +1
+        y NUMBER := 2;                      -- +1
+        a BOOLEAN := FALSE;                 -- +1
+        b BOOLEAN := TRUE;                  -- +1
+    BEGIN
+        IF (a OR b) THEN                    -- +1
+            LOOP                            -- +1
+                x := x + 2;                 -- +1
+                EXIT WHEN x >= 12;          -- +1
+            END LOOP;
+
+            DBMS_OUTPUT.PUT_LINE('done');   -- +1
+        ELSE                                -- +1
+            DBMS_OUTPUT.PUT_LINE('false');  -- +1
+        END IF;
+    EXCEPTION
+        WHEN PROGRAM_ERROR THEN DBMS_OUTPUT.PUT_LINE('Error Occurred'); -- +1
+    END bigMethod;
+BEGIN
+    bigMethod();                            -- +1
+END;
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Rule example from NcssObjectCount</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'(Input)' has value 4.</message>
+            <message>'(PackageSpecification) pkg_' has value 4.</message>
+            <message>'(ProgramUnit) Foo()' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+-- this package only has 4 NCSS lines
+CREATE OR REPLACE PACKAGE pkg_ IS
+ PROCEDURE Foo IS
+ BEGIN
+     super();
+     super();
+ END Foo;
+END;
+/
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Rule example from NcssMethodCount</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'(Input)' has value 3.</message>
+            <message>'(PackageSpecification) BODY' has value 3.</message>
+            <message>'(ProgramUnit) method()' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+CREATE OR REPLACE PACKAGE BODY AS
+ FUNCTION method RETURN INTEGER IS
+ BEGIN
+   RETURN 1;
+ END;
+END;
+]]></code>
+    </test-code>
+</test-data>
