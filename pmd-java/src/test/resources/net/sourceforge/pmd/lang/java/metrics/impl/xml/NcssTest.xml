@@ -219,17 +219,18 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>First catch is not counted</description>
+        <description>Try is not counted, only catch clauses and finally</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#foo()' has value 3.</message>
+            <message>'Foo#foo()' has value 4.</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
-    void foo() {
+    void foo() {                            // +1
         try {
-        } catch (java.io.IOException e) {
-        } catch (Exception e) {
+        } catch (java.io.IOException e) {   // +1
+        } catch (Exception e) {             // +1
+        } finally {                         // +1
         }
     }
 }
@@ -315,7 +316,7 @@ public class Boo {
         int x;
         int y;
 
-        getX() {
+        int getX() {
             return x;
         }
     }
@@ -398,5 +399,62 @@ public abstract class Koo {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While/do-while loops</description>
+        <rule-property name="reportClasses">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 4.</message>
+            <message>'Foo#foo(int)' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void foo(int x) {
+        while (x < 10) { }
+
+        do {
+        } while (x < 10);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Javadoc Example net.sourceforge.pmd.lang.java.metrics.JavaMetrics.NCSS</description>
+        <rule-property name="reportClasses">true</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 12.</message>
+            <message>'Foo#bigMethod()' has value 11.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.Collections;       // +0
+import java.io.IOException;         // +0
+
+class Foo {                         // +1, total Ncss = 12
+
+  public void bigMethod()           // +1
+      throws IOException {
+    int x = 0, y = 2;               // +1
+    boolean a = false, b = true;    // +1
+
+    if (a || b) {                   // +1
+      try {
+        do {                        // +1
+          x += 2;                   // +1
+        } while (x < 12);
+
+        System.exit(0);             // +1
+      } catch (IOException ioe) {   // +1
+        throw new PatheticFailException(ioe); // +1
+      }
+    } else {                        // +1
+      assert false;                 // +1
+    }
+  }
+}
+]]></code>
     </test-code>
 </test-data>

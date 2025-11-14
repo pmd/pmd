@@ -20,9 +20,10 @@ class AllMetricsTest extends SimpleAggregatorTst {
 
     @Override
     public void setUp() {
-        addRule(RULESET, "CycloTest");
-        addRule(RULESET, "WmcTest");
         addRule(RULESET, "CognitiveComplexityTest");
+        addRule(RULESET, "CycloTest");
+        addRule(RULESET, "NcssTest");
+        addRule(RULESET, "WmcTest");
     }
 
     static String formatApexMessage(Node node, Integer result, String defaultMessage) {

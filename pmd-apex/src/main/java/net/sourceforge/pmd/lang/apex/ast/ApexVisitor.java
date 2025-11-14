@@ -296,6 +296,10 @@ public interface ApexVisitor<P, R> extends AstVisitor<P, R> {
         return visitApexNode(node, data);
     }
 
+    /**
+     * @deprecated Since 7.19.0. The node ASTStatement is not used and doesn't appear in the tree.
+     */
+    @Deprecated
     default R visit(ASTStatement node, P data) {
         return visitApexNode(node, data);
     }
