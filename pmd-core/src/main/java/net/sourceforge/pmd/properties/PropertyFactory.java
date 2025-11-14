@@ -8,12 +8,14 @@ import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.enumerationParser;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
@@ -21,6 +23,7 @@ import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 //@formatter:off
 /**
@@ -310,6 +313,7 @@ public final class PropertyFactory {
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         PropertySerializer<T> parser = enumerationParser(
             nameToValue,
+            Collections.emptyMap(),
             t -> Objects.requireNonNull(CollectionUtil.getKeyOfValue(nameToValue, t))
         );
         return new GenericPropertyBuilder<>(name, parser);
@@ -353,7 +357,33 @@ public final class PropertyFactory {
         Map<String, T> labelsToValues = Arrays.stream(enumClass.getEnumConstants())
                                               .collect(Collectors.toMap(labelMaker, t -> t));
 
-        return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, labelMaker));
+        return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, Collections.emptyMap(), labelMaker));
+    }
+
+    /**
+     * Returns a builder for an enumerated property for the given enum class.
+     * It uses the given mapping to support deprecated (old) values in addition to the
+     * default mapping.
+     *
+     * <p>This build should only be used for maintaining backwards compatibility.
+     *
+     * @param name              Property name
+     * @param enumClass         Enum class
+     * @param deprecatedMapping Map with still allowed, but deprecated values
+     * @param <T>               Type of the enum class
+     *
+     * @return a new builder
+     * @deprecated Since 7.19.0. Only use it for maintaining compatibility.
+     */
+    @Deprecated
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name,
+                                                                             Class<T> enumClass,
+                                                                             Map<String, T> deprecatedMapping) {
+        // default mapping using the default naming convention of enum properties: camel case
+        Function<T, String> toString = v -> StringUtil.CaseConvention.SCREAMING_SNAKE_CASE.convertTo(StringUtil.CaseConvention.CAMEL_CASE, v.name());
+        Map<String, T> labelsToValues = EnumUtils.getEnumMap(enumClass, toString);
+
+        return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, deprecatedMapping, toString));
     }
 
 

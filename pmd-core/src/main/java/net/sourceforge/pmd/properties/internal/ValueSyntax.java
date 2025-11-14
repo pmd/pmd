@@ -34,6 +34,7 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
 
     private final Function<? super T, @NonNull String> toString;
     private final Function<@NonNull String, ? extends T> fromString;
+    private final Function<@NonNull String, Boolean> deprecated;
     private final boolean collection;
     private final Set<?> enumeratedValues;
 
@@ -42,11 +43,13 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
 
     ValueSyntax(Function<? super T, String> toString,
                 Function<@NonNull String, ? extends T> fromString,
+                Function<@NonNull String, Boolean> deprecated,
                 List<PropertyConstraint<? super T>> docConstraints,
                 boolean collection,
                 Set<?> enumeratedValues) {
         this.toString = toString;
         this.fromString = fromString;
+        this.deprecated = deprecated;
         this.docConstraints = docConstraints;
         this.collection = collection;
         this.enumeratedValues = enumeratedValues;
@@ -60,6 +63,11 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
     @Override
     public T fromString(@NonNull String attributeData) {
         return fromString.apply(attributeData);
+    }
+
+    @Override
+    public boolean isFromStringDeprecated(@NonNull String attributeData) {
+        return deprecated.apply(attributeData);
     }
 
     @Override
@@ -85,6 +93,7 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
      */
     static <T> ValueSyntax<T> partialFunction(Function<? super T, @NonNull String> toString,
                                               Function<@NonNull String, ? extends T> fromString,
+                                              Function<@NonNull String, Boolean> deprecated,
                                               PropertyConstraint<? super @NonNull String> checker,
                                               Set<?> enumeratedValues) {
         PropertyConstraint<T> docConstraint = PropertyConstraint.fromPredicate(
@@ -98,6 +107,7 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
                 checker.validate(s);
                 return fromString.apply(s);
             },
+            deprecated,
             listOf(docConstraint),
             false,
             enumeratedValues
@@ -105,13 +115,14 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
     }
 
     static <T> ValueSyntax<T> withDefaultToString(Function<String, ? extends T> fromString) {
-        return new ValueSyntax<>(Objects::toString, fromString, Collections.emptyList(), false, Collections.emptySet());
+        return new ValueSyntax<>(Objects::toString, fromString, s -> false, Collections.emptyList(), false, Collections.emptySet());
     }
 
     static <T> ValueSyntax<T> create(Function<? super T, String> toString,
                                      Function<String, ? extends T> fromString,
+                                     Function<@NonNull String, Boolean> deprecated,
                                      boolean isCollection,
                                      Set<?> enumeratedValues) {
-        return new ValueSyntax<>(toString, fromString, Collections.emptyList(), isCollection, enumeratedValues);
+        return new ValueSyntax<>(toString, fromString, deprecated, Collections.emptyList(), isCollection, enumeratedValues);
     }
 }
