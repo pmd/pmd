@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.doc.internal;
 
+import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.DEPRECATED_RULE_PROPERTY_MARKER;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
@@ -57,7 +59,6 @@ public class RuleDocGenerator {
 
     private static final String DEPRECATION_LABEL_SMALL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;\">Deprecated</span> ";
     private static final String DEPRECATION_LABEL = "<span style=\"border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;\">Deprecated</span>";
-    private static final String DEPRECATED_RULE_PROPERTY_MARKER = "deprecated!";
 
     private static final String GITHUB_SOURCE_LINK = "https://github.com/pmd/pmd/blob/main/";
 

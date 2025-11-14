@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.rule;
 
+import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.DEPRECATED_RULE_PROPERTY_MARKER;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.CLASS;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DELIMITER;
 import static net.sourceforge.pmd.util.internal.xml.SchemaConstants.DEPRECATED;
@@ -29,6 +30,8 @@ import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__MISSIN
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.ERR__PROPERTY_DOES_NOT_EXIST;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__DUPLICATE_PROPERTY_SETTER;
 import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.IGNORED__PROPERTY_CHILD_HAS_PRECEDENCE;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.WARN__DEPRECATED_ENUM_VALUE;
+import static net.sourceforge.pmd.util.internal.xml.XmlErrorMessages.WARN__DEPRECATED_PROPERTY;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -316,6 +319,10 @@ class RuleFactory {
                 // todo just warn and ignore
                 throw err.at(element).error(ERR__PROPERTY_DOES_NOT_EXIST, name, rule.getName());
             }
+            if (desc.description().startsWith(DEPRECATED_RULE_PROPERTY_MARKER)) {
+                err.at(element).warn(WARN__DEPRECATED_PROPERTY, name, rule.getName());
+            }
+
             try {
                 setRulePropertyCapture(rule, desc, element, err);
             } catch (XmlException e) {
@@ -332,7 +339,7 @@ class RuleFactory {
     }
 
     private <T> void setRulePropertyCapture(Rule rule, PropertyDescriptor<T> descriptor, Element propertyElt, PmdXmlReporter err) {
-        T value = parsePropertyValue(propertyElt, err, descriptor.serializer());
+        T value = parsePropertyValue(propertyElt, err, descriptor.name(), descriptor.serializer());
         rule.setProperty(descriptor, value);
     }
 
@@ -384,7 +391,7 @@ class RuleFactory {
             }
 
             parseConstraints(propertyElement, factory, builder, err);
-            builder.defaultValue(parsePropertyValue(propertyElement, err, factory.getXmlMapper()));
+            builder.defaultValue(parsePropertyValue(propertyElement, err, name, factory.getXmlMapper()));
             return builder.build();
 
         } catch (IllegalArgumentException e) {
@@ -438,7 +445,7 @@ class RuleFactory {
         throw err.error("Object is not comparable");
     }
 
-    private static <T> T parsePropertyValue(Element propertyElt, PmdXmlReporter err, PropertySerializer<T> syntax) {
+    private static <T> T parsePropertyValue(Element propertyElt, PmdXmlReporter err, String propertyName, PropertySerializer<T> syntax) {
         String valueAttr = PROPERTY_VALUE.getAttributeOrNull(propertyElt);
         Element valueChild = PROPERTY_VALUE.getOptChildIn(propertyElt, err);
         Attr attrNode = PROPERTY_VALUE.getAttributeNode(propertyElt);
@@ -458,7 +465,12 @@ class RuleFactory {
         }
 
         try {
-            return syntax.fromString(valueStr);
+            T result = syntax.fromString(valueStr);
+
+            if (syntax.isFromStringDeprecated(valueStr)) {
+                err.at(node).warn(WARN__DEPRECATED_ENUM_VALUE, valueStr, propertyName, syntax.toString(result));
+            }
+            return result;
         } catch (ConstraintViolatedException e) {
             throw err.at(node).error(e, StringUtil.quoteMessageFormat(e.getMessageWithoutValue()));
         } catch (IllegalArgumentException e) {

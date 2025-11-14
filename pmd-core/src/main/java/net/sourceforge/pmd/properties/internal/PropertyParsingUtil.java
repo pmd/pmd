@@ -28,6 +28,13 @@ import net.sourceforge.pmd.util.internal.xml.XmlUtil;
  */
 public final class PropertyParsingUtil {
 
+    /**
+     * Marker used for rule properties, that are deprecated. If the description of a property
+     * starts exactly with that string, then are warning is issued when the ruleset is loaded
+     * and the property is used and the rule documentation displays a deprecated label.
+     */
+    public static final String DEPRECATED_RULE_PROPERTY_MARKER = "deprecated!";
+
     public static final ValueSyntax<String> STRING = ValueSyntax.withDefaultToString(String::trim);
     public static final ValueSyntax<Character> CHARACTER =
         ValueSyntax.partialFunction(
