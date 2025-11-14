@@ -7,6 +7,7 @@ package net.sourceforge.pmd.properties.internal;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -35,7 +36,8 @@ public final class PropertyParsingUtil {
             PropertyConstraint.fromPredicate(
                 s -> s.length() == 1,
                 "Should be exactly one character in length"
-            ));
+            ),
+            Collections.emptySet());
 
     public static final ValueSyntax<Pattern> REGEX = ValueSyntax.withDefaultToString(Pattern::compile);
     public static final ValueSyntax<Integer> INTEGER = ValueSyntax.withDefaultToString(preTrim(Integer::valueOf));
@@ -76,7 +78,9 @@ public final class PropertyParsingUtil {
                     return Optional.empty();
                 }
                 return Optional.of(itemSyntax.fromString(str));
-            }
+            },
+            itemSyntax.isCollection(),
+            itemSyntax.enumeratedValues()
         );
     }
 
@@ -128,7 +132,9 @@ public final class PropertyParsingUtil {
         String delim = "" + PropertyFactory.DEFAULT_DELIMITER;
         return ValueSyntax.create(
             coll -> IteratorUtil.toStream(coll.iterator()).map(itemSyntax::toString).collect(Collectors.joining(delim)),
-            string -> parseListWithEscapes(string, PropertyFactory.DEFAULT_DELIMITER, itemSyntax::fromString).stream().collect(collector)
+            string -> parseListWithEscapes(string, PropertyFactory.DEFAULT_DELIMITER, itemSyntax::fromString).stream().collect(collector),
+            true,
+            itemSyntax.enumeratedValues()
         );
     }
 
@@ -205,7 +211,8 @@ public final class PropertyParsingUtil {
             PropertyConstraint.fromPredicate(
                 mappings::containsKey,
                 "Should be " + XmlUtil.formatPossibleNames(XmlUtil.toConstants(mappings.keySet()))
-            )
+            ),
+            new HashSet<>(mappings.values())
         );
     }
 }

@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -33,16 +34,22 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
 
     private final Function<? super T, @NonNull String> toString;
     private final Function<@NonNull String, ? extends T> fromString;
+    private final boolean collection;
+    private final Set<?> enumeratedValues;
 
     // these are not applied, just used to document the possible values
     private final List<PropertyConstraint<? super T>> docConstraints;
 
     ValueSyntax(Function<? super T, String> toString,
                 Function<@NonNull String, ? extends T> fromString,
-                List<PropertyConstraint<? super T>> docConstraints) {
+                List<PropertyConstraint<? super T>> docConstraints,
+                boolean collection,
+                Set<?> enumeratedValues) {
         this.toString = toString;
         this.fromString = fromString;
         this.docConstraints = docConstraints;
+        this.collection = collection;
+        this.enumeratedValues = enumeratedValues;
     }
 
     @Override
@@ -60,6 +67,16 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
         return toString.apply(data);
     }
 
+    @Override
+    public boolean isCollection() {
+        return collection;
+    }
+
+    @Override
+    public Set<?> enumeratedValues() {
+        return enumeratedValues;
+    }
+
     /**
      * Creates a value syntax that cannot parse just any string, but
      * which only applies the fromString parser if a precondition holds.
@@ -68,7 +85,8 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
      */
     static <T> ValueSyntax<T> partialFunction(Function<? super T, @NonNull String> toString,
                                               Function<@NonNull String, ? extends T> fromString,
-                                              PropertyConstraint<? super @NonNull String> checker) {
+                                              PropertyConstraint<? super @NonNull String> checker,
+                                              Set<?> enumeratedValues) {
         PropertyConstraint<T> docConstraint = PropertyConstraint.fromPredicate(
             PredicateUtil.always(),
             checker.getConstraintDescription()
@@ -80,16 +98,20 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
                 checker.validate(s);
                 return fromString.apply(s);
             },
-            listOf(docConstraint)
+            listOf(docConstraint),
+            false,
+            enumeratedValues
         );
     }
 
     static <T> ValueSyntax<T> withDefaultToString(Function<String, ? extends T> fromString) {
-        return new ValueSyntax<>(Objects::toString, fromString, Collections.emptyList());
+        return new ValueSyntax<>(Objects::toString, fromString, Collections.emptyList(), false, Collections.emptySet());
     }
 
     static <T> ValueSyntax<T> create(Function<? super T, String> toString,
-                                     Function<String, ? extends T> fromString) {
-        return new ValueSyntax<>(toString, fromString, Collections.emptyList());
+                                     Function<String, ? extends T> fromString,
+                                     boolean isCollection,
+                                     Set<?> enumeratedValues) {
+        return new ValueSyntax<>(toString, fromString, Collections.emptyList(), isCollection, enumeratedValues);
     }
 }
