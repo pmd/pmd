@@ -33,6 +33,7 @@ public final class PropertyParsingUtil {
         ValueSyntax.partialFunction(
             c -> Character.toString(c),
             s -> s.charAt(0),
+            s -> false,
             PropertyConstraint.fromPredicate(
                 s -> s.length() == 1,
                 "Should be exactly one character in length"
@@ -79,6 +80,7 @@ public final class PropertyParsingUtil {
                 }
                 return Optional.of(itemSyntax.fromString(str));
             },
+            itemSyntax::isFromStringDeprecated,
             itemSyntax.isCollection(),
             itemSyntax.enumeratedValues()
         );
@@ -133,6 +135,8 @@ public final class PropertyParsingUtil {
         return ValueSyntax.create(
             coll -> IteratorUtil.toStream(coll.iterator()).map(itemSyntax::toString).collect(Collectors.joining(delim)),
             string -> parseListWithEscapes(string, PropertyFactory.DEFAULT_DELIMITER, itemSyntax::fromString).stream().collect(collector),
+            string -> parseListWithEscapes(string, PropertyFactory.DEFAULT_DELIMITER, s -> s).stream()
+                    .anyMatch(itemSyntax::isFromStringDeprecated),
             true,
             itemSyntax.enumeratedValues()
         );
@@ -199,7 +203,7 @@ public final class PropertyParsingUtil {
     }
 
 
-    public static <T> ValueSyntax<T> enumerationParser(final Map<String, T> mappings, Function<? super T, String> reverseFun) {
+    public static <T> ValueSyntax<T> enumerationParser(final Map<String, T> mappings, final Map<String, T> deprecatedMappings, Function<? super T, String> reverseFun) {
 
         if (mappings.containsValue(null)) {
             throw new IllegalArgumentException("Map may not contain entries with null values");
@@ -207,9 +211,10 @@ public final class PropertyParsingUtil {
 
         return ValueSyntax.partialFunction(
             reverseFun,
-            mappings::get,
+            s -> mappings.getOrDefault(s, deprecatedMappings.get(s)),
+            deprecatedMappings::containsKey,
             PropertyConstraint.fromPredicate(
-                mappings::containsKey,
+                s -> mappings.containsKey(s) || deprecatedMappings.containsKey(s),
                 "Should be " + XmlUtil.formatPossibleNames(XmlUtil.toConstants(mappings.keySet()))
             ),
             new HashSet<>(mappings.values())

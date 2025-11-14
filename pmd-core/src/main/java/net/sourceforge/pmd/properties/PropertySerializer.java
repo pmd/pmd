@@ -47,6 +47,8 @@ public abstract class PropertySerializer<T> {
      */
     public abstract T fromString(@NonNull String attributeData);
 
+    public abstract boolean isFromStringDeprecated(@NonNull String attributeData);
+
     /**
      * Format the value to a string.
      *

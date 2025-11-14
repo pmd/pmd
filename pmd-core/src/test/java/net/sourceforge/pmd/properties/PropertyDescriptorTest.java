@@ -21,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -236,6 +237,38 @@ class PropertyDescriptorTest {
     }
 
     @Test
+    void testEnumPropertyWithDeprecatedValueMappings() {
+        Map<String, SampleEnum> deprecatedMappings = new HashMap<>(NAME_MAP);
+        deprecatedMappings.put("A", SampleEnum.A);
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", SampleEnum.class, deprecatedMappings)
+                .desc("hello")
+                .defaultValue(SampleEnum.B)
+                .build();
+        assertEquals(SampleEnum.B, descriptor.defaultValue());
+
+        BiFunction<SampleEnum, String, Void> assertValue = (v, s) -> {
+            assertEquals(v, descriptor.serializer().fromString(s));
+            assertEquals(s, descriptor.serializer().toString(v));
+            assertFalse(descriptor.serializer().isFromStringDeprecated(s));
+            return null;
+        };
+        BiFunction<SampleEnum, String, Void> assertDeprecatedValue = (v, s) -> {
+            assertEquals(v, descriptor.serializer().fromString(s));
+            assertTrue(descriptor.serializer().isFromStringDeprecated(s));
+            return null;
+        };
+
+        assertValue.apply(SampleEnum.A, "a");
+        assertValue.apply(SampleEnum.B, "b");
+        assertValue.apply(SampleEnum.C, "c");
+
+        assertDeprecatedValue.apply(SampleEnum.A, "A");
+        assertDeprecatedValue.apply(SampleEnum.A, "TEST_A");
+        assertDeprecatedValue.apply(SampleEnum.B, "TEST_B");
+        assertDeprecatedValue.apply(SampleEnum.C, "TEST_C");
+    }
+
+    @Test
     void testEnumListProperty() {
         PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", NAME_MAP)
                 .desc("hello")
@@ -250,6 +283,25 @@ class PropertyDescriptorTest {
         assertEquals(expectedEnumValues, listDescriptor.serializer().enumeratedValues());
     }
 
+    @Test
+    void testEnumListPropertyWithDeprecatedValueMappings() {
+        Map<String, SampleEnum> deprecatedMappings = new HashMap<>(NAME_MAP);
+        deprecatedMappings.put("A", SampleEnum.A);
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumProperty("enumProp", SampleEnum.class, deprecatedMappings)
+                .toList()
+                .desc("hello")
+                .defaultValues(SampleEnum.A, SampleEnum.B)
+                .build();
+
+        assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
+        assertEquals("a,c", listDescriptor.serializer().toString(Arrays.asList(SampleEnum.A, SampleEnum.C)));
+        assertFalse(listDescriptor.serializer().isFromStringDeprecated("a"));
+        assertFalse(listDescriptor.serializer().isFromStringDeprecated("c"));
+        assertFalse(listDescriptor.serializer().isFromStringDeprecated("a,b"));
+        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.serializer().fromString("TEST_B,TEST_C"));
+        assertTrue(listDescriptor.serializer().isFromStringDeprecated("TEST_A"));
+        assertTrue(listDescriptor.serializer().isFromStringDeprecated("TEST_A,TEST_C"));
+    }
 
     @Test
     void testEnumPropertyNullValueFailsBuild() {

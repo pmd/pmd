@@ -47,6 +47,11 @@ class ConstraintDecorator<T> extends PropertySerializer<T> {
     }
 
     @Override
+    public boolean isFromStringDeprecated(@NonNull String attributeData) {
+        return propertySerializer.isFromStringDeprecated(attributeData);
+    }
+
+    @Override
     public boolean isCollection() {
         return propertySerializer.isCollection();
     }
