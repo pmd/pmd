@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -103,7 +104,7 @@ public final class Report {
      * <p>Some report formats, such as {@link net.sourceforge.pmd.renderers.XMLRenderer}, include these
      * errors for further investigation.
      */
-    public static class ProcessingError {
+    public static class ProcessingError implements Comparable<ProcessingError> {
 
         private final Throwable error;
         private final FileId file;
@@ -142,6 +143,29 @@ public final class Report {
 
         public Throwable getError() {
             return error;
+        }
+
+        @Override
+        public int compareTo(ProcessingError o) {
+            int cmp = file.compareTo(o.file);
+            if (cmp != 0) {
+                return cmp;
+            }
+            return getMsg().compareTo(o.getMsg());
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (!(o instanceof ProcessingError)) {
+                return false;
+            }
+            ProcessingError that = (ProcessingError) o;
+            return Objects.equals(error, that.error) && Objects.equals(file, that.file);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(error, file);
         }
     }
 

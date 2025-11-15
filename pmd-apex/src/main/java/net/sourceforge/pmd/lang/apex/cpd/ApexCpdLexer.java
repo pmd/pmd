@@ -35,7 +35,7 @@ public class ApexCpdLexer implements CpdLexer {
                 String tokenText = token.getImage();
                 // be case-insensitive
                 tokenText = tokenText.toLowerCase(Locale.ROOT);
-                tokenEntries.recordToken(tokenText, token.getReportLocation());
+                tokenEntries.recordToken(tokenText, token.getRegion());
             }
             token = tokenManager.getNextToken();
         }
