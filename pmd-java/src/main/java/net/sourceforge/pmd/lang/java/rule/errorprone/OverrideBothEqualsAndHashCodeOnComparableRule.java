@@ -4,8 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
+import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
@@ -24,6 +29,11 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
     private static final String MISSING_HASH_CODE = MESSAGE_PREFIX + "hashCode() should be overridden";
     private static final String MISSING_EQUALS = MESSAGE_PREFIX + "equals() should be overridden";
     private static final String MISSING_EQUALS_AND_HASH_CODE = MESSAGE_PREFIX + "both equals() and hashCode() should be overridden";
+    private static final Set<String> GENERATED_EQUALS_HASHCODE = setOf(
+            "lombok.EqualsAndHashCode",
+            "lombok.Data",
+            "lombok.Value"
+    );
 
     @Override
     protected boolean skipType(ASTTypeDeclaration node) {
@@ -47,7 +57,9 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
         }
 
         if (equalsMethod == null && hashCodeMethod == null) {
-            ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
+            if (!JavaAstUtils.hasAnyAnnotation(node, GENERATED_EQUALS_HASHCODE)) {
+                ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
+            }
         } else if (equalsMethod == null) {
             ctx.addViolationWithMessage(hashCodeMethod, MISSING_EQUALS);
         } else if (hashCodeMethod == null) {
