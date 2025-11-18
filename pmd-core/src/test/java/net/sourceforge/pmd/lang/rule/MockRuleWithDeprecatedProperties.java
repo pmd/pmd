@@ -18,7 +18,7 @@ public class MockRuleWithDeprecatedProperties extends MockRuleWithNoProperties {
 
     enum SampleEnum { VALUE_A, VALUE_B }
 
-    static final PropertyDescriptor<SampleEnum> ENUM_PROPERTY = PropertyFactory.enumProperty("enumProp",
+    static final PropertyDescriptor<SampleEnum> ENUM_PROPERTY = PropertyFactory.enumPropertyTransitional("enumProp",
             SampleEnum.class, getDeprecatedMapping())
             .desc("This prop replaces the old stringProp")
             .defaultValue(SampleEnum.VALUE_A)
