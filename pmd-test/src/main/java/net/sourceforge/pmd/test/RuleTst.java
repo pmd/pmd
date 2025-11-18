@@ -115,6 +115,9 @@ public abstract class RuleTst {
                         }
 
                         Object value = propertyDescriptor.serializer().fromString((String) entry.getValue());
+                        if (propertyDescriptor.serializer().isFromStringDeprecated((String) entry.getValue())) {
+                            System.err.println(rule.getName() + ":" + test.getDescription() + ": Deprecated property value used! " + entry);
+                        }
                         rule.setProperty(propertyDescriptor, value);
                     }
                 }

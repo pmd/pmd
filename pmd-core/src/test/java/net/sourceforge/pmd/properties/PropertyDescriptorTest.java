@@ -240,7 +240,7 @@ class PropertyDescriptorTest {
     void testEnumPropertyWithDeprecatedValueMappings() {
         Map<String, SampleEnum> deprecatedMappings = new HashMap<>(NAME_MAP);
         deprecatedMappings.put("A", SampleEnum.A);
-        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", SampleEnum.class, deprecatedMappings)
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumPropertyTransitional("enumProp", SampleEnum.class, deprecatedMappings)
                 .desc("hello")
                 .defaultValue(SampleEnum.B)
                 .build();
@@ -287,7 +287,7 @@ class PropertyDescriptorTest {
     void testEnumListPropertyWithDeprecatedValueMappings() {
         Map<String, SampleEnum> deprecatedMappings = new HashMap<>(NAME_MAP);
         deprecatedMappings.put("A", SampleEnum.A);
-        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumProperty("enumProp", SampleEnum.class, deprecatedMappings)
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumPropertyTransitional("enumProp", SampleEnum.class, deprecatedMappings)
                 .toList()
                 .desc("hello")
                 .defaultValues(SampleEnum.A, SampleEnum.B)
