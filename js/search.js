@@ -676,6 +676,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/apex/bestpractices.md",
+  "title": "AvoidFutureAnnotation (Apex, Best Practices)",
+  "tags": "",
+  "keywords": "Avoid Future Annotation",
+  "url": "pmd_rules_apex_bestpractices.html#avoidfutureannotation",
+  "summary": "Usage of the `@Future` annotation should be limited. The `@Future` annotation is a legacy way..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/apex/bestpractices.md",
   "title": "AvoidGlobalModifier (Apex, Best Practices)",
   "tags": "",
   "keywords": "Avoid Global Modifier",

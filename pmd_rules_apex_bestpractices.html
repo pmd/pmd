@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, ApexAssertionsShouldIncludeMessage, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestClassShouldHaveRunAs, ApexUnitTestMethodShouldHaveIsTestAnnotation, ApexUnitTestShouldNotUseSeeAllDataTrue, AvoidGlobalModifier, AvoidLogicInTrigger, DebugsShouldUseLoggingLevel, QueueableWithoutFinalizer, UnusedLocalVariable">
+<meta name="keywords" content=" Best Practices, ApexAssertionsShouldIncludeMessage, ApexUnitTestClassShouldHaveAsserts, ApexUnitTestClassShouldHaveRunAs, ApexUnitTestMethodShouldHaveIsTestAnnotation, ApexUnitTestShouldNotUseSeeAllDataTrue, AvoidFutureAnnotation, AvoidGlobalModifier, AvoidLogicInTrigger, DebugsShouldUseLoggingLevel, QueueableWithoutFinalizer, UnusedLocalVariable">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2224,6 +2224,76 @@ annotation for test classes and methods.</p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/bestpractices.xml/ApexUnitTestShouldNotUseSeeAllDataTrue"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="avoidfutureannotation">AvoidFutureAnnotation</h2>
+
+<p><strong>Since:</strong> PMD 7.19.0</p>
+
+<p><strong>Priority:</strong> Medium Low (4)</p>
+
+<p>Usage of the <code class="language-plaintext highlighter-rouge">@Future</code> annotation should be limited. The <code class="language-plaintext highlighter-rouge">@Future</code> annotation is a legacy way to execute asynchronous Apex code, but it has several limitations:</p>
+<ul>
+  <li>Methods must be static</li>
+  <li>Only primitive data types, primitive arrays, or collections of primitive data types can be parameters</li>
+  <li>No way to monitor job status or handle failures</li>
+  <li>No support for chaining jobs</li>
+</ul>
+
+<p>Consider implementing the <code class="language-plaintext highlighter-rouge">Queueable</code> interface instead, which provides:</p>
+<ul>
+  <li>Better error handling and monitoring capabilities</li>
+  <li>Support for more complex data types</li>
+  <li>Ability to chain jobs</li>
+</ul>
+
+<p>See more here: <a href="https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_queueing_jobs.htm">https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_queueing_jobs.htm</a></p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">Method</span><span class="o">/</span><span class="nt">ModifierNode</span><span class="o">/</span><span class="nt">Annotation</span><span class="p">[</span><span class="nf">lower-case</span><span class="p">(</span><span class="na">@Name</span><span class="p">)</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'future'</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Not recommended: Using @Future annotation</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FutureExample</span> <span class="o">{</span>
+    <span class="nd">@Future</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">futureMethod</span><span class="o">(</span><span class="nc">String</span> <span class="n">accountId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// Process account asynchronously</span>
+        <span class="nc">Account</span> <span class="n">acc</span> <span class="o">=</span> <span class="o">[</span><span class="no">SELECT</span> <span class="nc">Id</span><span class="o">,</span> <span class="nc">Name</span> <span class="no">FROM</span> <span class="nc">Account</span> <span class="no">WHERE</span> <span class="nc">Id</span> <span class="o">=</span> <span class="o">:</span><span class="n">accountId</span><span class="o">];</span>
+        <span class="c1">// ... process account</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Recommended: Using Queueable interface with Finalizer to detect and handle job failure</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">QueueableExample</span> <span class="kd">implements</span> <span class="nc">Queueable</span><span class="o">,</span> <span class="nc">Finalizer</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">accountId</span><span class="o">;</span>
+    
+    <span class="kd">public</span> <span class="nf">QueueableExample</span><span class="o">(</span><span class="nc">String</span> <span class="n">accountId</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">accountId</span> <span class="o">=</span> <span class="n">accountId</span><span class="o">;</span>
+    <span class="o">}</span>
+    
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="nc">QueueableContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">attachFinalizer</span><span class="o">(</span><span class="k">this</span><span class="o">);</span>
+        <span class="nc">Account</span> <span class="n">acc</span> <span class="o">=</span> <span class="o">[</span><span class="no">SELECT</span> <span class="nc">Id</span><span class="o">,</span> <span class="nc">Name</span> <span class="no">FROM</span> <span class="nc">Account</span> <span class="no">WHERE</span> <span class="nc">Id</span> <span class="o">=</span> <span class="o">:</span><span class="n">accountId</span><span class="o">];</span>
+        <span class="c1">// ... process account</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">execute</span><span class="o">(</span><span class="nc">FinalizerContext</span> <span class="n">ctx</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">ctx</span><span class="o">.</span><span class="na">getResult</span><span class="o">()</span> <span class="o">==</span> <span class="nc">ParentJobResult</span><span class="o">.</span><span class="na">SUCCESS</span><span class="o">)</span> <span class="o">{</span>
+            <span class="c1">// Handle success</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="c1">// Handle failure</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">// Usage:</span>
+<span class="c1">// System.enqueueJob(new QueueableExample(accountId));</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/bestpractices.xml/AvoidFutureAnnotation"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="avoidglobalmodifier">AvoidGlobalModifier</h2>
 
 <p><strong>Since:</strong> PMD 5.5.0</p>
@@ -2448,7 +2518,7 @@ Without attaching a Finalizer, there is no way of designing error recovery actio
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 13, 2025 <br />
+             Site last generated: Nov 20, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
