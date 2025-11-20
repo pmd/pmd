@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
+/**
+ * @deprecated Since 7.19.0. For more info, see {@link net.sourceforge.pmd.lang.symboltable}.
+ */
+@Deprecated
 public class ImageFinderFunction implements Predicate<NameDeclaration> {
 
     private final Set<String> images;
