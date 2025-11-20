@@ -274,6 +274,10 @@
                     <version>3.14.1</version>
                     <configuration>
                         <release>${java.version}</release>
+                        <failOnWarning>true</failOnWarning>
+                        <compilerArgs>
+                            <arg>-Xlint:-options</arg> <!-- allow &dash;&dash;release 8 flag -->
+                        </compilerArgs>
                     </configuration>
                     <executions>
                         <!-- Replacing default-compile as it is treated specially by maven -->
