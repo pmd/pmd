@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpressionList;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
@@ -92,6 +93,7 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
             && (parent instanceof ASTExpressionStatement
                 || parent instanceof ASTStatementExpressionList
                 || parent instanceof ASTLambdaExpression
+                || parent instanceof ASTSwitchArrowBranch
             )
         ) {
             // that's ok
