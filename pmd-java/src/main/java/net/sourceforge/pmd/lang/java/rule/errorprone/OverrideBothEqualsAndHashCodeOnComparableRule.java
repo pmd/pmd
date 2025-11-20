@@ -56,10 +56,13 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
             return;
         }
 
+        if (equalsMethod == null && hashCodeMethod == null
+            && JavaAstUtils.hasAnyAnnotation(node, LOMBOK_GENERATED_EQUALS_HASHCODE)) {
+            return;
+        }
+
         if (equalsMethod == null && hashCodeMethod == null) {
-            if (!JavaAstUtils.hasAnyAnnotation(node, GENERATED_EQUALS_HASHCODE)) {
-                ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
-            }
+            ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
         } else if (equalsMethod == null) {
             ctx.addViolationWithMessage(hashCodeMethod, MISSING_EQUALS);
         } else if (hashCodeMethod == null) {
