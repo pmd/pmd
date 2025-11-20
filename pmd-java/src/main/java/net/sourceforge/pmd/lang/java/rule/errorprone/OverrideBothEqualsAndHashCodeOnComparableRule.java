@@ -29,7 +29,7 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
     private static final String MISSING_HASH_CODE = MESSAGE_PREFIX + "hashCode() should be overridden";
     private static final String MISSING_EQUALS = MESSAGE_PREFIX + "equals() should be overridden";
     private static final String MISSING_EQUALS_AND_HASH_CODE = MESSAGE_PREFIX + "both equals() and hashCode() should be overridden";
-    private static final Set<String> GENERATED_EQUALS_HASHCODE = setOf(
+    private static final Set<String> LOMBOK_GENERATED_EQUALS_HASHCODE = setOf(
             "lombok.EqualsAndHashCode",
             "lombok.Data",
             "lombok.Value"
