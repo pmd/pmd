@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
@@ -43,16 +41,8 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
                          .desc("Cyclomatic complexity reporting threshold")
                          .require(positive()).defaultValue(10).build();
 
-    private static final Map<String, CycloOption> OPTION_MAP;
-
-    static {
-        OPTION_MAP = new HashMap<>();
-        OPTION_MAP.put(CycloOption.IGNORE_BOOLEAN_PATHS.valueName(), CycloOption.IGNORE_BOOLEAN_PATHS);
-        OPTION_MAP.put(CycloOption.CONSIDER_ASSERT.valueName(), CycloOption.CONSIDER_ASSERT);
-    }
-
     private static final PropertyDescriptor<List<CycloOption>> CYCLO_OPTIONS_DESCRIPTOR
-            = PropertyFactory.enumListProperty("cycloOptions", OPTION_MAP)
+            = PropertyFactory.enumListPropertyNew("cycloOptions", CycloOption.class)
                              .desc("Choose options for the computation of Cyclo")
                              .emptyDefaultValue()
                              .build();
