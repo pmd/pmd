@@ -602,6 +602,8 @@ This rule is for testing enum properties
 
 |Name|Default Value|Description|
 |----|-------------|-----------|
+|enumPropertyNew|optionOne|Description<br>One of: `optionOne`, `optionTwo`|
+|enumListPropertyNew||Description<br>One or more of: `optionOne`, `optionTwo`|
 |enumProperty|OPTION\_ONE|Description<br>One of: `OPTION\_ONE`, `OPTION\_TWO`|
 |enumListProperty||Description<br>One or more of: `OPTION\_ONE`, `OPTION\_TWO`|
 
@@ -614,6 +616,8 @@ This rule is for testing enum properties
 ``` xml
 <rule ref="category/java/sample.xml/SampleRuleWithEnumProperties">
     <properties>
+        <property name="enumPropertyNew" value="optionOne" />
+        <property name="enumListPropertyNew" value="" />
         <property name="enumProperty" value="OPTION_ONE" />
         <property name="enumListProperty" value="" />
     </properties>

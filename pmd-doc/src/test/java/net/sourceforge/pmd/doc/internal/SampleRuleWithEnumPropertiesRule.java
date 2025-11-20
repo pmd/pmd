@@ -18,16 +18,31 @@ public class SampleRuleWithEnumPropertiesRule extends AbstractRule {
         OPTION_TWO
     }
 
+    private static final PropertyDescriptor<MyEnum> ENUM_PROPERTY_NEW = PropertyFactory.enumPropertyNew("enumPropertyNew", MyEnum.class)
+            .desc("Description")
+            .defaultValue(MyEnum.OPTION_ONE)
+            .build();
+
+    @Deprecated // required only for tests
     private static final PropertyDescriptor<MyEnum> ENUM_PROPERTY = PropertyFactory.enumProperty("enumProperty", MyEnum.class)
             .desc("Description")
             .defaultValue(MyEnum.OPTION_ONE)
             .build();
+
+    private static final PropertyDescriptor<List<MyEnum>> ENUMLIST_PROPERTY_NEW = PropertyFactory.enumListPropertyNew("enumListPropertyNew", MyEnum.class)
+            .desc("Description")
+            .emptyDefaultValue()
+            .build();
+
+    @Deprecated // required only for tests
     private static final PropertyDescriptor<List<MyEnum>> ENUMLIST_PROPERTY = PropertyFactory.enumListProperty("enumListProperty", MyEnum.class, Object::toString)
             .desc("Description")
             .emptyDefaultValue()
             .build();
 
     public SampleRuleWithEnumPropertiesRule() {
+        definePropertyDescriptor(ENUM_PROPERTY_NEW);
+        definePropertyDescriptor(ENUMLIST_PROPERTY_NEW);
         definePropertyDescriptor(ENUM_PROPERTY);
         definePropertyDescriptor(ENUMLIST_PROPERTY);
     }
