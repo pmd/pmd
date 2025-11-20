@@ -26,7 +26,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.SubstringMatcher;
@@ -337,6 +337,7 @@ class PropertyDescriptorTest {
     }
 
     @Test
+    @Deprecated // Tests the deprecated API
     void testEnumPropertyNullValueFailsBuild() {
         Map<String, SampleEnum> map = new HashMap<>(NAME_MAP);
         map.put("TEST_NULL", null);
@@ -346,8 +347,8 @@ class PropertyDescriptorTest {
         assertThat(thrown.getMessage(), containsIgnoreCase("null value"));
     }
 
-
     @Test
+    @Deprecated // Tests the deprecated API
     void testEnumListPropertyNullValueFailsBuild() {
         Map<String, SampleEnum> map = new HashMap<>(NAME_MAP);
         map.put("TEST_NULL", null);
@@ -359,6 +360,7 @@ class PropertyDescriptorTest {
 
 
     @Test
+    @Deprecated // Tests the deprecated API
     void testEnumPropertyInvalidValue() {
         PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", NAME_MAP)
                 .desc("hello")
@@ -368,6 +370,18 @@ class PropertyDescriptorTest {
         IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
             descriptor.serializer().fromString("InvalidEnumValue"));
         assertThat(thrown.getMessage(), containsString("'InvalidEnumValue' should be one of 'TEST_A', 'TEST_B', 'TEST_C'"));
+    }
+
+    @Test
+    void testEnumPropertyNewInvalidValue() {
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumPropertyNew("enumProp", SampleEnum.class)
+                .desc("hello")
+                .defaultValue(SampleEnum.B)
+                .build();
+
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+            descriptor.serializer().fromString("InvalidEnumValue"));
+        assertThat(thrown.getMessage(), containsString("'InvalidEnumValue' should be one of 'a', 'b', 'c'"));
     }
 
     @Test
@@ -451,7 +465,7 @@ class PropertyDescriptorTest {
 
             @Override
             protected boolean evalSubstringOf(String string) {
-                return StringUtils.indexOfIgnoreCase(string, substring) != -1;
+                return Strings.CI.indexOf(string, substring) != -1;
             }
         };
     }
