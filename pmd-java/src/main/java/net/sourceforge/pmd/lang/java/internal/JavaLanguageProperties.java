@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import org.apache.commons.lang3.EnumUtils;
-
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -22,8 +20,7 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
      * @since 7.0.0
      */
     static final PropertyDescriptor<InferenceLoggingVerbosity> INTERNAL_INFERENCE_LOGGING_VERBOSITY =
-        PropertyFactory.enumProperty("xTypeInferenceLogging",
-                                     EnumUtils.getEnumMap(InferenceLoggingVerbosity.class))
+        PropertyFactory.enumPropertyNew("xTypeInferenceLogging", InferenceLoggingVerbosity.class)
                        .desc("Verbosity of the type inference logging")
                        .defaultValue(InferenceLoggingVerbosity.DISABLED)
                        .build();

@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import static net.sourceforge.pmd.properties.PropertyFactory.enumProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.enumPropertyNew;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,13 +41,13 @@ import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
-        = enumProperty("foreachReassign", ForeachReassignOption.class, ForeachReassignOption::getDisplayName)
+        = enumPropertyNew("foreachReassign", ForeachReassignOption.class)
         .defaultValue(ForeachReassignOption.DENY)
         .desc("how/if foreach control variables may be reassigned")
         .build();
 
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
-        = enumProperty("forReassign", ForReassignOption.class, ForReassignOption::getDisplayName)
+        = enumPropertyNew("forReassign", ForReassignOption.class)
         .defaultValue(ForReassignOption.DENY)
         .desc("how/if for control variables may be reassigned")
         .build();
@@ -297,21 +297,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         /**
          * Allow reassigning the 'foreach' control variable.
          */
-        ALLOW;
-
-        /**
-         * The RuleDocGenerator uses toString() to determine the default value.
-         *
-         * @return the mapped property value instead of the enum name
-         */
-        @Override
-        public String toString() {
-            return getDisplayName();
-        }
-
-        public String getDisplayName() {
-            return CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, name());
-        }
+        ALLOW
     }
 
     private enum ForReassignOption {
