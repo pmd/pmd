@@ -195,9 +195,9 @@ public final class TestFrameworksUtil {
      */
     public static boolean isExpectAnnotated(ASTMethodDeclaration method) {
         return method.getDeclaredAnnotations()
-                     .filter(TestFrameworksUtil::isJunit4TestAnnotation)
+                     .filter(annotation -> isJunit4TestAnnotation(annotation) || isTestNgMethod(method))
                      .flatMap(ASTAnnotation::getMembers)
-                     .any(it -> "expected".equals(it.getName()));
+                     .any(it -> "expected".equals(it.getName()) || "expectedExceptions".equals(it.getName()));
 
     }
 }
