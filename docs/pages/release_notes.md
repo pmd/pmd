@@ -25,8 +25,17 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* core
+  * [#4767](https://github.com/pmd/pmd/issues/4767): \[core] Deprecate old symboltable API
 
 ### 🚨️ API Changes
+
+#### Deprecations
+* core
+  * {%jdoc_package core::lang.symboltable %}: All classes in this package are deprecated.
+    The symbol table and type resolution implementation for Java has been rewritten from scratch
+    for PMD 7.0.0. This package is the remains of the old symbol table API, that is only used by
+    PL/SQL. For PMD 8.0.0 all these classes will be removed from pmd-core.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
