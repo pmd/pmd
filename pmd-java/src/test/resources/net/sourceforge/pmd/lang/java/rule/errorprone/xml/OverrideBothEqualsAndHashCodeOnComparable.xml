@@ -401,7 +401,7 @@
                     return 0;
                 }
                 @Override
-                public boolean equals(Object o) {
+                public boolean equals(Object o) { // violation, line 35
                     return false;
                 }
             }
@@ -412,7 +412,7 @@
                     return 0;
                 }
                 @Override
-                public int hashCode() {
+                public int hashCode() { // violation, line 45
                     return 0;
                 }
             }
