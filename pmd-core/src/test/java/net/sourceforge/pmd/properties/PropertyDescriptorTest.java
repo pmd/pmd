@@ -221,15 +221,15 @@ class PropertyDescriptorTest {
     }
 
     @Test
-    void testEnumProperty() {
-        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", NAME_MAP)
+    void testEnumPropertyNew() {
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumPropertyNew("enumProp", SampleEnum.class)
                 .desc("hello")
                 .defaultValue(SampleEnum.B)
                 .build();
         assertEquals("enumProp", descriptor.name());
         assertEquals("hello", descriptor.description());
         assertEquals(SampleEnum.B, descriptor.defaultValue());
-        assertEquals(SampleEnum.C, descriptor.serializer().fromString("TEST_C"));
+        assertEquals(SampleEnum.C, descriptor.serializer().fromString("c"));
         assertFalse(descriptor.serializer().isCollection());
         assertFalse(descriptor.serializer().enumeratedValues().isEmpty());
         Set<Object> expectedEnumValues = new HashSet<>(Arrays.asList(SampleEnum.values()));
@@ -269,6 +269,22 @@ class PropertyDescriptorTest {
     }
 
     @Test
+    void testEnumListPropertyNew() {
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListPropertyNew("enumListProp", SampleEnum.class)
+                .desc("hello")
+                .defaultValues(SampleEnum.A, SampleEnum.B)
+                .build();
+        assertEquals("enumListProp", listDescriptor.name());
+        assertEquals("hello", listDescriptor.description());
+        assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
+        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.serializer().fromString("b,c"));
+        assertTrue(listDescriptor.serializer().isCollection());
+        Set<Object> expectedEnumValues = new HashSet<>(Arrays.asList(SampleEnum.values()));
+        assertEquals(expectedEnumValues, listDescriptor.serializer().enumeratedValues());
+    }
+
+    @Test
+    @Deprecated // Tests the deprecated API
     void testEnumListProperty() {
         PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", NAME_MAP)
                 .desc("hello")
@@ -281,6 +297,23 @@ class PropertyDescriptorTest {
         assertTrue(listDescriptor.serializer().isCollection());
         Set<Object> expectedEnumValues = new HashSet<>(Arrays.asList(SampleEnum.values()));
         assertEquals(expectedEnumValues, listDescriptor.serializer().enumeratedValues());
+    }
+
+    @Test
+    @Deprecated // Tests the deprecated API
+    void testEnumProperty() {
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", NAME_MAP)
+                .desc("hello")
+                .defaultValue(SampleEnum.B)
+                .build();
+        assertEquals("enumProp", descriptor.name());
+        assertEquals("hello", descriptor.description());
+        assertEquals(SampleEnum.B, descriptor.defaultValue());
+        assertEquals(SampleEnum.C, descriptor.serializer().fromString("TEST_C"));
+        assertFalse(descriptor.serializer().isCollection());
+        assertFalse(descriptor.serializer().enumeratedValues().isEmpty());
+        Set<Object> expectedEnumValues = new HashSet<>(Arrays.asList(SampleEnum.values()));
+        assertEquals(expectedEnumValues, descriptor.serializer().enumeratedValues());
     }
 
     @Test

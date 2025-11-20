@@ -615,7 +615,11 @@ public final class JavaMetrics {
         }
 
 
+        /**
+         * @deprecated Since 7.19.0.
+         */
         @Override
+        @Deprecated
         public String valueName() {
             return vName;
         }
@@ -639,7 +643,11 @@ public final class JavaMetrics {
         }
 
 
+        /**
+         * @deprecated Since 7.19.0.
+         */
         @Override
+        @Deprecated
         public String valueName() {
             return vName;
         }
@@ -687,7 +695,11 @@ public final class JavaMetrics {
             this.vName = valueName;
         }
 
+        /**
+         * @deprecated Since 7.19.0.
+         */
         @Override
+        @Deprecated
         public String valueName() {
             return vName;
         }
