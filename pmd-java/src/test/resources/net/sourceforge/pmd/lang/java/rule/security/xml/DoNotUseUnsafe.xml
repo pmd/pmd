@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Use sun.misc.Unsafe, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.Field;
+import sun.misc.Unsafe;
+
+class BadUnsafeSun {
+
+    void method() throws Exception {
+        final Field f = Unsafe.class.getDeclaredField("theUnsafe");
+        f.setAccessible(true);
+        final Unsafe unsafe = (Unsafe) f.get(null);
+        unsafe.setMemory(0L, 0L, (byte) 0);
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use sun.misc.Unsafe qualified, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.Field;
+
+class BadUnsafeSunQualified {
+
+    void method() throws Exception {
+        final Field f = sun.misc.Unsafe.class.getDeclaredField("theUnsafe");
+        f.setAccessible(true);
+        final sun.misc.Unsafe unsafe = (sun.misc.Unsafe) f.get(null);
+        unsafe.putAddress(0L, 0L);
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use jdk.internal.misc.Unsafe, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.Field;
+import jdk.internal.misc.Unsafe;
+
+class BadUnsafeSun {
+
+    void method() throws Exception {
+        final Field f = Unsafe.class.getDeclaredField("theUnsafe");
+        f.setAccessible(true);
+        final Unsafe unsafe = (Unsafe) f.get(null);
+        unsafe.setMemory(0L, 0L, (byte) 0);
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use jdk.internal.misc.Unsafe qualified, bad</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.Field;
+
+class BadUnsafeSunQualified {
+
+    void method() throws Exception {
+        final Field f = jdk.internal.misc.Unsafe.class.getDeclaredField("theUnsafe");
+        f.setAccessible(true);
+        final jdk.internal.misc.Unsafe unsafe = (jdk.internal.misc.Unsafe) f.get(null);
+        unsafe.putAddress(0L, 0L);
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Use foo.bar.Unsafe, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.lang.reflect.Field;
+import foo.bar.Unsafe;
+
+class GoodUnsafe {
+
+    void method() throws Exception {
+        final Field f = Unsafe.class.getDeclaredField("theUnsafe");
+        f.setAccessible(true);
+        final Unsafe unsafe = (Unsafe) f.get(null);
+        unsafe.setMemory(0L, 0L, (byte) 0);
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Do not sun.misc.Unsafe, good</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import sun.misc.Unsafe;
+
+class GoodNoUnsafe {
+
+    void method() throws Exception {
+        return;
+    }
+
+}
+        ]]></code>
+    </test-code>
+</test-data>
