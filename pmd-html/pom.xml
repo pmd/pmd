@@ -12,6 +12,7 @@
     </parent>
 
     <properties>
+        <Automatic-Module-Name>net.sourceforge.pmd.lang.html</Automatic-Module-Name>
         <java.version>8</java.version>
     </properties>
 

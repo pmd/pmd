@@ -13,6 +13,7 @@
 
     <properties>
         <log4j.version>2.25.2</log4j.version>
+        <Automatic-Module-Name>net.sourceforge.pmd.lang.java</Automatic-Module-Name>
     </properties>
 
     <build>
@@ -149,6 +150,11 @@
                     </parameter>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+            </plugin>
+
         </plugins>
     </build>
     <dependencies>

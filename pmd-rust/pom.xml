@@ -11,6 +11,10 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
+    <properties>
+        <Automatic-Module-Name>net.sourceforge.pmd.lang.rust</Automatic-Module-Name>
+    </properties>
+
     <build>
         <plugins>
             <plugin>

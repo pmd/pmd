@@ -17,6 +17,7 @@
 
     <properties>
         <java.version>8</java.version>
+        <Automatic-Module-Name>net.sourceforge.pmd.test.schema</Automatic-Module-Name>
     </properties>
 
     <build>
