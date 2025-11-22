@@ -176,6 +176,48 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>switch on enum without default from another compilation unit, exhaustive, arrow</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            // Enum from another compilation unit. jsr305 jar is on the classpath.
+            import javax.annotation.meta.When;
+
+            public class Foo {
+                void enumFromAnotherCompilationUnit(When x) {
+                    switch (x) {
+                      case ALWAYS, UNKNOWN, MAYBE, NEVER -> System.out.println("it is on");
+                      // javac is creating a default case here and so the number of
+                      // labels in the generated code is 5 rather than the expected 4.
+                      // javac is worried that the foreign compilation unit will be
+                      // recompiled with another enum value and this compilation unit
+                      // won't be recompiled; so there's always the danger of
+                      // newly-added unknown enum values.
+
+                      // What should happen in my opinion? The PMD rule should be satisfied that this
+                      // example is exhaustive. The programmer has included all the existing
+                      // values, and we have an auto-generated default to throw an exception
+                      // if we have unexpected values.
+
+                      // If you're working with the Bazel build tool then a lot of the enums
+                      // that you're dealing with will be from foreign compilation units.
+                      // Bazel compiles lots of small units of code separately and makes them
+                      // depend on each other. You're less likely to see this case if you're
+                      // using Gradle or Maven because of the way that most classes end up
+                      // in a single .jar file artifact.
+                    }
+                }
+                // It doesn't fail if you use a Java standard library enum.
+                // Presumably because javac doesn't generate a default case for these.
+                // void enumFromJavaStandardLibrary(Thread.State x) {
+                //    switch (x) {
+                //      case NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED ->
+                //        System.out.println("valid thread state");
+                //    }
+                //}
+            }
+            ]]></code>
+    </test-code>
 
     <test-code>
         <description>Enum type, not ok</description>
