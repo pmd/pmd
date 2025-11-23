@@ -1683,8 +1683,10 @@ Empty finalize methods serve no purpose and should be removed. Note that Oracle 
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name='finalize'][@Arity = 0]
-  /Block[not(*)]
+//ClassDeclaration
+  /ClassBody
+    /MethodDeclaration[@Name = "finalize"][@Arity = 0][@Final = false() or ancestor::ClassDeclaration[@Final = true()]]
+      /Block[not(*)]
 ]]>
                 </value>
             </property>
