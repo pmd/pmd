@@ -181,12 +181,12 @@ public class Foo {
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             // Enum from another compilation unit. jsr305 jar is on the classpath.
-            import javax.annotation.meta.When;
+            import org.slf4j.event.Level;
 
             public class Foo {
-                void enumFromAnotherCompilationUnit(When x) {
+                void enumFromAnotherCompilationUnit(Level x) {
                     switch (x) {
-                      case ALWAYS, UNKNOWN, MAYBE, NEVER -> System.out.println("it is on");
+                      case ERROR, WARN, INFO, DEBUG, TRACE -> System.out.println("it is on");
                       // javac is creating a default case here and so the number of
                       // labels in the generated code is 5 rather than the expected 4.
                       // javac is worried that the foreign compilation unit will be
