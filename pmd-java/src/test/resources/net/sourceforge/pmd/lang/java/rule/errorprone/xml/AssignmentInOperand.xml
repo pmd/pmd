@@ -335,6 +335,7 @@ public class Foo {
         <description>#6092 false positive for case statements</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+            // assignment allowed in switch statement case
             public class Foo {
                 public static void main(String[] args) {
                     String a = null;
