@@ -102,7 +102,7 @@ public final class RuleContext {
      * @see MessageFormat
      */
     public void addViolation(Node location, Object... formatArgs) {
-        at(location).warn(formatArgs);
+        at(location).warnWithArgs(formatArgs);
     }
 
     /**
@@ -383,10 +383,19 @@ public final class RuleContext {
         }
 
         /**
+         * Emit the violation with the given message (overriding the default
+         * rule message specified in the XML rule definition) and no
+         * extra arguments.
+         */
+        public void warnWithMessage(String message) {
+            warnWithMessage(message, NO_ARGS);
+        }
+
+        /**
          * Emit the violation with the default message (specified in the XML
          * rule definition) and the given extra arguments.
          */
-        public void warn(Object... formatArgs) {
+        public void warnWithArgs(Object... formatArgs) {
             warnWithMessage(getDefaultMessage(), formatArgs);
         }
 
@@ -395,17 +404,9 @@ public final class RuleContext {
          * rule definition) and no extra arguments.
          */
         public void warn() {
-            warn(NO_ARGS);
+            warnWithArgs(NO_ARGS);
         }
 
-        /**
-         * Emit the violation with the given message (overriding the default
-         * rule message specified in the XML rule definition) and no
-         * extra arguments.
-         */
-        public void warnWithMessage(String message) {
-            warnWithMessage(message, NO_ARGS);
-        }
     }
 
     /** Marker annotation for Intellij inspection to warn on unused return value. */
