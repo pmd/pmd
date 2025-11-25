@@ -45,11 +45,7 @@ public class UnnecessaryPmdSuppressionRule extends AbstractRule {
         for (ViolationSuppressor suppressor : suppressors) {
             Set<UnusedSuppressorNode> unusedSuppressors = suppressor.getUnusedSuppressors((RootNode) rootNode);
             for (UnusedSuppressorNode unusedSuppressor : unusedSuppressors) {
-                ctx.addViolationNoSuppress(
-                    unusedSuppressor.getLocation(),
-                    rootNode.getAstInfo(),
-                    unusedSuppressor.unusedReason()
-                );
+                ctx.at(unusedSuppressor.getLocation()).warn(unusedSuppressor.unusedReason());
             }
         }
     }

@@ -31,6 +31,7 @@ import net.sourceforge.pmd.lang.document.TextRange2d;
 import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.impl.CannotBeSuppressed;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Report.SuppressedViolation;
 
@@ -202,7 +203,11 @@ public final class RuleContext {
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
         RuleViolation violation = createViolation(() -> builder.location, builder.nearestNode, builder.languageServices, message, formatArgs);
-        SuppressedViolation suppressed = suppressOrNull(builder.nearestNode, violation, builder.languageServices);
+
+        SuppressedViolation suppressed = null;
+        if (!(rule instanceof CannotBeSuppressed)) {
+            suppressed = suppressOrNull(builder.nearestNode, violation, builder.languageServices);
+        }
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);
@@ -215,6 +220,7 @@ public final class RuleContext {
      * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
      */
     @Experimental
+    @Deprecated
     public void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,
                                 String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
@@ -298,6 +304,13 @@ public final class RuleContext {
         return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
     }
 
+    /**
+     * Place a violation at the given Reportable instance (node, token,
+     * etc.).
+     *
+     * @param reportable A node or token
+     * @return A violation builder
+     */
     @CheckReturnValue
     public ViolationBuilder at(Reportable reportable) {
         LanguageVersionHandler services = getLanguageServices();
@@ -310,6 +323,14 @@ public final class RuleContext {
         return at(() -> location);
     }
 
+    /**
+     * Place a violation at the given line in the source file. The location
+     * of the violation will enclose the full range of the line, from
+     * the first to the last character.
+     *
+     * @param lineNumber A line number (>= 1)
+     * @return A violation builder
+     */
     @CheckReturnValue
     public ViolationBuilder atLine(int lineNumber) {
         AstInfo<? extends RootNode> astInfo = rootNode.getAstInfo();
