@@ -75,7 +75,7 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
             int metric = getMetric(t);
             int limit = getProperty(reportLevel);
             if (metric >= limit) {
-                asCtx(data).at(t, getReportLocation(t))
+                asCtx(data).at(getReportLocation(t))
                            .warn(getViolationParameters(t, metric, limit));
             }
         }

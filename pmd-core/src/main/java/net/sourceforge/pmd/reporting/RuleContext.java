@@ -306,7 +306,9 @@ public final class RuleContext {
 
     /**
      * Place a violation at the given Reportable instance (node, token,
-     * etc.).
+     * etc.). If the parameter is a node, it is used to determine
+     * suppressions. Otherwise, the deepest node enclosing the location
+     * is found from the tree and used for that purpose.
      *
      * @param reportable A node or token
      * @return A violation builder
@@ -318,6 +320,13 @@ public final class RuleContext {
         return new ViolationBuilder(node, reportable.getReportLocation(), services);
     }
 
+    /**
+     * Place a violation at the given location. The deepest node that
+     * encloses the full location is used to determine suppressions.
+     *
+     * @param location A file location
+     * @return A violation builder
+     */
     @CheckReturnValue
     public ViolationBuilder at(FileLocation location) {
         return at(() -> location);
@@ -336,9 +345,11 @@ public final class RuleContext {
         AstInfo<? extends RootNode> astInfo = rootNode.getAstInfo();
         LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
 
-        TextDocument textDocument = rootNode.getTextDocument();
+        TextDocument textDocument = rootNode.getTextDocument(); // NOPMD CloseResource
         TextRegion lineRange = textDocument.createLineRange(lineNumber, lineNumber);
-        FileLocation location = textDocument.toLocation(lineRange);
+        FileLocation location =
+            FileLocation.range(textDocument.getFileId(),
+                TextRange2d.range2d(lineNumber, 1, lineNumber, lineRange.getLength()));
         Node nearestNode = getNearestNode(() -> location, astInfo);
         return new ViolationBuilder(nearestNode, location, services);
     }
@@ -347,6 +358,10 @@ public final class RuleContext {
         return rootNode.getAstInfo().getLanguageProcessor().services();
     }
 
+    /**
+     * A staged builder for violations. Instances should not be discarded,
+     * you need to call one of the methods of this class to emit the violation.
+     */
     public final class ViolationBuilder {
         private final Node nearestNode;
         private final FileLocation location;
@@ -358,18 +373,36 @@ public final class RuleContext {
             this.languageServices = languageServices;
         }
 
+        /**
+         * Emit the violation with the given message (overriding the default
+         * rule message specified in the XML rule definition) and the given
+         * extra arguments.
+         */
         public void warnWithMessage(String message, Object... formatArgs) {
             recordViolation(this, message, formatArgs);
         }
 
+        /**
+         * Emit the violation with the default message (specified in the XML
+         * rule definition) and the given extra arguments.
+         */
         public void warn(Object... formatArgs) {
             warnWithMessage(getDefaultMessage(), formatArgs);
         }
 
+        /**
+         * Emit the violation with the default message (specified in the XML
+         * rule definition) and no extra arguments.
+         */
         public void warn() {
             warn(NO_ARGS);
         }
 
+        /**
+         * Emit the violation with the given message (overriding the default
+         * rule message specified in the XML rule definition) and no
+         * extra arguments.
+         */
         public void warnWithMessage(String message) {
             warnWithMessage(message, NO_ARGS);
         }
