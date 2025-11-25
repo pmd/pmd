@@ -43,7 +43,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
 
         for (JavaComment comment : cUnit.getComments()) {
             if (hasTooManyLines(comment)) {
-                asCtx(data).at(comment.getToken()).warn("Too many lines");
+                asCtx(data).at(comment).warn("Too many lines");
             }
 
             reportLinesTooLong(cUnit, asCtx(data), comment);

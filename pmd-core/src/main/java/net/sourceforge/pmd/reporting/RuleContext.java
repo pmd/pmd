@@ -21,7 +21,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.AstInfo;
-import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -142,7 +141,9 @@ public final class RuleContext {
      * @param node       Location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
+     * @deprecated Since 7.20.0, use the new reporting API (See {@link #at(Reportable)})
      */
+    @Deprecated
     public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
         if (beginLine != -1 && endLine != -1) {
             FileLocation location = FileLocation.range(node.getTextDocument().getFileId(),
@@ -165,11 +166,9 @@ public final class RuleContext {
      * @param token   Report location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     * @experimental Since 7.17.0. This will probably never be stabilized, will instead be
-     *      replaced by a fluent API or something to report violations. Do not use
-     *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
+     * @deprecated Since 7.20.0, use the new reporting API (See {@link #at(Reportable)})
      */
-    @Experimental
+    @Deprecated
     public void addViolationWithPosition(Node node, JavaccToken token, String message, Object... formatArgs) {
         addViolationWithPosition(node, node.getAstInfo(), token.getReportLocation(), message, formatArgs);
     }
@@ -186,11 +185,9 @@ public final class RuleContext {
      * @param location   Report location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     * @experimental Since 7.9.0. This will probably never be stabilized, will instead be
-     *      replaced by a fluent API or something to report violations. Do not use
-     *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
+     * @deprecated Since 7.20.0, use the new reporting API (See {@link #at(Reportable)})
      */
-    @Experimental
+    @Deprecated
     public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
                                          String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
@@ -301,25 +298,16 @@ public final class RuleContext {
         return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
     }
 
-
-    @CheckReturnValue
-    public ViolationBuilder at(Node node) {
-        LanguageVersionHandler services = getLanguageServices();
-        return new ViolationBuilder(node, node.getReportLocation(), services);
-    }
-
-    @CheckReturnValue
-    public ViolationBuilder at(FileLocation location) {
-        LanguageVersionHandler services = getLanguageServices();
-        Node node = getNearestNode(() -> location, rootNode.getAstInfo());
-        return new ViolationBuilder(node, location, services);
-    }
-
     @CheckReturnValue
     public ViolationBuilder at(Reportable reportable) {
         LanguageVersionHandler services = getLanguageServices();
         Node node = getNearestNode(reportable, rootNode.getAstInfo());
         return new ViolationBuilder(node, reportable.getReportLocation(), services);
+    }
+
+    @CheckReturnValue
+    public ViolationBuilder at(FileLocation location) {
+        return at(() -> location);
     }
 
     @CheckReturnValue
@@ -332,13 +320,6 @@ public final class RuleContext {
         FileLocation location = textDocument.toLocation(lineRange);
         Node nearestNode = getNearestNode(() -> location, astInfo);
         return new ViolationBuilder(nearestNode, location, services);
-    }
-
-    @CheckReturnValue
-    public ViolationBuilder at(GenericToken<?> token) {
-        Node nearestNode = getNearestNode(token, rootNode.getAstInfo());
-        LanguageVersionHandler services = getLanguageServices();
-        return new ViolationBuilder(nearestNode, token.getReportLocation(), services);
     }
 
     private LanguageVersionHandler getLanguageServices() {
