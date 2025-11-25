@@ -249,7 +249,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>allowIncrementDecrement property: allowed usages</description>
+        <description>#6199 allowIncrementDecrement property: allowed usages</description>
         <rule-property name="allowIncrementDecrement">true</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
