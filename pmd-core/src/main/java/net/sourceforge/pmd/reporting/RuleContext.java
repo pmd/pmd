@@ -92,6 +92,12 @@ public final class RuleContext {
      * suppressions. Otherwise, the deepest node enclosing the location
      * is found from the tree and used for that purpose.
      *
+     * <p>Note that if the argument is a node, the source range that will
+     * be reported may be different from the full source range the node
+     * covers. For instance a warning emitted on a class declaration node
+     * will typically just have the source range of the class identifier.
+     * This is controlled by the implementation of {@link Node#getReportLocation()}.
+     *
      * @param reportable A node or token
      * @return A violation builder
      */
@@ -155,6 +161,10 @@ public final class RuleContext {
          * Emit the violation with the given message (overriding the default
          * rule message specified in the XML rule definition) and the given
          * extra arguments.
+         *
+         * <p>Note that the message must be in valid {@link MessageFormat}
+         * format (even if it has no arguments). Single quotes and curly
+         * braces must be escaped by prepending a single quote.
          */
         public void warnWithMessage(String message, Object... formatArgs) {
             recordViolation(this, message, formatArgs);
@@ -164,6 +174,10 @@ public final class RuleContext {
          * Emit the violation with the given message (overriding the default
          * rule message specified in the XML rule definition) and no
          * extra arguments.
+         *
+         * <p>Note that the message must be in valid {@link MessageFormat}
+         * format (even if it has no arguments). Single quotes and curly
+         * braces must be escaped by prepending a single quote.
          */
         public void warnWithMessage(String message) {
             warnWithMessage(message, NO_ARGS);
