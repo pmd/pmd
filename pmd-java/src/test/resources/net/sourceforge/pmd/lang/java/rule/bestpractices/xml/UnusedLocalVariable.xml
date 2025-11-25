@@ -714,4 +714,19 @@ class Foo {
         ]]></code>
         <source-type>java 22</source-type>
     </test-code>
+    <test-code>
+        <description>pattern with guard </description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Reproducer {
+            public static boolean customEquals(Object foo, Object bar) {
+                return switch (foo) {
+                    case String fooString when bar instanceof String barString -> fooString.equals(barString);
+                    default -> false;
+                };
+            }
+        }
+        ]]> </code>
+        <source-type>java 21</source-type>
+    </test-code>
 </test-data>

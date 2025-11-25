@@ -387,7 +387,7 @@ public final class SymbolTableResolver {
                 ASTSwitchLabel label = branch.getLabel();
                 // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
                 BindSet bindings =
-                    label.children(ASTPattern.class)
+                    label.descendants(ASTPattern.class)
                          .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
