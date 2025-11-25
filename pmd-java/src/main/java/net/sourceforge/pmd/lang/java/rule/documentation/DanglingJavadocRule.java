@@ -23,7 +23,7 @@ public class DanglingJavadocRule extends AbstractJavaRulechainRule {
     public Object visit(ASTCompilationUnit unit, Object data) {
         for (JavaComment comment: unit.getComments()) {
             if (comment instanceof JavadocComment && ((JavadocComment) comment).getOwner() == null) {
-                asCtx(data).at(comment.getToken(), unit.getAstInfo())
+                asCtx(data).at(comment.getToken())
                            .warn();
             }
         }

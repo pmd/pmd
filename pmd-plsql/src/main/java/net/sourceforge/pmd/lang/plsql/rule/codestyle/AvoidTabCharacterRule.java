@@ -36,7 +36,7 @@ public class AvoidTabCharacterRule extends AbstractPLSQLRule {
         int lineNumber = 1;
         for (Chars line : node.getText().lines()) {
             if (line.indexOf('\t', 0) != -1) {
-                asCtx(data).atLine(node, lineNumber).warn();
+                asCtx(data).atLine(lineNumber).warn();
 
                 if (!eachLine) {
                     break;

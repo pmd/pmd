@@ -103,7 +103,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         @Override
         boolean checkNextKeyword(KwMod next, RuleContext ctx) {
             if (mod.compareTo(next.mod) > 0) {
-                ctx.at(token, reportNode.getAstInfo()).warnWithMessage(MSG_KEYWORD_ORDER, this, next);
+                ctx.at(token).warnWithMessage(MSG_KEYWORD_ORDER, this, next);
                 return true;
             }
             return false;
@@ -115,7 +115,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
             if (next.isTypeAnnot != OptionalBool.NO && typeAnnotPosition != TypeAnnotationPosition.ON_DECL) {
                 return false;
             }
-            ctx.at(token, reportNode.getAstInfo()).warnWithMessage(MSG_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
+            ctx.at(token).warnWithMessage(MSG_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
             return true;
 
         }

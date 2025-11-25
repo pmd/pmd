@@ -56,15 +56,18 @@ public final class RuleContext {
 
     private final FileAnalysisListener listener;
     private final Rule rule;
+    private final RootNode rootNode;
 
     /**
      * @apiNote Internal API
      */
-    RuleContext(FileAnalysisListener listener, Rule rule) {
+    RuleContext(FileAnalysisListener listener, Rule rule, RootNode rootNode) {
         Objects.requireNonNull(listener, "Listener was null");
         Objects.requireNonNull(rule, "Rule was null");
+        Objects.requireNonNull(rootNode, "Root node was null");
         this.listener = listener;
         this.rule = rule;
+        this.rootNode = rootNode;
     }
 
     /**
@@ -145,7 +148,7 @@ public final class RuleContext {
             FileLocation location = FileLocation.range(node.getTextDocument().getFileId(),
                 TextRange2d.range2d(beginLine, 1, endLine, 1));
 
-            at(node, location).warnWithMessage(message, formatArgs);
+            at(location).warnWithMessage(message, formatArgs);
         } else {
             at(node).warnWithMessage(message, formatArgs);
         }
@@ -301,22 +304,30 @@ public final class RuleContext {
 
     @CheckReturnValue
     public ViolationBuilder at(Node node) {
-        LanguageVersionHandler services = node.getAstInfo().getLanguageProcessor().services();
+        LanguageVersionHandler services = getLanguageServices();
         return new ViolationBuilder(node, node.getReportLocation(), services);
     }
 
     @CheckReturnValue
-    public ViolationBuilder at(Node node, FileLocation location) {
-        LanguageVersionHandler services = node.getAstInfo().getLanguageProcessor().services();
+    public ViolationBuilder at(FileLocation location) {
+        LanguageVersionHandler services = getLanguageServices();
+        Node node = getNearestNode(() -> location, rootNode.getAstInfo());
         return new ViolationBuilder(node, location, services);
     }
 
     @CheckReturnValue
-    public ViolationBuilder atLine(RootNode node, int lineNumber) {
-        AstInfo<? extends RootNode> astInfo = node.getAstInfo();
+    public ViolationBuilder at(Reportable reportable) {
+        LanguageVersionHandler services = getLanguageServices();
+        Node node = getNearestNode(reportable, rootNode.getAstInfo());
+        return new ViolationBuilder(node, reportable.getReportLocation(), services);
+    }
+
+    @CheckReturnValue
+    public ViolationBuilder atLine(int lineNumber) {
+        AstInfo<? extends RootNode> astInfo = rootNode.getAstInfo();
         LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
 
-        TextDocument textDocument = node.getTextDocument();
+        TextDocument textDocument = rootNode.getTextDocument();
         TextRegion lineRange = textDocument.createLineRange(lineNumber, lineNumber);
         FileLocation location = textDocument.toLocation(lineRange);
         Node nearestNode = getNearestNode(() -> location, astInfo);
@@ -324,10 +335,14 @@ public final class RuleContext {
     }
 
     @CheckReturnValue
-    public ViolationBuilder at(GenericToken<?> token, AstInfo<?> astInfo) {
-        Node nearestNode = getNearestNode(token, astInfo);
-        LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
+    public ViolationBuilder at(GenericToken<?> token) {
+        Node nearestNode = getNearestNode(token, rootNode.getAstInfo());
+        LanguageVersionHandler services = getLanguageServices();
         return new ViolationBuilder(nearestNode, token.getReportLocation(), services);
+    }
+
+    private LanguageVersionHandler getLanguageServices() {
+        return rootNode.getAstInfo().getLanguageProcessor().services();
     }
 
     public final class ViolationBuilder {

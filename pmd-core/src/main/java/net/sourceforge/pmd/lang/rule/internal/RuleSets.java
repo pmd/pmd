@@ -180,7 +180,7 @@ public class RuleSets {
 
         for (RuleSet ruleSet : ruleSets) {
             if (InternalApiBridge.ruleSetApplies(ruleSet, root.getTextDocument().getFileId())) {
-                ruleApplicator.apply(ruleSet.getRules(), listener);
+                ruleApplicator.apply(ruleSet.getRules(), listener, root);
             }
         }
     }
