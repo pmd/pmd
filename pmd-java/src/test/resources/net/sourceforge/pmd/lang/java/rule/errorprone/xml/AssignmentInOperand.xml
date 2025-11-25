@@ -333,7 +333,8 @@ public class Foo {
 
     <test-code>
         <description>#6092 false positive for case statements</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>18</expected-linenumbers>
         <code><![CDATA[
             // assignment allowed in switch statement case
             public class Foo {
@@ -344,6 +345,20 @@ public class Foo {
                         case "A" -> a = "a";    // fixed false positive in 'a = "a"'
                         default -> {}
                     }
+                }
+            }
+
+            // in a switch expressions case, this is still a violation
+            class Scratch {
+                public static void main(String[] args) {
+                    int a = 2;
+                    int b = switch(a) {
+                        case 2 -> a = 1;    // violation line 18
+                        default -> 0;
+                    };
+
+                    System.out.println("a = " + a);
+                    System.out.println("b = " + b);
                 }
             }
         ]]></code>
