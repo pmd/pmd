@@ -82,6 +82,117 @@ public final class RuleContext {
         return rule.getMessage();
     }
 
+    private LanguageVersionHandler getLanguageServices() {
+        return rootNode.getAstInfo().getLanguageProcessor().services();
+    }
+
+    /**
+     * Place a violation at the given Reportable instance (node, token,
+     * etc.). If the parameter is a node, it is used to determine
+     * suppressions. Otherwise, the deepest node enclosing the location
+     * is found from the tree and used for that purpose.
+     *
+     * @param reportable A node or token
+     * @return A violation builder
+     */
+    @CheckReturnValue
+    public ViolationBuilder at(Reportable reportable) {
+        LanguageVersionHandler services = getLanguageServices();
+        Node node = getNearestNode(reportable, rootNode.getAstInfo());
+        return new ViolationBuilder(node, reportable.getReportLocation(), services);
+    }
+
+    /**
+     * Place a violation at the given location. The deepest node that
+     * encloses the full location is used to determine suppressions.
+     *
+     * @param location A file location
+     * @return A violation builder
+     */
+    @CheckReturnValue
+    public ViolationBuilder at(FileLocation location) {
+        return at(() -> location);
+    }
+
+    /**
+     * Place a violation at the given line in the source file. The location
+     * of the violation will enclose the full range of the line, from
+     * the first to the last character.
+     *
+     * @param lineNumber A line number (>= 1)
+     * @return A violation builder
+     */
+    @CheckReturnValue
+    public ViolationBuilder atLine(int lineNumber) {
+        AstInfo<? extends RootNode> astInfo = rootNode.getAstInfo();
+        LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
+
+        TextDocument textDocument = rootNode.getTextDocument(); // NOPMD CloseResource
+        TextRegion lineRange = textDocument.createLineRange(lineNumber, lineNumber);
+        FileLocation location =
+            FileLocation.range(textDocument.getFileId(),
+                TextRange2d.range2d(lineNumber, 1, lineNumber, lineRange.getLength()));
+        Node nearestNode = getNearestNode(() -> location, astInfo);
+        return new ViolationBuilder(nearestNode, location, services);
+    }
+
+    /**
+     * A staged builder for violations. Instances should not be discarded,
+     * you need to call one of the methods of this class to emit the violation.
+     */
+    public final class ViolationBuilder {
+        private final Node nearestNode;
+        private final FileLocation location;
+        private final LanguageVersionHandler languageServices;
+
+        ViolationBuilder(Node nearestNode, FileLocation location, LanguageVersionHandler languageServices) {
+            this.nearestNode = nearestNode;
+            this.location = location;
+            this.languageServices = languageServices;
+        }
+
+        /**
+         * Emit the violation with the given message (overriding the default
+         * rule message specified in the XML rule definition) and the given
+         * extra arguments.
+         */
+        public void warnWithMessage(String message, Object... formatArgs) {
+            recordViolation(this, message, formatArgs);
+        }
+
+        /**
+         * Emit the violation with the given message (overriding the default
+         * rule message specified in the XML rule definition) and no
+         * extra arguments.
+         */
+        public void warnWithMessage(String message) {
+            warnWithMessage(message, NO_ARGS);
+        }
+
+        /**
+         * Emit the violation with the default message (specified in the XML
+         * rule definition) and the given extra arguments.
+         */
+        public void warnWithArgs(Object... formatArgs) {
+            warnWithMessage(getDefaultMessage(), formatArgs);
+        }
+
+        /**
+         * Emit the violation with the default message (specified in the XML
+         * rule definition) and no extra arguments.
+         */
+        public void warn() {
+            warnWithArgs(NO_ARGS);
+        }
+
+    }
+
+    /** Marker annotation for Intellij inspection to warn on unused return value. */
+    @Documented
+    @interface CheckReturnValue {
+
+    }
+
     /**
      * Record a new violation of the contextual rule, at the given node.
      *
@@ -304,115 +415,5 @@ public final class RuleContext {
         return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
     }
 
-    /**
-     * Place a violation at the given Reportable instance (node, token,
-     * etc.). If the parameter is a node, it is used to determine
-     * suppressions. Otherwise, the deepest node enclosing the location
-     * is found from the tree and used for that purpose.
-     *
-     * @param reportable A node or token
-     * @return A violation builder
-     */
-    @CheckReturnValue
-    public ViolationBuilder at(Reportable reportable) {
-        LanguageVersionHandler services = getLanguageServices();
-        Node node = getNearestNode(reportable, rootNode.getAstInfo());
-        return new ViolationBuilder(node, reportable.getReportLocation(), services);
-    }
-
-    /**
-     * Place a violation at the given location. The deepest node that
-     * encloses the full location is used to determine suppressions.
-     *
-     * @param location A file location
-     * @return A violation builder
-     */
-    @CheckReturnValue
-    public ViolationBuilder at(FileLocation location) {
-        return at(() -> location);
-    }
-
-    /**
-     * Place a violation at the given line in the source file. The location
-     * of the violation will enclose the full range of the line, from
-     * the first to the last character.
-     *
-     * @param lineNumber A line number (>= 1)
-     * @return A violation builder
-     */
-    @CheckReturnValue
-    public ViolationBuilder atLine(int lineNumber) {
-        AstInfo<? extends RootNode> astInfo = rootNode.getAstInfo();
-        LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
-
-        TextDocument textDocument = rootNode.getTextDocument(); // NOPMD CloseResource
-        TextRegion lineRange = textDocument.createLineRange(lineNumber, lineNumber);
-        FileLocation location =
-            FileLocation.range(textDocument.getFileId(),
-                TextRange2d.range2d(lineNumber, 1, lineNumber, lineRange.getLength()));
-        Node nearestNode = getNearestNode(() -> location, astInfo);
-        return new ViolationBuilder(nearestNode, location, services);
-    }
-
-    private LanguageVersionHandler getLanguageServices() {
-        return rootNode.getAstInfo().getLanguageProcessor().services();
-    }
-
-    /**
-     * A staged builder for violations. Instances should not be discarded,
-     * you need to call one of the methods of this class to emit the violation.
-     */
-    public final class ViolationBuilder {
-        private final Node nearestNode;
-        private final FileLocation location;
-        private final LanguageVersionHandler languageServices;
-
-        ViolationBuilder(Node nearestNode, FileLocation location, LanguageVersionHandler languageServices) {
-            this.nearestNode = nearestNode;
-            this.location = location;
-            this.languageServices = languageServices;
-        }
-
-        /**
-         * Emit the violation with the given message (overriding the default
-         * rule message specified in the XML rule definition) and the given
-         * extra arguments.
-         */
-        public void warnWithMessage(String message, Object... formatArgs) {
-            recordViolation(this, message, formatArgs);
-        }
-
-        /**
-         * Emit the violation with the given message (overriding the default
-         * rule message specified in the XML rule definition) and no
-         * extra arguments.
-         */
-        public void warnWithMessage(String message) {
-            warnWithMessage(message, NO_ARGS);
-        }
-
-        /**
-         * Emit the violation with the default message (specified in the XML
-         * rule definition) and the given extra arguments.
-         */
-        public void warnWithArgs(Object... formatArgs) {
-            warnWithMessage(getDefaultMessage(), formatArgs);
-        }
-
-        /**
-         * Emit the violation with the default message (specified in the XML
-         * rule definition) and no extra arguments.
-         */
-        public void warn() {
-            warnWithArgs(NO_ARGS);
-        }
-
-    }
-
-    /** Marker annotation for Intellij inspection to warn on unused return value. */
-    @Documented
-    @interface CheckReturnValue {
-
-    }
 
 }
