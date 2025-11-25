@@ -8,9 +8,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.regexProperty;
 
 import java.util.regex.Pattern;
 
-import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.document.Chars;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaComment;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -47,20 +45,12 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private void reportIllegalTerms(RuleContext ctx, JavaComment comment, Pattern violationRegex, Node acu) {
+    private void reportIllegalTerms(RuleContext ctx, JavaComment comment, Pattern violationRegex, ASTCompilationUnit acu) {
 
         int lineNumber = comment.getReportLocation().getStartLine();
         for (Chars line : comment.getFilteredLines(true)) {
             if (violationRegex.matcher(line).find()) {
-
-                FileLocation location = FileLocation.caret(acu.getTextDocument().getFileId(), lineNumber, 1);
-                ctx.addViolationWithPosition(
-                    comment.getToken(),
-                    acu.getAstInfo(),
-                    location,
-                    "Line matches forbidden content regex ({0})",
-                    violationRegex.pattern()
-                );
+                ctx.atLine(acu, lineNumber).warn(violationRegex.pattern());
             }
             lineNumber++;
         }

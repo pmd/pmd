@@ -6,6 +6,7 @@ package net.sourceforge.pmd.reporting;
 
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
+import java.lang.annotation.Documented;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.Locale;
@@ -20,11 +21,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.internal.NodeFindingUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
+import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextRange2d;
+import net.sourceforge.pmd.lang.document.TextRegion;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -80,7 +85,7 @@ public final class RuleContext {
      * @param location Location of the violation
      */
     public void addViolation(Node location) {
-        addViolationWithMessage(location, getDefaultMessage(), NO_ARGS);
+        at(location).warn();
     }
 
     /**
@@ -94,7 +99,7 @@ public final class RuleContext {
      * @see MessageFormat
      */
     public void addViolation(Node location, Object... formatArgs) {
-        addViolationWithMessage(location, getDefaultMessage(), formatArgs);
+        at(location).warn(formatArgs);
     }
 
     /**
@@ -107,7 +112,7 @@ public final class RuleContext {
      * @param message  Violation message
      */
     public void addViolationWithMessage(Node location, String message) {
-        addViolationWithPosition(location, -1, -1, message, NO_ARGS);
+        at(location).warnWithMessage(message);
     }
 
     /**
@@ -121,7 +126,7 @@ public final class RuleContext {
      * @param formatArgs Format arguments for the message
      */
     public void addViolationWithMessage(Node location, String message, Object... formatArgs) {
-        addViolationWithPosition(location, -1, -1, message, formatArgs);
+        at(location).warnWithMessage(message, formatArgs);
     }
 
     /**
@@ -136,14 +141,14 @@ public final class RuleContext {
      * @param formatArgs Format arguments for the message
      */
     public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
-        FileLocation location;
         if (beginLine != -1 && endLine != -1) {
-            location = FileLocation.range(node.getTextDocument().getFileId(),
-                                          TextRange2d.range2d(beginLine, 1, endLine, 1));
+            FileLocation location = FileLocation.range(node.getTextDocument().getFileId(),
+                TextRange2d.range2d(beginLine, 1, endLine, 1));
+
+            at(node, location).warnWithMessage(message, formatArgs);
         } else {
-            location = node.getReportLocation();
+            at(node).warnWithMessage(message, formatArgs);
         }
-        addViolationWithPosition(node, node.getAstInfo(), location, message, formatArgs);
     }
 
     /**
@@ -186,12 +191,18 @@ public final class RuleContext {
     public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
                                          String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
+        LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
+        new ViolationBuilder(getNearestNode(reportable, astInfo), location, services)
+            .warnWithMessage(message, formatArgs);
+    }
+
+    private void recordViolation(ViolationBuilder builder, String message, Object[] formatArgs) {
+        Objects.requireNonNull(builder, "Builder was null");
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        Node suppressionNode = getNearestNode(reportable, astInfo);
-        RuleViolation violation = createViolation(() -> location, astInfo, suppressionNode, message, formatArgs);
-        SuppressedViolation suppressed = suppressOrNull(suppressionNode, violation, astInfo);
+        RuleViolation violation = createViolation(() -> builder.location, builder.nearestNode, builder.languageServices, message, formatArgs);
+        SuppressedViolation suppressed = suppressOrNull(builder.nearestNode, violation, builder.languageServices);
 
         if (suppressed != null) {
             listener.onSuppressedRuleViolation(suppressed);
@@ -211,12 +222,11 @@ public final class RuleContext {
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
         Node nearestNode = getNearestNode(reportable, astInfo);
-        RuleViolation violation = createViolation(reportable, astInfo, nearestNode, message, formatArgs);
+        RuleViolation violation = createViolation(reportable, nearestNode, astInfo.getLanguageProcessor().services(), message, formatArgs);
         listener.onRuleViolation(violation);
     }
 
-    private RuleViolation createViolation(Reportable reportable, AstInfo<?> astInfo, Node nearestNode, String message, Object... formatArgs) {
-        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
+    private RuleViolation createViolation(Reportable reportable, Node nearestNode, LanguageVersionHandler handler, String message, Object[] formatArgs) {
         Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), nearestNode);
         String description = makeMessage(message, formatArgs, extraVariables);
         FileLocation location = reportable.getReportLocation();
@@ -241,8 +251,7 @@ public final class RuleContext {
         return astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());
     }
 
-    private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, AstInfo<?> astInfo) {
-        LanguageVersionHandler handler = astInfo.getLanguageProcessor().services();
+    private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, LanguageVersionHandler handler) {
         SuppressedViolation suppressed = ViolationSuppressor.suppressOrNull(handler.getExtraViolationSuppressors(), rv, location);
         if (suppressed == null) {
             suppressed = ViolationSuppressor.suppressOrNull(DEFAULT_SUPPRESSORS, rv, location);
@@ -288,4 +297,71 @@ public final class RuleContext {
         final PropertyDescriptor<?> propertyDescriptor = rule.getPropertyDescriptor(name);
         return propertyDescriptor == null ? null : String.valueOf(rule.getProperty(propertyDescriptor));
     }
+
+
+    @CheckReturnValue
+    public ViolationBuilder at(Node node) {
+        LanguageVersionHandler services = node.getAstInfo().getLanguageProcessor().services();
+        return new ViolationBuilder(node, node.getReportLocation(), services);
+    }
+
+    @CheckReturnValue
+    public ViolationBuilder at(Node node, FileLocation location) {
+        LanguageVersionHandler services = node.getAstInfo().getLanguageProcessor().services();
+        return new ViolationBuilder(node, location, services);
+    }
+
+    @CheckReturnValue
+    public ViolationBuilder atLine(RootNode node, int lineNumber) {
+        AstInfo<? extends RootNode> astInfo = node.getAstInfo();
+        LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
+
+        TextDocument textDocument = node.getTextDocument();
+        TextRegion lineRange = textDocument.createLineRange(lineNumber, lineNumber);
+        FileLocation location = textDocument.toLocation(lineRange);
+        Node nearestNode = getNearestNode(() -> location, astInfo);
+        return new ViolationBuilder(nearestNode, location, services);
+    }
+
+    @CheckReturnValue
+    public ViolationBuilder at(GenericToken<?> token, AstInfo<?> astInfo) {
+        Node nearestNode = getNearestNode(token, astInfo);
+        LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
+        return new ViolationBuilder(nearestNode, token.getReportLocation(), services);
+    }
+
+    public final class ViolationBuilder {
+        private final Node nearestNode;
+        private final FileLocation location;
+        private final LanguageVersionHandler languageServices;
+
+        ViolationBuilder(Node nearestNode, FileLocation location, LanguageVersionHandler languageServices) {
+            this.nearestNode = nearestNode;
+            this.location = location;
+            this.languageServices = languageServices;
+        }
+
+        public void warnWithMessage(String message, Object... formatArgs) {
+            recordViolation(this, message, formatArgs);
+        }
+
+        public void warn(Object... formatArgs) {
+            warnWithMessage(getDefaultMessage(), formatArgs);
+        }
+
+        public void warn() {
+            warn(NO_ARGS);
+        }
+
+        public void warnWithMessage(String message) {
+            warnWithMessage(message, NO_ARGS);
+        }
+    }
+
+    /** Marker annotation for Intellij inspection to warn on unused return value. */
+    @Documented
+    @interface CheckReturnValue {
+
+    }
+
 }
