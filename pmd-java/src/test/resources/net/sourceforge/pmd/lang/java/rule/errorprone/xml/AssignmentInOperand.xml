@@ -341,7 +341,7 @@ public class Foo {
                     String a = null;
 
                     switch (args[0]) {
-                        case "A" -> a = "a"; // fixed false positive in 'a = "a"'
+                        case "A" -> a = "a";    // fixed false positive in 'a = "a"'
                         default -> {}
                     }
                 }
