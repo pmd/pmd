@@ -4,8 +4,14 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.Optional;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.internal.NodeFindingUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
@@ -13,12 +19,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
  * a {@link RuleViolation}. {@link Node}s and {@link GenericToken tokens}
  * implement this interface.
  */
-// TODO use this in RuleContext where RuleViolations are created
 public interface Reportable {
-
-    // todo add optional method to get the nearest node, to implement
-    //  suppression that depends on tree structure (eg annotations) for
-    //  not just nodes, for example, for comments or individual tokens
 
     /**
      * Returns the location at which this element should be reported.
@@ -26,4 +27,18 @@ public interface Reportable {
      * <p>Use this instead of {@link Node#getBeginColumn()}/{@link Node#getBeginLine()}, etc.
      */
     FileLocation getReportLocation();
+
+    /**
+     * Return the nearest node in the tree that encloses this reportable.
+     * This node is used to determine suppressions that apply to the violation.
+     */
+    default @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+        FileLocation loc = getReportLocation();
+        int startOffset = astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());
+
+        Optional<Node> foundNode = NodeFindingUtil.findNodeAt(astInfo.getRootNode(), startOffset);
+        // default to the root node
+        return foundNode.orElse(astInfo.getRootNode());
+
+    }
 }

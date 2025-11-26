@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -104,20 +103,8 @@ public final class RuleContext {
     @CheckReturnValue
     public ViolationBuilder at(Reportable reportable) {
         LanguageVersionHandler services = getLanguageServices();
-        Node node = getNearestNode(reportable, rootNode.getAstInfo());
+        Node node = reportable.getSuppressionNode(rootNode.getAstInfo());
         return new ViolationBuilder(node, reportable.getReportLocation(), services);
-    }
-
-    /**
-     * Place a violation at the given location. The deepest node that
-     * encloses the full location is used to determine suppressions.
-     *
-     * @param location A file location
-     * @return A violation builder
-     */
-    @CheckReturnValue
-    public ViolationBuilder at(FileLocation location) {
-        return at(() -> location);
     }
 
     /**
@@ -138,7 +125,7 @@ public final class RuleContext {
         FileLocation location =
             FileLocation.range(textDocument.getFileId(),
                 TextRange2d.range2d(lineNumber, 1, lineNumber, lineRange.getLength()));
-        Node nearestNode = getNearestNode(() -> location, astInfo);
+        Node nearestNode = NodeFindingUtil.findNodeAt(rootNode, lineRange.getStartOffset()).orElse(rootNode);
         return new ViolationBuilder(nearestNode, location, services);
     }
 
@@ -275,7 +262,7 @@ public final class RuleContext {
             FileLocation location = FileLocation.range(node.getTextDocument().getFileId(),
                 TextRange2d.range2d(beginLine, 1, endLine, 1));
 
-            at(location).warnWithMessage(message, formatArgs);
+            at(node.atLocation(location)).warnWithMessage(message, formatArgs);
         } else {
             at(node).warnWithMessage(message, formatArgs);
         }
@@ -318,7 +305,7 @@ public final class RuleContext {
                                          String message, Object... formatArgs) {
         Objects.requireNonNull(reportable, "Node was null");
         LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
-        new ViolationBuilder(getNearestNode(reportable, astInfo), location, services)
+        new ViolationBuilder(reportable.getSuppressionNode(astInfo), location, services)
             .warnWithMessage(message, formatArgs);
     }
 
@@ -352,7 +339,7 @@ public final class RuleContext {
         Objects.requireNonNull(message, "Message was null");
         Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
 
-        Node nearestNode = getNearestNode(reportable, astInfo);
+        Node nearestNode = reportable.getSuppressionNode(astInfo);
         RuleViolation violation = createViolation(reportable, nearestNode, astInfo.getLanguageProcessor().services(), message, formatArgs);
         listener.onRuleViolation(violation);
     }
@@ -362,24 +349,6 @@ public final class RuleContext {
         String description = makeMessage(message, formatArgs, extraVariables);
         FileLocation location = reportable.getReportLocation();
         return new ParametricRuleViolation(rule, location, description, extraVariables);
-    }
-
-    private Node getNearestNode(Reportable reportable, AstInfo<?> astInfo) {
-        if (reportable instanceof Node) {
-            return (Node) reportable;
-        }
-        int startOffset = getStartOffset(reportable, astInfo);
-        Optional<Node> foundNode = NodeFindingUtil.findNodeAt(astInfo.getRootNode(), startOffset);
-        // default to the root node
-        return foundNode.orElse(astInfo.getRootNode());
-    }
-
-    private static int getStartOffset(Reportable reportable, AstInfo<?> astInfo) {
-        if (reportable instanceof JavaccToken) {
-            return ((JavaccToken) reportable).getRegion().getStartOffset();
-        }
-        FileLocation loc = reportable.getReportLocation();
-        return astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());
     }
 
     private static @Nullable SuppressedViolation suppressOrNull(Node location, RuleViolation rv, LanguageVersionHandler handler) {

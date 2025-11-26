@@ -39,13 +39,13 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
         Pattern pattern = getProperty(DISALLOWED_TERMS_DESCRIPTOR);
 
         for (JavaComment comment : node.getComments()) {
-            reportIllegalTerms(asCtx(data), comment, pattern, node);
+            reportIllegalTerms(asCtx(data), comment, pattern);
         }
 
         return null;
     }
 
-    private void reportIllegalTerms(RuleContext ctx, JavaComment comment, Pattern violationRegex, ASTCompilationUnit acu) {
+    private void reportIllegalTerms(RuleContext ctx, JavaComment comment, Pattern violationRegex) {
 
         int lineNumber = comment.getReportLocation().getStartLine();
         for (Chars line : comment.getFilteredLines(true)) {

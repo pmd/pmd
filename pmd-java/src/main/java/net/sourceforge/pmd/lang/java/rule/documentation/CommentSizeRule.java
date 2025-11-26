@@ -46,7 +46,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
                 asCtx(data).at(comment).warnWithArgs("Too many lines");
             }
 
-            reportLinesTooLong(cUnit, asCtx(data), comment);
+            reportLinesTooLong(asCtx(data), comment);
         }
 
         return null;
@@ -77,7 +77,7 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
         return false;
     }
 
-    private void reportLinesTooLong(ASTCompilationUnit acu, RuleContext ctx, JavaComment comment) {
+    private void reportLinesTooLong(RuleContext ctx, JavaComment comment) {
 
         int maxLength = getProperty(MAX_LINE_LENGTH);
 

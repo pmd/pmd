@@ -11,8 +11,10 @@ import java.util.Objects;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.ast.NodeStream.DescendantNodeStream;
+import net.sourceforge.pmd.lang.ast.internal.NodeFindingUtil;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -21,6 +23,7 @@ import net.sourceforge.pmd.lang.rule.xpath.Attribute;
 import net.sourceforge.pmd.lang.rule.xpath.NoAttribute;
 import net.sourceforge.pmd.lang.rule.xpath.impl.AttributeAxisIterator;
 import net.sourceforge.pmd.reporting.Reportable;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.DataMap;
 import net.sourceforge.pmd.util.DataMap.DataKey;
 
@@ -115,6 +118,60 @@ public interface Node extends Reportable {
     @Override
     default FileLocation getReportLocation() {
         return getAstInfo().getTextDocument().toLocation(getTextRegion());
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p>This implementation returns this node.
+     */
+    @Override
+    default @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+        return this;
+    }
+
+    /**
+     * Return a {@link Reportable} instance that can be used to report
+     * this node with a more specific location. This node is used as the
+     * suppressor node. The location should be contained within this node.
+     *
+     * @param loc A location
+     * @return A {@link Reportable} instance, suitable for use with {@link RuleContext#at(Reportable)}.
+     * @throws AssertionError If the location is not contained within this node
+     * @experimental Will be stabilized in a few versions if it is useful
+     * @since 7.20.0
+     */
+    @Experimental
+    default Reportable atLocation(FileLocation loc) {
+        assert NodeFindingUtil.nodeCoversLocation(this, loc) : "Node does not contain location " + loc;
+        return new Reportable() {
+            @Override
+            public FileLocation getReportLocation() {
+                return loc;
+            }
+
+            @Override
+            public @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+                return Node.this;
+            }
+        };
+    }
+
+    /**
+     * Return a {@link Reportable} instance that can be used to report
+     * this node with a more specific location. This node is used as the
+     * suppressor node. The location should be contained within this node,
+     * though this is not asserted.
+     *
+     * @param token A token
+     * @return A {@link Reportable} instance, suitable for use with {@link RuleContext#at(Reportable)}.
+     * @throws AssertionError If the token is not contained within this node
+     * @experimental Will be stabilized in a few versions if it is useful
+     * @since 7.20.0
+     */
+    @Experimental
+    default Reportable atToken(GenericToken<?> token) {
+        return atLocation(token.getReportLocation());
     }
 
     /**
