@@ -30,7 +30,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
  */
 @Experimental
-public class UnnecessaryPmdSuppressionRule extends AbstractRule {
+public class UnnecessaryPmdSuppressionRule extends AbstractRule implements CannotBeSuppressed {
 
     @Override
     public void apply(Node rootNode, RuleContext ctx) {

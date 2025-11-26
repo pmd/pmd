@@ -23,7 +23,7 @@ import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
 import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
-import net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule;
+import net.sourceforge.pmd.lang.rule.impl.CannotBeSuppressed;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
@@ -64,8 +64,8 @@ public class RuleSets {
             RuleSetBuilder noSuppressions = ruleSet.toBuilder();
             RuleSetBuilder onlySuppressions = ruleSet.toBuilder();
 
-            noSuppressions.removeIf(rule1 -> followReference(rule1) instanceof UnnecessaryPmdSuppressionRule);
-            onlySuppressions.removeIf(rule1 -> !(followReference(rule1) instanceof UnnecessaryPmdSuppressionRule));
+            noSuppressions.removeIf(rule1 -> followReference(rule1) instanceof CannotBeSuppressed);
+            onlySuppressions.removeIf(rule1 -> !(followReference(rule1) instanceof CannotBeSuppressed));
             rulesets.add(noSuppressions.build());
             suppressionRules.add(onlySuppressions.build());
         }
