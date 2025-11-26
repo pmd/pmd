@@ -20,6 +20,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
@@ -97,8 +98,21 @@ public final class RuleContext {
      * will typically just have the source range of the class identifier.
      * This is controlled by the implementation of {@link Node#getReportLocation()}.
      *
+     * <p>To specify a more specific location to report a violation, use
+     * {@link Node#atLocation(FileLocation)} or the related {@link Node#atToken(GenericToken)}
+     * and pass that as the parameter to this method.
+     * <pre>{@code
+     * // use the default report location
+     * ctx.at(node).warn();
+     *
+     * // scope down the warning range to only the first token
+     * ctx.at(node.atToken(node.getFirstToken())).warn();
+     * }</pre>
+     *
      * @param reportable A node or token
      * @return A violation builder
+     *
+     * @since 7.20.0
      */
     @CheckReturnValue
     public ViolationBuilder at(Reportable reportable) {
@@ -114,6 +128,7 @@ public final class RuleContext {
      *
      * @param lineNumber A line number (>= 1)
      * @return A violation builder
+     * @since 7.20.0
      */
     @CheckReturnValue
     public ViolationBuilder atLine(int lineNumber) {
@@ -132,6 +147,7 @@ public final class RuleContext {
     /**
      * A staged builder for violations. Instances should not be discarded,
      * you need to call one of the methods of this class to emit the violation.
+     * @since 7.20.0
      */
     public final class ViolationBuilder {
         private final Node nearestNode;
