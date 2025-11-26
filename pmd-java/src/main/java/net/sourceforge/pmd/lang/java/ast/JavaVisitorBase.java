@@ -1,10 +1,9 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.ast;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.ast.AstVisitorBase;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 
@@ -78,7 +77,6 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
     @Override
-    @Experimental
     public R visit(ASTImplicitClassDeclaration node, P data) {
         return visitTypeDecl(node, data);
     }
@@ -310,7 +308,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     @Override
     public R visit(ASTDoStatement node, P data) {
-        return visitStatement(node, data);
+        return visitLoop(node, data);
     }
 
     @Override
@@ -330,12 +328,12 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     @Override
     public R visit(ASTForeachStatement node, P data) {
-        return visitStatement(node, data);
+        return visitLoop(node, data);
     }
 
     @Override
     public R visit(ASTForStatement node, P data) {
-        return visitStatement(node, data);
+        return visitLoop(node, data);
     }
 
     @Override
@@ -390,7 +388,7 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
 
     @Override
     public R visit(ASTWhileStatement node, P data) {
-        return visitStatement(node, data);
+        return visitLoop(node, data);
     }
 
     @Override
@@ -399,6 +397,12 @@ public class JavaVisitorBase<P, R> extends AstVisitorBase<P, R> implements JavaV
     }
 
 
+    /**
+     * @since 7.14.0
+     */
+    public R visitLoop(ASTLoopStatement node, P data) {
+        return visitStatement(node, data);
+    }
 
     // </editor-fold>
 

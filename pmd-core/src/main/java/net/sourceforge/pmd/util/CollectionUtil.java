@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -9,6 +9,8 @@ import static java.util.Collections.emptyIterator;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.emptySet;
 
+import java.util.AbstractMap;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,6 +78,39 @@ public final class CollectionUtil {
         } else {
             return new ConsList<>(head, tail);
         }
+    }
+
+    /**
+     * Returns a view over the given map, where values are mapped using the given function.
+     * @since 7.14.0
+     */
+    public static <K, V, U> Map<K, U> mapView(Map<K, V> map, Function<? super V, ? extends U> valueMapper) {
+        return new AbstractMap<K, U>() {
+            @Override
+            public U get(Object key) {
+                V v = map.get(key);
+                if (v == null && !map.containsKey(key)) {
+                    return null;
+                }
+                return valueMapper.apply(v);
+            }
+
+            @Override
+            public Set<Entry<K, U>> entrySet() {
+                return new AbstractSet<Entry<K, U>>() {
+
+                    @Override
+                    public Iterator<Entry<K, U>> iterator() {
+                        return IteratorUtil.map(map.entrySet().iterator(), entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), valueMapper.apply(entry.getValue())));
+                    }
+
+                    @Override
+                    public int size() {
+                        return map.size();
+                    }
+                };
+            }
+        };
     }
 
 
@@ -316,7 +351,7 @@ public final class CollectionUtil {
         AssertionUtil.requireParamNotNull("values", to);
         Validate.isTrue(from.size() == to.size(), "Mismatched list sizes %s to %s", from, to);
 
-        if (from.isEmpty()) { //NOPMD: we really want to compare references here
+        if (from.isEmpty()) {
             return emptyMap();
         }
 
@@ -519,7 +554,9 @@ public final class CollectionUtil {
 
         return Collector.of(
             Holder::new,
-            (h, t) -> h.set = h.set.plus(t),
+            (h, t) -> {
+                h.set = h.set.plus(t);
+            },
             (left, right) -> {
                 left.set = left.set.plusAll(right.set);
                 return left;

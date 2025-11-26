@@ -3,7 +3,7 @@
 ![PMD Logo](https://raw.githubusercontent.com/pmd/pmd/main/docs/images/logo/pmd-logo-300px.png)
 
 [![Join the chat](https://img.shields.io/gitter/room/pmd/pmd)](https://app.gitter.im/#/room/#pmd_pmd:gitter.im?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://github.com/pmd/pmd/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/pmd/pmd/actions)
+[![Build Snapshot](https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml/badge.svg?branch=main)](https://github.com/pmd/pmd/actions/workflows/build-snapshot.yml)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.sourceforge.pmd/pmd)
 [![Reproducible Builds](https://img.shields.io/badge/Reproducible_Builds-ok-green?labelColor=blue)](https://github.com/jvm-repo-rebuild/reproducible-central/tree/master/content/net/sourceforge/pmd#readme)
 [![Coverage Status](https://coveralls.io/repos/github/pmd/pmd/badge.svg?branch=main&v=1)](https://coveralls.io/github/pmd/pmd?branch=main)
@@ -20,15 +20,15 @@ extended with custom rules. It uses JavaCC and Antlr to parse source files into 
 (AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
 
 Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
+Kotlin, Swift, Modelica, PL/SQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
 Scala is supported, but there are currently no Scala rules available.
 
 Additionally, it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
-Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
-Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Salesforce.com Apex and
+Coco, C/C++, C#, CSS, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+Lua, Matlab, Modelica, Objective-C, Perl, PHP, PL/SQL, Python, Ruby, Salesforce.com Apex and
 Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
 
-## 🚀 Installation and Usage
+## 🚀️ Installation and Usage
 
 Download the latest binary zip from the [releases](https://github.com/pmd/pmd/releases/latest)
 and extract it somewhere.
@@ -58,7 +58,7 @@ See [Tools / Integrations](https://docs.pmd-code.org/latest/pmd_userdocs_tools.h
     or our [PMD Guru at Gurubase](https://gurubase.io/g/pmd).
 *   Where's your documentation? -- <https://docs.pmd-code.org/latest/>
 
-## 🤝 Contributing
+## 🤝️ Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
@@ -70,17 +70,17 @@ The rule designer is developed over at [pmd/pmd-designer](https://github.com/pmd
 Please see [its README](https://github.com/pmd/pmd-designer#contributing) for
 developer documentation.
 
-## 💵 Financial Contributors
+## 💵️ Financial Contributors
 
 Become a financial contributor and help us sustain our community. [Contribute](https://opencollective.com/pmd/contribute)
 
-## ✨ Contributors
+## ✨️ Contributors
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
 Contributions of any kind welcome!
 
 See [credits](docs/pages/pmd/projectdocs/credits.md) for the complete list.
 
-## 📝 License
+## 📝️ License
 
 [BSD Style](LICENSE)

@@ -15,16 +15,14 @@ $(document).ready(function () {
         listType: 'ul',
         showSpeed: 0,
         headers: 'h2,h3,h4',
-    });
-
-    // activate tooltips. although this is a bootstrap js function, it must be activated this way in your theme.
-    $('[data-toggle="tooltip"]').tooltip({
-        placement: 'top',
+        noBackToTopLinks: true,
     });
 
     /**
      * AnchorJS
      */
+    anchors.options.icon='';
+    anchors.options.class='fas fa-link fa-xs';
     anchors.add('h2,h3,h4,h5');
 
     // Add an "Edit on GitHub" button to each header (except h1)
@@ -35,9 +33,44 @@ $(document).ready(function () {
             .append(
                 '  <a class="edit-header" target="_blank" href=' +
                     url +
-                    ' role="button">✏️️</a>'
+                    ' role="button" data-toggle="tooltip" data-placement="top" title="Edit on GitHub"><i class="fas fa-edit fa-xs"></i>️</a>'
             );
     }
+
+    // Add an "copy url" button to each header
+    document.querySelectorAll('.anchorjs-link')
+            .forEach(e => {
+                const template = document.createElement('template');
+                template.innerHTML = '<a class="copy-anchor-url" href="#" data-toggle="tooltip" data-placement="top" title="Copy URL"><i class="fas fa-copy fa-xs"></i></a>';
+                e.parentNode.append(template.content.firstChild);
+            });
+    document.addEventListener('click', event => {
+        let target = null;
+        if (event.target.classList.contains('copy-anchor-url')) {
+            target = event.target;
+        } else if (event.target.parentNode.classList.contains('copy-anchor-url')) {
+            target = event.target.parentNode;
+        }
+
+        if (target) {
+            if (navigator.clipboard) {
+                const url = new URL(location.href);
+                url.hash = event.target.parentNode.id;
+                event.preventDefault();
+                event.stopImmediatePropagation();
+
+                navigator.clipboard.writeText(url)
+                         .then(() => {
+                            target.firstChild.classList.remove('fa-copy');
+                            target.firstChild.classList.add('fa-check');
+                            window.setTimeout(() => {
+                                target.firstChild.classList.remove('fa-check');
+                                target.firstChild.classList.add('fa-copy');
+                            }, 500);
+                         });
+            }
+        }
+    });
 
     // Check if TOC needs to be moved on page load
     moveToc();
@@ -60,24 +93,6 @@ $(document).ready(function () {
         }
     });
 
-    // Initialize jekyll search in topnav.
-    SimpleJekyllSearch.init({
-        searchInput: document.getElementById('search-input'),
-        resultsContainer: document.getElementById('results-container'),
-        json: 'search.json',
-        searchResultTemplate: '<li><a href="{url}">{title}</a></li>',
-        noResultsText: '{{site.data.strings.search_no_results_text}}',
-        limit: 10,
-        fuzzy: true,
-    });
-    // Make sure to close and empty the search results after clicking one result item.
-    // This is necessary, if we don't switch the page but only jump to a anchor on the
-    // same page.
-    $('#results-container').click(function() {
-        $('#search-input').val('');
-        $(this).empty();
-    });
-
     // Topnav toggle button for displaying/hiding nav sidebar
     $("#tg-sb-link").click(function(event) {
         $("#tg-sb-sidebar").toggle();
@@ -87,9 +102,76 @@ $(document).ready(function () {
         $("#tg-sb-icon").toggleClass('fa-toggle-off');
         event.preventDefault();
     });
+
+    // PMD Versions Dropdown in topnav
+    const versionsList = document.querySelector("#pmdVersions");
+    const releasesRequest = new Request("https://api.github.com/repos/pmd/pmd/releases?per_page=5&page=1");
+    window
+        .fetch(releasesRequest)
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then((response) => response.map((r) => r.tag_name.replace('pmd_releases/', '')))
+        .then((versions) => {
+            versions.push('6.55.0');
+            return versions.map((version) => {
+                if (version.endsWith('-SNAPSHOT')) {
+                    return `<a class="dropdown-item" href="https://docs.pmd-code.org/snapshot/" target="_blank">${version}</a>`;
+                } else {
+                    return `<a class="dropdown-item" href="https://docs.pmd-code.org/pmd-doc-${version}/" target="_blank">${version}</a>`;
+                }
+            });
+        })
+        .then((items) => {
+            versionsList.innerHTML = items.join();
+        })
+        .catch((error) => {
+            versionsList.innerHTML = "Couldn't download releases from api.github.com";
+            console.log(error);
+        });
+
+    // activate tooltips. although this is a bootstrap js function, it must be activated this way in your theme.
+    $('[data-toggle="tooltip"]').tooltip({
+        placement: 'top',
+    });
 });
 
 // Check if TOC needs to be moved on window resizing
 $(window).resize(function () {
     moveToc();
 });
+
+// based on https://github.com/laolusrael/scroll-spy/blob/master/scroll-spy.js and
+// using https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
+(function() {
+let observer = new IntersectionObserver((entries, observer) => {
+    entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            let id = entry.target.getAttribute('id');
+            let linkSelector = `#toc a[href='#${id}']`;
+            let nowActiveLink = document.querySelector(linkSelector);
+
+            if (nowActiveLink != null){
+                let curActiveLink = document.querySelector('#toc a.active');
+                if (curActiveLink) {
+                    if (curActiveLink.getAttribute('href') != '#' + id) {
+                        curActiveLink.classList.remove('active');
+                    }
+                }
+                if (!nowActiveLink.classList.contains('active')) {
+                    nowActiveLink.classList.add('active');
+                    nowActiveLink.scrollIntoView({ block: "center" });
+                }
+            }
+        }
+    });
+});
+
+document.querySelectorAll('h2,h3,h4,h5').forEach(el => {
+    observer.observe(el);
+});
+
+})();

@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -76,10 +76,6 @@ class AnyCpdLexerTest {
 
         assertEquals(expectedImages, tokenStrings);
         return tokens;
-    }
-
-    private String getTokenImage(TokenEntry t) {
-        return t.toString();
     }
 
     private static final List<String> EXPECTED = listOf(

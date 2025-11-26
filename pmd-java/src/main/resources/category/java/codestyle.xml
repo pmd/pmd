@@ -343,6 +343,10 @@ Avoid negation within an "if" expression with an "else" clause.  For example, re
 Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
 as "does the error case go first?" or "does the common case go first?".
+
+Since null checks are commonly considered a positive condition, they are by default ignored
+by this rule. This means both `a == null` and `a != null` are allowed. If you want
+to enforce either style and disallow the other, use the property `nullCheckBranch`.
         </description>
         <priority>3</priority>
         <example>
@@ -417,6 +421,53 @@ while (true) {  // preferred approach
         </example>
     </rule>
 
+    <rule name="EmptyControlStatement"
+          language="java"
+          since="6.46.0"
+          message="This control statement has an empty branch"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.EmptyControlStatementRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptycontrolstatement">
+        <!-- Note about naming: EmptyCodeBlock does not work because the rule flags `if(true);`  -->
+        <!-- EmptyControlStatement is weird because `{}` is not a control statement, and we also flag initializers. -->
+        <!-- EmptyStatement does not work because `;` is called an "empty statement" and is not flagged by this rule, rather, by UnnecessarySemicolon. -->
+        <!-- EmptyCodeConstruct would work but sounds a bit odd (right?). -->
+        <description><![CDATA[
+            Reports control statements whose body is empty, as well as empty initializers.
+
+            The checked code constructs are the following:
+            - bodies of `try` statements
+            - `finally` clauses of `try` statements
+            - `switch` statements
+            - `synchronized` statements
+            - `if` statements
+            - loop statements: `while`, `for`, `do .. while`
+            - initializers
+            - blocks used as statements (for scoping)
+
+            This rule replaces the rules EmptyFinallyBlock,
+            EmptyIfStmt, EmptyInitializer, EmptyStatementBlock,
+            EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
+
+            Notice that {% rule java/errorprone/EmptyCatchBlock %} is still an independent rule.
+
+            EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemicolon %}.
+        ]]></description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+class Foo {
+    {
+        if (true); // empty if statement
+        if (true) { // empty as well
+        }
+    }
+
+    {} // empty initializer
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="EmptyMethodInAbstractClassShouldBeAbstract"
           language="java"
           since="4.1"
@@ -424,7 +475,7 @@ while (true) {  // preferred approach
           message="An empty method in an abstract class should be abstract instead"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptymethodinabstractclassshouldbeabstract">
         <description>
-Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inapproprate
+Empty or auto-generated methods in an abstract class should be tagged as abstract. This helps to remove their inappropriate
 usage by developers who should be implementing their own versions in the concrete subclasses.
         </description>
         <priority>1</priority>
@@ -454,53 +505,6 @@ public abstract class ShouldBeAbstract {
 
     public void couldBeAbstract() {
     }
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="EmptyControlStatement"
-          language="java"
-          since="6.46.0"
-          message="This control statement has an empty branch"
-          class="net.sourceforge.pmd.lang.java.rule.codestyle.EmptyControlStatementRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#emptycontrolstatement">
-        <!-- Note about naming: EmptyCodeBlock does not work because the rule flags `if(true);`  -->
-        <!-- EmptyControlStatement is weird because `{}` is not a control statement, and we also flag initializers. -->
-        <!-- EmptyStatement does not work because `;` is called an "empty statement" and is not flagged by this rule, rather, by UnnecessarySemicolon. -->
-        <!-- EmptyCodeConstruct would work but sounds a bit odd (right?). -->
-        <description><![CDATA[
-            Reports control statements whose body is empty, as well as empty initializers.
-
-            The checked code constructs are the following:
-            - bodies of `try` statements
-            - `finally` clauses of `try` statements
-            - `switch` statements
-            - `synchronized` statements
-            - `if` statements
-            - loop statements: `while`, `for`, `do .. while`
-            - initializers
-            - blocks used as statements (for scoping)
-
-            This rule replaces the rules EmptyFinallyBlock, 
-            EmptyIfStmt, EmptyInitializer, EmptyStatementBlock, 
-            EmptySwitchStatements, EmptySynchronizedBlock, EmptyTryBlock, and EmptyWhileStmt.
-
-            Notice that {% rule java/errorprone/EmptyCatchBlock %} is still an independent rule.
-
-            EmptyStatementNotInLoop is replaced by {% rule java/codestyle/UnnecessarySemicolon %}.
-        ]]></description>
-        <priority>3</priority>
-        <example>
-<![CDATA[
-class Foo {
-    {
-        if (true); // empty if statement
-        if (true) { // empty as well
-        }
-    }
-
-    {} // empty initializer
 }
 ]]>
         </example>
@@ -701,11 +705,14 @@ public class Foo {
     <rule name="GenericsNaming"
           language="java"
           since="4.2.6"
+          deprecated="true"
           message="Generics names should be a one letter long and upper case."
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#genericsnaming">
         <description>
 Names for references to generic values should be limited to a single uppercase letter.
+
+**Deprecated:** This rule is deprecated since PMD 7.17.0 and will be removed with PMD 8.0.0. This rule has been replaced by {% rule TypeParameterNamingConventions %}, which provides more comprehensive and configurable naming conventions for type parameters.
         </description>
         <priority>4</priority>
         <properties>
@@ -1115,7 +1122,7 @@ class Foo {
             specific kind (e.g. JUnit test or native method). Each regex can be
             configured through properties.
 
-            By default this rule uses the standard Java naming convention (Camel case).
+            By default, this rule uses the standard Java naming convention (Camel case).
         </description>
         <priority>1</priority>
         <example>
@@ -1123,6 +1130,51 @@ class Foo {
 public class Foo {
     public void fooStuff() {
     }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="ModifierOrder"
+          language="java"
+          since="7.17.0"
+          message="Wrong modifier order (the actual message is written by the rule)"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.ModifierOrderRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#modifierorder">
+        <description>
+            Enforces the modifier order recommended by the JLS. Apart from sorting modifiers,
+            this rule also enforces that all annotations appear before all modifier keywords.
+            By setting the property `typeAnnotations`, you can also enforce that type
+            annotations appear right of the modifier keywords, next to the type they apply to.
+            This property can have three values:
+            - `ontype`: Type annotations must be placed next to the type they apply to
+            - `ondecl`: Type annotations must be placed with other annotations, before modifiers.
+            This is not enforced if the type annotations syntactically appears within the type, e.g.
+            in `public Map.@Nullable Entry&lt;K,V&gt; method()`.
+            - `anywhere` (default): Either position fits. They still cannot be interspersed within keyword
+            modifiers. Annotations that are not type annotations are still required to be before keyword
+            modifiers.
+        </description>
+        <priority>1</priority>
+        <example>
+<![CDATA[
+abstract public class Foo { // Warn: `public` should appear before `abstract`
+
+    // This order is not recommended, annotations should appear before keyword modifiers,
+    // and may appear after if they are type annotations.
+    public
+    @Override
+    static fooStuff() {
+    }
+
+    // This order is ok if property typeAnnotations is "anywhere", and enforced if it is "on decl":
+    @Nullable
+    public Object fooStuff() {}
+
+    // This order is ok if property typeAnnotations is "anywhere", and enforced if it is "on type":
+    public @Nullable Object fooStuff() {}
+
+
 }
 ]]>
         </example>
@@ -1147,58 +1199,6 @@ Detects when a class, interface, enum or annotation does not have a package defi
 <![CDATA[
 // no package declaration
 public class ClassInDefaultPackage {
-}
-]]>
-        </example>
-    </rule>
-
-    <rule name="UseUnderscoresInNumericLiterals"
-          language="java"
-          since="6.10.0"
-          minimumLanguageVersion="1.7"
-          message="Number {0} should separate every third digit with an underscore"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals">
-        <description>
-            Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that
-            numeric literals above a certain length use these underscores to increase readability.
-
-            The rule only supports decimal (base 10) literals for now. The acceptable length under which literals
-            are not required to have underscores is configurable via a property. Even under that length, underscores
-            that are misplaced (not making groups of 3 digits) are reported.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="acceptableDecimalLength" type="Integer" value="4" min="3" max="1000"
-                      description="Length under which literals in base 10 are not required to have underscores"/>
-            <property name="xpath">
-                <value>
-                    <![CDATA[
-//NumericLiteral
- (: Filter out literals in base other than 10 :)
- [@Base = 10]
- (: Filter out ignored field name :)
- [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
- [
-   some $num in tokenize(@Image, "[dDfFlLeE+\-]")
-   satisfies not(
-                  ( contains($num, ".")
-                    and string-length(substring-before($num, ".")) <= $acceptableDecimalLength
-                    and string-length(substring-after($num, ".")) <= $acceptableDecimalLength
-                    or string-length($num) <= $acceptableDecimalLength
-                  )
-                  and not(contains($num,"_"))
-                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*(\.([0-9]{3}_)*[0-9]{1,3})?$")
-                )
- ]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-            <![CDATA[
-public class Foo {
-    private int num = 1000000; // should be 1_000_000
 }
 ]]>
         </example>
@@ -1461,6 +1461,8 @@ Fields, local variables, enum constant names or parameter names that are very sh
  [not(parent::CatchParameter)]
  (: Lambda expression parameter :)
  [not(parent::LambdaParameter)]
+ (: Exclude Unnamed Variables (JEP 456) :)
+ [@Unnamed = false()]
 ]]>
                 </value>
             </property>
@@ -1518,6 +1520,44 @@ import static Yoko; // Too much !
         </example>
     </rule>
 
+    <rule name="TypeParameterNamingConventions"
+          language="java"
+          since="7.17.0"
+          message="The {0} name ''{1}'' doesn''t match ''{2}''"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.TypeParameterNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#typeparameternamingconventions">
+        <description>
+            Configurable naming conventions for type parameters in generic types and methods.
+            This rule reports type parameter declarations which do not match the configured regex.
+            Type parameters can appear on classes, interfaces, enums, records, and methods.
+
+            By default, this rule uses the standard Java naming convention (single uppercase letter).
+        </description>
+        <priority>4</priority>
+        <example>
+            <![CDATA[
+// Generic types - valid
+public interface Repository<T> { }
+public class Cache<K, V> { }
+
+// Generic types - invalid
+public interface Repository<type> { }      // lowercase
+public class Cache<KEY, VALUE> { }         // multiple letters
+
+// Generic methods - valid
+public class Util {
+    public static <T> T identity(T value) { return value; }
+    public <T, R> R transform(T input, Function<T, R> mapper) { }
+}
+
+// Generic methods - invalid
+public class Util {
+    public static <element> element get(element value) { }  // lowercase
+    public <INPUT, OUTPUT> OUTPUT convert(INPUT in) { }     // multiple letters
+}
+]]>
+        </example>
+    </rule>
 
     <rule name="UnnecessaryAnnotationValueElement"
           language="java"
@@ -1763,12 +1803,16 @@ public class Foo {
 
     <rule name="UnnecessaryLocalBeforeReturn"
           language="java"
+          deprecated="true"
           since="3.3"
           message="Consider simply returning the value vs storing it in local variable ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryLocalBeforeReturnRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessarylocalbeforereturn">
         <description>
-Avoid the creation of unnecessary local variables
+Avoid the creation of unnecessary local variables.
+
+This rule has been deprecated since 7.17.0. Use the new rule
+{%rule VariableCanBeInlined %} instead, which additionally covers throw statements.
         </description>
         <priority>3</priority>
         <example>
@@ -1813,7 +1857,7 @@ public interface Foo {
 }
 public class Bar {
     public static interface Baz {}  // static ignored
-    public static enum FoorBar {    // static ignored
+    public static enum FooBar {    // static ignored
         FOO;
     }
 }
@@ -1960,12 +2004,16 @@ See also [Local Variable Type Inference Style Guidelines](https://openjdk.org/pr
         <properties>
             <property name="allowLiterals" type="Boolean" value="false" description="Allow when variables are directly initialized with literals"/>
             <property name="allowCtors" type="Boolean" value="false" description="Allow when variables are directly initialized with a constructor call"/>
+            <property name="allowCasts" type="Boolean" value="false" description="Allow when variables are directly initialized with a the result of a cast"/>
+            <property name="allowLoopVariable" type="Boolean" value="false" description="Allow when variables are used as loop variables in enhanced for loops"/>
             <property name="xpath">
                 <value>
                     <![CDATA[
 //LocalVariableDeclaration[@TypeInferred = true()]
     [not(VariableDeclarator[*[pmd-java:nodeIs("Literal")]]) or $allowLiterals = false()]
     [not(VariableDeclarator[ConstructorCall]) or $allowCtors = false()]
+    [not(VariableDeclarator[CastExpression]) or $allowCasts = false()]
+    [not(parent::ForeachStatement) or $allowLoopVariable = false()]
 ]]>
                 </value>
             </property>
@@ -2061,7 +2109,7 @@ public class Foo {
     }
 
     private class Foo2 {
-        final Foo2 myFoo2 = Foo2.this;  // Use "this" direclty
+        final Foo2 myFoo2 = Foo2.this;  // Use "this" directly
     }
 }
 ]]>
@@ -2097,6 +2145,104 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
 Foo[] x = new Foo[] { ... }; // Overly verbose
 Foo[] x = { ... }; //Equivalent to above line
 ]]>
+        </example>
+    </rule>
+
+    <rule name="UseUnderscoresInNumericLiterals"
+          language="java"
+          since="6.10.0"
+          minimumLanguageVersion="1.7"
+          message="Number {0} should separate every third digit with an underscore"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#useunderscoresinnumericliterals">
+        <description>
+            Since Java 1.7, numeric literals can use underscores to separate digits. This rule enforces that
+            numeric literals above a certain length use these underscores to increase readability.
+
+            The rule only supports decimal (base 10) literals for now. The acceptable length under which literals
+            are not required to have underscores is configurable via a property. Even under that length, underscores
+            that are misplaced (not making groups of 3 digits) are reported.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="acceptableDecimalLength" type="Integer" value="4" min="3" max="1000"
+                      description="Length under which literals in base 10 are not required to have underscores"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//NumericLiteral
+ (: Filter out literals in base other than 10 :)
+ [@Base = 10]
+ (: Filter out ignored field name :)
+ [not(ancestor::VariableDeclarator[1][@Name = 'serialVersionUID'])]
+ [
+   some $num in tokenize(@Image, "[dDfFlLeE+\-]")
+   satisfies not(
+                  ( contains($num, ".")
+                    and string-length(substring-before($num, ".")) <= $acceptableDecimalLength
+                    and string-length(substring-after($num, ".")) <= $acceptableDecimalLength
+                    or string-length($num) <= $acceptableDecimalLength
+                  )
+                  and not(contains($num,"_"))
+                  or matches($num, "^[0-9]{1,3}(_[0-9]{3})*(\.([0-9]{3}_)*[0-9]{1,3})?$")
+                )
+ ]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public class Foo {
+    private int num = 1000000; // should be 1_000_000
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="VariableCanBeInlined"
+          language="java"
+          since="7.17.0"
+          message="Consider simply using the value vs. storing it in local variable ''{0}''."
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableCanBeInlinedRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variablecanbeinlined">
+        <description>
+            Local variables should not be declared and then immediately returned or thrown. Such
+            variable declarations add unnecessary complexity and make the code harder to read.
+            It is often simpler and cleaner to return or throw the value directly.
+
+            This rule implements SonarSource rule [S1488](https://sonarsource.github.io/rspec/#/rspec/S1488).
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+                class Foo {
+                    Object foo() {
+                        var foo = "foo";
+                        return foo;  // instead, just 'return "foo";'
+                    }
+
+                    Object bar() {
+                        var ex = getIllegalArgumentException();
+                        throw ex; // instead, just 'throw getIllegalArgumentException();'
+                    }
+
+                    Object baz() {
+                        var baz = switch (foo()) {
+                            case "foo" -> {
+                                var foo = foo();
+                                yield foo;  // Can be simplified to 'yield foo();'
+                            }
+                            case "bar" -> {
+                                var bar = bar();
+                                yield bar;  // Can be simplified to 'yield bar();'
+                            }
+                            default -> bar("baz");
+                        };
+                        return baz; // instead, just 'return switch (foo()) {...'
+                    }
+                }
+            ]]>
         </example>
     </rule>
 </ruleset>

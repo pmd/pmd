@@ -20,27 +20,3 @@
 {% endfor %}
 {% endfor %}
 {% endfor %}
-
-
-{% comment %} Get links from topnav {% endcomment %}
-
-{% for entry in site.data.topnav.topnav %}
-{% for item in entry.items %}
-{% if item.external_url == null %}
-[{{item.url | remove: "/" | remove: ".html"}}]: {{item.url | remove: "/"}}
-{% endif %}
-{% endfor %}
-{% endfor %}
-
-{% comment %}Get links from topnav dropdowns {% endcomment %}
-
-{% for entry in site.data.topnav.topnav_dropdowns %}
-{% for folder in entry.folders %}
-{% for folderitem in folder.folderitems %}
-{% if folderitem.external_url == null %}
-[{{folderitem.url | remove: "/"  | remove: ".html"}}]: {{folderitem.url | remove: "/"}}
-{% endif %}
-{% endfor %}
-{% endfor %}
-{% endfor %}
-

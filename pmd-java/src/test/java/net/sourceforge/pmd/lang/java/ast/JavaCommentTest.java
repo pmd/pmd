@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.lang.document.Chars;
@@ -75,6 +76,27 @@ class JavaCommentTest extends BaseParserTest {
 
         checkCommentMatches(docCommentOwners.get(0), "/** a */");
         checkCommentMatches(docCommentOwners.get(1), "/** b */");
+    }
+
+    @Test
+    void getLeadingCommentsAnnotatedMethod() {
+        ASTCompilationUnit parsed = java.parse("/* a */ class Foo { /* b */ @SuppressWarnings(\"\") /* c */ void noOp() {}; }");
+
+        assertLeadingCommentsMatch(parsed, "/* a */", "/* b */", "/* c */");
+    }
+
+    @Test
+    void getLeadingCommentsAnnotatedConstructor() {
+        ASTCompilationUnit parsed = java.parse("/* a */ class Foo { /* b */ @SuppressWarnings(\"\") /* c */ Foo() /* d */ {}; }");
+
+        final ASTConstructorDeclaration constructorNode = parsed.descendants(ASTConstructorDeclaration.class).first();
+        assertLeadingCommentsMatch(constructorNode, "/* b */", "/* c */", "/* d */");
+    }
+
+    private static void assertLeadingCommentsMatch(JavaNode javaNode, String... expectedComments) {
+        Assertions.assertThat(JavaComment.getLeadingComments(javaNode))
+                .extracting(c -> c.getText().toString())
+                .containsExactly(expectedComments);
     }
 
     private static void checkCommentMatches(JavadocCommentOwner commentOwner, String expectedText) {

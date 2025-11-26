@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -43,6 +43,10 @@ class SourceManager implements AutoCloseable {
         return textFiles;
     }
 
+    boolean isEmpty() {
+        return textFiles.isEmpty();
+    }
+
     private TextDocument load(TextFile file) {
         try {
             return TextDocument.create(file);
@@ -68,10 +72,10 @@ class SourceManager implements AutoCloseable {
 
 
     @Override
-    public void close() throws Exception {
+    public void close() throws IOException {
         Exception exception = IOUtil.closeAll(textFiles);
         if (exception != null) {
-            throw exception;
+            throw new IOException(exception);
         }
     }
 

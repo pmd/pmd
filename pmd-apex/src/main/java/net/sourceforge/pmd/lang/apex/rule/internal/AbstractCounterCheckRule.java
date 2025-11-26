@@ -30,7 +30,7 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
 
     private final PropertyDescriptor<Integer> reportLevel =
         CommonPropertyDescriptors.reportLevelProperty()
-                                 .desc("Threshold above which a node is reported")
+                                 .desc("Threshold at or above which a node is reported")
                                  .require(positive())
                                  .defaultValue(defaultReportLevel()).build();
     private final Class<T> nodeType;
@@ -75,7 +75,8 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
             int metric = getMetric(t);
             int limit = getProperty(reportLevel);
             if (metric >= limit) {
-                asCtx(data).addViolationWithPosition(t, t.getAstInfo(), getReportLocation(t), getMessage(), getViolationParameters(t, metric, limit));
+                asCtx(data).at(t.atLocation(getReportLocation(t)))
+                           .warnWithArgs(getViolationParameters(t, metric, limit));
             }
         }
 

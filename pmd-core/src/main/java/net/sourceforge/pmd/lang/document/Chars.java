@@ -75,7 +75,10 @@ public final class Chars implements CharSequence {
 
 
     /** Whether this slice is the empty string. */
-    @SuppressWarnings("PMD.MissingOverride") // with Java 15, isEmpty() has been added to java.lang.CharSequence (#4291)
+    // @SuppressWarnings("PMD.MissingOverride") // with Java 15, isEmpty() has been added to java.lang.CharSequence (#4291)
+    // We compile against Java 8 and execute maven on GitHub Actions with Java 17. So there is no missing override.
+    // However, when executing Maven with Java 15+, then we get MissingOverride (#5299).
+    // This is suppressed via maven-pmd-plugin's excludeFromFailureFile
     public boolean isEmpty() {
         return len == 0;
     }

@@ -60,7 +60,6 @@ DocShuffle.prototype._removeActiveClassFromChildren = function (parent) {
 };
 
 // Adds a pretty animation to links to shuffle panels
-// Note: needs jquery-ui
 DocShuffle.prototype.addLinkTargetHighlighting = function() {
     $("a[href^='#shuffle-panel']").click(function () {
         if (location.pathname.replace(/^\//, '') === this.pathname.replace(/^\//, '')
@@ -74,7 +73,11 @@ DocShuffle.prototype.addLinkTargetHighlighting = function() {
                 }, {
                     duration: 500,
                     complete: function () {
-                        target.effect("highlight", {}, 1000);
+                        target.css('background-color', 'yellow');
+                        window.setTimeout(
+                            function() {
+                                target.css('background-color', '');
+                            }, 1000);
                     }
                 });
 

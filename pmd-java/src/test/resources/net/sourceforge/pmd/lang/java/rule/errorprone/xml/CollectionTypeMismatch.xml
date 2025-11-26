@@ -1,0 +1,1093 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Collection.contains with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testContains(Collection<Integer> collection, String stringParam) {
+        collection.contains(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Collection.remove with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testRemove(Collection<Integer> collection, String stringParam) {
+        collection.remove(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Collection.removeAll with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testRemoveAll(Collection<Integer> collection, Collection<String> stringCollection) {
+        collection.removeAll(stringCollection); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Collection.retainAll with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testRetainAll(Collection<Integer> collection, Collection<String> stringCollection) {
+        collection.retainAll(stringCollection); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Collection.containsAll with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testContainsAll(Collection<Integer> collection, Collection<String> stringCollection) {
+        collection.containsAll(stringCollection); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>List.indexOf with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testIndexOf(List<Integer> list, String stringParam) {
+        list.indexOf(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>List.lastIndexOf with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testLastIndexOf(List<Integer> list, String stringParam) {
+        list.lastIndexOf(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Deque.removeFirstOccurrence with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testRemoveFirstOccurrence(Deque<Integer> deque, String stringParam) {
+        deque.removeFirstOccurrence(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Deque.removeLastOccurrence with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testRemoveLastOccurrence(Deque<Integer> deque, String stringParam) {
+        deque.removeLastOccurrence(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map.containsKey with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testContainsKey(Map<Integer, String> map, String stringParam) {
+        map.containsKey(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map.containsValue with incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testContainsValue(Map<String, Integer> map, String stringParam) {
+        map.containsValue(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map.get with incompatible key type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testGet(Map<Integer, String> map, String stringParam) {
+        map.get(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map.getOrDefault with incompatible key type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testGetOrDefault(Map<Integer, String> map, String stringParam, String defaultValue) {
+        map.getOrDefault(stringParam, defaultValue); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map.remove with incompatible key type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testRemove(Map<Integer, String> map, String stringParam) {
+        map.remove(stringParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map.remove with incompatible key type (2-parameter)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testRemoveIncompatibleKey(Map<Integer, String> map, String keyParam, String valueParam) {
+        map.remove(keyParam, valueParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map.remove with incompatible value type (2-parameter)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testRemoveIncompatibleValue(Map<Integer, String> map, Integer keyParam, Integer valueParam) {
+        map.remove(keyParam, valueParam); // violation
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Valid case - compatible types should not trigger violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testValidCases(
+        List<Integer> list, Set<String> set, Map<Integer, String> map,
+        Integer intParam, String stringParam, Collection<Integer> intCollection
+    ) {
+        list.contains(intParam);
+        list.remove(intParam);
+        list.indexOf(intParam);
+        set.contains(stringParam);
+        set.remove(stringParam);
+        list.removeAll(intCollection);
+        map.containsKey(intParam);
+        map.containsValue(stringParam);
+        map.get(intParam);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Collection.add and Map.put should never trigger violations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testAddAndPut(
+        Collection<Integer> intCollection, List<String> stringList, 
+        Map<Integer, String> map, Set<Double> doubleSet
+    ) {
+        intCollection.add(42);
+        stringList.add("hello");
+        doubleSet.add(3.14);
+        
+        map.put(123, "value");
+        map.put(456, "another");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Subtype compatibility - should not trigger violations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class Animal {}
+    static class Dog extends Animal {}
+    static class Cat extends Animal {}
+    
+    void testSubtypeCompatibility(
+        Collection<Animal> animals, List<Number> numbers, Set<CharSequence> sequences, 
+        Deque<Object> objects, Dog dog, Integer intValue, String stringValue,
+        Collection<Dog> dogs, Collection<Integer> integers, Collection<String> strings,
+        Map<Animal, Number> animalToNumber, Map<CharSequence, Object> seqToObj
+    ) {
+        animals.contains(dog);
+        animals.remove(dog);
+        numbers.indexOf(intValue);
+        numbers.lastIndexOf(intValue);
+        sequences.contains(stringValue);
+        objects.removeFirstOccurrence(stringValue);
+        objects.removeLastOccurrence(intValue);
+        
+        animals.removeAll(dogs);
+        animals.retainAll(dogs);
+        animals.containsAll(dogs);
+        numbers.removeAll(integers);
+        sequences.containsAll(strings);
+        
+        animalToNumber.containsKey(dog);
+        animalToNumber.containsValue(intValue);
+        animalToNumber.get(dog);
+        animalToNumber.getOrDefault(dog, 0);
+        animalToNumber.remove(dog);
+        animalToNumber.remove(dog, intValue);
+        
+        seqToObj.containsKey(stringValue);
+        seqToObj.containsValue(stringValue);
+        seqToObj.get(stringValue);
+        seqToObj.remove(stringValue, intValue);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Supertype compatibility - should not trigger violations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class Animal {}
+    static class Dog extends Animal {}
+    
+    void testSupertypeCompatibility(
+        Collection<Dog> dogs, List<Integer> integers, Set<String> strings,
+        Deque<Dog> dogDeque, Animal animal, Number number, CharSequence charSeq, Object obj,
+        Collection<Animal> animals, Collection<Number> numbers, Collection<CharSequence> sequences,
+        Map<Dog, Integer> dogToInt, Map<String, Dog> stringToDog
+    ) {
+        // Static type is supertype of element type - dynamic type might be compatible
+        dogs.contains(animal);
+        dogs.remove(animal);
+        integers.indexOf(number);
+        integers.lastIndexOf(number);
+        strings.contains(charSeq);
+        dogDeque.removeFirstOccurrence(animal);
+        dogDeque.removeLastOccurrence(obj);
+        
+        dogs.removeAll(animals);
+        dogs.retainAll(animals);
+        dogs.containsAll(animals);
+        integers.removeAll(numbers);
+        strings.containsAll(sequences);
+        
+        dogToInt.containsKey(animal);
+        dogToInt.containsValue(number);
+        dogToInt.get(animal);
+        dogToInt.getOrDefault(animal, 0);
+        dogToInt.remove(animal);
+        dogToInt.remove(animal, number);
+        
+        stringToDog.containsKey(charSeq);
+        stringToDog.containsValue(animal);
+        stringToDog.get(charSeq);
+        stringToDog.remove(charSeq, animal);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>MyList extends ArrayList - should detect incompatible type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class MyList extends ArrayList<String> {}
+    
+    void testMyListIncompatible(MyList myList, Integer intParam) {
+        myList.contains(intParam);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>MyMap extends HashMap - should detect incompatible key type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class MyMap extends HashMap<Integer, String> {}
+    
+    void testMyMapIncompatibleKey(MyMap myMap, String stringParam) {
+        myMap.get(stringParam);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>MyMap extends HashMap - should detect incompatible value type</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class MyMap extends HashMap<Integer, String> {}
+    
+    void testMyMapIncompatibleValue(MyMap myMap, Integer intParam) {
+        myMap.containsValue(intParam);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>MyList and MyMap with compatible types - should not trigger violations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class MyList extends ArrayList<String> {}
+    static class MyMap extends HashMap<Integer, String> {}
+    
+    void testMyCollectionsCompatible(MyList myList, MyMap myMap, String stringParam, Integer intParam) {
+        myList.contains(stringParam);
+        myList.remove(stringParam);
+        myList.indexOf(stringParam);
+        
+        myMap.get(intParam);
+        myMap.containsKey(intParam);
+        myMap.containsValue(stringParam);
+        myMap.remove(intParam);
+        myMap.remove(intParam, stringParam);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bounded generics with multiple violations</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>12,13,14,17,18</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class Animal {}
+    static class Dog extends Animal {}
+    static class Cat extends Animal {}
+    
+    void testBoundedGenericsViolations(
+        List<? extends Animal> animals, Set<? super Dog> dogSupers,
+        Map<? extends Number, ? super String> numberToStringSuper, String stringParam, Integer intParam
+    ) {
+        animals.contains(stringParam); // violation - String not compatible with ? extends Animal
+        animals.remove(intParam); // violation - Integer not compatible with ? extends Animal  
+        animals.indexOf(stringParam); // violation - String not compatible with ? extends Animal
+        dogSupers.contains(stringParam); // no violation - String is compatible with Object (? super Dog → Object)
+        dogSupers.remove(intParam); // no violation - Integer is compatible with Object (? super Dog → Object)
+        numberToStringSuper.containsKey(stringParam); // violation - String not compatible with ? extends Number
+        numberToStringSuper.get(stringParam); // violation - String not compatible with ? extends Number
+        numberToStringSuper.containsValue(intParam); // no violation - Integer is compatible with Object (? super String → Object)
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Bounded generics with no violations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class Animal {}
+    static class Dog extends Animal {}
+    static class Cat extends Animal {}
+    
+    void testBoundedGenericsNoViolations(
+        List<? extends Animal> animals, Set<? super Dog> dogSupers, 
+        Map<? extends Number, ? super String> numberToStringSuper,
+        Dog dog, Cat cat, Animal animal, Object obj, Integer intParam, Double doubleParam, 
+        String stringParam, CharSequence charSeq, Collection<? extends Animal> animalCollection
+    ) {
+        // Compatible with ? extends Animal
+        animals.contains(dog);
+        animals.contains(cat);
+        animals.contains(animal);
+        animals.remove(dog);
+        animals.indexOf(cat);
+        animals.lastIndexOf(animal);
+        
+        // Compatible with ? super Dog
+        dogSupers.contains(dog);
+        dogSupers.contains(animal);
+        dogSupers.contains(obj);
+        dogSupers.remove(dog);
+        
+        // Compatible collections
+        animals.removeAll(animalCollection);
+        animals.containsAll(animalCollection);
+        
+        // Compatible with ? extends Number keys and ? super String values
+        numberToStringSuper.containsKey(intParam);
+        numberToStringSuper.containsKey(doubleParam);
+        numberToStringSuper.get(intParam);
+        numberToStringSuper.containsValue(stringParam);
+        numberToStringSuper.containsValue(charSeq);
+        numberToStringSuper.containsValue(obj);
+        numberToStringSuper.remove(doubleParam);
+        numberToStringSuper.remove(intParam, stringParam);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>raw list</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.HashMap;
+
+public class Test {
+    @SuppressWarnings("rawtypes")
+    private static class VList extends ArrayList {}
+    private static class VMap extends HashMap {}
+
+    void test(VList vs, VMap vm, Object v) {
+        vs.contains(v);
+        vm.containsKey(v);
+        vm.containsValue(v);
+        vm.remove(v,v);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Primitive to wrapper compatibility - should not trigger violations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testPrimitiveToWrapper(
+        Collection<Integer> intCollection, List<Boolean> boolList, Set<Character> charSet,
+        Deque<Double> doubleDeque, Map<Long, Float> longToFloatMap,
+        int primitiveInt, boolean primitiveBool, char primitiveChar, 
+        double primitiveDouble, long primitiveLong, float primitiveFloat
+    ) {
+        // Collection methods with primitive arguments - should auto-box to wrapper
+        intCollection.contains(primitiveInt);
+        intCollection.remove(primitiveInt);
+        boolList.indexOf(primitiveBool);
+        boolList.lastIndexOf(primitiveBool);
+        charSet.contains(primitiveChar);
+        doubleDeque.removeFirstOccurrence(primitiveDouble);
+        doubleDeque.removeLastOccurrence(primitiveDouble);
+        
+        // Map methods with primitive arguments - should auto-box to wrapper
+        longToFloatMap.containsKey(primitiveLong);
+        longToFloatMap.containsValue(primitiveFloat);
+        longToFloatMap.get(primitiveLong);
+        longToFloatMap.getOrDefault(primitiveLong, primitiveFloat);
+        longToFloatMap.remove(primitiveLong);
+        longToFloatMap.remove(primitiveLong, primitiveFloat);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Mismatched primitive to wrapper types - should trigger violations</description>
+        <expected-problems>13</expected-problems>
+        <expected-linenumbers>11,12,13,14,15,16,17,20,21,22,23,24,25</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testMismatchedPrimitiveToWrapper(
+        Collection<Integer> intCollection, List<Boolean> boolList, Set<Character> charSet,
+        Deque<Double> doubleDeque, Map<Long, Float> longToFloatMap,
+        long wrongLong, int wrongInt, double wrongDouble, float wrongFloat, 
+        char wrongChar, boolean wrongBool, short wrongShort
+    ) {
+        // Collection methods with mismatched primitive arguments - should trigger violations
+        intCollection.contains(wrongLong); // long cannot be in Integer collection
+        intCollection.remove(wrongDouble); // double cannot be in Integer collection
+        boolList.indexOf(wrongInt); // int cannot be in Boolean list
+        boolList.lastIndexOf(wrongChar); // char cannot be in Boolean list
+        charSet.contains(wrongBool); // boolean cannot be in Character set
+        doubleDeque.removeFirstOccurrence(wrongShort); // short cannot be in Double deque
+        doubleDeque.removeLastOccurrence(wrongLong); // long cannot be in Double deque
+        
+        // Map methods with mismatched primitive arguments - should trigger violations
+        longToFloatMap.containsKey(wrongInt); // int cannot be key in Long-keyed map
+        longToFloatMap.containsValue(wrongDouble); // double cannot be value in Float-valued map
+        longToFloatMap.get(wrongShort); // short cannot be key in Long-keyed map
+        longToFloatMap.getOrDefault(wrongChar, wrongFloat); // char cannot be key in Long-keyed map
+        longToFloatMap.remove(wrongBool); // boolean cannot be key in Long-keyed map
+        longToFloatMap.remove(wrongDouble, wrongInt); // double cannot be key in Long-keyed map
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Primitives with non-wrapper collection types - should trigger violations</description>
+        <expected-problems>13</expected-problems>
+        <expected-linenumbers>11,12,13,14,15,16,17,20,21,22,23,24,25</expected-linenumbers>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testPrimitivesWithNonWrapperTypes(
+        Collection<String> stringCollection, List<String> stringList, Set<Number> numberSet,
+        Deque<CharSequence> charSeqDeque, Map<String, String> stringToStringMap,
+        int primitiveInt, long primitiveLong, double primitiveDouble, float primitiveFloat,
+        boolean primitiveBool, char primitiveChar, short primitiveShort, byte primitiveByte
+    ) {
+        // Collection methods with primitive arguments on non-wrapper collections - should trigger violations
+        stringCollection.contains(primitiveInt); // int cannot be in String collection
+        stringCollection.remove(primitiveLong); // long cannot be in String collection
+        stringList.indexOf(primitiveDouble); // double cannot be in String list
+        stringList.lastIndexOf(primitiveFloat); // float cannot be in String list
+        numberSet.contains(primitiveBool); // boolean cannot be in Number set
+        charSeqDeque.removeFirstOccurrence(primitiveChar); // char cannot be in CharSequence deque
+        charSeqDeque.removeLastOccurrence(primitiveShort); // short cannot be in CharSequence deque
+        
+        // Map methods with primitive arguments on non-wrapper maps - should trigger violations
+        stringToStringMap.containsKey(primitiveInt); // int cannot be key in String-keyed map
+        stringToStringMap.containsValue(primitiveLong); // long cannot be value in String-valued map
+        stringToStringMap.get(primitiveDouble); // double cannot be key in String-keyed map
+        stringToStringMap.getOrDefault(primitiveFloat, "default"); // float cannot be key in String-keyed map
+        stringToStringMap.remove(primitiveBool); // boolean cannot be key in String-keyed map
+        stringToStringMap.remove("key", primitiveByte); // byte cannot be value in String-valued map
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Primitives with compatible supertype collections - should not trigger violations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testPrimitivesWithCompatibleSupertypes(
+        Collection<Object> objectCollection, List<Object> objectList, Set<Number> numberSet,
+        Deque<Object> objectDeque, Map<Object, Object> objectToObjectMap, Map<Number, Object> numberToObjectMap,
+        int primitiveInt, long primitiveLong, double primitiveDouble, float primitiveFloat,
+        boolean primitiveBool, char primitiveChar, short primitiveShort, byte primitiveByte
+    ) {
+        // Collection methods with primitive arguments on Object collections - should be compatible via autoboxing
+        objectCollection.contains(primitiveInt); // int autoboxes to Integer, which extends Object
+        objectCollection.remove(primitiveLong); // long autoboxes to Long, which extends Object
+        objectList.indexOf(primitiveDouble); // double autoboxes to Double, which extends Object
+        objectList.lastIndexOf(primitiveFloat); // float autoboxes to Float, which extends Object
+        objectList.contains(primitiveBool); // boolean autoboxes to Boolean, which extends Object
+        objectDeque.removeFirstOccurrence(primitiveChar); // char autoboxes to Character, which extends Object
+        objectDeque.removeLastOccurrence(primitiveShort); // short autoboxes to Short, which extends Object
+        
+        // Collection methods with numeric primitives on Number collections - should be compatible
+        numberSet.contains(primitiveInt); // int autoboxes to Integer, which extends Number
+        numberSet.remove(primitiveLong); // long autoboxes to Long, which extends Number
+        numberSet.contains(primitiveDouble); // double autoboxes to Double, which extends Number
+        numberSet.contains(primitiveFloat); // float autoboxes to Float, which extends Number
+        numberSet.contains(primitiveShort); // short autoboxes to Short, which extends Number
+        numberSet.contains(primitiveByte); // byte autoboxes to Byte, which extends Number
+        
+        // Map methods with primitive arguments on Object maps - should be compatible via autoboxing
+        objectToObjectMap.containsKey(primitiveInt); // int autoboxes to Integer, which extends Object
+        objectToObjectMap.containsValue(primitiveLong); // long autoboxes to Long, which extends Object
+        objectToObjectMap.get(primitiveDouble); // double autoboxes to Double, which extends Object
+        objectToObjectMap.getOrDefault(primitiveFloat, new Object()); // float autoboxes to Float, which extends Object
+        objectToObjectMap.remove(primitiveBool); // boolean autoboxes to Boolean, which extends Object
+        objectToObjectMap.remove(primitiveChar, primitiveShort); // both autobox to Objects
+        
+        // Map methods with numeric primitives on Number-keyed maps - should be compatible
+        numberToObjectMap.containsKey(primitiveInt); // int autoboxes to Integer, which extends Number
+        numberToObjectMap.get(primitiveLong); // long autoboxes to Long, which extends Number
+        numberToObjectMap.remove(primitiveDouble); // double autoboxes to Double, which extends Number
+        numberToObjectMap.remove(primitiveFloat, new Object()); // float autoboxes to Float, which extends Number
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Generic wildcards with unbounded ? - should not trigger violations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void testUnboundedWildcards(
+        Collection<?> unboundedCollection, List<?> unboundedList, Set<?> unboundedSet,
+        Deque<?> unboundedDeque, Map<?, String> wildcardKeyMap, Map<String, ?> wildcardValueMap,
+        Map<?, ?> fullWildcardMap, String stringParam, Integer intParam, Object objParam,
+        Collection<String> stringCollection, Collection<Integer> intCollection
+    ) {
+        // Collection methods with unbounded wildcards - should not trigger violations
+        // since ? can represent any type, including the argument type
+        unboundedCollection.contains(stringParam);
+        unboundedCollection.contains(intParam);
+        unboundedCollection.contains(objParam);
+        unboundedCollection.remove(stringParam);
+        unboundedCollection.remove(intParam);
+        
+        unboundedList.indexOf(stringParam);
+        unboundedList.indexOf(intParam);
+        unboundedList.lastIndexOf(objParam);
+        
+        unboundedSet.contains(stringParam);
+        unboundedSet.remove(intParam);
+        
+        unboundedDeque.removeFirstOccurrence(stringParam);
+        unboundedDeque.removeLastOccurrence(intParam);
+        
+        // Collection-to-collection operations with unbounded wildcards
+        unboundedCollection.removeAll(stringCollection);
+        unboundedCollection.retainAll(intCollection);
+        unboundedCollection.containsAll(stringCollection);
+        
+        // Map methods with wildcard keys - should not trigger violations  
+        wildcardKeyMap.containsKey(stringParam);
+        wildcardKeyMap.containsKey(intParam);
+        wildcardKeyMap.get(objParam);
+        wildcardKeyMap.getOrDefault(stringParam, "default");
+        wildcardKeyMap.remove(intParam);
+        wildcardKeyMap.remove(stringParam, "value");
+        
+        // Map methods with wildcard values - should not trigger violations
+        wildcardValueMap.containsValue(stringParam);
+        wildcardValueMap.containsValue(intParam);
+        wildcardValueMap.remove("key", stringParam);
+        wildcardValueMap.remove("key", intParam);
+        
+        // Map methods with full wildcards - should not trigger violations
+        fullWildcardMap.containsKey(stringParam);
+        fullWildcardMap.containsKey(intParam);
+        fullWildcardMap.containsValue(stringParam);
+        fullWildcardMap.containsValue(intParam);
+        fullWildcardMap.get(objParam);
+        fullWildcardMap.remove(stringParam);
+        fullWildcardMap.remove(intParam, objParam);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map wildcard get with String key should not trigger violation</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+class Repro {
+    void test(Object c) {
+        if (c instanceof Map) {
+            Object path = ((Map<?, ?>) c).get("path");
+            Object value = ((Map<?, ?>) c).get("value");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constructor call with unresolved external type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.nonexistent.util.Pair;
+import com.nonexistent.model.Config;
+import java.util.*;
+
+class Test {
+    void test(Map<Pair<String, Config>, String> map) {
+        map.containsKey(new Pair<>("x", null));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>SimpleEntry with unresolved method return types</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+import com.nonexistent.util.SomeClass;
+
+public class Test {
+    void test(Map<Map.Entry<String, String>, String> map) {
+        // Generic inference with unresolved external types
+        map.get(new AbstractMap.SimpleEntry<>(SomeClass.getValue(), SomeClass.getValue()));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class wildcard type incompatibility</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    static class Message {}
+    
+    void test(Map<Class<? extends Message>, String> map, Class<?> clazz) {
+        map.get(clazz);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Map.Entry&lt;?,?&gt;</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+
+public class Test {
+    void test(Map<Integer, String> map, Map.Entry<?,?> entry) {
+        map.get(entry.getKey());
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Ideas_2011_07_03</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers><!--13,17,-->21</expected-linenumbers>
+        <code><![CDATA[
+package bugIdeas;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.TreeSet;
+
+public class Ideas_2011_07_03 {
+//    public boolean test(HashSet<Integer> s1, TreeSet<Integer> s2) {
+//        return s1.equals(s2);
+//    }
+
+//    public boolean test(HashSet<Integer> s1, ArrayList<Integer> s2) {
+//        return s1.equals(s2);
+//    }
+
+//    public boolean test(HashSet<Integer> s1, HashSet<String> s2) {
+//        return s1.equals(s2);
+//    }
+
+    public boolean test2(HashSet<Integer> s1, HashSet<String> s2) {
+        return s1.removeAll(s2);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Ideas_2011_07_24</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers><!--9,17,-->21,21</expected-linenumbers>
+        <code><![CDATA[
+package bugIdeas;
+
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Random;
+
+public class Ideas_2011_07_24 {
+//    static boolean test1(HashSet<Integer> s, LinkedList<Integer> lst) {
+//        return s.equals(lst);
+//    }
+
+    static boolean test2(HashSet<Integer> s, LinkedList<Integer> lst) {
+        return s.containsAll(lst) && lst.containsAll(s);
+    }
+
+//    static boolean test3(HashSet<Integer> s, LinkedList<String> lst) {
+//        return s.equals(lst);
+//    }
+
+    static boolean test4(HashSet<Integer> s, LinkedList<String> lst) {
+        return s.containsAll(lst) && lst.containsAll(s);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Ideas_2011_10_21</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>17,25,33,41,45,49,57</expected-linenumbers>
+        <code><![CDATA[
+package bugIdeas;
+
+import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Ideas_2011_10_21 {
+
+    Hashtable<String, Integer> hashtable = new Hashtable<String, Integer>();
+
+    ConcurrentHashMap<String, Integer> concurrentHashMap = new ConcurrentHashMap<String, Integer>();
+
+    public boolean testContainsHashtable(Integer i) {
+        return hashtable.contains(i);
+    }
+
+    public boolean testContainsHashtable(String s) {
+        return hashtable.contains(s);
+    }
+
+    public boolean testContainsConcurrentHashMap(Integer i) {
+        return concurrentHashMap.contains(i);
+    }
+
+    public boolean testContainsConcurrentHashMap(String s) {
+        return concurrentHashMap.contains(s);
+    }
+
+    public boolean testContainsValueHashtable(Integer i) {
+        return hashtable.containsValue(i);
+    }
+
+    public boolean testContainsValueHashtable(String s) {
+        return hashtable.containsValue(s);
+    }
+
+    public boolean testContainsValueConcurrentHashMap(Integer i) {
+        return concurrentHashMap.containsValue(i);
+    }
+
+    public boolean testContainsValueConcurrentHashMap(String s) {
+        return concurrentHashMap.containsValue(s);
+    }
+
+    public boolean testRemove(String s) {
+        return concurrentHashMap.remove(s, s);
+    }
+
+    public boolean testRemove(Integer i) {
+        return concurrentHashMap.remove(i, i);
+    }
+
+    public boolean testRemove(String s, Integer i) {
+        return concurrentHashMap.remove(s, i);
+    }
+
+    public boolean testRemove(Integer i, String s) {
+        return concurrentHashMap.remove(i, s);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Ideas_2012_11_19</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>27,31</expected-linenumbers>
+        <code><![CDATA[
+package bugIdeas;
+
+import java.util.ArrayList;
+
+public class Ideas_2012_11_19 {
+
+    static class A<XYZ> extends ArrayList<Long> {
+        private static final long serialVersionUID = 1L;
+    }
+
+    static class B<XYZ extends Number> extends ArrayList<XYZ> {
+        private static final long serialVersionUID = 1L;
+    }
+
+    static A<String> foo = new A<String>();
+
+    static B<Long> bar = new B<Long>();
+
+    public static void OK(String args[]) {
+        foo.add(13L);
+        System.out.println(foo.contains(13L));
+        bar.add(13L);
+        System.out.println(bar.contains(13L));
+    }
+
+    public static void bad1(String args[]) {
+        System.out.println(foo.contains("13"));
+    }
+
+    public static void bad2(String args[]) {
+        System.out.println(bar.contains("13"));
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Bug3470297</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sfBugs;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Bug3470297 {
+
+    public <A, B> void foo(A a, Foo<A, B> foo) {
+
+        Set<B> empty = Collections.emptySet();
+        foo.remove(a, empty); // This generated a false positive because it
+                              // thinks that the second parameter should be of
+                              // type B, not Set<B>
+    }
+
+    static class Foo<X, Y> extends Bar<X, Set<Y>> {
+
+    }
+
+    static class Bar<T, S> extends ConcurrentHashMap<T, S> {
+        @Override
+        public boolean remove(Object key, Object value) {
+            return false;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Findbugs test Bug3470297a</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package sfBugs;
+
+import java.util.Collections;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+public class Bug3470297a {
+    public static void main(String[] args) {
+        Foo<String, Long> foo = new Foo<String, Long>();
+        foo.remove("", Collections.emptySet());
+    }
+
+    static class Foo<A, B> extends Bar<A, Set<B>> {
+    }
+
+    static class Bar<X, Y> extends ConcurrentHashMap<X, Y> {
+        @Override
+        public boolean remove(final Object key, final Object value) {
+            // ...
+            return super.remove(key, value);
+        }
+    }
+
+}
+        ]]></code>
+    </test-code>
+
+</test-data>

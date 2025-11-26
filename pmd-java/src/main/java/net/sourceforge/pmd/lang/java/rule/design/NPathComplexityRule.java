@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
-import java.math.BigInteger;
-
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -45,12 +43,12 @@ public class NPathComplexityRule extends AbstractJavaRulechainRule {
 
     private Object visitMethod(ASTExecutableDeclaration node, RuleContext data) {
         int reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
-        if (!JavaMetrics.NPATH.supports(node)) {
+        if (!JavaMetrics.NPATH_COMP.supports(node)) {
             return data;
         }
 
-        BigInteger npath = MetricsUtil.computeMetric(JavaMetrics.NPATH, node);
-        if (npath.compareTo(BigInteger.valueOf(reportLevel)) >= 0) {
+        long npath = MetricsUtil.computeMetric(JavaMetrics.NPATH_COMP, node);
+        if (npath >= reportLevel) {
             asCtx(data).addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                      PrettyPrintingUtil.displaySignature(node),
                                      String.valueOf(npath),

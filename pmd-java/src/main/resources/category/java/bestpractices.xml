@@ -364,12 +364,12 @@ public class Foo {
     <rule name="AvoidUsingHardCodedIP"
           language="java"
           since="4.1"
-          message="Do not hard code the IP address ${variableName}"
+          message="Do not hard code the IP address ''{0}''"
           class="net.sourceforge.pmd.lang.java.rule.bestpractices.AvoidUsingHardCodedIPRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#avoidusinghardcodedip">
         <description>
 Application with hard-coded IP addresses can become impossible to deploy in some cases.
-Externalizing IP adresses is preferable.
+Externalizing IP addresses is preferable.
         </description>
         <priority>3</priority>
         <example>
@@ -865,6 +865,81 @@ public class MyTest {
         </example>
     </rule>
 
+    <rule name="LabeledStatement"
+          language="java"
+          since="7.18.0"
+          message="Avoid using labeled statements such as ''{0}''."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#labeledstatement">
+        <description>
+This rule detects the use of labeled statements. By default, it allows labeled loops so that you can
+use `break` / `continue` with labels. This can be changed with the property `allowLoops` to flag any
+labels.
+
+Labels make control flow difficult to understand and should be avoided. They can be confused
+with the goto statement and make code harder to read and maintain.
+
+If you really need to jump out of an inner loop, think about refactoring the multiple
+loops into a function - that way, you can replace the break with a return.
+
+This rule implements SonarSource rule [S1119](https://sonarsource.github.io/rspec/#/rspec/S1119).
+
+To detect unused labels, use the rule {% rule UnusedLabel %}.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+if ($allowLoops) then
+    //LabeledStatement[not(DoStatement|WhileStatement|ForStatement|ForeachStatement)][let $label := @Label return
+          (.//BreakStatement | .//ContinueStatement)[@Label = $label]
+    ]
+else
+    //LabeledStatement[let $label := @Label return
+          (.//BreakStatement | .//ContinueStatement)[@Label = $label]
+    ]
+]]>
+                </value>
+            </property>
+            <property name="allowLoops" type="Boolean"
+                      description="Whether to allow or not allow labels before loop statements (do, while, for)"
+                      value="true" />
+        </properties>
+        <example>
+<![CDATA[
+class Scratch {
+    public static void main(String[] args) {
+        int x = 1;
+        lbl1: while (true) {          // violation: labeled statement on loop (when property allowLoops=false)
+            lbl2: if (x == 3) {       // violation: labeled statement
+                x++;
+                break lbl2;
+            }
+            lbl3: if (x == 4) {
+                break lbl1;
+            }
+            System.out.println(x);
+            x++;
+        }
+    }
+}
+]]>
+        </example>
+        <example>
+            <![CDATA[
+// Bad
+outer:
+for (int i = 0; i < 10; i++) {
+    for (int j = 0; j < 10; j++) {
+        break outer; // violation - labeled break (when allowLoops=false)
+        continue outer; // violation - labeled continue (when allowLoops=false)
+    }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="LiteralsFirstInComparisons"
           language="java"
           since="6.24.0"
@@ -1017,10 +1092,12 @@ public class SecureSystem {
             <property name="xpath">
                 <value><![CDATA[
                 //SwitchStatement
+                    (: exclude empty switches :)
+                    [count(*) > 1]
                     [@DefaultCase = false()]
                     [@ExhaustiveEnumSwitch = false()]
                     (: exclude pattern tests - for these, the compiler will ensure exhaustiveness :)
-                    [*/SwitchLabel[@PatternLabel = false()]]
+                    [not(*/SwitchLabel[@PatternLabel = true()])]
             ]]></value>
             </property>
         </properties>
@@ -1161,6 +1238,58 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="RelianceOnDefaultCharset"
+          language="java"
+          since="7.17.0"
+          message="Specify a character set instead of relying on the default charset"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.RelianceOnDefaultCharsetRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#relianceondefaultcharset">
+        <description>
+Be sure to specify a character set for APIs that use the JVM's default character set to ensure
+stable encoding behavior between different JVMs, programs, and servers. Using the platform's
+default charset makes the code less portable and might lead to unexpected behavior when running
+on different systems.
+
+Additional, since Java 18, the default charset for these APIs is consistently UTF-8
+(see [JEP 400](https://openjdk.org/jeps/400)). While this reduces unexpected behavior
+on different systems, it is still advised to explicitly specify a character set,
+especially if UTF-8 is not the desired charset.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+public class Foo {
+    void bad() throws IOException {
+        new InputStreamReader(inputStream);  // violation
+        new OutputStreamWriter(outputStream);  // violation
+        URLEncoder.encode("test string");  // violation (deprecated)
+        new PrintStream(outputStream);  // violation
+        new PrintWriter("output.txt");  // violation
+        new Scanner(inputStream);  // violation
+        new Formatter();  // violation
+        "test".getBytes();  // violation
+        new ByteArrayOutputStream().toString();  // violation
+        new FileReader("input.txt");  // violation
+        new FileWriter("output.txt");  // violation
+    }
+
+    void good() throws IOException {
+        new InputStreamReader(inputStream, StandardCharsets.UTF_8);  // ok
+        new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);  // ok
+        URLEncoder.encode("test string", StandardCharsets.UTF_8);  // ok
+        new PrintStream(outputStream, true, StandardCharsets.UTF_8);  // ok
+        new PrintWriter("output.txt", StandardCharsets.UTF_8);  // ok
+        new Scanner(inputStream, StandardCharsets.UTF_8);  // ok
+        new Formatter(Locale.US);  // ok
+        "test".getBytes(StandardCharsets.UTF_8);  // ok
+        new ByteArrayOutputStream().toString(StandardCharsets.UTF_8);  // ok
+        new FileReader("input.txt", StandardCharsets.UTF_8);  // ok
+        new FileWriter("output.txt", StandardCharsets.UTF_8);  // ok
+    }
+}
+]]>
+        </example>
+    </rule>
 
     <rule name="ReplaceEnumerationWithIterator"
           language="java"
@@ -1667,6 +1796,36 @@ class C {
             ]]></example>
     </rule>
 
+    <rule name="UnnecessaryWarningSuppression"
+          language="java"
+          since="7.14.0"
+          message="Unused suppression {0}."
+          class="net.sourceforge.pmd.lang.rule.impl.UnnecessaryPmdSuppressionRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unnecessarywarningsuppression">
+        <description>
+            This rule reports suppression comments and annotations that did not suppress any PMD violation.
+            Note that violations of this rule cannot be suppressed.
+
+            Please note:
+            - The rule will report those suppressions comments/annotations that did not suppress a violation
+            _during the current run_. That means you cannot run this rule separately from other rules, it must
+            always be run with all the rules that could produce a warning. This is most likely not a problem, as
+            you can just include this rule in your regular ruleset.
+            - The rule for now only reports annotations specific to PMD, like `@SuppressWarnings("PMD")`. For instance
+            `@SuppressWarnings("all")` is never reported as we cannot know if another tool is producing a
+            warning there that must be suppressed. In the future we might be able to check for other common ones
+            like `@SuppressWarnings("unchecked")` or `"fallthrough"`.
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+            public class Something {
+                // Unless some rule triggered on the following line, this rule will report the comment:
+                private void foo() {} // NOPMD
+            }
+            ]]>
+        </example>
+    </rule>
 
     <rule name="UnusedAssignment"
           language="java"
@@ -1681,7 +1840,7 @@ class C {
             2. The assigned value is always overwritten by other assignments before the next read of
             the variable.
 
-            The rule tracks assignements to fields of `this`, and static fields of the current class.
+            The rule tracks assignments to fields of `this`, and static fields of the current class.
             This may cause some false positives in timing-sensitive concurrent code, which the rule cannot detect.
 
             The rule may be suppressed with the standard `@SuppressWarnings("unused")` tag.
@@ -1805,8 +1964,7 @@ Parameters whose name starts with `ignored` or `unused` are filtered out.
 
 Removing unused formal parameters from public methods could cause a ripple effect through the code base.
 Hence, by default, this rule only considers private methods. To include non-private methods, set the
-`checkAll` property to `true`.
-
+`checkAll` property to `true`. The same applies to public constructors.
         </description>
         <priority>3</priority>
         <example>
@@ -1814,6 +1972,44 @@ Hence, by default, this rule only considers private methods. To include non-priv
 public class Foo {
     private void bar(String howdy) {
         // howdy is not used
+    }
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedLabel"
+          language="java"
+          since="7.18.0"
+          message="Avoid unused labels such as ''{0}''."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#unusedlabel">
+        <description>
+Unused labeled are unnecessary and may be confusing as you might be wondering what this label is used for.
+To improve readability the unused label should simply be removed.
+
+This rule implements SonarSource rule [S1065](https://sonarsource.github.io/rspec/#/rspec/S1065).
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//LabeledStatement[let $label := @Label return
+      not( (.//BreakStatement | .//ContinueStatement)[@Label = $label] )
+]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+<![CDATA[
+class Example {
+    void main() {
+        lbl1: {                     // violation: Label "lbl1" is not nused
+            int x = 1;
+            System.out.println(x);
+        }
     }
 }
 ]]>

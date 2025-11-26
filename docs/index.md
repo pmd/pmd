@@ -13,13 +13,12 @@ author: Jeff Jensen <jjensen@apache.org>, Andreas Dangel <andreas.dangel@adangel
 
 additional_js:
  - assets/Shuffle-5.2.3/dist/shuffle.min.js
- - assets/jquery-ui-1.12.1/jquery-ui.min.js
  - js/shuffle.js
 ---
 
 
 
-## 💡 Overview
+## 💡️ Overview
 
 <!--  You can link to an individual panel, the id is determined from the title of the panel -->
 <!--  See custom/shuffle_panel.html for the details -->
@@ -31,12 +30,12 @@ extended with custom rules. It uses JavaCC and Antlr to parse source files into 
 (AST) and runs rules against them to find violations. Rules can be written in Java or using a XPath query.
 
 Currently, PMD supports Java, JavaScript, Salesforce.com Apex and Visualforce,
-Kotlin, Swift, Modelica, PLSQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
+Kotlin, Swift, Modelica, PL/SQL, Apache Velocity, JSP, WSDL, Maven POM, HTML, XML and XSL.
 Scala is supported, but there are currently no Scala rules available.
 
 Additionally, it includes **CPD**, the copy-paste-detector. CPD finds duplicated code in
-Coco, C/C++, C#, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
-Lua, Matlab, Modelica, Objective-C, Perl, PHP, PLSQL, Python, Ruby, Rust, Salesforce.com Apex and
+Coco, C/C++, C#, CSS, Dart, Fortran, Gherkin, Go, Groovy, HTML, Java, JavaScript, JSP, Julia, Kotlin,
+Lua, Matlab, Modelica, Objective-C, Perl, PHP, PL/SQL, Python, Ruby, Rust, Salesforce.com Apex and
 Visualforce, Scala, Swift, T-SQL, Typescript, Apache Velocity, WSDL, XML and XSL.
 
 PMD features many **built-in checks** (in PMD lingo, *rules*), which are documented
@@ -56,19 +55,19 @@ things, PMD can be run:
 **CPD**, the **copy-paste detector**, is also distributed with PMD. You can use it
 in a variety of ways, which are [documented here](pmd_userdocs_cpd.html).
 
-## 💾 Download
+## 💾️ Download
 
 The latest release of PMD can be downloaded from our [Github releases page](https://github.com/pmd/pmd/releases/latest).
 
 The Logo is available from the [Logo Project Page](pmd_projectdocs_logo.html).
 
-## 📖 Documentation
+## 📖️ Documentation
 
 The rest of this page exposes the contents of the documentation site thematically,
 which you can further scope down using the blue filter buttons. To navigate the site,
 you may also use the search bar in the top right, or the sidebar on the left.
 
-## ✨ Contributors
+## ✨️ Contributors
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification.
 Contributions of any kind welcome!

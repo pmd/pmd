@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -191,6 +191,7 @@ class PropertyDescriptorTest {
         assertEquals(Arrays.asList("v1", "v2"), listDescriptor.defaultValue());
         assertEquals(Arrays.asList("foo", "bar"), listDescriptor.serializer().fromString("foo,bar"));
         assertEquals(Arrays.asList("foo", "bar"), listDescriptor.serializer().fromString("  foo ,  bar  "));
+        assertEquals(Arrays.asList("foo", "bar"), listDescriptor.serializer().fromString("  foo ,  bar  , "));  // Github issue 4714
     }
 
     private enum SampleEnum { A, B, C }

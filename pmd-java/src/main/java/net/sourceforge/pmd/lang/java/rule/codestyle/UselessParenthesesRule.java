@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -46,6 +47,7 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
                                  + "For example, in `(a == null) == (b == null)`, only the second pair "
                                  + "of parentheses is necessary, but the expression is clearer that way.")
                        .build();
+    private static final int MAX_SNIPPET_LENGTH = 50;
 
     public UselessParenthesesRule() {
         super(ASTExpression.class);
@@ -82,11 +84,18 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
         if (necessity == NEVER
             || reportClarifying() && necessity == CLARIFYING
             || reportBalancing() && necessity == BALANCING) {
-            asCtx(data).addViolation(e);
+            String template = e.getParenthesisDepth() > 1 ? "Duplicate parentheses around `{0}`."
+                : "Useless parentheses around `{0}`.";
+            CharSequence snippet = PrettyPrintingUtil.prettyPrint(e);
+            String dots = "...";
+            if (snippet.length() > MAX_SNIPPET_LENGTH) {
+                snippet = snippet.subSequence(0, MAX_SNIPPET_LENGTH - dots.length()) + dots;
+            }
+            asCtx(data).addViolationWithMessage(e, template,
+                snippet);
+
         }
-
     }
-
 
     public static Necessity needsParentheses(ASTExpression inner, JavaNode outer) {
         // Note: as of jdk 15, PatternExpression cannot be parenthesized
@@ -102,9 +111,12 @@ public final class UselessParenthesesRule extends AbstractJavaRulechainRule {
             return NEVER;
         }
 
-        if (inner instanceof ASTPrimaryExpression
-            || inner instanceof ASTSwitchExpression) {
+        if (inner instanceof ASTPrimaryExpression) {
             return NEVER;
+        }
+        if (inner instanceof ASTSwitchExpression) {
+            return outer instanceof ASTPrimaryExpression && inner.getIndexInParent() == 0
+                    ? ALWAYS : NEVER;
         }
 
         if (outer instanceof ASTLambdaExpression) {

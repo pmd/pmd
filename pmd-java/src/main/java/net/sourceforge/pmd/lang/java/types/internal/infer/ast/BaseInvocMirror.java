@@ -45,6 +45,14 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     }
 
     @Override
+    public void groundTree() {
+        super.groundTree();
+        for (ExprMirror arg : getArgumentExpressions()) {
+            arg.groundTree();
+        }
+    }
+
+    @Override
     public boolean isEquivalentToUnderlyingAst() {
         MethodCtDecl ctDecl = getCtDecl();
         AssertionUtil.validateState(ctDecl != null, "overload resolution is not complete");
@@ -106,7 +114,7 @@ abstract class BaseInvocMirror<T extends InvocationNode> extends BasePolyMirror<
     }
 
     @Override
-    public void setCtDecl(MethodCtDecl methodType) {
+    public void setCompileTimeDecl(MethodCtDecl methodType) {
         ctDecl = methodType;
         if (mayMutateAst()) {
             InternalApiBridge.setOverload(myNode, methodType);

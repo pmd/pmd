@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -43,6 +43,7 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("csv", CSVRenderer.class);
         RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
         RENDERERS.put("vs", VSRenderer.class);
+        RENDERERS.put("markdown", MarkdownRenderer.class);
     }
 
 

@@ -31,6 +31,18 @@ public interface JExecutableSymbol extends JTypeParameterOwnerSymbol {
      */
     List<JFormalParamSymbol> getFormalParameters();
 
+    /**
+     * Return the return type under the given substitution.
+     * For a constructor, return the type of the owner. This type
+     * may be annotated.
+     * @see JConstructorSymbol
+     */
+    default JTypeMirror getReturnType(Substitution subst) {
+        // JMethodSymbol has always had this method abstract so this branch
+        // should never be taken.
+        throw new UnsupportedOperationException("Default method was added for compatibility, will be removed");
+    }
+
 
     default boolean isDefaultMethod() {
         // Default methods are public non-abstract instance methods

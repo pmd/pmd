@@ -94,6 +94,7 @@ import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
+import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Resolves types of expressions. This is used as the implementation of
@@ -439,7 +440,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
 
                 JTypeMirror resolved = isUnresolved(lhs) ? rhs : lhs;
                 return resolved.isNumeric() ? unaryNumericPromotion(resolved)
-                                            : resolved == ts.BOOLEAN ? resolved  // NOPMD #3205
+                                            : resolved == ts.BOOLEAN ? resolved
                                                                      : ts.ERROR;
             } else {
                 // anything else, including error types & such: ERROR
@@ -467,18 +468,16 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
             } else {
                 return binaryNumericPromotion(lhs, rhs);
             }
-
-        default:
-            throw new AssertionError("Unknown operator for " + node);
         }
+        throw AssertionUtil.shouldNotReachHere("Unknown operator for " + node);
     }
 
     private boolean isUnresolved(JTypeMirror t) {
-        return t == ts.UNKNOWN;  // NOPMD CompareObjectsWithEquals
+        return t == ts.UNKNOWN;
     }
 
     private boolean isUnresolved(JMethodSig m) {
-        return m == null || m == ts.UNRESOLVED_METHOD;  // NOPMD CompareObjectsWithEquals
+        return m == null || m == ts.UNRESOLVED_METHOD;
     }
 
     @Override
@@ -495,9 +494,8 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
         case POST_INCREMENT:
         case POST_DECREMENT:
             return node.getOperand().getTypeMirror(ctx);
-        default:
-            throw new AssertionError("Unknown operator for " + node);
         }
+        throw AssertionUtil.shouldNotReachHere("Unknown operator for " + node);
     }
 
     @Override
@@ -607,7 +605,7 @@ public final class LazyTypeResolver extends JavaVisitorBase<TypingContext, @NonN
                 // then the type of the parameter depends on the type
                 // of the lambda, which most likely depends on the overload
                 // resolution of an enclosing invocation context
-                resultMirror = id.getTypeMirror();
+                resultMirror = id.getTypeMirror(ctx);
             }
         }
 

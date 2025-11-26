@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>failure case</description>
@@ -105,14 +105,23 @@ class Foo {
         ]]></code>
     </test-code>
 
-    <test-code>
-        <description>unused constructor param</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
+    <code-fragment id="public-constructor"><![CDATA[
 class Foo {
     public Foo(int s) {}
 }
-        ]]></code>
+        ]]></code-fragment>
+
+    <test-code>
+        <description>#4700 don't flag unused constructor param by default</description>
+        <expected-problems>0</expected-problems>
+        <code-ref id="public-constructor"/>
+    </test-code>
+
+    <test-code>
+        <description>#4700 flag unused constructor param if checkall property is set</description>
+        <rule-property name="checkAll">true</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="public-constructor"/>
     </test-code>
 
     <test-code>
@@ -145,7 +154,7 @@ class Foo {
         <code><![CDATA[
 class Foo {
     int type;
-    public Foo (int type, String[] s) {
+    private Foo (int type, String[] s) {
         this.type = type;
     }
 }
@@ -181,6 +190,9 @@ public class Foo {
         <description>violation suppression regex works</description>
         <rule-property name="violationSuppressRegex">.*'paramB'.*</rule-property>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="2">Regex</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class Foo {
     private void bar2(Object paramA, Object paramB)
@@ -195,6 +207,9 @@ public class Foo {
         <description>violation suppression xpath works, by name</description>
         <rule-property name="violationSuppressXPath">.[@Name = 'paramB']</rule-property>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="2">XPath</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class Foo {
     private void bar2(Object paramA, Object paramB)
@@ -209,6 +224,9 @@ public class Foo {
         <description>violation suppression xpath works, by type</description>
         <rule-property name="violationSuppressXPath">.[pmd-java:typeIs('java.lang.String')]</rule-property>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="2">XPath</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 public class Foo {
     private void bar2(Object paramA, String paramB)

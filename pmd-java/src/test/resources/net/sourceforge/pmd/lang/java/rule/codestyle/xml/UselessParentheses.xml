@@ -663,4 +663,105 @@ public class Test {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>Detailed message</description>
+        <expected-problems>11</expected-problems>
+        <expected-messages>
+            <message>Useless parentheses around `3 * 3`.</message>
+            <message>Useless parentheses around `4`.</message>
+            <message>Useless parentheses around `true ? 4 : 2`.</message>
+            <message>Useless parentheses around `k3`.</message>
+            <message>Useless parentheses around `id(k3)`.</message>
+            <message>Useless parentheses around `k5++`.</message>
+            <message>Useless parentheses around `k2 = 2`.</message>
+            <message>Duplicate parentheses around `1 + 2`.</message>
+            <message>Useless parentheses around `"very" + "long            " + "concat     split...`.</message>
+            <message>Useless parentheses around `new int[5][7]`.</message>
+            <message>Useless parentheses around `switch (k2 + k3) { ... }`.</message>
+        </expected-messages>
+        <code><![CDATA[
+            class Parentheses {
+
+                public int id(int k) {
+                    return k;
+                }
+
+                public void run() {
+                    int k1 = (3 * 3);
+                    int k2 = (4);
+                    int k3 = (true ? 4 : 2);
+                    int k4 = id((k3));
+                    int k5 = (id(k3));
+                    int k6 = (k5++);
+                    int k7 = (k1 = (k2 = 2)) + 1;
+                    int k8 = ((1 + 2));
+                    int k9 =  (  "very" + "long            " + "concat     splitHere");
+                    int[][] k10 = (new int[5][7]);
+                    int k11 = (switch(k2 + k3) {
+                        case 1 -> 7;
+                        default -> 2;
+                    });
+                }
+            }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Main {
+
+            public static String foo(final int k) {
+                int f = (switch (k) {
+                    default -> new int[1];
+                })[0];
+                int length = (switch (k) {
+                    default -> new int[0];
+                }).length;
+                return (switch (e) {
+                    default -> "bar";
+                }).toUpperCase();
+            }
+        }
+        ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expression unnecessary</description>
+        <expected-problems>8</expected-problems>
+        <code><![CDATA[
+        import java.util.function.Supplier;
+
+        public class Tester {
+            public void foo(int k1, int k2, int k3, int k4, int k5, int k6, int k7, int k8) {
+                String.format("%s", (switch (k1) {
+                    default -> new int[1];
+                }));
+                boolean flag = !(switch (k2) {
+                    default -> true;
+                });
+                int num = ~(switch (k3) {
+                    default -> 0;
+                });
+                double cast = (double) (switch (k4) {
+                     default -> 0;
+                });
+                Supplier<Integer> factory = () -> (switch (k5) {
+                    default -> 0;
+                });
+                int nest = switch (k6) {
+                    default -> (switch (k6) {
+                        default -> 4;
+                    });
+                };
+                boolean check = (switch (k7) {
+                    default -> "5";
+                }) instanceof String;
+                int[] ints = {1,2};
+                int first = ints[(switch (k8) {
+                    default -> 0;
+                })];
+            }
+        }
+        ]]></code>
+    </test-code>
 </test-data>

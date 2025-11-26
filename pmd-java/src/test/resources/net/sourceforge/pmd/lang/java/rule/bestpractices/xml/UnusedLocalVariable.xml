@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.github.io/schema/rule-tests_1_1_0.xsd">
 
     <test-code>
         <description>unused local with assignment</description>
@@ -308,6 +308,9 @@ public class Foo {
     <test-code>
         <description>unused local with assignment - Suppressed</description>
         <expected-problems>0</expected-problems>
+        <expected-suppressions>
+            <suppressor line="4">@SuppressWarnings</suppressor>
+        </expected-suppressions>
         <code><![CDATA[
 @SuppressWarnings("unused")
 public class Foo {
@@ -539,5 +542,176 @@ public class UnusedLocalVarsMultiple {
     }
 }
 ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Issues 5061/5081: Compound assignment used in another expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int read = 0;
+        consume(read += 1);
+    }
+
+    void consume(int val) {
+        System.out.println(val);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5061/5081: Compound assignment used in another expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int read = 0;
+        consume(read += 1);
+    }
+    void consume(int val) {
+        System.out.println(val);
+    }
+
+    void readUpTo(java.nio.channels.ReadableByteChannel channel, java.nio.ByteBuffer buffer, int length) {
+        int read = 0;
+        while ((read += channel.read(buffer)) < length) {
+        }
+
+        int totalBytesRead = 0;
+        read = 0;
+        while ((read = channel.read(buffer)) >= 0 && totalBytesRead < length) {
+            totalBytesRead += read;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedLocalVariable false positive with try-with-resource #5747 - workaround</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.*;
+import java.nio.*;
+import java.nio.channels.*;
+
+class Foo {
+    long workaround() {
+        try (FileOutputStream fos = new FileOutputStream(file);
+                FileChannel out = fos.getChannel();
+                FileLock ignored = out.lock()) {
+            final int buffsize = 4096;
+            long position = 0;
+            long read;
+            while ((read = out.transferFrom(channel, position, buffsize)) > 0) {
+                position += read;
+            }
+            return position;
+        }
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>Instanceof pattern</description>
+        <expected-problems>1</expected-problems>
+        <code>
+            public class Tester {
+                public void foo(Object arg) {
+                    if (arg instanceof String s) {
+                    }
+                    if (arg instanceof String s) {
+                        System.out.println(s);
+                    }
+                }
+            }
+        </code>
+    </test-code>
+    <test-code>
+        <description>Type pattern in switch</description>
+        <expected-problems>0</expected-problems>
+        <code>
+            public class Switcher {
+                public static void foo(Object r) {
+                    switch (r) {
+                        case String s -> System.out.println("a string");
+                        default -> System.out.println("not a string");
+                    }
+                }
+            }
+        </code>
+        <source-type>java 21</source-type>
+    </test-code>
+    <test-code>
+        <description>Type pattern in switch, Java 22</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+            public class Switcher {
+                public static void foo(Object r) {
+                    switch (r) {
+                        case String s -> System.out.println("a string");
+                        default -> System.out.println("not a string");
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+    <test-code>
+        <description>Record pattern Java 21</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Switcher {
+                public record Wrap(int k) {
+                }
+                public static void foo(Object r) {
+                    switch (r) {
+                        case Wrap(int k) -> System.out.println("a wrapped int");
+                        default -> System.out.println("not a wrapped int");
+                    }
+                    if (r instanceof Wrap(int k)) {
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 21</source-type>
+    </test-code>
+    <test-code>
+        <description>Record pattern Java 22</description>
+        <expected-problems>2</expected-problems>
+        <code><![CDATA[
+            public class Switcher {
+                public record Wrap(int k) {
+                }
+                public static void foo(Object r) {
+                    switch (r) {
+                        case Wrap(int k) -> System.out.println("a wrapped int");
+                        default -> System.out.println("not a wrapped int");
+                    }
+                    if (r instanceof Wrap(int k)) {
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 22</source-type>
+    </test-code>
+    <test-code>
+        <description>Record pattern with guard Java 22</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Switcher {
+                public record Wrap(int k) {
+                }
+                public static void foo(Object r) {
+                    switch (r) {
+                        case Wrap(int n) when n < 0 -> System.out.println("a wrapped negative int");
+                        default -> System.out.println("not a wrapped int");
+                    }
+                }
+            }
+        ]]></code>
+        <source-type>java 22</source-type>
     </test-code>
 </test-data>

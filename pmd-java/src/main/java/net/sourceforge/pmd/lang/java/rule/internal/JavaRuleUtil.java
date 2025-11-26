@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
@@ -59,12 +60,25 @@ public final class JavaRuleUtil {
         // actually not all of them, probs only stream of some type
         // arg which doesn't implement Closeable...
         "java.util.stream.Stream#_(_*)",
+        "java.util.Collection#contains(_)",
         "java.util.Collection#size()",
         "java.util.List#get(int)",
         "java.util.Map#get(_)",
         "java.lang.Iterable#iterator()",
-        "java.lang.Comparable#compareTo(_)"
+        "java.lang.Comparable#compareTo(_)",
+        "java.math.BigDecimal#_(_*)",
+        "java.math.BigInteger#_(_*)",
+        "java.time.temporal.Temporal#_(_*)",
+        "java.time.Duration#_(_*)",
+        "java.time.Period#_(_*)"
     );
+
+    private static final CompoundInvocationMatcher KNOWN_SIDE_EFFECT_METHODS =
+            InvocationMatcher.parseAll(
+                "_#getAndIncrement()",
+                "_#getAndDecrement()",
+                "_#getNextEntry()"
+            );
 
     public static final Set<String> LOMBOK_ANNOTATIONS = immutableSetOf(
         "lombok.Data",
@@ -262,11 +276,11 @@ public final class JavaRuleUtil {
     }
 
     public static boolean isGetterCall(ASTMethodCall call) {
-        return call.getArguments().size() == 0
+        return call.getArguments().isEmpty()
             && (startsWithCamelCaseWord(call.getMethodName(), "get")
-            || startsWithCamelCaseWord(call.getMethodName(), "is"));
+            || startsWithCamelCaseWord(call.getMethodName(), "is"))
+            && !call.getMethodType().getReturnType().isVoid();
     }
-
 
     public static boolean isGetterOrSetter(ASTMethodDeclaration node) {
         return isGetter(node) || isSetter(node);
@@ -387,6 +401,28 @@ public final class JavaRuleUtil {
      */
     private static boolean isPure(ASTMethodCall call) {
         return isGetterCall(call) || KNOWN_PURE_METHODS.anyMatch(call);
+    }
+
+    /**
+     * Whether the invocation has no side effects. Even more conservative than {@code isPure}.
+     * Only checks methods in java.* packages because frameworks may define getter-like methods
+     * with side effects (such as isEqualTo matcher in AssertJ).
+     */
+    public static boolean isKnownPure(ASTMethodCall call) {
+        return isGetterCall(call)
+                    && isPureGetter(call)
+            || KNOWN_PURE_METHODS.anyMatch(call) && !call.getMethodType().getReturnType().isVoid();
+    }
+
+    private static boolean isPureGetter(ASTMethodCall call) {
+        JTypeDeclSymbol symbol = call.getMethodType().getDeclaringType().getSymbol();
+        if (symbol == null) {
+            return false;
+        }
+        String pkg = symbol.getPackageName();
+        return pkg.startsWith("java.")
+            && !pkg.startsWith("java.nio") && !pkg.startsWith("java.net")
+            && !KNOWN_SIDE_EFFECT_METHODS.anyMatch(call);
     }
 
     public static @Nullable ASTVariableId getReferencedNode(ASTNamedReferenceExpr expr) {

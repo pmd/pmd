@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -14,7 +14,10 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
-
+/**
+ * @deprecated Since 7.17.0. This rule is replaced by {@link VariableCanBeInlinedRule}.
+ */
+@Deprecated
 public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> STATEMENT_ORDER_MATTERS = booleanProperty("statementOrderMatters").defaultValue(true).desc("If set to false this rule no longer requires the variable declaration and return statement to be on consecutive lines. Any variable that is used solely in a return statement will be reported.").build();

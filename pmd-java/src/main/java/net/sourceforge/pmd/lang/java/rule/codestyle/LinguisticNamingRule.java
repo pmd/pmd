@@ -140,10 +140,14 @@ public class LinguisticNamingRule extends AbstractJavaRulechainRule {
     }
 
     private void checkSetters(ASTMethodDeclaration node, Object data, String nameOfMethod) {
-        if (startsWithCamelCaseWord(nameOfMethod, "set") && !node.isVoid()) {
+        if (startsWithCamelCaseWord(nameOfMethod, "set") && !node.isVoid() && returnsEnclosingType(node)) {
             asCtx(data).addViolationWithMessage(node, "Linguistics Antipattern - The setter ''{0}'' should not return any type except void linguistically",
                                                 nameOfMethod);
         }
+    }
+
+    private static boolean returnsEnclosingType(ASTMethodDeclaration node) {
+        return !node.getResultTypeNode().getTypeMirror().equals(node.getEnclosingType().getTypeMirror());
     }
 
     private boolean isBooleanType(ASTType node) {

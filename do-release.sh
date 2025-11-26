@@ -134,7 +134,8 @@ echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
 echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the version, that will be released"
-echo "    later in this process."
+echo "    later in this process. ⚠️ WARNING! This does not work. You need to select an already released version."
+echo "    See <https://github.com/pmd/pmd-designer/blob/main/releasing.md>."
 echo
 echo "Press enter to continue..."
 read -r
@@ -192,9 +193,8 @@ echo "Change version in the POMs to ${RELEASE_VERSION} and update build timestam
 ./mvnw --quiet versions:set -DnewVersion="${RELEASE_VERSION}" -DgenerateBackupPoms=false -DupdateBuildOutputTimestampPolicy=always
 echo "Transform the SCM information in the POM"
 sed -i "s|<tag>HEAD</tag>|<tag>pmd_releases/${RELEASE_VERSION}</tag>|" pom.xml
-echo "Run the project tests against the changed POMs to confirm everything is in running order (skipping cli and dist)"
-# note: skipping pmd in order to avoid failures due to #4757
-./mvnw clean verify -Dskip-cli-dist -Dpmd.skip=true -Dcpd.skip=true -Pgenerate-rule-docs
+echo "Run the project tests against the changed POMs to confirm everything is in running order"
+./mvnw clean verify -Pgenerate-rule-docs
 echo "Commit and create tag"
 git commit -a -m "[release] prepare release pmd_releases/${RELEASE_VERSION}"
 git tag -m "[release] copy for tag pmd_releases/${RELEASE_VERSION}" "pmd_releases/${RELEASE_VERSION}"
@@ -205,16 +205,17 @@ git push origin tag "pmd_releases/${RELEASE_VERSION}"
 echo
 echo "Tag has been pushed.... now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
-echo "Now wait, until first stage of the release is finished successfully..."
-echo "You don't need to wait until artifacts are in maven central, just the GitHub Action must be successful."
+echo "Now wait, until the workflows 'Build Release' and 'Publish Release' finished successfully..."
+echo "You don't need to wait until artifacts are in maven central, just the GitHub Actions must be successful."
 echo
-echo "If it is failing, you can fix the code/scripts and force push the tag via"
+echo "If it is failing already at the first job (deploy-to-maven-central), you can fix the code/scripts and force push the tag via"
 echo
 echo "    git tag -d \"pmd_releases/${RELEASE_VERSION}\""
 echo "    git tag -m \"[release] copy for tag pmd_releases/${RELEASE_VERSION}\" \"pmd_releases/${RELEASE_VERSION}\""
 echo "    git push origin tag \"pmd_releases/${RELEASE_VERSION}\" --force"
 echo
 echo "However: This is only possible, if the artefacts have not been pushed to maven central yet..."
+echo "         And doing this later will destroy reproducible builds."
 echo
 echo "Press enter to continue, once the GitHub Action finished successfully..."
 read -r
@@ -274,19 +275,19 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### 🚀 New and noteworthy
+### 🚀️ New and noteworthy
 
-### 🐛 Fixed Issues
+### 🐛️ Fixed Issues
 
-### 🚨 API Changes
+### 🚨️ API Changes
 
-### ✨ Merged pull requests
+### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📦 Dependency updates
+### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📈 Stats
+### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
@@ -294,40 +295,10 @@ This is a {{ site.pmd.release_type }} release.
 EOF
 
 echo "Committing current changes on branch ${CURRENT_BRANCH}"
-# note: using [skip ci] as only the first stage is done and the full build
-# requires pmd-designer to be present, which might not be the case yet...
-git commit -a -m "[release] Prepare next development version [skip ci]"
+git commit -a -m "[release] Prepare next development version"
 echo "Push branch ${CURRENT_BRANCH}"
 git push origin "${CURRENT_BRANCH}"
 
-echo
-echo
-echo
-echo "*   Wait until the new version is synced to maven central and appears as latest version in"
-echo "    <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd/maven-metadata.xml>."
-echo
-echo
-echo "Then proceed with releasing pmd-designer..."
-echo "<https://github.com/pmd/pmd-designer/blob/main/releasing.md>"
-echo
-echo "Press enter to continue when pmd-designer is available in maven-central..."
-echo "<https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/maven-metadata.xml>."
-echo
-echo "Note: If there is no new pmd-designer release needed, you can directly proceed."
-read -r
-
-echo
-echo "Continuing with release of pmd-cli and pmd-dist..."
-echo "Before proceeding however, wait another 10 minutes, so that the freshly released artefacts"
-echo "are indeed available from maven central. The GitHub runners might not yet see them..."
-echo "If that happens, the build job needs to be started again, maybe the runner cache needs to be cleared as well."
-echo
-echo "Go to <https://github.com/pmd/pmd/actions/workflows/build.yml> and manually trigger a new build"
-echo "from tag 'pmd_releases/${RELEASE_VERSION}' and with option 'Build only modules cli and dist' checked."
-echo
-echo "This triggers the second stage release and eventually publishes the release on GitHub."
-echo
-echo "Now check github actions: <https://github.com/pmd/pmd/actions>"
 echo
 echo
 echo "Verification: (see also <https://docs.pmd-code.org/latest/pmd_projectdocs_committers_releasing.html>)"
@@ -340,12 +311,10 @@ echo "  * Default download should be new version"
 echo "  * All assets are there (bin, src, doc, cyclondx.json, cyclondx.xml, ReadMe.md)"
 echo "* News entry on sourceforge: <https://sourceforge.net/p/pmd/news/>"
 echo "* Latest documentation points to new release: <https://docs.pmd-code.org/latest/>"
-echo "* JavaDoc API Doc is available: <https://docs.pmd-code.org/apidocs/pmd-core/${RELEASE_VERSION}/>"
-echo "* All artefacts are on maven central, especially pmd-cli"
-echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-cli/${RELEASE_VERSION}/>"
+echo "* JavaDoc API Doc is available: <https://docs.pmd-code.org/apidocs/pmd-core/latest/>"
+echo "* All artefacts are on maven central"
 echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-core/${RELEASE_VERSION}/>"
 echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-java/${RELEASE_VERSION}/>"
-echo "  * <https://repo.maven.apache.org/maven2/net/sourceforge/pmd/pmd-designer/${RELEASE_VERSION}/>"
 echo "* Regression Tester baseline has been created: <https://pmd-code.org/pmd-regression-tester/>"
 echo "* Docker images have been created: <https://hub.docker.com/r/pmdcode/pmd> / <https://github.com/pmd/docker/pkgs/container/pmd>"
 echo

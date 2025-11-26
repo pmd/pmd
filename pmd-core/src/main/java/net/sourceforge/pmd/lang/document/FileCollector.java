@@ -407,7 +407,7 @@ public final class FileCollector implements AutoCloseable {
         for (Iterator<TextFile> iterator = allFilesToProcess.iterator(); iterator.hasNext();) {
             TextFile file = iterator.next();
             if (toExclude.contains(file)) {
-                LOG.trace("Excluding file {}", file.getFileId());
+                LOG.trace("Excluding file {}", file.getFileId().getAbsolutePath());
                 iterator.remove();
             }
         }

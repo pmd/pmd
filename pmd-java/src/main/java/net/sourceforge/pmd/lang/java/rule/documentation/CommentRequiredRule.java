@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -103,8 +103,6 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
             if (node.getJavadocComment() != null) {
                 commentRequiredViolation(data, node, descriptor);
             }
-            break;
-        default:
             break;
         }
     }

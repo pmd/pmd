@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -89,7 +89,6 @@ public class CodeClimateRenderer extends AbstractIncrementingRenderer {
             issue.severity = "minor";
             break;
         case LOW:
-        default:
             issue.severity = "info";
             break;
         }

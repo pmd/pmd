@@ -26,4 +26,20 @@ import java.util.Vector;
 public class Foo{}
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify message includes import count</description>
+        <rule-property name="minimum">3</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>A high number of imports (4) can indicate a high degree of coupling within an object; current threshold is 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.Vector;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+public class Foo{}
+        ]]></code>
+    </test-code>
 </test-data>

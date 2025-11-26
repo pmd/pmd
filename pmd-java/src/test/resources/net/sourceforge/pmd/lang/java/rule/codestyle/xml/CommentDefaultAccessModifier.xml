@@ -484,7 +484,7 @@ class SomeTest {
   void repeatedTest() {}
 
   @RegisterExtension
-  void registerExtenstionTest(){}
+  void registerExtensionTest(){}
 }
         ]]></code>
     </test-code>
@@ -583,4 +583,22 @@ public class Test {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5634: Annotated constructors with comment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    @SuppressWarnings("")
+    /* package */ Foo() {}
+
+    /* package */ @SuppressWarnings("")
+    Foo() {}
+
+    @SuppressWarnings("")
+    Foo() /* package */ {}
+}
+        ]]></code>
+    </test-code>
+
 </test-data>

@@ -30,7 +30,7 @@ public class Bar {
         <code><![CDATA[
 public class SystemCall {
     private App application;
-    public void methode() {
+    public void method() {
         // OK
         application.exit(0);
     }

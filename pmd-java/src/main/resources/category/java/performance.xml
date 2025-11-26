@@ -399,27 +399,24 @@ buf.append("1m");           // good
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_performance.html#inefficientemptystringcheck">
         <description>
 <![CDATA[
-String.trim().length() == 0 (or String.trim().isEmpty() for the same reason) is an inefficient
-way to check if a String is really blank, as it creates a new String object just to check its size.
-Consider creating a static function that loops through a string, checking Character.isWhitespace()
-on each character and returning false if a non-whitespace character is found. A Smarter code to
-check for an empty string would be:
+Checking the length of `string.trim()` or `string.strip()` is an inefficient way
+to decide if a string is really blank, as it creates a new `String` object just to check its size.
+As of Java 11 you can use `string.isBlank()` to decide if a string consists only of whitespace,
+that check is equivalent to `string.strip().isEmpty()`. To get the semantic of
+`string.trim().isEmpty()`, you can loop through the characters and compare them to 0x20:
 
 ```java
 private boolean checkTrimEmpty(String str) {
-    for(int i = 0; i < str.length(); i++) {
-        if(!Character.isWhitespace(str.charAt(i))) {
-            return false;
-        }
-    }
-    return true;
+    return str.chars().allMatch(c -> c <= 0x20);
 }
 ```
 
-You can refer to Apache's StringUtils#isBlank (in commons-lang),
-Spring's StringUtils#hasText (in the Spring framework) or Google's
-CharMatcher#whitespace (in Guava) for existing implementations (some might
-include the check for != null).
+You can also consider using library functions that include a null check
+(e.g. Apache's `StringUtils#isBlank` in commons-lang,
+Spring's `StringUtils#hasText` in the Spring framework) or use a different definition of whitespace
+(e.g. Google's `CharMatcher#whitespace` in Guava).
+
+Calling `string.strip().isBlank()` is also redundant and should be simplified to `string.isBlank()`.
 ]]>
         </description>
         <priority>3</priority>
@@ -720,7 +717,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
   [*[2]//FieldAccess[@Name = 'length']/VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
   /*[last()]/ExpressionStatement/
     MethodCall
-      [pmd-java:matchesSig('java.util.Collection#add(_)')]
+      [pmd-java:matchesSig('java.util.List#add(_)')]
       [ArgumentList/ArrayAccess
         [VariableAccess[@Name = ancestor::ForStatement/ForInit/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
       ]
@@ -728,7 +725,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 //ForeachStatement
   [VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
   /*[last()]/ExpressionStatement/MethodCall
-      [pmd-java:matchesSig('java.util.Collection#add(_)')]
+      [pmd-java:matchesSig('java.util.List#add(_)')]
       [ArgumentList
         [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
       ]

@@ -114,7 +114,7 @@ public interface TypeInferenceLogger {
      * Such an event is perfectly normal and may happen repeatedly
      * when performing overload resolution.
      *
-     * <p>Exceptions occuring in an {@link MethodResolutionPhase#isInvocation() invocation phase}
+     * <p>Exceptions occurring in an {@link MethodResolutionPhase#isInvocation() invocation phase}
      * are compile-time errors though.
      *
      * @param exception Failure record
@@ -234,7 +234,7 @@ public interface TypeInferenceLogger {
 
         @Override
         public void logResolutionFail(ResolutionFailure exception) {
-            if (exception.getCallSite() instanceof MethodCallSite && exception != ResolutionFailure.UNKNOWN) { // NOPMD CompareObjectsWithEquals
+            if (exception.getCallSite() instanceof MethodCallSite && exception != ResolutionFailure.UNKNOWN) {
                 ((MethodCallSite) exception.getCallSite()).acceptFailure(exception);
             }
         }

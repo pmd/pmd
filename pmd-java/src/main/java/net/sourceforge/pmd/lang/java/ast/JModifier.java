@@ -15,38 +15,38 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 
 /**
- * A Java modifier. The ordering of constants respects the ordering
- * recommended by the JLS.
+ * A Java modifier. The ordering of constants must respects the ordering recommended by the JLS:
+ * <ul>
+ * <li><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.1.1">Class modifiers</a></li>
+ * <li><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.3.1">Field modifiers</a></li>
+ * <li><a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html#jls-8.4.3">Method modifiers</a></li>
+ * </ul>
  */
 // Note: the class is named JModifier and not Modifier to avoid conflict
 // with java.lang.reflect.Modifier
 public enum JModifier {
-    // for anything
     PUBLIC(Modifier.PUBLIC),
     PROTECTED(Modifier.PROTECTED),
     PRIVATE(Modifier.PRIVATE),
+
+    ABSTRACT(Modifier.ABSTRACT),
+    DEFAULT(0),
+    STATIC(Modifier.STATIC),
+    FINAL(Modifier.FINAL),
 
     /** Modifier {@code "sealed"} (since Java 17). */
     SEALED(0),
     /** Modifier {@code "non-sealed"} (since Java 17). */
     NON_SEALED("non-sealed", 0),
 
-    ABSTRACT(Modifier.ABSTRACT),
-    STATIC(Modifier.STATIC),
-    FINAL(Modifier.FINAL),
+    TRANSIENT(Modifier.TRANSIENT),
+    VOLATILE(Modifier.VOLATILE),
 
-    // for methods
     SYNCHRONIZED(Modifier.SYNCHRONIZED),
     NATIVE(Modifier.NATIVE),
-    DEFAULT(0),
 
-    // not for fields
-    STRICTFP(Modifier.STRICT),
-
-    // for fields
-    TRANSIENT(Modifier.TRANSIENT),
-    VOLATILE(Modifier.VOLATILE);
-
+    STRICTFP(Modifier.STRICT);
+    /* IMPORTANT: when adding a constant, keep the order aligned with JLS (links in JavaDoc) */
 
     private final String token;
     private final int reflect;

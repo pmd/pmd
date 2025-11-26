@@ -9,6 +9,43 @@
 Rules which enforce a specific coding style.
     </description>
 
+    <rule name="AnnotationsNamingConventions"
+          language="apex"
+          since="7.17.0"
+          message="The annotation @{0} should be in PascalCase: @{1}"
+          class="net.sourceforge.pmd.lang.apex.rule.codestyle.AnnotationsNamingConventionsRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#annotationsnamingconventions">
+        <description>
+            Apex, while case-insensitive, benefits from a consistent code style to improve readability and maintainability.
+            Enforcing PascalCase for annotations aligns with the established conventions and reduces ambiguity - promoting a unified coding standard.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+// Incorrect:
+@istest
+private static void fooShouldBar() {
+  //...
+}
+
+// Correct:
+@IsTest
+private static void fooShouldBar() {
+  //...
+}
+
+//Incorrect:
+@testvisible
+private boolean doSomething = false;
+
+
+//Correct:
+@TestVisible
+private boolean doSomething = false;
+]]>
+        </example>
+    </rule>
+
     <rule name="ClassNamingConventions"
           language="apex"
           since="5.5.0"
@@ -29,76 +66,6 @@ Rules which enforce a specific coding style.
 public class FooClass { } // This is in pascal case, so it's ok
 
 public class fooClass { } // This will be reported unless you change the regex
-]]>
-        </example>
-    </rule>
-
-    <rule name="IfElseStmtsMustUseBraces"
-          language="apex"
-          since="5.6.0"
-          message="Avoid using 'if...else' statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces">
-        <description>
-Avoid using if..else statements without using surrounding braces. If the code formatting
-or indentation is lost then it becomes difficult to separate the code being controlled
-from the rest.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
-|
-//IfElseBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-// this is OK
-if (foo) x++;
-
-// but this is not
-if (foo)
-    x = x+1;
-else
-    x = x-1;
-]]>
-        </example>
-    </rule>
-
-    <rule name="IfStmtsMustUseBraces"
-          language="apex"
-          since="5.6.0"
-          message="Avoid using if statements without curly braces"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifstmtsmustusebraces">
-        <description>
-Avoid using if statements without using braces to surround the code block. If the code
-formatting or indentation is lost then it becomes difficult to separate the code being
-controlled from the rest.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//IfBlockStatement/BlockStatement[@CurlyBrace= false()]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
- <![CDATA[
-if (foo)    // not recommended
-    x++;
-
-if (foo) {  // preferred approach
-    x++;
-}
 ]]>
         </example>
     </rule>
@@ -208,6 +175,76 @@ public class Foo {
     public bar(Integer methodParameter) { } // This is in camel case, so it's ok
 
     public baz(Integer METHOD_PARAMETER) { } // This will be reported unless you change the regex
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="IfElseStmtsMustUseBraces"
+          language="apex"
+          since="5.6.0"
+          message="Avoid using 'if...else' statements without curly braces"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifelsestmtsmustusebraces">
+        <description>
+            Avoid using if..else statements without using surrounding braces. If the code formatting
+            or indentation is lost then it becomes difficult to separate the code being controlled
+            from the rest.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
+|
+//IfElseBlockStatement/BlockStatement[@CurlyBrace= false()][count(child::*) > 0]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+// this is OK
+if (foo) x++;
+
+// but this is not
+if (foo)
+    x = x+1;
+else
+    x = x-1;
+]]>
+        </example>
+    </rule>
+
+    <rule name="IfStmtsMustUseBraces"
+          language="apex"
+          since="5.6.0"
+          message="Avoid using if statements without curly braces"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#ifstmtsmustusebraces">
+        <description>
+            Avoid using if statements without using braces to surround the code block. If the code
+            formatting or indentation is lost then it becomes difficult to separate the code being
+            controlled from the rest.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//IfBlockStatement/BlockStatement[@CurlyBrace= false()]
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+if (foo)    // not recommended
+    x++;
+
+if (foo) {  // preferred approach
+    x++;
 }
 ]]>
         </example>

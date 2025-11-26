@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -209,7 +209,7 @@ public final class TimeTracker {
 
             totalTimeNanos.getAndAdd(delta);
             selfTimeNanos.getAndAdd(delta - timerEntry.inNestedOperationsNanos);
-            callCount.getAndIncrement();
+            callCount.getAndIncrement(); // NOPMD: UselessPureMethodCall false-positive #6055
             extraDataCounter.getAndAdd(extraData);
 
             return delta;

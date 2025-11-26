@@ -236,7 +236,7 @@ class NodeStreamBlanketTest<T extends Node> {
                 stream.precedingSiblings(),
                 stream.descendantsOrSelf(),
                 stream.children(),
-                stream.children().filter(c -> c.getImage().equals("0")),
+                stream.children().filter(c -> "0".equals(c.getImage())),
                 stream.children(DummyNode.class)
             )
         ).flatMap(

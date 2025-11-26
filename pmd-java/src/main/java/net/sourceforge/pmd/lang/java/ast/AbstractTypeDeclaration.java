@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -56,7 +56,7 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
 
     @Override
     public @Nullable String getCanonicalName() {
-        assert binaryName != null : "Canonical name wasn't set";
+        assert binaryName != null : "binary name and canonical name weren't set";
         return canonicalName;
     }
 

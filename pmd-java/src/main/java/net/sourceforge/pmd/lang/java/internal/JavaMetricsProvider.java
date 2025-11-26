@@ -20,7 +20,7 @@ class JavaMetricsProvider implements LanguageMetricsProvider {
     private final Set<Metric<?, ?>> metrics = setOf(
         JavaMetrics.ACCESS_TO_FOREIGN_DATA,
         JavaMetrics.CYCLO,
-        JavaMetrics.NPATH,
+        JavaMetrics.NPATH_COMP,
         JavaMetrics.NCSS,
         JavaMetrics.LINES_OF_CODE,
         JavaMetrics.FAN_OUT,

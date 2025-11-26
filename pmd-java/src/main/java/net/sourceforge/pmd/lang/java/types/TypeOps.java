@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.types.JVariableSig.FieldSig;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar;
 import net.sourceforge.pmd.lang.java.types.internal.infer.InferenceVar.BoundKind;
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
+import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -181,7 +182,11 @@ public final class TypeOps {
 
         @Override
         public Boolean visit(JTypeMirror t, JTypeMirror s) {
-            // for sentinel types
+            throw AssertionUtil.shouldNotReachHere("other overload should be chosen");
+        }
+
+        @Override
+        public Boolean visitSentinel(JTypeMirror t, JTypeMirror s) {
             return t == s;
         }
 
@@ -1385,7 +1390,7 @@ public final class TypeOps {
         boolean m2Gen = m2.isGeneric();
         if (m1Gen ^ m2Gen) {
             if (m1Gen) {
-                return false; // this test is assymetric
+                return false; // this test is asymmetric
             } else {
                 m2 = m2.getErasure();
             }
@@ -1458,6 +1463,26 @@ public final class TypeOps {
             return isSubSignature(m1, m2);
         }
         return false;
+    }
+
+    /**
+     * Returns true if both methods override the same method of a common supertype.
+     */
+    public static boolean overrideSameMethod(JMethodSig m1, JMethodSig m2) {
+        if (Objects.equals(m1.getSymbol(), m2.getSymbol())) {
+            return true;
+        }
+        if (!haveSameSignature(m1, m2)) {
+            return false;
+        }
+        JTypeMirror declaringType1 = m1.getDeclaringType();
+        JTypeMirror declaringType2 = m2.getDeclaringType();
+        return declaringType2.getSuperTypeSet().stream().anyMatch(st ->
+            TypeTestUtil.isA(st, declaringType1) && st.streamDeclaredMethods(
+                method -> method.nameEquals(m1.getName())
+                    && method.getFormalParameters().equals(m1.getSymbol().getFormalParameters())
+            ).findAny().isPresent()
+        );
     }
 
     private static boolean isOverridableIn(JMethodSig m, JTypeDeclSymbol origin) {

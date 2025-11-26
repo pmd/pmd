@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -94,7 +94,6 @@ public class JavaComment implements Reportable {
      * True if this is a comment delimiter or an asterisk. This
      * tests the whole parameter and not a prefix/suffix.
      */
-    @SuppressWarnings("PMD.LiteralsFirstInComparisons") // a fp
     public static boolean isMarkupWord(Chars word) {
         return word.length() <= 3
             && (word.contentEquals("*")
@@ -132,9 +131,9 @@ public class JavaComment implements Reportable {
     }
 
     public static Stream<JavaComment> getLeadingComments(JavaNode node) {
-        Stream<JavaccToken> specialTokens;
+        Stream<JavaccToken> specialTokens = getSpecialTokensIn(node);
         
-        if (node instanceof ModifierOwner) {
+        if (node instanceof ModifierOwner && !(node instanceof ASTConstructorDeclaration)) {
             node = ((ModifierOwner) node).getModifiers();
             specialTokens = getSpecialTokensIn(node);
             
@@ -142,8 +141,6 @@ public class JavaComment implements Reportable {
             if (!node.getFirstToken().isImplicit()) {
                 specialTokens = Stream.concat(specialTokens, getSpecialTokensIn(node.getNextSibling()));
             }
-        } else {
-            specialTokens = getSpecialTokensIn(node);
         }
         
         return specialTokens.filter(JavaComment::isComment)

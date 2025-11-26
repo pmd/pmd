@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -11,6 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
@@ -31,7 +33,7 @@ class SuppressWarningsTest extends ApexParserTestBase {
 
         @Override
         public Object visit(ASTUserClass clazz, Object ctx) {
-            if (clazz.getSimpleName().equalsIgnoreCase("bar")) {
+            if ("bar".equalsIgnoreCase(clazz.getSimpleName())) {
                 asCtx(ctx).addViolation(clazz);
             }
             return super.visit(clazz, ctx);
@@ -134,15 +136,18 @@ class SuppressWarningsTest extends ApexParserTestBase {
             + "}");
     }
 
-    @Test
-    void testSpecificSuppressionMulitpleValues() {
-        assertNoWarningsWithFoo("@SuppressWarnings('PMD.NoFoo, PMD.NoBar')"
-            + "\n" + "public class Bar {\n"
-            + " Integer foo;\n"
-            + " void bar() {" + "\n"
-            + "  Integer foo;\n"
-            + " }\n"
-            + "}");
+    @ParameterizedTest
+    @ValueSource(strings = {
+        "PMD.NoFoo,PMD.NoBar", "PMD.NoFoo, PMD.NoBar", "PMD.NoFoo ,PMD.NoBar", "PMD.NoFoo , PMD.NoBar",
+        "PMD.NoBar,PMD.NoFoo", "PMD.NoBar, PMD.NoFoo", "PMD.NoBar ,PMD.NoFoo", "PMD.NoBar , PMD.NoFoo"})
+    void testSpecificSuppressionMultipleValues(String suppressWarningsValue) {
+        assertNoWarningsWithFoo("@SuppressWarnings('" + suppressWarningsValue + "')"
+                + "\n" + "public class Bar {\n"
+                + " Integer foo;\n"
+                + " void bar() {" + "\n"
+                + "  Integer foo;\n"
+                + " }\n"
+                + "}");
     }
 
     @Test

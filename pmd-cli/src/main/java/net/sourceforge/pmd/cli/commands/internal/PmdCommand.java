@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,6 +7,7 @@ package net.sourceforge.pmd.cli.commands.internal;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
+import net.sourceforge.pmd.cli.commands.typesupport.internal.NumThreadsConverter;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.RulePriorityTypeSupport;
@@ -41,6 +43,7 @@ import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.ParameterException;
@@ -78,7 +81,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     private List<String> rulesets;
     
-    private Path ignoreListPath;
 
     private String format;
 
@@ -94,8 +96,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     private Properties properties = new Properties();
 
-    private Path reportFile;
-
     private List<LanguageVersion> languageVersion;
 
     private Language forceLanguage;
@@ -108,6 +108,10 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
 
     private boolean showProgressBar;
 
+
+    @CommandLine.ArgGroup(heading = FILE_COLLECTION_OPTION_HEADER, exclusive = false)
+    FileCollectionOptions<PMDConfiguration> files = new FileCollectionOptions<>();
+
     @Option(names = { "--rulesets", "-R" },
                description = "Path to a ruleset xml file. "
                              + "The path may reference a resource on the classpath of the application, be a local file system path, or a URL. "
@@ -117,12 +121,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.rulesets = rulesets;
     }
 
-    @Option(names = "--ignore-list",
-            description = "Path to a file containing a list of files to exclude from the analysis, one path per line. "
-                          + "This option can be combined with --dir, --file-list and --uri.")
-    public void setIgnoreListPath(final Path ignoreListPath) {
-        this.ignoreListPath = ignoreListPath;
-    }
 
     @Option(names = { "--format", "-f" },
             description = "Report format.%nValid values: ${COMPLETION-CANDIDATES}%n"
@@ -164,14 +162,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
             completionCandidates = PmdReportPropertiesCandidates.class)
     public void setProperties(final Properties properties) {
         this.properties = properties;
-    }
-
-    @Option(names = { "--report-file", "-r" },
-            description = "Path to a file to which report output is written. "
-                + "The file is created if it does not exist. "
-                + "If this option is not specified, the report is rendered to standard output.")
-    public void setReportFile(final Path reportFile) {
-        this.reportFile = reportFile;
     }
 
     @Option(names = "--use-version",
@@ -225,8 +215,12 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.noCache = noCache;
     }
 
-    @Option(names = { "--threads", "-t" }, description = "Sets the number of threads used by PMD.",
-            defaultValue = "1")
+    @Option(names = {"--threads", "-t"}, description =
+        "Set the number of threads used by PMD. This can be an integer, or a float (or int) followed by the letter `C`, eg `0.5C` or `1C`. "
+            + "In the latter case, the float will be multiplied by the number of cores of the host machine, and rounded down to an integer. "
+            + "If the specified number of threads is zero, then PMD will use the main thread for everything. If it is `n` > 0, "
+            + "PMD will spawn `n` separate analysis threads besides the main thread.",
+        defaultValue = "1C", converter = NumThreadsConverter.class)
     public void setThreads(final int threads) {
         if (threads < 0) {
             throw new ParameterException(spec.commandLine(), "Thread count should be a positive number or zero, found " + threads + " instead.");
@@ -241,6 +235,12 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.showProgressBar = showProgressBar;
     }
 
+
+    @Override
+    protected FileCollectionOptions<PMDConfiguration> getFileCollectionOptions() {
+        return files;
+    }
+
     /**
      * Converts these parameters into a configuration.
      *
@@ -251,28 +251,17 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     @Override
     protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
-        if (inputPaths != null) {
-            configuration.setInputPathList(new ArrayList<>(inputPaths));
-        }
-        configuration.setInputFilePath(fileListPath);
-        configuration.setIgnoreFilePath(ignoreListPath);
-        configuration.setInputUri(uri);
+        setCommonConfigProperties(configuration);
+
         configuration.setReportFormat(format);
-        configuration.setSourceEncoding(encoding.getEncoding());
         configuration.setMinimumPriority(minimumPriority);
-        configuration.setReportFile(reportFile);
         configuration.setReportProperties(properties);
-        if (relativizeRootPaths != null) {
-            configuration.addRelativizeRoots(relativizeRootPaths);
-        }
         configuration.setRuleSets(rulesets);
         configuration.setShowSuppressedViolations(showSuppressed);
         configuration.setSuppressMarker(suppressMarker);
-        configuration.setThreads(threads);
-        configuration.setFailOnViolation(failOnViolation);
-        configuration.setFailOnError(failOnError);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
+        configuration.setThreads(threads);
 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);
@@ -319,7 +308,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                 LOG.debug("Aux classpath: {}", configuration.getClassLoader());
 
                 if (showProgressBar) {
-                    if (reportFile == null) {
+                    if (configuration.getReportFilePath() == null) {
                         pmdReporter.warn("Progressbar rendering conflicts with reporting to STDOUT. "
                                 + "No progressbar will be shown. Try running with argument '-r <file>' to output the report to a file instead.");
                     } else {
@@ -370,7 +359,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
             try {
                 // No try-with-resources, do not want to close STDERR
                 @SuppressWarnings("PMD.CloseResource")
-                final Writer writer = new OutputStreamWriter(System.err);
+                final Writer writer = new OutputStreamWriter(System.err, Charset.defaultCharset());
                 renderer.render(timingReport, writer);
             } catch (final IOException e) {
                 pmdReporter.errorEx("Error producing benchmark report", e);

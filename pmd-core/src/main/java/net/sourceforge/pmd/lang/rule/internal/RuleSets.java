@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -20,7 +20,10 @@ import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.InternalApiBridge;
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.lang.rule.RuleReference;
 import net.sourceforge.pmd.lang.rule.RuleSet;
+import net.sourceforge.pmd.lang.rule.RuleSet.RuleSetBuilder;
+import net.sourceforge.pmd.lang.rule.impl.CannotBeSuppressed;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
@@ -49,7 +52,32 @@ public class RuleSets {
     }
 
     public RuleSets(Collection<? extends RuleSet> ruleSets) {
-        this.ruleSets = Collections.unmodifiableList(new ArrayList<>(ruleSets));
+        List<RuleSet> rulesets = new ArrayList<>();
+        List<RuleSet> suppressionRules = new ArrayList<>();
+
+        /*
+         Suppression rules are separated because they must be run last.
+         They are packed into their own rulesets. and added at the end of the ruleset list.
+         */
+
+        for (RuleSet ruleSet : ruleSets) {
+            RuleSetBuilder noSuppressions = ruleSet.toBuilder();
+            RuleSetBuilder onlySuppressions = ruleSet.toBuilder();
+
+            noSuppressions.removeIf(rule1 -> followReference(rule1) instanceof CannotBeSuppressed);
+            onlySuppressions.removeIf(rule1 -> !(followReference(rule1) instanceof CannotBeSuppressed));
+            rulesets.add(noSuppressions.build());
+            suppressionRules.add(onlySuppressions.build());
+        }
+        rulesets.addAll(suppressionRules);
+        this.ruleSets = Collections.unmodifiableList(rulesets);
+    }
+
+    private static Rule followReference(Rule rule) {
+        if (rule instanceof RuleReference) {
+            return followReference(((RuleReference) rule).getRule());
+        }
+        return rule;
     }
 
     /**
@@ -152,7 +180,7 @@ public class RuleSets {
 
         for (RuleSet ruleSet : ruleSets) {
             if (InternalApiBridge.ruleSetApplies(ruleSet, root.getTextDocument().getFileId())) {
-                ruleApplicator.apply(ruleSet.getRules(), listener);
+                ruleApplicator.apply(ruleSet.getRules(), listener, root);
             }
         }
     }

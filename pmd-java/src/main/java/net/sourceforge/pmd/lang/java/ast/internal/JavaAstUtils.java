@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -38,9 +39,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTBreakStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
-import net.sourceforge.pmd.lang.java.ast.ASTCompactConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTExplicitConstructorInvocation;
@@ -49,6 +48,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -66,6 +66,8 @@ import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTSuperExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchLike;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTThisExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTThrowStatement;
@@ -80,6 +82,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.JavaTokenKinds;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.QualifiableExpression;
+import net.sourceforge.pmd.lang.java.ast.ReturnScopeNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
@@ -244,8 +247,14 @@ public final class JavaAstUtils {
     private static boolean isReadUsage(ASTNamedReferenceExpr expr) {
         return expr.getAccessType() == AccessType.READ
             // x++ as a method argument or used in other expression
-            || expr.getParent() instanceof ASTUnaryExpression
-            && !(expr.getParent().getParent() instanceof ASTExpressionStatement);
+            || ((expr.getParent() instanceof ASTUnaryExpression
+            // compound assignments like '+=' have AccessType.WRITE, but can also be used in another expression
+            || isCompoundAssignment(expr))
+            && !(expr.getParent().getParent() instanceof ASTExpressionStatement));
+    }
+
+    private static boolean isCompoundAssignment(ASTNamedReferenceExpr expr) {
+        return expr.getParent() instanceof ASTAssignmentExpression && ((ASTAssignmentExpression) expr.getParent()).isCompound();
     }
 
     /**
@@ -292,8 +301,10 @@ public final class JavaAstUtils {
      */
     public static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
         JavaNode last = expr.ancestorsOrSelf()
-                            .takeWhile(it -> it instanceof ASTExpression
-                                || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression)
+                            .takeWhile(it ->
+                                    it instanceof ASTExpression && !(it instanceof ASTLambdaExpression)
+                                        || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression
+                            )
                             .last();
         return (ASTExpression) Objects.requireNonNull(last);
     }
@@ -791,7 +802,8 @@ public final class JavaAstUtils {
     }
 
     public static boolean isMarkdownComment(JavaccToken token) {
-        return token.kind == JavaTokenKinds.SINGLE_LINE_COMMENT && token.getText().charAt(2) == '/';
+        Chars text = token.getText();
+        return token.kind == JavaTokenKinds.SINGLE_LINE_COMMENT && text.length() > 2 && text.charAt(2) == '/';
     }
 
     /**
@@ -825,20 +837,12 @@ public final class JavaAstUtils {
     }
 
     /**
-     * Return the target of the return. May be an {@link ASTMethodDeclaration},
-     * {@link ASTLambdaExpression}, {@link ASTInitializer},
-     * {@link ASTConstructorDeclaration} or {@link ASTCompactConstructorDeclaration}.
-     *
+     * Return the target of the return.
      */
-    public static @Nullable JavaNode getReturnTarget(ASTReturnStatement stmt) {
-        return stmt.ancestors().first(
-                it -> it instanceof ASTMethodDeclaration
-                        || it instanceof ASTLambdaExpression
-                        || it instanceof ASTConstructorDeclaration
-                        || it instanceof ASTInitializer
-                        || it instanceof ASTCompactConstructorDeclaration
-        );
+    public static @Nullable ReturnScopeNode getReturnTarget(ASTReturnStatement stmt) {
+        return stmt.ancestors().first(ReturnScopeNode.class);
     }
+
 
     /**
      * Return true if the variable is effectively final. This means
@@ -866,5 +870,24 @@ public final class JavaAstUtils {
             }
         }
         return true;
+    }
+
+    public static boolean isUnconditionalLoop(ASTLoopStatement loop) {
+        return !(loop instanceof ASTForeachStatement)
+                && (loop.getCondition() == null || isBooleanLiteral(loop.getCondition(), true));
+    }
+
+    /**
+     * Return true if this switch is total with respect to the scrutinee
+     * type. This means, one of the branches will always be taken, and the
+     * switch will never "not match". A switch with a default case is always
+     * total. A switch expression is checked by the compiler for exhaustivity,
+     * and we assume it is correct.
+     */
+    public static boolean isTotalSwitch(ASTSwitchLike switchLike) {
+        if (switchLike instanceof ASTSwitchExpression || switchLike.hasDefaultCase()) {
+            return true;
+        }
+        return switchLike.isExhaustive();
     }
 }

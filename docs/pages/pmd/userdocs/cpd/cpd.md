@@ -4,7 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: June 2024 (7.3.0)
+last_updated: August 2025 (7.17.0)
 ---
 
 ## Overview
@@ -42,7 +42,7 @@ refactored out. We thus advise developers to use CPD to **help remove duplicates
 
 ### Refactoring duplicates
 
-Once you have located some duplicates, several refactoring strategies may apply depending of the scope and extent of
+Once you have located some duplicates, several refactoring strategies may apply depending on the scope and extent of
 the duplication. Here's a quick summary:
 
 * If the duplication is local to a method or single class:
@@ -75,6 +75,10 @@ exactly identical.
 
 ### CLI options reference
 
+{% include callout.html 
+    type="primary"
+    content="The file collection options are common to PMD and CPD and [described over there](pmd_userdocs_cli_reference.html#file-collection-options)." %}
+
 <table>
     <tr>
         <th>Option</th>
@@ -87,24 +91,6 @@ exactly identical.
                description="The minimum token length which should be reported as a duplicate."
                required="yes"
     %}
-    {% include custom/cli_option_row.html options="--dir,-d"
-               option_arg="path"
-               description="Path to a source file, or directory containing
-                               source files to analyze. Zip and Jar files are
-                               also supported, if they are specified directly
-                               (archive files found while exploring a directory
-                               are not recursively expanded). This option can
-                               be repeated, and multiple arguments can be
-                               provided to a single occurrence of the option.
-                               One of `--dir`, `--file-list` or `--uri` must be
-                               provided."
-    %}
-    {% include custom/cli_option_row.html options="--file-list"
-               option_arg="filepath"
-               description="Path to a file containing a list of files to
-                               analyze, one path per line. One of `--dir`,
-                               `--file-list` or `--uri` must be provided."
-    %}
     {% include custom/cli_option_row.html options="--language,-l"
                option_arg="lang"
                description="The source code language.
@@ -115,24 +101,11 @@ exactly identical.
     {% include custom/cli_option_row.html options="--debug,--verbose,-D,-v"
                description="Debug mode. Prints more log output. See also [Logging](#logging)."
     %}
-    {% include custom/cli_option_row.html options="--encoding,-e"
-               option_arg="charset"
-               description="Specifies the character set encoding of the source code files PMD is reading.
-                            The valid values are the standard character sets of `java.nio.charset.Charset`."
-               default="UTF-8"
-    %}
     {% include custom/cli_option_row.html options="--skip-duplicate-files"
                description="Ignore multiple copies of files of the same name and length in comparison."
     %}
-    {% include custom/cli_option_row.html options="--exclude"
-               option_arg="path"
-               description="Files to be excluded from the analysis"
-    %}
-    {% include custom/cli_option_row.html options="--non-recursive"
-               description="Don't scan subdirectories. By default, subdirectories are considered."
-    %}
     {% include custom/cli_option_row.html options="--skip-lexical-errors"
-               description="<span class='label label-primary'>Deprecated</span> Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
+               description="<span class='label label-primary'>Deprecated (Since 7.3.0)</span> Skip files which can't be tokenized due to invalid characters instead of aborting CPD.
                             By default, CPD analysis is stopped on the first error. This is deprecated. Use `--fail-on-error` instead."
     %}
     {% include custom/cli_option_row.html options="--format,-f"
@@ -140,15 +113,6 @@ exactly identical.
                description="Output format of the analysis report. The available formats
                             are described [here](#available-report-formats)."
                default="text"
-    %}
-    {% include custom/cli_option_row.html options="--relativize-paths-with,-z"
-               option_arg="path"
-               description="Path relative to which directories are rendered in the report. This option allows
-                    shortening directories in the report; without it, paths are rendered as mentioned in the
-                    source directory (option \"--dir\").
-                    The option can be repeated, in which case the shortest relative path will be used.
-                    If the root path is mentioned (e.g. \"/\" or \"C:\\\"), then the paths will be rendered
-                    as absolute."
     %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-error"
                description="Specifies whether CPD exits with non-zero status if recoverable errors occurred.
@@ -199,12 +163,6 @@ exactly identical.
                             separated by `|`. The first part is the start pattern, the second part is the ending pattern."
                default="#if&nbsp;0|#endif"
                languages="C++"
-    %}
-    {% include custom/cli_option_row.html options="--uri,-u"
-               option_arg="uri"
-               description="Database URI for sources. One of `--dir`,
-                               `--file-list` or `--uri` must be provided."
-               languages="PLSQL"
     %}
     {% include custom/cli_option_row.html options="--help,-h"
                description="Print help text"
@@ -312,41 +270,7 @@ to be "debug".
 
 ## Supported Languages
 
-* C#
-* C/C++
-* [Coco](pmd_languages_coco.html)
-* Dart
-* EcmaScript (JavaScript)
-* Fortran
-* [Gherkin](pmd_languages_gherkin.html) (Cucumber)
-* Go
-* Groovy
-* [Html](pmd_languages_html.html)
-* [Java](pmd_languages_java.html)
-* [Jsp](pmd_languages_jsp.html)
-* [Julia](pmd_languages_julia.html)
-* [Kotlin](pmd_languages_kotlin.html)
-* Lua
-* Matlab
-* Modelica
-* Objective-C
-* Perl
-* PHP
-* [PL/SQL](pmd_languages_plsql.html)
-* Python
-* Ruby
-* [Rust](pmd_languages_rust.html)
-* [Salesforce.com Apex](pmd_languages_apex.html)
-* Scala
-* Swift
-* T-SQL
-* [TypeScript](pmd_languages_js_ts.html)
-* [Visualforce](pmd_languages_visualforce.html)
-* vm (Apache Velocity)
-* [XML](pmd_languages_xml.html)
-  * POM (Apache Maven)
-  * XSL
-  * WSDL
+See [CPD Capable Languages](tag_CpdCapableLanguage.html) for the full list of supported languages.
 
 ## Available report formats
 
@@ -355,6 +279,7 @@ to be "debug".
 * csv
 * csv_with_linecount_per_file
 * vs
+* markdown
 
 For details, see [CPD Report Formats](pmd_userdocs_cpd_report_formats.html).
 

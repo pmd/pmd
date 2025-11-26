@@ -1,8 +1,10 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.lang.java.ast;
+
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -11,7 +13,6 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
-
 
 /**
  * A method declaration, in a class or interface declaration. Since 7.0,
@@ -130,26 +131,41 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
 
     /**
      * Returns whether this is a main method declaration.
+     *
+     * @see <a href="https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html#jls-12.1.4">12.1.4. Invoke a main Method</a>
      */
     public boolean isMainMethod() {
-        return this.hasModifiers(JModifier.PUBLIC, JModifier.STATIC)
-            && "main".equals(this.getName())
-            && this.isVoid()
-            && this.getArity() == 1
-            && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0))
-            || isLaunchableMainMethod();
+        if (!isMainMethodCandidate()) {
+            return false;
+        }
+        if (isStatic()) {
+            return getArity() == 1 || hasNoOtherMainMethodSibling(
+                m -> m.isStatic() && m.getArity() == 1);
+        }
+        if (getArity() == 1) {
+            return hasNoOtherMainMethodSibling(ASTExecutableDeclaration::isStatic);
+        }
+        return hasNoOtherMainMethodSibling(any -> true)
+            && !ancestors(ASTClassDeclaration.class).firstOpt()
+                    .map(this::hasParametrizedMain).orElse(false);
     }
 
-    /**
-     * With JEP 445/463/477/495 (Java 23/24 Preview) the main method does not need to be static anymore and
-     * does not need to be public or have a formal parameter.
-     */
-    private boolean isLaunchableMainMethod() {
-        return this.getRoot().isSimpleCompilationUnit()
-                && "main".equals(this.getName())
-                && !this.hasModifiers(JModifier.PRIVATE)
-                && this.isVoid()
-                && (this.getArity() == 0
-                    || this.getArity() == 1 && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0)));
+    private boolean hasNoOtherMainMethodSibling(Predicate<ASTMethodDeclaration> check) {
+        return getParent().children(ASTMethodDeclaration.class).toStream().filter(check)
+            .noneMatch(m -> m != this && m.isMainMethodCandidate());
+    }
+
+    private boolean isMainMethodCandidate() {
+        return "main".equals(this.getName())
+            && !this.hasModifiers(JModifier.PRIVATE)
+            && this.isVoid()
+            && (this.getArity() == 0
+            || this.getArity() == 1 && TypeTestUtil.isExactlyA(String[].class, this.getFormalParameters().get(0)));
+    }
+
+    private boolean hasParametrizedMain(ASTClassDeclaration astClassType) {
+        return astClassType.getTypeMirror().streamMethods(
+            m -> "main".equals(m.getSimpleName()) && m.getArity() == 1 && !m.isStatic())
+            .anyMatch(m -> TypeTestUtil.isExactlyA(String[].class, m.getFormalParameters().get(0)));
     }
 }

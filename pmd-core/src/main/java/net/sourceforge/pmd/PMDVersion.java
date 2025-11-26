@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -80,7 +80,6 @@ public final class PMDVersion {
      * Checks if the current version is unknown.
      * @return True if an unknown version, false otherwise
      */
-    @SuppressWarnings("PMD.LiteralsFirstInComparisons")
     public static boolean isUnknown() {
         return UNKNOWN.equals(VERSION);
     }

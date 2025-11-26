@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -10,6 +10,8 @@ import static net.sourceforge.pmd.reporting.RuleViolation.PACKAGE_NAME;
 import static net.sourceforge.pmd.reporting.RuleViolation.VARIABLE_NAME;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
@@ -21,19 +23,20 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
+import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 
 /**
  * @author Philip Graf
  */
 class JavaViolationDecoratorTest {
-
-    // TODO there are no tests for anon or local classes
 
     @Test
     void testASTFormalParameterVariableName() {
@@ -60,7 +63,7 @@ class JavaViolationDecoratorTest {
         assertThat(decorate(md), hasEntry(METHOD_NAME, "bar"));
     }
 
-    static Map<String, String> decorate(JavaNode md) {
+    private static Map<String, String> decorate(JavaNode md) {
         Map<String, String> result = new HashMap<>();
         JavaViolationDecorator.INSTANCE.decorate(md, result);
         return result;
@@ -118,7 +121,7 @@ class JavaViolationDecoratorTest {
     }
 
     @Test
-    void testDefaultPackageAndClassName() {
+    void testDefaultPackageAndClassNameOnImports() {
         ASTCompilationUnit ast = parse("import java.util.List; public class Foo { }");
         ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
@@ -128,7 +131,7 @@ class JavaViolationDecoratorTest {
     }
 
     @Test
-    void testPackageAndMultipleClassesName() {
+    void testPackageAndMultipleClassesNameOnImports() {
         ASTCompilationUnit ast = parse("package pkg; import java.util.List; class Foo { } public class Bar { }");
         ASTImportDeclaration importNode = ast.descendants(ASTImportDeclaration.class).first();
 
@@ -153,18 +156,96 @@ class JavaViolationDecoratorTest {
      */
     @Test
     void testInnerClass() {
-        ASTCompilationUnit ast = parse("class Foo { int a; class Bar { int a; } }");
-        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).toList();
+        ASTCompilationUnit ast = parse("class Foo { int a; class Bar { int a; class Baz { int a; } } }");
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(3, classes.size());
+
+        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo.Bar"));
+        assertThat(decorate(classes.get(2)), hasEntry(CLASS_NAME, "Foo.Bar.Baz"));
+
+        List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(3, fields.size());
+
+        assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Foo.Bar"));
+        assertThat(decorate(fields.get(2)), hasEntry(CLASS_NAME, "Foo.Bar.Baz"));
+    }
+
+    @Test
+    void testInnerClassIncludingPackage() {
+        ASTCompilationUnit ast = parse("package pkg; class Foo { class Bar {} }");
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
         assertEquals(2, classes.size());
 
         assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
-        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Bar"));
+        assertThat(decorate(classes.get(0)), hasEntry(PACKAGE_NAME, "pkg"));
+
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo.Bar"));
+        assertThat(decorate(classes.get(1)), hasEntry(PACKAGE_NAME, "pkg"));
+    }
+
+    @Test
+    void localClasses() {
+        ASTCompilationUnit ast = parse("class Foo { int a; void m() { class Local { int a; Local() {} }; } }");
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(2, classes.size());
+
+        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo.Local"));
 
         List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
         assertEquals(2, fields.size());
 
         assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
-        assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Bar"));
+        assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Foo.Local"));
+
+        List<ASTConstructorDeclaration> ctors = ast.descendants(ASTConstructorDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(1, ctors.size());
+
+        assertThat(decorate(ctors.get(0)), hasEntry(CLASS_NAME, "Foo.Local"));
+    }
+
+    @Test
+    void localClassesNested() {
+        ASTCompilationUnit ast = parse("package pkg1.pkg2; class Foo { static void fooMethod() { class Local1 { void local1Method() { class Local2 { int field2; Local2() {} } } } } }");
+        List<ASTClassDeclaration> classes = ast.descendants(ASTClassDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(3, classes.size());
+
+        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.get(0)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo.Local1"));
+        assertThat(decorate(classes.get(1)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+        assertThat(decorate(classes.get(2)), hasEntry(CLASS_NAME, "Foo.Local1.Local2"));
+        assertThat(decorate(classes.get(2)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+
+        List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(1, fields.size());
+
+        assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo.Local1.Local2"));
+        assertThat(decorate(fields.get(0)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+
+        List<ASTConstructorDeclaration> ctors = ast.descendants(ASTConstructorDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(1, ctors.size());
+
+        assertThat(decorate(ctors.get(0)), hasEntry(CLASS_NAME, "Foo.Local1.Local2"));
+        assertThat(decorate(ctors.get(0)), hasEntry(PACKAGE_NAME, "pkg1.pkg2"));
+    }
+
+    @Test
+    void anonymousClasses() {
+        ASTCompilationUnit ast = parse("class Foo { int a; void m() { new Object() { int a; }; } }");
+        List<ASTTypeDeclaration> classes = ast.descendants(ASTTypeDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(2, classes.size());
+
+        assertThat(decorate(classes.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(classes.get(1)), hasEntry(CLASS_NAME, "Foo")); // anonymous classes are unnamed
+
+        List<ASTFieldDeclaration> fields = ast.descendants(ASTFieldDeclaration.class).crossFindBoundaries().toList();
+        assertEquals(2, fields.size());
+
+        assertThat(decorate(fields.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(fields.get(1)), hasEntry(CLASS_NAME, "Foo")); // anonymous classes are unnamed
     }
 
     @Test
@@ -180,4 +261,36 @@ class JavaViolationDecoratorTest {
         assertThat(decorate(expressions.get(1)), hasEntry(VARIABLE_NAME, "x"));
     }
 
+    @Test
+    void variableNameForStringLiterals() {
+        ASTCompilationUnit ast = parse("class Foo { { String var1 = new String(\"var1\"); new String(\"var2\"); } }");
+        List<ASTStringLiteral> literals = ast.descendants(ASTStringLiteral.class).toList();
+        assertEquals(2, literals.size());
+
+        assertThat(decorate(literals.get(0)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(literals.get(0)), hasEntry(VARIABLE_NAME, "var1"));
+
+        assertThat(decorate(literals.get(1)), hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorate(literals.get(1)), not(hasKey(VARIABLE_NAME)));
+    }
+
+    @Test
+    void noVariableNameForStringLiteralsInsideLambda() {
+        ASTCompilationUnit ast = parse("class Foo {\n"
+                + "  void foo() {\n"
+                + "    int otherVariable = 1;\n"
+                + "    Runnable run = () -> {\n"
+                + "      System.out.println(\"noVar\");\n"
+                + "    };\n"
+                + "  }\n"
+                + "}\n");
+        List<ASTStringLiteral> literals = ast.descendants(ASTStringLiteral.class).crossFindBoundaries().toList();
+        assertEquals(1, literals.size());
+
+        Map<String, String> decorated = decorate(literals.get(0));
+        assertThat(decorated, hasEntry(CLASS_NAME, "Foo"));
+        assertThat(decorated, hasEntry(METHOD_NAME, "foo"));
+        assertThat(decorated, not(hasEntry(VARIABLE_NAME, "run")));
+        assertThat(decorated, not(hasKey(VARIABLE_NAME)));
+    }
 }

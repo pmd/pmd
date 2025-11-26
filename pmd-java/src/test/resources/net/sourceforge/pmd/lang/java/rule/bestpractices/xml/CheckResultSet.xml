@@ -239,7 +239,7 @@ public class Foo {
         if (results.first()) {
             //do a little logic
             do {
-                //this is handeling paging
+                //this is handling paging
                 if (results.getInt("RowNum") >= firstEntry && results.getInt("RowNum") <= lastEntry) {
                     answer  = results.getString("answer");
                     stringList.add(answer);
@@ -321,6 +321,118 @@ public class Foo {
         return results.next();
     }
 }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5198: Result is saved in variable before being checked in if statement</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+public class Foo {
+    public void bar(Statement stmt) {
+        ResultSet results = stmt.executeQuery();
+        boolean hasNext = results.next();
+        if (hasNext) {
+            System.out.println("next!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5198: Result is saved in variable before being checked in while loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.sql.*;
+
+public class Foo {
+    public void bar(Statement stmt) {
+        ResultSet results = stmt.executeQuery();
+        boolean hasNext = results.next();
+        while (hasNext) {
+            System.out.println("next!");
+            hasNext = results.next();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Result is overwritten before being checked</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+import java.sql.*;
+
+public class Foo {
+    public void bar(Statement stmt) {
+        ResultSet results = stmt.executeQuery();
+        boolean hasNext = results.next();
+        hasNext = false;
+        if (hasNext) {
+            System.out.println("next!");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4122: CheckResultSet false-positive with local variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.sql.Connection;
+            import java.sql.ResultSet;
+
+            class Scratch {
+                public void bar(Connection c, String tableName) throws Exception {
+                      ResultSet created = c.getMetaData().getTables(null, null, tableName, null);
+                      boolean missing = !created.next();
+                      reportTableName(tableName, !missing);
+                }
+
+                private void reportTableName(String tableName, boolean alreadyExisting) {
+                    if (!alreadyExisting) {
+                        System.out.println("Table " + tableName + " is available");
+                    }
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>CheckResultSet in lambda and anonymous class</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,14</expected-linenumbers>
+        <code><![CDATA[
+            import java.sql.*;
+            import java.util.function.Consumer;
+
+            class Foo {
+                public void bar(ResultSet resultSet) {
+                    int x = consumeResultSet(resultSet, rs -> {
+                        rs.next();
+                    });
+                    System.out.println(x);
+
+                    int y = consumeResultSet(resultSet, new Consumer<ResultSet>() {
+                        @Override
+                        public void accept(ResultSet rs) {
+                            rs.next();
+                        }
+                    });
+                    System.out.println(y);
+                }
+
+                private static int consumeResultSet(ResultSet resultSet, Consumer<ResultSet> consumer) throws Exception {
+                    consumer.accept(resultSet);
+                    return rs.getInt(0);
+                }
+            }
         ]]></code>
     </test-code>
 </test-data>

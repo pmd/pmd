@@ -5,9 +5,7 @@
 package net.sourceforge.pmd.lang.ecmascript.ast;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.mozilla.javascript.CompilerEnvirons;
@@ -26,9 +24,11 @@ import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.FileAnalysisException;
 import net.sourceforge.pmd.lang.ast.ParseException;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.ast.impl.SuppressionCommentImpl;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextPos2d;
+import net.sourceforge.pmd.reporting.ViolationSuppressor.SuppressionCommentWrapper;
 
 public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Parser {
     private static final Logger LOGGER = LoggerFactory.getLogger(EcmascriptParser.class);
@@ -90,17 +90,18 @@ public final class EcmascriptParser implements net.sourceforge.pmd.lang.ast.Pars
         ASTAstRoot tree = (ASTAstRoot) treeBuilder.build(astRoot);
 
         String suppressMarker = properties.getSuppressMarker();
-        Map<Integer, String> suppressMap = new HashMap<>();
+        List<SuppressionCommentWrapper> suppressionComments = new ArrayList<>();
         if (astRoot.getComments() != null) {
             for (Comment comment : astRoot.getComments()) {
                 int nopmd = comment.getValue().indexOf(suppressMarker);
                 if (nopmd > -1) {
                     String suppression = comment.getValue().substring(nopmd + suppressMarker.length());
-                    suppressMap.put(comment.getLineno(), suppression);
+                    FileLocation loc = FileLocation.caret(task.getFileId(), comment.getLineno(), 1);
+                    suppressionComments.add(new SuppressionCommentImpl<>(() -> loc, suppression));
                 }
             }
         }
-        tree.setAstInfo(new AstInfo<>(task, tree).withSuppressMap(suppressMap));
+        tree.setAstInfo(new AstInfo<>(task, tree).withSuppressionComments(suppressionComments));
         return tree;
     }
 

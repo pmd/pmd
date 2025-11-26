@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -7,7 +7,6 @@ package net.sourceforge.pmd.lang.java.rule.codestyle;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
@@ -17,7 +16,8 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
+import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.util.OptionalBool;
 
 
@@ -42,17 +42,17 @@ public class IdenticalCatchBranchesRule extends AbstractJavaRulechainRule {
         String e2Name = st2.getParameter().getName();
 
         return JavaAstUtils.tokenEquals(st1.getBody(), st2.getBody(), name -> name.equals(e1Name) ? e2Name : name)
-            && areStructurallyEquivalent(st1.getBody(), st2.getBody(),
-                                         (n1, n2) -> {
-                                             if (n1 instanceof InvocationNode) {
-                                                 JExecutableSymbol sym1 = ((InvocationNode) n1).getMethodType().getSymbol();
-                                                 JExecutableSymbol sym2 = ((InvocationNode) n2).getMethodType().getSymbol();
-                                                 if (!Objects.equals(sym1, sym2)) {
-                                                     return OptionalBool.NO;
-                                                 }
-                                             }
-                                             return OptionalBool.UNKNOWN;
-                                         });
+            && areStructurallyEquivalent(st1.getBody(), st2.getBody(), this::isSameMethod);
+    }
+
+    private OptionalBool isSameMethod(JavaNode n1, JavaNode n2) {
+        if (n1 instanceof InvocationNode) {
+            JMethodSig methodType1 = ((InvocationNode) n1).getMethodType();
+            JMethodSig methodType2 = ((InvocationNode) n2).getMethodType();
+            return TypeOps.overrideSameMethod(methodType1, methodType2)
+                ? OptionalBool.UNKNOWN : OptionalBool.NO;
+        }
+        return OptionalBool.UNKNOWN;
     }
 
     /**

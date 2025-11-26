@@ -60,7 +60,7 @@ public class Foo {
         <description>Full example</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#bar()' has value 8064.</message>
+            <message>'Foo#bar()' has value 5064.</message>
         </expected-messages>
         <code-ref id="full-example"/>
     </test-code>
@@ -216,6 +216,29 @@ class Foo {
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Switch with no default</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo#bar()' has value 7.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar() {
+        boolean a, b;
+        int j = 23;
+        switch(j) {
+            case 1:
+            case 2: break;
+            case 3: j = 5; break;
+            case 4: if (b && a) { bar(); } break;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>Ensure switch has same complexity as equivalent ifs</description>
         <expected-problems>1</expected-problems>
@@ -302,12 +325,24 @@ class Foo {
         <description>Boolean operators</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Foo#bar()' has value 4.</message>
+            <message>'Foo#bar()' has value 5.</message>
         </expected-messages>
         <code><![CDATA[
 class Foo {
     void bar() {
-        if (a && b || c);
+        if (a && b || c) {
+            // there are 3 paths into here:
+            // a && b
+            // !a && c
+            // a && !b && c
+        }
+        // And 2 paths into here (if stmt is false):
+        // !a && !c
+        // a && !b && !c
+
+        // To which must be added the three paths into the `if` stmt
+        // that fallthrough to here.
+        // Total number of paths to the end of the function: 5
     }
 }
         ]]></code>
@@ -367,7 +402,7 @@ class Foo {
         <description>NPath should count the boolean complexity of ternaries</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Test#method(Date)' has value 4.</message>
+            <message>'Test#method(Date)' has value 5.</message>
         </expected-messages>
         <code><![CDATA[
 import java.util.Date;
@@ -533,6 +568,32 @@ public class SOFExample {
         ]]></code>
     </test-code>
 
+
+    <test-code>
+        <description>Foreach with break and continue</description>
+        <rule-property name="reportLevel">6</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'SOFExample#usefulMethod(List&lt;MyCal&gt;)' has value 8.</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.*;
+public class SOFExample {
+    private static final class MyCal { long aTime; long bTime; long cTime; long dTime;}
+
+    public void usefulMethod(final List<MyCal> myCals) {
+
+        for (MyCal myCal : myCals) {
+            if(myCal.aTime == UNKNOWN) continue;
+            if(myCal.bTime == UNKNOWN) myCal.bTime = bTime;
+            if(myCal.cTime == UNKNOWN) break;
+            if(myCal.dTime == UNKNOWN) myCal.dTime = dTime;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
     <test-code>
         <description>NPath foreach times other construct</description>
         <rule-property name="reportLevel">6</rule-property>
@@ -632,7 +693,7 @@ public class NPathComplexityOverflow {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Product#buildProduct(String, Language)' has value 12.</message>
+            <message>'Product#buildProduct(String, Language)' has value 6.</message>
         </expected-messages>
         <code><![CDATA[
             public class Product {
@@ -666,7 +727,7 @@ public class NPathComplexityOverflow {
         <rule-property name="reportLevel">2</rule-property>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>'Product#buildProduct(String, Language)' has value 12.</message>
+            <message>'Product#buildProduct(String, Language)' has value 6.</message>
         </expected-messages>
         <code><![CDATA[
             public class Product {
@@ -738,6 +799,290 @@ public class NPathComplexityOverflow {
                     return product;
                 }
                 enum Language {FR,IT,EN}
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Switch expression in return statement (#5568)</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Product#toByte(Register8)' has value 20.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+                static byte toByte(final Register8 r) {
+                    return switch (r) {
+                        case AL, R8B -> (byte) 0x00;
+                        case CL, R9B -> (byte) 0x01;
+                        case DL, R10B -> (byte) 0x02;
+                        case BL, R11B -> (byte) 0x03;
+                        case AH, SPL, R12B -> (byte) 0x04;
+                        case CH, BPL, R13B -> (byte) 0x05;
+                        case DH, SIL, R14B -> (byte) 0x06;
+                        case BH, DIL, R15B -> (byte) 0x07;
+                    };
+                }
+                enum Register8 {
+                    AL, R8B, CL, R9B, DL, R10B, BL, R11B, AH, SPL, R12B, CH, BPL, R13B, DH, SIL, R14B, BH, DIL, R15B
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return stmt</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>'Product#m0()' has value 2.</message>
+            <message>'Product#m1()' has value 2.</message>
+            <message>'Product#m2()' has value 4.</message>
+            <message>'Product#m3()' has value 5.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+               static int m0() {
+                   if (foo())
+                       return 1 + 2;
+                   return 4;
+               }
+               static int m1() {
+                   if (foo())
+                       return 2;
+                   return 6;
+               }
+                static boolean m2() {
+                    if (foo())
+                        return foo() || bar();
+                    return foo() && bar();
+                }
+                static boolean m3() {
+                    if (foo())
+                        return foo() || bar() ? foo() : bar();
+                    return foo() && bar();
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Return stmt 2</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>'Product#m0()' has value 5.</message>
+            <message>'Product#m1()' has value 4.</message>
+            <message>'Product#m2()' has value 4.</message>
+            <message>'Product#m3()' has value 5.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Product {
+                static int m0() {
+                    if (foo() && bar())
+                        return 1 + 2;
+                    if (a) dosomething();
+                    return 4;
+                }
+                static int m1() {
+                    if (foo() || bar())
+                        return 1 + 2;
+                    if (a) dosomething();
+                    return 4;
+                }
+                static boolean m2() {
+                    if (!(foo() && bar()))
+                        return 1 + 2;
+                    if (a) dosomething();
+                    return 4;
+                }
+                static boolean m3() {
+                    if (!(foo() || bar()))
+                        return 1 + 2;
+                    if (a) dosomething();
+                    return 4;
+                }
+            }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For stmt</description>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>'Test#testFor1()' has value 2.</message>
+            <message>'Test#testFor2()' has value 3.</message>
+            <message>'Test#testFor3()' has value 5.</message>
+            <message>'Test#testFor4()' has value 4.</message>
+            <message>'Test#testForCyclesComplex()' has value 120.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                boolean a, b, c, d;
+                void testFor1() { // violation
+                    for (int i = 0; i < 10; i++) dosomething();
+                }
+                void testFor2() { // violation
+                    for (int i = 0; i < 10 && b; i++)  dosomething();;
+                }
+                void testFor3() { // violation
+                    for (int i = 0; a ? i < 10 : c || d; i++)  dosomething();;
+                }
+                void testFor4() { // violation
+                    for (int i = b ? 0 : 1; i < 10; i++)  dosomething();;
+                }
+                void testForCyclesComplex() { // violation
+                    // NP(for-statement) = (for-range=1) + (expr(1)=0) + (expr(2)=0) + (expr(3)=0) + 1 = 2
+                    for (int i = 0; i < 10; i++) ;
+                    // NP(for-statement) = (for-range=1) + (expr(1)=0) + (expr(2)=1) + (expr(3)=0) + 1 = 3
+                    for (int i = 0; i < 10 && true; i++) ;
+                    // NP(for-statement) = (for-range=1) + (expr(1)=2) + (expr(2)=0) + (expr(3)=0) + 1 = 4
+                    for (int i = true ? 0 : 0; i < 10; i++) ;
+                    // NP(for-statement) = (for-range=1) + (expr(1)=0) + (expr(2)=1+2) + (expr(3)=0) + 1 = 5
+                    for (int i = 0; true ? i < 10 : true || true; i++) ;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>While stmt</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#testWhileCyclesComplex()' has value 6.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                // NP = (while-statement[1]=2) * (while-statement[2]=3) = 6
+                boolean testWhileCyclesComplex() { // violation
+                    int a = 0;
+                    // 1 path into while
+                    while (a != 0) { }
+                    // 2 paths out of while
+
+                    // 2 paths into while
+                    while (a != 0 && a == 0) { // 1 true path, 2 false paths
+                        // 2*1 paths to this return
+                        return a == 0;
+                    }
+                    // 2*2 paths to this return
+                    return true;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Do stmt</description>
+        <expected-problems>6</expected-problems>
+        <expected-messages>
+            <message>'Test#testDoWhile0()' has value 2.</message>
+            <message>'Test#testDoWhile1()' has value 3.</message>
+            <message>'Test#testDoWhile2()' has value 3.</message>
+            <message>'Test#testDoWhile3()' has value 4.</message>
+            <message>'Test#testDoWhile4()' has value 7.</message>
+            <message>'Test#testDoWhileCyclesComplex()' has value 15.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                boolean x, q, b;
+                int a = 0;
+                void testDoWhile0() { // violation
+                    do {
+                    } while (b);
+
+                }
+                void testDoWhile1() { // violation
+                    do {
+                    } while (a < 10 && b);
+
+                }
+                void testDoWhile2() { // violation
+                    do { } while (a < 10 || b);
+                }
+                void testDoWhile3() { // violation
+                    do {
+                        do { } while (a < 10 || b);
+
+                    } while (x);
+                }
+                void testDoWhile4() { // violation
+                    do {
+                        do { } while (a < 10 || b);
+
+                    } while (x ? a > 10 : (a < 10 || q));
+                }
+
+                // NP = (do-statement[1]=6) * (do-statement[2]=3) = 21
+                void testDoWhileCyclesComplex() { // violation
+                    int a = 0;
+                    // 1 path going in
+                    do { } while (a < 10 && b);
+                    // 1 path going back to the top (a < 10 && b)
+                    // 2 paths going out (
+                    //   - a>=10  and
+                    //   - a<10 && !b
+
+                    // NP(do-statement) =
+                    //         (do-range=3) + ((expr(1)=0) + (expr(2)=0) + (expr(3)=1) + 2) + 1 = 7
+
+                    // 2 paths going in
+                    do {
+                        // 2 paths going in
+                        do { } while (a < 10 || b);
+                        // 2 paths going out (condition is false only if a >= 10 && !b)
+
+                    } while
+                    // 2 paths reaching here. There are 2 paths that lead to false in this condition. Total is 4 paths.
+                    (x ? a > 10 : (a < 10 || q));
+
+                }
+
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] NPathComplexity does not account for returns #5647</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Test#foo(int)' has value 11.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                int foo(int x) {
+                    if(x==0) return 0;
+                    if(x==1) return 1;
+                    if(x==2) return 2;
+                    if(x==3) return 3;
+                    if(x==4) return 4;
+                    if(x==5) return 5;
+                    if(x==6) return 6;
+                    if(x==7) return 7;
+                    if(x==8) return 8;
+                    if(x==9) return 9;
+                    return x;
+                }
+            }
+            ]]></code>
+    </test-code>
+    <test-code>
+        <description>Lambdas and anon classes don't count as control flow in their parent</description>
+        <rule-property name="reportLevel">1</rule-property>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'Test#foo(int)' has value 1.</message>
+            <message>'(lambda) on line 3' has value 2.</message>
+            <message>'Test$1#run()' has value 16.</message>
+        </expected-messages>
+        <code><![CDATA[
+            public class Test {
+                Runnable foo(int x) {
+                    Runnable lambda = () -> {
+                        if(x==0) dosomething();
+                    };
+                    lambda = new Runnable() {
+                        void run() {
+                            if(x==0) dosomething();
+                            if(x==1) dosomething();
+                            if(x==2) dosomething();
+                            if(x==4) dosomething();
+                        }
+                    };
+                    return lambda;
+                }
             }
             ]]></code>
     </test-code>

@@ -12,6 +12,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
@@ -28,8 +30,13 @@ final class MultiThreadProcessor extends AbstractPMDProcessor {
 
     MultiThreadProcessor(final AnalysisTask task) {
         super(task);
-
-        executor = Executors.newFixedThreadPool(task.getThreadCount(), new PmdThreadFactory());
+        int threadCount = task.getThreadCount();
+        if (threadCount == 1) {
+            task.getMessageReporter().log(Level.DEBUG, "Using 1 thread for analysis");
+        } else {
+            task.getMessageReporter().log(Level.DEBUG, "Using {0} threads for analysis", threadCount);
+        }
+        executor = Executors.newFixedThreadPool(threadCount, new PmdThreadFactory());
         futureList = new LinkedList<>();
     }
 

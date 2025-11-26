@@ -1,4 +1,4 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
@@ -36,8 +36,7 @@ public class AvoidTabCharacterRule extends AbstractPLSQLRule {
         int lineNumber = 1;
         for (Chars line : node.getText().lines()) {
             if (line.indexOf('\t', 0) != -1) {
-                asCtx(data).addViolationWithPosition(node, lineNumber, lineNumber,
-                                        "Tab characters are not allowed. Use spaces for indentation");
+                asCtx(data).atLine(lineNumber).warn();
 
                 if (!eachLine) {
                     break;

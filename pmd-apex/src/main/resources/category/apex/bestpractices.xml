@@ -172,6 +172,77 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="AvoidFutureAnnotation"
+          since="7.19.0"
+          language="apex"
+          message="Usage of @Future annotation should be limited. Consider implementing the Queueable interface instead."
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#avoidfutureannotation">
+        <description>
+Usage of the `@Future` annotation should be limited. The `@Future` annotation is a legacy way to execute asynchronous Apex code, but it has several limitations:
+- Methods must be static
+- Only primitive data types, primitive arrays, or collections of primitive data types can be parameters
+- No way to monitor job status or handle failures
+- No support for chaining jobs
+
+Consider implementing the `Queueable` interface instead, which provides:
+- Better error handling and monitoring capabilities
+- Support for more complex data types
+- Ability to chain jobs
+
+See more here: &lt;https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_queueing_jobs.htm&gt;
+        </description>
+        <priority>4</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+<![CDATA[
+//Method/ModifierNode/Annotation[lower-case(@Name) = 'future']
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+// Not recommended: Using @Future annotation
+public class FutureExample {
+    @Future
+    public static void futureMethod(String accountId) {
+        // Process account asynchronously
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+        // ... process account
+    }
+}
+
+// Recommended: Using Queueable interface with Finalizer to detect and handle job failure
+public class QueueableExample implements Queueable, Finalizer {
+    private String accountId;
+    
+    public QueueableExample(String accountId) {
+        this.accountId = accountId;
+    }
+    
+    public void execute(QueueableContext context) {
+        System.attachFinalizer(this);
+        Account acc = [SELECT Id, Name FROM Account WHERE Id = :accountId];
+        // ... process account
+    }
+
+    public void execute(FinalizerContext ctx) {
+        if (ctx.getResult() == ParentJobResult.SUCCESS) {
+            // Handle success
+        } else {
+            // Handle failure
+        }
+    }
+}
+
+// Usage:
+// System.enqueueJob(new QueueableExample(accountId));
+]]>
+        </example>
+    </rule>
+
     <rule name="AvoidGlobalModifier"
           language="apex"
           since="5.5.0"
@@ -264,27 +335,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="UnusedLocalVariable"
-          since="6.23.0"
-          language="apex"
-          message="Variable ''{0}'' defined but not used"
-          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
-        <description>
-Detects when a local variable is declared and/or assigned but not used.
-        </description>
-        <example>
-<![CDATA[
-    public Boolean bar(String z) {
-        String x = 'some string'; // not used
-
-        String y = 'some other string'; // used in the next line
-        return z.equals(y);
-    }
-]]>
-        </example>
-    </rule>
-
     <rule name="QueueableWithoutFinalizer"
           since="7.8.0"
           language="apex"
@@ -292,13 +342,13 @@ Detects when a local variable is declared and/or assigned but not used.
           class="net.sourceforge.pmd.lang.apex.rule.bestpractices.QueueableWithoutFinalizerRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#queueablewithoutfinalizer">
         <description>
-Detects when the Queueable interface is used but a Finalizer is not attached.
-It is best practice to call the `System.attachFinalizer(Finalizer f)` method within the `execute` method of a class which implements the `Queueable` interface.
-Without attaching a Finalizer, there is no way of designing error recovery actions should the Queueable action fail.
+            Detects when the Queueable interface is used but a Finalizer is not attached.
+            It is best practice to call the `System.attachFinalizer(Finalizer f)` method within the `execute` method of a class which implements the `Queueable` interface.
+            Without attaching a Finalizer, there is no way of designing error recovery actions should the Queueable action fail.
         </description>
         <priority>5</priority>
         <example>
-<![CDATA[
+            <![CDATA[
 // Incorrect code, does not attach a finalizer.
 public class UserUpdater implements Queueable {
     public List<User> usersToUpdate;
@@ -333,6 +383,27 @@ public class UserUpdater implements Queueable, Finalizer {
         }
     }
 }
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnusedLocalVariable"
+          since="6.23.0"
+          language="apex"
+          message="Variable ''{0}'' defined but not used"
+          class="net.sourceforge.pmd.lang.apex.rule.bestpractices.UnusedLocalVariableRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_bestpractices.html#unusedlocalvariable">
+        <description>
+Detects when a local variable is declared and/or assigned but not used.
+        </description>
+        <example>
+<![CDATA[
+    public Boolean bar(String z) {
+        String x = 'some string'; // not used
+
+        String y = 'some other string'; // used in the next line
+        return z.equals(y);
+    }
 ]]>
         </example>
     </rule>

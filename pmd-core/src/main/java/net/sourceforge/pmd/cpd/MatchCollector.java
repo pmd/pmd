@@ -1,23 +1,22 @@
-/**
+/*
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 
 class MatchCollector {
 
     private final Map<Integer, List<Match>> matchTree = new TreeMap<>();
 
-    private final Map<Integer, Set<Integer>> tokenMatchSets = new HashMap<>();
+    private final Map<Integer, BitSet> tokenMatchSets = new HashMap<>();
 
     private final MatchAlgorithm ma;
 
@@ -68,7 +67,7 @@ class MatchCollector {
          *  - BC
          * It should be reduced to a single match with 3 marks
          */
-        if (tokenMatchSets.computeIfAbsent(mark1.getIndex(), (i) -> new HashSet<>()).contains(mark2.getIndex())) {
+        if (tokenMatchSets.computeIfAbsent(mark1.getIndex(), (i) -> new BitSet()).get(mark2.getIndex())) {
             return;
         }
 
@@ -116,8 +115,8 @@ class MatchCollector {
     }
 
     private void registerTokenMatch(TokenEntry mark1, TokenEntry mark2) {
-        tokenMatchSets.computeIfAbsent(mark1.getIndex(), (i) -> new HashSet<>()).add(mark2.getIndex());
-        tokenMatchSets.computeIfAbsent(mark2.getIndex(), (i) -> new HashSet<>()).add(mark1.getIndex());
+        tokenMatchSets.computeIfAbsent(mark1.getIndex(), (i) -> new BitSet()).set(mark2.getIndex());
+        tokenMatchSets.computeIfAbsent(mark2.getIndex(), (i) -> new BitSet()).set(mark1.getIndex());
     }
 
     List<Match> getMatches() {

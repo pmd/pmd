@@ -19,6 +19,7 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -120,6 +121,7 @@ class BaseTestParserImpl {
         descriptor.getProperties().putAll(properties);
 
         parseExpectedProblems(testCode, descriptor, err);
+        parseExpectedSuppressions(testCode, descriptor, err);
 
         String code = getTestCode(testCode, fragments, usedFragments, err);
         if (code == null) {
@@ -192,6 +194,32 @@ class BaseTestParserImpl {
             expectedMessages
         );
 
+    }
+
+    private void parseExpectedSuppressions(Element testCode, RuleTestDescriptor descriptor, PmdXmlReporter err) {
+        Node expectedProblemsNode = getSingleChild(testCode, "expected-suppressions", false, err);
+        if (expectedProblemsNode == null) {
+            return;
+        }
+
+        descriptor.createEmptyExpectedSuppression();
+        NodeList childNodes = expectedProblemsNode.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            if (!(item instanceof Element)) {
+                continue;
+            }
+            Element itemEl = (Element) item;
+            if (!"suppressor".equals(itemEl.getLocalName())) {
+                err.at(itemEl).error("Unexpected node found: {0} - 'suppressor' expected", item.getLocalName());
+            }
+            Attr line = getRequiredAttribute("line", itemEl, err);
+            String suppressor = parseTextNode(itemEl);
+
+            if (line != null) {
+                descriptor.recordExpectedSuppression(Integer.parseInt(line.getValue()), suppressor);
+            }
+        }
     }
 
     private String getTestCode(Element testCode, Map<String, Element> fragments, Set<String> usedFragments, PmdXmlReporter err) {
@@ -289,7 +317,10 @@ class BaseTestParserImpl {
     private boolean parseBoolAttribute(Element testCode, String attrName, boolean defaultValue, PmdXmlReporter err, String deprecationMessage) {
         Attr attrNode = testCode.getAttributeNode(attrName);
         if (attrNode != null) {
-            if (deprecationMessage != null) {
+            // only consider attributes that are "specified". XML Validation will add the default values of
+            // the defined attributes implicitly. This would lead to deprecation messages for attributes, that
+            // are not actually used.
+            if (deprecationMessage != null && attrNode.getSpecified()) {
                 err.at(attrNode).warn(deprecationMessage);
             }
             return Boolean.parseBoolean(attrNode.getNodeValue());

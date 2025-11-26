@@ -15,6 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
+import net.sourceforge.pmd.lang.java.ast.MethodUsage;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
@@ -24,6 +25,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypingContext;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Adapter class to manipulate expressions. The framework
@@ -123,6 +125,36 @@ public interface ExprMirror {
      * @throws IllegalStateException If this mirror has not been used for overload resolution
      */
     boolean isEquivalentToUnderlyingAst();
+
+
+    /**
+     * Ground this expression and any expressions that might have been
+     * assigned a type/ other data during type inference of this node.
+     * This is called when inference in a parent expression failed, to
+     * clean up partial data like type inference.
+     *
+     * <p>This is only called if the invocation fails, not when testing
+     * for applicability. The reason is that this is really only relevant
+     * for lambdas (to reset the type of their parameters), and those are
+     * not relevant to applicability.
+     */
+    default void groundTree() {
+        setInferredType(ensureNoTypeVariables(getInferredType()));
+    }
+
+    static JTypeMirror ensureNoTypeVariables(JTypeMirror ty) {
+        if (ty == null) {
+            return null;
+        }
+        return ty.subst(InferenceContext.finalGroundSubst());
+    }
+
+    static JMethodSig ensureNoTypeVariables(JMethodSig ty) {
+        if (ty == null) {
+            return null;
+        }
+        return ty.subst(InferenceContext.finalGroundSubst());
+    }
 
     /** A general category of types. */
     enum TypeSpecies {
@@ -241,9 +273,30 @@ public interface ExprMirror {
     }
 
     /**
+     * Common interface for {@link InvocationMirror} and {@link MethodRefMirror},
+     * both of which wrap nods that implement {@link MethodUsage}.
+     */
+    interface MethodUsageMirror extends PolyExprMirror {
+
+        /**
+         * Set the compile-time declaration that was resolved for this method usage.
+         */
+        void setCompileTimeDecl(InvocationMirror.MethodCtDecl methodType);
+
+        /**
+         * Return the type in which the search for accessible methods start.
+         * For method references it is the type of the LHS and is specified by
+         * the JLS. For method invocations it is the type of the receiver, or
+         * the type of the enclosing type. For constructor invocations this
+         * is not defined and will return null.
+         */
+        @Nullable JTypeMirror getTypeToSearch();
+    }
+
+    /**
      * Mirror of a method reference expression.
      */
-    interface MethodRefMirror extends FunctionalExprMirror {
+    interface MethodRefMirror extends FunctionalExprMirror, MethodUsageMirror {
 
         /** True if this references a ctor. */
         boolean isConstructorRef();
@@ -255,6 +308,7 @@ public interface ExprMirror {
          * , except it may also return an array type (the jls makes an exception for it,
          * while we don't).
          */
+        @Override
         JTypeMirror getTypeToSearch();
 
 
@@ -286,7 +340,8 @@ public interface ExprMirror {
          * E.g. in {@code stringStream.map(String::isEmpty)}, this is
          * {@code java.lang.String.isEmpty() -> boolean}
          */
-        void setCompileTimeDecl(JMethodSig methodType);
+        @Override
+        void setCompileTimeDecl(InvocationMirror.MethodCtDecl methodType);
 
 
         /**
@@ -369,7 +424,8 @@ public interface ExprMirror {
     /**
      * Adapter over a method or constructor invocation expression.
      */
-    interface InvocationMirror extends PolyExprMirror {
+    interface InvocationMirror extends PolyExprMirror, MethodUsageMirror {
+
 
         /**
          * Enumerates *accessible* method (or ctor) signatures with
@@ -424,18 +480,31 @@ public interface ExprMirror {
         List<ExprMirror> getArgumentExpressions();
 
 
+        /** Return the size of the argument list. */
         int getArgumentCount();
 
 
-        void setCtDecl(MethodCtDecl methodType);
+        /**
+         * {@inheritDoc}
+         *
+         * @implSpec Should cache this value and return it when {@link #getCtDecl()}
+         * is called.
+         */
+        @Override
+        void setCompileTimeDecl(MethodCtDecl methodType);
 
 
         /**
-         * Returns the method type set with {@link #setCtDecl(MethodCtDecl)}
+         * Returns the method type set with {@link #setCompileTimeDecl(MethodCtDecl)}
          * or null if that method was never called. This is used to perform
          * overload resolution exactly once per call site.
          */
         @Nullable MethodCtDecl getCtDecl();
+
+        @Override
+        default @Nullable JTypeMirror getTypeToSearch() {
+            return getReceiverType();
+        }
 
 
         /**
@@ -449,29 +518,36 @@ public interface ExprMirror {
             private final JMethodSig methodType;
             private final MethodResolutionPhase resolvePhase;
             private final boolean canSkipInvocation;
-            private final boolean needsUncheckedConversion;
+            private final OptionalBool needsUncheckedConversion;
             private final boolean failed;
+            private final @Nullable MethodUsageMirror expr;
 
             MethodCtDecl(JMethodSig methodType,
                          MethodResolutionPhase resolvePhase,
                          boolean canSkipInvocation,
-                         boolean needsUncheckedConversion,
-                         boolean failed) {
+                         OptionalBool needsUncheckedConversion,
+                         boolean failed,
+                         @Nullable MethodUsageMirror expr) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
                 this.canSkipInvocation = canSkipInvocation;
                 this.needsUncheckedConversion = needsUncheckedConversion;
                 this.failed = failed;
+                this.expr = expr;
             }
 
             // package-private:
 
-            MethodCtDecl withMethod(JMethodSig method) {
+            public MethodCtDecl withMethod(JMethodSig method) {
                 return withMethod(method, failed);
             }
 
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
-                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed);
+                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+            }
+
+            public MethodCtDecl withExpr(MethodUsageMirror expr) {
+                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
             }
 
             MethodCtDecl asFailed() {
@@ -487,7 +563,7 @@ public interface ExprMirror {
             }
 
             static MethodCtDecl unresolved(TypeSystem ts) {
-                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, false, true);
+                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, OptionalBool.UNKNOWN, true, null);
             }
 
             // public:
@@ -500,7 +576,7 @@ public interface ExprMirror {
 
             @Override
             public boolean needsUncheckedConversion() {
-                return needsUncheckedConversion;
+                return needsUncheckedConversion.isTrue();
             }
 
             @Override
@@ -518,6 +594,10 @@ public interface ExprMirror {
                 return "CtDecl[phase=" + resolvePhase + ", method=" + methodType + ']';
             }
 
+            @Override
+            public @Nullable JTypeMirror getTypeToSearch() {
+                return expr != null ? expr.getTypeToSearch() : null;
+            }
         }
     }
 

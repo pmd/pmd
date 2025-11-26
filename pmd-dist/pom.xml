@@ -8,7 +8,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.14.0-SNAPSHOT</version>
+        <version>7.19.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -178,7 +178,7 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
-            <version>1.27.1</version>
+            <version>1.28.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -216,10 +216,10 @@
             </build>
         </profile>
         <profile>
-            <id>jdk17-compat-it</id>
+            <id>jdk11-compat-it</id>
             <activation>
                 <property>
-                    <name>java17.home</name>
+                    <name>java11.home</name>
                 </property>
             </activation>
             <build>
@@ -229,15 +229,15 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>jdk17-compat-it</id>
+                                <id>jdk11-compat-it</id>
                                 <goals>
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
                                     <environmentVariables>
-                                        <JAVA_HOME>${java17.home}</JAVA_HOME>
-                                        <PATH>${java17.home}/bin:${env.PATH}</PATH>
+                                        <JAVA_HOME>${java11.home}</JAVA_HOME>
+                                        <PATH>${java11.home}/bin:${env.PATH}</PATH>
                                     </environmentVariables>
                                 </configuration>
                             </execution>
@@ -269,6 +269,37 @@
                                     <environmentVariables>
                                         <JAVA_HOME>${java21.home}</JAVA_HOME>
                                         <PATH>${java21.home}/bin:${env.PATH}</PATH>
+                                    </environmentVariables>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk25-compat-it</id>
+            <activation>
+                <property>
+                    <name>java25.home</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jdk25-compat-it</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                    <goal>verify</goal>
+                                </goals>
+                                <configuration>
+                                    <environmentVariables>
+                                        <JAVA_HOME>${java25.home}</JAVA_HOME>
+                                        <PATH>${java25.home}/bin:${env.PATH}</PATH>
                                     </environmentVariables>
                                 </configuration>
                             </execution>

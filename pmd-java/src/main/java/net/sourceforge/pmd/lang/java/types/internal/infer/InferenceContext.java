@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -291,14 +292,18 @@ final class InferenceContext {
      * or else replace them with a failed type.
      */
     static JMethodSig finalGround(JMethodSig t) {
-        return t.subst(s -> {
+        return t.subst(finalGroundSubst());
+    }
+
+    public static Function<SubstVar, JTypeMirror> finalGroundSubst() {
+        return s -> {
             if (!(s instanceof InferenceVar)) {
                 return s;
             } else {
                 InferenceVar ivar = (InferenceVar) s;
                 return ivar.getInst() != null ? ivar.getInst() : s.getTypeSystem().ERROR;
             }
-        });
+        };
     }
 
 
@@ -439,7 +444,7 @@ final class InferenceContext {
     void onBoundAdded(InferenceVar ivar, BoundKind kind, JTypeMirror bound, boolean isPrimary) {
         // guard against α <: Object
         // all variables have it, it's useless to propagate it
-        if (kind != BoundKind.UPPER || bound != ts.OBJECT) { // NOPMD CompareObjectsWithEquals
+        if (kind != BoundKind.UPPER || bound != ts.OBJECT) {
             if (parent != null) {
                 parent.onBoundAdded(ivar, kind, bound, isPrimary);
                 return;

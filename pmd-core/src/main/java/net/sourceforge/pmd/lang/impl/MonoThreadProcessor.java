@@ -4,6 +4,8 @@
 
 package net.sourceforge.pmd.lang.impl;
 
+import org.slf4j.event.Level;
+
 import net.sourceforge.pmd.lang.LanguageProcessor.AnalysisTask;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
@@ -15,6 +17,7 @@ final class MonoThreadProcessor extends AbstractPMDProcessor {
 
     MonoThreadProcessor(AnalysisTask task) {
         super(task);
+        task.getMessageReporter().log(Level.DEBUG, "Using main thread for analysis");
     }
 
     @Override

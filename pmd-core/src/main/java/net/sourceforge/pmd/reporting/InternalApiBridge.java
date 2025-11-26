@@ -4,9 +4,11 @@
 
 package net.sourceforge.pmd.reporting;
 
+import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.pmd.annotation.InternalApi;
+import net.sourceforge.pmd.lang.ast.RootNode;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.Rule;
 
@@ -29,13 +31,15 @@ public final class InternalApiBridge {
         return ruleContext.getRule();
     }
 
+    public static final List<ViolationSuppressor> DEFAULT_SUPPRESSORS = RuleContext.DEFAULT_SUPPRESSORS;
+
     /**
      * Create a new RuleContext.
      *
      * The listener must be closed by its creator.
      */
-    public static RuleContext createRuleContext(FileAnalysisListener listener, Rule rule) {
-        return new RuleContext(listener, rule);
+    public static RuleContext createRuleContext(FileAnalysisListener listener, Rule rule, RootNode root) {
+        return new RuleContext(listener, rule, root);
     }
 
     public static ParametricRuleViolation createRuleViolation(Rule theRule, FileLocation location, String message, Map<String, String> additionalInfo) {
