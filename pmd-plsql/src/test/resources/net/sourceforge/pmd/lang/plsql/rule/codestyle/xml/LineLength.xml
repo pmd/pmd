@@ -27,7 +27,7 @@ END;
         <expected-problems>1</expected-problems>
         <expected-linenumbers>5</expected-linenumbers>
         <expected-messages>
-            <message>The line is too long. Only 30 characters are allowed.</message>
+            <message>The line is too long (32 characters). Only 30 characters are allowed.</message>
         </expected-messages>
         <code><![CDATA[
 BEGIN
@@ -49,7 +49,7 @@ END;
         <expected-problems>1</expected-problems>
         <expected-linenumbers>2</expected-linenumbers>
         <expected-messages>
-            <message>The line is too long. Only 30 characters are allowed.</message>
+            <message>The line is too long (46 characters). Only 30 characters are allowed.</message>
         </expected-messages>
         <code><![CDATA[
 BEGIN
