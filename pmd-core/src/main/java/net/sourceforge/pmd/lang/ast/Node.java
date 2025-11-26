@@ -159,9 +159,9 @@ public interface Node extends Reportable {
 
     /**
      * Return a {@link Reportable} instance that can be used to report
-     * this node with a more specific location. This node is used as the
-     * suppressor node. The location should be contained within this node,
-     * though this is not asserted.
+     * this node with a more specific location (that of the token). This
+     * node is used as the suppressor node. The location should be
+     * contained within this node.
      *
      * @param token A token
      * @return A {@link Reportable} instance, suitable for use with {@link RuleContext#at(Reportable)}.
