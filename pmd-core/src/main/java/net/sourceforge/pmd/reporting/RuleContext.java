@@ -17,13 +17,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.GenericToken;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.ast.internal.NodeFindingUtil;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -58,6 +56,9 @@ public final class RuleContext {
     private final Rule rule;
     private final RootNode rootNode;
 
+    // Default message, parsed only once to avoid overhead of parsing.
+    private MessageFormat defaultMessageFormat;
+
     /**
      * @apiNote Internal API
      */
@@ -76,10 +77,6 @@ public final class RuleContext {
      */
     Rule getRule() {
         return rule;
-    }
-
-    private String getDefaultMessage() {
-        return rule.getMessage();
     }
 
     private LanguageVersionHandler getLanguageServices() {
@@ -160,6 +157,24 @@ public final class RuleContext {
             this.languageServices = languageServices;
         }
 
+        private void warnImpl(MessageFormat messageFormat, Object... args) {
+            Objects.requireNonNull(messageFormat, "Message was null");
+            Objects.requireNonNull(args, "Format arguments were null, use an empty array");
+
+            RuleViolation violation = createViolation(location, nearestNode, languageServices, messageFormat, args);
+
+            SuppressedViolation suppressed = null;
+            if (!(rule instanceof CannotBeSuppressed)) {
+                suppressed = suppressOrNull(nearestNode, violation, languageServices);
+            }
+
+            if (suppressed != null) {
+                listener.onSuppressedRuleViolation(suppressed);
+            } else {
+                listener.onRuleViolation(violation);
+            }
+        }
+
         /**
          * Emit the violation with the given message (overriding the default
          * rule message specified in the XML rule definition) and the given
@@ -170,7 +185,8 @@ public final class RuleContext {
          * braces must be escaped by prepending a single quote.
          */
         public void warnWithMessage(String message, Object... formatArgs) {
-            recordViolation(this, message, formatArgs);
+            MessageFormat parsed = parseMessage(message);
+            warnImpl(parsed, formatArgs);
         }
 
         /**
@@ -191,7 +207,10 @@ public final class RuleContext {
          * rule definition) and the given extra arguments.
          */
         public void warnWithArgs(Object... formatArgs) {
-            warnWithMessage(getDefaultMessage(), formatArgs);
+            if (defaultMessageFormat == null) {
+                defaultMessageFormat = parseMessage(rule.getMessage());
+            }
+            warnImpl(defaultMessageFormat, formatArgs);
         }
 
         /**
@@ -284,86 +303,9 @@ public final class RuleContext {
         }
     }
 
-    /**
-     * Record a new violation of the contextual rule, at the given token location.
-     * The position is refined using the given begin and end line numbers.
-     * The given violation message ({@link Rule#getMessage()}) is treated
-     * as a format string for a {@link MessageFormat} and should hence use
-     * appropriate escapes. The given formatting arguments are used.
-     *
-     * @param node Location of the violation (node or token) - only used to determine suppression
-     * @param token   Report location of the violation
-     * @param message    Violation message
-     * @param formatArgs Format arguments for the message
-     * @deprecated Since 7.20.0, use the new reporting API (See {@link #at(Reportable)})
-     */
-    @Deprecated
-    public void addViolationWithPosition(Node node, JavaccToken token, String message, Object... formatArgs) {
-        addViolationWithPosition(node, node.getAstInfo(), token.getReportLocation(), message, formatArgs);
-    }
-
-    /**
-     * Record a new violation of the contextual rule, at the given location (node or token).
-     * The position is refined using the given begin and end line numbers.
-     * The given violation message ({@link Rule#getMessage()}) is treated
-     * as a format string for a {@link MessageFormat} and should hence use
-     * appropriate escapes. The given formatting arguments are used.
-     *
-     * @param reportable Location of the violation (node or token) - only used to determine suppression
-     * @param astInfo    Info about the root of the tree ({@link Node#getAstInfo()})
-     * @param location   Report location of the violation
-     * @param message    Violation message
-     * @param formatArgs Format arguments for the message
-     * @deprecated Since 7.20.0, use the new reporting API (See {@link #at(Reportable)})
-     */
-    @Deprecated
-    public void addViolationWithPosition(Reportable reportable, AstInfo<?> astInfo, FileLocation location,
-                                         String message, Object... formatArgs) {
-        Objects.requireNonNull(reportable, "Node was null");
-        LanguageVersionHandler services = astInfo.getLanguageProcessor().services();
-        new ViolationBuilder(reportable.getSuppressionNode(astInfo), location, services)
-            .warnWithMessage(message, formatArgs);
-    }
-
-    private void recordViolation(ViolationBuilder builder, String message, Object[] formatArgs) {
-        Objects.requireNonNull(builder, "Builder was null");
-        Objects.requireNonNull(message, "Message was null");
-        Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
-
-        RuleViolation violation = createViolation(() -> builder.location, builder.nearestNode, builder.languageServices, message, formatArgs);
-
-        SuppressedViolation suppressed = null;
-        if (!(rule instanceof CannotBeSuppressed)) {
-            suppressed = suppressOrNull(builder.nearestNode, violation, builder.languageServices);
-        }
-
-        if (suppressed != null) {
-            listener.onSuppressedRuleViolation(suppressed);
-        } else {
-            listener.onRuleViolation(violation);
-        }
-    }
-
-    /**
-     * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
-     */
-    @Experimental
-    @Deprecated
-    public void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,
-                                String message, Object... formatArgs) {
-        Objects.requireNonNull(reportable, "Node was null");
-        Objects.requireNonNull(message, "Message was null");
-        Objects.requireNonNull(formatArgs, "Format arguments were null, use an empty array");
-
-        Node nearestNode = reportable.getSuppressionNode(astInfo);
-        RuleViolation violation = createViolation(reportable, nearestNode, astInfo.getLanguageProcessor().services(), message, formatArgs);
-        listener.onRuleViolation(violation);
-    }
-
-    private RuleViolation createViolation(Reportable reportable, Node nearestNode, LanguageVersionHandler handler, String message, Object[] formatArgs) {
+    private RuleViolation createViolation(FileLocation location, Node nearestNode, LanguageVersionHandler handler, MessageFormat message, Object[] formatArgs) {
         Map<String, String> extraVariables = ViolationDecorator.apply(handler.getViolationDecorator(), nearestNode);
         String description = makeMessage(message, formatArgs, extraVariables);
-        FileLocation location = reportable.getReportLocation();
         return new ParametricRuleViolation(rule, location, description, extraVariables);
     }
 
@@ -375,14 +317,17 @@ public final class RuleContext {
         return suppressed;
     }
 
-    private String makeMessage(@NonNull String message, Object[] args, Map<String, String> extraVars) {
-        // Escape PMD specific variable message format, specifically the {
-        // in the ${, so MessageFormat doesn't bitch.
-        final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
-        String formatted = new MessageFormat(escapedMessage, Locale.ROOT).format(args);
+    private String makeMessage(@NonNull MessageFormat message, Object[] args, Map<String, String> extraVars) {
+        String formatted = message.format(args);
         return expandVariables(formatted, extraVars);
     }
 
+    private static MessageFormat parseMessage(String message) {
+        // Escape PMD specific variable message format, specifically the {
+        // in the ${, so MessageFormat doesn't bitch.
+        final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
+        return new MessageFormat(escapedMessage, Locale.ROOT);
+    }
 
     private String expandVariables(String message, Map<String, String> extraVars) {
 
