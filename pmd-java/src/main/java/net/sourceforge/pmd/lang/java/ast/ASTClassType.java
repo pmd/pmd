@@ -44,12 +44,12 @@ public final class ASTClassType extends AbstractJavaTypeNode implements ASTRefer
     private boolean isFqcn;
     private JClassType implicitEnclosing;
 
-    ASTClassType(ASTAmbiguousName lhs, String simpleName) {
+    ASTClassType(ASTAmbiguousName lhs, JavaccToken simpleName) {
         super(JavaParserImplTreeConstants.JJTCLASSTYPE);
         assert lhs != null : "Null LHS";
 
         this.addChild(lhs, 0);
-        this.setSimpleName(simpleName);
+        this.setSimpleName(simpleName.getImage());
     }
 
 
