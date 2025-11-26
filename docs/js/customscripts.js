@@ -55,7 +55,7 @@ $(document).ready(function () {
         if (target) {
             if (navigator.clipboard) {
                 const url = new URL(location.href);
-                url.hash = event.target.parentNode.id;
+                url.hash = target.parentNode.id;
                 event.preventDefault();
                 event.stopImmediatePropagation();
 
