@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpressionList;
+import net.sourceforge.pmd.lang.java.ast.ASTSwitchArrowBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
@@ -88,14 +89,18 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
         ASTExpression toplevel = JavaAstUtils.getTopLevelExpr(impureExpr);
         JavaNode parent = toplevel.getParent();
 
-        if (toplevel == impureExpr
-            && (parent instanceof ASTExpressionStatement
-                || parent instanceof ASTStatementExpressionList
-                || parent instanceof ASTLambdaExpression
-            )
-        ) {
-            // that's ok
-            return;
+        if (toplevel == impureExpr) {
+            if (parent instanceof ASTExpressionStatement
+                    || parent instanceof ASTStatementExpressionList
+                    || parent instanceof ASTLambdaExpression) {
+                // that's ok
+                return;
+            }
+            if (parent instanceof ASTSwitchArrowBranch
+                    && parent.getParent() instanceof ASTSwitchStatement) {
+                // assignments in modern (->) switch statements are ok
+                return;
+            }
         }
         if (parent instanceof ASTIfStatement && getProperty(ALLOW_IF_DESCRIPTOR)
             || parent instanceof ASTWhileStatement && getProperty(ALLOW_WHILE_DESCRIPTOR)

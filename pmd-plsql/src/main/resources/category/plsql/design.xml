@@ -144,6 +144,7 @@ END;
 
     <rule name="ExcessiveMethodLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long methods ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveMethodLengthRule"
@@ -153,6 +154,8 @@ When methods are excessively long this usually indicates that the method is doin
 name/signature might suggest. They also become challenging for others to digest since excessive
 scrolling causes readers to lose focus.
 Try to reduce the method length by creating helper methods and removing any copy/pasted code.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big methods.
         </description>
         <priority>3</priority>
         <example>
@@ -169,6 +172,7 @@ END;
 
     <rule name="ExcessiveObjectLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long Oracle object specifications and bodies ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveObjectLengthRule"
@@ -176,7 +180,9 @@ END;
         <description>
 Excessive object line lengths are usually indications that the object may be burdened with excessive
 responsibilities that could be provided by other objects. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big objects.
         </description>
         <priority>3</priority>
         <example>
@@ -204,6 +210,7 @@ END;
 
     <rule name="ExcessivePackageBodyLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long Object Type and Package bodies ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageBodyLengthRule"
@@ -211,7 +218,9 @@ END;
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big objects.
         </description>
         <priority>3</priority>
         <example>
@@ -239,6 +248,7 @@ END;
 
     <rule name="ExcessivePackageSpecificationLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long Package Specifications ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessivePackageSpecificationLengthRule"
@@ -246,7 +256,9 @@ END;
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big objects.
         </description>
         <priority>3</priority>
         <example>
@@ -329,6 +341,7 @@ public class Foo {
 
     <rule name="ExcessiveTypeLength"
           language="plsql"
+          deprecated="true"
           since="5.1"
           message="Avoid really long Object Type specifications ({0} lines found, threshold is {1})."
           class="net.sourceforge.pmd.lang.plsql.rule.design.ExcessiveTypeLengthRule"
@@ -336,7 +349,9 @@ public class Foo {
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big objects.
         </description>
         <priority>3</priority>
         <example>
@@ -362,9 +377,51 @@ END;
         </example>
     </rule>
 
+    <rule name="NcssCount"
+          language="plsql"
+          message="The {0} ''{1}'' has a NCSS line count of {2} (limit: {3})."
+          since="7.19.0"
+          class="net.sourceforge.pmd.lang.plsql.rule.design.NcssCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#ncsscount">
+        <description>
+            This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
+            of code in a plsql type or method. NCSS ignores comments, blank lines, and only counts actual
+            statements. For more details on the calculation, see the documentation
+            {% jdoc plsql::lang.plsql.metrics.PlsqlMetrics#NCSS %}.
+        </description>
+        <priority>3</priority>
+        <example><![CDATA[
+DECLARE                                     -- total Ncss: 14
+    PROCEDURE bigMethod IS                  -- +1
+        x NUMBER;                           -- +1
+        y NUMBER := 2;                      -- +1
+        a BOOLEAN := FALSE;                 -- +1
+        b BOOLEAN := TRUE;                  -- +1
+    BEGIN
+        IF (a OR b) THEN                    -- +1
+            LOOP                            -- +1
+                x := x + 2;                 -- +1
+                EXIT WHEN x >= 12;          -- +1
+            END LOOP;
+
+            DBMS_OUTPUT.PUT_LINE('done');   -- +1
+        ELSE                                -- +1
+            DBMS_OUTPUT.PUT_LINE('false');  -- +1
+        END IF;
+    EXCEPTION
+        WHEN PROGRAM_ERROR THEN DBMS_OUTPUT.PUT_LINE('Error Occurred'); -- +1
+    END bigMethod;
+BEGIN
+    bigMethod();                            -- +1
+END;
+]]>
+        </example>
+    </rule>
+
     <rule name="NcssMethodCount"
           message="The method {0}() has an NCSS line count of {1} (threshold is {2})"
           language="plsql"
+          deprecated="true"
           since="5.1"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NcssMethodCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#ncssmethodcount">
@@ -372,14 +429,16 @@ END;
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {% rule NcssCount %} instead.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 CREATE OR REPLACE PACKAGE BODY AS
- FUNCTION methd RETURN INTEGER IS
+ FUNCTION method RETURN INTEGER IS
  BEGIN
-   RETURN 1;;
+   RETURN 1;
  END;
 END;
 ]]>
@@ -389,6 +448,7 @@ END;
     <rule name="NcssObjectCount"
           message="The Oracle object {0} has a NCSS line count of {1} (threshold is {2})"
           language="plsql"
+          deprecated="true"
           since="5.1"
           class="net.sourceforge.pmd.lang.plsql.rule.design.NcssObjectCountRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_plsql_design.html#ncssobjectcount">
@@ -396,18 +456,20 @@ END;
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given Oracle object. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {% rule NcssCount %} instead.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
-CREATE OR REPLACE PACKAGE pkg_
+CREATE OR REPLACE PACKAGE pkg_ IS
  PROCEDURE Foo IS
  BEGIN
  --this class only has 6 NCSS lines
      super();
      super();
- END;
-}
+ END Foo;
+END;
 ]]>
         </example>
     </rule>

@@ -66,7 +66,7 @@ class SourceManager implements AutoCloseable {
         return textDocument;
     }
 
-    public int size() {
+    int size() {
         return files.size();
     }
 
@@ -80,7 +80,7 @@ class SourceManager implements AutoCloseable {
     }
 
     @SuppressWarnings("PMD.CloseResource")
-    public Chars getSlice(Mark mark) {
+    Chars getSlice(Mark mark) {
         TextFile textFile = fileByPathId.get(mark.getToken().getFileId());
         assert textFile != null : "No such file " + mark.getToken().getFileId();
         TextDocument doc = get(textFile);
@@ -90,7 +90,7 @@ class SourceManager implements AutoCloseable {
         return doc.sliceOriginalText(lineRange);
     }
 
-    public String getFileDisplayName(FileId fileId) {
+    String getFileDisplayName(FileId fileId) {
         return fileNameRenderer.getDisplayName(fileId);
     }
 }

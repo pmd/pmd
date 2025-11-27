@@ -47,8 +47,7 @@ public final class ASTTryStatement extends AbstractStatement {
      * Returns the node for the resource list. This is null if this is
      * not a try-with-resources.
      */
-    @Nullable
-    public ASTResourceList getResources() {
+    public @Nullable ASTResourceList getResources() {
         return AstImplUtil.getChildAs(this, 0, ASTResourceList.class);
     }
 
@@ -74,8 +73,7 @@ public final class ASTTryStatement extends AbstractStatement {
      *
      * @return The finally statement, or null if there is none
      */
-    @Nullable
-    public ASTFinallyClause getFinallyClause() {
+    public @Nullable ASTFinallyClause getFinallyClause() {
         return firstChild(ASTFinallyClause.class);
     }
 

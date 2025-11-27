@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example"><![CDATA[
+public class Foo extends Bar {
+    int y, z, t;
+    String q;
+
+    {
+        bar();
+        int x;
+        switch on
+        x {
+        when 1 { foo(); break; }
+        when 2 { }
+        when 3 { bar();
+            break; }
+        when else { break; }
+        }
+    }
+
+    public Foo() {
+        this(2);
+    }
+
+    public Foo(int z) {
+
+        Random r = new Random();
+        for (int j = -12; i < z; i++) {
+            for (int k = -20; k < 20; k += j) {
+                if (r.nextInt() == 42) {
+                    System
+                            .out
+                            .println('Bye');
+                    break;
+                } else if (k > 12) {
+                    continue;
+                }
+            }
+        }
+
+        super.f(z);
+    }
+
+    public void foo() {
+        int x = 0;
+        x++;
+
+        do {
+            if (x == 0) {
+                x++;
+            } else if (x == 1) {
+                x = 0;
+            } else {
+                System.out.println('Bonjour');
+                throw new ScaryException('Surprise!');
+            }
+        } while (x != 2);
+    }
+
+    public static void main(String[] args) {
+        String k, l, m;
+        int x;
+
+        bar();
+
+        do {
+            x++;
+        } while (x < 2);
+
+        while (x < 4) {
+            x++;
+        }
+
+        for (int i = 1; x < 6; ) {
+            x += i;
+        }
+
+        {
+            x++;
+        }
+
+        int p =
+                2 + 4 + 5;
+
+        try {
+            x++;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            e.printStackTrace();
+        } catch (ThemAll pokemon) {
+            pokemon.train();
+        } finally {
+            // Do nothing
+        }
+
+        bar();
+        x = (int) bar();
+        /*
+         * This is
+         * a comment
+         */
+        x.foobar();
+    }
+}
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Full example</description>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 59.</message>
+            <message>'Foo#Foo()' has value 2.</message>
+            <message>'Foo#Foo(int)' has value 10.</message>
+            <message>'Foo#foo()' has value 11.</message>
+            <message>'Foo#main(String[])' has value 21.</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+    <test-code>
+        <description>Empty ctor and method</description>
+        <expected-problems>3</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 3.</message>
+            <message>'Foo#Foo()' has value 1.</message>
+            <message>'Foo#foo()' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    Foo() {
+        // Comment not counted
+    }
+    void foo() {
+        // Comment not counted
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Field Declarations</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    private int field1;
+    private int field2,
+                field3;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Switch statement</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 12.</message>
+            <message>'Foo#foo()' has value 11.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int x;
+        switch on x {
+            when 1 {}
+            when 2, 3 {}
+            when 5 { foo(); break; }
+            when Foo f {}
+            when else { break; }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Multiple local variable declarations</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 3.</message>
+            <message>'Foo#foo()' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int x, y = 2, z;
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Try is not counted, only catch clauses and finally</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 5.</message>
+            <message>'Foo#foo()' has value 4.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {                // +1
+    void foo() {                  // +1
+        try {
+        } catch (MyException e) { // +1
+        } catch (Exception e) {   // +1
+        } finally {               // +1
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Blocks are not counted</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Boo' has value 4.</message>
+            <message>'Boo#foo()' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Boo {
+    void foo() {
+        foo();
+        {
+        }
+        {
+            bar();
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>For initialisations are not counted</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Hoo' has value 4.</message>
+            <message>'Hoo#foo()' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Hoo {
+    void foo() {
+        for (int x = 0; x < 2; x++) {
+
+        }
+
+        for (;;) {
+
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Nested classes are counted</description>
+        <expected-problems>4</expected-problems>
+        <expected-messages>
+            <message>'Boo' has value 8.</message>
+            <message>'Boo#foo()' has value 2.</message>
+            <message>'Boo.Barnabee' has value 5.</message>
+            <message>'Boo.Barnabee#getX()' has value 2.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Boo {
+    void foo() {
+        bar();
+    }
+
+    class Barnabee {
+        int x;
+        int y;
+
+        int getX() {
+            return x;
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Enum constants are not counted</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>'Shoo' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public enum Shoo {
+    BAR, NA, BEE
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Abstract methods are counted</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Koo' has value 2.</message>
+            <message>'Koo#bar()' has value 1.</message>
+        </expected-messages>
+        <code><![CDATA[
+public abstract class Koo {
+    abstract void bar();
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>While/do-while loops</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 4.</message>
+            <message>'Foo#foo(int)' has value 3.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void foo(int x) {
+        while (x < 10) { }
+
+        do {
+        } while (x < 10);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Javadoc Example (net.sourceforge.pmd.lang.apex.metrics.ApexMetrics.NCSS)</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 12.</message>
+            <message>'Foo#bigMethod()' has value 11.</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {                         // +1, total Ncss = 12
+
+  public void bigMethod()           // +1
+  {
+    int x = 0, y = 2;               // +1
+    boolean a = false, b = true;    // +1
+
+    if (a || b) {                   // +1
+      try {
+        do {                        // +1
+          x += 2;                   // +1
+        } while (x < 12);
+
+        System.exit(0);             // +1
+      } catch (IOException ioe) {   // +1
+        throw new PatheticFailException(ioe); // +1
+      }
+    } else {                        // +1
+      System.out.println('false');  // +1
+    }
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Differences to old NcssTypeCount / NcssMethodCount rules</description>
+        <expected-problems>2</expected-problems>
+        <expected-messages>
+            <message>'Foo' has value 48.</message>
+            <message>'Foo#start(Id)' has value 47.</message>
+        </expected-messages>
+        <code><![CDATA[
+/*
+ * Note: The old implementation for NcssTypeCount / NcssMethodCount counted too many
+ * and the results were too high.
+ * The new metric NCSS is correct.
+ *
+ * new == new NCSS metric -> net.sourceforge.pmd.lang.apex.metrics.internal.NcssVisitor
+ * old == old AbstractNcssCountRule (base for NcssTypeCount and NcssMethodCount)
+ *
+ * sums (type):   new = 48 | old = 68
+ * sums (method): new = 47 | old = 67
+ *
+ * Some helper XPaths to help count the nodes:
+ (: for old AbstractNcssCountRule :)
+//Method[1+13+16+5+32 =
+      count(.//WhileLoopStatement)
+    + count(.//ForLoopStatement)
+    + count(.//ForEachStatement)
+    + count(.//DoLoopStatement)
+    + count(.//BreakStatement)
+    + count(.//ContinueStatement)
+    + count(.//ThrowStatement)
+    + count(.//FieldDeclaration)
+    + count(.//TryCatchFinallyBlockStatement) (: 1 :)
+    + count(.//IfBlockStatement) (: 13 :)
+    + 2*count(.//IfElseBlockStatement) (: 2*8=16 :)
+    + count(.//ReturnStatement) (: 5 :)
+    + count(.//MethodCallExpression[not(.//MethodCallExpression)]) (: 32 :)
+]
+| //IfBlockStatement (: for manual verification :)
+
+ (: for new NCSS metric :)
+//Method[13+2+1+5+22+3 =
+      count(.//ForLoopStatement)
+    + count(.//ForEachStatement)
+    + count(.//DoLoopStatement)
+    + count(.//IfBlockStatement) (: 13 :)
+    + count(.//IfElseBlockStatement[@ElseStatement = true()]) (: 2 :)
+    + count(.//WhileLoopStatement)
+    + count(.//BreakStatement)
+    + count(.//TryCatchFinallyBlockStatement[*[last()][local-name() != 'CatchBlockStatement']])
+    + count(.//CatchBlockStatement) (: 1 :)
+    + count(.//ContinueStatement)
+    + count(.//ReturnStatement) (: 5 :)
+    + count(.//ThrowStatement)
+    + count(.//SwitchStatement)
+    + count(.//ValueWhenBlock)
+    + count(.//ElseWhenBlock)
+    + count(.//TypeWhenBlock)
+    + count(.//ExpressionStatement) (: 22 :)
+    + count(.//VariableDeclarationStatements) (: 3 :)
+]
+| //ExpressionStatement (: for manual verification :)
+ */
+class Foo {                                     // new: +1 | old: +1
+    void start(Id jobId) {                      // new: +1 | old: +0
+        System.abortJob(jobId);                 // new: +1 | old: +1
+
+        try {                                   // new: +0 | old: +1
+            this.entry = [                      // new: +1 | old: +0
+              SELECT
+                Name,
+                AnonymousCode__c,
+                AsyncApexJobId__c,
+                BatchSize__c,
+                Class__c,
+                DailyEnd__c,
+                DailyStartDateTime__c,
+                End__c,
+                Flow__c,
+                IsBatchable__c,
+                IsDaily__c,
+                IsSchedulable__c,
+                NumberOfExecutions__c,
+                RepeatInterval__c,
+                RescheduleInterval__c,
+                Start__c,
+                OwnerId,
+                Owner.IsActive
+              FROM SchedulomaticEntry__c
+              WHERE Id = :entryId
+            ];
+
+            if (!this.entry.Owner.IsActive) {       // new: +1 | old: +2 +1
+                logExecutionError(entryId, EXECUTION_ERROR_INACTIVE_OWNER); // new: +1 | old: +1
+                return;                             // new: +1 | old: +1
+            } else if (!hasPermission(this.entry.OwnerId)) {              // new: +1 | old: +1 +1
+                logExecutionError(entryId, EXECUTION_ERROR_MISSING_PERMISSIONS); // new: +1 | old: +1
+                return;                             // new: +1 | old: +1
+            }
+        } catch (QueryException e) {            // new: +1 | old: +0
+            return;                             // new: +1 | old: +1
+        }
+
+        if (isBeforeOrNoEndDateTime()) {                // new: +1 | old: +2 +1 +1
+            if (String.isNotBlank(entry.Class__c)) {    // new: +1 | old: +2 +1 +1
+                String c = entry.Class__c;              // new: +1 | old: +0
+                String namespacePrefix;                 // new: +1 | old: +0
+                String name;                            // new: +1 | old: +0
+
+                if (c.contains('__')) {                             // new: +1 | old: +2 +1 +1
+                      namespacePrefix = c.substringBefore('__');    // new: +1 | old: +1
+                      name = c.substringAfter('__');                // new: +1 | old: +1
+                } else {                                            // new: +1 | old: +0
+                      namespacePrefix = null;                       // new: +1 | old: +0
+                      name = c;                                     // new: +1 | old: +0
+                }
+
+                classToExecute = Test.isRunningTest()           // new: +1 | old: +1
+                    ? BATCHABLE_TYPE                            // new: +0 | old: +0
+                    : Type.forName(namespacePrefix, name);      // new: +0 | old: +1
+
+                if (classToExecute == null) {                   // new: +1 | old: +2 +1
+                    logExecutionError(entry.Id, EXECUTION_ERROR_INVALID_CLASS); // new: +1 | old: +1
+                    return;                                     // new: +1 | old: +1
+                } else if (                                     // new: +1 | old: +1
+                    !(entry.IsBatchable__c &&
+                    BATCHABLE_TYPE.isAssignableFrom(classToExecute) || // new: +0 | old: +1
+                    entry.IsSchedulable__c &&
+                    SCHEDULABLE_TYPE.isAssignableFrom(classToExecute)) // new: +0 | old: +1
+                ) {
+                    logExecutionError(entry.Id, EXECUTION_ERROR_INVALID_CLASS);   // new: +1 | old: +1
+                    return;                                                       // new: +1 | old: +1
+                }
+            }
+
+            if (                                          // new: +1 | old: +2 +1
+                String.isNotBlank(entry.Class__c) ||      // new: +0 | old: +1
+                String.isNotBlank(entry.Flow__c) ||       // new: +0 | old: +1
+                String.isNotBlank(entry.AnonymousCode__c) // new: +0 | old: +1
+            ) {
+                if (canStartMore()) {                     // new: +1 | old: +2 +1 +1
+                    executeJob();                         // new: +1 | old: +1
+
+                    if (isPositiveInteger(entry.RepeatInterval__c)) {   // new: +1 | old: +2 +1 +1
+                        entry.Start__c = Datetime.now()                     // new: +1 | old: +1
+                          .addMinutes((Integer) entry.RepeatInterval__c);
+                        incrementExecutions();                              // new: +1 | old: +1
+                        reschedule();                                       // new: +1 | old: +1
+                    } else if (entry.IsDaily__c) {                          // new: +1 | old: +1
+                        incrementExecutions();                              // new: +1 | old: +1
+                        rescheduleForTomorrow();                            // new: +1 | old: +1
+                    } else {                                                // new: +1 | old: +0
+                        incrementExecutions();                              // new: +1 | old: +1
+                        updateEntry();                                      // new: +1 | old: +1
+                    }
+                } else if (isPositiveInteger(entry.RescheduleInterval__c)) {    // new: +1 | old: +1 +1
+                    entry.Start__c = Datetime.now()                             // new: +1 | old: +1
+                        .addMinutes((Integer) entry.RescheduleInterval__c);
+                    reschedule();                                               // new: +1 | old: +1
+                }
+            }
+        } else if (entry.IsDaily__c) {          // new: +1 | old: +1
+            rescheduleForTomorrow();            // new: +1 | old: +1
+        }
+    }
+}
+]]></code>
+    </test-code>
+</test-data>
