@@ -32,6 +32,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6228](https://github.com/pmd/pmd/pull/6228): \[java] UseArraysAsList: skip when if-statements - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
