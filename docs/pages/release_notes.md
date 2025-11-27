@@ -24,6 +24,12 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog (7.19.0)](https://github.com/pmd/pmd-designer/releases/tag/7.19.0)
+and [PMD Designer Changelog (7.19.1)](https://github.com/pmd/pmd-designer/releases/tag/7.19.1).
+
 ### 🌟️ New and Changed Rules
 #### New Rules
 * The new Apex rule {%rule apex/bestpractices/AvoidFutureAnnotation %} finds usages of the `@Future`
