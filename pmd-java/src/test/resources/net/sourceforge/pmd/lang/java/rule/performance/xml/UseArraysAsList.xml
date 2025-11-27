@@ -300,4 +300,37 @@ public class Test {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4577 [java] UseArraysAsList with condition in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+class Foo {
+    public List<String> convertToNonEmptyList(String[] arr) {
+        List<String> resultList = new ArrayList<>();
+        for (String item: arr) {
+            if (item.isEmpty()) {
+                continue;
+            }
+            resultList.add(item);
+        }
+        return resultList;
+    }
+
+    public List<String> convertToNonEmptyList2(String[] arr) {
+        List<String> resultList = new ArrayList<>();
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].isEmpty()) {
+                continue;
+            }
+            resultList.add(arr[i]);
+        }
+        return resultList;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

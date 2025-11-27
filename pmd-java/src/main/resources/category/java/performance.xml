@@ -721,7 +721,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
        | AssignmentExpression[@Operator = '+='][NumericLiteral[@IntLiteral][@Image = '1']]]
     ]
   ]
-  /*[last()]/ExpressionStatement/
+  /*[last()][not(IfStatement)]/ExpressionStatement/
     MethodCall
       [pmd-java:matchesSig('java.util.List#add(_)')]
       [ArgumentList/ArrayAccess
@@ -730,7 +730,7 @@ You must use `new ArrayList<>(Arrays.asList(...))` if that is inconvenient for y
 |
 //ForeachStatement
   [VariableAccess[pmd-java:typeIs("java.lang.Object[]")]]
-  /*[last()]/ExpressionStatement/MethodCall
+  /*[last()][not(IfStatement)]/ExpressionStatement/MethodCall
       [pmd-java:matchesSig('java.util.List#add(_)')]
       [ArgumentList
         [VariableAccess[@Name = ancestor::ForeachStatement/LocalVariableDeclaration/VariableDeclarator/VariableId/@Name]]
