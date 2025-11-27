@@ -150,6 +150,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#6255](https://github.com/pmd/pmd/pull/6255): \[java] Fix #4742: EmptyFinalizer should not trigger if finalize method is final and class is not - [Marcel](https://github.com/mrclmh) (@mrclmh)
 * [#6258](https://github.com/pmd/pmd/pull/6258): \[java] Fix #5820: GuardLogStatement recognizes that a string is a compile-time constant expression only if at first position - [Marcel](https://github.com/mrclmh) (@mrclmh)
 * [#6259](https://github.com/pmd/pmd/pull/6259): \[java] Fix #5689: Issue with scoping of record members - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6277](https://github.com/pmd/pmd/pull/6277): \[doc] Add button to copy configuration snippet - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
