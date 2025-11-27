@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.18.0-SNAPSHOT</version>
+    <version>7.19.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -73,7 +73,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2025-09-12T07:17:26Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2025-10-31T08:02:02Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -86,20 +86,19 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>2.2.10</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit5.version>5.13.4</junit5.version>
-        <junit5.platform.version>1.13.4</junit5.platform.version>
+        <junit.version>6.0.1</junit.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.4</surefire.version>
-        <checkstyle.version>10.26.1</checkstyle.version>
+        <checkstyle.version>12.1.2</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
-        <pmd.plugin.version>3.27.0</pmd.plugin.version>
+        <pmd.plugin.version>3.28.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
-        <javadoc.plugin.version>3.11.3</javadoc.plugin.version>
+        <javadoc.plugin.version>3.12.0</javadoc.plugin.version>
         <antlr.version>4.9.3</antlr.version>
         <slf4j.version>1.7.36</slf4j.version>
-        <saxon.version>12.5</saxon.version>
+        <saxon.version>12.9</saxon.version>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -108,7 +107,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>34</pmd.build-tools.version>
+        <pmd.build-tools.version>35</pmd.build-tools.version>
 
         <pmd-designer.version>7.10.0</pmd-designer.version>
 
@@ -151,7 +150,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
-                    <version>3.1.0</version>
+                    <version>3.2.0</version>
                     <dependencies>
                         <dependency>
                             <groupId>net.java.dev.javacc</groupId>
@@ -179,7 +178,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.8.1</version>
+                    <version>3.9.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -189,7 +188,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
-                    <version>3.1.1</version>
+                    <version>3.2.0</version>
                     <configuration>
                         <releaseProfiles>pmd-release,sign</releaseProfiles>
                         <pushChanges>true</pushChanges>
@@ -272,7 +271,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.0</version>
+                    <version>3.14.1</version>
                     <configuration>
                         <release>${java.version}</release>
                     </configuration>
@@ -320,7 +319,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>3.4.2</version>
+                    <version>3.5.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -377,14 +376,14 @@
                         <dependency>
                             <groupId>org.junit.platform</groupId>
                             <artifactId>junit-platform-launcher</artifactId>
-                            <version>${junit5.platform.version}</version>
+                            <version>${junit.version}</version>
                         </dependency>
                     </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>exec-maven-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.6.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -528,7 +527,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>3.6.1</version>
+                    <version>3.6.2</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -603,27 +602,27 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.17.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.17.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.17.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.17.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-xml</artifactId>
-                            <version>7.16.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.17.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -641,17 +640,17 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.19.0</version>
+                    <version>2.20.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonatype.central</groupId>
                     <artifactId>central-publishing-maven-plugin</artifactId>
-                    <version>0.8.0</version>
+                    <version>0.9.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.13</version>
+                    <version>0.8.14</version>
                 </plugin>
                 <plugin>
                     <groupId>org.cyclonedx</groupId>
@@ -691,7 +690,7 @@
                 <plugin>
                     <groupId>com.github.siom79.japicmp</groupId>
                     <artifactId>japicmp-maven-plugin</artifactId>
-                    <version>0.23.1</version>
+                    <version>0.24.2</version>
                     <configuration>
                         <parameter>
                             <breakBuildBasedOnSemanticVersioning>true</breakBuildBasedOnSemanticVersioning>
@@ -740,7 +739,7 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[11,)</version>
+                                    <version>[17,)</version>
                                 </requireJavaVersion>
                             </rules>
                         </configuration>
@@ -879,7 +878,7 @@
             <dependency>
                 <groupId>org.ow2.asm</groupId>
                 <artifactId>asm</artifactId>
-                <version>9.8</version>
+                <version>9.9</version>
             </dependency>
             <dependency>
                 <groupId>org.pcollections</groupId>
@@ -904,7 +903,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.49.5</version>
+                <version>3.52.0</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -914,7 +913,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.18.0</version>
+                <version>3.20.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -939,7 +938,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>5.0.1</version>
+                <version>5.0.2</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -954,19 +953,19 @@
             <dependency>
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
-                <version>33.4.8-jre</version>
+                <version>33.5.0-jre</version>
             </dependency>
 
             <!-- scala-reflect and scala-library needed by pmd-apex via apex-link -->
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-reflect</artifactId>
-                <version>2.13.16</version>
+                <version>2.13.18</version>
             </dependency>
             <dependency>
                 <groupId>org.scala-lang</groupId>
                 <artifactId>scala-library</artifactId>
-                <version>2.13.13</version>
+                <version>2.13.18</version>
             </dependency>
 
             <!-- TEST DEPENDENCIES -->
@@ -1013,7 +1012,7 @@
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
-                <version>${junit5.version}</version>
+                <version>${junit.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -1028,7 +1027,7 @@
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>5.19.0</version>
+                <version>5.20.0</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1039,13 +1038,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.17.7</version>
+                <version>1.18.1</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.17.7</version>
+                <version>1.18.1</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1135,16 +1134,16 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.32.0</version>
+                <version>4.33.1</version>
             </dependency>
 
-            <!-- Make sure to use the correct version that JUnit5 needs. E.g. 5.12.1 needs 1.12.1
+            <!-- Make sure to use the correct version that JUnit6 needs.
                  Kotest might bring a different version.
-                 see junit5.version / junit5.platform.version -->
+                 see junit.version -->
             <dependency>
                 <groupId>org.junit.platform</groupId>
                 <artifactId>junit-platform-commons</artifactId>
-                <version>${junit5.platform.version}</version>
+                <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -1284,7 +1283,7 @@
                     <plugin>
                         <groupId>com.github.hazendaz.maven</groupId>
                         <artifactId>coveralls-maven-plugin</artifactId>
-                        <version>4.7.0</version>
+                        <version>5.0.0</version>
                     </plugin>
                 </plugins>
             </build>
@@ -1307,7 +1306,7 @@
                         <plugin>
                             <groupId>org.sonarsource.scanner.maven</groupId>
                             <artifactId>sonar-maven-plugin</artifactId>
-                            <version>5.2.0.4988</version>
+                            <version>5.3.0.6276</version>
                         </plugin>
                     </plugins>
                 </pluginManagement>

@@ -12,7 +12,7 @@ public class Foo {
     void bar() {
         String foo = "foo";
         if (foo.length() == 0) {
-            // this is bad
+            // this is OK
         }
     }
 }
@@ -28,6 +28,46 @@ public class Foo {
         String foo = "foo";
         if (foo.trim().length() == 0) {
             // this is bad
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String.strip checked for emptiness, should have failed</description>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        if (foo.strip().length() == 0) {
+            // this is bad
+        }
+        if (foo.strip().isEmpty()) {
+            // this is bad
+        }
+        if (foo.strip().isBlank()) {
+            // this is bad
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>String.strip length checks with inequalities</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4,7</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void bar() {
+        String foo = "foo";
+        if (foo.strip().length() <= 0 // bad
+            || foo.strip().length() >= 0 // different problem
+            || foo.strip().length() <= 1 // OK
+            || foo.strip().length() >= 1) { // bad
+
         }
     }
 }

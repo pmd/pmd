@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTStatementExpressionList;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
@@ -55,7 +56,7 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<Boolean> ALLOW_INCREMENT_DECREMENT_DESCRIPTOR =
             booleanProperty("allowIncrementDecrement")
-                    .desc("Allow increment or decrement operators within the conditional expression of an if, for, or while statement")
+                    .desc("Allow increment or decrement operators in any context")
                     .defaultValue(false).build();
 
 
@@ -89,7 +90,9 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
 
         if (toplevel == impureExpr
             && (parent instanceof ASTExpressionStatement
-            || parent instanceof ASTStatementExpressionList)
+                || parent instanceof ASTStatementExpressionList
+                || parent instanceof ASTLambdaExpression
+            )
         ) {
             // that's ok
             return;

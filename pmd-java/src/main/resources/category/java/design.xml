@@ -47,49 +47,7 @@ public abstract class Example {
         </example>
     </rule>
 
-    <rule name="AvoidCatchingGenericException"
-          since="4.2.6"
-          language="java"
-          message="Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#avoidcatchinggenericexception">
-        <description>
-Avoid catching generic exceptions such as NullPointerException, RuntimeException, Exception in try-catch block.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//CatchParameter//ClassType[
-        pmd-java:typeIsExactly('java.lang.NullPointerException') or
-        pmd-java:typeIsExactly('java.lang.Exception') or
-        pmd-java:typeIsExactly('java.lang.RuntimeException')]
-]]>
-                </value>
-            </property>
-        </properties>
-        <example>
-<![CDATA[
-package com.igate.primitive;
-
-public class PrimitiveType {
-
-    public void downCastPrimitiveType() {
-        try {
-            System.out.println(" i [" + i + "]");
-        } catch(Exception e) {
-            e.printStackTrace();
-        } catch(RuntimeException e) {
-            e.printStackTrace();
-        } catch(NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
-}
-]]>
-        </example>
-    </rule>
+    <rule name="AvoidCatchingGenericException" ref="category/java/errorprone.xml/AvoidCatchingGenericException" deprecated="true" />
 
     <rule name="AvoidDeeplyNestedIfStmts"
           language="java"

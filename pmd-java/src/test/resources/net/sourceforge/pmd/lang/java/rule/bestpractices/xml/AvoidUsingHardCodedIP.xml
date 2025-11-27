@@ -67,7 +67,7 @@ public class Foo {
         <description>Common basic case</description>
         <expected-problems>1</expected-problems>
         <expected-messages>
-            <message>Do not hard code the IP address badIdea</message>
+            <message>Do not hard code the IP address '127.0.0.1'</message>
         </expected-messages>
         <code><![CDATA[
 public class Foo {
@@ -113,6 +113,16 @@ public class Foo {
 public class Foo {
     String ID_MD5 = "1.2.840.113549.2.5";
     String bar = "testing 1.2.3.4";
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6171 Not an IPv6 address</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    String s = ":4:81";
 }
         ]]></code>
     </test-code>

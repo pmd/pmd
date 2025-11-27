@@ -2,10 +2,10 @@
  * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
  */
 
-package net.sourceforge.pmd.lang.java.rule.design;
+package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class AvoidCatchingGenericExceptionTest extends PmdRuleTst {
+class LabeledStatementTest extends PmdRuleTst {
     // no additional unit tests
 }

@@ -134,7 +134,7 @@ echo
 echo "*   Update **../pmd.github.io/_config.yml** to mention the new release"
 echo
 echo "*   Update property \`pmd-designer.version\` in **pom.xml** to reference the version, that will be released"
-echo "    later in this process. ⚠ WARNING! This does not work. You need to select an already released version."
+echo "    later in this process. ⚠️ WARNING! This does not work. You need to select an already released version."
 echo "    See <https://github.com/pmd/pmd-designer/blob/main/releasing.md>."
 echo
 echo "Press enter to continue..."
@@ -275,19 +275,19 @@ This is a {{ site.pmd.release_type }} release.
 
 {% tocmaker is_release_notes_processor %}
 
-### 🚀 New and noteworthy
+### 🚀️ New and noteworthy
 
-### 🐛 Fixed Issues
+### 🐛️ Fixed Issues
 
-### 🚨 API Changes
+### 🚨️ API Changes
 
-### ✨ Merged pull requests
+### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📦 Dependency updates
+### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
 
-### 📈 Stats
+### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}

@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.test.lang.rule;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.emptyString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -73,9 +74,15 @@ public abstract class AbstractRuleSetFactoryTest {
     // todo rename this field to validCoreRules or something. Make private.
     protected Set<String> validXPathClassNames = new HashSet<>();
     private final Set<String> languagesToSkip = new HashSet<>();
+    private final Map<String, Set<String>> expectedMessagesPerRuleset = new HashMap<>();
 
     public AbstractRuleSetFactoryTest() {
         this(new String[0]);
+    }
+
+    public AbstractRuleSetFactoryTest(Map<String, Set<String>> expectedMessagesPerRuleset) {
+        this();
+        this.expectedMessagesPerRuleset.putAll(expectedMessagesPerRuleset);
     }
 
     /**
@@ -368,8 +375,20 @@ public abstract class AbstractRuleSetFactoryTest {
         RuleSet ruleSet = InternalApiBridge.withReporter(new RuleSetLoader(), new Reporter())
                 .loadFromResource(ruleSetFileName);
 
-        assertThat("There should be no warnings while loading the ruleset",
-                messages.toString(), emptyString());
+        // normalize all line-endings to \n - in case we run under Windows...
+        String allMessages = messages.toString().replaceAll("\\R", "\n");
+
+        if (expectedMessagesPerRuleset.containsKey(ruleSetFileName)) {
+            for (String expectedMessage : expectedMessagesPerRuleset.get(ruleSetFileName)) {
+                assertThat(allMessages, containsString(expectedMessage));
+                allMessages = allMessages.replace(expectedMessage, "");
+            }
+            assertThat("There should be no other warnings while loading the ruleset, but found: " + allMessages,
+                    allMessages, emptyString());
+        } else {
+            assertThat("There should be no warnings while loading the ruleset, but found: " + allMessages,
+                    allMessages, emptyString());
+        }
 
         return ruleSet;
     }
@@ -426,7 +445,7 @@ public abstract class AbstractRuleSetFactoryTest {
                 + file;
         }
 
-        try (InputStream modifiedStream = new ByteArrayInputStream(file.getBytes())) {
+        try (InputStream modifiedStream = new ByteArrayInputStream(file.getBytes(StandardCharsets.UTF_8))) {
             saxParser.parse(modifiedStream, validateDefaultHandler.resetValid());
         }
         return validateDefaultHandler.isValid();
@@ -434,7 +453,7 @@ public abstract class AbstractRuleSetFactoryTest {
 
     private String readFullyToString(InputStream inputStream) throws IOException {
         StringBuilder buf = new StringBuilder(64 * 1024);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 buf.append(line);
@@ -463,7 +482,7 @@ public abstract class AbstractRuleSetFactoryTest {
         RuleSetWriter writer1 = new RuleSetWriter(outputStream1);
         writer1.write(ruleSet1);
         writer1.close();
-        String xml2 = new String(outputStream1.toByteArray());
+        String xml2 = new String(outputStream1.toByteArray(), StandardCharsets.UTF_8);
         // System.out.println("xml2: " + xml2);
 
         // Read RuleSet from XML, first time
@@ -477,20 +496,20 @@ public abstract class AbstractRuleSetFactoryTest {
         RuleSetWriter writer2 = new RuleSetWriter(outputStream2);
         writer2.write(ruleSet2);
         writer2.close();
-        String xml3 = new String(outputStream2.toByteArray());
+        String xml3 = new String(outputStream2.toByteArray(), StandardCharsets.UTF_8);
         // System.out.println("xml3: " + xml3);
 
         // Read RuleSet from XML, second time
         RuleSet ruleSet3 = loader.loadFromString("readRuleSet2.xml", xml3);
 
         // The 2 written XMLs should all be valid w.r.t Schema/DTD
-        assertTrue(validateAgainstSchema(new ByteArrayInputStream(xml2.getBytes())),
+        assertTrue(validateAgainstSchema(new ByteArrayInputStream(xml2.getBytes(StandardCharsets.UTF_8))),
                 "1st roundtrip RuleSet XML is not valid against Schema (filename: " + fileName + ")");
-        assertTrue(validateAgainstSchema(new ByteArrayInputStream(xml3.getBytes())),
+        assertTrue(validateAgainstSchema(new ByteArrayInputStream(xml3.getBytes(StandardCharsets.UTF_8))),
                 "2nd roundtrip RuleSet XML is not valid against Schema (filename: " + fileName + ")");
-        assertTrue(validateAgainstDtd(new ByteArrayInputStream(xml2.getBytes())),
+        assertTrue(validateAgainstDtd(new ByteArrayInputStream(xml2.getBytes(StandardCharsets.UTF_8))),
                 "1st roundtrip RuleSet XML is not valid against DTD (filename: " + fileName + ")");
-        assertTrue(validateAgainstDtd(new ByteArrayInputStream(xml3.getBytes())),
+        assertTrue(validateAgainstDtd(new ByteArrayInputStream(xml3.getBytes(StandardCharsets.UTF_8))),
                 "2nd roundtrip RuleSet XML is not valid against DTD (filename: " + fileName + ")");
 
         // All 3 versions of the RuleSet should be the same

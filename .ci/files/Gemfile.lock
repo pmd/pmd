@@ -18,7 +18,7 @@ GEM
     nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     ostruct (0.6.3)
-    pmdtester (1.6.1)
+    pmdtester (1.6.2)
       base64 (~> 0.3)
       bigdecimal (~> 3.2)
       differ (~> 0.1)

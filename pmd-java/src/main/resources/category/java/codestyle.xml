@@ -343,6 +343,10 @@ Avoid negation within an "if" expression with an "else" clause.  For example, re
 Most "if (x != y)" cases without an "else" are often return cases, so consistent use of this
 rule makes the code easier to read.  Also, this resolves trivial ordering problems, such
 as "does the error case go first?" or "does the common case go first?".
+
+Since null checks are commonly considered a positive condition, they are by default ignored
+by this rule. This means both `a == null` and `a != null` are allowed. If you want
+to enforce either style and disallow the other, use the property `nullCheckBranch`.
         </description>
         <priority>3</priority>
         <example>
@@ -1143,8 +1147,8 @@ public class Foo {
             By setting the property `typeAnnotations`, you can also enforce that type
             annotations appear right of the modifier keywords, next to the type they apply to.
             This property can have three values:
-            - `on type`: Type annotations must be placed next to the type they apply to
-            - `on decl`: Type annotations must be placed with other annotations, before modifiers.
+            - `ontype`: Type annotations must be placed next to the type they apply to
+            - `ondecl`: Type annotations must be placed with other annotations, before modifiers.
             This is not enforced if the type annotations syntactically appears within the type, e.g.
             in `public Map.@Nullable Entry&lt;K,V&gt; method()`.
             - `anywhere` (default): Either position fits. They still cannot be interspersed within keyword

@@ -249,6 +249,25 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>#6199 allowIncrementDecrement property: allowed usages</description>
+        <rule-property name="allowIncrementDecrement">true</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        int x = 0;
+        int[] values = new int[] {1, 2, 3};
+        values[x++] = 5;
+        consume(values[x--]);
+        consume(++x);
+    }
+
+    private void consume(int value) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>Distinct error messages for the same line</description>
         <expected-problems>2</expected-problems>
         <expected-messages>
@@ -294,6 +313,39 @@ public class Foo {
                     // case5
                     new File(location, projectName = projectNamePrefix + "_" + num).exists();
                 }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Github issue #6075 - false positive in lambda expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class PmdTest {
+                private String field;
+                public void pmdTest() {
+                    Consumer<String> cons = s -> this.field = s;
+                    cons.accept("pmd");
+                }
+            }
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>But assignments inside statements inside lambdas should still be flagged</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            import java.util.function.IntConsumer;
+
+            class PmdTest {
+                private String field;
+                public void pmdTest() {
+                    IntConsumer cons = i -> f(i++);
+                    cons.accept(42);
+                }
+
+                private static f(int i) {};
             }
         ]]></code>
     </test-code>
