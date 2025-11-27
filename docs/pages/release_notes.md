@@ -25,13 +25,14 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
-* general
+* maintenance
   * [#5701](https://github.com/pmd/pmd/issues/5701): \[core] net.sourceforge.pmd.cpd.SourceManager has public methods
 
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6229](https://github.com/pmd/pmd/pull/6229): chore: remove public methods from SourceManager - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
