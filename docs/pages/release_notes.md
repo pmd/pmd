@@ -29,12 +29,16 @@ This is a {{ site.pmd.release_type }} release.
 * The new Apex rule {%rule apex/bestpractices/AvoidFutureAnnotation %} finds usages of the `@Future`
   annotation. It is a legacy way to execute asynchronous Apex code. New code should implement
   the `Queueable` interface instead.
+* The new Java rule {%rule java/bestpractices/EnumComparison %} finds usages of `equals()` on
+  enum constants or values. Enums should be compared directly with `==` instead of `equals()` which
+  has some advantages (e.g. static type checking at compile time).
 
 ### 🐛️ Fixed Issues
 * apex-bestpractices
     * [#6203](https://github.com/pmd/pmd/issues/6203): \[apex] New Rule: Avoid Future Annotation
 * java-bestpractices
     * [#6188](https://github.com/pmd/pmd/issues/6188): \[java] UnitTestShouldIncludeAssert false positive when TestNG @<!-- -->Test.expectedException present
+    * [#6193](https://github.com/pmd/pmd/issues/6193): \[java] New Rule: Always compare enum values with ==
 * java-codestyle
     * [#6053](https://github.com/pmd/pmd/issues/6053): \[java] ModifierOrder false-positives with type annotations and type parameters (typeAnnotations = anywhere)
 * java-errorprone
@@ -51,6 +55,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#6192](https://github.com/pmd/pmd/pull/6192): \[java] Fix #6053: ModifierOrder - consider type params - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6194](https://github.com/pmd/pmd/pull/6194): chore: always place type annotations on the type - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6195](https://github.com/pmd/pmd/pull/6195): chore: always compare enums with == - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6196](https://github.com/pmd/pmd/pull/6196): \[java] New Rule: EnumComparison - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6201](https://github.com/pmd/pmd/pull/6201): \[java] Fix #6199: AssignmentInOperandRule: Update description of allowIncrementDecrement property - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6202](https://github.com/pmd/pmd/pull/6202): \[java] Fix #6188: UnitTestsShouldIncludeAssert - FP when TestNG @<!-- -->Test.expectedException is present - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6204](https://github.com/pmd/pmd/pull/6204): \[apex] Add rule to limit usage of @<!-- -->Future annotation - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
