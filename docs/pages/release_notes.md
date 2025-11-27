@@ -176,6 +176,7 @@ checkstyle version during the build.
 * [#6185](https://github.com/pmd/pmd/pull/6185): \[java] Fix #6131: Correct enum values for ModifierOrder - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6190](https://github.com/pmd/pmd/pull/6190): \[apex] Update ApexDoc rule to match the published specification - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
 * [#6191](https://github.com/pmd/pmd/pull/6191): \[java] HardCodedCryptoKey: NPE when constants from parent class are used - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6194](https://github.com/pmd/pmd/pull/6194): chore: always place type annotations on the type - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
