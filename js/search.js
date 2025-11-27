@@ -908,6 +908,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/apex/design.md",
+  "title": "NcssCount (Apex, Design)",
+  "tags": "",
+  "keywords": "Ncss Count",
+  "url": "pmd_rules_apex_design.html#ncsscount",
+  "summary": "This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/apex/design.md",
   "title": "NcssMethodCount (Apex, Design)",
   "tags": "",
   "keywords": "Ncss Method Count",
@@ -1601,6 +1609,14 @@ let pmd_doc_search_index = [
   "keywords": "Double Brace Initialization",
   "url": "pmd_rules_java_bestpractices.html#doublebraceinitialization",
   "summary": "Double brace initialisation is a pattern to initialise eg collections concisely. But it implicitly generates..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/bestpractices.md",
+  "title": "EnumComparison (Java, Best Practices)",
+  "tags": "",
+  "keywords": "Enum Comparison",
+  "url": "pmd_rules_java_bestpractices.html#enumcomparison",
+  "summary": "When comparing enums, `equals()` should be avoided and `==` should be preferred. Using `==` has..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/bestpractices.md",
@@ -4329,6 +4345,14 @@ let pmd_doc_search_index = [
   "keywords": "Excessive Type Length",
   "url": "pmd_rules_plsql_design.html#excessivetypelength",
   "summary": "Excessive class file lengths are usually indications that the class may be burdened with excessive..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/plsql/design.md",
+  "title": "NcssCount (PLSQL, Design)",
+  "tags": "",
+  "keywords": "Ncss Count",
+  "url": "pmd_rules_plsql_design.html#ncsscount",
+  "summary": "This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/plsql/design.md",

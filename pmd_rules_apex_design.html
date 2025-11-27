@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that help you discover design issues.">
-<meta name="keywords" content=" Design, AvoidBooleanMethodParameters, AvoidDeeplyNestedIfStmts, CognitiveComplexity, CyclomaticComplexity, ExcessiveClassLength, ExcessiveParameterList, ExcessivePublicCount, NcssConstructorCount, NcssMethodCount, NcssTypeCount, StdCyclomaticComplexity, TooManyFields, UnusedMethod">
+<meta name="keywords" content=" Design, AvoidBooleanMethodParameters, AvoidDeeplyNestedIfStmts, CognitiveComplexity, CyclomaticComplexity, ExcessiveClassLength, ExcessiveParameterList, ExcessivePublicCount, NcssConstructorCount, NcssCount, NcssMethodCount, NcssTypeCount, StdCyclomaticComplexity, TooManyFields, UnusedMethod">
 <title>Design | PMD Source Code Analyzer</title>
 
 
@@ -2328,13 +2328,17 @@ into subcomponents.</p>
 
 <h2 id="excessiveclasslength">ExcessiveClassLength</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.5.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
 <p>Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.</p>
+apart the code becomes more manageable and ripe for reuse.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use <a href="pmd_rules_apex_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> to find big classes.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/design/ExcessiveClassLengthRule.java">net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule</a></p>
 
@@ -2505,6 +2509,8 @@ developed easily.</p>
 
 <h2 id="ncssconstructorcount">NcssConstructorCount</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.5.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -2512,6 +2518,8 @@ developed easily.</p>
 <p>This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use <a href="pmd_rules_apex_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/design/NcssConstructorCountRule.java">net.sourceforge.pmd.lang.apex.rule.design.NcssConstructorCountRule</a></p>
 
@@ -2561,7 +2569,85 @@ lines of code that are split are counted as one.</p>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="ncsscount">NcssCount</h2>
+
+<p><strong>Since:</strong> PMD 7.19.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
+of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual
+statements. For more details on the calculation, see the documentation
+<a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/metrics/ApexMetrics.html#NCSS"><code>NCSS</code></a>.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/design/NcssCountRule.java">net.sourceforge.pmd.lang.apex.rule.design.NcssCountRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>                         <span class="c1">// +1, total Ncss = 12</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">bigMethod</span><span class="o">()</span>           <span class="c1">// +1</span>
+  <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="o">;</span>               <span class="c1">// +1</span>
+    <span class="kt">boolean</span> <span class="n">a</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">b</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>    <span class="c1">// +1</span>
+
+    <span class="k">if</span> <span class="o">(</span><span class="n">a</span> <span class="o">||</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>                   <span class="c1">// +1</span>
+      <span class="k">try</span> <span class="o">{</span>                         <span class="c1">// +1</span>
+        <span class="k">do</span> <span class="o">{</span>                        <span class="c1">// +1</span>
+          <span class="n">x</span> <span class="o">+=</span> <span class="mi">2</span><span class="o">;</span>                   <span class="c1">// +1</span>
+        <span class="o">}</span> <span class="k">while</span> <span class="o">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">12</span><span class="o">);</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">exit</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>             <span class="c1">// +1</span>
+      <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">ioe</span><span class="o">)</span> <span class="o">{</span>   <span class="c1">// +1</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">PatheticFailException</span><span class="o">(</span><span class="n">ioe</span><span class="o">);</span> <span class="c1">// +1</span>
+      <span class="o">}</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="err">'</span><span class="kc">false</span><span class="err">'</span><span class="o">);</span>  <span class="c1">// +1</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>This rule has the following properties:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Default Value</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>methodReportLevel</td>
+      <td>40</td>
+      <td>NCSS reporting threshold for methods</td>
+    </tr>
+    <tr>
+      <td>classReportLevel</td>
+      <td>500</td>
+      <td>NCSS reporting threshold for classes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Use this rule with the default properties by just referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/NcssCount"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule and customize it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/design.xml/NcssCount"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"methodReportLevel"</span> <span class="na">value=</span><span class="s">"40"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"classReportLevel"</span> <span class="na">value=</span><span class="s">"500"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+<span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
 <h2 id="ncssmethodcount">NcssMethodCount</h2>
+
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
 
 <p><strong>Since:</strong> PMD 5.5.0</p>
 
@@ -2570,6 +2656,8 @@ lines of code that are split are counted as one.</p>
 <p>This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use <a href="pmd_rules_apex_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/design/NcssMethodCountRule.java">net.sourceforge.pmd.lang.apex.rule.design.NcssMethodCountRule</a></p>
 
@@ -2620,6 +2708,8 @@ lines of code that are split are counted as one.</p>
 
 <h2 id="ncsstypecount">NcssTypeCount</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 5.5.0</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
@@ -2627,6 +2717,8 @@ lines of code that are split are counted as one.</p>
 <p>This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use <a href="pmd_rules_apex_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> instead.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/design/NcssTypeCountRule.java">net.sourceforge.pmd.lang.apex.rule.design.NcssTypeCountRule</a></p>
 

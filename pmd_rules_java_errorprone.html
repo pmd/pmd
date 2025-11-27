@@ -4846,9 +4846,10 @@ as keys in sorted maps.</p>
 will report missing <code class="language-plaintext highlighter-rouge">equals()</code> and/or <code class="language-plaintext highlighter-rouge">hashCode()</code> methods for classes only
 that implement <code class="language-plaintext highlighter-rouge">Comparable</code>.</p>
 
-<p>Note 2: This rule also reports records that implement <code class="language-plaintext highlighter-rouge">Comparable</code>. While
-for records, <code class="language-plaintext highlighter-rouge">equals()</code> and <code class="language-plaintext highlighter-rouge">hashCode()</code> are generated, you still must make
-sure that <code class="language-plaintext highlighter-rouge">compareTo()</code> is consistent with <code class="language-plaintext highlighter-rouge">equals()</code>.</p>
+<p>Note 2: This rule reports records only, if either <code class="language-plaintext highlighter-rouge">equals()</code> or <code class="language-plaintext highlighter-rouge">hashCode()</code>
+have been overridden, but not both. If a record uses the generated
+equals/hashCode methods, then the <code class="language-plaintext highlighter-rouge">compareTo()</code> implementation is only
+consistent with <code class="language-plaintext highlighter-rouge">equals()</code> if all record components are considered.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/OverrideBothEqualsAndHashCodeOnComparableRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.OverrideBothEqualsAndHashCodeOnComparableRule</a></p>
 

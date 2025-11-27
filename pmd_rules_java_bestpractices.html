@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules which enforce generally accepted best practices.">
-<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
+<meta name="keywords" content=" Best Practices, AbstractClassWithoutAbstractMethod, AccessorClassGeneration, AccessorMethodGeneration, ArrayIsStoredDirectly, AvoidMessageDigestField, AvoidPrintStackTrace, AvoidReassigningCatchVariables, AvoidReassigningLoopVariables, AvoidReassigningParameters, AvoidStringBufferField, AvoidUsingHardCodedIP, CheckResultSet, ConstantsInInterface, DefaultLabelNotLastInSwitch, DefaultLabelNotLastInSwitchStmt, DoubleBraceInitialization, EnumComparison, ExhaustiveSwitchHasDefault, ForLoopCanBeForeach, ForLoopVariableCount, GuardLogStatement, ImplicitFunctionalInterface, JUnit4SuitesShouldUseSuiteAnnotation, JUnit4TestShouldUseAfterAnnotation, JUnit4TestShouldUseBeforeAnnotation, JUnit4TestShouldUseTestAnnotation, JUnit5TestShouldBePackagePrivate, JUnitAssertionsShouldIncludeMessage, JUnitTestContainsTooManyAsserts, JUnitTestsShouldIncludeAssert, JUnitUseExpected, LabeledStatement, LiteralsFirstInComparisons, LooseCoupling, MethodReturnsInternalArray, MissingOverride, NonExhaustiveSwitch, OneDeclarationPerLine, PreserveStackTrace, PrimitiveWrapperInstantiation, RelianceOnDefaultCharset, ReplaceEnumerationWithIterator, ReplaceHashtableWithMap, ReplaceVectorWithList, SimplifiableTestAssertion, SwitchStmtsShouldHaveDefault, SystemPrintln, UnitTestAssertionsShouldIncludeMessage, UnitTestContainsTooManyAsserts, UnitTestShouldIncludeAssert, UnitTestShouldUseAfterAnnotation, UnitTestShouldUseBeforeAnnotation, UnitTestShouldUseTestAnnotation, UnnecessaryVarargsArrayCreation, UnnecessaryWarningSuppression, UnusedAssignment, UnusedFormalParameter, UnusedLabel, UnusedLocalVariable, UnusedPrivateField, UnusedPrivateMethod, UseCollectionIsEmpty, UseEnumCollections, UseStandardCharsets, UseTryWithResources, UseVarargs, WhileLoopWithLiteralBoolean">
 <title>Best Practices | PMD Source Code Analyzer</title>
 
 
@@ -2709,6 +2709,52 @@ accessible from outside the anonymous class, and those legit cases should be sup
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/DoubleBraceInitialization"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="enumcomparison">EnumComparison</h2>
+
+<p><strong>Since:</strong> PMD 7.19.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>When comparing enums, <code class="language-plaintext highlighter-rouge">equals()</code> should be avoided and <code class="language-plaintext highlighter-rouge">==</code> should be preferred.</p>
+
+<p>Using <code class="language-plaintext highlighter-rouge">==</code> has some advantages:</p>
+<ul>
+  <li>same semantic as <code class="language-plaintext highlighter-rouge">equals()</code></li>
+  <li>less problematic with possible null pointer exceptions</li>
+  <li>supports static type check: If you compare two incompatible enum types, the compiler will tell you.
+When using equals, you’ll only get noticed at runtime or not at all.</li>
+</ul>
+
+<p>This rule implements SonarSource rule <a href="https://sonarsource.github.io/rspec/#/rspec/S4551">S4551</a>.</p>
+
+<p>Note, that only primitive types and enums should be compared using <code class="language-plaintext highlighter-rouge">==</code>. To compare other
+objects, <code class="language-plaintext highlighter-rouge">equals()</code> is the correct way. See <a href="pmd_rules_java_errorprone.html#compareobjectswithequals"><code class="language-plaintext highlighter-rouge">CompareObjectsWithEquals</code></a>
+and <a href="pmd_rules_java_errorprone.html#useequalstocomparestrings"><code class="language-plaintext highlighter-rouge">UseEqualsToCompareStrings</code></a>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s2">"_#equals(java.lang.Object)"</span><span class="p">)]</span><span class="w">
+  </span><span class="p">[</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s2">"java.lang.Enum"</span><span class="p">)]</span><span class="w"> </span><span class="ow">or</span><span class="w">
+   </span><span class="nt">ArgumentList</span><span class="p">[</span><span class="o">*</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s2">"java.lang.Enum"</span><span class="p">)]]]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">enum</span> <span class="nc">Color</span> <span class="o">{</span> <span class="no">RED</span><span class="o">,</span> <span class="no">GREEN</span><span class="o">,</span> <span class="no">BLUE</span> <span class="o">}</span>
+<span class="kd">class</span> <span class="nc">ColorTester</span> <span class="o">{</span>
+  <span class="kt">boolean</span> <span class="nf">isRed</span><span class="o">(</span><span class="nc">Color</span> <span class="n">color</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">color</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="nc">Color</span><span class="o">.</span><span class="na">RED</span><span class="o">);</span> <span class="c1">// violation</span>
+  <span class="o">}</span>
+
+  <span class="kt">boolean</span> <span class="nf">isGreen</span><span class="o">(</span><span class="nc">Color</span> <span class="n">color</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="n">color</span> <span class="o">==</span> <span class="nc">Color</span><span class="o">.</span><span class="na">GREEN</span><span class="o">;</span> <span class="c1">// preferred</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/EnumComparison"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="exhaustiveswitchhasdefault">ExhaustiveSwitchHasDefault</h2>
