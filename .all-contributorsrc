@@ -8197,7 +8197,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/2975481?v=4",
       "profile": "https://github.com/mrclmh",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -8268,6 +8269,78 @@
       "name": "Vincent Zorge",
       "avatar_url": "https://avatars.githubusercontent.com/u/3940229?v=4",
       "profile": "https://nl.linkedin.com/in/vincentzorge",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Jallibad",
+      "name": "Jordan Alligood",
+      "avatar_url": "https://avatars.githubusercontent.com/u/568244?v=4",
+      "profile": "https://github.com/Jallibad",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "bmeier-pros",
+      "name": "bmeier-pros",
+      "avatar_url": "https://avatars.githubusercontent.com/u/141971923?v=4",
+      "profile": "https://github.com/bmeier-pros",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "delanym",
+      "name": "Delany",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5310238?v=4",
+      "profile": "https://github.com/delanym",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "pkozuchowski",
+      "name": "Piotr Kożuchowski",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4470967?v=4",
+      "profile": "https://github.com/pkozuchowski",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "rubenporras",
+      "name": "rubenporras",
+      "avatar_url": "https://avatars.githubusercontent.com/u/43636626?v=4",
+      "profile": "https://github.com/rubenporras",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mebigfatguy",
+      "name": "Dave Brosius",
+      "avatar_url": "https://avatars.githubusercontent.com/u/170161?v=4",
+      "profile": "http://www.jroller.com/dbrosius/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "kdandoy107255",
+      "name": "kdandoy107255",
+      "avatar_url": "https://avatars.githubusercontent.com/u/221576972?v=4",
+      "profile": "https://github.com/kdandoy107255",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Juneezee",
+      "name": "Eng Zer Jun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20135478?v=4",
+      "profile": "https://github.com/Juneezee",
       "contributions": [
         "bug"
       ]
