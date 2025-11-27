@@ -25,11 +25,14 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java-errorprone
+    * [#6273](https://github.com/pmd/pmd/issues/6273): \[java] TestClassWithoutTestCases documentation does not mention test prefixes
 
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6278](https://github.com/pmd/pmd/pull/6278): \[doc] TestClassWithoutTestCases: Mention test prefixes - [Marcel](https://github.com/mrclmh) (@mrclmh)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
