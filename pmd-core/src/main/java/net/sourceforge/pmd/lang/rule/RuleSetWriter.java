@@ -292,8 +292,7 @@ public class RuleSetWriter {
         return propertiesElement;
     }
 
-    @NonNull
-    private <T> Element propertyElementWithValueAttribute(PropertySource propertySource, PropertyDescriptor<T> propertyDescriptor) {
+    private <T> @NonNull Element propertyElementWithValueAttribute(PropertySource propertySource, PropertyDescriptor<T> propertyDescriptor) {
         Element element = document.createElementNS(RULESET_2_0_0_NS_URI, "property");
         SchemaConstants.NAME.setOn(element, propertyDescriptor.name());
 
