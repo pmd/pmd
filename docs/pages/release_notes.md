@@ -153,6 +153,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#6259](https://github.com/pmd/pmd/pull/6259): \[java] Fix #5689: Issue with scoping of record members - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#6277](https://github.com/pmd/pmd/pull/6277): \[doc] Add button to copy configuration snippet - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6278](https://github.com/pmd/pmd/pull/6278): \[doc] TestClassWithoutTestCases: Mention test prefixes - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6280](https://github.com/pmd/pmd/pull/6280): \[ci] Exclude build resources from spring-framework for regression tester - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
