@@ -335,7 +335,7 @@ public final class ElEscapeDetector {
                         break;
                     }
 
-                    if (e.equals(Escaping.ANY)) {
+                    if (e == Escaping.ANY) {
                         for (Escaping esc : Escaping.values()) {
                             if (id.getImage().equalsIgnoreCase(esc.toString())) {
                                 isEscaped = true;
