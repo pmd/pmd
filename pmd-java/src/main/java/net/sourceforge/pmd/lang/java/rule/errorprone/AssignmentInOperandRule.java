@@ -97,7 +97,8 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
                 return;
             }
             if (parent instanceof ASTSwitchArrowBranch
-                    && parent.getParent() instanceof ASTSwitchStatement) {  // switch expression excluded
+                    && parent.getParent() instanceof ASTSwitchStatement) {
+                // assignments in modern (->) switch statements are ok
                 return;
             }
         }

@@ -333,8 +333,8 @@ public class Foo {
 
     <test-code>
         <description>#6092 false positive for case statements</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>18</expected-linenumbers>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>31,35,39</expected-linenumbers>
         <code><![CDATA[
             // assignment allowed in switch statement case
             public class Foo {
@@ -342,9 +342,22 @@ public class Foo {
                     String a = null;
 
                     switch (args[0]) {
-                        case "A" -> a = "a";    // fixed false positive in 'a = "a"'
+                        case "A" -> a = "a";             // fixed false positive in 'a = "a"'
                         default -> {}
                     }
+                    System.out.println("a = " + a);
+
+                    switch (args[0]) {
+                        case "A": a = "b"; break;
+                        default:
+                    }
+                    System.out.println("a = " + a);
+
+                    switch (args[0]) {
+                        case "A": { a = "c"; break; }
+                        default:
+                    }
+                    System.out.println("a = " + a);
                 }
             }
 
@@ -353,12 +366,22 @@ public class Foo {
                 public static void main(String[] args) {
                     int a = 2;
                     int b = switch(a) {
-                        case 2 -> a = 1;    // violation line 18
+                        case 2 -> a = 1;              // violation line 31
                         default -> 0;
+                    };
+                    int c = switch(a) {
+                        case 1 -> { yield a = 1; }    // violation line 35
+                        default -> 0;
+                    };
+                    int d = switch(a) {
+                        case 1: yield a = 1;          // violation line 39
+                        default: yield 0;
                     };
 
                     System.out.println("a = " + a);
                     System.out.println("b = " + b);
+                    System.out.println("c = " + c);
+                    System.out.println("d = " + d);
                 }
             }
         ]]></code>
