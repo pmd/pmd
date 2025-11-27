@@ -35,8 +35,7 @@ public interface TypeNode extends JavaNode {
      * @return The type mirror. Never returns null; if the type is unresolved, returns
      *     {@link TypeSystem#UNKNOWN}.
      */
-    @NonNull
-    default JTypeMirror getTypeMirror() {
+    default @NonNull JTypeMirror getTypeMirror() {
         return getTypeMirror(TypingContext.DEFAULT);
     }
 

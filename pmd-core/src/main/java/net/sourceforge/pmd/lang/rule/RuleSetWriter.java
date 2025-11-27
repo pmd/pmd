@@ -260,8 +260,7 @@ public class RuleSetWriter {
         return ruleSetReferenceElement;
     }
 
-    @Nullable
-    private Element createPropertiesElement(PropertySource propertySource) {
+    private @Nullable Element createPropertiesElement(PropertySource propertySource) {
 
         Element propertiesElement = null;
         List<PropertyDescriptor<?>> overridden = propertySource.getOverriddenPropertyDescriptors();

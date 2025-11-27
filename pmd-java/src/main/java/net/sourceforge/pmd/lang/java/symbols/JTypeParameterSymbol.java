@@ -41,8 +41,7 @@ public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTy
 
 
     @Override
-    @NonNull
-    default String getPackageName() {
+    default @NonNull String getPackageName() {
         return getDeclaringSymbol().getPackageName();
     }
 
@@ -53,8 +52,7 @@ public interface JTypeParameterSymbol extends JTypeDeclSymbol, BoundToNode<ASTTy
     }
 
     @Override
-    @NonNull
-    default JClassSymbol getEnclosingClass() {
+    default @NonNull JClassSymbol getEnclosingClass() {
         JTypeParameterOwnerSymbol ownerSymbol = getDeclaringSymbol();
         return ownerSymbol instanceof JClassSymbol ? (JClassSymbol) ownerSymbol : ownerSymbol.getEnclosingClass();
     }

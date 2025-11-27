@@ -711,7 +711,7 @@ public final class CollectionUtil {
         return as.plusAll(bs);
     }
 
-    public static @NonNull <T> List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {
+    public static <T> @NonNull List<T> makeUnmodifiableAndNonNull(@Nullable List<? extends T> list) {
         if (list instanceof PSequence) {
             return (List<T>) list;
         }
