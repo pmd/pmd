@@ -10,6 +10,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [Updated PMD Designer](#updated-pmd-designer)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
     * [New Rules](#new-rules)
     * [Deprecated Rules](#deprecated-rules)
@@ -21,6 +22,12 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+
+#### Updated PMD Designer
+
+This PMD release ships a new version of the pmd-designer.
+For the changes, see [PMD Designer Changelog (7.19.0)](https://github.com/pmd/pmd-designer/releases/tag/7.19.0)
+and [PMD Designer Changelog (7.19.1)](https://github.com/pmd/pmd-designer/releases/tag/7.19.1).
 
 ### 🌟️ New and Changed Rules
 #### New Rules
@@ -81,6 +88,7 @@ This is a minor release.
     * [#2128](https://github.com/pmd/pmd/issues/2128): \[apex] Merge NCSS count rules for Apex
 * java
     * [#5689](https://github.com/pmd/pmd/issues/5689): \[java] Members of record should be in scope in record header
+    * [#6256](https://github.com/pmd/pmd/issues/6256): \[java] java.lang.IllegalArgumentException: Invalid target type of type annotation for method or ctor type annotation: 19
 * java-bestpractices
     * [#5820](https://github.com/pmd/pmd/issues/5820): \[java] GuardLogStatement recognizes that a string is a compile-time constant expression only if at first position
     * [#6188](https://github.com/pmd/pmd/issues/6188): \[java] UnitTestShouldIncludeAssert false positive when TestNG @<!-- -->Test.expectedException present
@@ -151,6 +159,8 @@ This is a minor release.
 * [#6259](https://github.com/pmd/pmd/pull/6259): \[java] Fix #5689: Issue with scoping of record members - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#6277](https://github.com/pmd/pmd/pull/6277): \[doc] Add button to copy configuration snippet - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
 * [#6278](https://github.com/pmd/pmd/pull/6278): \[doc] TestClassWithoutTestCases: Mention test prefixes - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6280](https://github.com/pmd/pmd/pull/6280): \[ci] Exclude build resources from spring-framework for regression tester - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6282](https://github.com/pmd/pmd/pull/6282): \[java] Fix #6256: ignore invalid annotation type - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
