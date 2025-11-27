@@ -83,6 +83,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#2128](https://github.com/pmd/pmd/issues/2128): \[apex] Merge NCSS count rules for Apex
 * java
     * [#5689](https://github.com/pmd/pmd/issues/5689): \[java] Members of record should be in scope in record header
+    * [#6256](https://github.com/pmd/pmd/issues/6256): \[java] java.lang.IllegalArgumentException: Invalid target type of type annotation for method or ctor type annotation: 19
 * java-bestpractices
     * [#5820](https://github.com/pmd/pmd/issues/5820): \[java] GuardLogStatement recognizes that a string is a compile-time constant expression only if at first position
     * [#6188](https://github.com/pmd/pmd/issues/6188): \[java] UnitTestShouldIncludeAssert false positive when TestNG @<!-- -->Test.expectedException present

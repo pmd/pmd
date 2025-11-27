@@ -420,6 +420,14 @@ abstract class GenericSigBase<T extends JTypeParameterOwnerSymbol & AsmStub> {
                         annot, ctx.getEnclosingClass().getCanonicalName(), ctx.getSimpleName());
                 return false;
             }
+            case TypeReference.FIELD: {
+                // avoid exception for Java 16+ bug
+                // see https://github.com/pmd/pmd/issues/6256 and https://bugs.openjdk.org/browse/JDK-8372382
+                LOGGER.debug("Invalid target type FIELD of type annotation {} for method or ctor detected. "
+                        + "The annotation is ignored. Method: {}#{}. See https://github.com/pmd/pmd/issues/6256.",
+                        annot, ctx.getEnclosingClass().getCanonicalName(), ctx.getSimpleName());
+                return false;
+            }
             default:
                 throw new IllegalArgumentException(
                     "Invalid target type of type annotation " + annot + " for method or ctor type annotation: "
