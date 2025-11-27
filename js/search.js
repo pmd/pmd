@@ -3568,7 +3568,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Test Class Without Test Cases",
   "url": "pmd_rules_java_errorprone.html#testclasswithouttestcases",
-  "summary": "Test classes typically end with the suffix &quot;Test&quot;, &quot;Tests&quot; or &quot;TestCase&quot;. Having a non-test class..."
+  "summary": "Test classes typically start or end with the affix &quot;Test&quot;, &quot;Tests&quot; or &quot;TestCase&quot;. Having a..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",

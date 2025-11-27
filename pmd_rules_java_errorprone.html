@@ -3934,8 +3934,10 @@ or reported.</p>
 <p>Empty finalize methods serve no purpose and should be removed. Note that Oracle has declared Object.finalize() as deprecated since JDK 9.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
-<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s1">'finalize'</span><span class="p">][</span><span class="na">@Arity</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">]</span><span class="w">
-  </span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="w">
+  </span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
+    </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"finalize"</span><span class="p">][</span><span class="na">@Arity</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">0</span><span class="p">][</span><span class="na">@Final</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="na">@Final</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]]</span><span class="w">
+      </span><span class="o">/</span><span class="nt">Block</span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="err">*</span><span class="p">)]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -5489,12 +5491,12 @@ the literal character "8".</p>
 
 <p><strong>Priority:</strong> Medium (3)</p>
 
-<p>Test classes typically end with the suffix "Test", "Tests" or "TestCase". Having a non-test class with that name
+<p>Test classes typically start or end with the affix "Test", "Tests" or "TestCase". Having a non-test class with that name
 is not a good practice, since most people will assume it is a test case. Test classes have test methods
 named "testXXX" (JUnit3) or use annotations (e.g. <code class="language-plaintext highlighter-rouge">@Test</code>).</p>
 
-<p>The suffix can be configured using the property <code class="language-plaintext highlighter-rouge">testClassPattern</code>. To disable the detection of possible test classes
-by name, set this property to an empty string.</p>
+<p>The regular expression to match can be configured using the property <code class="language-plaintext highlighter-rouge">testClassPattern</code>. To disable the detection of
+possible test classes by name, set this property to an empty string.</p>
 
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/TestClassWithoutTestCasesRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule</a></p>
 

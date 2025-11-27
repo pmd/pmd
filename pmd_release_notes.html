@@ -2109,8 +2109,14 @@ deprecated in favor of the new rule <a href="pmd_rules_plsql_design.html#ncsscou
       <li><a href="https://github.com/pmd/pmd/issues/2128">#2128</a>: [apex] Merge NCSS count rules for Apex</li>
     </ul>
   </li>
+  <li>java
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5689">#5689</a>: [java] Members of record should be in scope in record header</li>
+    </ul>
+  </li>
   <li>java-bestpractices
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/5820">#5820</a>: [java] GuardLogStatement recognizes that a string is a compile-time constant expression only if at first position</li>
       <li><a href="https://github.com/pmd/pmd/issues/6188">#6188</a>: [java] UnitTestShouldIncludeAssert false positive when TestNG @<!-- -->Test.expectedException present</li>
       <li><a href="https://github.com/pmd/pmd/issues/6193">#6193</a>: [java] New Rule: Always compare enum values with ==</li>
     </ul>
@@ -2122,10 +2128,12 @@ deprecated in favor of the new rule <a href="pmd_rules_plsql_design.html#ncsscou
   </li>
   <li>java-errorprone
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4742">#4742</a>: [java] EmptyFinalizer should not trigger if finalize method is final and class is not</li>
       <li><a href="https://github.com/pmd/pmd/issues/6072">#6072</a>: [java] OverrideBothEqualsAndHashCodeOnComparable should not be required for record classes</li>
       <li><a href="https://github.com/pmd/pmd/issues/6092">#6092</a>: [java] AssignmentInOperand false positive in 7.17.0 for case blocks in switch statements</li>
       <li><a href="https://github.com/pmd/pmd/issues/6096">#6096</a>: [java] OverrideBothEqualsAndHashCodeOnComparable on class with lombok.EqualsAndHashCode annotation</li>
       <li><a href="https://github.com/pmd/pmd/issues/6199">#6199</a>: [java] AssignmentInOperand: description of property allowIncrementDecrement is unclear</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6273">#6273</a>: [java] TestClassWithoutTestCases documentation does not mention test prefixes</li>
     </ul>
   </li>
   <li>java-performance
@@ -2202,6 +2210,11 @@ PL/SQL. For PMD 8.0.0 all these classes will be removed from pmd-core.</li>
   <li><a href="https://github.com/pmd/pmd/pull/6249">#6249</a>: [core] Deprecate old symboltable API - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6250">#6250</a>: chore: fail build for compiler warnings - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/6251">#6251</a>: [java] Fix #6092: AssignmentInOperand false positive in 7.17.0 for case statements - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6255">#6255</a>: [java] Fix #4742: EmptyFinalizer should not trigger if finalize method is final and class is not - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6258">#6258</a>: [java] Fix #5820: GuardLogStatement recognizes that a string is a compile-time constant expression only if at first position - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6259">#6259</a>: [java] Fix #5689: Issue with scoping of record members - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6277">#6277</a>: [doc] Add button to copy configuration snippet - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/6278">#6278</a>: [doc] TestClassWithoutTestCases: Mention test prefixes - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
 </ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
