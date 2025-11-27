@@ -211,8 +211,7 @@ public class ClasspathClassLoader extends URLClassLoader {
     // this is lazily initialized on first query of a module-info.class
     private Map<String, URL> moduleNameToModuleInfoUrls;
 
-    @Nullable
-    private static String extractModuleName(String name) {
+    private static @Nullable String extractModuleName(String name) {
         if (!name.endsWith(MODULE_INFO_SUFFIX_SLASH)) {
             return null;
         }

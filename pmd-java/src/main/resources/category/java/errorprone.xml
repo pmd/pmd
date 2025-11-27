@@ -2557,9 +2557,10 @@ public class Foo {        // perfect, both methods provided
             will report missing `equals()` and/or `hashCode()` methods for classes only
             that implement `Comparable`.
 
-            Note 2: This rule also reports records that implement `Comparable`. While
-            for records, `equals()` and `hashCode()` are generated, you still must make
-            sure that `compareTo()` is consistent with `equals()`.
+            Note 2: This rule reports records only, if either `equals()` or `hashCode()`
+            have been overridden, but not both. If a record uses the generated
+            equals/hashCode methods, then the `compareTo()` implementation is only
+            consistent with `equals()` if all record components are considered.
         </description>
         <priority>3</priority>
         <example>

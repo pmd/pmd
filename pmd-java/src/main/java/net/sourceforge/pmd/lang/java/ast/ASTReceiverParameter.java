@@ -57,8 +57,7 @@ public final class ASTReceiverParameter extends AbstractJavaNode {
      * declaration of the inner class, call it C, and the name of the parameter
      * must be {@code Identifier.this} where {@code Identifier} is the simple name of C.
      */
-    @NonNull
-    public ASTClassType getReceiverType() {
+    public @NonNull ASTClassType getReceiverType() {
         return (ASTClassType) getChild(0);
     }
 

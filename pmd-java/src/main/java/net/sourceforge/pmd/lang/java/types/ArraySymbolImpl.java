@@ -145,14 +145,12 @@ class ArraySymbolImpl implements JClassSymbol {
     }
 
     @Override
-    @NonNull
-    public String getPackageName() {
+    public @NonNull String getPackageName() {
         return getArrayComponent().getPackageName();
     }
 
     @Override
-    @NonNull
-    public String getSimpleName() {
+    public @NonNull String getSimpleName() {
         return getArrayComponent().getSimpleName() + "[]";
     }
 
@@ -168,8 +166,7 @@ class ArraySymbolImpl implements JClassSymbol {
     }
 
     @Override
-    @Nullable
-    public JClassSymbol getEnclosingClass() {
+    public @Nullable JClassSymbol getEnclosingClass() {
         return null;
     }
 

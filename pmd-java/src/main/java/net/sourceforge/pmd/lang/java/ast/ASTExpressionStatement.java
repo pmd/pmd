@@ -29,8 +29,7 @@ public final class ASTExpressionStatement extends AbstractStatement {
 
 
     /** Returns the contained expression. */
-    @NonNull
-    public ASTExpression getExpr() {
+    public @NonNull ASTExpression getExpr() {
         return (ASTExpression) getChild(0);
     }
 }

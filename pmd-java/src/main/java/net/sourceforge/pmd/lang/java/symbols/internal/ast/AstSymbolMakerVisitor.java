@@ -107,8 +107,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
         return null;
     }
 
-    @NonNull
-    private String makeBinaryName(ASTTypeDeclaration node) {
+    private @NonNull String makeBinaryName(ASTTypeDeclaration node) {
         String simpleName = node.getSimpleName();
         if (node.isLocal()) {
             simpleName = getNextIndexFromHistogram(currentLocalIndices.getFirst(), node.getSimpleName(), 1)
@@ -125,8 +124,7 @@ final class AstSymbolMakerVisitor extends JavaVisitorBase<AstSymFactory, Void> {
                                                          : packageName + "." + simpleName;
     }
 
-    @Nullable
-    private String makeCanonicalName(ASTTypeDeclaration node, String binaryName) {
+    private @Nullable String makeCanonicalName(ASTTypeDeclaration node, String binaryName) {
         if (node.isAnonymous() || node.isLocal() || node.isUnnamedToplevelClass()) {
             return null;
         }

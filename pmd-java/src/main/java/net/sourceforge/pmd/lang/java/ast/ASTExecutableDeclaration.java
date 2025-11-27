@@ -71,8 +71,7 @@ public interface ASTExecutableDeclaration
     /**
      * Returns the formal parameters node of this method or constructor.
      */
-    @NonNull
-    default ASTFormalParameters getFormalParameters() {
+    default @NonNull ASTFormalParameters getFormalParameters() {
         return firstChild(ASTFormalParameters.class);
     }
 
@@ -99,8 +98,7 @@ public interface ASTExecutableDeclaration
      * Returns the {@code throws} clause of this declaration, or null
      * if there is none.
      */
-    @Nullable
-    default ASTThrowsList getThrowsList() {
+    default @Nullable ASTThrowsList getThrowsList() {
         return firstChild(ASTThrowsList.class);
     }
 
