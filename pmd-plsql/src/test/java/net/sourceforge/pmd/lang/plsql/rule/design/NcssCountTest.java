@@ -6,10 +6,6 @@ package net.sourceforge.pmd.lang.plsql.rule.design;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-/**
- * @deprecated Since 7.19.0
- */
-@Deprecated
-class ExcessiveObjectLengthTest extends PmdRuleTst {
+class NcssCountTest extends PmdRuleTst {
     // no additional unit tests
 }
