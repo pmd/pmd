@@ -25,11 +25,14 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java-errorprone
+    * [#6092](https://github.com/pmd/pmd/issues/6092): \[java] AssignmentInOperand false positive in 7.17.0 for case blocks in switch statements
 
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6251](https://github.com/pmd/pmd/pull/6251): \[java] Fix #6092 AssignmentInOperand false positive in 7.17.0 for case statements - [Marcel](https://github.com/mrclmh) (@mrclmh)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
