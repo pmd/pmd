@@ -95,6 +95,7 @@ This is a {{ site.pmd.release_type }} release.
     * [#6092](https://github.com/pmd/pmd/issues/6092): \[java] AssignmentInOperand false positive in 7.17.0 for case blocks in switch statements
     * [#6096](https://github.com/pmd/pmd/issues/6096): \[java] OverrideBothEqualsAndHashCodeOnComparable on class with lombok.EqualsAndHashCode annotation
     * [#6199](https://github.com/pmd/pmd/issues/6199): \[java] AssignmentInOperand: description of property allowIncrementDecrement is unclear
+    * [#6273](https://github.com/pmd/pmd/issues/6273): \[java] TestClassWithoutTestCases documentation does not mention test prefixes
 * java-performance
     * [#4577](https://github.com/pmd/pmd/issues/4577): \[java] UseArraysAsList with condition in loop
     * [#5071](https://github.com/pmd/pmd/issues/5071): \[java] UseArraysAsList should not warn when elements are skipped in array
@@ -151,6 +152,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#6258](https://github.com/pmd/pmd/pull/6258): \[java] Fix #5820: GuardLogStatement recognizes that a string is a compile-time constant expression only if at first position - [Marcel](https://github.com/mrclmh) (@mrclmh)
 * [#6259](https://github.com/pmd/pmd/pull/6259): \[java] Fix #5689: Issue with scoping of record members - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#6277](https://github.com/pmd/pmd/pull/6277): \[doc] Add button to copy configuration snippet - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6278](https://github.com/pmd/pmd/pull/6278): \[doc] TestClassWithoutTestCases: Mention test prefixes - [Marcel](https://github.com/mrclmh) (@mrclmh)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
