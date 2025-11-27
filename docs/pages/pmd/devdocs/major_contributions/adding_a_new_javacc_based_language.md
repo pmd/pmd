@@ -3,7 +3,7 @@ title: Adding PMD support for a new JavaCC grammar based language
 short_title: Adding a new language with JavaCC
 tags: [devdocs, extending]
 summary: "How to add a new language to PMD using JavaCC grammar."
-last_updated: December 2023 (7.0.0)
+last_updated: November 2025 (7.19.0)
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_adding_new_language_javacc.html
 folder: pmd/devdocs
@@ -293,7 +293,7 @@ see [Java-specific features and guidance](pmd_languages_java.html).
 {% capture deprecated_symbols_api_note %}
 With PMD 7.0.0 the symbol table and type resolution implementation has been
 rewritten from scratch. There is still an old API for symbol table support, that is used by PLSQL,
-see {% jdoc_package core::lang.symboltable %}. This will be deprecated and should not be used.
+see {% jdoc_package core::lang.symboltable %}. This has been deprecated and should not be used.
 {% endcapture %}
 {% include note.html content=deprecated_symbols_api_note %}
 

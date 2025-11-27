@@ -75,6 +75,8 @@ This is a {{ site.pmd.release_type }} release.
   deprecated in favor of the new rule {% rule plsql/design/NcssCount %}.
 
 ### 🐛️ Fixed Issues
+* core
+    * [#4767](https://github.com/pmd/pmd/issues/4767): \[core] Deprecate old symboltable API
 * apex-bestpractices
     * [#6203](https://github.com/pmd/pmd/issues/6203): \[apex] New Rule: Avoid Future Annotation
 * apex-design
@@ -95,13 +97,18 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚨️ API Changes
 
 #### Deprecations
+* core
+    * {%jdoc_package core::lang.symboltable %}: All classes in this package are deprecated.
+      The symbol table and type resolution implementation for Java has been rewritten from scratch
+      for PMD 7.0.0. This package is the remains of the old symbol table API, that is only used by
+      PL/SQL. For PMD 8.0.0 all these classes will be removed from pmd-core.
 * apex
-  * {% jdoc apex::lang.apex.rule.design.ExcessiveClassLengthRule %}
-  * {% jdoc apex::lang.apex.rule.design.NcssConstructorCountRule %}
-  * {% jdoc apex::lang.apex.rule.design.NcssMethodCountRule %}
-  * {% jdoc apex::lang.apex.rule.design.NcssTypeCountRule %}
-  * {% jdoc apex::lang.apex.ast.ASTStatement %}: This AST node is not used and doesn't appear in the tree.
-  * {% jdoc !ac!apex::lang.apex.ast.ApexVisitor#visit(apex::lang.apex.ast.ASTStatement,P) %}
+    * {% jdoc apex::lang.apex.rule.design.ExcessiveClassLengthRule %}
+    * {% jdoc apex::lang.apex.rule.design.NcssConstructorCountRule %}
+    * {% jdoc apex::lang.apex.rule.design.NcssMethodCountRule %}
+    * {% jdoc apex::lang.apex.rule.design.NcssTypeCountRule %}
+    * {% jdoc apex::lang.apex.ast.ASTStatement %}: This AST node is not used and doesn't appear in the tree.
+    * {% jdoc !ac!apex::lang.apex.ast.ApexVisitor#visit(apex::lang.apex.ast.ASTStatement,P) %}
 * plsql
     * {% jdoc plsql::lang.plsql.rule.design.ExcessiveMethodLengthRule %}
     * {% jdoc plsql::lang.plsql.rule.design.ExcessiveObjectLengthRule %}
@@ -125,6 +132,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#6217](https://github.com/pmd/pmd/pull/6217): \[doc] Add Blue Cave to known tools using PMD - [Jude Pereira](https://github.com/judepereira) (@judepereira)
 * [#6214](https://github.com/pmd/pmd/pull/6214): \[plsql] New rule NcssCount to replace old Ncss*Count rules - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6238](https://github.com/pmd/pmd/pull/6238): \[java] Fix #6096: Detect Lombok generated equals/hashCode in Comparable - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6249](https://github.com/pmd/pmd/pull/6249): \[core] Deprecate old symboltable API - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6251](https://github.com/pmd/pmd/pull/6251): \[java] Fix #6092: AssignmentInOperand false positive in 7.17.0 for case statements - [Marcel](https://github.com/mrclmh) (@mrclmh)
 
 ### 📦️ Dependency updates
