@@ -233,7 +233,7 @@
         ]]></code>
     </test-code>
     <test-code>
-        <description>Record with Comparable and no explicit equals/hashCode</description>
+        <description>#6072 Record with Comparable and no explicit equals/hashCode</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
@@ -266,7 +266,7 @@
         ]]></code>
     </test-code>
     <test-code>
-        <description>Record with Comparable and explicit hashCode</description>
+        <description>#6072 Record with Comparable and explicit hashCode, missing equals</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8</expected-linenumbers>
         <expected-messages>
@@ -287,7 +287,7 @@
         ]]></code>
     </test-code>
     <test-code>
-        <description>Record with Comparable and both explicit equals and hashCode</description>
+        <description>#6072 Record with Comparable and both explicit equals and hashCode</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public record Foo(int x, int y) implements Comparable<Foo> {
@@ -313,26 +313,6 @@
         <expected-problems>0</expected-problems>
         <code><![CDATA[
             public record Foo(int x, int y) {
-            }
-        ]]></code>
-    </test-code>
-    <test-code>
-        <description>Comparable Record with wrong equals signature</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>3</expected-linenumbers>
-        <expected-messages>
-            <message>When implementing Comparable, both equals() and hashCode() should be overridden</message>
-        </expected-messages>
-        <code><![CDATA[
-            public record Foo(int x, int y) implements Comparable<Foo> {
-                @Override
-                public int compareTo(Foo o) {
-                    return Integer.compare(this.x, o.x);
-                }
-
-                public boolean equals(Foo o) {
-                    return compareTo(o) == 0;
-                }
             }
         ]]></code>
     </test-code>

@@ -30,16 +30,6 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
         return !TypeTestUtil.isA(Comparable.class, node) || TypeTestUtil.isA(Enum.class, node);
     }
 
-    private static boolean hasBrokenEqualsMethod(ASTTypeDeclaration node) {
-        for (ASTMethodDeclaration m : node.getDeclarations(ASTMethodDeclaration.class)) {
-            if ("equals".equals(m.getName()) && !JavaAstUtils.isEqualsMethod(m)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     @Override
     protected void maybeReport(RuleContext ctx, ASTTypeDeclaration node, ASTMethodDeclaration hashCodeMethod, ASTMethodDeclaration equalsMethod) {
         ASTMethodDeclaration compareToMethod = node
@@ -50,7 +40,7 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
         }
 
         if (equalsMethod == null && hashCodeMethod == null) {
-            if (!node.isRecord() || hasBrokenEqualsMethod(node)) {
+            if (!node.isRecord()) {
                 ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
             }
         } else if (equalsMethod == null) {
