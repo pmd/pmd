@@ -143,6 +143,7 @@ This is a {{ site.pmd.release_type }} release.
 * [#6249](https://github.com/pmd/pmd/pull/6249): \[core] Deprecate old symboltable API - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6250](https://github.com/pmd/pmd/pull/6250): chore: fail build for compiler warnings - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6251](https://github.com/pmd/pmd/pull/6251): \[java] Fix #6092: AssignmentInOperand false positive in 7.17.0 for case statements - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6280](https://github.com/pmd/pmd/pull/6280): \[ci] Exclude build resources from spring-framework for regression tester - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
