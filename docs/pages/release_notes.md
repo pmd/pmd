@@ -25,11 +25,14 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java
+    * [#5689](https://github.com/pmd/pmd/issues/5689): [java] Members of record should be in scope in record header
 
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6259](https://github.com/pmd/pmd/pull/6259): \[java] Fix #5689: Issue with scoping of record members - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
