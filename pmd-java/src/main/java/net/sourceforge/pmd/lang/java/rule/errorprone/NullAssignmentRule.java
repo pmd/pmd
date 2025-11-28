@@ -50,7 +50,7 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isBadTernary(ASTConditionalExpression ternary, ASTNullLiteral nullLiteral) {
-        boolean isInitializer = false;
+        boolean isInitializer;
 
         ASTVariableDeclarator variableDeclarator = ternary.ancestors(ASTVariableDeclarator.class).first();
         isInitializer = variableDeclarator != null && variableDeclarator.getInitializer() == ternary;
