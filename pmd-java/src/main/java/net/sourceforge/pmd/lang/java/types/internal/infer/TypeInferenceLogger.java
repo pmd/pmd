@@ -329,7 +329,7 @@ public interface TypeInferenceLogger {
         }
 
         protected void printExpr(ExprMirror expr) {
-            String exprText = expr.getLocation().getText().toString();
+            String exprText = expr.getLocationText().toString();
             exprText = exprText.replaceAll("\\R\\s+", "");
             exprText = StringUtil.escapeJava(StringUtils.truncate(exprText, 100));
             println("At:   " + fileLocation(expr));

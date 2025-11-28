@@ -40,6 +40,16 @@ public interface ExprMirror {
      */
     JavaNode getLocation();
 
+    /**
+     * Return the text of the location node. May be overridden if this
+     * mirror is fake (eg, using a lambda node but presenting a method ref,
+     * or using a method ref node but presenting an invocation).
+     * Use this only to log messages and for debugging.
+     */
+    default CharSequence getLocationText() {
+        return getLocation().getText();
+    }
+
 
     /**
      * If this expression is of a standalone form, returns the type of
@@ -324,6 +334,9 @@ public interface ExprMirror {
         @Nullable
         JTypeMirror getLhsIfType();
 
+        default boolean isLhsAType() {
+            return getLhsIfType() != null;
+        }
 
         /**
          * Returns the name of the invoked method, or {@link JConstructorSymbol#CTOR_NAME}

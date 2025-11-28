@@ -100,9 +100,23 @@ public final class ExprOps {
 
             } else {
                 // is method reference
+                MethodRefMirror mref = (MethodRefMirror) e;
+                boolean hasAppropriateCandidate;
+                if (mref.isLhsAType() && !mref.isConstructorRef()) {
+                    // The method reference expression has the form
+                    // ReferenceType :: [TypeArguments] Identifier and
+                    // at least one potentially applicable method is
+                    // either (i) static and supports arity n, or
+                    // (ii) not static and supports arity n-1.
+                    hasAppropriateCandidate =
+                        hasCandidate(mref, fun, false, true)
+                        || hasCandidate(mref, fun, true, false);
+                } else {
+                    // The method reference expression has some other form and at least one potentially applicable method is not static.
+                    hasAppropriateCandidate = hasCandidate(mref, fun, false, false);
+                }
 
-                // TODO need to look for potentially applicable methods
-                return true;
+                return hasAppropriateCandidate;
             }
         }
 
@@ -110,6 +124,17 @@ public final class ExprOps {
         // a standalone form (§15.2) is potentially compatible with any type.
         // (ie anything else)
         return true;
+    }
+
+    private boolean hasCandidate(MethodRefMirror mref, JMethodSig fun, boolean firstParamIsReceiver, boolean expectStatic) {
+        InvocationMirror asMethodCall = methodRefAsInvocation(mref, fun, firstParamIsReceiver);
+        for (JMethodSig cand : asMethodCall.getAccessibleCandidates()) {
+            if (infer.isPotentiallyApplicable(cand, asMethodCall)
+                && cand.isStatic() == expectStatic) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -143,26 +168,25 @@ public final class ExprOps {
                     return false;
                 }
             }
-
-            //  If m is a generic method and the method invocation does
-            //  not provide explicit type arguments, an explicitly typed
-            //  lambda expression for which the corresponding target type
-            //  (as derived from the signature of m) is a type parameter of m.
-            return !m.isGeneric()
-                    || !invoc.getExplicitTypeArguments().isEmpty()
-                    || !formalType.isTypeVariable();
         }
 
         if (arg instanceof MethodRefMirror) {
             // An inexact method reference expression(§ 15.13 .1).
-            return getExactMethod((MethodRefMirror) arg) != null
-                    //  If m is a generic method and the method invocation does
-                    //  not provide explicit type arguments, an exact method
-                    //  reference expression for which the corresponding target type
-                    //  (as derived from the signature of m) is a type parameter of m.
-                    && (!m.isGeneric()
-                        || !invoc.getExplicitTypeArguments().isEmpty()
-                        || !formalType.isTypeVariable());
+            if (getExactMethod((MethodRefMirror) arg) == null) {
+                return false;
+            }
+        }
+
+        if (arg instanceof FunctionalExprMirror) {
+            //  If m is a generic method and the method invocation does
+            //  not provide explicit type arguments, an explicitly typed
+            //  lambda expression or an exact method reference expression
+            //  for which the corresponding target type (as derived from
+            //  the signature of m) is a type parameter of m.
+            if (m.isGeneric() && !invoc.getExplicitTypeArguments().isEmpty()
+                && m.getTypeParameters().contains(formalType)) {
+                return false;
+            }
         }
 
         if (arg instanceof BranchingMirror) {
@@ -368,6 +392,11 @@ public final class ExprOps {
             @Override
             public JavaNode getLocation() {
                 return mref.getLocation();
+            }
+
+            @Override
+            public CharSequence getLocationText() {
+                return mref.getLocationText() + " (viewed as method call)";
             }
 
             @Override
