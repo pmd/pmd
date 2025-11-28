@@ -101,22 +101,22 @@ public final class ExprOps {
             } else {
                 // is method reference
                 MethodRefMirror mref = (MethodRefMirror) e;
-                boolean hasAppropriateCandidate;
+                if (TypeOps.isUnresolved(mref.getTypeToSearch())) {
+                    // don't fail if the LHS is not known or not fully known
+                    return true;
+                }
                 if (mref.isLhsAType() && !mref.isConstructorRef()) {
                     // The method reference expression has the form
                     // ReferenceType :: [TypeArguments] Identifier and
                     // at least one potentially applicable method is
                     // either (i) static and supports arity n, or
                     // (ii) not static and supports arity n-1.
-                    hasAppropriateCandidate =
-                        hasCandidate(mref, fun, false, true)
+                    return hasCandidate(mref, fun, false, true)
                         || hasCandidate(mref, fun, true, false);
                 } else {
                     // The method reference expression has some other form and at least one potentially applicable method is not static.
-                    hasAppropriateCandidate = hasCandidate(mref, fun, false, false);
+                    return hasCandidate(mref, fun, false, false);
                 }
-
-                return hasAppropriateCandidate;
             }
         }
 

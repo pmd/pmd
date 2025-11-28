@@ -319,7 +319,7 @@ public interface ExprMirror {
          * while we don't).
          */
         @Override
-        JTypeMirror getTypeToSearch();
+        @NonNull JTypeMirror getTypeToSearch();
 
 
         /**
