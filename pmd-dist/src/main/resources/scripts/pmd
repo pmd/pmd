@@ -146,19 +146,31 @@ jre_specific_vm_options() {
       # Azul provides builds which include javafx as well
       # Since Java 9, it is included as a module. But we run on the classpath (aka unnamed module) and
       # want to access the classes.
-      # open internal module of javafx to reflection (for our TreeViewWrapper)
+      #
+      # for PMD Designer
+      # in net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper.getVirtualFlow
       options="--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
-      # The rest here is for RichtextFX
+      # in net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.customBuilderFactory
+      options="$options --add-opens javafx.fxml/com.sun.javafx.fxml.builder=ALL-UNNAMED"
+      #
+      # for RichtextFX
       options="$options --add-opens javafx.graphics/javafx.scene.text=ALL-UNNAMED"
       options="$options --add-opens javafx.graphics/com.sun.javafx.scene.text=ALL-UNNAMED"
       options="$options --add-opens javafx.graphics/com.sun.javafx.text=ALL-UNNAMED"
       options="$options --add-opens javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED"
-      # for ??
-      options="$options --add-opens javafx.fxml/com.sun.javafx.fxml.builder=ALL-UNNAMED"
+      #
       # for controlsfx
       options="$options --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED"
-      # Warn of remaining illegal accesses
-      options="$options --illegal-access=warn"
+      options="$options --add-opens javafx.base/com.sun.javafx.runtime=ALL-UNNAMED"
+      options="$options --add-opens javafx.base/com.sun.javafx.event=ALL-UNNAMED"
+      options="$options --add-opens javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED"
+
+      if [ "$java_version_feature" -lt 17 ]
+      then
+        # Warn of remaining illegal accesses - only possible until java 16.
+        # With Java 17+ this option has no effect anymore (https://openjdk.org/jeps/403).
+        options="$options --illegal-access=warn"
+      fi
     fi
 
     echo "$options"
@@ -177,7 +189,6 @@ add_pmd_classpath() {
 
 add_openjfx_classpath() {
   if [ "$APPNAME" = "designer" ]
-  echo "add_openfx_classpath: java_version_feature='$java_version_feature' java_version_update='$java_version_update' java_has_javafx=$java_has_javafx"
   then
     if [ $java_has_javafx = 1 ]
     then
