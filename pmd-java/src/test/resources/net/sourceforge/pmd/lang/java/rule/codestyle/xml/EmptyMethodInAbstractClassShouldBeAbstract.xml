@@ -218,7 +218,7 @@ public interface Foo {
     </test-code>
 
     <test-code>
-        <description>#6279 allow final finalize to prevent finalizer attack</description>
+        <description>#6279 allow all final methods</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 package example;
@@ -231,6 +231,10 @@ public abstract class PMDTest {
     @Override
     protected final void finalize() {       // fixed false positive
         // prevent finalizer attack
+    }
+
+    public final int returnCode() {         // fixed false positive
+        return 0;
     }
 }
         ]]></code>

@@ -486,7 +486,7 @@ usage by developers who should be implementing their own versions in the concret
 //ClassDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
   /ClassBody
     /MethodDeclaration
-    [not(@Name = "finalize" and @Final = true())]
+    [@Final = false()]
     [Block[
       let $size := count(*[not(self::EmptyStatement)])
       return $size = 0
