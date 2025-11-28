@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.19.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.20.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.19.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.20.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.19.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 28-November-2025</div>
+    <li class="sidebarTitle">PMD 7.20.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 28-December-2025</div>
     
     
     
@@ -2030,201 +2030,20 @@
     </details>
 
   
-<h2 id="28-november-2025---7190-snapshot">28-November-2025 - 7.19.0-SNAPSHOT</h2>
+<h2 id="28-december-2025---7200-snapshot">28-December-2025 - 7.20.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.19.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.20.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
-<h4 id="updated-pmd-designer">Updated PMD Designer</h4>
-
-<p>This PMD release ships a new version of the pmd-designer.
-For the changes, see <a href="https://github.com/pmd/pmd-designer/releases/tag/7.19.0">PMD Designer Changelog (7.19.0)</a>
-and <a href="https://github.com/pmd/pmd-designer/releases/tag/7.19.1">PMD Designer Changelog (7.19.1)</a>.</p>
-
-<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
-<h4 id="new-rules">New Rules</h4>
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_bestpractices.html#avoidfutureannotation"><code class="language-plaintext highlighter-rouge">AvoidFutureAnnotation</code></a> finds usages of the <code class="language-plaintext highlighter-rouge">@Future</code>
-annotation. It is a legacy way to execute asynchronous Apex code. New code should implement
-the <code class="language-plaintext highlighter-rouge">Queueable</code> interface instead.</li>
-  <li>The new Java rule <a href="pmd_rules_java_bestpractices.html#enumcomparison"><code class="language-plaintext highlighter-rouge">EnumComparison</code></a> finds usages of <code class="language-plaintext highlighter-rouge">equals()</code> on
-enum constants or values. Enums should be compared directly with <code class="language-plaintext highlighter-rouge">==</code> instead of <code class="language-plaintext highlighter-rouge">equals()</code> which
-has some advantages (e.g. static type checking at compile time).</li>
-  <li>The new Apex rule <a href="pmd_rules_apex_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> replaces the four rules “ExcessiveClassLength”,
-“NcssConstructorCount”, “NcssMethodCount”, and “NcssTypeCount”. The new rule uses the metrics framework
-to achieve the same. It has two properties, to define the report level for method and class sizes separately.
-Constructors and methods are considered the same.<br />
-The rule has been added to the quickstart ruleset.<br />
-Note: The new metric is implemented more correct than in the old rules. E.g. it considers now also
-switch statements and correctly counts if-statements only once and ignores method calls that are
-part of an expression and not a statement on their own. This leads to different numbers. Keep in mind,
-that NCSS counts statements and not lines of code. Statements that are split on multiple lines are
-still counted as one.</li>
-  <li>The new PL/SQL rule <a href="pmd_rules_plsql_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> replaces the rules “ExcessiveMethodLength”,
-“ExcessiveObjectLength”, “ExcessivePackageBodyLength”, “ExcessivePackageSpecificationLength”,
-“ExcessiveTypeLength”, “NcssMethodCount” and “NcssObjectCount”. The new rule uses the metrics framework
-to achieve the same. It has two properties, to define the report level for method and object sizes separately.<br />
-Note: the new metric is implemented more correct than in the old rules, so that the actual numbers of
-the NCSS metric from the old rules might be different from the new rule “NcssCount”. Statements that are
-split on multiple lines are still counted as one.</li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-<ul>
-  <li>The Apex rule <a href="pmd_rules_apex_design.html#excessiveclasslength"><code class="language-plaintext highlighter-rouge">ExcessiveClassLength</code></a> has been deprecated. Use <a href="pmd_rules_apex_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a> to
-find big classes or create a custom XPath based rule using
-<code class="language-plaintext highlighter-rouge">//ApexFile[UserClass][@EndLine - @BeginLine &gt; 1000]</code>.</li>
-  <li>The Apex rules <a href="pmd_rules_apex_design.html#ncssconstructorcount"><code class="language-plaintext highlighter-rouge">NcssConstructorCount</code></a>, <a href="pmd_rules_apex_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a>, and
-<a href="pmd_rules_apex_design.html#ncsstypecount"><code class="language-plaintext highlighter-rouge">NcssTypeCount</code></a> have been deprecated in favor or the new rule <a href="pmd_rules_apex_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>.</li>
-  <li>The PL/SQL rule <a href="pmd_rules_plsql_design.html#excessivemethodlength"><code class="language-plaintext highlighter-rouge">ExcessiveMethodLength</code></a> has been deprecated. Use <a href="pmd_rules_plsql_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>
-instead or create a custom XPath based rule using
-<code class="language-plaintext highlighter-rouge">//(MethodDeclaration|ProgramUnit|TriggerTimingPointSection|TriggerUnit|TypeMethod)[@EndLine - @BeginLine &gt; 100]</code>.</li>
-  <li>The PL/SQL rule <a href="pmd_rules_plsql_design.html#excessiveobjectlength"><code class="language-plaintext highlighter-rouge">ExcessiveObjectLength</code></a> has been deprecated. Use <a href="pmd_rules_plsql_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>
-instead or create a custom XPath based rule using
-<code class="language-plaintext highlighter-rouge">//(PackageBody|PackageSpecification|ProgramUnit|TriggerUnit|TypeSpecification)[@EndLine - @BeginLine &gt; 1000]</code>.</li>
-  <li>The PL/SQL rule <a href="pmd_rules_plsql_design.html#excessivepackagebodylength"><code class="language-plaintext highlighter-rouge">ExcessivePackageBodyLength</code></a> has been deprecated. Use <a href="pmd_rules_plsql_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>
-instead or create a custom XPath based rule using
-<code class="language-plaintext highlighter-rouge">//PackageBody[@EndLine - @BeginLine &gt; 1000]</code>.</li>
-  <li>The PL/SQL rule <a href="pmd_rules_plsql_design.html#excessivepackagespecificationlength"><code class="language-plaintext highlighter-rouge">ExcessivePackageSpecificationLength</code></a> has been deprecated. Use <a href="pmd_rules_plsql_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>
-instead or create a custom XPath based rule using
-<code class="language-plaintext highlighter-rouge">//PackageSpecification[@EndLine - @BeginLine &gt; 1000]</code>.</li>
-  <li>The PL/SQL rule <a href="pmd_rules_plsql_design.html#excessivetypelength"><code class="language-plaintext highlighter-rouge">ExcessiveTypeLength</code></a> has been deprecated. Use <a href="pmd_rules_plsql_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>
-instead or create a custom XPath based rule using
-<code class="language-plaintext highlighter-rouge">//TypeSpecification[@EndLine - @BeginLine &gt; 1000]</code>.</li>
-  <li>The PL/SQL rules <a href="pmd_rules_plsql_design.html#ncssmethodcount"><code class="language-plaintext highlighter-rouge">NcssMethodCount</code></a> and <a href="pmd_rules_plsql_design.html#ncssobjectcount"><code class="language-plaintext highlighter-rouge">NcssObjectCount</code></a> have been
-deprecated in favor of the new rule <a href="pmd_rules_plsql_design.html#ncsscount"><code class="language-plaintext highlighter-rouge">NcssCount</code></a>.</li>
-</ul>
-
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4767">#4767</a>: [core] Deprecate old symboltable API</li>
-    </ul>
-  </li>
-  <li>apex-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6203">#6203</a>: [apex] New Rule: Avoid Future Annotation</li>
-    </ul>
-  </li>
-  <li>apex-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/2128">#2128</a>: [apex] Merge NCSS count rules for Apex</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5689">#5689</a>: [java] Members of record should be in scope in record header</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6256">#6256</a>: [java] java.lang.IllegalArgumentException: Invalid target type of type annotation for method or ctor type annotation: 19</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5820">#5820</a>: [java] GuardLogStatement recognizes that a string is a compile-time constant expression only if at first position</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6188">#6188</a>: [java] UnitTestShouldIncludeAssert false positive when TestNG @<!-- -->Test.expectedException present</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6193">#6193</a>: [java] New Rule: Always compare enum values with ==</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6053">#6053</a>: [java] ModifierOrder false-positives with type annotations and type parameters (typeAnnotations = anywhere)</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4742">#4742</a>: [java] EmptyFinalizer should not trigger if finalize method is final and class is not</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6072">#6072</a>: [java] OverrideBothEqualsAndHashCodeOnComparable should not be required for record classes</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6092">#6092</a>: [java] AssignmentInOperand false positive in 7.17.0 for case blocks in switch statements</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6096">#6096</a>: [java] OverrideBothEqualsAndHashCodeOnComparable on class with lombok.EqualsAndHashCode annotation</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6199">#6199</a>: [java] AssignmentInOperand: description of property allowIncrementDecrement is unclear</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6273">#6273</a>: [java] TestClassWithoutTestCases documentation does not mention test prefixes</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4577">#4577</a>: [java] UseArraysAsList with condition in loop</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5071">#5071</a>: [java] UseArraysAsList should not warn when elements are skipped in array</li>
-    </ul>
-  </li>
-  <li>plsql-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4326">#4326</a>: [plsql] Merge NCSS count rules for PL/SQL</li>
-    </ul>
-  </li>
-  <li>maintenance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5701">#5701</a>: [core] net.sourceforge.pmd.cpd.SourceManager has public methods</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
 
-<h4 id="deprecations">Deprecations</h4>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/symboltable/package-summary.html#"><code>net.sourceforge.pmd.lang.symboltable</code></a>: All classes in this package are deprecated.
-The symbol table and type resolution implementation for Java has been rewritten from scratch
-for PMD 7.0.0. This package is the remains of the old symbol table API, that is only used by
-PL/SQL. For PMD 8.0.0 all these classes will be removed from pmd-core.</li>
-    </ul>
-  </li>
-  <li>apex
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/rule/design/ExcessiveClassLengthRule.html#"><code>ExcessiveClassLengthRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/rule/design/NcssConstructorCountRule.html#"><code>NcssConstructorCountRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/rule/design/NcssMethodCountRule.html#"><code>NcssMethodCountRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/rule/design/NcssTypeCountRule.html#"><code>NcssTypeCountRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ASTStatement.html#"><code>ASTStatement</code></a>: This AST node is not used and doesn’t appear in the tree.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-apex/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/apex/ast/ApexVisitor.html#visit(net.sourceforge.pmd.lang.apex.ast.ASTStatement,P)"><code>ApexVisitor#visit(ASTStatement, P)</code></a></li>
-    </ul>
-  </li>
-  <li>plsql
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/rule/design/ExcessiveMethodLengthRule.html#"><code>ExcessiveMethodLengthRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/rule/design/ExcessiveObjectLengthRule.html#"><code>ExcessiveObjectLengthRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/rule/design/ExcessivePackageBodyLengthRule.html#"><code>ExcessivePackageBodyLengthRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/rule/design/ExcessivePackageSpecificationLengthRule.html#"><code>ExcessivePackageSpecificationLengthRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/rule/design/ExcessiveTypeLengthRule.html#"><code>ExcessiveTypeLengthRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/rule/design/NcssMethodCountRule.html#"><code>NcssMethodCountRule</code></a></li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-plsql/7.19.0-SNAPSHOT/net/sourceforge/pmd/lang/plsql/rule/design/NcssObjectCountRule.html#"><code>NcssObjectCountRule</code></a></li>
-    </ul>
-  </li>
-</ul>
-
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/6081">#6081</a>: [java] Fix #6072: OverrideBothEqualsAndHashCodeOnComparable should not be required for record classes - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6192">#6192</a>: [java] Fix #6053: ModifierOrder - consider type params - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6194">#6194</a>: chore: always place type annotations on the type - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6195">#6195</a>: chore: always compare enums with == - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6196">#6196</a>: [java] New Rule: EnumComparison - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6198">#6198</a>: [apex] New rule NcssCount to replace old Ncss*Count rules - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6201">#6201</a>: [java] Fix #6199: AssignmentInOperandRule: Update description of allowIncrementDecrement property - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6202">#6202</a>: [java] Fix #6188: UnitTestsShouldIncludeAssert - FP when TestNG @<!-- -->Test.expectedException is present - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6204">#6204</a>: [apex] Add rule to limit usage of @<!-- -->Future annotation - <a href="https://github.com/mitchspano">Mitch Spano</a> (@mitchspano)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6217">#6217</a>: [doc] Add Blue Cave to known tools using PMD - <a href="https://github.com/judepereira">Jude Pereira</a> (@judepereira)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6214">#6214</a>: [plsql] New rule NcssCount to replace old Ncss*Count rules - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6227">#6227</a>: [java] UseArraysAsList: check increment - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6228">#6228</a>: [java] UseArraysAsList: skip when if-statements - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6229">#6229</a>: chore: remove public methods from SourceManager - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6238">#6238</a>: [java] Fix #6096: Detect Lombok generated equals/hashCode in Comparable - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6249">#6249</a>: [core] Deprecate old symboltable API - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6250">#6250</a>: chore: fail build for compiler warnings - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6251">#6251</a>: [java] Fix #6092: AssignmentInOperand false positive in 7.17.0 for case statements - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6255">#6255</a>: [java] Fix #4742: EmptyFinalizer should not trigger if finalize method is final and class is not - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6258">#6258</a>: [java] Fix #5820: GuardLogStatement recognizes that a string is a compile-time constant expression only if at first position - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6259">#6259</a>: [java] Fix #5689: Issue with scoping of record members - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6277">#6277</a>: [doc] Add button to copy configuration snippet - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6278">#6278</a>: [doc] TestClassWithoutTestCases: Mention test prefixes - <a href="https://github.com/mrclmh">Marcel</a> (@mrclmh)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6280">#6280</a>: [ci] Exclude build resources from spring-framework for regression tester - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6282">#6282</a>: [java] Fix #6256: ignore invalid annotation type - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-</ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -2261,7 +2080,7 @@ PL/SQL. For PMD 8.0.0 all these classes will be removed from pmd-core.</li>
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Nov 27, 2025 <br />
+             Site last generated: Nov 28, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
