@@ -121,8 +121,8 @@ class MatchCollectorTest {
 
         assertEquals(1, matches.size());
         Match match = matches.get(0);
-        assertEquals(54, match.getMinTokenCount());
-        assertEquals(54, match.getMaxTokenCount());
+        assertEquals(56, match.getMinTokenCount());
+        assertEquals(56, match.getMaxTokenCount());
 
         List<Mark> marks = match.getMarks();
         assertThat(marks, hasSize(2));
@@ -130,10 +130,10 @@ class MatchCollectorTest {
         Mark mark2 = marks.get(1);
 
         assertEquals(2, mark1.getLocation().getStartLine());
-        assertEquals(54, mark1.getLength());
+        assertEquals(56, mark1.getLength());
 
         assertEquals(5, mark2.getLocation().getStartLine());
-        assertEquals(54, mark2.getLength());
+        assertEquals(56, mark2.getLength());
     }
 
     private static List<Match> getMatches(String code, int minTileSize) throws IOException {
