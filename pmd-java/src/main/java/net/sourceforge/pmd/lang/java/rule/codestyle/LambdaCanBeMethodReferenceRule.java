@@ -343,7 +343,7 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
 
         @Override
         public void setInferredType(@Nullable JTypeMirror mirror) {
-
+            // Not needed
         }
 
         @Override
@@ -363,11 +363,12 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
 
         @Override
         public void setFunctionalMethod(@Nullable JMethodSig methodType) {
-
+            // Not needed
         }
 
         @Override
         public void finishFailedInference(@Nullable JTypeMirror targetType) {
+            // Null this out to signify that we failed inference
             ctDecl = null;
         }
 
