@@ -19,7 +19,6 @@ import org.apache.commons.lang3.StringUtils;
 import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
-import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
@@ -86,10 +85,8 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
 
     private Object checkForAssertStatements(ApexNode<?> node, Object data) {
         final List<ASTBlockStatement> blockStatements = node.descendants(ASTBlockStatement.class).toList();
-        final List<ASTStatement> statements = new ArrayList<>();
         final List<ASTMethodCallExpression> methodCalls = new ArrayList<>();
         for (ASTBlockStatement blockStatement : blockStatements) {
-            statements.addAll(blockStatement.descendants(ASTStatement.class).toList());
             methodCalls.addAll(blockStatement.descendants(ASTMethodCallExpression.class).toList());
         }
         boolean isAssertFound = false;

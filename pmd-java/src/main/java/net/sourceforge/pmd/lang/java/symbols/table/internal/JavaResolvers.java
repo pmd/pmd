@@ -74,8 +74,7 @@ public final class JavaResolvers {
         return isAccessibleIn(null, thisPackage, member, false);
     }
 
-    @NonNull
-    static NameResolver<JTypeMirror> moduleImport(Set<String> moduleNames,
+    static @NonNull NameResolver<JTypeMirror> moduleImport(Set<String> moduleNames,
                                                   final SymbolResolver symbolResolver,
                                                   final String thisPackage) {
         return new SingleNameResolver<JTypeMirror>() {
@@ -107,8 +106,7 @@ public final class JavaResolvers {
         };
     }
 
-    @NonNull
-    static NameResolver<JTypeMirror> importedOnDemand(Set<String> lazyImportedPackagesAndTypes,
+    static @NonNull NameResolver<JTypeMirror> importedOnDemand(Set<String> lazyImportedPackagesAndTypes,
                                                       final SymbolResolver symResolver,
                                                       final String thisPackage) {
         return new SingleNameResolver<JTypeMirror>() {
@@ -133,8 +131,7 @@ public final class JavaResolvers {
         };
     }
 
-    @NonNull
-    static NameResolver<JTypeMirror> packageResolver(SymbolResolver symResolver, String packageName) {
+    static @NonNull NameResolver<JTypeMirror> packageResolver(SymbolResolver symResolver, String packageName) {
         return new SingleNameResolver<JTypeMirror>() {
             @Nullable
             @Override

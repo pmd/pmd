@@ -54,8 +54,7 @@ public final class ASTEnumConstant extends AbstractJavaTypeNode
     }
 
     @Override
-    @Nullable
-    public ASTArgumentList getArguments() {
+    public @Nullable ASTArgumentList getArguments() {
         return firstChild(ASTArgumentList.class);
     }
 

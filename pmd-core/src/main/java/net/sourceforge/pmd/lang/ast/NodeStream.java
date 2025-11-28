@@ -776,8 +776,7 @@ public interface NodeStream<@NonNull T extends Node> extends Iterable<@NonNull T
      * @see #first(Class)
      * @see #firstOpt()
      */
-    @NonNull
-    default T firstOrThrow() {
+    default @NonNull T firstOrThrow() {
         T first = first();
         if (first == null) {
             throw new NoSuchElementException("Empty node stream");

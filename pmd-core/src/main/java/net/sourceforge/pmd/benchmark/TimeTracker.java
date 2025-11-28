@@ -209,7 +209,7 @@ public final class TimeTracker {
 
             totalTimeNanos.getAndAdd(delta);
             selfTimeNanos.getAndAdd(delta - timerEntry.inNestedOperationsNanos);
-            callCount.getAndIncrement(); // NOPMD: UselessPureMethodCall false-positive #6055
+            callCount.getAndIncrement();
             extraDataCounter.getAndAdd(extraData);
 
             return delta;

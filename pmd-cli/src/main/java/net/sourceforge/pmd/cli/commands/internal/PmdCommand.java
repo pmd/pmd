@@ -267,8 +267,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     }
 
     @Override
-    @NonNull
-    protected CliExitCode doExecute(PMDConfiguration configuration) {
+    protected @NonNull CliExitCode doExecute(PMDConfiguration configuration) {
         if (benchmark) {
             TimeTracker.startGlobalTracking();
         }

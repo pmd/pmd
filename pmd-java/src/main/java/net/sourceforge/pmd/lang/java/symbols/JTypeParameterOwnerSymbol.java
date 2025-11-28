@@ -58,8 +58,7 @@ public interface JTypeParameterOwnerSymbol extends JAccessibleElementSymbol {
      * the {@link #getEnclosingClass() enclosing class}, in that order
      * of priority.
      */
-    @Nullable
-    default JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
+    default @Nullable JTypeParameterOwnerSymbol getEnclosingTypeParameterOwner() {
         // may be overridden to add getEnclosingMethod
         return getEnclosingClass();
     }

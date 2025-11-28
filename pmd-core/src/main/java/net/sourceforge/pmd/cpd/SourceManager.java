@@ -112,7 +112,7 @@ class SourceManager implements AutoCloseable {
         }
     }
 
-    public int size() {
+    int size() {
         return textFiles.size();
     }
 
@@ -128,7 +128,7 @@ class SourceManager implements AutoCloseable {
     }
 
     @SuppressWarnings("PMD.CloseResource")
-    public Chars getSlice(Mark mark) {
+    Chars getSlice(Mark mark) {
         TextDocument doc = getUnchecked(mark.getFileId());
         assert doc != null;
         FileLocation loc = mark.getLocation();
@@ -136,7 +136,7 @@ class SourceManager implements AutoCloseable {
         return doc.sliceOriginalText(lineRange);
     }
 
-    public String getFileDisplayName(FileId fileId) {
+    String getFileDisplayName(FileId fileId) {
         return fileNameRenderer.getDisplayName(fileId);
     }
 
