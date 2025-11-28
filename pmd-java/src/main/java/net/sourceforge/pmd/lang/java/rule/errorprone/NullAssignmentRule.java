@@ -44,6 +44,7 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAssignmentToFinal(ASTAssignmentExpression n) {
+        @Nullable
         JVariableSymbol symbol = tryGetLeftOperandSymbol(n);
         return symbol != null && symbol.isFinal();
     }
@@ -75,8 +76,7 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
                 && !isInitializer;
     }
 
-    @Nullable
-    private JVariableSymbol tryGetLeftOperandSymbol(ASTAssignmentExpression expression) {
+    private @Nullable JVariableSymbol tryGetLeftOperandSymbol(ASTAssignmentExpression expression) {
         @NonNull
         ASTAssignableExpr leftOperand = expression.getLeftOperand();
         if (leftOperand instanceof ASTNamedReferenceExpr) {
@@ -92,7 +92,8 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
             return false;
         }
 
-        final JVariableSymbol symbol = tryGetLeftOperandSymbol(expression);
+        @Nullable
+        JVariableSymbol symbol = tryGetLeftOperandSymbol(expression);
         return symbol != null && symbol.isField() && symbol.isFinal();
     }
 
