@@ -216,4 +216,23 @@ public interface Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6279 allow final finalize to prevent finalizer attack</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package example;
+
+public abstract class PMDTest {
+    public PMDTest() {
+        throw new RuntimeException();
+    }
+
+    @Override
+    protected final void finalize() {       // fixed false positive
+        // prevent finalizer attack
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
