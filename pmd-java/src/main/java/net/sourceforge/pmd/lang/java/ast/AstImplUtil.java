@@ -31,8 +31,7 @@ final class AstImplUtil {
         return lastIdx < 0 ? nameWithDots : nameWithDots.substring(0, lastIdx);
     }
 
-    @Nullable
-    public static <T extends Node> T getChildAs(JavaNode javaNode, int idx, Class<T> type) {
+    public static <T extends Node> @Nullable T getChildAs(JavaNode javaNode, int idx, Class<T> type) {
         if (javaNode.getNumChildren() <= idx || idx < 0) {
             return null;
         }
