@@ -8103,7 +8103,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1005544?v=4",
       "profile": "https://www.elharo.com/blog/",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -8341,6 +8342,24 @@
       "name": "Eng Zer Jun",
       "avatar_url": "https://avatars.githubusercontent.com/u/20135478?v=4",
       "profile": "https://github.com/Juneezee",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "estekhin",
+      "name": "Oleg Estekhin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6337779?v=4",
+      "profile": "https://github.com/estekhin",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "frankk3",
+      "name": "frankk3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28110843?v=4",
+      "profile": "https://github.com/frankk3",
       "contributions": [
         "bug"
       ]
