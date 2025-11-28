@@ -146,8 +146,8 @@ and [PMD Designer Changelog (7.19.1)](https://github.com/pmd/pmd-designer/releas
 * [#6201](https://github.com/pmd/pmd/pull/6201): \[java] Fix #6199: AssignmentInOperandRule: Update description of allowIncrementDecrement property - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6202](https://github.com/pmd/pmd/pull/6202): \[java] Fix #6188: UnitTestsShouldIncludeAssert - FP when TestNG @<!-- -->Test.expectedException is present - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#6204](https://github.com/pmd/pmd/pull/6204): \[apex] Add rule to limit usage of @<!-- -->Future annotation - [Mitch Spano](https://github.com/mitchspano) (@mitchspano)
-* [#6217](https://github.com/pmd/pmd/pull/6217): \[doc] Add Blue Cave to known tools using PMD - [Jude Pereira](https://github.com/judepereira) (@judepereira)
 * [#6214](https://github.com/pmd/pmd/pull/6214): \[plsql] New rule NcssCount to replace old Ncss*Count rules - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6217](https://github.com/pmd/pmd/pull/6217): \[doc] Add Blue Cave to known tools using PMD - [Jude Pereira](https://github.com/judepereira) (@judepereira)
 * [#6227](https://github.com/pmd/pmd/pull/6227): \[java] UseArraysAsList: check increment - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6228](https://github.com/pmd/pmd/pull/6228): \[java] UseArraysAsList: skip when if-statements - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#6229](https://github.com/pmd/pmd/pull/6229): chore: remove public methods from SourceManager - [Andreas Dangel](https://github.com/adangel) (@adangel)
@@ -165,9 +165,38 @@ and [PMD Designer Changelog (7.19.1)](https://github.com/pmd/pmd-designer/releas
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6197](https://github.com/pmd/pmd/pull/6197): Bump PMD from 7.17.0 to 7.18.0
+* [#6205](https://github.com/pmd/pmd/pull/6205): chore(deps): bump junit.version from 6.0.0 to 6.0.1
+* [#6206](https://github.com/pmd/pmd/pull/6206): chore(deps): bump org.checkerframework:checker-qual from 3.51.1 to 3.52.0
+* [#6207](https://github.com/pmd/pmd/pull/6207): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.17.7 to 1.17.8
+* [#6208](https://github.com/pmd/pmd/pull/6208): chore(deps): bump com.google.protobuf:protobuf-java from 4.32.1 to 4.33.0
+* [#6209](https://github.com/pmd/pmd/pull/6209): chore(deps): bump com.puppycrawl.tools:checkstyle from 12.0.1 to 12.1.1
+* [#6210](https://github.com/pmd/pmd/pull/6210): chore(deps): bump org.jacoco:jacoco-maven-plugin from 0.8.13 to 0.8.14
+* [#6219](https://github.com/pmd/pmd/pull/6219): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.17.8 to 1.18.0
+* [#6220](https://github.com/pmd/pmd/pull/6220): chore(deps): bump org.apache.maven.plugins:maven-release-plugin from 3.1.1 to 3.2.0
+* [#6221](https://github.com/pmd/pmd/pull/6221): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.17.8 to 1.18.0
+* [#6222](https://github.com/pmd/pmd/pull/6222): chore(deps): bump com.puppycrawl.tools:checkstyle from 12.1.1 to 12.1.2
+* [#6223](https://github.com/pmd/pmd/pull/6223): chore(deps): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.2.0.4988 to 5.3.0.6276
+* [#6240](https://github.com/pmd/pmd/pull/6240): chore(deps): bump ruby/setup-ruby from 1.267.0 to 1.268.0
+* [#6241](https://github.com/pmd/pmd/pull/6241): chore(deps): bump actions/checkout from 5.0.0 to 5.0.1
+* [#6242](https://github.com/pmd/pmd/pull/6242): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.0 to 1.18.1
+* [#6243](https://github.com/pmd/pmd/pull/6243): chore(deps): bump org.scala-lang:scala-library from 2.13.17 to 2.13.18
+* [#6244](https://github.com/pmd/pmd/pull/6244): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.0 to 1.18.1
+* [#6245](https://github.com/pmd/pmd/pull/6245): chore(deps): bump org.apache.maven.plugins:maven-jar-plugin from 3.4.2 to 3.5.0
+* [#6246](https://github.com/pmd/pmd/pull/6246): chore(deps): bump org.scala-lang:scala-reflect from 2.13.17 to 2.13.18
+* [#6247](https://github.com/pmd/pmd/pull/6247): chore(deps): bump com.google.protobuf:protobuf-java from 4.33.0 to 4.33.1
+* [#6263](https://github.com/pmd/pmd/pull/6263): chore(deps): bump actions/checkout from 5.0.1 to 6.0.0
+* [#6264](https://github.com/pmd/pmd/pull/6264): chore(deps): bump org.apache.commons:commons-lang3 from 3.19.0 to 3.20.0
+* [#6265](https://github.com/pmd/pmd/pull/6265): chore(deps): bump actions/create-github-app-token from 2.1.4 to 2.2.0
+* [#6266](https://github.com/pmd/pmd/pull/6266): chore(deps): bump scalameta.version from 4.14.1 to 4.14.2
+* [#6267](https://github.com/pmd/pmd/pull/6267): chore(deps): bump org.codehaus.mojo:versions-maven-plugin from 2.19.1 to 2.20.1
+* [#6281](https://github.com/pmd/pmd/pull/6281): Bump build-tools from 35 to 36
+* [#6283](https://github.com/pmd/pmd/pull/6283): Bump PMD Designer from 7.10.0 to 7.19.1
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 122 commits
+* 44 closed tickets & PRs
+* Days since last release: 28
 
 {% endtocmaker %}
-
