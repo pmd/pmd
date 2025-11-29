@@ -129,8 +129,8 @@ public final class ExprOps {
     private boolean hasCandidate(MethodRefMirror mref, JMethodSig fun, boolean firstParamIsReceiver, boolean expectStatic) {
         InvocationMirror asMethodCall = methodRefAsInvocation(mref, fun, firstParamIsReceiver);
         for (JMethodSig cand : asMethodCall.getAccessibleCandidates()) {
-            if (infer.isPotentiallyApplicable(cand, asMethodCall)
-                && cand.isStatic() == expectStatic) {
+            if (cand.isStatic() == expectStatic
+                && infer.isPotentiallyApplicable(cand, asMethodCall)) {
                 return true;
             }
         }
@@ -297,8 +297,8 @@ public final class ExprOps {
         boolean acceptLowerArity = lhsIfType != null && lhsIfType.isClassOrInterface() && !mref.isConstructorRef();
 
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
-        site1.setLogging(!acceptLowerArity); // if we do only one search, then failure matters
-        MethodCtDecl ctd1 = infer.determineInvocationTypeOrFail(site1);
+        site1.setLogging(!acceptLowerArity);
+        MethodCtDecl ctd1 =  infer.LOG.inContext("Method ref ctdectl search 1 (static) ", () -> infer.determineInvocationTypeOrFail(site1));
         JMethodSig m1 = ctd1.getMethodType();
 
         if (acceptLowerArity) {
@@ -306,8 +306,8 @@ public final class ExprOps {
             // one with n-1, looking for instance methods
 
             MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
-            site2.setLogging(false);
-            MethodCtDecl ctd2 = infer.determineInvocationTypeOrFail(site2);
+            site1.setLogging(false);
+            MethodCtDecl ctd2 =  infer.LOG.inContext("Method ref ctdectl search 2 (instance) ", () -> infer.determineInvocationTypeOrFail(site2));
             JMethodSig m2 = ctd2.getMethodType();
 
             //  If the first search produces a most specific method that is static,
@@ -545,11 +545,11 @@ public final class ExprOps {
         // The type to search is Objects. But Objects inherits Object.toString(),
         // which could not be called on a string (String.toString() != Objects.toString()).
 
-        if (mref.getLhsIfType() != null && !sig.getFormalParameters().isEmpty()) {
-            // ReferenceType :: [TypeArguments] Identifier
-            JTypeMirror firstFormal = sig.getFormalParameters().get(0);
-            return firstFormal.isSubtypeOf(typeToSearch);
-        }
+        // if (mref.getLhsIfType() != null && !sig.getFormalParameters().isEmpty()) {
+        //     // ReferenceType :: [TypeArguments] Identifier
+        //     JTypeMirror firstFormal = sig.getFormalParameters().get(0);
+        //     return firstFormal.isSubtypeOf(typeToSearch);
+        // }
         return true;
     }
 
