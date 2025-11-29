@@ -25,4 +25,24 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4742 EmptyFinalizer should not trigger if finalize method is final and class is not</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>7,11</expected-linenumbers>
+        <code><![CDATA[
+// non-final class + final finalize: allowed to prevent finalizer attack
+public class Foo {
+    final void finalize() {}
+}
+// non-final class + non-final finalize: does not prevent anything; no need for empty finalize
+public class Bar {
+    void finalize() {} // violation line 7
+}
+// final class: can not be overwritten; no need for empty finalize
+public final class Baz {
+    final void finalize() {}  // violation line 11
+}
+        ]]></code>
+    </test-code>
 </test-data>
