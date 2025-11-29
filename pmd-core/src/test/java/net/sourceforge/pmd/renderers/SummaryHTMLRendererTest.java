@@ -149,8 +149,8 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
             DummyRootNode root = helper.parse("dummy code", getSourceCodeFilename());
             root = root.withNoPmdComments(new SuppressionCommentImpl<>(root, "test"));
 
-            RuleContext ruleContext = InternalApiBridge.createRuleContext(listener, new FooRule());
-            ruleContext.addViolationWithPosition(root, 1, 1, "suppress test");
+            RuleContext ruleContext = InternalApiBridge.createRuleContext(listener, new FooRule(), root);
+            ruleContext.at(root).warnWithMessage("suppress test");
         };
     }
 }

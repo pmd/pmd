@@ -53,17 +53,17 @@ public class RuleApplicator {
         currentLangVer = root.getLanguageVersion();
     }
 
-    public void apply(Collection<? extends Rule> rules, FileAnalysisListener listener) {
-        applyOnIndex(idx, rules, listener);
+    public void apply(Collection<? extends Rule> rules, FileAnalysisListener listener, RootNode root) {
+        applyOnIndex(idx, root, rules, listener);
     }
 
-    private void applyOnIndex(TreeIndex idx, Collection<? extends Rule> rules, FileAnalysisListener listener) {
+    private void applyOnIndex(TreeIndex idx, RootNode root, Collection<? extends Rule> rules, FileAnalysisListener listener) {
         for (Rule rule : rules) {
             if (!ruleSetApplies(rule, currentLangVer)) {
                 continue; // No point in even trying to apply the rule
             }
             
-            RuleContext ctx = InternalApiBridge.createRuleContext(listener, rule);
+            RuleContext ctx = InternalApiBridge.createRuleContext(listener, rule, root);
             rule.start(ctx);
             try (TimedOperation rcto = TimeTracker.startOperation(TimedOperationCategory.RULE, rule.getName())) {
 
