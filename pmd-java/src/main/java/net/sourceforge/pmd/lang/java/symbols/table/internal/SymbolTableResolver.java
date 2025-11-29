@@ -40,6 +40,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -385,14 +386,17 @@ public final class SymbolTableResolver {
 
             for (ASTSwitchBranch branch : node.getBranches()) {
                 ASTSwitchLabel label = branch.getLabel();
-                // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
-                BindSet bindings =
-                    label.descendants(ASTPattern.class)
+                // Collect all bindings. Composite label with bindings would be a compilation error.
+                BindSet bindings = label.children(ASTPattern.class)
                          .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
                 int pushBindings = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
                 setTopSymbolTableAndVisit(label, ctx);
+                bindings = label.children(ASTGuard.class).reduce(BindSet.EMPTY,
+                        (bindSet, pat) -> bindSet.union(bindersOfExpr(pat.getGuard())));
+
+                pushBindings += pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
 
                 if (branch instanceof ASTSwitchArrowBranch) {
                     pushed = pushBindings;
