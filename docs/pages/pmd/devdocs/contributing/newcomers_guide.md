@@ -84,6 +84,17 @@ pull requests later for your fix.
     $ ./mvnw clean verify -pl pmd-apex
     ```
 
+6.  You might get an error about not being able to resolve a `snapshot` module:
+    ```shell
+    Could not resolve dependencies for project net.sourceforge.pmd:pmd-apex:jar:7.20.0-SNAPSHOT
+    ```
+    Then you are on snapshot commit and need snapshot dependencies for your module. You can activate building the
+    required dependencies yourself (line 1) or you can activate the snapshot repository (line 2) for your build:
+    ```shell
+    $ ./mvnw clean verify -pl pmd-apex -am
+    $ ./mvnw clean verify -pl pmd-apex -Pcentral-portal-snapshots
+    ```
+
     We recommend to read the documentation [Building PMD General Info](pmd_devdocs_building_general.html) and
     especially the IDE specific guides, such as [Building PMD with IntelliJ IDEA](pmd_devdocs_building_intellij.html).
     These pages explain how to prepare your local development environment in order to work on PMD.

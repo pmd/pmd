@@ -126,6 +126,13 @@ See also <https://central.sonatype.org/publish/publish-portal-snapshots/>.
   ```shell
   ./mvnw verify -pl pmd-apex
   ```
+* If you are currently on a snapshot commit (as opposed to a release commit) you need snapshot modules as dependencies
+  for the module you want to build. You can either build them yourself (line 1) or you can activate the snapshot
+  repository (line 2) for your build:
+  ```shell
+  ./mvnw verify -pl pmd-apex -am
+  ./mvnw verify -pl pmd-apex -Pcentral-portal-snapshots
+  ```
   **Caveats:** We have some integration tests, that run only after all modules have been built. You could
   break these without noticing.  
   **Note:** In our CI (via GitHub Actions) we always build the complete project.
