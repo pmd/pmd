@@ -40,7 +40,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
-import net.sourceforge.pmd.lang.java.ast.ASTGuard;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTImportDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
@@ -400,9 +399,8 @@ public final class SymbolTableResolver {
 
                 // visit guarded patterns in label
                 int pushBindings = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
-                setTopSymbolTableAndVisit(label, ctx);
-                bindings = label.children(ASTGuard.class).reduce(BindSet.EMPTY,
-                        (bindSet, pat) -> bindSet.union(bindersOfExpr(pat.getGuard())));
+                setTopSymbolTableAndVisit(label.getGuard(), ctx);
+                bindings = bindersOfExpr(label.getGuardExpression());
 
                 pushBindings += pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
 
