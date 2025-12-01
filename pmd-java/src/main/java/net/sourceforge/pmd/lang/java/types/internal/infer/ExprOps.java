@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf.cast;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -298,17 +297,23 @@ public final class ExprOps {
 
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
         site1.setLogging(!acceptLowerArity);
-        MethodCtDecl ctd1 =  infer.LOG.inContext("Method ref ctdectl search 1 (static) ", () -> infer.determineInvocationTypeOrFail(site1));
+        MethodCtDecl ctd1 = infer.LOG.inContext("Method ref ctdectl search 1 (static) ", () -> infer.determineInvocationTypeOrFail(site1));
         JMethodSig m1 = ctd1.getMethodType();
 
-        if (acceptLowerArity) {
+        if (lhsIfType != null && !mref.isConstructorRef()) {
             // then we need to perform two searches, one with arity n, looking for static methods,
             // one with n-1, looking for instance methods
 
-            MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
-            site1.setLogging(false);
-            MethodCtDecl ctd2 =  infer.LOG.inContext("Method ref ctdectl search 2 (instance) ", () -> infer.determineInvocationTypeOrFail(site2));
-            JMethodSig m2 = ctd2.getMethodType();
+            MethodCtDecl ctd2 = null;
+            JMethodSig m2 = ts.UNRESOLVED_METHOD;
+            if (!targetType.getFormalParameters().isEmpty()
+                && targetType.getFormalParameters().get(0).isSubtypeOf(lhsIfType)) {
+                // todo prevent this to add constraints to variables in the target type?
+                MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
+                site1.setLogging(false);
+                ctd2 = infer.LOG.inContext("Method ref ctdectl search 2 (instance) ", () -> infer.determineInvocationTypeOrFail(site2));
+                m2 = ctd2.getMethodType();
+            }
 
             //  If the first search produces a most specific method that is static,
             //  and the set of applicable methods produced by the second search
@@ -529,29 +534,11 @@ public final class ExprOps {
             // TypeName.super :: [TypeArguments] Identifier
             // ReferenceType :: [TypeArguments] Identifier
 
-            boolean acceptsInstanceMethods = canUseInstanceMethods(actualTypeToSearch, targetType, mref);
-
-            Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol())
-                                                        .and(m -> Modifier.isStatic(m.getModifiers())
-                                                            || acceptsInstanceMethods);
+            Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol());
             return actualTypeToSearch.streamMethods(prefilter).collect(Collectors.toList());
         }
     }
 
-    private static boolean canUseInstanceMethods(JTypeMirror typeToSearch, JMethodSig sig, MethodRefMirror mref) {
-        // For example, if you write
-        // stringStream.map(Objects::toString),
-
-        // The type to search is Objects. But Objects inherits Object.toString(),
-        // which could not be called on a string (String.toString() != Objects.toString()).
-
-        // if (mref.getLhsIfType() != null && !sig.getFormalParameters().isEmpty()) {
-        //     // ReferenceType :: [TypeArguments] Identifier
-        //     JTypeMirror firstFormal = sig.getFormalParameters().get(0);
-        //     return firstFormal.isSubtypeOf(typeToSearch);
-        // }
-        return true;
-    }
 
 
     /**
