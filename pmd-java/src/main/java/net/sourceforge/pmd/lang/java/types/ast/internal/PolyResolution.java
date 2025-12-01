@@ -14,6 +14,10 @@ import static net.sourceforge.pmd.lang.java.types.ast.InternalApiBridge.newOther
 import static net.sourceforge.pmd.util.AssertionUtil.shouldNotReachHere;
 import static net.sourceforge.pmd.util.CollectionUtil.all;
 import static net.sourceforge.pmd.util.CollectionUtil.map;
+import static net.sourceforge.pmd.util.OptionalBool.NO;
+import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
+import static net.sourceforge.pmd.util.OptionalBool.YES;
+import static net.sourceforge.pmd.util.OptionalBool.definitely;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -55,6 +59,7 @@ import net.sourceforge.pmd.lang.java.ast.InvocationNode;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
+import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
@@ -75,7 +80,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.Infer;
 import net.sourceforge.pmd.lang.java.types.internal.infer.MethodCallSite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.PolySite;
 import net.sourceforge.pmd.lang.java.types.internal.infer.ast.JavaExprMirrors;
-import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Routines to handle context around poly expressions.
@@ -185,7 +190,7 @@ public final class PolyResolution {
                         List<JTypeMirror> branches = ((ASTSwitchExpression) e).getYieldExpressions().toList(TypeNode::getTypeMirror);
                         return computeStandaloneConditionalType(ts, branches);
                     } else {
-                        throw AssertionUtil.shouldNotReachHere("ConditionalMirrorImpl returns non-null for conditionals: " + e);
+                        throw shouldNotReachHere("ConditionalMirrorImpl returns non-null for conditionals: " + e);
                     }
                 }
                 return ts.ERROR;
@@ -369,25 +374,6 @@ public final class PolyResolution {
         return contextOf(e, false, true);
     }
 
-    private static @Nullable JTypeMirror returnTargetType(ASTReturnStatement context) {
-        JavaNode methodDecl = JavaAstUtils.getReturnTarget(context);
-
-        if (methodDecl instanceof ASTLambdaExpression) {
-            // return within a lambda
-            // "assignment context", deferred to lambda inference
-            JMethodSig fun = ((ASTLambdaExpression) methodDecl).getFunctionalMethod();
-            return fun == null ? null : fun.getReturnType();
-        } else if (methodDecl instanceof ASTMethodDeclaration) {
-            @NonNull ASTType resultType = ((ASTMethodDeclaration) methodDecl).getResultTypeNode();
-            return resultType instanceof ASTVoidType ? null // (this is an error)
-                                                     : resultType.getTypeMirror();
-        }
-        // Return within ctor or initializer or the like,
-        // return with value is disallowed. This is an error.
-        return null;
-    }
-
-
     /**
      * Returns the node on which the type of the given node depends.
      * This addresses the fact that poly expressions depend on their
@@ -484,7 +470,7 @@ public final class PolyResolution {
 
         } else if (papa instanceof ASTReturnStatement) {
 
-            return newAssignmentCtx(returnTargetType((ASTReturnStatement) papa));
+            return newAssignmentCtx(returnTargetType((ASTReturnStatement) papa, internalUse));
 
 
         } else if (papa instanceof ASTVariableDeclarator
@@ -518,7 +504,7 @@ public final class PolyResolution {
         return ExprContext.getMissingInstance();
     }
 
-    // more detailed
+    // more detailed, only for external use
     private ExprContext conversionContextOf(JavaNode node, JavaNode papa) {
         if (papa instanceof ASTArrayAccess && node.getIndexInParent() == 1) {
 
@@ -533,15 +519,8 @@ public final class PolyResolution {
         } else if (papa instanceof ASTLambdaExpression && node.getIndexInParent() == 1) {
             // lambda expression body
 
-
-            JMethodSig fun = ((ASTLambdaExpression) papa).getFunctionalMethod();
-            if (fun == null || TypeOps.isContextDependent(fun.getSymbol())) {
-                // Missing context, because the expression type itself
-                // is used to infer the context type.
-                return ExprContext.getMissingInstance();
-            }
-            return newAssignmentCtx(fun.getReturnType());
-
+            JTypeMirror ty = getContextTypeOfLambdaReturnExpr((ASTLambdaExpression) papa, false);
+            return ty == null ? ExprContext.getMissingInstance() : newAssignmentCtx(ty);
 
         } else if (papa instanceof ASTIfStatement
             || papa instanceof ASTLoopStatement && !(papa instanceof ASTForeachStatement)) {
@@ -639,6 +618,126 @@ public final class PolyResolution {
             return ExprContext.getMissingInstance();
         }
     }
+
+    private @Nullable JTypeMirror returnTargetType(ASTReturnStatement context, boolean internalUse) {
+        JavaNode returnTarget = JavaAstUtils.getReturnTarget(context);
+
+        if (returnTarget instanceof ASTLambdaExpression) {
+            // return within a lambda
+            // "assignment context", deferred to lambda inference
+            return getContextTypeOfLambdaReturnExpr((ASTLambdaExpression) returnTarget, internalUse);
+        } else if (returnTarget instanceof ASTMethodDeclaration) {
+            @NonNull ASTType resultType = ((ASTMethodDeclaration) returnTarget).getResultTypeNode();
+            return resultType instanceof ASTVoidType ? null // (this is an error)
+                                                     : resultType.getTypeMirror();
+        }
+        // Return within ctor or initializer or the like,
+        // return with value is disallowed. This is an error.
+        return null;
+    }
+
+    private @Nullable JTypeMirror getContextTypeOfLambdaReturnExpr(ASTLambdaExpression papa, boolean internalUse) {
+        JMethodSig fun = papa.getFunctionalMethod();
+        // If we're in "internal use" mode, then we cannot call isLambdaReturnExprInDependentContext
+        // because that would trigger overload resolution of the parent invocation if any.
+        if (fun == null || !internalUse && isLambdaReturnExprInDependentContext(papa) != NO) {
+            return null;
+        }
+
+        // This is the target type for the lambda, as given by
+        // the generic method declaration. For instance if the
+        // lambda appears in `foo(() -> X)`:
+        // - if `foo` has signature `<T> foo(Supplier<T>)`, then this is `Supplier<T>`.
+        //   This means the lambda's return expression type is used in the type inference of
+        //   `foo`, in which case we return a missing context.
+        // - if `foo` has signature `foo(Supplier<Long>)`, then this is Supplier<Long>.
+        //   This means the lambda's return expression type is NOT used in the type inference of
+        //   `foo`, as it is known to be Long. In this case we return an assignment context.
+        return fun.getReturnType();
+    }
+
+
+    private OptionalBool isLambdaReturnExprInDependentContext(ASTLambdaExpression lambda) {
+        // The necessary conditions are:
+        // - The lambda return type mentions type vars that are missing from its arguments
+        // (lambda is context dependent)
+        // - The lambda type is inferred:
+        //   1. its context is missing, or
+        //   2. it is invocation and the parent method call
+        //      a. is inferred (generic + no explicit arguments)
+        //      b. mentions some of its type params in the argument type corresponding to the lambda
+
+        JExecutableSymbol symbol = lambda.getFunctionalMethod().getSymbol();
+        if (symbol.isUnresolved()) {
+            return UNKNOWN;
+        }
+
+        // Note we don't test the functional method directly, because it has been instantiated
+        // We test its generic signature (the symbol).
+        boolean contextDependent = TypeOps.isContextDependent(symbol);
+        if (!contextDependent) {
+            return NO;
+        }
+
+        ExprContext lambdaCtx = getConversionContextForExternalUse(lambda);
+        if (lambdaCtx.isMissing()) {
+            return YES;
+        } else if (lambdaCtx.hasKind(ExprContextKind.CAST)) {
+            return NO;
+        } else if (lambdaCtx.hasKind(ExprContextKind.INVOCATION)) {
+            // Note an invocation context does not mean the lambda's
+            // parent is an argument list. There may be branching (switch,
+            // ternary) exprs between the lambda and the invocation.
+            int argIdx = lambda.getIndexInParent();
+            JavaNode parent = lambda.getParent();
+            while (!(parent instanceof ASTArgumentList)) {
+                argIdx = parent.getIndexInParent();
+                parent = parent.getParent();
+            }
+
+            InvocationNode parentCall = (InvocationNode) parent.getParent();
+            if (parentCall.getExplicitTypeArguments() != null) {
+                return NO;
+            }
+            OverloadSelectionResult overload = parentCall.getOverloadSelectionInfo();
+            if (overload.isFailed()) {
+                return UNKNOWN;
+            }
+            JMethodSig parentMethod = overload.getMethodType();
+            if (!parentMethod.getSymbol().isGeneric()) {
+                return NO;
+            }
+
+            JMethodSig genericSig = parentMethod.getSymbol().getGenericSignature();
+            // this is the generic lambda ty as mentioned in the formal parameters
+            JTypeMirror genericLambdaTy = genericSig.ithFormalParam(argIdx, overload.isVarargsCall());
+            if (!(genericLambdaTy instanceof JClassType)) {
+                return NO;
+            }
+            // Note that we don't capture this type, which may make the method type malformed (eg mentioning a wildcard
+            // as return type). We need these bare wildcards for "mentionsAny" to work properly.
+            // The "correct" approach here to remove wildcards would be to infer the ground non-wildcard parameterization
+            // of the lambda but this is pretty deep inside the inference code and not readily usable.
+            JClassType lambdaTyCapture = (JClassType) genericLambdaTy;
+
+            // This is the method signature of the lambda, given the formal parameter type of the parent call.
+            // The formal type is not instantiated, it may contain type variables of the parent method...
+            JMethodSig expectedLambdaMethod = genericLambdaTy.getTypeSystem().sigOf(
+                lambda.getFunctionalMethod().getSymbol(),
+                lambdaTyCapture.getTypeParamSubst()
+            );
+            // but if the return type does not contain such tvars, then the parent method type does
+            // not depend on the lambda type :)
+            return definitely(
+                TypeOps.mentionsAny(
+                    expectedLambdaMethod.getReturnType(),
+                    parentMethod.getTypeParameters()
+                )
+            );
+        }
+        return UNKNOWN;
+    }
+
 
 
     /**
