@@ -325,7 +325,7 @@ public final class Infer {
                 MethodCtDecl bestApplicable = applicable.getMostSpecificOrLogAmbiguity(LOG);
                 JMethodSig adapted = ExprOps.adaptGetClass(bestApplicable.getMethodType(),
                                                            site.getExpr()::getErasedReceiverType);
-                return bestApplicable.withMethod(adapted);
+                return bestApplicable.withMethod(adapted).neededSpecificityCheck(applicable.threwAwaySomeOverloads());
             }
         }
 
@@ -380,12 +380,15 @@ public final class Infer {
         if (candidate == null) {
             return FAILED_INVOCATION;
         } else {
-            return new MethodCtDecl(candidate,
-                                    phase,
-                                    site.canSkipInvocation(),
-                    OptionalBool.definitely(site.needsUncheckedConversion()),
-                                    false,
-                                    site.getExpr());
+            return new MethodCtDecl(
+                candidate,
+                phase,
+                site.canSkipInvocation(),
+                OptionalBool.definitely(site.needsUncheckedConversion()),
+                false,
+                site.getExpr(),
+                false
+            );
         }
     }
 

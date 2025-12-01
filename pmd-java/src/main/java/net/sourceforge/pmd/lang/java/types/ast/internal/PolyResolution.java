@@ -703,6 +703,14 @@ public final class PolyResolution {
             if (overload.isFailed()) {
                 return UNKNOWN;
             }
+
+            // If the overload selection had to pick between several applicable overloads
+            // then we reply yes. This is an approximation that should avoid FPs in rules that
+            // use the context.
+            if (overload.hadSeveralApplicableOverloads()) {
+                return UNKNOWN; // maybe
+            }
+
             JMethodSig parentMethod = overload.getMethodType();
             if (!parentMethod.getSymbol().isGeneric()) {
                 return NO;
