@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
  * A simple double-checked initializer, that parses something (a class,
  * or a type signature).
  */
-@SuppressWarnings({"PMD.AvoidUsingVolatile", "PMD.AvoidCatchingThrowable"})
+@SuppressWarnings({"PMD.AvoidUsingVolatile", "PMD.AvoidCatchingGenericException"})
 abstract class ParseLock {
 
     private static final Logger LOG = LoggerFactory.getLogger(ParseLock.class);

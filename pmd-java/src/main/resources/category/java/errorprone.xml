@@ -1683,8 +1683,10 @@ Empty finalize methods serve no purpose and should be removed. Note that Oracle 
             <property name="xpath">
                 <value>
 <![CDATA[
-//MethodDeclaration[@Name='finalize'][@Arity = 0]
-  /Block[not(*)]
+//ClassDeclaration
+  /ClassBody
+    /MethodDeclaration[@Name = "finalize"][@Arity = 0][@Final = false() or ancestor::ClassDeclaration[@Final = true()]]
+      /Block[not(*)]
 ]]>
                 </value>
             </property>
@@ -2557,9 +2559,10 @@ public class Foo {        // perfect, both methods provided
             will report missing `equals()` and/or `hashCode()` methods for classes only
             that implement `Comparable`.
 
-            Note 2: This rule also reports records that implement `Comparable`. While
-            for records, `equals()` and `hashCode()` are generated, you still must make
-            sure that `compareTo()` is consistent with `equals()`.
+            Note 2: This rule reports records only, if either `equals()` or `hashCode()`
+            have been overridden, but not both. If a record uses the generated
+            equals/hashCode methods, then the `compareTo()` implementation is only
+            consistent with `equals()` if all record components are considered.
         </description>
         <priority>3</priority>
         <example>
@@ -3193,12 +3196,12 @@ public void foo() {
           class="net.sourceforge.pmd.lang.java.rule.errorprone.TestClassWithoutTestCasesRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#testclasswithouttestcases">
         <description>
-Test classes typically end with the suffix "Test", "Tests" or "TestCase". Having a non-test class with that name
+Test classes typically start or end with the affix "Test", "Tests" or "TestCase". Having a non-test class with that name
 is not a good practice, since most people will assume it is a test case. Test classes have test methods
 named "testXXX" (JUnit3) or use annotations (e.g. `@Test`).
 
-The suffix can be configured using the property `testClassPattern`. To disable the detection of possible test classes
-by name, set this property to an empty string.
+The regular expression to match can be configured using the property `testClassPattern`. To disable the detection of
+possible test classes by name, set this property to an empty string.
         </description>
         <priority>3</priority>
         <example>

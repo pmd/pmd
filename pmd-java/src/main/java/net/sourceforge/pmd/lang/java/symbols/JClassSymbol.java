@@ -116,8 +116,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
 
     /** Returns a class with the given name defined in this class. */
-    @Nullable
-    default JClassSymbol getDeclaredClass(String name) {
+    default @Nullable JClassSymbol getDeclaredClass(String name) {
         for (JClassSymbol klass : getDeclaredClasses()) {
             if (klass.nameEquals(name)) {
                 return klass;
@@ -168,8 +167,7 @@ public interface JClassSymbol extends JTypeDeclSymbol,
 
 
     /** Returns a field with the given name defined in this class. */
-    @Nullable
-    default JFieldSymbol getDeclaredField(String name) {
+    default @Nullable JFieldSymbol getDeclaredField(String name) {
         for (JFieldSymbol field : getDeclaredFields()) {
             if (field.nameEquals(name)) {
                 return field;

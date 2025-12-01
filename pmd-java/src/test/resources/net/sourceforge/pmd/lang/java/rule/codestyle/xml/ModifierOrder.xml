@@ -68,10 +68,10 @@ abstract public class Foo { // warn l1
         <expected-problems>5</expected-problems>
         <expected-linenumbers>8,14,17,22,24</expected-linenumbers>
         <expected-messages>
-            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Non-type annotations should be placed before modifiers.</message>
             <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
-            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `static @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `static @Decl`. Non-type annotations should be placed before modifiers.</message>
             <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
         </expected-messages>
         <code-ref id="annotations"/>
@@ -88,7 +88,7 @@ abstract public class Foo { // warn l1
             <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
             <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
             <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
-            <message>Missorted modifiers `static @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `static @Decl`. Non-type annotations should be placed before modifiers.</message>
             <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
         </expected-messages>
         <code-ref id="annotations"/>
@@ -100,12 +100,12 @@ abstract public class Foo { // warn l1
         <expected-problems>6</expected-problems>
         <expected-linenumbers>5,8,14,17,22,24</expected-linenumbers>
         <expected-messages>
-            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `static @Decl`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `static @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
         </expected-messages>
         <code-ref id="annotations"/>
     </test-code>
@@ -269,7 +269,7 @@ abstract public class Foo { // warn l1
     </test-code>
 
     <test-code>
-        <description>Sealed class</description>
+        <description>#6057 Sealed class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
         public abstract sealed class Foo permits Bar {
@@ -278,5 +278,114 @@ abstract public class Foo { // warn l1
         ]]></code>
     </test-code>
 
+    <code-fragment id="methods"><![CDATA[
+class Foo {
+  public @TypeAnnotation Foo bar1a() { return this; }       // line 2
+  @TypeAnnotation public Foo bar1b() { return this; }       // line 3
 
+  public @NotATypeAnnotation Foo bar2a() { return this; }   // line 5
+  @NotATypeAnnotation public Foo bar2b() { return this; }   // line 6
+
+  public @TypeAnnotation <T> Foo bar3a() { return this; }   // line 8
+  public <T> @TypeAnnotation Foo bar3b() { return this; }   // line 9
+  @TypeAnnotation public <T> Foo bar3c() { return this; }   // line 10
+
+  public @NotATypeAnnotation <T> Foo bar4a() { return this; }   // line 12
+  public <T> @NotATypeAnnotation Foo bar4b() { return this; }   // line 13
+  @NotATypeAnnotation public <T> Foo bar4c() { return this; }   // line 14
+}
+@java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE_USE)
+@interface TypeAnnotation {}
+
+@interface NotATypeAnnotation {}
+]]></code-fragment>
+
+    <test-code>
+        <description>#6053 Annotation on method with modifiers/generic types (typeAnnotations=anywhere)</description>
+        <rule-property name="typeAnnotations">anywhere</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,12</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `public @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="methods"/>
+    </test-code>
+
+    <test-code>
+        <description>#6053 Annotation on method with modifiers/generic types (typeAnnotations=ontype)</description>
+        <rule-property name="typeAnnotations">ontype</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>3,5,8,10,12</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `@TypeAnnotation public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `public @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `@TypeAnnotation &lt;T&gt;`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeAnnotation public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `public @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="methods"/>
+    </test-code>
+
+    <test-code>
+        <description>#6053 Annotation on method with modifiers/generic types (typeAnnotations=ondecl)</description>
+        <rule-property name="typeAnnotations">ondecl</rule-property>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>2,5,8,12</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `public @TypeAnnotation`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeAnnotation`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="methods"/>
+    </test-code>
+
+    <code-fragment id="method_params"><![CDATA[
+class Foo {
+  public void bar1a(final @TypeAnnotation Foo foo) {}       // line 2
+  public void bar1b(@TypeAnnotation final Foo foo) {}       // line 3
+
+  public void bar2a(final @NotATypeAnnotation Foo foo) {}   // line 5
+  public void bar2b(@NotATypeAnnotation final Foo foo) {}   // line 6
+}
+
+@java.lang.annotation.Target(java.lang.annotation.ElementType.TYPE_USE)
+@interface TypeAnnotation {}
+
+@java.lang.annotation.Target({java.lang.annotation.ElementType.METHOD, java.lang.annotation.ElementType.PARAMETER, java.lang.annotation.ElementType.FIELD})
+@interface NotATypeAnnotation {}
+]]></code-fragment>
+    <test-code>
+        <description>#6053 Annotation on method parameter with modifiers/generic types (typeAnnotations=anywhere)</description>
+        <rule-property name="typeAnnotations">anywhere</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `final @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="method_params"/>
+    </test-code>
+    <test-code>
+        <description>#6053 Annotation on method parameter with modifiers/generic types (typeAnnotations=ontype)</description>
+        <rule-property name="typeAnnotations">ontype</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,5</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `@TypeAnnotation final`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `final @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="method_params"/>
+    </test-code>
+    <test-code>
+        <description>#6053 Annotation on method parameter with modifiers/generic types (typeAnnotations=ondecl)</description>
+        <rule-property name="typeAnnotations">ondecl</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,5</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `final @TypeAnnotation`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `final @NotATypeAnnotation`. Non-type annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="method_params"/>
+    </test-code>
 </test-data>

@@ -48,6 +48,7 @@ class ApexLanguageHandler implements LanguageVersionHandler {
         private final Set<Metric<?, ?>> metrics = setOf(
             ApexMetrics.COGNITIVE_COMPLEXITY,
             ApexMetrics.CYCLO,
+            ApexMetrics.NCSS,
             ApexMetrics.WEIGHED_METHOD_COUNT
         );
 

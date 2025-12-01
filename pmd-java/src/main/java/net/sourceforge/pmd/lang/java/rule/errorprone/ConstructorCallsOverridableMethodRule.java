@@ -92,8 +92,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         return null;
     }
 
-    @NonNull
-    private Deque<JMethodSymbol> getUnsafetyReason(ASTMethodCall call, PVector<ASTMethodDeclaration> recursionGuard) {
+    private @NonNull Deque<JMethodSymbol> getUnsafetyReason(ASTMethodCall call, PVector<ASTMethodDeclaration> recursionGuard) {
         if (!isCallOnThisInstance(call)) {
             return EMPTY_STACK;
         }
@@ -113,8 +112,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         }
     }
 
-    @NonNull
-    private Deque<JMethodSymbol> getUnsafetyReason(JMethodSymbol method, PVector<ASTMethodDeclaration> recursionGuard) {
+    private @NonNull Deque<JMethodSymbol> getUnsafetyReason(JMethodSymbol method, PVector<ASTMethodDeclaration> recursionGuard) {
         if (method.isStatic()) {
             return EMPTY_STACK; // no access to this instance anyway
         }

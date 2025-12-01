@@ -31,8 +31,7 @@ public final class ASTReturnStatement extends AbstractStatement {
     /**
      * Returns the returned expression, or null if this is a simple return.
      */
-    @Nullable
-    public ASTExpression getExpr() {
+    public @Nullable ASTExpression getExpr() {
         return AstImplUtil.getChildAs(this, 0, ASTExpression.class);
     }
 }

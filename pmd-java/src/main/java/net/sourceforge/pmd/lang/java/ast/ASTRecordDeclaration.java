@@ -44,8 +44,7 @@ public final class ASTRecordDeclaration extends AbstractTypeDeclaration {
     }
 
     @Override
-    @NonNull
-    public ASTRecordComponentList getRecordComponents() {
+    public @NonNull ASTRecordComponentList getRecordComponents() {
         return firstChild(ASTRecordComponentList.class);
     }
 }

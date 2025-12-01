@@ -39,8 +39,7 @@ public final class ASTArrayAllocation extends AbstractJavaExpr implements ASTPri
     }
 
     /** Returns the initializer, if present. */
-    @Nullable
-    public ASTArrayInitializer getArrayInitializer() {
+    public @Nullable ASTArrayInitializer getArrayInitializer() {
         return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTArrayInitializer.class);
     }
 

@@ -18,6 +18,16 @@ public abstract class ApexVisitorBase<P, R> extends AstVisitorBase<P, R> impleme
         return visitTypeDecl(node, data);
     }
 
+    @Override
+    public R visit(ASTUserEnum node, P data) {
+        return visitTypeDecl(node, data);
+    }
+
+    @Override
+    public R visit(ASTUserTrigger node, P data) {
+        return visitTypeDecl(node, data);
+    }
+
     public R visitTypeDecl(ASTUserClassOrInterface<?> node, P data) {
         return visitApexNode(node, data);
     }

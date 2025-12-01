@@ -67,14 +67,12 @@ public final class ASTLambdaParameter extends AbstractJavaTypeNode
      * Returns the declarator ID of this formal parameter.
      */
     @Override
-    @NonNull
-    public ASTVariableId getVarId() {
+    public @NonNull ASTVariableId getVarId() {
         return firstChild(ASTVariableId.class);
     }
 
     /** Returns the type node of this formal parameter. */
-    @Nullable
-    public ASTType getTypeNode() {
+    public @Nullable ASTType getTypeNode() {
         return firstChild(ASTType.class);
     }
 

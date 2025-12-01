@@ -7,7 +7,10 @@ package net.sourceforge.pmd.lang.symboltable;
 /**
  * This is a declaration of a name, e.g. a variable or method name. See
  * {@link AbstractNameDeclaration} for a base class.
+ *
+ * @deprecated Since 7.19.0. For more info, see {@link net.sourceforge.pmd.lang.symboltable}.
  */
+@Deprecated
 public interface NameDeclaration {
 
     /**
