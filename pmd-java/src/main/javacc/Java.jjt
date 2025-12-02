@@ -1,4 +1,9 @@
 /**
+ * Fix grammar of switch labels and switch guards. At most one guard is
+ * allowed, guards are only allowed on pattern branches, several patterns
+ * are allowed.
+ * Clément Fournier 12/2025
+ *====================================================================
  * Removed support for String Templates, introduced in Java 21 / 22 Preview
  * Andreas Dangel 01/2025
  *====================================================================
@@ -2555,38 +2560,21 @@ void SwitchFallthroughBranch():
     (LOOKAHEAD({shouldStartStatementInSwitch()}) BlockStatement() )*
 }
 
+// https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-SwitchLabel
 void SwitchLabel() :
 {}
 {
 { inSwitchLabel = true; }
 (
-  "case" CaseLabelElement(jjtThis) ( "," CaseLabelElement(jjtThis) )*
+  "case" (
+                          "null" #NullLiteral [ "," "default" {jjtThis.setDefault();} ]
+  | LOOKAHEAD(Pattern())  Pattern() ("," Pattern())* [ LOOKAHEAD({isKeyword("when")}) Guard() ]
+  |                       ConditionalExpression() ("," ConditionalExpression())*
+  )
 |
   "default" {jjtThis.setDefault();}
 )
 { inSwitchLabel = false; }
-}
-
-void CaseLabelElement(ASTSwitchLabel label) #void:
-{}
-{
-    "null" #NullLiteral [ "," "default" {label.setDefault();} ]
-    |
-    LOOKAHEAD(Pattern()) CasePattern() [ LOOKAHEAD({isKeyword("when")}) Guard() ]
-    |
-    CaseConstant()
-}
-
-void CaseConstant() #void:
-{}
-{
-    ConditionalExpression()
-}
-
-void CasePattern() #void:
-{}
-{
-    Pattern()
 }
 
 void Guard() :
