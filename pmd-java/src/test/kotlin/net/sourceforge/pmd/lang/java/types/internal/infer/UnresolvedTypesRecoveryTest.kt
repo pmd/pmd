@@ -982,4 +982,24 @@ class C {
             debugCall.qualifier!! shouldHaveType ts.ERROR
         }
     }
+    parserTest("Failure with method ref") {
+        val (acu, spy) = parser.logTypeInferenceVerbose().parseWithTypeInferenceSpy(
+            """
+                import java.util.List;
+                import java.util.stream.Collectors;
+                public class Foo {
+                  static {
+                      List.of("a", "b").stream().collect(Collectors.toMap(String::toUpperCase, _ -> "NO_DATA"));
+                  }
+                }
+            """.trimIndent()
+        )
+
+
+        val (collect, _, _, toMap) = acu.methodCalls().crossFindBoundaries().toList()
+
+        acu.withTypeDsl {
+            collect shouldHaveType java.util.Map::class[ts.STRING, ts.STRING]
+        }
+    }
 })
