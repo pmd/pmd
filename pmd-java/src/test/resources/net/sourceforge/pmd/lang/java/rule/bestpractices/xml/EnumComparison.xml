@@ -83,4 +83,23 @@ class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Equals null</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8-8</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    enum AnEnum {
+        A
+    }
+    void method() {
+        AnEnum x = AnEnum.A;
+
+        if (x.equals(null)) {} // violation, line 8
+        if (new Object().equals(null)) {} // no violation, line 10
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
