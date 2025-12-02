@@ -393,14 +393,16 @@ public final class SymbolTableResolver {
 
             for (ASTSwitchBranch branch : node.getBranches()) {
                 ASTSwitchLabel label = branch.getLabel();
-                // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
-                BindSet bindings =
-                    label.children(ASTPattern.class)
+                // Collect all bindings. Composite label with bindings would be a compilation error.
+                BindSet bindings = label.children(ASTPattern.class)
                          .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
                 int pushBindings = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
-                setTopSymbolTableAndVisit(label, ctx);
+                setTopSymbolTableAndVisit(label.getGuard(), ctx);
+                bindings = bindersOfExpr(label.getGuardExpression());
+
+                pushBindings += pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
 
                 if (branch instanceof ASTSwitchArrowBranch) {
                     pushed = pushBindings;
