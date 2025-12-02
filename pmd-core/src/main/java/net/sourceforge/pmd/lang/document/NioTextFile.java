@@ -61,8 +61,12 @@ class NioTextFile extends BaseCloseable implements TextFile {
     }
 
     @Override
+    public boolean canReopen() {
+        return true;
+    }
+
+    @Override
     public void writeContents(TextFileContent content) throws IOException {
-        ensureOpen();
         if (isReadOnly()) {
             throw new ReadOnlyFileException(this);
         }
@@ -80,8 +84,6 @@ class NioTextFile extends BaseCloseable implements TextFile {
 
     @Override
     public TextFileContent readContents() throws IOException {
-        ensureOpen();
-
         if (!Files.isRegularFile(path)) {
             throw new IOException("Not a regular file: " + path);
         }

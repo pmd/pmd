@@ -11,7 +11,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.TextDocument;
-import net.sourceforge.pmd.util.StringUtil;
 
 /**
  * Simple tokenization into words and separators. Can ignore end-of-line
@@ -66,29 +65,13 @@ public class AnyCpdLexer implements CpdLexer {
     public void tokenize(TextDocument document, TokenFactory tokens) {
         Chars text = document.getText();
         Matcher matcher = pattern.matcher(text);
-        int lineNo = 1;
-        int lastLineStart = 0;
         while (matcher.find()) {
             String image = matcher.group();
-            if (isComment(image)) {
-                continue;
-            } else if (StringUtils.isWhitespace(image)) {
-                lineNo++;
-                lastLineStart = matcher.end();
+            if (isComment(image) || StringUtils.isWhitespace(image)) {
                 continue;
             }
 
-            int bline = lineNo;
-            int bcol = 1 + matcher.start() - lastLineStart; // + 1 because columns are 1 based
-            int ecol = StringUtil.columnNumberAt(image, image.length()); // this already outputs a 1-based column
-            if (ecol == image.length() + 1) {
-                ecol = bcol + image.length(); // single-line token
-            } else {
-                // multiline, need to update the line count
-                lineNo += StringUtil.lineNumberAt(image, image.length()) - 1;
-                lastLineStart = matcher.start() + image.length() - ecol + 1;
-            }
-            tokens.recordToken(image, bline, bcol, lineNo, ecol);
+            tokens.recordToken(image, matcher.start(), matcher.end());
         }
     }
 

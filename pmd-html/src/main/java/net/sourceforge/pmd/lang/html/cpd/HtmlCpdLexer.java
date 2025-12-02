@@ -55,7 +55,7 @@ public class HtmlCpdLexer implements CpdLexer {
             image = ((ASTHtmlTextNode) node).getWholeText();
         }
 
-        tokenEntries.recordToken(image, node.getReportLocation());
+        tokenEntries.recordToken(image, node.getTextRegion());
 
         for (HtmlNode child : node.children()) {
             traverse(child, tokenEntries);

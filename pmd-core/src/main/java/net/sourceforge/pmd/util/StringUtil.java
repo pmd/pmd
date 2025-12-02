@@ -313,8 +313,7 @@ public final class StringUtil {
      * and joined with {@code \n}.
      */
     public static StringBuilder trimIndent(Chars string) {
-        List<Chars> lines = string.lineStream().collect(CollectionUtil.toMutableList());
-        trimIndentInPlace(lines);
+        List<Chars> lines = linesWithTrimIndent(string);
         return CollectionUtil.joinCharsIntoStringBuilder(lines, "\n");
     }
 
