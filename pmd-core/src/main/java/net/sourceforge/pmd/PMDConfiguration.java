@@ -6,7 +6,9 @@ package net.sourceforge.pmd;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,13 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
@@ -93,6 +94,8 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
+    private static final Logger LOG = LoggerFactory.getLogger(PMDConfiguration.class);
+
     private static final LanguageRegistry DEFAULT_REGISTRY = LanguageRegistry.PMD;
 
     /** The default suppress marker string. */
@@ -101,7 +104,11 @@ public class PMDConfiguration extends AbstractConfiguration {
     // General behavior options
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
-    private ClassLoader classLoader = getClass().getClassLoader();
+
+    // This is lazy loaded for compatibility
+    @Deprecated
+    private ClassLoader classLoader;
+
     // Default is blank. This causes a warning bc user hasn't set it, although only if a JVM language is initialized.
     private String analysisClasspath = "";
 
@@ -169,12 +176,26 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the ClassLoader being used by PMD when processing Rules.
      *
      * @return The ClassLoader being used
-     *
      * @deprecated PMD will manage classpath handling internally and
-     * will not necessarily build a classloader.
+     *     will not necessarily build a classloader. Use {@link #setAnalysisClasspath(String)}
+     *     and stop using the classloader directly.
+     *     For compatibility, the first call to this method creates a
+     *     ClassLoader that behaves like before. It is the responsibility
+     *     of the caller to close this classloader or not.
      */
     @Deprecated
     public ClassLoader getClassLoader() {
+        if (classLoader == null) {
+            if (StringUtils.isNotBlank(analysisClasspath)) {
+                try {
+                    classLoader = new ClasspathClassLoader(analysisClasspath, getClass().getClassLoader());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                classLoader = getClass().getClassLoader();
+            }
+        }
         return classLoader;
     }
 
@@ -221,9 +242,18 @@ public class PMDConfiguration extends AbstractConfiguration {
      * This is consistent with how {@link java.net.URLClassLoader} interprets
      * classpath entries.
      *
+     * <p>Note: contrary to {@link #prependAuxClasspath(String)}, this method
+     * does not treat {@code file://} URLs specially (it treats them just like
+     * {@link java.net.URLClassLoader} would). That other method instead treats
+     * them as the path to a text file containing classpath entries written
+     * one by line. To do this, use instead the method {@link #loadAnalysisClasspathFromFile(Path)}.
+     *
      * @param classpath A list of classpath entries separated by {@link File#pathSeparatorChar}
+     *
+     * @throws NullPointerException If the parameter is null
      */
     public void setAnalysisClasspath(@NonNull String classpath) {
+        LOG.debug("Set analysis classpath to: {}", classpath);
         this.analysisClasspath = Objects.requireNonNull(classpath, "Classpath was null");
     }
 
@@ -238,24 +268,38 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     /**
+     * Load the aux-classpath from the given file input stream. The file
+     * is expected to contain one classpath entry per line. The method
+     * returns a string in the format expected by {@link #setAnalysisClasspath(String)}.
+     *
+     * @param inputStream An input stream
+     * @throws IOException If an error occurred while reading the file
+     * @see #setAnalysisClasspath(String)
+     */
+    public static String loadAnalysisClasspathFromFile(InputStream inputStream) throws IOException {
+        try {
+            return ClasspathClassLoader.readClasspathListFile(inputStream);
+        } finally {
+            inputStream.close();
+        }
+    }
+
+
+    /**
      * Load the aux-classpath from the given file. The file is expected
      * to contain one classpath entry per line. These are then passed to
      * {@link #setAnalysisClasspath(String)}.
      *
-     * @param filePath A file path
+     * @param path A file path
      * @throws java.io.FileNotFoundException If the file does not exist
      * @throws IOException                   If an error occurred while reading the file,
      *                                       or the file is a directory
-     * @experimental Maybe we don't need this at all given how easy it is to write it in client code.
      * @see #setAnalysisClasspath(String)
      */
-    @Experimental
-    public void loadAuxClasspathFromFile(Path filePath) throws IOException {
-        String classpath;
-        try (Stream<String> lines = Files.lines(filePath)) {
-            classpath = lines.collect(Collectors.joining(File.pathSeparator));
+    public static String loadAnalysisClasspathFromFile(Path path) throws IOException {
+        try (InputStream is = Files.newInputStream(path)) {
+            return loadAnalysisClasspathFromFile(is);
         }
-        setAnalysisClasspath(classpath);
     }
 
     /**
@@ -275,21 +319,42 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
      * @see PMDConfiguration#setClassLoader(ClassLoader)
-     * @deprecated Use exclusively {@link #setAnalysisClasspath(String)}.
+     * @deprecated Use {@link #setAnalysisClasspath(String)}.
+     *             For compatibility, this method now calls  {@link #setAnalysisClasspath(String)}
+     *             to prepend the parameter to the previous contents of {@link #getAnalysisClasspath()}.
+     *             It does not create a new ClassLoader anymore, instead,
+     *             a new classloader is created lazily in {@link #getClassLoader()}
+     *             if that method is ever called.
+     *             Be aware that {@link #setAnalysisClasspath(String)} does
+     *             NOT interpret {@code file:} scheme URLs as a classpath file list
+     *             like this method does. If you want this behavior, use
+     *             {@link #loadAnalysisClasspathFromFile(InputStream)}.
      */
     @Deprecated
     public void prependAuxClasspath(String classpath) {
-        try {
-            if (classLoader == null) {
-                classLoader = PMDConfiguration.class.getClassLoader();
+        if (StringUtils.isBlank(classpath)) {
+            return;
+        }
+        if (classpath.startsWith("file:")) {
+            LOG.debug("Treating parameter of prependAuxClasspath as a classpath list file {}", classpath);
+            try (InputStream inputStream = new URL(classpath).openStream()) {
+                classpath = ClasspathClassLoader.readClasspathListFile(inputStream);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("Error while reading classpath list file: " + classpath, e);
             }
-            if (classpath != null) {
-                classLoader = new ClasspathClassLoader(classpath, classLoader);
-            }
-        } catch (IOException e) {
-            // Note: IOExceptions shouldn't appear anymore, they should already be converted
-            // to IllegalArgumentException in ClasspathClassLoader.
-            throw new IllegalArgumentException(e);
+        }
+        if (classLoader != null) {
+            // someone called setClassLoader... The pre PMD 7.20 behavior
+            // is that we create a wrapper classloader that will load classes
+            // from the classpath first
+            classLoader = new ClasspathClassLoader(classpath, classLoader, false);
+            return;
+        }
+
+        if (StringUtils.isBlank(this.analysisClasspath)) {
+            setAnalysisClasspath(classpath);
+        } else {
+            setAnalysisClasspath(classpath.trim() + File.pathSeparatorChar + this.analysisClasspath);
         }
     }
 

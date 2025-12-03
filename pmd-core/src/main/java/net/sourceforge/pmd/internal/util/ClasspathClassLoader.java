@@ -84,7 +84,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         this(classpath, parent, true);
     }
 
-    public ClasspathClassLoader(String classpath, ClassLoader parent, boolean mayBeClasspathListFile) throws IOException {
+    public ClasspathClassLoader(String classpath, ClassLoader parent, boolean mayBeClasspathListFile) {
         super(new URL[0], parent);
         for (URL url : initURLs(classpath, mayBeClasspathListFile)) {
             addURL(url);
@@ -127,16 +127,28 @@ public class ClasspathClassLoader extends URLClassLoader {
         }
     }
 
+    /**
+     * Read a classpath entry list from the input stream. Each line
+     * is treated as a new entry. Lines starting with {@code #} are
+     * considered comments.
+     *
+     * @param inputStream An input stream
+     * @return classpath entries delimited by {@link File#pathSeparatorChar}
+     */
+    public static String readClasspathListFile(InputStream inputStream) throws IOException {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, Charset.defaultCharset()))) {
+            return in.lines()
+                     .map(String::trim)
+                     .filter(it -> !it.isEmpty() && it.charAt(0) != '#')
+                     .collect(Collectors.joining(File.pathSeparator));
+        }
+    }
+
     private void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(fileURL.openStream(), Charset.defaultCharset()))) {
-            String line;
-            while ((line = in.readLine()) != null) {
-                LOG.debug("Read classpath entry line: <{}>", line);
-                line = line.trim();
-                if (line.length() > 0 && line.charAt(0) != '#') {
-                    LOG.debug("Adding classpath entry: <{}>", line);
-                    urls.add(createURLFromPath(line));
-                }
+        try (InputStream inputStream = fileURL.openStream()) {
+            for (String entry : readClasspathListFile(inputStream).split(File.pathSeparator)) {
+                LOG.debug("Adding classpath entry: <{}>", entry);
+                urls.add(createURLFromPath(entry));
             }
         }
     }

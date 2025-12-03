@@ -129,7 +129,7 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  * <h2>Specifying the Java classpath</h2>
  *
  * <p>Java rules work better if you specify the path to the compiled classes
- * of the analysed sources. See {@link PMDConfiguration#prependAuxClasspath(String)}.
+ * of the analysed sources. See {@link PMDConfiguration#setAnalysisClasspath(String)}.
  *
  * <h2>Customizing message output</h2>
  *

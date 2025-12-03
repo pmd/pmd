@@ -6,6 +6,8 @@ package net.sourceforge.pmd.ant.internal;
 
 import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -32,7 +34,6 @@ import net.sourceforge.pmd.ant.InternalApiBridge;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -231,9 +232,17 @@ public class PMDTaskImpl {
         try {
             if (auxClasspath != null) {
                 project.log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
-                configuration.prependAuxClasspath(auxClasspath.toString());
+                if (auxClasspath.size() == 1) {
+                    String first = auxClasspath.list()[0];
+                    if (first.startsWith("file:")) {
+                        String fileListContents = PMDConfiguration.loadAnalysisClasspathFromFile(new URL(first).openStream());
+                        configuration.setAnalysisClasspath(fileListContents);
+                        return;
+                    }
+                }
+                configuration.setAnalysisClasspath(auxClasspath.toString());
             }
-        } catch (IllegalArgumentException ioe) {
+        } catch (IllegalArgumentException | IOException ioe) {
             throw new BuildException(ioe.getMessage(), ioe);
         }
     }
@@ -244,15 +253,7 @@ public class PMDTaskImpl {
         // need to reload the logger with the new configuration
         Logger log = LoggerFactory.getLogger(PMDTaskImpl.class);
         log.info("Logging is at {}", level);
-        try {
-            doTask();
-        } finally {
-            // only close the classloader, if it is ours. Otherwise we end up with class not found
-            // exceptions
-            if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
-                IOUtil.tryCloseClassLoader(configuration.getClassLoader());
-            }
-        }
+        doTask();
     }
 
 }

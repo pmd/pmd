@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -32,6 +34,7 @@ import net.sourceforge.pmd.cli.commands.typesupport.internal.RulePriorityTypeSup
 import net.sourceforge.pmd.cli.internal.CliExitCode;
 import net.sourceforge.pmd.cli.internal.ProgressBarListener;
 import net.sourceforge.pmd.internal.LogMessages;
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.rule.RulePriority;
@@ -277,10 +280,12 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         // Setup CLI message reporter
         configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(PmdCommand.class)));
 
-        try {
-            configuration.prependAuxClasspath(auxClasspath);
-        } catch (IllegalArgumentException e) {
-            throw new ParameterException(spec.commandLine(), "Invalid auxiliary classpath: " + e.getMessage(), e);
+        if (auxClasspath.startsWith("file://")) {
+            try (InputStream inputStream = new URL(auxClasspath).openStream()) {
+                configuration.setAnalysisClasspath(ClasspathClassLoader.readClasspathListFile(inputStream));
+            } catch (IOException e) {
+                throw new ParameterException(spec.commandLine(), "Error reading classpath file.", e, spec.findOption("--aux-classpath"), auxClasspath);
+            }
         }
         return configuration;
     }
@@ -304,7 +309,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                 }
 
                 LOG.debug("Runtime classpath:\n{}", System.getProperty("java.class.path"));
-                LOG.debug("Aux classpath: {}", configuration.getClassLoader());
+                LOG.debug("Aux classpath: {}", configuration.getAnalysisClasspath());
 
                 if (showProgressBar) {
                     if (configuration.getReportFilePath() == null) {
