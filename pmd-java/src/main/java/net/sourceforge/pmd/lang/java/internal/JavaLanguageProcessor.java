@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,9 +12,12 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
+import net.sourceforge.pmd.lang.impl.Classpath;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties.InferenceLoggingVerbosity;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
@@ -44,11 +48,14 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parser;
     private final JavaParser parserWithoutProcessing;
     private final boolean firstClassLombok;
+    private final ClasspathClassLoader ownedClassloader;
     private TypeSystem typeSystem;
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties, TypeSystem typeSystem) {
+    private JavaLanguageProcessor(JavaLanguageProperties properties, ClasspathClassLoader ownedClassloader) {
         super(properties);
-        this.typeSystem = typeSystem;
+        this.ownedClassloader = ownedClassloader;
+        LOG.debug("Using analysis classloader: {}", ownedClassloader);
+        this.typeSystem = TypeSystem.usingClasspath((Classpath) ownedClassloader::getResourceAsStream);
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
@@ -56,9 +63,8 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         this.firstClassLombok = properties.getProperty(JavaLanguageProperties.FIRST_CLASS_LOMBOK);
     }
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties) {
-        this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
-        LOG.debug("Using analysis classloader: {}", properties.getAnalysisClassLoader());
+    public JavaLanguageProcessor(JavaLanguageProperties properties) throws IOException {
+        this(properties, properties.newClasspathClassLoader());
     }
 
     @Override
@@ -139,6 +145,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public void close() throws Exception {
         this.typeSystem.logStats();
+        IOUtil.tryCloseClassLoader(ownedClassloader);
         super.close();
     }
 }

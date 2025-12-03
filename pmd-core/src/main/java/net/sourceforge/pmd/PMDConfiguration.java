@@ -8,15 +8,20 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
@@ -77,8 +82,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <h2>Language configuration</h2>
  * <ul>
  * <li>Use {@link #setSuppressMarker(String)} to change the comment marker for suppression comments. Defaults to {@value #DEFAULT_SUPPRESS_MARKER}.</li>
- * <li>See {@link #setClassLoader(ClassLoader)} and {@link #prependAuxClasspath(String)} for
- *  information for how to configure classpath for Java analysis.</li>
+ * <li>See {@link #setAnalysisClasspath(String)} for how to configure the classpath for Java analysis.</li>
  * <li>You can set additional language properties with {@link #getLanguageProperties(Language)}</li>
  * </ul>
  *
@@ -98,6 +102,8 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
     private ClassLoader classLoader = getClass().getClassLoader();
+    // Default is blank. This causes a warning bc user hasn't set it, although only if a JVM language is initialized.
+    private String analysisClasspath = "";
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -163,7 +169,11 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the ClassLoader being used by PMD when processing Rules.
      *
      * @return The ClassLoader being used
+     *
+     * @deprecated PMD will manage classpath handling internally and
+     * will not necessarily build a classloader.
      */
+    @Deprecated
     public ClassLoader getClassLoader() {
         return classLoader;
     }
@@ -174,13 +184,78 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param classLoader
      *            The ClassLoader to use
+     *
+     * @deprecated Use exclusively {@link #setAnalysisClasspath(String)}.
      */
+    @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
         if (classLoader == null) {
             this.classLoader = getClass().getClassLoader();
         } else {
             this.classLoader = classLoader;
         }
+    }
+
+    /**
+     * Set the classpath used to load classes for the analysis of Java (or other JVM language)
+     * sources. During analysis of those sources, the symbols used by the
+     * analysed source files are resolved from this classpath. The classpath
+     * should therefore provide access to all dependencies of the analysed
+     * sources (including JDK classes for the correct JDK versions). It
+     * should also provide access to the compiled classes corresponding to
+     * the analysed sources themselves, for the purpose of resolving
+     * inter-file dependencies.
+     *
+     * <p>A classpath string (the parameter) must be a list of classpath
+     * entries separated by {@link File#pathSeparatorChar} characters.
+     *
+     * <p>Each entry may be a {@code file:} or {@code jar:} scheme URL,
+     * or a path string (without scheme) that will be interpreted by
+     * {@link Paths#get(String, String...)}.
+     *
+     * <p>A {@code file:} scheme URL that ends with {@code /} will be interpreted
+     * as a directory. A path or {@code file:} scheme URL that refers
+     * to a directory will be assumed to contain class files to be loaded
+     * as needed. A path or {@code file:} scheme URL that refers to a file,
+     * or a {@code jar:} scheme URL, is assumed to refer to a JAR file.
+     * This is consistent with how {@link java.net.URLClassLoader} interprets
+     * classpath entries.
+     *
+     * @param classpath A list of classpath entries separated by {@link File#pathSeparatorChar}
+     */
+    public void setAnalysisClasspath(@NonNull String classpath) {
+        this.analysisClasspath = Objects.requireNonNull(classpath, "Classpath was null");
+    }
+
+    /**
+     * Return the current analysis classpath. This may be blank, in which
+     * case all classes will need to be loaded from PMD's boot classpath.
+     * This is not an expected situation: if you analyse Java sources, you
+     * should set the analysis classpath.
+     */
+    public @NonNull String getAnalysisClasspath() {
+        return analysisClasspath;
+    }
+
+    /**
+     * Load the aux-classpath from the given file. The file is expected
+     * to contain one classpath entry per line. These are then passed to
+     * {@link #setAnalysisClasspath(String)}.
+     *
+     * @param filePath A file path
+     * @throws java.io.FileNotFoundException If the file does not exist
+     * @throws IOException                   If an error occurred while reading the file,
+     *                                       or the file is a directory
+     * @experimental Maybe we don't need this at all given how easy it is to write it in client code.
+     * @see #setAnalysisClasspath(String)
+     */
+    @Experimental
+    public void loadAuxClasspathFromFile(Path filePath) throws IOException {
+        String classpath;
+        try (Stream<String> lines = Files.lines(filePath)) {
+            classpath = lines.collect(Collectors.joining(File.pathSeparator));
+        }
+        setAnalysisClasspath(classpath);
     }
 
     /**
@@ -200,7 +275,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
      * @see PMDConfiguration#setClassLoader(ClassLoader)
+     * @deprecated Use exclusively {@link #setAnalysisClasspath(String)}.
      */
+    @Deprecated
     public void prependAuxClasspath(String classpath) {
         try {
             if (classLoader == null) {

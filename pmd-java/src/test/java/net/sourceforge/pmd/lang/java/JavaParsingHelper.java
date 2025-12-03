@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageProcessor;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.SemanticErrorReporter;
@@ -39,6 +40,7 @@ import net.sourceforge.pmd.util.log.PmdReporter;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 import kotlin.Pair;
+import kotlin.Unit;
 
 public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTCompilationUnit> {
 
@@ -59,7 +61,10 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
 
     /** This runs all processing stages when parsing. */
     public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(
-        Params.getDefault(),
+        Params.getDefault().withLanguagePropertyConfig(bundle -> {
+            bundle.setProperty(JvmLanguagePropertyBundle.WARN_IF_NO_CLASSPATH, false);
+            return Unit.INSTANCE;
+        }),
         SemanticErrorReporter.noop(), // todo change this to unforgiving logger, need to update a lot of tests
         TEST_TYPE_SYSTEM,
         TypeInferenceLogger.noop()

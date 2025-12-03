@@ -81,11 +81,17 @@ public class ClasspathClassLoader extends URLClassLoader {
     }
 
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
+        this(classpath, parent, true);
+    }
+
+    public ClasspathClassLoader(String classpath, ClassLoader parent, boolean mayBeClasspathListFile) throws IOException {
         super(new URL[0], parent);
-        for (URL url : initURLs(classpath)) {
+        for (URL url : initURLs(classpath, mayBeClasspathListFile)) {
             addURL(url);
         }
     }
+
+
 
     private List<URL> fileToURL(List<File> files) throws IOException {
         List<URL> urlList = new ArrayList<>();
@@ -95,11 +101,11 @@ public class ClasspathClassLoader extends URLClassLoader {
         return urlList;
     }
 
-    private List<URL> initURLs(String classpath) {
+    private List<URL> initURLs(String classpath, boolean mayBeClasspathListFile) {
         AssertionUtil.requireParamNotNull("classpath", classpath);
         final List<URL> urls = new ArrayList<>();
         try {
-            if (classpath.startsWith("file:")) {
+            if (mayBeClasspathListFile && classpath.startsWith("file:")) {
                 // Treat as file URL
                 addFileURLs(urls, new URL(classpath));
             } else {

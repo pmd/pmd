@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 class ClassStubTest {
+
     // while parsing the annotation type, ClassStub's parseLock.ensureParsed()
     // is called multiple times, reentering the parselock while the status is
     // still BEING_PARSED.

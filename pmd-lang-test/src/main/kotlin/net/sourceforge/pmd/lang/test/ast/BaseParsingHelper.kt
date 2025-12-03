@@ -73,9 +73,17 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             languageRegistry: LanguageRegistry = LanguageRegistry.PMD,
             suppressMarker: String = PMDConfiguration.DEFAULT_SUPPRESS_MARKER,
         ) = copy(
-            doProcess, defaultVerString, resourceLoader, resourcePrefix, languageRegistry, suppressMarker,
-            configLanguageProperties
+            doProcess = doProcess,
+            defaultVerString = defaultVerString,
+            resourceLoader = resourceLoader,
+            resourcePrefix = resourcePrefix,
+            languageRegistry = languageRegistry,
+            suppressMarker = suppressMarker,
+            configLanguageProperties = configLanguageProperties
         )
+
+        fun withLanguagePropertyConfig(config: LanguagePropertyBundle.() -> Unit) =
+            copy(configLanguageProperties = config)
 
         companion object {
 
