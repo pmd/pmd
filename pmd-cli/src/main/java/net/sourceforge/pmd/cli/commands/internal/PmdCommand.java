@@ -309,7 +309,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                 }
 
                 LOG.debug("Runtime classpath:\n{}", System.getProperty("java.class.path"));
-                LOG.debug("Aux classpath: {}", configuration.getAnalysisClasspath());
+                LOG.debug("Aux classpath: {}", configuration.getAnalysisClasspathLoader());
 
                 if (showProgressBar) {
                     if (configuration.getReportFilePath() == null) {

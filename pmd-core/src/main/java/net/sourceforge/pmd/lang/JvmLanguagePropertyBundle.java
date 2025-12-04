@@ -4,18 +4,14 @@
 
 package net.sourceforge.pmd.lang;
 
-import java.io.IOException;
-
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.PMDConfiguration;
-import net.sourceforge.pmd.annotation.InternalApi;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.PmdClasspathWrapper;
 
 /**
  * Base properties class for JVM languages that use a classpath to resolve
@@ -41,7 +37,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
                          .defaultValue(true)
                          .build();
 
-    private ClassLoader classLoader;
+    private @Nullable PmdClasspathWrapper classpathWrapper;
 
     public JvmLanguagePropertyBundle(Language language) {
         super(language);
@@ -53,26 +49,34 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
         super.setProperty(propertyDescriptor, value);
         if (propertyDescriptor == AUX_CLASSPATH) {
-            classLoader = null; // reset it.
+            classpathWrapper = null; // reset it.
         }
     }
 
     /**
-     * Create a new {@link ClasspathClassLoader} from the provided auxClasspath.
-     * Closing this classloader is the responsibility of the caller. Typically,
-     * this will be called when a {@link LanguageProcessor} is created, and
-     * closed when it is destroyed.
+     * Set the classloader to use for analysis. This overrides the
+     * setting of a classpath as a string via {@link #setProperty(PropertyDescriptor, Object)}.
+     * If the parameter is null, the classloader returned by {@link #getClasspathWrapper()}
+     * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
      */
-    @InternalApi
-    public ClasspathClassLoader newClasspathClassLoader() throws IOException {
-        String auxclasspath = getProperty(AUX_CLASSPATH);
-        if (StringUtils.isBlank(auxclasspath) && getProperty(WARN_IF_NO_CLASSPATH)) {
-            LOG.warn("auxClasspath property was not set."
-                     + " The analysis will use the PMD boot classpath to resolve symbols in analysed sources."
-                     + " This may cause problems, including false positives.");
-        }
-        return new ClasspathClassLoader(auxclasspath, getClass().getClassLoader(), false);
+    public void setClasspathWrapper(@Nullable PmdClasspathWrapper classpath) {
+        this.classpathWrapper = classpath;
     }
+
+    /**
+     * Return the classpath wrapper. Note that a language property bundle
+     * is not considered to own the classpath wrapper and will not close
+     * it itself. It is only passing this data from pmd core to pmd java.
+     * The Java language processor will close it.
+     */
+    public PmdClasspathWrapper getClasspathWrapper() {
+        if (classpathWrapper == null) {
+            classpathWrapper = PmdClasspathWrapper.bootClasspath();
+            classpathWrapper.prependClasspath(getProperty(AUX_CLASSPATH));
+        }
+        return classpathWrapper;
+    }
+
 
     /**
      * Set the classloader to use for analysis. This overrides the
@@ -84,7 +88,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      */
     @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+        setClasspathWrapper(PmdClasspathWrapper.thisClassLoaderWillNotBeClosedByPmd(classLoader));
     }
 
     /**
@@ -94,19 +98,6 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      */
     @Deprecated
     public @NonNull ClassLoader getAnalysisClassLoader() {
-        if (classLoader != null) {
-            return classLoader;
-        }
-        // load classloader using the property.
-        classLoader = PMDConfiguration.class.getClassLoader();
-        String classpath = getProperty(AUX_CLASSPATH);
-        if (StringUtils.isNotBlank(classpath)) {
-            try {
-                classLoader = new ClasspathClassLoader(classpath, classLoader);
-            } catch (IOException e) {
-                throw new IllegalArgumentException(e);
-            }
-        }
-        return classLoader;
+        return getClasspathWrapper().getClassLoader();
     }
 }

@@ -73,18 +73,18 @@ public class ClasspathClassLoader extends URLClassLoader {
         }
     }
 
-    public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
+    public ClasspathClassLoader(List<File> files, @Nullable ClassLoader parent) throws IOException {
         super(new URL[0], parent);
         for (URL url : fileToURL(files)) {
             addURL(url);
         }
     }
 
-    public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
+    public ClasspathClassLoader(String classpath, @Nullable ClassLoader parent) throws IOException {
         this(classpath, parent, true);
     }
 
-    public ClasspathClassLoader(String classpath, ClassLoader parent, boolean mayBeClasspathListFile) {
+    public ClasspathClassLoader(String classpath, @Nullable ClassLoader parent, boolean mayBeClasspathListFile) {
         super(new URL[0], parent);
         for (URL url : initURLs(classpath, mayBeClasspathListFile)) {
             addURL(url);
@@ -312,8 +312,10 @@ public class ClasspathClassLoader extends URLClassLoader {
             collectModules(allModules, moduleInfoUrls);
 
             // also search in parents
-            moduleInfoUrls = getParent().getResources(MODULE_INFO_SUFFIX);
-            collectModules(allModules, moduleInfoUrls);
+            if (getParent() != null) {
+                moduleInfoUrls = getParent().getResources(MODULE_INFO_SUFFIX);
+                collectModules(allModules, moduleInfoUrls);
+            }
 
             LOG.debug("Found {} modules on auxclasspath", allModules.size());
 

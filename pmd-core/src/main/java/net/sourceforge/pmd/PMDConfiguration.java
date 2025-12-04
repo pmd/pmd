@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,7 @@ import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.PmdClasspathWrapper;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
@@ -104,13 +104,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
 
-    // This is lazy loaded for compatibility
-    @Deprecated
-    private ClassLoader classLoader;
-
-    // Default is null, meaning the user is not using the new methods to set the classpath.
-    // This causes a warning bc user hasn't set it, although only if a JVM language is initialized.
-    private String analysisClasspath;
+    private PmdClasspathWrapper classLoader = PmdClasspathWrapper.bootClasspath();
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -185,18 +179,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public ClassLoader getClassLoader() {
-        if (classLoader == null) {
-            if (StringUtils.isNotBlank(analysisClasspath)) {
-                try {
-                    classLoader = new ClasspathClassLoader(analysisClasspath, getClass().getClassLoader());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                classLoader = getClass().getClassLoader();
-            }
-        }
-        return classLoader;
+        return classLoader.getClassLoader();
     }
 
     /**
@@ -210,10 +193,25 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
-            this.classLoader = getClass().getClassLoader();
-        } else {
-            this.classLoader = classLoader;
+        setAnalysisClasspath(
+            classLoader == null ? PmdClasspathWrapper.bootClasspath()
+                                : PmdClasspathWrapper.thisClassLoaderWillNotBeClosedByPmd(classLoader)
+        );
+    }
+
+    public PmdClasspathWrapper getAnalysisClasspathLoader() {
+        return classLoader;
+    }
+
+    public void setAnalysisClasspath(PmdClasspathWrapper classpath) {
+        // todo what to do about the previous wrapper? Log that it is being dropped? Maybe only if
+        //  any link needs to be closed? Close it automatically?
+        try {
+            PmdClasspathWrapper prev = this.classLoader;
+            this.classLoader = Objects.requireNonNull(classpath);
+            prev.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while closing classpath wrapper:", e);
         }
     }
 
@@ -254,17 +252,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     public void setAnalysisClasspath(@NonNull String classpath) {
         LOG.debug("Set analysis classpath to: {}", classpath);
-        this.analysisClasspath = Objects.requireNonNull(classpath, "Classpath was null");
-    }
-
-    /**
-     * Return the current analysis classpath. This may be blank, in which
-     * case all classes will need to be loaded from PMD's boot classpath.
-     * This is not an expected situation: if you analyse Java sources, you
-     * should set the analysis classpath.
-     */
-    public @NonNull String getAnalysisClasspath() {
-        return analysisClasspath == null ? "" : analysisClasspath;
+        PmdClasspathWrapper newCp = PmdClasspathWrapper.bootClasspath();
+        newCp.prependClasspath(classpath);
+        setAnalysisClasspath(newCp);
     }
 
     /**
@@ -319,24 +309,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param classpath The prepended classpath.
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
-     * @see PMDConfiguration#setClassLoader(ClassLoader)
-     * @deprecated Use {@link #setAnalysisClasspath(String)}.
-     *             For compatibility, this method creates a ClassLoader like before.
+     * @see PmdClasspathWrapper#prependClasspath(String)
      */
-    @Deprecated
     public void prependAuxClasspath(String classpath) {
-        if (StringUtils.isBlank(classpath)) {
-            return;
-        }
-        if (StringUtils.isNotBlank(analysisClasspath)) {
-            throw new IllegalStateException(
-                "Mixing prependAuxClasspath and setAnalysisClasspath is not allowed. "
-                + "Use exclusively setAnalysisClasspath as prependAuxClasspath is deprecated.");
-        }
-        if (classLoader == null) {
-            classLoader = getClass().getClassLoader();
-        }
-        classLoader = new ClasspathClassLoader(classpath, classLoader, true);
+        this.classLoader.prependClasspath(classpath);
     }
 
     /**

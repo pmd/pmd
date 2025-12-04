@@ -12,12 +12,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
-import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
-import net.sourceforge.pmd.lang.impl.Classpath;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties.InferenceLoggingVerbosity;
 import net.sourceforge.pmd.lang.java.rule.xpath.internal.BaseContextNodeTestFun;
@@ -34,6 +31,7 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
+import net.sourceforge.pmd.util.PmdClasspathWrapper;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 /**
@@ -48,14 +46,15 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parser;
     private final JavaParser parserWithoutProcessing;
     private final boolean firstClassLombok;
-    private final ClasspathClassLoader ownedClassloader;
+    private final AutoCloseable classpathWrapperSubscription;
     private TypeSystem typeSystem;
 
-    private JavaLanguageProcessor(JavaLanguageProperties properties, ClasspathClassLoader ownedClassloader) {
+    private JavaLanguageProcessor(JavaLanguageProperties properties, PmdClasspathWrapper classpathWrapper) {
         super(properties);
-        this.ownedClassloader = ownedClassloader;
-        LOG.debug("Using analysis classloader: {}", ownedClassloader);
-        this.typeSystem = TypeSystem.usingClasspath((Classpath) ownedClassloader::getResourceAsStream);
+        LOG.debug("Using analysis classloader: {}", classpathWrapper);
+        // record that this wrapper should not be closed before we're done with it.
+        this.classpathWrapperSubscription = classpathWrapper.subscribe();
+        this.typeSystem = TypeSystem.usingClasspath(classpathWrapper.asClasspath());
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
@@ -64,7 +63,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     }
 
     public JavaLanguageProcessor(JavaLanguageProperties properties) throws IOException {
-        this(properties, properties.newClasspathClassLoader());
+        this(properties, properties.getClasspathWrapper());
     }
 
     @Override
@@ -145,7 +144,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public void close() throws Exception {
         this.typeSystem.logStats();
-        IOUtil.tryCloseClassLoader(ownedClassloader);
+        classpathWrapperSubscription.close();
         super.close();
     }
 }
