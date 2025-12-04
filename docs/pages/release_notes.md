@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* cli
+  * [#6290](https://github.com/pmd/pmd/issues/6290): \[cli] Improve Designer start script
 
 ### 🚨️ API Changes
 
