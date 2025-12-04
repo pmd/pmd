@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import net.sourceforge.pmd.lang.java.BaseParserTest;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 
-class ASTSwitchLabelTest extends BaseParserTest {
+class ASTSwitchExhaustiveTest extends BaseParserTest {
 
     private final JavaParsingHelper java = JavaParsingHelper.DEFAULT;
 

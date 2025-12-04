@@ -343,9 +343,18 @@ fun TreeNodeWrapper<Node, *>.localVarDecl(contents: NodeSpec<ASTLocalVariableDec
         }
 
 fun TreeNodeWrapper<Node, *>.localClassDecl(simpleName: String, contents: NodeSpec<ASTClassDeclaration> = EmptyAssertions) =
-        child<ASTLocalClassStatement> {
-            it::getDeclaration shouldBe classDecl(simpleName, contents)
+    localTypeDecl<ASTClassDeclaration>(simpleName, contents)
+
+inline fun <reified T : ASTTypeDeclaration> TreeNodeWrapper<Node, *>.localTypeDecl(
+    simpleName: String,
+    noinline contents: NodeSpec<T> = EmptyAssertions
+) =
+    child<ASTLocalClassStatement> {
+        it::getDeclaration shouldBe child<T>(ignoreChildren = contents == EmptyAssertions) {
+            it::getSimpleName shouldBe simpleName
+            contents()
         }
+    }
 
 fun TreeNodeWrapper<Node, *>.exprStatement(contents: ValuedNodeSpec<ASTExpressionStatement, ASTExpression?> = { null }) =
         child<ASTExpressionStatement> {
@@ -416,6 +425,15 @@ fun TreeNodeWrapper<Node, *>.typePattern(contents: NodeSpec<ASTTypePattern>) =
         child<ASTTypePattern>(ignoreChildren = contents == EmptyAssertions) {
             contents()
         }
+fun TreeNodeWrapper<Node, *>.recordPattern(simpleName: String, contents: NodeSpec<ASTRecordPattern> = EmptyAssertions) =
+    child<ASTRecordPattern> {
+        it::getTypeNode shouldBe classType(simpleName)
+        if (contents == EmptyAssertions) {
+            unspecifiedChild()
+        } else {
+            contents()
+        }
+    }
 
 
 fun TreeNodeWrapper<Node, *>.arrayType(contents: NodeSpec<ASTArrayType> = EmptyAssertions) =
@@ -600,12 +618,25 @@ fun TreeNodeWrapper<Node, *>.switchFallthrough(assertions: NodeSpec<ASTSwitchFal
 fun TreeNodeWrapper<Node, *>.switchLabel(assertions: NodeSpec<ASTSwitchLabel> = EmptyAssertions) =
         child<ASTSwitchLabel>(ignoreChildren = assertions == EmptyAssertions) {
             it::isDefault shouldBe false
+            it::isCaseNull shouldBe false
             assertions()
         }
+
+fun TreeNodeWrapper<Node, *>.switchNullLabel(
+    isDefault: Boolean = false,
+    assertions: NodeSpec<ASTSwitchLabel> = EmptyAssertions
+) =
+    child<ASTSwitchLabel> {
+        it::isDefault shouldBe isDefault
+        it::isCaseNull shouldBe true
+        it.exprList.toList() shouldBe listOf(nullLit())
+        assertions()
+    }
 
 fun TreeNodeWrapper<Node, *>.switchDefaultLabel(assertions: NodeSpec<ASTSwitchLabel> = EmptyAssertions) =
         child<ASTSwitchLabel>(ignoreChildren = assertions == EmptyAssertions) {
             it::isDefault shouldBe true
+            it::isCaseNull shouldBe false
             it.exprList.toList() shouldBe emptyList()
             assertions()
         }

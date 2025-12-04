@@ -53,6 +53,13 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
     }
 
     /**
+     * Returns true if this is the label {@code case null} or {@code case null, default}.
+     */
+    public boolean isCaseNull() {
+        return getFirstChild() instanceof ASTNullLiteral;
+    }
+
+    /**
      * Returns the expressions of this label, or an empty list if this
      * is the default label. This does neither contain {@linkplain  ASTTypePattern TypePatterns}
      * nor {@linkplain ASTRecordPattern RecordPatterns}. To check for this,
@@ -61,6 +68,7 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
     public NodeStream<ASTExpression> getExprList() {
         return children(ASTExpression.class);
     }
+
 
     /** Return the guard expression for this branch if there is one. */
     public @Nullable ASTExpression getGuardExpression() {
