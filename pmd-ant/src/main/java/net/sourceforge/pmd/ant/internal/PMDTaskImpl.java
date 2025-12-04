@@ -6,8 +6,6 @@ package net.sourceforge.pmd.ant.internal;
 
 import static net.sourceforge.pmd.lang.rule.InternalApiBridge.loadRuleSetsWithoutException;
 
-import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -232,16 +230,9 @@ public class PMDTaskImpl {
         try {
             if (auxClasspath != null) {
                 project.log("Using auxclasspath: " + auxClasspath, Project.MSG_VERBOSE);
-                if (auxClasspath.size() == 1) {
-                    String first = auxClasspath.list()[0];
-                    if (first.startsWith("file:")) {
-                        configuration.loadAnalysisClasspathFromFile(new URL(first).openStream());
-                        return;
-                    }
-                }
                 configuration.prependAuxClasspath(auxClasspath.toString());
             }
-        } catch (IllegalArgumentException | IOException ioe) {
+        } catch (IllegalArgumentException ioe) {
             throw new BuildException(ioe.getMessage(), ioe);
         }
     }

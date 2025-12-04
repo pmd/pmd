@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.PmdClasspathWrapper;
 
 /**
  * An analysis cache backed by a regular file.
@@ -44,7 +45,7 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     }
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, PmdClasspathWrapper auxclassPathClassLoader, Collection<? extends TextFile> files) {
         // load cached data before checking for validity
         loadFromFile(cacheFile, files);
         super.checkValidity(ruleSets, auxclassPathClassLoader, files);

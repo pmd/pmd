@@ -41,6 +41,7 @@ import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
@@ -74,56 +75,87 @@ public class ClasspathClassLoader extends URLClassLoader {
     }
 
     public ClasspathClassLoader(List<File> files, @Nullable ClassLoader parent) throws IOException {
-        super(new URL[0], parent);
-        for (URL url : fileToURL(files)) {
-            addURL(url);
-        }
+        this(filesToParsedCp(files), parent);
     }
 
     public ClasspathClassLoader(String classpath, @Nullable ClassLoader parent) throws IOException {
         this(classpath, parent, true);
     }
 
-    public ClasspathClassLoader(String classpath, @Nullable ClassLoader parent, boolean mayBeClasspathListFile) {
-        super(new URL[0], parent);
-        for (URL url : initURLs(classpath, mayBeClasspathListFile)) {
-            addURL(url);
+    public ClasspathClassLoader(String classpath, @Nullable ClassLoader parent, boolean mayBeClasspathListFile) throws IOException {
+        this(parseClasspath(classpath, mayBeClasspathListFile), parent);
+    }
+
+    public ClasspathClassLoader(ParsedClassPath parsed, @Nullable ClassLoader parent) {
+        super(parsed.urls.toArray(new URL[0]), parent);
+
+        if (parsed.jrtFsPath != null) {
+            initializeJrtFilesystem(parsed.jrtFsPath);
         }
     }
 
+    public static class ParsedClassPath {
+        private final List<URL> urls = new ArrayList<>();
+        private @Nullable Path jrtFsPath;
 
+        private ParsedClassPath() {
+        }
 
-    private List<URL> fileToURL(List<File> files) throws IOException {
-        List<URL> urlList = new ArrayList<>();
+        public @Nullable ParsedClassPath prepend(ParsedClassPath parsed) {
+            ParsedClassPath result = new ParsedClassPath();
+            result.urls.addAll(parsed.urls);
+            result.urls.addAll(this.urls);
+
+            if (parsed.jrtFsPath != null && this.jrtFsPath != null
+                && !Objects.equals(this.jrtFsPath, parsed.jrtFsPath)) {
+                throw new IllegalArgumentException(
+                    "Multiple JRT fs paths? " + this.jrtFsPath + " AND " + parsed.jrtFsPath);
+            }
+
+            result.jrtFsPath = parsed.jrtFsPath == null ? this.jrtFsPath : parsed.jrtFsPath;
+            return result;
+        }
+
+        public boolean isEmpty() {
+            return urls.isEmpty() && jrtFsPath == null;
+        }
+
+        public long fingerprint(ClasspathFingerprinter fingerprinter) {
+            return fingerprinter.fingerprint(urls);
+        }
+    }
+
+    private static ParsedClassPath filesToParsedCp(List<File> files) throws IOException {
+        ParsedClassPath result = new ParsedClassPath();
         for (File f : files) {
-            urlList.add(createURLFromPath(f.getAbsolutePath()));
+            addSingleEntry(result, f.getAbsolutePath());
         }
-        return urlList;
+        return result;
     }
 
-    private List<URL> initURLs(String classpath, boolean mayBeClasspathListFile) {
+    public static ParsedClassPath parseClasspath(String classpath, boolean mayBeClasspathListFile) {
+        ParsedClassPath result = new ParsedClassPath();
         AssertionUtil.requireParamNotNull("classpath", classpath);
-        final List<URL> urls = new ArrayList<>();
         try {
             if (mayBeClasspathListFile && classpath.startsWith("file:")) {
                 // Treat as file URL
-                addFileURLs(urls, new URL(classpath));
+                addFileURLs(result, new URL(classpath));
             } else {
                 // Treat as classpath
-                addClasspathURLs(urls, classpath);
+                addClasspathURLs(result, classpath);
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot prepend classpath " + classpath + "\n" + e.getMessage(), e);
         }
-        return urls;
+        return result;
     }
 
-    private void addClasspathURLs(final List<URL> urls, final String classpath) throws MalformedURLException {
+    private static void addClasspathURLs(final ParsedClassPath result, final String classpath) throws MalformedURLException {
         StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
         while (toker.hasMoreTokens()) {
             String token = toker.nextToken();
             LOG.debug("Adding classpath entry: <{}>", token);
-            urls.add(createURLFromPath(token));
+            addSingleEntry(result, token);
         }
     }
 
@@ -144,23 +176,22 @@ public class ClasspathClassLoader extends URLClassLoader {
         }
     }
 
-    private void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
+    private static void addFileURLs(ParsedClassPath result, URL fileURL) throws IOException {
         String classpath;
         try (InputStream inputStream = fileURL.openStream()) {
             classpath = readClasspathListFile(inputStream);
         }
-        addClasspathURLs(urls, classpath);
+        addClasspathURLs(result, classpath);
     }
 
-    private URL createURLFromPath(String path) throws MalformedURLException {
+    private static void addSingleEntry(ParsedClassPath result, String path) throws MalformedURLException {
         Path filePath = Paths.get(path).toAbsolutePath();
         if (filePath.endsWith(Paths.get("lib", "jrt-fs.jar"))) {
-            initializeJrtFilesystem(filePath);
-            // don't add jrt-fs.jar to the normal aux classpath
-            return null;
+            result.jrtFsPath = filePath;
         }
 
-        return filePath.toUri().normalize().toURL();
+        URL url = filePath.toUri().normalize().toURL();
+        result.urls.add(url);
     }
 
     /**

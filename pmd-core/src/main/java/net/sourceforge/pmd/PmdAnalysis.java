@@ -30,7 +30,6 @@ import net.sourceforge.pmd.benchmark.TimedOperationCategory;
 import net.sourceforge.pmd.cache.internal.AnalysisCacheListener;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.LogMessages;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.InternalApiBridge;
@@ -218,7 +217,7 @@ public final class PmdAnalysis implements AutoCloseable {
             //  CLI syntax is implemented. #2947
             props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
             if (props instanceof JvmLanguagePropertyBundle) {
-                ((JvmLanguagePropertyBundle) props).setClasspathWrapper(config.getClasspathWrapper());
+                ((JvmLanguagePropertyBundle) props).setClasspathWrapper(config.getAnalysisClasspath());
             }
         }
 
@@ -396,7 +395,7 @@ public final class PmdAnalysis implements AutoCloseable {
             @SuppressWarnings("PMD.CloseResource")
             AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(),
                                                                             rulesets,
-                                                                            configuration.getClassLoader(),
+                                                                            configuration.getAnalysisClasspath(),
                                                                             textFiles);
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
                                                          GlobalAnalysisListener.tee(listeners),
@@ -590,15 +589,6 @@ public final class PmdAnalysis implements AutoCloseable {
 
         // close listeners if analysis is not run.
         IOUtil.closeAll(listeners);
-
-        /*
-         * Make sure it's our own classloader before attempting to close it....
-         * Maven + Jacoco provide us with a cloaseable classloader that if closed
-         * will throw a ClassNotFoundException.
-         */
-        if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
-            IOUtil.tryCloseClassLoader(configuration.getClassLoader());
-        }
     }
 
     public ReportStats runAndReturnStats() {

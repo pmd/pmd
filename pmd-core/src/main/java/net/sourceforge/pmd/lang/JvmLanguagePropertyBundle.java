@@ -68,8 +68,8 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      */
     public PmdClasspathWrapper getClasspathWrapper() {
         if (classpathWrapper == null) {
-            classpathWrapper = PmdClasspathWrapper.bootClasspath();
-            classpathWrapper.prependClasspath(getProperty(AUX_CLASSPATH));
+            classpathWrapper = PmdClasspathWrapper.bootClasspath()
+                                                  .prependClasspath(getProperty(AUX_CLASSPATH));
         }
         return classpathWrapper;
     }
@@ -95,6 +95,6 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      */
     @Deprecated
     public @NonNull ClassLoader getAnalysisClassLoader() {
-        return getClasspathWrapper().getClassLoader();
+        return getClasspathWrapper().leakClassLoader();
     }
 }

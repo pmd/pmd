@@ -173,12 +173,15 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public ClassLoader getClassLoader() {
-        return classpathWrapper.getClassLoader();
+        return classpathWrapper.leakClassLoader();
     }
 
     /**
      * Set the ClassLoader being used by PMD when processing Rules. Setting a
      * value of <code>null</code> will cause the default ClassLoader to be used.
+     *
+     * <p>NOTE: PMD does not close this classloader! It is the responsibility of
+     * whoever creates this classloader to manage its lifecycle.
      *
      * @param classpathWrapper
      *            The ClassLoader to use
@@ -194,7 +197,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     }
 
     // private.
-    PmdClasspathWrapper getClasspathWrapper() {
+    PmdClasspathWrapper getAnalysisClasspath() {
         return classpathWrapper;
     }
 
@@ -244,7 +247,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     public void loadAnalysisClasspathFromFile(InputStream inputStream) throws IOException {
         try {
             String classpath = ClasspathClassLoader.readClasspathListFile(inputStream);
-            this.classpathWrapper.prependClasspath(classpath);
+            this.classpathWrapper = this.classpathWrapper.prependClasspath(classpath);
         } finally {
             inputStream.close();
         }
@@ -269,7 +272,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @see PmdClasspathWrapper#prependClasspath(String)
      */
     public void prependAuxClasspath(String classpath) {
-        this.classpathWrapper.prependClasspathOrClasspathListFile(classpath);
+        this.classpathWrapper = this.classpathWrapper.prependClasspathOrClasspathListFile(classpath);
     }
 
     /**

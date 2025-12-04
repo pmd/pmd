@@ -24,7 +24,7 @@ public class ClasspathFingerprinter {
             new NoopFingerprinter() // catch-all fingerprinter, MUST be last
         ));
 
-    public long fingerprint(final URL... classpathEntry) {
+    public long fingerprint(final Iterable<URL> classpathEntry) {
         final Adler32 adler32 = new Adler32();
 
         try {

@@ -5,10 +5,8 @@
 package net.sourceforge.pmd.cli.commands.internal;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -279,14 +277,11 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         // Setup CLI message reporter
         configuration.setReporter(new SimpleMessageReporter(LoggerFactory.getLogger(PmdCommand.class)));
 
-        if (auxClasspath.startsWith("file://")) {
-            try (InputStream inputStream = new URL(auxClasspath).openStream()) {
-                configuration.loadAnalysisClasspathFromFile(inputStream);
-            } catch (IOException e) {
-                throw new ParameterException(spec.commandLine(), "Error reading classpath file.", e, spec.findOption("--aux-classpath"), auxClasspath);
-            }
-        } else {
+        try {
             configuration.prependAuxClasspath(auxClasspath);
+        } catch (IllegalArgumentException e) {
+            throw new ParameterException(spec.commandLine(),
+                "Invalid auxiliary classpath: ", e, spec.findOption("--aux-classpath"), auxClasspath);
         }
         return configuration;
     }
