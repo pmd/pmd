@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -109,8 +108,9 @@ public class PMDConfiguration extends AbstractConfiguration {
     @Deprecated
     private ClassLoader classLoader;
 
-    // Default is blank. This causes a warning bc user hasn't set it, although only if a JVM language is initialized.
-    private String analysisClasspath = "";
+    // Default is null, meaning the user is not using the new methods to set the classpath.
+    // This causes a warning bc user hasn't set it, although only if a JVM language is initialized.
+    private String analysisClasspath;
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -264,21 +264,22 @@ public class PMDConfiguration extends AbstractConfiguration {
      * should set the analysis classpath.
      */
     public @NonNull String getAnalysisClasspath() {
-        return analysisClasspath;
+        return analysisClasspath == null ? "" : analysisClasspath;
     }
 
     /**
      * Load the aux-classpath from the given file input stream. The file
-     * is expected to contain one classpath entry per line. The method
-     * returns a string in the format expected by {@link #setAnalysisClasspath(String)}.
+     * is expected to contain one classpath entry per line. These are
+     * then passed to {@link #setAnalysisClasspath(String)}.
      *
      * @param inputStream An input stream
      * @throws IOException If an error occurred while reading the file
      * @see #setAnalysisClasspath(String)
      */
-    public static String loadAnalysisClasspathFromFile(InputStream inputStream) throws IOException {
+    public void loadAnalysisClasspathFromFile(InputStream inputStream) throws IOException {
         try {
-            return ClasspathClassLoader.readClasspathListFile(inputStream);
+            String classpath = ClasspathClassLoader.readClasspathListFile(inputStream);
+            setAnalysisClasspath(classpath);
         } finally {
             inputStream.close();
         }
@@ -296,9 +297,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      *                                       or the file is a directory
      * @see #setAnalysisClasspath(String)
      */
-    public static String loadAnalysisClasspathFromFile(Path path) throws IOException {
+    public void loadAnalysisClasspathFromFile(Path path) throws IOException {
         try (InputStream is = Files.newInputStream(path)) {
-            return loadAnalysisClasspathFromFile(is);
+            loadAnalysisClasspathFromFile(is);
         }
     }
 
@@ -320,42 +321,22 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
      * @see PMDConfiguration#setClassLoader(ClassLoader)
      * @deprecated Use {@link #setAnalysisClasspath(String)}.
-     *             For compatibility, this method now calls  {@link #setAnalysisClasspath(String)}
-     *             to prepend the parameter to the previous contents of {@link #getAnalysisClasspath()}.
-     *             It does not create a new ClassLoader anymore, instead,
-     *             a new classloader is created lazily in {@link #getClassLoader()}
-     *             if that method is ever called.
-     *             Be aware that {@link #setAnalysisClasspath(String)} does
-     *             NOT interpret {@code file:} scheme URLs as a classpath file list
-     *             like this method does. If you want this behavior, use
-     *             {@link #loadAnalysisClasspathFromFile(InputStream)}.
+     *             For compatibility, this method creates a ClassLoader like before.
      */
     @Deprecated
     public void prependAuxClasspath(String classpath) {
         if (StringUtils.isBlank(classpath)) {
             return;
         }
-        if (classpath.startsWith("file:")) {
-            LOG.debug("Treating parameter of prependAuxClasspath as a classpath list file {}", classpath);
-            try (InputStream inputStream = new URL(classpath).openStream()) {
-                classpath = ClasspathClassLoader.readClasspathListFile(inputStream);
-            } catch (IOException e) {
-                throw new IllegalArgumentException("Error while reading classpath list file: " + classpath, e);
-            }
+        if (StringUtils.isNotBlank(analysisClasspath)) {
+            throw new IllegalStateException(
+                "Mixing prependAuxClasspath and setAnalysisClasspath is not allowed. "
+                + "Use exclusively setAnalysisClasspath as prependAuxClasspath is deprecated.");
         }
-        if (classLoader != null) {
-            // someone called setClassLoader... The pre PMD 7.20 behavior
-            // is that we create a wrapper classloader that will load classes
-            // from the classpath first
-            classLoader = new ClasspathClassLoader(classpath, classLoader, false);
-            return;
+        if (classLoader == null) {
+            classLoader = getClass().getClassLoader();
         }
-
-        if (StringUtils.isBlank(this.analysisClasspath)) {
-            setAnalysisClasspath(classpath);
-        } else {
-            setAnalysisClasspath(classpath.trim() + File.pathSeparatorChar + this.analysisClasspath);
-        }
+        classLoader = new ClasspathClassLoader(classpath, classLoader, true);
     }
 
     /**

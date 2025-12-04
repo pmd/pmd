@@ -235,8 +235,7 @@ public class PMDTaskImpl {
                 if (auxClasspath.size() == 1) {
                     String first = auxClasspath.list()[0];
                     if (first.startsWith("file:")) {
-                        String fileListContents = PMDConfiguration.loadAnalysisClasspathFromFile(new URL(first).openStream());
-                        configuration.setAnalysisClasspath(fileListContents);
+                        configuration.loadAnalysisClasspathFromFile(new URL(first).openStream());
                         return;
                     }
                 }

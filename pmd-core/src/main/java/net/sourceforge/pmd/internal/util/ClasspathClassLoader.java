@@ -145,12 +145,11 @@ public class ClasspathClassLoader extends URLClassLoader {
     }
 
     private void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
+        String classpath;
         try (InputStream inputStream = fileURL.openStream()) {
-            for (String entry : readClasspathListFile(inputStream).split(File.pathSeparator)) {
-                LOG.debug("Adding classpath entry: <{}>", entry);
-                urls.add(createURLFromPath(entry));
-            }
+            classpath = readClasspathListFile(inputStream);
         }
+        addClasspathURLs(urls, classpath);
     }
 
     private URL createURLFromPath(String path) throws MalformedURLException {

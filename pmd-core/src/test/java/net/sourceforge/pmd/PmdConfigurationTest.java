@@ -78,7 +78,7 @@ class PmdConfigurationTest {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals(0, urls.length);
+        assertArrayEquals(new URL[0], urls);
     }
 
     @Test
@@ -87,7 +87,7 @@ class PmdConfigurationTest {
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
         URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals(0, urls.length);
+        assertArrayEquals(new URL[0], urls);
     }
 
     @Test
