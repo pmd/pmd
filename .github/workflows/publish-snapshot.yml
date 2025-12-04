@@ -30,7 +30,7 @@ jobs:
     outputs:
       PMD_VERSION: ${{ steps.version.outputs.PMD_VERSION }}
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
         with:
          ref: main
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
@@ -76,7 +76,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
         with:
           ref: main
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
@@ -416,7 +416,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
         with:
           ref: gh-pages
       - name: Clear old files
@@ -639,7 +639,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
         with:
           ref: main
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
@@ -726,7 +726,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
         with:
           ref: main
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
@@ -763,7 +763,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
         with:
           ref: main
       - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
