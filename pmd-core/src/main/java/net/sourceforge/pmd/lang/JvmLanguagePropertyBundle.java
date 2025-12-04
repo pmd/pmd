@@ -6,8 +6,6 @@ package net.sourceforge.pmd.lang;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -20,7 +18,6 @@ import net.sourceforge.pmd.util.PmdClasspathWrapper;
  * @author Clément Fournier
  */
 public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
-    private static final Logger LOG = LoggerFactory.getLogger(JvmLanguagePropertyBundle.class);
 
     public static final PropertyDescriptor<String> AUX_CLASSPATH
         = PropertyFactory.stringProperty("auxClasspath")

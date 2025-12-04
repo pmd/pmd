@@ -46,15 +46,15 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parser;
     private final JavaParser parserWithoutProcessing;
     private final boolean firstClassLombok;
-    private final AutoCloseable classpathWrapperSubscription;
+    private final PmdClasspathWrapper.OpenClasspath openClasspath;
     private TypeSystem typeSystem;
 
     private JavaLanguageProcessor(JavaLanguageProperties properties, PmdClasspathWrapper classpathWrapper) {
         super(properties);
         LOG.debug("Using analysis classloader: {}", classpathWrapper);
         // record that this wrapper should not be closed before we're done with it.
-        this.classpathWrapperSubscription = classpathWrapper.subscribe();
-        this.typeSystem = TypeSystem.usingClasspath(classpathWrapper.asClasspath());
+        this.openClasspath = classpathWrapper.open();
+        this.typeSystem = TypeSystem.usingClasspath(openClasspath);
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
@@ -144,7 +144,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public void close() throws Exception {
         this.typeSystem.logStats();
-        classpathWrapperSubscription.close();
+        openClasspath.close();
         super.close();
     }
 }

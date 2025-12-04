@@ -62,6 +62,7 @@ import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.PmdClasspathWrapper;
 import net.sourceforge.pmd.util.StringUtil;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
@@ -129,7 +130,7 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  * <h2>Specifying the Java classpath</h2>
  *
  * <p>Java rules work better if you specify the path to the compiled classes
- * of the analysed sources. See {@link PMDConfiguration#setAnalysisClasspath(String)}.
+ * of the analysed sources. See {@link PMDConfiguration#setAnalysisClasspath(PmdClasspathWrapper)}.
  *
  * <h2>Customizing message output</h2>
  *
@@ -217,7 +218,7 @@ public final class PmdAnalysis implements AutoCloseable {
             //  CLI syntax is implemented. #2947
             props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
             if (props instanceof JvmLanguagePropertyBundle) {
-                ((JvmLanguagePropertyBundle) props).setClasspathWrapper(config.getAnalysisClasspathLoader());
+                ((JvmLanguagePropertyBundle) props).setClasspathWrapper(config.getClasspathWrapper());
             }
         }
 

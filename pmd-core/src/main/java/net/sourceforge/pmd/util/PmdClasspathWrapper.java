@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.util;
 
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,23 +14,40 @@ import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.impl.Classpath;
 
 /**
  * Wrapper around a classloader that makes the closing behavior explicit.
- * This is designed to allow PMD to manage its own classloader (or internal
- * resource finding logic), if the user only uses classpath strings. It
- * also allows PMD to use a user-provided classloader, or reuse a classloader
- * between several analyses without closing it.
+ *
+ * <ul>
+ * <li>An instance may wrap a user-provided classloader, in which case
+ * the responsibility for closing it is on the caller. See
+ * {@link #thisClassLoaderWillNotBeClosedByPmd(ClassLoader)}.
+ * <li>{@link #bootClasspath()} uses the classloader used to load this
+ * class (and PMD sources).
+ * <li>{@link #emptyClasspath()} does not load any classes.
+ * </ul>
+ *
+ * <p>Any of these instances may be prepended with a string classpath
+ * (see {@link #prependClasspath(String)}), which creates a classloader
+ * managed internally by PMD. Note that calls to {@link #prependClasspath(String)}
+ * do not immediately create this classloader. It is created by the first
+ * call to {@link #open()} and destroyed by the call to {@link #close()}.
+ * The call to {@link #close()} may be performed manually, else it will
+ * be done when the last {@link OpenClasspath} instance obtained from
+ * {@link #open()} is closed.
+ *
+ *
  */
 public final class PmdClasspathWrapper implements AutoCloseable {
 
     private @Nullable MyClassLoaderWrapper current;
     private final AtomicInteger refCount = new AtomicInteger();
 
-    private PmdClasspathWrapper(ClassLoader loader, boolean close) {
+    private PmdClasspathWrapper(ClassLoaderMaker loader, boolean close) {
         this.current = new MyClassLoaderWrapper(loader, close, null);
     }
 
@@ -45,7 +63,7 @@ public final class PmdClasspathWrapper implements AutoCloseable {
      */
     @Deprecated
     public @Nullable ClassLoader getClassLoader() {
-        return current == null ? null : current.loader;
+        return current == null ? null : current.getClassLoader();
     }
 
     /**
@@ -68,6 +86,8 @@ public final class PmdClasspathWrapper implements AutoCloseable {
      *
      * @return An empty instance
      */
+    // TODO make this the default and require that people put JDK sources
+    //  on the classpath explicitly.
     public static PmdClasspathWrapper emptyClasspath() {
         return new PmdClasspathWrapper();
     }
@@ -81,7 +101,7 @@ public final class PmdClasspathWrapper implements AutoCloseable {
      * @return A new instance
      */
     public static PmdClasspathWrapper thisClassLoaderWillNotBeClosedByPmd(ClassLoader classLoader) {
-        return new PmdClasspathWrapper(classLoader, false);
+        return new PmdClasspathWrapper(x -> classLoader, false);
     }
 
     /**
@@ -105,49 +125,80 @@ public final class PmdClasspathWrapper implements AutoCloseable {
      * This is consistent with how {@link java.net.URLClassLoader} interprets
      * classpath entries.
      *
-     * <p>Note: contrary to {@link net.sourceforge.pmd.PMDConfiguration#prependAuxClasspath(String)},
+     * <p>Note: contrary to {@link PMDConfiguration#prependAuxClasspath(String)},
      * this method does not treat {@code file://} URLs specially (it treats them just like
      * {@link java.net.URLClassLoader} would). That other method instead treats
      * them as the path to a text file containing classpath entries written
-     * one by line.
+     * one by line. Use {@link #prependClasspathOrClasspathListFile(String)} for this
+     * behavior.
      *
      * @param classpath A list of classpath entries separated by {@link File#pathSeparatorChar}
+     *
+     * @return This instance
      */
-    public void prependClasspath(String classpath) {
+    public PmdClasspathWrapper prependClasspath(String classpath) {
         prependClasspathOrClasspathListFile(classpath, false);
+        return this;
     }
 
-    public void prependClasspathOrClasspathListFile(String classpath) {
+    /**
+     * Prepend the given classpath to this instance. This causes classes
+     * and resources to be fetched first on the given classpath, and then
+     * defaulted to the behavior of the current instance if a resource
+     * is not found on the classpath.
+     *
+     * <p>This method uses the same format as {@link #prependClasspath(String)},
+     * but if the parameter starts with {@code file://}, it will be interpreted
+     * as the path to a text file containing classpath entries, one by line.
+     * This is the behavior of {@link PMDConfiguration#prependAuxClasspath(String)}.
+     *
+     * @param classpath A list of classpath entries separated by {@link File#pathSeparatorChar}
+     * @return This instance
+     */
+    public PmdClasspathWrapper prependClasspathOrClasspathListFile(String classpath) {
         prependClasspathOrClasspathListFile(classpath, true);
+        return this;
     }
 
     private void prependClasspathOrClasspathListFile(String classpath, boolean allowCpListFile) {
         if (StringUtils.isNotBlank(classpath)) {
-            ClassLoader parent = current == null ? null : current.loader;
-            ClasspathClassLoader newClassloader = new ClasspathClassLoader(classpath, parent, allowCpListFile);
-            this.current = new MyClassLoaderWrapper(newClassloader, true, current);
+            this.current = new MyClassLoaderWrapper(
+                parent -> new ClasspathClassLoader(classpath, parent, allowCpListFile),
+                true, current);
         }
     }
 
-    public Classpath asClasspath() {
-        assert refCount.get() > 0 : "Classpath wrapper used after being closed. Did you call subscribe?";
-
-        if (current == null) {
-            return x -> null;
-        }
-        return current.loader::getResourceAsStream;
-    }
-
+    /**
+     * Return an object that witnesses that the classpath has been opened.
+     * Any call to {@link OpenClasspath#findResource(String)} needs to be
+     * done before closing that instance. The instance must be closed by
+     * the caller when they are done. It is possible for several threads
+     * to run analyses concurrently with the same classpath wrapper object.
+     * In this case the classpath will only ever be closed by the last
+     * analysis that finishes.
+     */
     @InternalApi
-    public AutoCloseable subscribe() {
-        refCount.incrementAndGet();
-        return () -> {
-            // This will be called when the subscriber unsubscribes
-            // (closes itself, most likely)
+    public OpenClasspath open() {
+        return new OpenClasspath();
+    }
+
+    public final class OpenClasspath implements AutoCloseable, Classpath {
+        private OpenClasspath() {
+            refCount.incrementAndGet();
+        }
+
+        @Override
+        public @Nullable InputStream findResource(String resourcePath) {
+            assert refCount.get() > 0 : "Classpath wrapper used after being closed";
+            return current == null ? null : current.getClassLoader().getResourceAsStream(resourcePath);
+        }
+
+        @Override
+        public void close() throws Exception {
             if (refCount.decrementAndGet() == 0) {
-                close();
+                PmdClasspathWrapper.this.close();
             }
-        };
+        }
     }
 
     @Override
@@ -159,26 +210,71 @@ public final class PmdClasspathWrapper implements AutoCloseable {
 
     /**
      * A single node in the chain of classloaders that we build. Keeps
-     * references to parents (closing a ClassLoader does not close its parent).
+     * references to parents (closing a ClassLoader does not close its parent
+     * so if we want to close them all we need to keep all the chain).
+     *
+     * <p>This class lazily builds the classloader from its parent. If
+     * we were to build them eagerly, there is a risk of memory leak.
+     * You could write for instance
+     * <pre>{@code
+     * PMDConfiguration config = new PMDConfiguration();
+     * // This internally would create a ClasspathClassLoader
+     * // that is the responsibility of PMD to close.
+     * config.prependClasspath("...");
+     * // This would clear the previous ClasspathClassLoader
+     * // without closing it.
+     * config.setAnalysisClasspath(PmdClasspathWrapper.bootClasspath());
+     * }</pre>
+     * It is not possible to specify {@link PMDConfiguration#setAnalysisClasspath(PmdClasspathWrapper)} to
+     * close the previous wrapper, because then you could write
+     * <pre>{@code
+     * PMDConfiguration config = new PMDConfiguration();
+     * PmdClasspathWrapper classpath = PmdClasspathWrapper.bootClasspath().prependClasspath("...");
+     * config.setAnalysisClasspath(classpath);
+     * // This would close the instance, and set it back to the same
+     * // (closed) value.
+     * config.setAnalysisClasspath(classpath);
+     * }</pre>
+     * We need {@link PMDConfiguration#setAnalysisClasspath(PmdClasspathWrapper)}
+     * because we want to be able to write
+     * <pre>{@code
+     * config.setAnalysisClasspath(PmdClasspathWrapper.thisClassLoaderWillNotBeClosedByPmd(classLoader));
+     * }</pre>
+     * to use a custom classloader provided by the user.
+     *
      */
     private static final class MyClassLoaderWrapper implements AutoCloseable {
-        private final @NonNull ClassLoader loader;
+        private final @NonNull ClassLoaderMaker loader;
+        private volatile ClassLoader myClassLoader; // NOPMD Field must be volatile as we use it in double-checked locking
+
         private final AtomicBoolean shouldClose;
         private final @Nullable MyClassLoaderWrapper parent;
 
-        private MyClassLoaderWrapper(@NonNull ClassLoader loader, boolean shouldClose, @Nullable MyClassLoaderWrapper parent) {
-            this.loader = loader;
+        private MyClassLoaderWrapper(@NonNull ClassLoaderMaker makeClassloader, boolean shouldClose, @Nullable MyClassLoaderWrapper parent) {
+            this.loader = makeClassloader;
             this.shouldClose = new AtomicBoolean(shouldClose);
             this.parent = parent;
+        }
+
+        ClassLoader getClassLoader() {
+            if (myClassLoader == null) {
+                synchronized (this) {
+                    if (myClassLoader == null) {
+                        ClassLoader parent = this.parent == null ? null : this.parent.getClassLoader();
+                        myClassLoader = loader.build(parent);
+                    }
+                }
+            }
+            return myClassLoader;
         }
 
         @Override
         public void close() throws Exception {
             try {
-                if (shouldClose.compareAndSet(true, false) && loader instanceof AutoCloseable) {
+                if (shouldClose.compareAndSet(true, false) && myClassLoader instanceof AutoCloseable) {
                     // This will only be called at most once, regardless of the number of threads
                     // that have access to the ClassLoaderWrapper instance
-                    ((AutoCloseable) loader).close();
+                    ((AutoCloseable) myClassLoader).close();
                 }
             } finally {
                 if (parent != null) {
@@ -188,4 +284,7 @@ public final class PmdClasspathWrapper implements AutoCloseable {
         }
     }
 
+    interface ClassLoaderMaker {
+        ClassLoader build(@Nullable ClassLoader parent);
+    }
 }

@@ -239,7 +239,7 @@ public class PMDTaskImpl {
                         return;
                     }
                 }
-                configuration.setAnalysisClasspath(auxClasspath.toString());
+                configuration.prependAuxClasspath(auxClasspath.toString());
             }
         } catch (IllegalArgumentException | IOException ioe) {
             throw new BuildException(ioe.getMessage(), ioe);

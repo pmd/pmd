@@ -9,18 +9,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
@@ -82,7 +80,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <h2>Language configuration</h2>
  * <ul>
  * <li>Use {@link #setSuppressMarker(String)} to change the comment marker for suppression comments. Defaults to {@value #DEFAULT_SUPPRESS_MARKER}.</li>
- * <li>See {@link #setAnalysisClasspath(String)} for how to configure the classpath for Java analysis.</li>
+ * <li>See {@link #prependAuxClasspath(String)} for how to configure the classpath for Java analysis.</li>
  * <li>You can set additional language properties with {@link #getLanguageProperties(Language)}</li>
  * </ul>
  *
@@ -93,7 +91,6 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
-    private static final Logger LOG = LoggerFactory.getLogger(PMDConfiguration.class);
 
     private static final LanguageRegistry DEFAULT_REGISTRY = LanguageRegistry.PMD;
 
@@ -104,7 +101,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
 
-    private PmdClasspathWrapper classLoader = PmdClasspathWrapper.bootClasspath();
+    private PmdClasspathWrapper classpathWrapper = PmdClasspathWrapper.bootClasspath();
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -171,48 +168,44 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return The ClassLoader being used
      * @deprecated PMD will manage classpath handling internally and
-     *     will not necessarily build a classloader. Use {@link #setAnalysisClasspath(String)}
-     *     and stop using the classloader directly.
-     *     For compatibility, the first call to this method creates a
-     *     ClassLoader that behaves like before. It is the responsibility
-     *     of the caller to close this classloader or not.
+     *     will not necessarily build a classloader. Use {@link #setAnalysisClasspath(PmdClasspathWrapper)}
+     *     or {@link #prependAuxClasspath(String)} and stop using the classloader directly.
      */
     @Deprecated
     public ClassLoader getClassLoader() {
-        return classLoader.getClassLoader();
+        return classpathWrapper.getClassLoader();
     }
 
     /**
      * Set the ClassLoader being used by PMD when processing Rules. Setting a
      * value of <code>null</code> will cause the default ClassLoader to be used.
      *
-     * @param classLoader
+     * @param classpathWrapper
      *            The ClassLoader to use
      *
-     * @deprecated Use exclusively {@link #setAnalysisClasspath(String)}.
+     * @deprecated Use {@link #setAnalysisClasspath(PmdClasspathWrapper)}
      */
     @Deprecated
-    public void setClassLoader(ClassLoader classLoader) {
+    public void setClassLoader(ClassLoader classpathWrapper) {
         setAnalysisClasspath(
-            classLoader == null ? PmdClasspathWrapper.bootClasspath()
-                                : PmdClasspathWrapper.thisClassLoaderWillNotBeClosedByPmd(classLoader)
+            classpathWrapper == null ? PmdClasspathWrapper.bootClasspath()
+                                     : PmdClasspathWrapper.thisClassLoaderWillNotBeClosedByPmd(classpathWrapper)
         );
     }
 
-    public PmdClasspathWrapper getAnalysisClasspathLoader() {
-        return classLoader;
+    // private.
+    PmdClasspathWrapper getClasspathWrapper() {
+        return classpathWrapper;
     }
 
-    public void setAnalysisClasspath(PmdClasspathWrapper classpath) {
-        // todo what to do about the previous wrapper? Log that it is being dropped? Maybe only if
-        //  any link needs to be closed? Close it automatically?
-        try {
-            PmdClasspathWrapper prev = this.classLoader;
-            this.classLoader = Objects.requireNonNull(classpath);
-            prev.close();
-        } catch (Exception e) {
-            throw new RuntimeException("Exception while closing classpath wrapper:", e);
-        }
+    /**
+     * Return a description that can be used only for debugging. It is
+     * not necessarily in the format expected by {@link PmdClasspathWrapper#prependClasspath(String)},
+     * but might contain more information.
+     */
+    @InternalApi
+    public String getAnalysisClasspathDescriptionForDebug() {
+        return classpathWrapper.toString();
     }
 
     /**
@@ -225,71 +218,35 @@ public class PMDConfiguration extends AbstractConfiguration {
      * the analysed sources themselves, for the purpose of resolving
      * inter-file dependencies.
      *
-     * <p>A classpath string (the parameter) must be a list of classpath
-     * entries separated by {@link File#pathSeparatorChar} characters.
+     * <p>See {@link PmdClasspathWrapper} for documentation about how to
+     * build instances.
      *
-     * <p>Each entry may be a {@code file:} or {@code jar:} scheme URL,
-     * or a path string (without scheme) that will be interpreted by
-     * {@link Paths#get(String, String...)}.
+     * <p>PMD's default analysis classpath loads classes with
+     * {@link PmdClasspathWrapper#bootClasspath()}, which is likely
+     * to be insufficient. If you analyze Java sources, make sure to
+     * configure this appropriately.
      *
-     * <p>A {@code file:} scheme URL that ends with {@code /} will be interpreted
-     * as a directory. A path or {@code file:} scheme URL that refers
-     * to a directory will be assumed to contain class files to be loaded
-     * as needed. A path or {@code file:} scheme URL that refers to a file,
-     * or a {@code jar:} scheme URL, is assumed to refer to a JAR file.
-     * This is consistent with how {@link java.net.URLClassLoader} interprets
-     * classpath entries.
-     *
-     * <p>Note: contrary to {@link #prependAuxClasspath(String)}, this method
-     * does not treat {@code file://} URLs specially (it treats them just like
-     * {@link java.net.URLClassLoader} would). That other method instead treats
-     * them as the path to a text file containing classpath entries written
-     * one by line. To do this, use instead the method {@link #loadAnalysisClasspathFromFile(Path)}.
-     *
-     * @param classpath A list of classpath entries separated by {@link File#pathSeparatorChar}
-     *
-     * @throws NullPointerException If the parameter is null
+     * @param classpath A classpath wrapper object
      */
-    public void setAnalysisClasspath(@NonNull String classpath) {
-        LOG.debug("Set analysis classpath to: {}", classpath);
-        PmdClasspathWrapper newCp = PmdClasspathWrapper.bootClasspath();
-        newCp.prependClasspath(classpath);
-        setAnalysisClasspath(newCp);
+    public void setAnalysisClasspath(@NonNull PmdClasspathWrapper classpath) {
+        this.classpathWrapper = Objects.requireNonNull(classpath);
     }
 
     /**
      * Load the aux-classpath from the given file input stream. The file
      * is expected to contain one classpath entry per line. These are
-     * then passed to {@link #setAnalysisClasspath(String)}.
+     * then passed to {@link #prependAuxClasspath(String)}.
      *
-     * @param inputStream An input stream
+     * @param inputStream An input stream (will be closed by this method)
      * @throws IOException If an error occurred while reading the file
-     * @see #setAnalysisClasspath(String)
+     * @see #prependAuxClasspath(String)
      */
     public void loadAnalysisClasspathFromFile(InputStream inputStream) throws IOException {
         try {
             String classpath = ClasspathClassLoader.readClasspathListFile(inputStream);
-            setAnalysisClasspath(classpath);
+            this.classpathWrapper.prependClasspath(classpath);
         } finally {
             inputStream.close();
-        }
-    }
-
-
-    /**
-     * Load the aux-classpath from the given file. The file is expected
-     * to contain one classpath entry per line. These are then passed to
-     * {@link #setAnalysisClasspath(String)}.
-     *
-     * @param path A file path
-     * @throws java.io.FileNotFoundException If the file does not exist
-     * @throws IOException                   If an error occurred while reading the file,
-     *                                       or the file is a directory
-     * @see #setAnalysisClasspath(String)
-     */
-    public void loadAnalysisClasspathFromFile(Path path) throws IOException {
-        try (InputStream is = Files.newInputStream(path)) {
-            loadAnalysisClasspathFromFile(is);
         }
     }
 
@@ -312,7 +269,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @see PmdClasspathWrapper#prependClasspath(String)
      */
     public void prependAuxClasspath(String classpath) {
-        this.classLoader.prependClasspath(classpath);
+        this.classpathWrapper.prependClasspathOrClasspathListFile(classpath);
     }
 
     /**
