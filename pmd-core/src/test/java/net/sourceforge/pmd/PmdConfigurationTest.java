@@ -7,7 +7,6 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,11 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -31,11 +31,13 @@ import org.junit.jupiter.api.io.TempDir;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.internal.util.ClasspathClassLoaderTestUtil;
 import net.sourceforge.pmd.lang.CpdOnlyDummyLanguage;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 class PmdConfigurationTest {
 
@@ -72,13 +74,31 @@ class PmdConfigurationTest {
                 "Revert to default ClassLoader");
     }
 
+
+    @Test
+    void testClasspathConfig() throws MalformedURLException, URISyntaxException {
+        PMDConfiguration configuration = new PMDConfiguration();
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getAnalysisClasspath().getFallback(), "Default ClassLoader");
+        assertTrue(configuration.getAnalysisClasspath().getClasspath().isEmpty(), "Default ClassLoader");
+        configuration.prependAuxClasspath("some.jar");
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getAnalysisClasspath().getFallback(), "Default ClassLoader");
+        ClasspathClassLoaderTestUtil.assertClasspathContainsExactly(configuration.getAnalysisClasspath().getClasspath(),
+            Paths.get("some.jar").toAbsolutePath().toString());
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader().getParent(),
+                "parent classLoader");
+        configuration.setAnalysisClasspath(PmdClasspathConfig.bootClasspath());
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getAnalysisClasspath().getFallback(),
+                "Revert to default ClassLoader");
+        assertTrue(configuration.getAnalysisClasspath().getClasspath().isEmpty(), "Default ClassLoader");
+    }
+
     @Test
     void auxClasspathWithRelativeFileEmpty() {
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertArrayEquals(new URL[0], urls);
+        ClasspathClassLoader.ParsedClassPath cp = configuration.getAnalysisClasspath().getClasspath();
+        assertTrue(cp.isEmpty());
     }
 
     @Test
@@ -86,34 +106,29 @@ class PmdConfigurationTest {
         String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertArrayEquals(new URL[0], urls);
+        ClasspathClassLoader.ParsedClassPath cp = configuration.getAnalysisClasspath().getClasspath();
+        assertTrue(cp.isEmpty());
     }
 
     @Test
-    void auxClasspathWithRelativeFile() throws URISyntaxException {
-        final String FILE_SCHEME = "file";
+    void auxClasspathWithRelativeFile() throws URISyntaxException, MalformedURLException {
 
         String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
         String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath.cp";
         PMDConfiguration configuration = new PMDConfiguration();
         configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        URI[] uris = new URI[urls.length];
-        for (int i = 0; i < urls.length; i++) {
-            uris[i] = urls[i].toURI();
-        }
-        URI[] expectedUris = new URI[] {
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "lib1.jar", null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "other/directory/lib2.jar", null),
-            new URI(FILE_SCHEME, null, new File("/home/jondoe/libs/lib3.jar").getAbsoluteFile().toURI().getPath(), null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes", null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes2", null),
-            new URI(FILE_SCHEME, null, new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(), null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
-        };
-        assertArrayEquals(expectedUris, uris);
+        ClasspathClassLoader.ParsedClassPath classpath = configuration.getAnalysisClasspath().getClasspath();
+        ClasspathClassLoaderTestUtil.assertClasspathContainsExactly(
+            classpath,
+            currentWorkingDirectory + "lib1.jar",
+            currentWorkingDirectory + "other/directory/lib2.jar",
+            new File("/home/jondoe/libs/lib3.jar").getAbsoluteFile().toURI().getPath(),
+            currentWorkingDirectory + "classes",
+            currentWorkingDirectory + "classes2",
+            new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(),
+            currentWorkingDirectory,
+            currentWorkingDirectory + "relative source dir/bar"
+        );
     }
 
     @Test

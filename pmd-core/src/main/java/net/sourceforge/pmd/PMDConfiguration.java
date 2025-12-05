@@ -32,7 +32,7 @@ import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.AssertionUtil;
-import net.sourceforge.pmd.util.PmdClasspathWrapper;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
@@ -101,7 +101,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
 
-    private PmdClasspathWrapper classpathWrapper = PmdClasspathWrapper.bootClasspath();
+    private PmdClasspathConfig classpathWrapper = PmdClasspathConfig.bootClasspath();
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -168,7 +168,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return The ClassLoader being used
      * @deprecated PMD will manage classpath handling internally and
-     *     will not necessarily build a classloader. Use {@link #setAnalysisClasspath(PmdClasspathWrapper)}
+     *     will not necessarily build a classloader. Use {@link #setAnalysisClasspath(PmdClasspathConfig)}
      *     or {@link #prependAuxClasspath(String)} and stop using the classloader directly.
      */
     @Deprecated
@@ -186,24 +186,24 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param classpathWrapper
      *            The ClassLoader to use
      *
-     * @deprecated Use {@link #setAnalysisClasspath(PmdClasspathWrapper)}
+     * @deprecated Use {@link #setAnalysisClasspath(PmdClasspathConfig)}
      */
     @Deprecated
     public void setClassLoader(ClassLoader classpathWrapper) {
         setAnalysisClasspath(
-            classpathWrapper == null ? PmdClasspathWrapper.bootClasspath()
-                                     : PmdClasspathWrapper.thisClassLoaderWillNotBeClosedByPmd(classpathWrapper)
+            classpathWrapper == null ? PmdClasspathConfig.bootClasspath()
+                                     : PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(classpathWrapper)
         );
     }
 
     // private.
-    PmdClasspathWrapper getAnalysisClasspath() {
+    PmdClasspathConfig getAnalysisClasspath() {
         return classpathWrapper;
     }
 
     /**
      * Return a description that can be used only for debugging. It is
-     * not necessarily in the format expected by {@link PmdClasspathWrapper#prependClasspath(String)},
+     * not necessarily in the format expected by {@link PmdClasspathConfig#prependClasspath(String)},
      * but might contain more information.
      */
     @InternalApi
@@ -221,17 +221,17 @@ public class PMDConfiguration extends AbstractConfiguration {
      * the analysed sources themselves, for the purpose of resolving
      * inter-file dependencies.
      *
-     * <p>See {@link PmdClasspathWrapper} for documentation about how to
+     * <p>See {@link PmdClasspathConfig} for documentation about how to
      * build instances.
      *
      * <p>PMD's default analysis classpath loads classes with
-     * {@link PmdClasspathWrapper#bootClasspath()}, which is likely
+     * {@link PmdClasspathConfig#bootClasspath()}, which is likely
      * to be insufficient. If you analyze Java sources, make sure to
      * configure this appropriately.
      *
      * @param classpath A classpath wrapper object
      */
-    public void setAnalysisClasspath(@NonNull PmdClasspathWrapper classpath) {
+    public void setAnalysisClasspath(@NonNull PmdClasspathConfig classpath) {
         this.classpathWrapper = Objects.requireNonNull(classpath);
     }
 
@@ -269,7 +269,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param classpath The prepended classpath.
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
-     * @see PmdClasspathWrapper#prependClasspath(String)
+     * @see PmdClasspathConfig#prependClasspath(String)
      */
     public void prependAuxClasspath(String classpath) {
         this.classpathWrapper = this.classpathWrapper.prependClasspathOrClasspathListFile(classpath);

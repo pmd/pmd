@@ -31,7 +31,7 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
-import net.sourceforge.pmd.util.PmdClasspathWrapper;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 /**
@@ -46,10 +46,10 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parser;
     private final JavaParser parserWithoutProcessing;
     private final boolean firstClassLombok;
-    private final PmdClasspathWrapper.OpenClasspath openClasspath;
+    private final PmdClasspathConfig.OpenClasspath openClasspath;
     private TypeSystem typeSystem;
 
-    private JavaLanguageProcessor(JavaLanguageProperties properties, PmdClasspathWrapper classpathWrapper) {
+    private JavaLanguageProcessor(JavaLanguageProperties properties, PmdClasspathConfig classpathWrapper) {
         super(properties);
         LOG.debug("Using analysis classloader: {}", classpathWrapper);
         // record that this wrapper should not be closed before we're done with it.

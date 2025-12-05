@@ -251,4 +251,5 @@ class ClasspathClassLoaderTest {
             assertArrayEquals(fromUrl, fromStream, "getResource and getResourceAsStream should return the same module");
         }
     }
+
 }

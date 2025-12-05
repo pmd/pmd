@@ -6,7 +6,11 @@ package net.sourceforge.pmd.util;
 
 import java.io.File;
 import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +21,7 @@ import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.internal.util.ClasspathClassLoader.ParsedClassPath;
 import net.sourceforge.pmd.lang.impl.Classpath;
 
 import com.google.errorprone.annotations.CheckReturnValue;
@@ -48,16 +53,28 @@ import com.google.errorprone.annotations.CheckReturnValue;
  * closed afterward, by the caller of {@link #open()}. This will most
  * typically be called internally by PMD.
  */
-public final class PmdClasspathWrapper {
-    private static final PmdClasspathWrapper BOOT_CLASSPATH =
-        thisClassLoaderWillNotBeClosedByPmd(PmdClasspathWrapper.class.getClassLoader());
+public final class PmdClasspathConfig {
+    private static final @NonNull ParsedClassPath EMPTY_CP =
+        ClasspathClassLoader.parseClasspath("", false);
 
     private final @NonNull ClassLoader fallback; // for now it is nonnull
-    private final ClasspathClassLoader.@Nullable ParsedClassPath classpath;
+    private final @NonNull ParsedClassPath classpath;
 
-    private PmdClasspathWrapper(@NonNull ClassLoader fallback, ClasspathClassLoader.@Nullable ParsedClassPath classpath) {
+    private PmdClasspathConfig(@NonNull ClassLoader fallback, @NonNull ParsedClassPath classpath) {
         this.fallback = fallback;
         this.classpath = classpath;
+    }
+
+    // test only
+    @InternalApi
+    public @NonNull ParsedClassPath getClasspath() {
+        return classpath;
+    }
+
+    // test only
+    @InternalApi
+    public @NonNull ClassLoader getFallback() {
+        return fallback;
     }
 
     /**
@@ -69,8 +86,8 @@ public final class PmdClasspathWrapper {
      *
      * @return An instance for the boot classloader
      */
-    public static PmdClasspathWrapper bootClasspath() {
-        return BOOT_CLASSPATH;
+    public static PmdClasspathConfig bootClasspath() {
+        return thisClassLoaderWillNotBeClosedByPmd(PmdClasspathConfig.class.getClassLoader());
     }
 
     /**
@@ -81,8 +98,8 @@ public final class PmdClasspathWrapper {
      * @param classLoader A classloader instance.
      * @return A new instance
      */
-    public static PmdClasspathWrapper thisClassLoaderWillNotBeClosedByPmd(ClassLoader classLoader) {
-        return new PmdClasspathWrapper(classLoader, null);
+    public static PmdClasspathConfig thisClassLoaderWillNotBeClosedByPmd(ClassLoader classLoader) {
+        return new PmdClasspathConfig(classLoader, EMPTY_CP);
     }
 
     /**
@@ -117,7 +134,7 @@ public final class PmdClasspathWrapper {
      * @throws IllegalArgumentException If some path is incorrect or a malformed URI
      */
     @CheckReturnValue
-    public PmdClasspathWrapper prependClasspath(String classpath) {
+    public PmdClasspathConfig prependClasspath(String classpath) {
         return prependClasspathOrClasspathListFile(classpath, false);
     }
 
@@ -136,18 +153,18 @@ public final class PmdClasspathWrapper {
      * @throws IllegalArgumentException If some path is incorrect or a malformed URI
      */
     @CheckReturnValue
-    public PmdClasspathWrapper prependClasspathOrClasspathListFile(String classpath) {
+    public PmdClasspathConfig prependClasspathOrClasspathListFile(String classpath) {
         return prependClasspathOrClasspathListFile(classpath, true);
     }
 
-    private PmdClasspathWrapper prependClasspathOrClasspathListFile(String classpath, boolean allowCpListFile) {
+    private PmdClasspathConfig prependClasspathOrClasspathListFile(String classpath, boolean allowCpListFile) {
         if (StringUtils.isBlank(classpath)) {
             return this;
         }
-        ClasspathClassLoader.ParsedClassPath parsed = ClasspathClassLoader.parseClasspath(classpath, allowCpListFile);
-        return new PmdClasspathWrapper(
+        ParsedClassPath parsed = ClasspathClassLoader.parseClasspath(classpath, allowCpListFile);
+        return new PmdClasspathConfig(
             this.fallback,
-            this.classpath == null ? parsed : this.classpath.prepend(parsed)
+            this.classpath.prepend(parsed)
         );
     }
 
@@ -160,31 +177,47 @@ public final class PmdClasspathWrapper {
      * In this case the classpath will only ever be closed by the last
      * analysis that finishes.
      */
-    @InternalApi
+    @CheckReturnValue
     public OpenClasspath open() {
         ClassLoader classLoader = fallback;
         boolean shouldClose = false;
-        if (classpath != null && !classpath.isEmpty()) {
+        if (!classpath.isEmpty()) {
             classLoader = new ClasspathClassLoader(classpath, classLoader);
             shouldClose = true;
         }
         return new OpenClasspath(classLoader, shouldClose);
     }
 
+
+    /**
+     * Used internally to fingerprint classpath entries and figure out
+     * if they have changed between runs.
+     *
+     * @param fingerprinter A fingerprinter
+     */
+    @InternalApi
     public long fingerprint(ClasspathFingerprinter fingerprinter) {
-        if (classpath != null && !classpath.isEmpty()) {
-            return classpath.fingerprint(fingerprinter);
+        long fingerprint = 0;
+        if (!classpath.isEmpty()) {
+            fingerprint = classpath.fingerprint(fingerprinter);
         }
-        return 0;
+        if (fallback instanceof URLClassLoader) {
+            List<URL> urls = Arrays.asList(((URLClassLoader) fallback).getURLs());
+            fingerprint = 31 * fingerprint + fingerprinter.fingerprint(urls);
+        }
+        return fingerprint;
     }
 
     /**
-     * This method should not be used as it leaks resources.
+     * This method should not be used as it may leak resources. It may
+     * allocate a new classloader. The caller should check whether the
+     * return value is {@link AutoCloseable} and close it if it is.
+     *
      */
     @Deprecated
     @InternalApi
-    @SuppressWarnings("PMD.CloseResource")
     public ClassLoader leakClassLoader() {
+        //noinspection resource
         return open().myClassLoader;
     }
 

@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -79,11 +80,7 @@ public class ClasspathClassLoader extends URLClassLoader {
     }
 
     public ClasspathClassLoader(String classpath, @Nullable ClassLoader parent) throws IOException {
-        this(classpath, parent, true);
-    }
-
-    public ClasspathClassLoader(String classpath, @Nullable ClassLoader parent, boolean mayBeClasspathListFile) throws IOException {
-        this(parseClasspath(classpath, mayBeClasspathListFile), parent);
+        this(parseClasspath(classpath, true), parent);
     }
 
     public ClasspathClassLoader(ParsedClassPath parsed, @Nullable ClassLoader parent) {
@@ -94,14 +91,18 @@ public class ClasspathClassLoader extends URLClassLoader {
         }
     }
 
-    public static class ParsedClassPath {
+
+    /**
+     * Construction arguments for a {@link ClasspathClassLoader}.
+     */
+    public static final class ParsedClassPath {
         private final List<URL> urls = new ArrayList<>();
         private @Nullable Path jrtFsPath;
 
         private ParsedClassPath() {
         }
 
-        public @Nullable ParsedClassPath prepend(ParsedClassPath parsed) {
+        public @NonNull ParsedClassPath prepend(ParsedClassPath parsed) {
             ParsedClassPath result = new ParsedClassPath();
             result.urls.addAll(parsed.urls);
             result.urls.addAll(this.urls);
@@ -123,6 +124,11 @@ public class ClasspathClassLoader extends URLClassLoader {
         public long fingerprint(ClasspathFingerprinter fingerprinter) {
             return fingerprinter.fingerprint(urls);
         }
+
+        // test only
+        List<URL> getUrls() {
+            return urls;
+        }
     }
 
     private static ParsedClassPath filesToParsedCp(List<File> files) throws IOException {
@@ -133,7 +139,7 @@ public class ClasspathClassLoader extends URLClassLoader {
         return result;
     }
 
-    public static ParsedClassPath parseClasspath(String classpath, boolean mayBeClasspathListFile) {
+    public static @NonNull ParsedClassPath parseClasspath(String classpath, boolean mayBeClasspathListFile) {
         ParsedClassPath result = new ParsedClassPath();
         AssertionUtil.requireParamNotNull("classpath", classpath);
         try {

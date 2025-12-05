@@ -9,7 +9,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
-import net.sourceforge.pmd.util.PmdClasspathWrapper;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 /**
  * Base properties class for JVM languages that use a classpath to resolve
@@ -34,7 +34,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
                          .defaultValue(true)
                          .build();
 
-    private @Nullable PmdClasspathWrapper classpathWrapper;
+    private @Nullable PmdClasspathConfig classpathWrapper;
 
     public JvmLanguagePropertyBundle(Language language) {
         super(language);
@@ -56,7 +56,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * If the parameter is null, the classloader returned by {@link #getClasspathWrapper()}
      * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
      */
-    public void setClasspathWrapper(@Nullable PmdClasspathWrapper classpath) {
+    public void setClasspathWrapper(@Nullable PmdClasspathConfig classpath) {
         this.classpathWrapper = classpath;
     }
 
@@ -66,10 +66,10 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * it itself. It is only passing this data from pmd core to pmd java.
      * The Java language processor will close it.
      */
-    public PmdClasspathWrapper getClasspathWrapper() {
+    public PmdClasspathConfig getClasspathWrapper() {
         if (classpathWrapper == null) {
-            classpathWrapper = PmdClasspathWrapper.bootClasspath()
-                                                  .prependClasspath(getProperty(AUX_CLASSPATH));
+            classpathWrapper = PmdClasspathConfig.bootClasspath()
+                                                 .prependClasspath(getProperty(AUX_CLASSPATH));
         }
         return classpathWrapper;
     }
@@ -85,7 +85,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      */
     @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
-        setClasspathWrapper(PmdClasspathWrapper.thisClassLoaderWillNotBeClosedByPmd(classLoader));
+        setClasspathWrapper(PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(classLoader));
     }
 
     /**

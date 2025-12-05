@@ -36,7 +36,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import net.sourceforge.pmd.util.PmdClasspathWrapper;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -115,7 +115,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(RuleSets ruleSets, PmdClasspathWrapper auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, PmdClasspathConfig classpath, Collection<? extends TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
@@ -124,7 +124,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
                 cacheIsValid = false;
             }
 
-            final long currentAuxClassPathChecksum = auxclassPathClassLoader.fingerprint(FINGERPRINTER);
+            final long currentAuxClassPathChecksum = classpath.fingerprint(FINGERPRINTER);
             if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
                 // TODO some rules don't need that (in fact, some languages)
                 LOG.debug("Analysis cache invalidated, auxclasspath changed.");

@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.GlobalAnalysisListener;
 import net.sourceforge.pmd.reporting.RuleViolation;
-import net.sourceforge.pmd.util.PmdClasspathWrapper;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 /**
  * An analysis cache for incremental analysis.
@@ -64,7 +64,7 @@ public interface AnalysisCache {
      *                                records in the cache are matched to the file
      *                                IDs of these files.
      */
-    void checkValidity(RuleSets ruleSets, PmdClasspathWrapper auxclassPathClassLoader, Collection<? extends TextFile> files);
+    void checkValidity(RuleSets ruleSets, PmdClasspathConfig auxclassPathClassLoader, Collection<? extends TextFile> files);
 
     /**
      * Returns a listener that will be used like in {@link GlobalAnalysisListener#startFileAnalysis(TextFile)}.
