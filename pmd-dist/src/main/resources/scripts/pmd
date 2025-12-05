@@ -33,19 +33,6 @@ convert_cygwin_vars() {
     fi
 }
 
-java_heapsize_settings() {
-    case "$HEAPSIZE" in
-        [1-9]*[mgMG])
-            HEAPSIZE="-Xmx$HEAPSIZE"
-            ;;
-        '')
-            ;;
-        *)
-            echo "HEAPSIZE '$HEAPSIZE' unknown (try: 1024m)"
-            exit 1
-    esac
-}
-
 set_pmd_home_dir() {
   script_real_loc="$0"
 
@@ -274,7 +261,6 @@ java_heapsize_settings
 # and openjfx_module_path. That's why we explicitly don't use quotes.
 # shellcheck disable=SC2046,SC2086
 exec java \
-  ${HEAPSIZE:+"$HEAPSIZE"} \
   $PMD_JAVA_OPTS $(jre_specific_vm_options) \
   $openjfx_module_path \
   -cp "$classpath" \
