@@ -3,7 +3,7 @@ title: The rule designer
 short_title: Rule designer
 tags: [extending, userdocs]
 summary: "Learn about the usage and features of the rule designer."
-last_updated: March 2024 (7.0.0)
+last_updated: December 2025 (7.20.0)
 permalink: pmd_userdocs_extending_designer_reference.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
@@ -13,32 +13,36 @@ author: Clément Fournier <clement.fournier76@gmail.com>
 The designer is part of PMD's binary distributions. To **install a distribution**, see the
 [documentation page about installing PMD](pmd_userdocs_installation.html).
 
-The designer still works with Java 8 from Oracle, which includes JavaFX. If you use this Java version, then
-all is set. However, it is recommended to use OpenJDK along with OpenJFX. The recommended Java Runtime is
+The designer still works with Java 8 from Oracle, which includes JavaFX up until Java 8u441. It also works
+with Java 8+ from Azul (Zulu JDK FX) or Bellsoft (Liberica Full JDK) which also include JavaFX.
+Note: The latest Java 8 from Oracle does _not_ include JavaFX anymore, see <https://www.oracle.com/javase/javafx/>.
+
+If you use a Java version, which includes JavaFX, then all is set.
+
+However, it is recommended to use OpenJDK along with OpenJFX. The recommended Java Runtime is
 Java 11 (or later) with OpenJFX 17 (or later).
 
 You can get OpenJDK from [Adoptium](https://adoptium.net), [Azul](https://www.azul.com/downloads/#zulu),
+[Bellsoft](https://bell-sw.com/pages/downloads/),
 [Microsoft](https://learn.microsoft.com/en-us/java/openjdk/download), [SAP](https://sap.github.io/SapMachine/),
 [Amazon](https://downloads.corretto.aws/#/overview) and other OpenJDK vendors.
-Note: Azul provides a JDK which includes JavaFX - this variant is currently not supported. You always need
-to install OpenJFX separately.
 
 [OpenJFX](https://openjfx.io/) is available from [JavaFX download page](https://gluonhq.com/products/javafx/).
 You need the SDK. Extract the zip file, and set the `JAVAFX_HOME` environment variable to the extracted
-directory. It should be the directory, that contain the sub-folder "lib" in it.
+directory. It should be the directory, that contains the sub-folder "lib" in it.
 
 Example (for linux x64 only, with Java 21 and OpenJFX 21):
 
 ```shell
 $ mkdir $HOME/openjdk
 $ cd $HOME/openjdk
-$ wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2%2B13/OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz
-$ tar xfz OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz
-$ export JAVA_HOME=$HOME/openjdk/jdk-21.0.2+13
+$ wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.9%2B10/OpenJDK21U-jdk_x64_linux_hotspot_21.0.9_10.tar.gz
+$ tar xfz OpenJDK21U-jdk_x64_linux_hotspot_21.0.9_10.tar.gz
+$ export JAVA_HOME=$HOME/openjdk/jdk-21.0.9+10
 $ export PATH=$JAVA_HOME/bin:$PATH
-$ wget https://download2.gluonhq.com/openjfx/21.0.2/openjfx-21.0.2_linux-x64_bin-sdk.zip
-$ unzip -q openjfx-21.0.2_linux-x64_bin-sdk.zip
-$ export JAVAFX_HOME=$HOME/openjdk/javafx-sdk-21.0.2
+$ wget https://download2.gluonhq.com/openjfx/21.0.9/openjfx-21.0.9_linux-x64_bin-sdk.zip
+$ unzip -q openjfx-21.0.9_linux-x64_bin-sdk.zip
+$ export JAVAFX_HOME=$HOME/openjdk/javafx-sdk-21.0.9
 ```
 
 If the bin directory of your PMD distribution is on your shell's path, then you can then **launch the app** with
