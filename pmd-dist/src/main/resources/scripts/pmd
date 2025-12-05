@@ -19,7 +19,7 @@ cygwin_paths() {
     if [ "$cygwin" = true ] ; then
         [ -n "$JAVA_HOME" ] && JAVA_HOME=$(cygpath --windows "$JAVA_HOME")
         [ -n "$JAVAFX_HOME" ] && JAVAFX_HOME=$(cygpath --windows "$JAVAFX_HOME")
-        [ -n "$CLASSPATH" ] && CLASSPATH=$(cypath --windows "$CLASSPATH")
+        [ -n "$CLASSPATH" ] && CLASSPATH=$(cygpath --path --windows "$CLASSPATH")
     fi
 }
 
