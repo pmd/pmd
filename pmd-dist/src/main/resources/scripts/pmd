@@ -17,7 +17,6 @@ is_cygwin() {
 cygwin_paths() {
     # For Cygwin, switch paths to Windows format before running java
     if [ "$cygwin" = true ] ; then
-        [ -n "$JAVA_HOME" ] && JAVA_HOME=$(cygpath --windows "$JAVA_HOME")
         [ -n "$JAVAFX_HOME" ] && JAVAFX_HOME=$(cygpath --windows "$JAVAFX_HOME")
         [ -n "$CLASSPATH" ] && CLASSPATH=$(cygpath --path --windows "$CLASSPATH")
     fi
@@ -26,7 +25,6 @@ cygwin_paths() {
 convert_cygwin_vars() {
     # If cygwin, convert to Unix form before manipulating
     if [ "$cygwin" = true ] ; then
-        [ -n "$JAVA_HOME" ] && JAVA_HOME=$(cygpath --unix "$JAVA_HOME")
         [ -n "$JAVAFX_HOME" ] && JAVAFX_HOME=$(cygpath --unix "$JAVAFX_HOME")
         [ -n "$CLASSPATH" ] && CLASSPATH=$(cygpath --path --unix "$CLASSPATH")
     fi
