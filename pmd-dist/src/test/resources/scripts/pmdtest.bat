@@ -144,8 +144,10 @@ IF "%EXPECTED_HAS_JAVAFX%" == "no" (
     )
 )
 IF %_temp_javafx_passed% EQU 0 ( CALL :fail )
-rem echo javafx_properties: %java_javafx_properties%
-rem echo javafx_properties_path: %java_javafx_properties_path%
+IF %java_has_javafx% EQU 1 (
+    echo.|set /p =java_javafx_properties_path:
+    IF NOT "%java_javafx_properties_path%" == "" ( CALL :pass ) ELSE ( CALL :fail )
+)
 echo.
 
 EXIT /B
