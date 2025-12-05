@@ -484,12 +484,15 @@ usage by developers who should be implementing their own versions in the concret
                 <value>
 <![CDATA[
 //ClassDeclaration[@RegularClass = true() and pmd-java:modifiers() = "abstract"]
-    /ClassBody
+  /ClassBody
     /MethodDeclaration
+    [@Final = false()]
     [Block[
       let $size := count(*[not(self::EmptyStatement)])
       return $size = 0
-             or $size = 1 and ReturnStatement[ NullLiteral or NumericLiteral[@ValueAsInt = 0] or StringLiteral[@Empty = true()]]
+             or $size = 1 and ReturnStatement[NullLiteral
+                                              or NumericLiteral[@ValueAsInt = 0]
+                                              or StringLiteral[@Empty = true()]]
     ]]
 ]]>
                 </value>
