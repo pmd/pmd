@@ -184,7 +184,7 @@ add_pmd_classpath() {
 }
 
 add_openjfx_classpath() {
-  openjfx_module_path=""
+  PMD_OPENJFX_MODULE_PATH=""
   if [ "$APPNAME" = "designer" ]
   then
     if [ $java_has_javafx = 1 ]
@@ -224,7 +224,7 @@ add_openjfx_classpath() {
         "
       fi
 
-      openjfx_module_path="--module-path $JAVAFX_HOME/lib --add-modules javafx.controls,javafx.fxml"
+      PMD_OPENJFX_MODULE_PATH="--module-path $JAVAFX_HOME/lib --add-modules javafx.controls,javafx.fxml"
       # still add the path where javafx.properties is located to the classpath, so that Designer's
       # net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
       append_classpath "$JAVAFX_HOME/lib"
@@ -256,10 +256,10 @@ determine_additional_java_opts
 cygwin_paths
 
 # Note: we want word-splitting happening on PMD_JAVA_OPTS, PMD_ADDITIONAL_JAVA_OPTS
-# and openjfx_module_path. That's why we explicitly don't use quotes.
+# and PMD_OPENJFX_MODULE_PATH. That's why we explicitly don't use quotes.
 # shellcheck disable=SC2046,SC2086
 exec java \
   $PMD_JAVA_OPTS $PMD_ADDITIONAL_JAVA_OPTS \
-  $openjfx_module_path \
+  $PMD_OPENJFX_MODULE_PATH \
   -cp "$classpath" \
   net.sourceforge.pmd.cli.PmdCli "$@"
