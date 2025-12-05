@@ -142,7 +142,7 @@ determine_java_version() {
 
 jre_specific_vm_options() {
   options=""
-  if [ "$APPNAME" = "designer" ] && [ "$java_version_feature" -ge 9 ] && [ $java_has_javafx = 1 ]
+  if [ "$APPNAME" = "designer" ] && [ "$java_version_feature" -ge 9 ]
   then
     # Since Java 9, Java uses the module system. If JavaFX is bundled, this is also
     # included as modules. PMD however is run on the classpath and will run as the
@@ -198,6 +198,7 @@ add_pmd_classpath() {
 }
 
 add_openjfx_classpath() {
+  openjfx_module_path=""
   if [ "$APPNAME" = "designer" ]
   then
     if [ $java_has_javafx = 1 ]
@@ -236,9 +237,10 @@ add_openjfx_classpath() {
           for instructions.
         "
       else
-        # The wildcard will include only jar files, but we need to access also
-        # property files such as javafx.properties that lay bare in the dir
-        append_classpath "$JAVAFX_HOME/lib/*:$JAVAFX_HOME/lib/"
+        openjfx_module_path="--module-path $JAVAFX_HOME/lib --add-modules javafx.controls,javafx.fxml"
+        # still add the path where javafx.properties is located to the classpath, so that Designer's
+        # net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
+        append_classpath "$JAVAFX_HOME/lib"
       fi
     fi
   fi
@@ -268,11 +270,12 @@ cygwin_paths
 
 java_heapsize_settings
 
-# Note: we want word-splitting happening on PMD_JAVA_OPTS and jre_specific_vm_options,
-# so we explicitly don't use quotes.
+# Note: we want word-splitting happening on PMD_JAVA_OPTS, jre_specific_vm_options
+# and openjfx_module_path. That's why we explicitly don't use quotes.
 # shellcheck disable=SC2046,SC2086
 exec java \
   ${HEAPSIZE:+"$HEAPSIZE"} \
   $PMD_JAVA_OPTS $(jre_specific_vm_options) \
+  $openjfx_module_path \
   -cp "$classpath" \
   net.sourceforge.pmd.cli.PmdCli "$@"
