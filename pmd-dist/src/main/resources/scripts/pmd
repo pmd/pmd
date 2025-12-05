@@ -66,7 +66,7 @@ set_lib_dir() {
 
 check_lib_dir() {
   if [ ! -e "$LIB_DIR" ]; then
-    echo "The jar directory [$LIB_DIR] does not exist"
+    script_exit "The jar directory [$LIB_DIR] does not exist"
   fi
 }
 
@@ -78,13 +78,13 @@ set_conf_dir() {
 
 check_conf_dir() {
   if [ ! -e "$CONF_DIR" ]; then
-    echo "The configuration directory [$CONF_DIR] does not exist"
+    script_exit "The configuration directory [$CONF_DIR] does not exist"
   fi
 }
 
 script_exit() {
     echo "$1" >&2
-    exit 1
+    exit 2
 }
 
 check_java() {
