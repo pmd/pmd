@@ -126,6 +126,7 @@ determine_java_version() {
     java_home_property=$(echo "$all_props" | grep "java.home" | sed -n -e 's/^.*java\.home *= *\(.*\)$/\1/; p')
     java_has_javafx=0
     java_javafx_properties=
+    java_javafx_properties_path=
     if [ -e "$java_home_property/lib/javafx.properties" ]; then
       java_javafx_properties="$java_home_property/lib/javafx.properties"
       java_has_javafx=1
@@ -133,58 +134,67 @@ determine_java_version() {
       java_javafx_properties="$java_home_property/jre/lib/javafx.properties"
       java_has_javafx=1
     fi
+    if [ $java_has_javafx = 1 ]
+    then
+      java_javafx_properties_path="$(dirname "$java_javafx_properties")"
+    fi
 }
 
 jre_specific_vm_options() {
-  if [ "$APPNAME" = "designer" ]
+  options=""
+  if [ "$APPNAME" = "designer" ] && [ "$java_version_feature" -ge 9 ] && [ $java_has_javafx = 1 ]
   then
-    options=""
-
-    if [ "$java_version_feature" -ge 9 ] && [ $java_has_javafx = 1 ]
-    then
-      # java9 and java10 from oracle contain javafx as a module
-      # Azul provides builds which include javafx as well
-      # Since Java 9, it is included as a module. But we run on the classpath (aka unnamed module) and
-      # want to access the classes.
-      #
-      # for PMD Designer
-      # in net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper.getVirtualFlow
-      options="--add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
-      # in net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.customBuilderFactory
-      options="$options --add-opens javafx.fxml/com.sun.javafx.fxml.builder=ALL-UNNAMED"
-      #
-      # for RichtextFX
-      options="$options --add-opens javafx.graphics/javafx.scene.text=ALL-UNNAMED"
-      options="$options --add-opens javafx.graphics/com.sun.javafx.scene.text=ALL-UNNAMED"
-      options="$options --add-opens javafx.graphics/com.sun.javafx.text=ALL-UNNAMED"
-      options="$options --add-opens javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED"
-      #
-      # for controlsfx
-      options="$options --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED"
-      options="$options --add-opens javafx.base/com.sun.javafx.runtime=ALL-UNNAMED"
-      options="$options --add-opens javafx.base/com.sun.javafx.event=ALL-UNNAMED"
-      options="$options --add-opens javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED"
-
-      if [ "$java_version_feature" -lt 17 ]
-      then
-        # Warn of remaining illegal accesses - only possible until java 16.
-        # With Java 17+ this option has no effect anymore (https://openjdk.org/jeps/403).
-        options="$options --illegal-access=warn"
-      fi
-    fi
-
-    echo "$options"
-  else
-    echo ""
+    # Since Java 9, Java uses the module system. If JavaFX is bundled, this is also
+    # included as modules. PMD however is run on the classpath and will run as the
+    # "unnamed module". To allow reflection to some JavaFX classes, we need to allow
+    # this access explicitly by opening specific javafx packages.
+    #
+    # This applies to Java 9/10 builds from Oracle and to Java 9+ builds from
+    # Azul (Zulu) or Bellsoft (Liberica).
+    #
+    # It does not apply, if we run Java 8+ without bundled JavaFX and we
+    # put JavaFX on the classpath. Then we don't use the module system at all
+    # and all classes on the classpath are allowed to access all other classes
+    # on the classpath by reflection without explicitly opening packages.
+    #
+    # Reflective access used by PMD Designer
+    # in net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper.getVirtualFlow
+    options="$options --add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
+    # in net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.customBuilderFactory
+    options="$options --add-opens javafx.fxml/com.sun.javafx.fxml.builder=ALL-UNNAMED"
+    #
+    # Reflective access used by RichtextFX
+    options="$options --add-opens javafx.graphics/javafx.scene.text=ALL-UNNAMED"
+    options="$options --add-opens javafx.graphics/com.sun.javafx.scene.text=ALL-UNNAMED"
+    options="$options --add-opens javafx.graphics/com.sun.javafx.text=ALL-UNNAMED"
+    options="$options --add-opens javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED"
+    #
+    # Reflective access used by controlsfx
+    options="$options --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED"
+    options="$options --add-opens javafx.base/com.sun.javafx.runtime=ALL-UNNAMED"
+    options="$options --add-opens javafx.base/com.sun.javafx.event=ALL-UNNAMED"
+    options="$options --add-opens javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED"
   fi
+
+  if [ "$java_version_feature" -ge 9 ] && [ "$java_version_feature" -le 16 ]
+  then
+    # Warn of illegal accesses in general - only possible for Java 9 until Java 16 (inclusive).
+    # With Java 17+ this option has no effect anymore (https://openjdk.org/jeps/403) and is deprecated.
+    options="$options --illegal-access=warn"
+  fi
+  echo "$options"
+}
+
+append_classpath() {
+    if [ -n "$classpath" ]; then
+        classpath="$classpath:$1"
+    else
+        classpath="$1"
+    fi
 }
 
 add_pmd_classpath() {
-    if [ -n "$classpath" ]; then
-        classpath="$classpath:$CONF_DIR:$LIB_DIR/*"
-    else
-        classpath="$CONF_DIR:$LIB_DIR/*"
-    fi
+    append_classpath "$CONF_DIR:$LIB_DIR/*"
 }
 
 add_openjfx_classpath() {
@@ -195,36 +205,40 @@ add_openjfx_classpath() {
       # almost nothing to do, javafx is bundled (either an old Oracle Java < 8u451 or an OpenJDK 8 Build from Azul)
       # still add the path where javafx.properties is located to the classpath, so that Designer's
       # net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
-      if [ -n "$classpath" ]; then
-        classpath="$classpath:$(dirname "$java_javafx_properties")"
-      else
-        classpath="$(dirname "$java_javafx_properties")"
-      fi
-    elif [ "$java_version_feature" = "8" ] && [ "$java_version_update" -ge 451 ]
-    then
-      script_exit "
-        JavaFX has been removed from Oracle Java 8 since Java 8u451. See https://www.oracle.com/javase/javafx.
-        Use Java 11 or later with OpenJFX separately from https://openjfx.io/.
-        Alternatively use an OpenJDK build from Azul with JavaFX bundled (JDK FX).
-      "
-    elif [ "$java_version_feature" -lt 10 ]
-    then
-      script_exit "
-        For OpenJFX at least Java 10 is required.
-      "
+      append_classpath "$java_javafx_properties_path"
     else
+
+      if [ "$java_version_feature" = "8" ] && [ "$java_version_update" -ge 451 ]
+      then
+        script_exit "
+          JavaFX has been removed from Oracle Java 8 since Java 8u451.
+          See https://www.oracle.com/javase/javafx.
+          Use Java 11 or later with OpenJFX separately from https://openjfx.io/.
+          Alternatively use an OpenJDK build from Azul with JavaFX bundled (JDK FX)
+          or from Bellsoft with JavaFX bundled (Full JDK).
+        "
+      fi
+
+      if [ "$java_version_feature" -lt 10 ]
+      then
+        script_exit "
+          For OpenJFX at least Java 10 is required. Newer OpenJFX version
+          might require newer Java versions.
+        "
+      fi
+
       # openjfx is required for any openjdk builds which don't include JavaFX
       if [ -z "$JAVAFX_HOME" ]
       then
-        script_exit "The environment variable JAVAFX_HOME is missing."
+        script_exit "
+          The environment variable JAVAFX_HOME is missing.
+          See https://docs.pmd-code.org/latest/pmd_userdocs_extending_designer_reference.html#installing-running-updating
+          for instructions.
+        "
       else
         # The wildcard will include only jar files, but we need to access also
         # property files such as javafx.properties that lay bare in the dir
-        if [ -n "$classpath" ]; then
-          classpath="$classpath:$JAVAFX_HOME/lib/*:$JAVAFX_HOME/lib/"
-        else
-          classpath="$JAVAFX_HOME/lib/*:$JAVAFX_HOME/lib/"
-        fi
+        append_classpath "$JAVAFX_HOME/lib/*:$JAVAFX_HOME/lib/"
       fi
     fi
   fi
@@ -254,7 +268,9 @@ cygwin_paths
 
 java_heapsize_settings
 
-# Note: we want word-splitting happening on PMD_JAVA_OPTS and jre_specific_vm_options
+# Note: we want word-splitting happening on PMD_JAVA_OPTS and jre_specific_vm_options,
+# so we explicitly don't use quotes.
+# shellcheck disable=SC2046,SC2086
 exec java \
   ${HEAPSIZE:+"$HEAPSIZE"} \
   $PMD_JAVA_OPTS $(jre_specific_vm_options) \
