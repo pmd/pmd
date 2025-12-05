@@ -215,4 +215,9 @@ IF %java_version_feature% GEQ 9 (
     SET "PMD_ADDITIONAL_JAVA_OPTS=!PMD_ADDITIONAL_JAVA_OPTS! --illegal-access=warn"
   )
 )
+IF %java_version_feature% GEQ 24 (
+  rem Allow native access to javafx.graphics
+  SET "PMD_ADDITIONAL_JAVA_OPTS=!PMD_ADDITIONAL_JAVA_OPTS! --enable-native-access=javafx.graphics"
+)
+
 EXIT /B
