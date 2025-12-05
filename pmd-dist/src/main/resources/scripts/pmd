@@ -127,8 +127,8 @@ determine_java_version() {
     fi
 }
 
-jre_specific_vm_options() {
-  options=""
+determine_additional_java_opts() {
+  PMD_ADDITIONAL_JAVA_OPTS=""
   if [ "$APPNAME" = "designer" ] && [ "$java_version_feature" -ge 9 ]
   then
     # Since Java 9, Java uses the module system. If JavaFX is bundled, this is also
@@ -146,30 +146,29 @@ jre_specific_vm_options() {
     #
     # Reflective access used by PMD Designer
     # in net.sourceforge.pmd.util.fxdesigner.util.controls.TreeViewWrapper.getVirtualFlow
-    options="$options --add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.controls/javafx.scene.control.skin=ALL-UNNAMED"
     # in net.sourceforge.pmd.util.fxdesigner.util.DesignerUtil.customBuilderFactory
-    options="$options --add-opens javafx.fxml/com.sun.javafx.fxml.builder=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.fxml/com.sun.javafx.fxml.builder=ALL-UNNAMED"
     #
     # Reflective access used by RichtextFX
-    options="$options --add-opens javafx.graphics/javafx.scene.text=ALL-UNNAMED"
-    options="$options --add-opens javafx.graphics/com.sun.javafx.scene.text=ALL-UNNAMED"
-    options="$options --add-opens javafx.graphics/com.sun.javafx.text=ALL-UNNAMED"
-    options="$options --add-opens javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.graphics/javafx.scene.text=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.graphics/com.sun.javafx.scene.text=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.graphics/com.sun.javafx.text=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED"
     #
     # Reflective access used by controlsfx
-    options="$options --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED"
-    options="$options --add-opens javafx.base/com.sun.javafx.runtime=ALL-UNNAMED"
-    options="$options --add-opens javafx.base/com.sun.javafx.event=ALL-UNNAMED"
-    options="$options --add-opens javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.graphics/com.sun.javafx.scene=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.base/com.sun.javafx.runtime=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.base/com.sun.javafx.event=ALL-UNNAMED"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --add-opens javafx.graphics/com.sun.javafx.scene.traversal=ALL-UNNAMED"
   fi
 
   if [ "$java_version_feature" -ge 9 ] && [ "$java_version_feature" -le 16 ]
   then
     # Warn of illegal accesses in general - only possible for Java 9 until Java 16 (inclusive).
     # With Java 17+ this option has no effect anymore (https://openjdk.org/jeps/403) and is deprecated.
-    options="$options --illegal-access=warn"
+    PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --illegal-access=warn"
   fi
-  echo "$options"
 }
 
 append_classpath() {
@@ -223,12 +222,12 @@ add_openjfx_classpath() {
           See https://docs.pmd-code.org/latest/pmd_userdocs_extending_designer_reference.html#installing-running-updating
           for instructions.
         "
-      else
-        openjfx_module_path="--module-path $JAVAFX_HOME/lib --add-modules javafx.controls,javafx.fxml"
-        # still add the path where javafx.properties is located to the classpath, so that Designer's
-        # net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
-        append_classpath "$JAVAFX_HOME/lib"
       fi
+
+      openjfx_module_path="--module-path $JAVAFX_HOME/lib --add-modules javafx.controls,javafx.fxml"
+      # still add the path where javafx.properties is located to the classpath, so that Designer's
+      # net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
+      append_classpath "$JAVAFX_HOME/lib"
     fi
   fi
 }
@@ -252,16 +251,15 @@ classpath=$CLASSPATH
 add_pmd_classpath
 determine_java_version
 add_openjfx_classpath
+determine_additional_java_opts
 
 cygwin_paths
 
-java_heapsize_settings
-
-# Note: we want word-splitting happening on PMD_JAVA_OPTS, jre_specific_vm_options
+# Note: we want word-splitting happening on PMD_JAVA_OPTS, PMD_ADDITIONAL_JAVA_OPTS
 # and openjfx_module_path. That's why we explicitly don't use quotes.
 # shellcheck disable=SC2046,SC2086
 exec java \
-  $PMD_JAVA_OPTS $(jre_specific_vm_options) \
+  $PMD_JAVA_OPTS $PMD_ADDITIONAL_JAVA_OPTS \
   $openjfx_module_path \
   -cp "$classpath" \
   net.sourceforge.pmd.cli.PmdCli "$@"

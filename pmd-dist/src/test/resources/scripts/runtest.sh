@@ -37,9 +37,9 @@ determine_java_version() {
     }')
     # 1. component: java_version_feature is e.g. "8" for java 1.8, "9" for java 9, "10" for java 10, ...
     java_version_feature=$(echo "$java_ver_normalized" | sed -n -e 's/^\([0-9]\{1,\}\).*$/\1/p')
-    # 3. component: update release counter
+    # 3. component: update release counter is e.g. "17" for java 11.0.17
     java_version_update=$(echo "$java_ver_normalized" | sed -n -e 's/^\([0-9]\{1,\}\)\.\([0-9]\{1,\}\).\([0-9]\{1,\}\).*$/\3/p')
-    # if there was no 3rd component, use "0"
+    # if there was no 3rd component (eg. -ea or ga version), use "0"
     java_version_update=${java_version_update:="0"}
 
     java_home_property=$(echo "$all_props" | grep "java.home" | sed -n -e 's/^.*java\.home *= *\(.*\)$/\1/; p')
