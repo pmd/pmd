@@ -191,7 +191,7 @@ public final class TypeSystem {
      */
     @Deprecated
     public static TypeSystem usingClassLoaderClasspath(ClassLoader bootstrapResourceLoader) {
-        return usingClasspath((Classpath) bootstrapResourceLoader::getResourceAsStream);
+        return usingClasspath(Classpath.forClassLoader(bootstrapResourceLoader));
     }
 
     /**
