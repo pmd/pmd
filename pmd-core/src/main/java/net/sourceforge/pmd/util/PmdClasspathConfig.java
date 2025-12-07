@@ -230,6 +230,16 @@ public final class PmdClasspathConfig {
             this.shouldClose = new AtomicBoolean(shouldClose);
         }
 
+        // test only
+        ClassLoader classLoader() {
+            return myClassLoader;
+        }
+
+        // test only
+        boolean shouldClose() {
+            return shouldClose.get();
+        }
+
         @Override
         public @Nullable InputStream findResource(String resourcePath) {
             return myClassLoader.getResourceAsStream(resourcePath);

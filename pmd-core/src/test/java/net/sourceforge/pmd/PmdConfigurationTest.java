@@ -57,8 +57,9 @@ class PmdConfigurationTest {
         assertEquals(0, configuration.getThreads(), "Changed threads");
     }
 
+    // remove in PMD 8
     @Test
-    void testClassLoader() {
+    void testClassLoaderLegacy() {
         PMDConfiguration configuration = new PMDConfiguration();
         assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Default ClassLoader");
         configuration.prependAuxClasspath("some.jar");
