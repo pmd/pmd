@@ -59,12 +59,13 @@ public interface AnalysisCache {
      * conditions the good behaviour of {@link #isUpToDate(TextDocument)}.
      *
      * @param ruleSets                The rulesets configured for this analysis.
-     * @param auxclassPathClassLoader The class loader for auxclasspath configured for this analysis.
+     * @param auxclasspath            The class loader for auxclasspath configured
+     *                                for this analysis.
      * @param files                   Set of files in the current analysis. File
      *                                records in the cache are matched to the file
      *                                IDs of these files.
      */
-    void checkValidity(RuleSets ruleSets, PmdClasspathConfig auxclassPathClassLoader, Collection<? extends TextFile> files);
+    void checkValidity(RuleSets ruleSets, PmdClasspathConfig auxclasspath, Collection<? extends TextFile> files);
 
     /**
      * Returns a listener that will be used like in {@link GlobalAnalysisListener#startFileAnalysis(TextFile)}.

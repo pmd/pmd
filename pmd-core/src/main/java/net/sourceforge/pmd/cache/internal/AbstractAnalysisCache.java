@@ -115,7 +115,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(RuleSets ruleSets, PmdClasspathConfig classpath, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, PmdClasspathConfig auxclasspath, Collection<? extends TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
@@ -124,7 +124,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
                 cacheIsValid = false;
             }
 
-            final long currentAuxClassPathChecksum = classpath.fingerprint(FINGERPRINTER);
+            final long currentAuxClassPathChecksum = auxclasspath.fingerprint(FINGERPRINTER);
             if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
                 // TODO some rules don't need that (in fact, some languages)
                 LOG.debug("Analysis cache invalidated, auxclasspath changed.");

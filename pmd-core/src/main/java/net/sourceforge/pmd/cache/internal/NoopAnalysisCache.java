@@ -36,7 +36,7 @@ public class NoopAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public void checkValidity(RuleSets ruleSets, PmdClasspathConfig auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, PmdClasspathConfig auxclasspath, Collection<? extends TextFile> files) {
         // noop
     }
 

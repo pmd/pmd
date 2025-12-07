@@ -140,6 +140,14 @@ public class ClasspathClassLoader extends URLClassLoader {
         List<URL> getUrls() {
             return urls;
         }
+
+        @Override
+        public String toString() {
+            return "ParsedClassPath{"
+                   + "urls=" + urls
+                   + ", jrtFsPath=" + jrtFsPath
+                   + '}';
+        }
     }
 
     private static ParsedClassPath filesToParsedCp(List<File> files) throws IOException {
@@ -204,6 +212,9 @@ public class ClasspathClassLoader extends URLClassLoader {
     private static void addSingleEntry(ParsedClassPath result, String path) throws MalformedURLException {
         Path filePath = Paths.get(path).toAbsolutePath();
         if (filePath.endsWith(Paths.get("lib", "jrt-fs.jar"))) {
+            if (result.jrtFsPath != null) {
+                throw new IllegalArgumentException("Multiple JRT fs paths: " + result.jrtFsPath + " AND " + filePath);
+            }
             result.jrtFsPath = filePath;
         }
 

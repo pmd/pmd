@@ -5,8 +5,6 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -18,11 +16,9 @@ import java.util.Properties;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.LoggerFactory;
 
-import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -80,7 +76,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <h2>Language configuration</h2>
  * <ul>
  * <li>Use {@link #setSuppressMarker(String)} to change the comment marker for suppression comments. Defaults to {@value #DEFAULT_SUPPRESS_MARKER}.</li>
- * <li>See {@link #prependAuxClasspath(String)} for how to configure the classpath for Java analysis.</li>
+ * <li>See {@link #setAnalysisClasspath(PmdClasspathConfig)} and {@link #prependAuxClasspath(String)} for how to configure the classpath for Java analysis.</li>
  * <li>You can set additional language properties with {@link #getLanguageProperties(Language)}</li>
  * </ul>
  *
@@ -101,7 +97,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
 
-    private PmdClasspathConfig classpathWrapper = PmdClasspathConfig.bootClasspath();
+    private PmdClasspathConfig classpathConfig = PmdClasspathConfig.pmdClasspath();
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -173,7 +169,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public ClassLoader getClassLoader() {
-        return classpathWrapper.leakClassLoader();
+        return classpathConfig.leakClassLoader();
     }
 
     /**
@@ -191,24 +187,16 @@ public class PMDConfiguration extends AbstractConfiguration {
     @Deprecated
     public void setClassLoader(ClassLoader classpathWrapper) {
         setAnalysisClasspath(
-            classpathWrapper == null ? PmdClasspathConfig.bootClasspath()
+            classpathWrapper == null ? PmdClasspathConfig.pmdClasspath()
                                      : PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(classpathWrapper)
         );
     }
 
-    // private.
-    PmdClasspathConfig getAnalysisClasspath() {
-        return classpathWrapper;
-    }
-
     /**
-     * Return a description that can be used only for debugging. It is
-     * not necessarily in the format expected by {@link PmdClasspathConfig#prependClasspath(String)},
-     * but might contain more information.
+     * Return the current classpath config.
      */
-    @InternalApi
-    public String getAnalysisClasspathDescriptionForDebug() {
-        return classpathWrapper.toString();
+    public PmdClasspathConfig getAnalysisClasspath() {
+        return classpathConfig;
     }
 
     /**
@@ -225,32 +213,15 @@ public class PMDConfiguration extends AbstractConfiguration {
      * build instances.
      *
      * <p>PMD's default analysis classpath loads classes with
-     * {@link PmdClasspathConfig#bootClasspath()}, which is likely
+     * {@link PmdClasspathConfig#pmdClasspath()}, which is likely
      * to be insufficient. If you analyze Java sources, make sure to
      * configure this appropriately.
      *
      * @param classpath A classpath wrapper object
-     */
-    public void setAnalysisClasspath(@NonNull PmdClasspathConfig classpath) {
-        this.classpathWrapper = Objects.requireNonNull(classpath);
-    }
-
-    /**
-     * Load the aux-classpath from the given file input stream. The file
-     * is expected to contain one classpath entry per line. These are
-     * then passed to {@link #prependAuxClasspath(String)}.
-     *
-     * @param inputStream An input stream (will be closed by this method)
-     * @throws IOException If an error occurred while reading the file
      * @see #prependAuxClasspath(String)
      */
-    public void loadAnalysisClasspathFromFile(InputStream inputStream) throws IOException {
-        try {
-            String classpath = ClasspathClassLoader.readClasspathListFile(inputStream);
-            this.classpathWrapper = this.classpathWrapper.prependClasspath(classpath);
-        } finally {
-            inputStream.close();
-        }
+    public void setAnalysisClasspath(@NonNull PmdClasspathConfig classpath) {
+        this.classpathConfig = Objects.requireNonNull(classpath);
     }
 
     /**
@@ -272,7 +243,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @see PmdClasspathConfig#prependClasspath(String)
      */
     public void prependAuxClasspath(String classpath) {
-        this.classpathWrapper = this.classpathWrapper.prependClasspathOrClasspathListFile(classpath);
+        this.classpathConfig = this.classpathConfig.prependClasspathOrClasspathListFile(classpath);
     }
 
     /**

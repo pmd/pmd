@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.lang.java.internal;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -49,21 +48,24 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final PmdClasspathConfig.OpenClasspath openClasspath;
     private TypeSystem typeSystem;
 
-    private JavaLanguageProcessor(JavaLanguageProperties properties, PmdClasspathConfig classpathWrapper) {
+    public JavaLanguageProcessor(JavaLanguageProperties properties) {
         super(properties);
-        LOG.debug("Using analysis classloader: {}", classpathWrapper);
+        PmdClasspathConfig classpathConfig = properties.getClasspathConfig();
+        LOG.debug("Using analysis classloader: {}", classpathConfig);
+
+        if (classpathConfig.equals(PmdClasspathConfig.pmdClasspath())
+            && properties.shouldWarnIfNoClasspath()) {
+            LOG.warn("No analysis classpath configured. This may cause false positives.");
+        }
+
         // record that this wrapper should not be closed before we're done with it.
-        this.openClasspath = classpathWrapper.open();
+        this.openClasspath = classpathConfig.open();
         this.typeSystem = TypeSystem.usingClasspath(openClasspath);
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
         this.parserWithoutProcessing = new JavaParser(suppressMarker, this, false);
         this.firstClassLombok = properties.getProperty(JavaLanguageProperties.FIRST_CLASS_LOMBOK);
-    }
-
-    public JavaLanguageProcessor(JavaLanguageProperties properties) throws IOException {
-        this(properties, properties.getClasspathWrapper());
     }
 
     @Override

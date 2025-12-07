@@ -31,6 +31,19 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨️ API Changes
 
+
+- The methods {% jdoc core::PMDConfiguration#getClassLoader() %} and
+ {% jdoc core::PMDConfiguration#setClassLoader(java.lang.ClassLoader) %}
+ have been deprecated for removal. Use the new method {% jdoc core::PMDConfiguration#setAnalysisClasspath(core::util.PmdClasspathConfig) %}
+ instead. It is still possible to use a custom ClassLoader to find resources
+ during PMD analysis, however, a custom ClassLoader will not be closed by PMD.
+ The new API makes that clearer.
+  - A similar change has been done to {% jdoc core::lang.JvmLanguagePropertyBundle#getAnalysisClassLoader() %} and
+  its setter.
+- The methods {% jdoc java::lang.java.types.TypeSystem#usingClasspath(net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath) %}
+  and {% jdoc java::lang.java.types.TypeSystem#usingClassLoaderClasspath(java.lang.ClassLoader) %} have been deprecated.
+  See Javadoc for the replacement.
+
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 

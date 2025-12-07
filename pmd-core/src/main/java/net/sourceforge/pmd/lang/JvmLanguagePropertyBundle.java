@@ -34,7 +34,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
                          .defaultValue(true)
                          .build();
 
-    private @Nullable PmdClasspathConfig classpathWrapper;
+    private @Nullable PmdClasspathConfig classpathConfig;
 
     public JvmLanguagePropertyBundle(Language language) {
         super(language);
@@ -46,32 +46,37 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     public <T> void setProperty(PropertyDescriptor<T> propertyDescriptor, T value) {
         super.setProperty(propertyDescriptor, value);
         if (propertyDescriptor == AUX_CLASSPATH) {
-            classpathWrapper = null; // reset it.
+            classpathConfig = null; // reset it.
         }
     }
 
     /**
-     * Set the classloader to use for analysis. This overrides the
+     * Return whether PMD should warn when the classpath is the default
+     * used for PMD analysis. This hints at incomplete configuration.
+     */
+    public boolean shouldWarnIfNoClasspath() {
+        return getProperty(WARN_IF_NO_CLASSPATH);
+    }
+
+    /**
+     * Set the classpath to use for analysis. This overrides the
      * setting of a classpath as a string via {@link #setProperty(PropertyDescriptor, Object)}.
-     * If the parameter is null, the classloader returned by {@link #getClasspathWrapper()}
+     * If the parameter is null, the classpath config returned by {@link #getClasspathConfig()}
      * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
      */
-    public void setClasspathWrapper(@Nullable PmdClasspathConfig classpath) {
-        this.classpathWrapper = classpath;
+    public void setClasspathConfig(@Nullable PmdClasspathConfig classpath) {
+        this.classpathConfig = classpath;
     }
 
     /**
-     * Return the classpath wrapper. Note that a language property bundle
-     * is not considered to own the classpath wrapper and will not close
-     * it itself. It is only passing this data from pmd core to pmd java.
-     * The Java language processor will close it.
+     * Return the classpath config, as specified by {@link #setClasspathConfig(PmdClasspathConfig)}.
      */
-    public PmdClasspathConfig getClasspathWrapper() {
-        if (classpathWrapper == null) {
-            classpathWrapper = PmdClasspathConfig.bootClasspath()
-                                                 .prependClasspath(getProperty(AUX_CLASSPATH));
+    public PmdClasspathConfig getClasspathConfig() {
+        if (classpathConfig == null) {
+            classpathConfig = PmdClasspathConfig.pmdClasspath()
+                                                .prependClasspath(getProperty(AUX_CLASSPATH));
         }
-        return classpathWrapper;
+        return classpathConfig;
     }
 
 
@@ -81,20 +86,20 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * If the parameter is null, the classloader returned by {@link #getAnalysisClassLoader()}
      * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
      *
-     * @deprecated Use exclusively the string property {@link #AUX_CLASSPATH}.
+     * @deprecated Use {@link #setClasspathConfig(PmdClasspathConfig)}
      */
     @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
-        setClasspathWrapper(PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(classLoader));
+        setClasspathConfig(PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(classLoader));
     }
 
     /**
      * Returns the classloader to use to resolve classes for this language.
      *
-     * @deprecated Use exclusively the string property {@link #AUX_CLASSPATH}.
+     * @deprecated Use {@link #getClasspathConfig()}
      */
     @Deprecated
     public @NonNull ClassLoader getAnalysisClassLoader() {
-        return getClasspathWrapper().leakClassLoader();
+        return getClasspathConfig().leakClassLoader();
     }
 }

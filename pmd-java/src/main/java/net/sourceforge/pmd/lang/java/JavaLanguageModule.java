@@ -4,8 +4,6 @@
 
 package net.sourceforge.pmd.lang.java;
 
-import java.io.IOException;
-
 import net.sourceforge.pmd.cpd.CpdCapableLanguage;
 import net.sourceforge.pmd.cpd.CpdLexer;
 import net.sourceforge.pmd.lang.LanguageModuleBase;
@@ -64,11 +62,7 @@ public class JavaLanguageModule extends LanguageModuleBase implements PmdCapable
 
     @Override
     public LanguageProcessor createProcessor(LanguagePropertyBundle bundle) {
-        try {
-            return new JavaLanguageProcessor((JavaLanguageProperties) bundle);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        return new JavaLanguageProcessor((JavaLanguageProperties) bundle);
     }
 
     @Override

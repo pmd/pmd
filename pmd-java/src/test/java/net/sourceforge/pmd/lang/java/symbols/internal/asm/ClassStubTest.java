@@ -39,7 +39,7 @@ import net.sourceforge.pmd.util.PmdClasspathConfig;
 class ClassStubTest {
 
     private static @NotNull TypeSystem newTypeSystem() {
-        return TypeSystem.usingClasspath(PmdClasspathConfig.bootClasspath().open());
+        return TypeSystem.usingClasspath(PmdClasspathConfig.pmdClasspath().open());
     }
 
     // while parsing the annotation type, ClassStub's parseLock.ensureParsed()

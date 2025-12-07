@@ -217,7 +217,7 @@ public final class PmdAnalysis implements AutoCloseable {
             //  CLI syntax is implemented. #2947
             props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
             if (props instanceof JvmLanguagePropertyBundle) {
-                ((JvmLanguagePropertyBundle) props).setClasspathWrapper(config.getAnalysisClasspath());
+                ((JvmLanguagePropertyBundle) props).setClasspathConfig(config.getAnalysisClasspath());
             }
         }
 

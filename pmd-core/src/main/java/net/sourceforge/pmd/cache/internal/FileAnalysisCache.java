@@ -45,10 +45,10 @@ public class FileAnalysisCache extends AbstractAnalysisCache {
     }
 
     @Override
-    public void checkValidity(RuleSets ruleSets, PmdClasspathConfig classpath, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, PmdClasspathConfig auxclasspath, Collection<? extends TextFile> files) {
         // load cached data before checking for validity
         loadFromFile(cacheFile, files);
-        super.checkValidity(ruleSets, classpath, files);
+        super.checkValidity(ruleSets, auxclasspath, files);
     }
 
     /**

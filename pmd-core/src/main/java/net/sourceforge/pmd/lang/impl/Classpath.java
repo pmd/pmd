@@ -60,5 +60,12 @@ public interface Classpath {
 
     // </editor-fold>
 
+    /**
+     * Returns a classpath instance that uses {@link ClassLoader#getResourceAsStream(String)}
+     * to find resources.
+     */
+    static Classpath forClassLoader(ClassLoader classLoader) {
+        return classLoader::getResourceAsStream;
+    }
 }
 

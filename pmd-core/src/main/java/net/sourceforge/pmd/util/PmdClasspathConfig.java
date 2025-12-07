@@ -38,7 +38,7 @@ import com.google.errorprone.annotations.CheckReturnValue;
  * <li>Users may create an instance to wrap a user-provided classloader,
  * in which case the responsibility for closing it is on the caller. See
  * {@link #thisClassLoaderWillNotBeClosedByPmd(ClassLoader)}.
- * <li>{@link #bootClasspath()} uses the classloader used to load this
+ * <li>{@link #pmdClasspath()} uses the classloader used to load this
  * class (and PMD sources).
  * </ul>
  *
@@ -86,7 +86,7 @@ public final class PmdClasspathConfig {
      *
      * @return An instance for the boot classloader
      */
-    public static PmdClasspathConfig bootClasspath() {
+    public static PmdClasspathConfig pmdClasspath() {
         return thisClassLoaderWillNotBeClosedByPmd(PmdClasspathConfig.class.getClassLoader());
     }
 
@@ -221,6 +221,14 @@ public final class PmdClasspathConfig {
         return open().myClassLoader;
     }
 
+    @Override
+    public String toString() {
+        return "PmdClasspathConfig{"
+               + "fallback=" + fallback
+               + ", classpath=" + classpath
+               + '}';
+    }
+
     public static final class OpenClasspath implements AutoCloseable, Classpath {
         private final ClassLoader myClassLoader;
         private final AtomicBoolean shouldClose;
@@ -252,6 +260,14 @@ public final class PmdClasspathConfig {
                 // that have access to the ClassLoaderWrapper instance
                 ((AutoCloseable) myClassLoader).close();
             }
+        }
+
+        @Override
+        public String toString() {
+            return "OpenClasspath{"
+                   + "myClassLoader=" + myClassLoader
+                   + ", shouldClose=" + shouldClose.get()
+                   + '}';
         }
     }
 }
