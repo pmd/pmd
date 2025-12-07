@@ -148,6 +148,20 @@ public class ClasspathClassLoader extends URLClassLoader {
                    + ", jrtFsPath=" + jrtFsPath
                    + '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+            ParsedClassPath that = (ParsedClassPath) o;
+            return Objects.equals(urls, that.urls) && Objects.equals(jrtFsPath, that.jrtFsPath);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(urls, jrtFsPath);
+        }
     }
 
     private static ParsedClassPath filesToParsedCp(List<File> files) throws IOException {

@@ -11,6 +11,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.commons.lang3.StringUtils;
@@ -218,6 +219,20 @@ public final class PmdClasspathConfig {
                + "fallback=" + fallback
                + ", classpath=" + classpath
                + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PmdClasspathConfig that = (PmdClasspathConfig) o;
+        return Objects.equals(fallback, that.fallback) && Objects.equals(classpath, that.classpath);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(fallback, classpath);
     }
 
     /**

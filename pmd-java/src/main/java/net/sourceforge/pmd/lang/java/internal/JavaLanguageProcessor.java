@@ -54,8 +54,9 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
         LOG.debug("Using analysis classloader: {}", classpathConfig);
 
         if (classpathConfig.equals(PmdClasspathConfig.pmdClasspath())
-            && properties.shouldWarnIfNoClasspath()) {
-            LOG.warn("No analysis classpath configured. This may cause false positives.");
+            && properties.shouldWarnIfImproperClasspath()) {
+            LOG.warn("No analysis classpath configured. This may cause false positives. "
+                     + "See https://docs.pmd-code.org/latest/pmd_languages_java.html#providing-the-auxiliary-classpath");
         }
 
         // record that this wrapper should not be closed before we're done with it.

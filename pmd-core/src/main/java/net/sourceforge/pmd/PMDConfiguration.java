@@ -169,6 +169,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      */
     @Deprecated
     public ClassLoader getClassLoader() {
+        if (classpathConfig.getClasspath().isEmpty()) {
+            return classpathConfig.getFallback();
+        }
         return classpathConfig.leakClassLoader();
     }
 

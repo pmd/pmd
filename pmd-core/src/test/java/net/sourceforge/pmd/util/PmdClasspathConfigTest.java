@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.util;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -16,6 +17,7 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 
+import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoaderTestUtil;
 
@@ -71,6 +73,14 @@ class PmdClasspathConfigTest {
 
         verify(cl, never()).close();
         verify(cl).getResource("something");
+    }
+
+
+    @Test
+    void testEquals() {
+        PmdClasspathConfig defaultConfig = new PMDConfiguration().getAnalysisClasspath();
+        assertNotSame(defaultConfig, PmdClasspathConfig.pmdClasspath());
+        assertEquals(defaultConfig, PmdClasspathConfig.pmdClasspath());
     }
 
 

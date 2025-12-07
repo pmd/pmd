@@ -59,7 +59,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
     /** This runs all processing stages when parsing. */
     public static final JavaParsingHelper DEFAULT = new JavaParsingHelper(
         Params.getDefault().withLanguagePropertyConfig(bundle -> {
-            bundle.setProperty(JvmLanguagePropertyBundle.WARN_IF_NO_CLASSPATH, false);
+            bundle.setProperty(JvmLanguagePropertyBundle.ENABLE_CLASSPATH_DIAGNOSTICS, false);
             return Unit.INSTANCE;
         }),
         SemanticErrorReporter.noop(), // todo change this to unforgiving logger, need to update a lot of tests

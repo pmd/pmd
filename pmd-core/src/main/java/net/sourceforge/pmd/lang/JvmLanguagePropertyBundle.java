@@ -28,9 +28,11 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
                          .defaultValue("")
                          .build();
 
-    public static final PropertyDescriptor<Boolean> WARN_IF_NO_CLASSPATH
-        = PropertyFactory.booleanProperty("warnIfNoClasspath")
-                         .desc("Whether to warn about missing auxclasspath. This is enabled by default, but disabled in tests for instance.")
+    // TODO use this to warn about missing JDK sources on classpath for instance.
+    public static final PropertyDescriptor<Boolean> ENABLE_CLASSPATH_DIAGNOSTICS
+        = PropertyFactory.booleanProperty("enableClasspathDiagnostics")
+                         .desc("Whether to warn about missing auxclasspath and other possible configuration mistakes."
+                               + " This is enabled by default, but can be disabled in tests for instance.")
                          .defaultValue(true)
                          .build();
 
@@ -39,7 +41,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     public JvmLanguagePropertyBundle(Language language) {
         super(language);
         definePropertyDescriptor(AUX_CLASSPATH);
-        definePropertyDescriptor(WARN_IF_NO_CLASSPATH);
+        definePropertyDescriptor(ENABLE_CLASSPATH_DIAGNOSTICS);
     }
 
     @Override
@@ -54,8 +56,8 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * Return whether PMD should warn when the classpath is the default
      * used for PMD analysis. This hints at incomplete configuration.
      */
-    public boolean shouldWarnIfNoClasspath() {
-        return getProperty(WARN_IF_NO_CLASSPATH);
+    public boolean shouldWarnIfImproperClasspath() {
+        return getProperty(ENABLE_CLASSPATH_DIAGNOSTICS);
     }
 
     /**
