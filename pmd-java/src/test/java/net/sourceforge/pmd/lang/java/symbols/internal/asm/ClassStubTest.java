@@ -24,7 +24,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.java.JavaParsingHelper;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
@@ -35,8 +34,13 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.Substitution;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 class ClassStubTest {
+
+    private static @NotNull TypeSystem newTypeSystem() {
+        return TypeSystem.usingClasspath(PmdClasspathConfig.bootClasspath().open());
+    }
 
     // while parsing the annotation type, ClassStub's parseLock.ensureParsed()
     // is called multiple times, reentering the parselock while the status is
@@ -44,7 +48,7 @@ class ClassStubTest {
     @Test
     void loadAndParseAnnotation() {
         // class stub - annotation type
-        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        TypeSystem ts = newTypeSystem();
         JClassSymbol classSymbol = ts.getClassSymbol("java.lang.Deprecated");
         PSet<String> annotationAttributeNames = classSymbol.getAnnotationAttributeNames();
         assertFalse(annotationAttributeNames.isEmpty());
@@ -53,7 +57,7 @@ class ClassStubTest {
 
     @Test
     void recordReflectionTest() {
-        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        TypeSystem ts = newTypeSystem();
         JClassSymbol pointRecord = loadRecordClass(ts, "Point");
         List<JRecordComponentSymbol> components = pointRecord.getRecordComponents();
         assertThat(components, hasSize(2));
@@ -72,7 +76,7 @@ class ClassStubTest {
 
     @Test
     void varargsRecordReflectionTest() {
-        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        TypeSystem ts = newTypeSystem();
         JClassSymbol record = loadRecordClass(ts, "Varargs");
         List<JRecordComponentSymbol> components = record.getRecordComponents();
         assertThat(components, hasSize(1));
@@ -89,7 +93,7 @@ class ClassStubTest {
 
     @Test
     void annotatedRecordReflectionTest() {
-        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        TypeSystem ts = newTypeSystem();
         JClassSymbol record = loadRecordClass(ts, "Annotated");
         List<JRecordComponentSymbol> components = record.getRecordComponents();
         assertThat(components, hasSize(2));
@@ -115,7 +119,7 @@ class ClassStubTest {
 
     @Test
     void targetRecordComponentReflectionTest() {
-        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        TypeSystem ts = newTypeSystem();
         JClassSymbol record = loadRecordClass(ts, "AnnotatedForRecord");
         List<JRecordComponentSymbol> components = record.getRecordComponents();
         assertThat(components, hasSize(1));
@@ -127,7 +131,7 @@ class ClassStubTest {
 
     @Test
     void testLoadScalaPrivateClassInInterface() {
-        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        TypeSystem ts = newTypeSystem();
         JClassSymbol itf = loadScalaClass(ts, "InterfaceWithPrivateInner");
         assertThat(itf, hasProperty("interface", equalTo(true)));
         assertThat(itf.getDeclaredClasses(), hasSize(2));
@@ -144,7 +148,7 @@ class ClassStubTest {
 
     @Test
     void testLoadAnonClassFromEnum() {
-        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        TypeSystem ts = newTypeSystem();
         JClassSymbol enumClass = loadTestDataClass(ts, "EnumConstantWithBody");
         assertThat(enumClass, hasProperty("simpleName", equalTo("EnumConstantWithBody")));
 
@@ -158,7 +162,7 @@ class ClassStubTest {
 
     @Test
     void testLoadLocalClass() {
-        TypeSystem ts = TypeSystem.usingClassLoaderClasspath(JavaParsingHelper.class.getClassLoader());
+        TypeSystem ts = newTypeSystem();
         JClassSymbol outerClass = loadTestDataClass(ts, "LocalClasses");
 
         AsmSymbolResolver resolver = (AsmSymbolResolver) ts.bootstrapResolver();

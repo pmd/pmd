@@ -186,7 +186,10 @@ public final class TypeSystem {
      * @param bootstrapResourceLoader Classloader used to resolve class files
      *                                to populate the fields of the new type
      *                                system
+     *
+     * @deprecated Use {@link #usingClasspath(Classpath)}
      */
+    @Deprecated
     public static TypeSystem usingClassLoaderClasspath(ClassLoader bootstrapResourceLoader) {
         return usingClasspath((Classpath) bootstrapResourceLoader::getResourceAsStream);
     }

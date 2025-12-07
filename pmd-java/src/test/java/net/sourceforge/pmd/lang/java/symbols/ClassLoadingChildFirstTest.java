@@ -15,10 +15,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 /**
  * @author Clément Fournier
@@ -38,20 +38,22 @@ class ClassLoadingChildFirstTest {
      * </p>
      */
     @Test
-    void testClassLoading() {
+    void testClassLoading() throws Exception {
         Path file = Paths.get("src/test/resources",
                 getClass().getPackage().getName().replace('.', '/'),
                 "custom_java_lang.jar");
 
-        PMDConfiguration config = new PMDConfiguration();
-        config.prependAuxClasspath(file.toAbsolutePath().toString());
+        PmdClasspathConfig config = PmdClasspathConfig.bootClasspath();
+        config = config.prependClasspath(file.toAbsolutePath().toString());
 
-        TypeSystem typeSystem = TypeSystem.usingClassLoaderClasspath(config.getClassLoader());
+        try (PmdClasspathConfig.OpenClasspath cp = config.open()) {
+            TypeSystem typeSystem = TypeSystem.usingClasspath(cp);
 
-        JClassType voidClass = typeSystem.BOXED_VOID;
-        List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
-        assertThat(declaredMethods, hasSize(1));
-        assertThat(declaredMethods.get(0), hasProperty("simpleName", equalTo("customMethodOnJavaLangVoid")));
+            JClassType voidClass = typeSystem.BOXED_VOID;
+            List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();
+            assertThat(declaredMethods, hasSize(1));
+            assertThat(declaredMethods.get(0), hasProperty("simpleName", equalTo("customMethodOnJavaLangVoid")));
+        }
     }
 
 }

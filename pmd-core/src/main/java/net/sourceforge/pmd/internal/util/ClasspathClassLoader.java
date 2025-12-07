@@ -102,7 +102,17 @@ public class ClasspathClassLoader extends URLClassLoader {
         private ParsedClassPath() {
         }
 
+        /**
+         * Prepend the given classpath config to this config. The classloader
+         * built from the resulting classpath will load classes first from the
+         * parameter classpath, then from this classpath.
+         */
         public @NonNull ParsedClassPath prepend(ParsedClassPath parsed) {
+            if (parsed.isEmpty()) {
+                return this;
+            } else if (this.isEmpty()) {
+                return parsed;
+            }
             ParsedClassPath result = new ParsedClassPath();
             result.urls.addAll(parsed.urls);
             result.urls.addAll(this.urls);
@@ -117,6 +127,7 @@ public class ClasspathClassLoader extends URLClassLoader {
             return result;
         }
 
+        /** Whether these arguments can be ignored, as they are an "empty" classpath. */
         public boolean isEmpty() {
             return urls.isEmpty() && jrtFsPath == null;
         }

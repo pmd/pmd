@@ -18,8 +18,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 public interface Classpath {
 
     /**
-     * Returns a URL to load the given resource if it exists in this classpath.
-     * Otherwise returns null. This will typically be used to find Java class files.
+     * Return a URL to load the given resource if it exists in this classpath.
+     * Otherwise, return null. This will typically be used to find Java class files.
      * A typical input would be {@code java/lang/String.class}.
      *
      * @param resourcePath Resource path, as described in {@link ClassLoader#getResource(String)}
@@ -41,6 +41,13 @@ public interface Classpath {
         return resourcePath -> deletedEntries.contains(resourcePath) ? null : findResource(resourcePath);
     }
 
+    /**
+     * If the current classpath cannot find a resource, fallback to
+     * the provided classpath.
+     *
+     * @param c A fallback classpath
+     * @return A new, composite classpath
+     */
     default Classpath delegateTo(Classpath c) {
         return path -> {
             InputStream p = findResource(path);
