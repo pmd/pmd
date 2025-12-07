@@ -84,7 +84,7 @@ class PmdConfigurationTest {
         configuration.prependAuxClasspath("some.jar");
         assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getAnalysisClasspath().getFallback(), "Default ClassLoader");
         ClasspathClassLoaderTestUtil.assertClasspathContainsExactly(configuration.getAnalysisClasspath().getClasspath(),
-            Paths.get("some.jar").toAbsolutePath().toString());
+            Paths.get("some.jar").toAbsolutePath().toUri().getPath());
         assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader().getParent(),
                 "parent classLoader");
         configuration.setAnalysisClasspath(PmdClasspathConfig.pmdClasspath());

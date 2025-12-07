@@ -62,7 +62,7 @@ class PmdClasspathConfigTest {
         config = config.prependClasspath("a/foo.jar");
 
         ClasspathClassLoaderTestUtil.assertClasspathContainsExactly(config.getClasspath(),
-            Paths.get("a/foo.jar").toAbsolutePath().toString());
+            Paths.get("a/foo.jar").toAbsolutePath().toUri().getPath());
 
         try (PmdClasspathConfig.OpenClasspath cp = config.open()) {
             assertNotSame(cl, cp.classLoader());
