@@ -172,20 +172,11 @@ public final class PmdClasspathConfig {
      * Return an object that witnesses that the classpath has been opened.
      * Any call to {@link OpenClasspath#findResource(String)} needs to be
      * done before closing that instance. The instance must be closed by
-     * the caller when they are done. It is possible for several threads
-     * to run analyses concurrently with the same classpath wrapper object.
-     * In this case the classpath will only ever be closed by the last
-     * analysis that finishes.
+     * the caller when they are done.
      */
     @CheckReturnValue
     public OpenClasspath open() {
-        ClassLoader classLoader = fallback;
-        boolean shouldClose = false;
-        if (!classpath.isEmpty()) {
-            classLoader = new ClasspathClassLoader(classpath, classLoader);
-            shouldClose = true;
-        }
-        return new OpenClasspath(classLoader, shouldClose);
+        return new OpenClasspath(new ClasspathClassLoader(classpath, fallback));
     }
 
 
@@ -229,13 +220,19 @@ public final class PmdClasspathConfig {
                + '}';
     }
 
+    /**
+     * A closeable instance that implements {@link Classpath}. The caller
+     * of {@link #open()} is responsible for closing this instance.
+     */
     public static final class OpenClasspath implements AutoCloseable, Classpath {
-        private final ClassLoader myClassLoader;
-        private final AtomicBoolean shouldClose;
+        private final AtomicBoolean shouldClose = new AtomicBoolean(true);
+        // Note: we always need to create a ClasspathClassLoader as even with an empty
+        // classpath it allows us to load module-info definitions from the boot classpath.
+        // For some reason the default AppClassLoader doesn't do that.
+        private final ClasspathClassLoader myClassLoader;
 
-        private OpenClasspath(@NonNull ClassLoader myClassLoader, boolean shouldClose) {
+        private OpenClasspath(@NonNull ClasspathClassLoader myClassLoader) {
             this.myClassLoader = myClassLoader;
-            this.shouldClose = new AtomicBoolean(shouldClose);
         }
 
         // test only
@@ -250,15 +247,16 @@ public final class PmdClasspathConfig {
 
         @Override
         public @Nullable InputStream findResource(String resourcePath) {
+            assert shouldClose.get() : "Used a closed classloader";
             return myClassLoader.getResourceAsStream(resourcePath);
         }
 
         @Override
         public void close() throws Exception {
-            if (shouldClose.compareAndSet(true, false) && myClassLoader instanceof AutoCloseable) {
+            if (shouldClose.compareAndSet(true, false)) {
                 // This will only be called at most once, regardless of the number of threads
                 // that have access to the ClassLoaderWrapper instance
-                ((AutoCloseable) myClassLoader).close();
+                myClassLoader.close();
             }
         }
 

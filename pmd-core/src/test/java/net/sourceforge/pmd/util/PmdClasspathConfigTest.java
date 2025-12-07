@@ -4,7 +4,6 @@
 
 package net.sourceforge.pmd.util;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -29,8 +28,9 @@ class PmdClasspathConfigTest {
         ClasspathClassLoaderTestUtil.assertClasspathContainsExactly(config.getClasspath());
 
         try (PmdClasspathConfig.OpenClasspath cp = config.open()) {
-            assertSame(cl, cp.classLoader());
-            assertFalse(cp.shouldClose());
+            assertInstanceOf(ClasspathClassLoader.class, cp.classLoader());
+            assertSame(cl, cp.classLoader().getParent());
+            assertTrue(cp.shouldClose());
         }
 
         verify(cl, never()).close();
@@ -45,8 +45,9 @@ class PmdClasspathConfigTest {
         ClasspathClassLoaderTestUtil.assertClasspathContainsExactly(config.getClasspath());
 
         try (PmdClasspathConfig.OpenClasspath cp = config.open()) {
-            assertSame(cl, cp.classLoader());
-            assertFalse(cp.shouldClose());
+            assertInstanceOf(ClasspathClassLoader.class, cp.classLoader());
+            assertSame(cl, cp.classLoader().getParent());
+            assertTrue(cp.shouldClose());
         }
 
         verify(cl, never()).close();
