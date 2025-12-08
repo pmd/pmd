@@ -61,7 +61,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
 
         // record that this wrapper should not be closed before we're done with it.
         this.openClasspath = classpathConfig.open();
-        this.typeSystem = TypeSystem.usingClasspath(openClasspath);
+        this.typeSystem = TypeSystem.usingClasspath(openClasspath::findResource);
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);

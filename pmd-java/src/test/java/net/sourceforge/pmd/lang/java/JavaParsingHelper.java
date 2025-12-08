@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.JavaParser;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.internal.JavaLanguageProcessor;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger;
 import net.sourceforge.pmd.lang.java.types.internal.infer.TypeInferenceLogger.SimpleLogger;
@@ -53,7 +54,7 @@ public class JavaParsingHelper extends BaseParsingHelper<JavaParsingHelper, ASTC
      * default options of JavaParsingHelper. This allows constants like
      * the null type to be compared.
      */
-    public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClasspath(TEST_CLASSPATH);
+    public static final TypeSystem TEST_TYPE_SYSTEM = TypeSystem.usingClasspath(Classpath.forOpenClasspath(TEST_CLASSPATH));
 
 
     /** This runs all processing stages when parsing. */

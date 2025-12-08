@@ -16,6 +16,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.util.PmdClasspathConfig;
@@ -47,7 +48,7 @@ class ClassLoadingChildFirstTest {
         config = config.prependClasspath(file.toAbsolutePath().toString());
 
         try (PmdClasspathConfig.OpenClasspath cp = config.open()) {
-            TypeSystem typeSystem = TypeSystem.usingClasspath(cp);
+            TypeSystem typeSystem = TypeSystem.usingClasspath(Classpath.forOpenClasspath(cp));
 
             JClassType voidClass = typeSystem.BOXED_VOID;
             List<JMethodSymbol> declaredMethods = voidClass.getSymbol().getDeclaredMethods();

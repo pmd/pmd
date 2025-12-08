@@ -23,7 +23,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
-import net.sourceforge.pmd.lang.impl.Classpath;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
@@ -37,6 +36,7 @@ import net.sourceforge.pmd.lang.java.symbols.SymbolResolver;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.UnresolvedClassStore;
 import net.sourceforge.pmd.lang.java.symbols.internal.asm.AsmSymbolResolver;
+import net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.RealPrimitiveSymbol;
 import net.sourceforge.pmd.lang.java.types.BasePrimitiveSymbol.VoidSymbol;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
@@ -201,14 +201,7 @@ public final class TypeSystem {
      * @param bootstrapResourceLoader Classpath used to resolve class files
      *                                to populate the fields of the new type
      *                                system
-     *
-     * @deprecated Use {@link #usingClasspath(Classpath)}
      */
-    @Deprecated
-    public static TypeSystem usingClasspath(net.sourceforge.pmd.lang.java.symbols.internal.asm.Classpath bootstrapResourceLoader) {
-        return new TypeSystem(ts -> new AsmSymbolResolver(ts, bootstrapResourceLoader));
-    }
-
     public static TypeSystem usingClasspath(Classpath bootstrapResourceLoader) {
         return new TypeSystem(ts -> new AsmSymbolResolver(ts, bootstrapResourceLoader));
     }

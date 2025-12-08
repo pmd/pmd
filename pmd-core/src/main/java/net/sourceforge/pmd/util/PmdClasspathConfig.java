@@ -23,7 +23,6 @@ import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.cache.internal.ClasspathFingerprinter;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.ClasspathClassLoader.ParsedClassPath;
-import net.sourceforge.pmd.lang.impl.Classpath;
 
 import com.google.errorprone.annotations.CheckReturnValue;
 
@@ -236,10 +235,10 @@ public final class PmdClasspathConfig {
     }
 
     /**
-     * A closeable instance that implements {@link Classpath}. The caller
-     * of {@link #open()} is responsible for closing this instance.
+     * A closeable instance that can be used to load resources from a classpath.
+     * The caller of {@link #open()} is responsible for closing this instance.
      */
-    public static final class OpenClasspath implements AutoCloseable, Classpath {
+    public static final class OpenClasspath implements AutoCloseable {
         private final AtomicBoolean shouldClose = new AtomicBoolean(true);
         // Note: we always need to create a ClasspathClassLoader as even with an empty
         // classpath it allows us to load module-info definitions from the boot classpath.
@@ -260,7 +259,14 @@ public final class PmdClasspathConfig {
             return shouldClose.get();
         }
 
-        @Override
+        /**
+         * Return a URL to load the given resource if it exists in this classpath.
+         * Otherwise, return null. This will typically be used to find Java class files.
+         * A typical input would be {@code java/lang/String.class}.
+         *
+         * @param resourcePath Resource path, as described in {@link ClassLoader#getResource(String)}
+         * @return A InputStream if the resource exists, otherwise null
+         */
         public @Nullable InputStream findResource(String resourcePath) {
             assert shouldClose.get() : "Used a closed classloader";
             return myClassLoader.getResourceAsStream(resourcePath);
