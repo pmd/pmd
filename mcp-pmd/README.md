@@ -35,7 +35,7 @@ Add to your MCP configuration (`.mcp.json` or settings):
   "mcpServers": {
     "pmd": {
       "command": "npx",
-      "args": ["pmd-mcp"]
+      "args": ["@springsoftware/pmd-mcp"]
     }
   }
 }
@@ -50,7 +50,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
   "mcpServers": {
     "pmd": {
       "command": "npx",
-      "args": ["pmd-mcp"]
+      "args": ["@springsoftware/pmd-mcp"]
     }
   }
 }

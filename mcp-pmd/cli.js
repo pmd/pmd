@@ -4,9 +4,9 @@
  * PMD MCP Server CLI
  * 
  * Usage:
- *   npx pmd-mcp          - Start the MCP server (stdio transport)
- *   npx pmd-mcp --help   - Show help
- *   npx pmd-mcp --version - Show version
+ *   npx @springsoftware/pmd-mcp          - Start the MCP server (stdio transport)
+ *   npx @springsoftware/pmd-mcp --help   - Show help
+ *   npx @springsoftware/pmd-mcp --version - Show version
  */
 
 const args = process.argv.slice(2);
@@ -16,16 +16,16 @@ if (args.includes('--help') || args.includes('-h')) {
 PMD MCP Server - Static code analysis for AI assistants
 
 Usage:
-  npx pmd-mcp              Start the MCP server (stdio transport)
-  npx pmd-mcp --help       Show this help message
-  npx pmd-mcp --version    Show version
+  npx @springsoftware/pmd-mcp              Start the MCP server (stdio transport)
+  npx @springsoftware/pmd-mcp --help       Show this help message
+  npx @springsoftware/pmd-mcp --version    Show version
 
 Configuration (add to your MCP client config):
   {
     "mcpServers": {
       "pmd": {
         "command": "npx",
-        "args": ["pmd-mcp"]
+        "args": ["@springsoftware/pmd-mcp"]
       }
     }
   }
