@@ -12,7 +12,7 @@ Rules that are related to code documentation.
     <rule name="CommentContent"
           language="java"
           since="5.0"
-          message="Invalid words or phrases found"
+          message="Line matches forbidden content regex ({0})"
           class="net.sourceforge.pmd.lang.java.rule.documentation.CommentContentRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentcontent">
         <description>
@@ -50,7 +50,7 @@ Denotes whether javadoc (formal) comments are required (or unwanted) for specifi
     <rule name="CommentSize"
           language="java"
           since="5.0"
-          message="Comment is too large"
+          message="Comment is too large: {0}"
           class="net.sourceforge.pmd.lang.java.rule.documentation.CommentSizeRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_documentation.html#commentsize">
         <description>
