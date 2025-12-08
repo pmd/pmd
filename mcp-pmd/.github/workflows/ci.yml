@@ -1,0 +1,37 @@
+name: CI
+
+on:
+  push:
+    branches: [main, feature/mcp-server]
+    paths:
+      - 'mcp-pmd/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'mcp-pmd/**'
+
+defaults:
+  run:
+    working-directory: mcp-pmd
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: mcp-pmd/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Test CLI
+        run: node cli.js --version
