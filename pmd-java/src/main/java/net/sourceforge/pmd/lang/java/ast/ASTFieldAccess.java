@@ -30,16 +30,6 @@ public final class ASTFieldAccess extends AbstractJavaExpr implements ASTNamedRe
         super(id);
     }
 
-    /**
-     * Promotes an ambiguous name to the LHS of this node.
-     */
-    ASTFieldAccess(ASTAmbiguousName lhs, String fieldName) {
-        super(JavaParserImplTreeConstants.JJTFIELDACCESS);
-        assert fieldName != null;
-        this.addChild(lhs, 0);
-        this.setImage(fieldName);
-    }
-
     ASTFieldAccess(ASTExpression lhs, JavaccToken identifier) {
         super(JavaParserImplTreeConstants.JJTFIELDACCESS);
         TokenUtils.expectKind(identifier, JavaTokenKinds.IDENTIFIER);
