@@ -1,0 +1,57 @@
+{
+  "name": "@pmd/mcp",
+  "version": "0.1.0",
+  "description": "MCP server for PMD static code analyzer - enables AI assistants to run code analysis",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "mcp-pmd": "cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "node cli.js",
+    "dev": "npx tsx src/index.ts",
+    "lint": "eslint src/",
+    "test": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "pmd",
+    "static-analysis",
+    "code-quality",
+    "linter",
+    "ai",
+    "llm"
+  ],
+  "author": "PMD Contributors",
+  "license": "BSD-4-Clause",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pmd/pmd.git",
+    "directory": "mcp-pmd"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0",
+    "vitest": "^2.1.0",
+    "eslint": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0"
+  },
+  "files": [
+    "dist/",
+    "cli.js",
+    "README.md"
+  ]
+}
