@@ -5,7 +5,6 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -20,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -30,6 +28,7 @@ import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
 import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
 /**
@@ -77,8 +76,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <h2>Language configuration</h2>
  * <ul>
  * <li>Use {@link #setSuppressMarker(String)} to change the comment marker for suppression comments. Defaults to {@value #DEFAULT_SUPPRESS_MARKER}.</li>
- * <li>See {@link #setClassLoader(ClassLoader)} and {@link #prependAuxClasspath(String)} for
- *  information for how to configure classpath for Java analysis.</li>
+ * <li>See {@link #setAnalysisClasspath(PmdClasspathConfig)} and {@link #prependAuxClasspath(String)} for how to configure the classpath for Java analysis.</li>
  * <li>You can set additional language properties with {@link #getLanguageProperties(Language)}</li>
  * </ul>
  *
@@ -89,6 +87,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * </ul>
  */
 public class PMDConfiguration extends AbstractConfiguration {
+
     private static final LanguageRegistry DEFAULT_REGISTRY = LanguageRegistry.PMD;
 
     /** The default suppress marker string. */
@@ -97,7 +96,8 @@ public class PMDConfiguration extends AbstractConfiguration {
     // General behavior options
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
-    private ClassLoader classLoader = getClass().getClassLoader();
+
+    private PmdClasspathConfig classpathConfig = PmdClasspathConfig.pmdClasspath();
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -163,24 +163,68 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the ClassLoader being used by PMD when processing Rules.
      *
      * @return The ClassLoader being used
+     * @deprecated PMD will manage classpath handling internally and
+     *     will not necessarily build a classloader. Use {@link #setAnalysisClasspath(PmdClasspathConfig)}
+     *     or {@link #prependAuxClasspath(String)} and stop using the classloader directly.
      */
+    @Deprecated
     public ClassLoader getClassLoader() {
-        return classLoader;
+        if (classpathConfig.getClasspath().isEmpty()) {
+            return classpathConfig.getFallback();
+        }
+        return classpathConfig.leakClassLoader();
     }
 
     /**
      * Set the ClassLoader being used by PMD when processing Rules. Setting a
      * value of <code>null</code> will cause the default ClassLoader to be used.
      *
-     * @param classLoader
+     * <p>NOTE: PMD does not close this classloader! It is the responsibility of
+     * whoever creates this classloader to manage its lifecycle.
+     *
+     * @param classpathWrapper
      *            The ClassLoader to use
+     *
+     * @deprecated Use {@link #setAnalysisClasspath(PmdClasspathConfig)}
      */
-    public void setClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
-            this.classLoader = getClass().getClassLoader();
-        } else {
-            this.classLoader = classLoader;
-        }
+    @Deprecated
+    public void setClassLoader(ClassLoader classpathWrapper) {
+        setAnalysisClasspath(
+            classpathWrapper == null ? PmdClasspathConfig.pmdClasspath()
+                                     : PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(classpathWrapper)
+        );
+    }
+
+    /**
+     * Return the current classpath config.
+     */
+    public PmdClasspathConfig getAnalysisClasspath() {
+        return classpathConfig;
+    }
+
+    /**
+     * Set the classpath used to load classes for the analysis of Java (or other JVM language)
+     * sources. During analysis of those sources, the symbols used by the
+     * analysed source files are resolved from this classpath. The classpath
+     * should therefore provide access to all dependencies of the analysed
+     * sources (including JDK classes for the correct JDK versions). It
+     * should also provide access to the compiled classes corresponding to
+     * the analysed sources themselves, for the purpose of resolving
+     * inter-file dependencies.
+     *
+     * <p>See {@link PmdClasspathConfig} for documentation about how to
+     * build instances.
+     *
+     * <p>PMD's default analysis classpath loads classes with
+     * {@link PmdClasspathConfig#pmdClasspath()}, which is likely
+     * to be insufficient. If you analyze Java sources, make sure to
+     * configure this appropriately.
+     *
+     * @param classpath A classpath wrapper object
+     * @see #prependAuxClasspath(String)
+     */
+    public void setAnalysisClasspath(@NonNull PmdClasspathConfig classpath) {
+        this.classpathConfig = Objects.requireNonNull(classpath);
     }
 
     /**
@@ -199,21 +243,10 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param classpath The prepended classpath.
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
-     * @see PMDConfiguration#setClassLoader(ClassLoader)
+     * @see PmdClasspathConfig#prependClasspath(String)
      */
     public void prependAuxClasspath(String classpath) {
-        try {
-            if (classLoader == null) {
-                classLoader = PMDConfiguration.class.getClassLoader();
-            }
-            if (classpath != null) {
-                classLoader = new ClasspathClassLoader(classpath, classLoader);
-            }
-        } catch (IOException e) {
-            // Note: IOExceptions shouldn't appear anymore, they should already be converted
-            // to IllegalArgumentException in ClasspathClassLoader.
-            throw new IllegalArgumentException(e);
-        }
+        this.classpathConfig = this.classpathConfig.prependClasspathOrClasspathListFile(classpath);
     }
 
     /**
