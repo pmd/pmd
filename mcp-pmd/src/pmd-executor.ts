@@ -61,9 +61,10 @@ function runCommand(
   options: { timeout?: number; cwd?: string } = {}
 ): Promise<{ stdout: string; stderr: string; exitCode: number }> {
   return new Promise((resolve, reject) => {
+    // Don't use shell: true to avoid path quoting issues with spaces
     const proc = spawn(command, args, {
       cwd: options.cwd,
-      shell: true,
+      shell: false,
       stdio: ['pipe', 'pipe', 'pipe'],
     });
 

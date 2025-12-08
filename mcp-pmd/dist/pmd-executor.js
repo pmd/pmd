@@ -48,9 +48,10 @@ async function detectPmdPath() {
  */
 function runCommand(command, args, options = {}) {
     return new Promise((resolve, reject) => {
+        // Don't use shell: true to avoid path quoting issues with spaces
         const proc = (0, child_process_1.spawn)(command, args, {
             cwd: options.cwd,
-            shell: true,
+            shell: false,
             stdio: ['pipe', 'pipe', 'pipe'],
         });
         let stdout = '';
