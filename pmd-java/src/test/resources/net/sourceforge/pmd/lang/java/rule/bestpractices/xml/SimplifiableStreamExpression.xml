@@ -103,4 +103,42 @@
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Test any/none/allMatch</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>9,10,11,12,15,16,19</expected-linenumbers>
+        <expected-messages>
+            <message>Stream call chain may be simplified: replace `!stream.anyMatch(..)` with `stream.noneMatch(..)`</message>
+            <message>Stream call chain may be simplified: replace `!stream.anyMatch(x -> !(..))` with `stream.allMatch(..)`</message>
+            <message>Stream call chain may be simplified: replace `!stream.allMatch(x -> !(..))` with `stream.anyMatch(..)`</message>
+            <message>Stream call chain may be simplified: replace `!stream.noneMatch(x -> !(..))` with `!stream.allMatch(..)`</message>
+            <message>Stream call chain may be simplified: replace `stream.allMatch(x -> !(..))` with `stream.noneMatch(..)`</message>
+            <message>Stream call chain may be simplified: replace `stream.noneMatch(x -> !(..))` with `stream.allMatch(..)`</message>
+            <message>Stream call chain may be simplified: replace `!stream.noneMatch(..)` with `stream.anyMatch(..)`</message>
+        </expected-messages>
+        <code><![CDATA[
+            import java.util.Arrays;
+            import java.util.stream.Stream;
+            import java.util.stream.Collectors;
+
+            class SomeTestClass {
+                void example(Stream<String> strings) {
+                    boolean b;
+                    b = strings.anyMatch(it -> it.isEmpty()); // ok
+                    b = !strings.anyMatch(it -> it.isEmpty()); // noneMatch(String::isEmpty)
+                    b = !strings.anyMatch(it -> !it.isEmpty()); // allMatch(String::isEmpty)
+                    b = !strings.allMatch(it -> !it.isEmpty()); // anyMatch(String::isEmpty)
+                    b = !strings.noneMatch(it -> !it.isEmpty()); // !allMatch(String::isEmpty)
+
+                    b = strings.anyMatch(it -> !it.isEmpty()); // ok
+                    b = strings.allMatch(it -> !it.isEmpty()); // noneMatch(String::isEmpty)
+                    b = strings.noneMatch(it -> !it.isEmpty()); // allMatch(String::isEmpty)
+
+                    b = !strings.allMatch(it -> it.isEmpty()); // ok
+                    b = !strings.noneMatch(it -> it.isEmpty()); // anyMatch(String::isEmpty)
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

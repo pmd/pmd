@@ -1479,6 +1479,8 @@ class SomeTestClass {
             - `.collect(Collectors.toList())` -> `.toList()` (Java 16+)
             - `Arrays.asList(..).stream()` -> `Arrays.stream(..)` or `Stream.of(..)`
             - `collection.stream().forEach(..)` -> `collection.forEach(..)`
+            - Many patterns related to `stream.anyMatch`, `allMatch` and `noneMatch` and negations.
+            For instance `!stream.anyMatch(..)` -> `stream.noneMatch(..)`
 
         </description>
         <priority>3</priority>

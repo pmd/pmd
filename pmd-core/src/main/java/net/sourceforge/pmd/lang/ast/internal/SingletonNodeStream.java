@@ -93,6 +93,11 @@ final class SingletonNodeStream<T extends Node> extends IteratorBasedNStream<T> 
     }
 
     @Override
+    public <R extends Node> NodeStream<R> filterIs(Class<? extends R> rClass) {
+        return rClass.isInstance(node) ? (NodeStream<R>) this : NodeStream.empty();
+    }
+
+    @Override
     public NodeStream<T> drop(int n) {
         AssertionUtil.requireNonNegative("n", n);
         return n == 0 ? this : NodeStream.empty();
