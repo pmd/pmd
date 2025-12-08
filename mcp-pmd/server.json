@@ -1,0 +1,20 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
+  "name": "io.github.roeiba/pmd",
+  "description": "MCP server for PMD static code analyzer - run code analysis and detect duplicates",
+  "repository": {
+    "url": "https://github.com/roeiba/pmd",
+    "source": "github"
+  },
+  "version": "0.1.2",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@springsoftware/pmd-mcp",
+      "version": "0.1.2",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ]
+}
