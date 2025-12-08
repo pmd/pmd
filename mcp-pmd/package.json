@@ -1,11 +1,11 @@
 {
-  "name": "@pmd/mcp",
+  "name": "pmd-mcp",
   "version": "0.1.0",
   "description": "MCP server for PMD static code analyzer - enables AI assistants to run code analysis",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "mcp-pmd": "cli.js"
+    "pmd-mcp": "cli.js"
   },
   "scripts": {
     "build": "tsc",
@@ -30,8 +30,12 @@
   "license": "BSD-4-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/pmd/pmd.git",
+    "url": "https://github.com/roeiba/pmd.git",
     "directory": "mcp-pmd"
+  },
+  "homepage": "https://github.com/roeiba/pmd/tree/feature/mcp-server/mcp-pmd#readme",
+  "bugs": {
+    "url": "https://github.com/roeiba/pmd/issues"
   },
   "engines": {
     "node": ">=18.0.0"
