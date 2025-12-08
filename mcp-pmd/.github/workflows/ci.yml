@@ -35,3 +35,55 @@ jobs:
 
       - name: Test CLI
         run: node cli.js --version
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: mcp-pmd/package-lock.json
+
+      - name: Install PMD
+        run: |
+          wget https://github.com/pmd/pmd/releases/download/pmd_releases%2F7.9.0/pmd-dist-7.9.0-bin.zip
+          unzip pmd-dist-7.9.0-bin.zip
+          echo "$PWD/pmd-bin-7.9.0/bin" >> $GITHUB_PATH
+
+      - name: Verify PMD installation
+        run: pmd --version
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
+
+  test-without-pmd:
+    runs-on: ubuntu-latest
+    name: Test (without PMD)
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: mcp-pmd/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run tests (graceful degradation)
+        run: npm test
