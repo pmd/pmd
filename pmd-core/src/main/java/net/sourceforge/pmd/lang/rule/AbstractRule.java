@@ -220,8 +220,7 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      * Create the targeting strategy for this rule.
      * Use the factory methods of {@link RuleTargetSelector}.
      */
-    @NonNull
-    protected RuleTargetSelector buildTargetSelector() {
+    protected @NonNull RuleTargetSelector buildTargetSelector() {
         Set<Class<? extends Node>> crvs = getClassRuleChainVisits();
         return crvs.isEmpty() ? RuleTargetSelector.forRootOnly()
                               : RuleTargetSelector.forTypes(crvs);

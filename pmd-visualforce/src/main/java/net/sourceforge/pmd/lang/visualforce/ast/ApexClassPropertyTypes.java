@@ -98,7 +98,7 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
     @Override
     protected DataType putDataType(String name, DataType dataType) {
         DataType previousType = super.putDataType(name, dataType);
-        if (previousType != null && !previousType.equals(dataType)) {
+        if (previousType != null && previousType != dataType) {
             // It is possible to have a property and method with different types that appear the same to this code. An
             // example is an Apex class with a property "public String Foo {get; set;}" and a method of
             // "Integer getFoo() { return 1; }". In this case set the value as Unknown because we can't be sure which it

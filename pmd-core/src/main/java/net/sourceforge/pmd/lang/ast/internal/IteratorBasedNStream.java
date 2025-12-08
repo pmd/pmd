@@ -91,8 +91,7 @@ abstract class IteratorBasedNStream<T extends Node> implements NodeStream<T> {
     }
 
 
-    @NonNull
-    protected <R extends Node> DescendantNodeStream<R> flatMapDescendants(Function<T, DescendantNodeStream<? extends R>> mapper) {
+    protected <R extends Node> @NonNull DescendantNodeStream<R> flatMapDescendants(Function<T, DescendantNodeStream<? extends R>> mapper) {
         return new DescendantMapping<>(this, mapper);
     }
 

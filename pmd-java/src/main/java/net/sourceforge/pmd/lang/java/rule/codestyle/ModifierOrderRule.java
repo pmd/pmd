@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
+import net.sourceforge.pmd.lang.java.ast.ASTTypeParameters;
 import net.sourceforge.pmd.lang.java.ast.ASTVoidType;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -37,8 +38,11 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
     private static final String MSG_KEYWORD_ORDER =
         "Missorted modifiers `{0} {1}`.";
 
-    private static final String MSG_ANNOTATIONS_SHOULD_BE_BEFORE_MODS =
-        "Missorted modifiers `{0} {1}`. Annotations should be placed before modifiers.";
+    private static final String MSG_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS =
+        "Missorted modifiers `{0} {1}`. Type annotations should be placed before modifiers.";
+
+    private static final String MSG_NON_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS =
+        "Missorted modifiers `{0} {1}`. Non-type annotations should be placed before modifiers.";
 
     private static final String MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE =
         "Missorted modifiers `{0} {1}`. Type annotations should be placed before the type they qualify.";
@@ -85,6 +89,8 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
 
         abstract boolean checkNextAnnot(AnnotMod next, RuleContext ctx);
 
+        abstract boolean checkNextTypeParams(TypeParamsMod next, RuleContext ctx);
+
         @Override
         public abstract String toString();
     }
@@ -115,9 +121,19 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
             if (next.isTypeAnnot != OptionalBool.NO && typeAnnotPosition != TypeAnnotationPosition.ON_DECL) {
                 return false;
             }
-            ctx.at(reportNode.atToken(token)).warnWithMessage(MSG_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
+
+            if (next.isTypeAnnot.isTrue()) {
+                ctx.at(reportNode.atToken(token)).warnWithMessage(MSG_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
+            } else {
+                ctx.at(reportNode.atToken(token)).warnWithMessage(MSG_NON_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
+            }
             return true;
 
+        }
+
+        @Override
+        boolean checkNextTypeParams(TypeParamsMod next, RuleContext ctx) {
+            return false;
         }
 
         @Override
@@ -126,7 +142,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         }
     }
 
-    class AnnotMod extends ModifierOrderRule.LastModSeen {
+    class AnnotMod extends LastModSeen {
         private final @Nullable LastModSeen previous;
         private final ASTAnnotation annot;
         private final OptionalBool isTypeAnnot;
@@ -149,8 +165,10 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
                 // annotation sandwiched between keywords
                 if (isTypeAnnot.isTrue() && typeAnnotPosition != TypeAnnotationPosition.ON_DECL) {
                     ctx.at(annot).warnWithMessage(MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE, this, next);
+                } else if (isTypeAnnot.isTrue()) {
+                    ctx.addViolationWithMessage(annot, MSG_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, previous, this);
                 } else {
-                    ctx.at(annot).warnWithMessage(MSG_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, previous, this);
+                    ctx.at(annot).warnWithMessage(MSG_NON_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, previous, this);
                 }
                 return true;
             }
@@ -165,8 +183,45 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         }
 
         @Override
+        boolean checkNextTypeParams(TypeParamsMod next, RuleContext ctx) {
+            if (isTypeAnnot.isTrue() && typeAnnotPosition == TypeAnnotationPosition.ON_TYPE) {
+                ctx.addViolationWithMessage(annot, MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE, this, next);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
         public String toString() {
             return PrettyPrintingUtil.prettyPrintAnnot(annot);
+        }
+    }
+
+    class TypeParamsMod extends LastModSeen {
+        private final ASTTypeParameters typeParameters;
+
+        TypeParamsMod(ASTTypeParameters typeParameters) {
+            this.typeParameters = typeParameters;
+        }
+
+        @Override
+        boolean checkNextKeyword(KwMod next, RuleContext ctx) {
+            return false;
+        }
+
+        @Override
+        boolean checkNextAnnot(AnnotMod next, RuleContext ctx) {
+            return false;
+        }
+
+        @Override
+        boolean checkNextTypeParams(TypeParamsMod next, RuleContext ctx) {
+            return false;
+        }
+
+        @Override
+        public String toString() {
+            return typeParameters.getText().toString();
         }
     }
 
@@ -202,6 +257,18 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
                 lastModSeen = kwMod;
                 return false;
             }
+
+            @Override
+            public boolean recordTypeParameters(ASTTypeParameters typeParameters) {
+                TypeParamsMod typeParamsMod = new TypeParamsMod(typeParameters);
+                if (lastModSeen != null) {
+                    if (lastModSeen.checkNextTypeParams(typeParamsMod, ctx)) {
+                        return true;
+                    }
+                }
+                lastModSeen = typeParamsMod;
+                return false;
+            }
         };
 
         readModifierList(modList, eventHandler);
@@ -225,6 +292,9 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
 
     private static @Nullable ASTType getFollowingType(ASTModifierList node) {
         JavaNode nextSibling = node.getNextSibling();
+        if (nextSibling instanceof ASTTypeParameters) {
+            nextSibling = nextSibling.getNextSibling();
+        }
         if (nextSibling instanceof ASTType) {
             return (ASTType) nextSibling;
         }
@@ -252,6 +322,9 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
 
         /** Record that the next modifier is the given one occurring at the given token. */
         boolean recordModifier(JModifier mod, JavaccToken token);
+
+        /** Record that the next "modifier" is the given type parameters. */
+        boolean recordTypeParameters(ASTTypeParameters typeParameters);
     }
 
     /**
@@ -301,7 +374,9 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
             tok = tok.getNext();
         }
 
-
+        if (modList.getNextSibling() instanceof ASTTypeParameters) {
+            events.recordTypeParameters((ASTTypeParameters) modList.getNextSibling());
+        }
     }
 
     private static JModifier getModFromToken(JavaccToken tok) {

@@ -74,8 +74,7 @@ public final class GraphUtil {
     }
 
 
-    @NonNull
-    private static String escapeDotString(String string) {
+    private static @NonNull String escapeDotString(String string) {
         return string.replaceAll("\\R", "\\\n")
                      .replaceAll("\"", "\\\"");
     }

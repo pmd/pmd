@@ -15,7 +15,6 @@ import net.sourceforge.pmd.lang.apex.ast.ASTIfElseBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.apex.ast.ASTStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTThrowStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTTryCatchFinallyBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
@@ -32,7 +31,9 @@ import net.sourceforge.pmd.lang.ast.Node;
  * <a href="http://www.kclee.de/clemens/java/javancss/">JavaNCSS rules</a>.
  *
  * @author ported from Java original of Jason Bennett
+ * @deprecated Since 7.19.0.
  */
+@Deprecated
 abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCounterCheckRule<T> {
 
 
@@ -136,11 +137,6 @@ abstract class AbstractNcssCountRule<T extends ApexNode<?>> extends AbstractCoun
         @Override
         public Integer visit(ASTThrowStatement node, Void data) {
             return countNodeChildren(node, data) + 1;
-        }
-
-        @Override
-        public Integer visit(ASTStatement node, Void data) {
-            return 1;
         }
 
         @Override

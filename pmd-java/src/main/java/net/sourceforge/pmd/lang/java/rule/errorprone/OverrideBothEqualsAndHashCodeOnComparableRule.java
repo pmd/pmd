@@ -11,7 +11,6 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -40,18 +39,11 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
         return !TypeTestUtil.isA(Comparable.class, node) || TypeTestUtil.isA(Enum.class, node);
     }
 
-    private static boolean isCompareToMethod(ASTMethodDeclaration method) {
-        return "compareTo".equals(method.getName())
-                && method.getArity() == 1
-                && method.getResultTypeNode().getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)
-                && !method.isStatic();
-    }
-
     @Override
     protected void maybeReport(RuleContext ctx, ASTTypeDeclaration node, ASTMethodDeclaration hashCodeMethod, ASTMethodDeclaration equalsMethod) {
         ASTMethodDeclaration compareToMethod = node
                 .getDeclarations(ASTMethodDeclaration.class)
-                .first(OverrideBothEqualsAndHashCodeOnComparableRule::isCompareToMethod);
+                .first(JavaAstUtils::isCompareToMethod);
         if (compareToMethod == null) {
             return;
         }
@@ -62,7 +54,9 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
         }
 
         if (equalsMethod == null && hashCodeMethod == null) {
-            ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
+            if (!node.isRecord()) {
+                ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
+            }
         } else if (equalsMethod == null) {
             ctx.addViolationWithMessage(hashCodeMethod, MISSING_EQUALS);
         } else if (hashCodeMethod == null) {

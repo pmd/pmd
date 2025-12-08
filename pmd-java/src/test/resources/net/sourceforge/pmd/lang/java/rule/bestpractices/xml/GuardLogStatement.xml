@@ -791,4 +791,22 @@ class Test {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5820 compile time constant only recognized in first position</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.slf4j.*;
+
+public class MyLogger {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MyLogger.class);
+
+    public static void main(String[] args) {
+        final Marker marker = MarkerFactory.getMarker("myMarker");
+        LOGGER.debug(marker, "Part3 " + "Part4"); // fixed false positive
+        LOGGER.debug(marker, "Message={}", "Part3 " + "Part4"); // fixed false positive
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
