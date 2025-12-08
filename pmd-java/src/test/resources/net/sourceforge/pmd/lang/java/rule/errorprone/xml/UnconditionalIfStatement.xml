@@ -54,4 +54,20 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5882 false-negative if true/false is not literal</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class UnconditionalIfStatementBug {
+    public static void main(String[] args) {
+        boolean condition = true;
+        if (condition) {            // violation line 4
+            System.out.println("This will always print.");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
