@@ -493,7 +493,7 @@ final class ExprCheckHelper {
     }
 
     MethodCtDecl mrefSigAsCtDecl(JMethodSig sig) {
-        return new MethodCtDecl(sig, MethodResolutionPhase.INVOC_LOOSE, false, OptionalBool.UNKNOWN, false, null);
+        return new MethodCtDecl(sig, MethodResolutionPhase.INVOC_LOOSE, false, OptionalBool.UNKNOWN, false, null, false);
     }
 
     MethodCtDecl inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl) {

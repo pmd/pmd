@@ -102,4 +102,13 @@ public interface OverloadSelectionResult {
      */
     @Experimental
     @Nullable JTypeMirror getTypeToSearch();
+
+
+    /**
+     * Return whether several overloads were applicable, and needed to
+     * be disambiguated through specificity checks.
+     */
+    @Experimental
+    boolean hadSeveralApplicableOverloads();
+
 }

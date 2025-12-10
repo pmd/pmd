@@ -521,19 +521,22 @@ public interface ExprMirror {
             private final OptionalBool needsUncheckedConversion;
             private final boolean failed;
             private final @Nullable MethodUsageMirror expr;
+            private final boolean neededSpecificityCheck;
 
             MethodCtDecl(JMethodSig methodType,
                          MethodResolutionPhase resolvePhase,
                          boolean canSkipInvocation,
                          OptionalBool needsUncheckedConversion,
                          boolean failed,
-                         @Nullable MethodUsageMirror expr) {
+                         @Nullable MethodUsageMirror expr,
+                         boolean neededSpecificityCheck) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
                 this.canSkipInvocation = canSkipInvocation;
                 this.needsUncheckedConversion = needsUncheckedConversion;
                 this.failed = failed;
                 this.expr = expr;
+                this.neededSpecificityCheck = neededSpecificityCheck;
             }
 
             // package-private:
@@ -542,12 +545,16 @@ public interface ExprMirror {
                 return withMethod(method, failed);
             }
 
+            MethodCtDecl neededSpecificityCheck(boolean needed) {
+                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr, needed);
+            }
+
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
-                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr, neededSpecificityCheck);
             }
 
             public MethodCtDecl withExpr(MethodUsageMirror expr) {
-                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr, neededSpecificityCheck);
             }
 
             MethodCtDecl asFailed() {
@@ -563,7 +570,7 @@ public interface ExprMirror {
             }
 
             static MethodCtDecl unresolved(TypeSystem ts) {
-                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, OptionalBool.UNKNOWN, true, null);
+                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, OptionalBool.UNKNOWN, true, null, false);
             }
 
             // public:
@@ -597,6 +604,11 @@ public interface ExprMirror {
             @Override
             public @Nullable JTypeMirror getTypeToSearch() {
                 return expr != null ? expr.getTypeToSearch() : null;
+            }
+
+            @Override
+            public boolean hadSeveralApplicableOverloads() {
+                return neededSpecificityCheck;
             }
         }
     }
