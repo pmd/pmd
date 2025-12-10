@@ -4,8 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.cpd;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
+import java.util.List;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.TokenEntry;
@@ -32,13 +33,13 @@ public class JavaCpdLexer extends JavaccCpdLexer {
     private final boolean ignoreLiterals;
     private final boolean ignoreIdentifiers;
 
-    private final ConstructorDetector constructorDetector;
+    private final ThreadLocal<ConstructorDetector> constructorDetector;
 
     public JavaCpdLexer(JavaLanguageProperties properties) {
         ignoreAnnotations = properties.getProperty(CpdLanguageProperties.CPD_IGNORE_METADATA);
         ignoreLiterals = properties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_LITERALS);
         ignoreIdentifiers = properties.getProperty(CpdLanguageProperties.CPD_ANONYMIZE_IDENTIFIERS);
-        constructorDetector = new ConstructorDetector(ignoreIdentifiers);
+        constructorDetector = ThreadLocal.withInitial(() -> new ConstructorDetector(ignoreIdentifiers));
     }
 
     @Override
@@ -52,10 +53,15 @@ public class JavaCpdLexer extends JavaccCpdLexer {
     }
 
     @Override
+    protected List<String> javaccTokenNames() {
+        return JavaTokenKinds.TOKEN_NAMES;
+    }
+
+    @Override
     protected void processToken(TokenFactory tokenEntries, JavaccToken javaToken) {
         String image = javaToken.getImage();
 
-        constructorDetector.restoreConstructorToken(tokenEntries, javaToken);
+        constructorDetector.get().restoreConstructorToken(tokenEntries, javaToken);
 
         if (ignoreLiterals && (javaToken.kind == JavaTokenKinds.STRING_LITERAL
                 || javaToken.kind == JavaTokenKinds.CHARACTER_LITERAL
@@ -67,9 +73,9 @@ public class JavaCpdLexer extends JavaccCpdLexer {
             image = JavaTokenKinds.describe(javaToken.kind);
         }
 
-        constructorDetector.processToken(javaToken);
+        constructorDetector.get().processToken(javaToken);
 
-        tokenEntries.recordToken(image, javaToken.getReportLocation());
+        tokenEntries.recordToken(image, javaToken.getInputRegion());
     }
 
     /**
@@ -193,7 +199,7 @@ public class JavaCpdLexer extends JavaccCpdLexer {
             this.ignoreIdentifiers = ignoreIdentifiers;
 
             currentNestingLevel = 0;
-            classMembersIndentations = new LinkedList<>();
+            classMembersIndentations = new ArrayDeque<>();
         }
 
         public void processToken(JavaccToken currentToken) {

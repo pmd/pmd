@@ -173,7 +173,12 @@ abstract class CpdTextComparisonTest(
         FileData(fileName = fileName, fileText = text)
 
     fun tokenize(cpdLexer: CpdLexer, fileData: FileData): Tokens =
-        CpdLexer.tokenize(cpdLexer, sourceCodeOf(fileData))
+        Tokens().also { tokens ->
+            val doc = sourceCodeOf(fileData)
+            tokens.factoryForFile(doc).use {
+                cpdLexer.tokenize(doc, it)
+            }
+        }
 
     private companion object {
         const val INDENT = "    "

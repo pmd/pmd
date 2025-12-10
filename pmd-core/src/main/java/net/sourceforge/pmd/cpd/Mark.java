@@ -7,7 +7,6 @@ package net.sourceforge.pmd.cpd;
 import java.util.Objects;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
@@ -21,10 +20,17 @@ import net.sourceforge.pmd.lang.document.TextRange2d;
 public final class Mark implements Comparable<Mark> {
 
     private final @NonNull TokenEntry token;
-    private @Nullable TokenEntry endToken;
+    private final @NonNull TokenEntry endToken;
 
     Mark(@NonNull TokenEntry token) {
+        this(token, token);
+    }
+
+    Mark(@NonNull TokenEntry token, @NonNull TokenEntry endToken) {
+        assert endToken.getFileId().equals(token.getFileId())
+            : "Tokens are not from the same file";
         this.token = token;
+        this.endToken = endToken;
     }
 
     @NonNull TokenEntry getToken() {
@@ -32,7 +38,12 @@ public final class Mark implements Comparable<Mark> {
     }
 
     @NonNull TokenEntry getEndToken() {
-        return endToken == null ? token : endToken;
+        return endToken;
+    }
+
+    /** Length in tokens. */
+    public int getLength() {
+        return getEndToken().getLocalIndex() - getToken().getLocalIndex() + 1;
     }
 
     /**
@@ -46,31 +57,55 @@ public final class Mark implements Comparable<Mark> {
                                 endToken.getEndLine(), endToken.getEndColumn()));
     }
 
+    /** The number of lines spanned by this mark. At least 1. */
+    public int getLineCount() {
+        return endToken.getEndLine() - token.getBeginLine() + 1;
+    }
+
     FileId getFileId() {
         return token.getFileId();
     }
 
+    /** Return the index in the file of the first token in this mark. */
     public int getBeginTokenIndex() {
-        return this.token.getIndex();
+        return this.token.getLocalIndex();
     }
 
+    /** Return the index in the file of the last token in this mark. */
     public int getEndTokenIndex() {
-        return getEndToken().getIndex();
+        return getEndToken().getLocalIndex();
     }
 
-    void setEndToken(@NonNull TokenEntry endToken) {
-        assert endToken.getFileId().equals(token.getFileId())
-            : "Tokens are not from the same file";
-        this.endToken = endToken;
+    @Override
+    public String toString() {
+        return "Mark [token=" + token + ", endToken=" + endToken + "]";
     }
 
+    /***
+     * Return -1 if this mark contains the given other mark, 1 if the other contains this one,
+     * zero otherwise.
+     */
+    int contains(Mark that) {
+        int thisFile = this.token.getFileIdInternal();
+        int thatFile = that.token.getFileIdInternal();
+        if (thisFile != thatFile) {
+            return 0;
+        }
+        int thisStart = this.token.getLocalIndex();
+        int thatStart = that.token.getLocalIndex();
+        if (thisStart <= thatStart && thatStart + that.getLength() <= thisStart + this.getLength()) {
+            // this contains that
+            return -1;
+        } else if (thatStart <= thisStart && thisStart + this.getLength() <= thatStart + that.getLength()) {
+            // that contains this
+            return 1;
+        }
+        return 0;
+    }
 
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + token.hashCode();
-        return result;
+        return token.hashCode();
     }
 
     @Override
@@ -91,7 +126,9 @@ public final class Mark implements Comparable<Mark> {
 
     @Override
     public int compareTo(Mark other) {
-        return getToken().compareTo(other.getToken());
+        int cmp = token.compareTo(other.token);
+        cmp = cmp != 0 ? cmp : endToken.compareTo(other.endToken);
+        return cmp;
     }
 
 }

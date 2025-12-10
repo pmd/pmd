@@ -63,8 +63,7 @@ public class ScalaCpdLexer implements CpdLexer {
                 if (StringUtils.isEmpty(token.getImage())) {
                     continue;
                 }
-                tokenEntries.recordToken(token.getImage(),
-                                         token.getReportLocation());
+                tokenEntries.recordToken(token.getImage(), token.getRegion());
             }
         } catch (Exception e) {
             if (e instanceof TokenizeException) { // NOPMD
