@@ -129,10 +129,10 @@ EXIT /B
 SET "PMD_OPENJFX_MODULE_PATH="
 IF [%APPNAME%] == [designer] (
   IF %java_has_javafx% EQU 1 (
-    rem almost nothing to do, javafx is bundled (either an old Oracle Java < 8u451 or an OpenJDK 8 Build from Azul)
-    rem still add the path where javafx.properties is located to the classpath, so that Designer's
-    rem net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
-    CALL :append_classpath "%java_javafx_properties_path%"
+    rem No additional options needed as JavaFX is bundled.
+    rem We are running either an old Oracle Java < 8u451 or an OpenJDK 8 Build from Azul/Bellsoft which
+    rem have JavaFX bundled as modules.
+    SET "PMD_OPENJFX_MODULE_PATH="
   ) ELSE (
 
     IF %java_version_feature% EQU 8 (
@@ -163,10 +163,6 @@ IF [%APPNAME%] == [designer] (
     )
 
     SET "PMD_OPENJFX_MODULE_PATH=--module-path %JAVAFX_HOME%/lib --add-modules javafx.controls,javafx.fxml"
-    rem still add the path where javafx.properties is located to the classpath, so that Designer's
-    rem net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
-    rem note: no trailing backslash, as this would escape a following quote when %CLASSPATH% is used later
-    CALL :append_classpath "%JAVAFX_HOME%/lib"
   )
 )
 EXIT /B
