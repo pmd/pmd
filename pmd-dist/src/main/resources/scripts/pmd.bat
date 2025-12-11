@@ -109,20 +109,12 @@ rem if there was no 3rd component (eg. -ea or ga version), use "0"
 IF "%java_version_update%" == "" set java_version_update=0
 
 set java_has_javafx=0
-set java_javafx_properties=
-set java_javafx_properties_path=
 IF EXIST "%java_home_property%/lib/javafx.properties" (
-    set "java_javafx_properties=%java_home_property%/lib/javafx.properties"
     set java_has_javafx=1
 )
 IF EXIST "%java_home_property%/jre/lib/javafx.properties" (
-    set "java_javafx_properties=%java_home_property%/jre/lib/javafx.properties"
     set java_has_javafx=1
 )
-rem resolve dirname
-IF %java_has_javafx% EQU 1 FOR %%F IN (%java_javafx_properties%) DO set "java_javafx_properties_path=%%~dpF"
-rem remove trailing backslash
-IF %java_has_javafx% EQU 1 set "java_javafx_properties_path=%java_javafx_properties_path:~0,-1%"
 EXIT /B
 
 :add_openjfx_classpath

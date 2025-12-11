@@ -110,18 +110,10 @@ determine_java_version() {
 
     java_home_property=$(echo "$all_props" | grep "java.home" | sed -n -e 's/^.*java\.home *= *\(.*\)$/\1/; p')
     java_has_javafx=0
-    java_javafx_properties=
-    java_javafx_properties_path=
     if [ -e "$java_home_property/lib/javafx.properties" ]; then
-      java_javafx_properties="$java_home_property/lib/javafx.properties"
       java_has_javafx=1
     elif [ -e "$java_home_property/jre/lib/javafx.properties" ]; then
-      java_javafx_properties="$java_home_property/jre/lib/javafx.properties"
       java_has_javafx=1
-    fi
-    if [ $java_has_javafx = 1 ]
-    then
-      java_javafx_properties_path="$(dirname "$java_javafx_properties")"
     fi
 }
 

@@ -44,18 +44,10 @@ determine_java_version() {
 
     java_home_property=$(echo "$all_props" | grep "java.home" | sed -n -e 's/^.*java\.home *= *\(.*\)$/\1/; p')
     java_has_javafx=0
-    java_javafx_properties=
-    java_javafx_properties_path=
     if [ -e "$java_home_property/lib/javafx.properties" ]; then
-      java_javafx_properties="$java_home_property/lib/javafx.properties"
       java_has_javafx=1
     elif [ -e "$java_home_property/jre/lib/javafx.properties" ]; then
-      java_javafx_properties="$java_home_property/jre/lib/javafx.properties"
       java_has_javafx=1
-    fi
-    if [ $java_has_javafx = 1 ]
-    then
-      java_javafx_properties_path="$(dirname "$java_javafx_properties")"
     fi
 }
 
@@ -83,14 +75,9 @@ run_test() {
   printf "java_version_update: %s " "$java_version_update"
   if [ "$EXPECTED_UPDATE" = "$java_version_update" ]; then pass; else fail; fi
   printf "java_has_javafx: %s " "$java_has_javafx"
-  if [ "$EXPECTED_HAS_JAVAFX" = "yes" ] && [ "$java_has_javafx" = 1 ] && [ -n "$java_javafx_properties" ]; then pass;
-  elif [ "$EXPECTED_HAS_JAVAFX" = "no" ] && [ "$java_has_javafx" = 0 ] && [ -z "$java_javafx_properties" ]; then pass;
+  if [ "$EXPECTED_HAS_JAVAFX" = "yes" ] && [ "$java_has_javafx" = 1 ]; then pass;
+  elif [ "$EXPECTED_HAS_JAVAFX" = "no" ] && [ "$java_has_javafx" = 0 ]; then pass;
   else fail; fi
-  if [ "$java_has_javafx" = 1 ]
-  then
-    printf "java_javafx_properties_path: "
-    if [ -n "$java_javafx_properties_path" ]; then pass; else fail; fi
-  fi
   echo
 }
 
