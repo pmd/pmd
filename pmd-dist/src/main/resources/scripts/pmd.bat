@@ -218,6 +218,8 @@ IF %java_version_feature% GEQ 9 (
 IF %java_version_feature% GEQ 24 (
   rem Allow native access to javafx.graphics
   SET "PMD_ADDITIONAL_JAVA_OPTS=!PMD_ADDITIONAL_JAVA_OPTS! --enable-native-access=javafx.graphics"
+  rem Don't warn about sun misc unsafe (used by javafx.graphics). Needed until JavaFX 25. See https://bugs.openjdk.org/browse/JDK-8359264.
+  SET "PMD_ADDITIONAL_JAVA_OPTS=!PMD_ADDITIONAL_JAVA_OPTS! --sun-misc-unsafe-memory-access=allow"
 )
 
 EXIT /B
