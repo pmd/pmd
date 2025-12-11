@@ -194,10 +194,10 @@ add_openjfx_classpath() {
   then
     if [ $java_has_javafx = 1 ]
     then
-      # almost nothing to do, javafx is bundled (either an old Oracle Java < 8u451 or an OpenJDK 8 Build from Azul)
-      # still add the path where javafx.properties is located to the classpath, so that Designer's
-      # net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
-      append_classpath "$java_javafx_properties_path"
+      # No additional options needed as JavaFX is bundled.
+      # We are running either an old Oracle Java < 8u451 or an OpenJDK 8 Build from Azul/Bellsoft which
+      # have JavaFX bundled as modules.
+      PMD_OPENJFX_MODULE_PATH=""
     else
 
       if [ "$java_version_feature" = "8" ] && [ "$java_version_update" -ge 451 ]
@@ -230,9 +230,6 @@ add_openjfx_classpath() {
       fi
 
       PMD_OPENJFX_MODULE_PATH="$JAVAFX_HOME/lib"
-      # still add the path where javafx.properties is located to the classpath, so that Designer's
-      # net.sourceforge.pmd.util.fxdesigner.util.JavaFxUtil#getJavaFxVersion can find it.
-      append_classpath "$JAVAFX_HOME/lib"
     fi
   fi
 }
