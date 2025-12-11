@@ -159,7 +159,7 @@ determine_additional_java_opts() {
     # With Java 17+ this option has no effect anymore (https://openjdk.org/jeps/403) and is deprecated.
     PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --illegal-access=warn"
   fi
-  if [ "$java_version_feature" -ge 24 ]
+  if [ "$APPNAME" = "designer" ] && [ "$java_version_feature" -ge 24 ]
   then
     # Allow native access to javafx.graphics
     PMD_ADDITIONAL_JAVA_OPTS="$PMD_ADDITIONAL_JAVA_OPTS --enable-native-access=javafx.graphics"
