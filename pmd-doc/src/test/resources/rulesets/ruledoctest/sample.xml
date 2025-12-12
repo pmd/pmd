@@ -230,7 +230,7 @@ RuleTag with full category and without quotes: Use {% rule java/sample/RenamedRu
 
     <rule name="SampleRuleWithEnumProperties"
           language="java"
-          since="7.19.0"
+          since="7.20.0"
           message="Message"
           class="net.sourceforge.pmd.doc.internal.SampleRuleWithEnumPropertiesRule">
         <description>This rule is for testing enum properties</description>
