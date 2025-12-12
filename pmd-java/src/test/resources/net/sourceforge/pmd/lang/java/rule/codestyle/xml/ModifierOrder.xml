@@ -105,7 +105,7 @@ abstract public class Foo { // warn l1
             <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
             <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
             <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
-            <message>Missorted modifiers `static @Decl`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `static @Decl`. Non-type annotations should be placed before modifiers.</message>
             <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
         </expected-messages>
         <code-ref id="annotations"/>
@@ -117,12 +117,12 @@ abstract public class Foo { // warn l1
         <expected-problems>6</expected-problems>
         <expected-linenumbers>5,8,14,17,22,24</expected-linenumbers>
         <expected-messages>
-            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `public @Decl`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `static @Decl`. Annotations should be placed before modifiers.</message>
-            <message>Missorted modifiers `public @TypeA`. Annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `static @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
         </expected-messages>
         <code-ref id="annotations"/>
     </test-code>
