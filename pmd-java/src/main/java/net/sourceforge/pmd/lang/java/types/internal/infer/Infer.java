@@ -1019,7 +1019,7 @@ public final class Infer {
      * @param m    Method to test
      * @param expr Invocation expression
      */
-    private boolean isPotentiallyApplicable(JMethodSig m, InvocationMirror expr) {
+    boolean isPotentiallyApplicable(JMethodSig m, InvocationMirror expr) {
 
         if (m.isGeneric()
             && !expr.getExplicitTypeArguments().isEmpty()

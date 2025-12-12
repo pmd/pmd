@@ -329,12 +329,11 @@ class MethodRefInferenceTest : ProcessorTestSpec({
             """.trimIndent()
         )
 
-        val t_Archive = acu.firstTypeSignature()
         val mref = acu.descendants(ASTMethodReference::class.java).firstOrThrow()
         val (getName) = acu.declaredMethodSignatures().toList()
         val call = acu.firstMethodCall()
 
-        spy.shouldHaveMissingCtDecl(call)
+        spy.shouldHaveNoApplicableMethods(call)
 
         acu.withTypeDsl {
             mref.referencedMethod shouldBe getName

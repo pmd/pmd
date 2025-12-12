@@ -74,6 +74,7 @@
                         return correct(x);
                     }); // do not flag
                     iTakeLambda(x -> {});
+                    iTakeLambda(this::correct);
                 }
                 public int correct(int a) {
                     return 0;
@@ -147,7 +148,7 @@
         <rule-property name="ignoreIfMayNPE">true</rule-property>
         <expected-problems>4</expected-problems>
         <expected-messages>
-            <message>Lambda expression could be written as a method reference: `"abc"::indexOf`</message>
+            <message>Lambda expression could be written as a method reference: `"abc"::equals`</message>
             <message>Lambda expression could be written as a method reference: `this::correct`</message>
             <message>Lambda expression could be written as a method reference: `Integer::valueOf`</message>
             <message>Lambda expression could be written as a method reference: `String.class::isAssignableFrom`</message>
@@ -157,8 +158,8 @@
 
                 public static void iTakeLambda(ALambda l) {}
                 public static void iTakeClass(Consumer<Class<?>> l) {}
-                static {
-                    iTakeLambda(x -> "abc".indexOf(x));
+                {
+                    iTakeLambda(x -> "abc".equals(x));
                     iTakeLambda(x -> this.correct(x));
                     iTakeLambda(x -> Integer.valueOf(x));
                     iTakeClass(x -> String.class.isAssignableFrom(x));
@@ -169,9 +170,13 @@
             }
 
             interface ALambda {
-                boolean doSomething(int a);
+                void doSomething(int a);
             }
-            ]]></code>
+
+            interface Consumer<T> {
+                void doSomething(T a);
+            }
+]]></code>
     </test-code>
     <test-code>
         <description>Test annotated lambda</description>
@@ -256,8 +261,7 @@
             ]]></code>
     </test-code>
 
-    <code-fragment id="riskOfNPE">
-        <![CDATA[
+    <code-fragment id="riskOfNPE"><![CDATA[
             public final class Foo {
 
                 public static void iTakeLambda(ALambda l) {}
@@ -283,8 +287,7 @@
             interface ALambda2 {
                 boolean doSomething(String a);
             }
-            ]]>
-    </code-fragment>
+            ]]></code-fragment>
 
 
     <test-code>
@@ -373,6 +376,45 @@
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5043 Method reference would be ambiguous</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            class Something {
+                public static int foo(Something i) {}
+                public int foo() {}
+            }
+            interface Alambda {
+                int doSomething(Something s);
+            }
+
+            public final class Outer {
+                static {
+                    Alambda l1 = st -> st.foo();
+                    Alambda l2 = st -> Something.foo(st);
+                    l2 = Something::foo; // ambiguous
+                }
+            }
+            ]]></code>
+    </test-code>
+
+
+    <test-code>
+        <description>#5043 Method reference would be ambiguous (Integer toString</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import java.util.function.Function;
+            public final class Outer {
+                public void foo() {
+                    Function<Integer, String> x = v -> Integer.toString(v);
+
+                    System.out.println(x.apply(100));
+                }
+            }
+            ]]></code>
+    </test-code>
+
 
 
 </test-data>
