@@ -234,7 +234,7 @@ public final class CollectionUtil {
     }
 
     /**
-     * @since 7.19.0.
+     * @since 7.20.0.
      */
     public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3) {
         Map<K, V> map = new LinkedHashMap<>();

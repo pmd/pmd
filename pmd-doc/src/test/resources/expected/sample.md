@@ -590,7 +590,7 @@ Avoid jumbled loop incrementers - it's usually a mistake, and is confusing even 
 
 ## SampleRuleWithEnumProperties
 
-**Since:** PMD 7.19.0
+**Since:** PMD 7.20.0
 
 **Priority:** Medium (3)
 

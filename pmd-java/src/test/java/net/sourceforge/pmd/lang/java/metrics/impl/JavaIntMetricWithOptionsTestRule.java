@@ -12,7 +12,7 @@ import net.sourceforge.pmd.lang.metrics.MetricOption;
 import net.sourceforge.pmd.lang.test.AbstractMetricTestRule;
 
 /**
- * @since 7.19.0.
+ * @since 7.20.0.
  */
 public abstract class JavaIntMetricWithOptionsTestRule<O extends Enum<O> & MetricOption> extends AbstractMetricTestRule.OfIntWithOptions<O> {
 
