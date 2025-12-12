@@ -10,18 +10,23 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.SubstringMatcher;
@@ -108,7 +113,11 @@ class PropertyDescriptorTest {
         assertEquals(Integer.valueOf(1), descriptor.defaultValue());
         assertEquals(Integer.valueOf(5), descriptor.serializer().fromString("5"));
         assertEquals(Integer.valueOf(5), descriptor.serializer().fromString(" 5 "));
+        assertFalse(descriptor.serializer().isCollection());
+    }
 
+    @Test
+    void testIntListProperty() {
         PropertyDescriptor<List<Integer>> listDescriptor = PropertyFactory.intListProperty("intListProp")
                 .desc("hello")
                 .defaultValues(1, 2)
@@ -118,6 +127,7 @@ class PropertyDescriptorTest {
         assertEquals(Arrays.asList(1, 2), listDescriptor.defaultValue());
         assertEquals(Arrays.asList(5, 7), listDescriptor.serializer().fromString("5,7"));
         assertEquals(Arrays.asList(5, 7), listDescriptor.serializer().fromString(" 5 , 7 "));
+        assertTrue(listDescriptor.serializer().isCollection());
     }
 
     @Test
@@ -143,7 +153,11 @@ class PropertyDescriptorTest {
         assertEquals(Double.valueOf(1.0), descriptor.defaultValue());
         assertEquals(Double.valueOf(2.0), descriptor.serializer().fromString("2.0"));
         assertEquals(Double.valueOf(2.0), descriptor.serializer().fromString("  2.0  "));
+        assertFalse(descriptor.serializer().isCollection());
+    }
 
+    @Test
+    void testDoubleListProperty() {
         PropertyDescriptor<List<Double>> listDescriptor = PropertyFactory.doubleListProperty("doubleListProp")
                 .desc("hello")
                 .defaultValues(1.0, 2.0)
@@ -153,6 +167,7 @@ class PropertyDescriptorTest {
         assertEquals(Arrays.asList(1.0, 2.0), listDescriptor.defaultValue());
         assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.serializer().fromString("2.0,3.0"));
         assertEquals(Arrays.asList(2.0, 3.0), listDescriptor.serializer().fromString(" 2.0 , 3.0 "));
+        assertTrue(listDescriptor.serializer().isCollection());
     }
 
     @Test
@@ -177,7 +192,7 @@ class PropertyDescriptorTest {
         assertEquals("default value", descriptor.defaultValue());
         assertEquals("foo", descriptor.serializer().fromString("foo"));
         assertEquals("foo", descriptor.serializer().fromString("  foo   "));
-
+        assertFalse(descriptor.serializer().isCollection());
     }
 
     @Test
@@ -192,6 +207,7 @@ class PropertyDescriptorTest {
         assertEquals(Arrays.asList("foo", "bar"), listDescriptor.serializer().fromString("foo,bar"));
         assertEquals(Arrays.asList("foo", "bar"), listDescriptor.serializer().fromString("  foo ,  bar  "));
         assertEquals(Arrays.asList("foo", "bar"), listDescriptor.serializer().fromString("  foo ,  bar  , "));  // Github issue 4714
+        assertTrue(listDescriptor.serializer().isCollection());
     }
 
     private enum SampleEnum { A, B, C }
@@ -205,6 +221,86 @@ class PropertyDescriptorTest {
     }
 
     @Test
+    void testEnumPropertyNew() {
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.conventionalEnumProperty("enumProp", SampleEnum.class)
+                .desc("hello")
+                .defaultValue(SampleEnum.B)
+                .build();
+        assertEquals("enumProp", descriptor.name());
+        assertEquals("hello", descriptor.description());
+        assertEquals(SampleEnum.B, descriptor.defaultValue());
+        assertEquals(SampleEnum.C, descriptor.serializer().fromString("c"));
+        assertFalse(descriptor.serializer().isCollection());
+        assertFalse(descriptor.serializer().enumeratedValues().isEmpty());
+        Set<Object> expectedEnumValues = new HashSet<>(Arrays.asList(SampleEnum.values()));
+        assertEquals(expectedEnumValues, descriptor.serializer().enumeratedValues());
+    }
+
+    @Test
+    void testEnumPropertyWithDeprecatedValueMappings() {
+        Map<String, SampleEnum> deprecatedMappings = new HashMap<>(NAME_MAP);
+        deprecatedMappings.put("A", SampleEnum.A);
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumPropertyTransitional("enumProp", SampleEnum.class, deprecatedMappings)
+                .desc("hello")
+                .defaultValue(SampleEnum.B)
+                .build();
+        assertEquals(SampleEnum.B, descriptor.defaultValue());
+
+        BiFunction<SampleEnum, String, Void> assertValue = (v, s) -> {
+            assertEquals(v, descriptor.serializer().fromString(s));
+            assertEquals(s, descriptor.serializer().toString(v));
+            assertFalse(descriptor.serializer().isFromStringDeprecated(s));
+            return null;
+        };
+        BiFunction<SampleEnum, String, Void> assertDeprecatedValue = (v, s) -> {
+            assertEquals(v, descriptor.serializer().fromString(s));
+            assertTrue(descriptor.serializer().isFromStringDeprecated(s));
+            return null;
+        };
+
+        assertValue.apply(SampleEnum.A, "a");
+        assertValue.apply(SampleEnum.B, "b");
+        assertValue.apply(SampleEnum.C, "c");
+
+        assertDeprecatedValue.apply(SampleEnum.A, "A");
+        assertDeprecatedValue.apply(SampleEnum.A, "TEST_A");
+        assertDeprecatedValue.apply(SampleEnum.B, "TEST_B");
+        assertDeprecatedValue.apply(SampleEnum.C, "TEST_C");
+    }
+
+    @Test
+    void testEnumListPropertyNew() {
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.conventionalEnumListProperty("enumListProp", SampleEnum.class)
+                .desc("hello")
+                .defaultValues(SampleEnum.A, SampleEnum.B)
+                .build();
+        assertEquals("enumListProp", listDescriptor.name());
+        assertEquals("hello", listDescriptor.description());
+        assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
+        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.serializer().fromString("b,c"));
+        assertTrue(listDescriptor.serializer().isCollection());
+        Set<Object> expectedEnumValues = new HashSet<>(Arrays.asList(SampleEnum.values()));
+        assertEquals(expectedEnumValues, listDescriptor.serializer().enumeratedValues());
+    }
+
+    @Test
+    @Deprecated // Tests the deprecated API
+    void testEnumListProperty() {
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", NAME_MAP)
+                .desc("hello")
+                .defaultValues(SampleEnum.A, SampleEnum.B)
+                .build();
+        assertEquals("enumListProp", listDescriptor.name());
+        assertEquals("hello", listDescriptor.description());
+        assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
+        assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.serializer().fromString("TEST_B,TEST_C"));
+        assertTrue(listDescriptor.serializer().isCollection());
+        Set<Object> expectedEnumValues = new HashSet<>(Arrays.asList(SampleEnum.values()));
+        assertEquals(expectedEnumValues, listDescriptor.serializer().enumeratedValues());
+    }
+
+    @Test
+    @Deprecated // Tests the deprecated API
     void testEnumProperty() {
         PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", NAME_MAP)
                 .desc("hello")
@@ -214,19 +310,34 @@ class PropertyDescriptorTest {
         assertEquals("hello", descriptor.description());
         assertEquals(SampleEnum.B, descriptor.defaultValue());
         assertEquals(SampleEnum.C, descriptor.serializer().fromString("TEST_C"));
+        assertFalse(descriptor.serializer().isCollection());
+        assertFalse(descriptor.serializer().enumeratedValues().isEmpty());
+        Set<Object> expectedEnumValues = new HashSet<>(Arrays.asList(SampleEnum.values()));
+        assertEquals(expectedEnumValues, descriptor.serializer().enumeratedValues());
+    }
 
-        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListProperty("enumListProp", NAME_MAP)
+    @Test
+    void testEnumListPropertyWithDeprecatedValueMappings() {
+        Map<String, SampleEnum> deprecatedMappings = new HashMap<>(NAME_MAP);
+        deprecatedMappings.put("A", SampleEnum.A);
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumPropertyTransitional("enumProp", SampleEnum.class, deprecatedMappings)
+                .toList()
                 .desc("hello")
                 .defaultValues(SampleEnum.A, SampleEnum.B)
                 .build();
-        assertEquals("enumListProp", listDescriptor.name());
-        assertEquals("hello", listDescriptor.description());
+
         assertEquals(Arrays.asList(SampleEnum.A, SampleEnum.B), listDescriptor.defaultValue());
+        assertEquals("a,c", listDescriptor.serializer().toString(Arrays.asList(SampleEnum.A, SampleEnum.C)));
+        assertFalse(listDescriptor.serializer().isFromStringDeprecated("a"));
+        assertFalse(listDescriptor.serializer().isFromStringDeprecated("c"));
+        assertFalse(listDescriptor.serializer().isFromStringDeprecated("a,b"));
         assertEquals(Arrays.asList(SampleEnum.B, SampleEnum.C), listDescriptor.serializer().fromString("TEST_B,TEST_C"));
+        assertTrue(listDescriptor.serializer().isFromStringDeprecated("TEST_A"));
+        assertTrue(listDescriptor.serializer().isFromStringDeprecated("TEST_A,TEST_C"));
     }
 
-
     @Test
+    @Deprecated // Tests the deprecated API
     void testEnumPropertyNullValueFailsBuild() {
         Map<String, SampleEnum> map = new HashMap<>(NAME_MAP);
         map.put("TEST_NULL", null);
@@ -236,8 +347,8 @@ class PropertyDescriptorTest {
         assertThat(thrown.getMessage(), containsIgnoreCase("null value"));
     }
 
-
     @Test
+    @Deprecated // Tests the deprecated API
     void testEnumListPropertyNullValueFailsBuild() {
         Map<String, SampleEnum> map = new HashMap<>(NAME_MAP);
         map.put("TEST_NULL", null);
@@ -249,6 +360,7 @@ class PropertyDescriptorTest {
 
 
     @Test
+    @Deprecated // Tests the deprecated API
     void testEnumPropertyInvalidValue() {
         PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumProperty("enumProp", NAME_MAP)
                 .desc("hello")
@@ -261,6 +373,18 @@ class PropertyDescriptorTest {
     }
 
     @Test
+    void testEnumPropertyNewInvalidValue() {
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.conventionalEnumProperty("enumProp", SampleEnum.class)
+                .desc("hello")
+                .defaultValue(SampleEnum.B)
+                .build();
+
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+            descriptor.serializer().fromString("InvalidEnumValue"));
+        assertThat(thrown.getMessage(), containsString("'InvalidEnumValue' should be one of 'a', 'b', 'c'"));
+    }
+
+    @Test
     void testRegexProperty() {
         PropertyDescriptor<Pattern> descriptor = PropertyFactory.regexProperty("regexProp")
                 .desc("hello")
@@ -270,6 +394,7 @@ class PropertyDescriptorTest {
         assertEquals("hello", descriptor.description());
         assertEquals("^[A-Z].*$", descriptor.defaultValue().toString());
         assertEquals("[0-9]+", descriptor.serializer().fromString("[0-9]+").toString());
+        assertFalse(descriptor.serializer().isCollection());
     }
 
     @Test
@@ -340,7 +465,7 @@ class PropertyDescriptorTest {
 
             @Override
             protected boolean evalSubstringOf(String string) {
-                return StringUtils.indexOfIgnoreCase(string, substring) != -1;
+                return Strings.CI.indexOf(string, substring) != -1;
             }
         };
     }
