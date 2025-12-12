@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import java.util.Iterator;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.sourceforge.pmd.lang.ast.NodeStream;
 
 
@@ -18,7 +20,7 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  *
  * SwitchLabel ::=  "case" {@linkplain ASTExpression Expression} ("," {@linkplain ASTExpression Expression} )*
  *                | "case" "null [ "," "default" ]
- *                | "case" ( {@linkplain ASTTypePattern TypePattern} | {@linkplain ASTRecordPattern RecordPattern} )
+ *                | "case" {@linkplain ASTPattern Pattern} ("," {@linkplain ASTPattern Pattern} )* [ {@linkplain ASTGuard Guard} ]
  *                | "default"
  *
  * </pre>
@@ -42,8 +44,10 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
         isDefault = true;
     }
 
-    /** Returns true if this is the {@code default} label. */
-    // todo `case default`
+    /**
+     * Returns true if this is the {@code default} label.
+     * This also returns true if this is the variant {@code case null, default}.
+     */
     public boolean isDefault() {
         return isDefault;
     }
@@ -56,6 +60,17 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
      */
     public NodeStream<ASTExpression> getExprList() {
         return children(ASTExpression.class);
+    }
+
+    /** Return the guard expression for this branch if there is one. */
+    public @Nullable ASTExpression getGuardExpression() {
+        ASTGuard guard = getGuard();
+        return guard == null ? null : guard.getGuard();
+    }
+
+    public @Nullable ASTGuard getGuard() {
+        JavaNode last = getLastChild();
+        return last instanceof ASTGuard ? (ASTGuard) last : null;
     }
 
     @Override

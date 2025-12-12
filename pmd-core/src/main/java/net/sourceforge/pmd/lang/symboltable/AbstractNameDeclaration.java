@@ -6,7 +6,10 @@ package net.sourceforge.pmd.lang.symboltable;
 
 /**
  * Base class for all name declarations.
+ *
+ * @deprecated Since 7.19.0. For more info, see {@link net.sourceforge.pmd.lang.symboltable}.
  */
+@Deprecated
 public abstract class AbstractNameDeclaration implements NameDeclaration {
 
     protected ScopedNode node;

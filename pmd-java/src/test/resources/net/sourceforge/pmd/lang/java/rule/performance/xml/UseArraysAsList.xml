@@ -276,4 +276,61 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5071 [java] UseArraysAsList should not warn when elements are skipped in array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.*;
+public class Test {
+  public static void main(String... args) {
+    String[] entrySet = {"key1", "value1", "key2", "value2", "key3", "value3"};
+    for (String key : keySet(entrySet)) {
+      System.out.println(key);
+    }
+  }
+
+  private static Collection<String> keySet(String... entrySet) {
+    final List<String> result = new ArrayList<>(entrySet.length / 2);
+    for (int i = 0; i < entrySet.length; i += 2) {
+      result.add(entrySet[i]); // false positive here
+    }
+    return result;
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4577 [java] UseArraysAsList with condition in loop</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+class Foo {
+    public List<String> convertToNonEmptyList(String[] arr) {
+        List<String> resultList = new ArrayList<>();
+        for (String item: arr) {
+            if (item.isEmpty()) {
+                continue;
+            }
+            resultList.add(item);
+        }
+        return resultList;
+    }
+
+    public List<String> convertToNonEmptyList2(String[] arr) {
+        List<String> resultList = new ArrayList<>();
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i].isEmpty()) {
+                continue;
+            }
+            resultList.add(arr[i]);
+        }
+        return resultList;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

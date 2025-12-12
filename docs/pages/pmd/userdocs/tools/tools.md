@@ -3,12 +3,23 @@ title: Tools / Integrations
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools.html
 author: David Dixon-Peugh <dpeugh@users.sourceforge.net>
-last_updated: December 2024 (7.9.0)
+last_updated: November 2025 (7.19.0)
 ---
 
 ## Automated Code Review
 
 {% include note.html content="The tools are listed in alphabetical order without rating." %}
+
+### Blue Cave
+
+[Blue Cave](https://bluecave.io) is a code quality and test coverage reporting platform, focused on large monorepos.
+It integrates directly with GitHub to provide Pull Request merge checks and supports GitHub Actions amongst other CI using
+[native plugins](https://docs.bluecave.io/languages/java/) for Gradle, Maven and Bazel.
+
+Blue Cave uses PMD for static analysis of Java code, enhancing it with code coverage and other features.
+
+* Homepage: <https://bluecave.io>
+* Documentation: <https://docs.bluecave.io>
 
 ### CodeClimate Quality
 

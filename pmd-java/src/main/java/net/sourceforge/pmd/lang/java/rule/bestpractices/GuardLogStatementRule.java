@@ -128,8 +128,8 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
             return true;
         }
 
-        // if any additional params are not a direct access, we need a guard
-        return !areAdditionalParamsDirectAccess(node, messageArg + 1);
+        // if any additional params are not a direct access or constant foldable, we need a guard
+        return !areAdditionalParamsLowOverhead(node, messageArg + 1);
     }
 
     private boolean hasGuard(ASTMethodCall node, String logLevel) {
@@ -195,12 +195,12 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean areAdditionalParamsDirectAccess(ASTMethodCall call, int messageArgIndex) {
+    private boolean areAdditionalParamsLowOverhead(ASTMethodCall call, int messageArgIndex) {
         // return true if the statement has limited overhead even if unguarded,
         // so that we can ignore it
         return call.getArguments().toStream()
                    .drop(messageArgIndex) // remove the level argument if needed
-                   .all(GuardLogStatementRule::isDirectAccess);
+                   .all(it -> isDirectAccess(it) || it.getConstFoldingResult().hasValue());
     }
 
     private static boolean isDirectAccess(ASTExpression it) {

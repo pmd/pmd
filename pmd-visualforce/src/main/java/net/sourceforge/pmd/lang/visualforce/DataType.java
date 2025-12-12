@@ -119,15 +119,8 @@ public enum DataType {
         return dataType;
     }
 
-    DataType(boolean requiresEscaping) {
-        this(requiresEscaping, null);
-    }
-
     DataType(boolean requiresEscaping, String... basicTypeNames) {
         this.requiresEscaping = requiresEscaping;
-        this.basicTypeNames = new HashSet<>();
-        if (basicTypeNames != null) {
-            this.basicTypeNames.addAll(Arrays.asList(basicTypeNames));
-        }
+        this.basicTypeNames = new HashSet<>(Arrays.asList(basicTypeNames));
     }
 }

@@ -10,7 +10,10 @@ import net.sourceforge.pmd.lang.plsql.ast.ExecutableCode;
  * Non-commented source statement counter for methods.
  *
  * <p>Analogous to and cribbed from Java version of the rule.</p>
+ *
+ * @deprecated Since 7.19.0. Use the rule {@link NcssCountRule} instead.
  */
+@Deprecated
 public class NcssMethodCountRule extends AbstractNcssCountRule<ExecutableCode> {
 
     /**

@@ -899,6 +899,17 @@ table code {
     background-color: transparent !important;
 }
 
+.highlighter-rouge {
+    position: relative;
+}
+
+.highlighter-rouge .copy-clipboard-button {
+    position: absolute;
+    right: 1rem;
+    top: 0;
+    font-size: 1.5rem;
+}
+
 table p {
     margin-top: 12px;
     margin-bottom: 12px;
@@ -1280,10 +1291,10 @@ a.edit-header::after {
   content: '' !important; /* hide the external link marker */
 }
 
-.copy-anchor-url {
+.copy-clipboard-button {
     opacity: 0;
 }
-:hover > .copy-anchor-url {
+:hover > .copy-clipboard-button {
     opacity: 1;
     cursor: pointer;
 }

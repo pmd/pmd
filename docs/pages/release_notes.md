@@ -26,6 +26,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 
+- java-bestpractices
+  - [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
+
 ### 🚨️ API Changes
 
 ### ✨️ Merged pull requests

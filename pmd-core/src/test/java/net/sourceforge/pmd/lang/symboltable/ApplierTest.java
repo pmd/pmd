@@ -12,6 +12,10 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * @deprecated Since 7.19.0. For more info, see {@link net.sourceforge.pmd.lang.symboltable}.
+ */
+@Deprecated
 class ApplierTest {
 
     private static class MyFunction implements Predicate<Object> {

@@ -331,8 +331,7 @@ final class TypeSigParser {
          * non-null, if the symbol is not found (linkage error) then return
          * an unresolved symbol.
          */
-        @NonNull
-        public abstract JClassSymbol makeClassSymbol(String internalName, int observedArity);
+        public abstract @NonNull JClassSymbol makeClassSymbol(String internalName, int observedArity);
 
 
         public JTypeMirror getBaseType(char baseType) {

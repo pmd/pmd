@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <code-fragment id="full-example"><![CDATA[
+CREATE PACKAGE foo AS
+    PROCEDURE foo ();
+    y NUMBER;
+    z NUMBER;
+    q VARCHAR2;
+END foo;
+/
+CREATE PACKAGE BODY foo AS
+    PROCEDURE init () IS
+        x NUMBER;
+    BEGIN
+        bar();
+        CASE x
+            WHEN 1 THEN foo();
+            WHEN 2 THEN DBMS_OUTPUT.PUT_LINE('A');
+            WHEN 3 THEN bar();
+            ELSE DBMS_OUTPUT.PUT_LINE('B');
+        END CASE;
+    END;
+
+    PROCEDURE init (z NUMBER) IS
+        r NUMBER;
+        j NUMBER;
+        k NUMBER;
+    BEGIN
+        r := Random();
+        FOR j IN 1..3 LOOP
+            FOR k IN -20..20 LOOP
+                IF r.nextInt() = 42 THEN
+                    DBMS_OUTPUT.PUT_LINE('Bye');
+                    EXIT;
+                ELSIF k > 12 THEN
+                    CONTINUE;
+                END IF;
+            END LOOP;
+        END LOOP;
+        f(z);
+    END;
+
+    PROCEDURE foo () IS
+        x NUMBER := 0;
+        scary EXCEPTION;
+    BEGIN
+        x := x +1;
+        LOOP
+            IF x = 0 THEN
+                x := x + 1;
+            ELSIF x = 1 THEN
+                x := 0;
+            ELSE
+                DBMS_OUTPUT.PUT_LINE('Bonjour');
+                RAISE scary;
+            END IF;
+            EXIT WHEN x = 2;
+        END LOOP;
+    END;
+
+    PROCEDURE main IS
+        k VARCHAR2;
+        l VARCHAR2;
+        m VARCHAR2;
+        x NUMBER;
+        i NUMBER;
+        p NUMBER;
+        ThemAll EXCEPTION;
+    BEGIN
+        bar;
+
+        LOOP
+            x := x + 1;
+            EXIT WHEN x > 2;
+        END LOOP;
+
+        WHILE X < 4 LOOP
+            x := x + 1;
+        END LOOP;
+
+        FOR i IN 1..5 LOOP
+            x := x + 1;
+        END LOOP;
+
+        x := x + 1;
+
+        p :=
+            2 + 4 + 5;
+
+        x := x + 1;
+
+        bar();
+        x := bar();
+        /*
+         * This is
+         * a comment
+         */
+        x.foobar();
+    EXCEPTION
+        WHEN ACCESS_INTO_NULL THEN DBMS_OUTPUT.PUT_LINE('Ups');
+        WHEN ThemAll THEN DBMS_OUTPUT.PUT_LINE('Dang');
+    END;
+END foo;
+    ]]></code-fragment>
+
+    <test-code>
+        <description>Full example</description>
+        <rule-property name="objectReportLevel">40</rule-property>
+        <rule-property name="methodReportLevel">5</rule-property>
+        <expected-problems>5</expected-problems>
+        <expected-messages>
+            <message>The PackageBody 'foo' has a NCSS line count of 59 (limit: 40, highest: 24).</message>
+            <message>The ProgramUnit 'init()' has a NCSS line count of 8 (limit: 5).</message>
+            <message>The ProgramUnit 'init(z NUMBER)' has a NCSS line count of 13 (limit: 5).</message>
+            <message>The ProgramUnit 'foo()' has a NCSS line count of 13 (limit: 5).</message>
+            <message>The ProgramUnit 'main()' has a NCSS line count of 24 (limit: 5).</message>
+        </expected-messages>
+        <code-ref id="full-example"/>
+    </test-code>
+
+</test-data>

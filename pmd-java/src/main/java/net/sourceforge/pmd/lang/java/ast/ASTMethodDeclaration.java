@@ -108,8 +108,7 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
      * Returns the default clause, if this is an annotation method declaration
      * that features one. Otherwise returns null.
      */
-    @Nullable
-    public ASTDefaultValue getDefaultClause() {
+    public @Nullable ASTDefaultValue getDefaultClause() {
         return AstImplUtil.getChildAs(this, getNumChildren() - 1, ASTDefaultValue.class);
     }
 
@@ -124,8 +123,7 @@ public final class ASTMethodDeclaration extends AbstractExecutableDeclaration<JM
      * Returns the extra array dimensions that may be after the
      * formal parameters.
      */
-    @Nullable
-    public ASTArrayDimensions getExtraDimensions() {
+    public @Nullable ASTArrayDimensions getExtraDimensions() {
         return children(ASTArrayDimensions.class).first();
     }
 

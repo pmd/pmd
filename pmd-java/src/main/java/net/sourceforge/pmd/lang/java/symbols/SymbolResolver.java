@@ -27,22 +27,19 @@ public interface SymbolResolver {
      * the AST implementation or by the type system. Looking up such symbols
      * is undefined behaviour.
      */
-    @Nullable
-    JClassSymbol resolveClassFromBinaryName(@NonNull String binaryName);
+    @Nullable JClassSymbol resolveClassFromBinaryName(@NonNull String binaryName);
 
     /**
      * @since 7.5.0
      */
-    @Nullable
-    JModuleSymbol resolveModule(@NonNull String moduleName);
+    @Nullable JModuleSymbol resolveModule(@NonNull String moduleName);
 
     /**
      * Resolves a class symbol from its canonical name. Periods ('.') may
      * be interpreted as nested-class separators, so for n segments, this
      * performs at most n classloader lookups.
      */
-    @Nullable
-    default JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName) {
+    default @Nullable JClassSymbol resolveClassFromCanonicalName(@NonNull String canonicalName) {
         JClassSymbol symbol = resolveClassFromBinaryName(canonicalName);
         if (symbol != null) {
             return symbol;

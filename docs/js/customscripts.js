@@ -36,30 +36,35 @@ $(document).ready(function () {
                     ' role="button" data-toggle="tooltip" data-placement="top" title="Edit on GitHub"><i class="fas fa-edit fa-xs"></i>️</a>'
             );
     }
+    const addCopyButton = (parent, title, content) => {
+        const template = document.createElement('template');
+        template.innerHTML = `<a class="copy-clipboard-button" href="#" data-toggle="tooltip" data-placement="top" title="${title}"><i class="fas fa-copy fa-xs"></i></a>`;
+        template.content.firstChild.dataset['copy'] = content;
+        parent.append(template.content.firstChild);
+    }
 
-    // Add an "copy url" button to each header
+    // Add a "copy url" button to each header
     document.querySelectorAll('.anchorjs-link')
             .forEach(e => {
-                const template = document.createElement('template');
-                template.innerHTML = '<a class="copy-anchor-url" href="#" data-toggle="tooltip" data-placement="top" title="Copy URL"><i class="fas fa-copy fa-xs"></i></a>';
-                e.parentNode.append(template.content.firstChild);
+                const url = new URL(location.href);
+                url.hash = e.parentNode.id;
+                addCopyButton(e.parentElement, "Copy URL", url);
             });
+    // Add a "copy snippet" button to each configuration snippet
+    document.querySelectorAll('.language-xml.highlighter-rouge')
+           .forEach(e => {
+               addCopyButton(e, 'Copy snippet', e.textContent);
+           });
+
     document.addEventListener('click', event => {
-        let target = null;
-        if (event.target.classList.contains('copy-anchor-url')) {
-            target = event.target;
-        } else if (event.target.parentNode.classList.contains('copy-anchor-url')) {
-            target = event.target.parentNode;
-        }
+        let target = event.target.closest('.copy-clipboard-button');
 
         if (target) {
             if (navigator.clipboard) {
-                const url = new URL(location.href);
-                url.hash = event.target.parentNode.id;
                 event.preventDefault();
                 event.stopImmediatePropagation();
 
-                navigator.clipboard.writeText(url)
+                navigator.clipboard.writeText(target.dataset['copy'])
                          .then(() => {
                             target.firstChild.classList.remove('fa-copy');
                             target.firstChild.classList.add('fa-check');

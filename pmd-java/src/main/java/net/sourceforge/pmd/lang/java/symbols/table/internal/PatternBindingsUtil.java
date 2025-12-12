@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.symbols.table.internal;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
@@ -37,7 +38,7 @@ final class PatternBindingsUtil {
      * of expression does not contribute anything (meaning, all subexpressions
      * are not processed).
      */
-    static BindSet bindersOfExpr(ASTExpression e) {
+    static BindSet bindersOfExpr(@Nullable ASTExpression e) {
         /*
            JLS 17§6.3.1
            If an expression is not a conditional-and expression, conditional-or
@@ -45,8 +46,9 @@ final class PatternBindingsUtil {
            instanceof expression, switch expression, or parenthesized
            expression, then no scope rules apply.
          */
-
-        if (e instanceof ASTUnaryExpression) {
+        if (e == null) {
+            return BindSet.EMPTY;
+        } else if (e instanceof ASTUnaryExpression) {
             ASTUnaryExpression unary = (ASTUnaryExpression) e;
             return unary.getOperator() == UnaryOp.NEGATION
                    ? bindersOfExpr(unary.getOperand()).negate()
@@ -88,7 +90,10 @@ final class PatternBindingsUtil {
         return BindSet.EMPTY;
     }
 
-    static BindSet bindersOfPattern(ASTPattern pattern) {
+    static BindSet bindersOfPattern(@Nullable ASTPattern pattern) {
+        if (pattern == null) {
+            return BindSet.EMPTY;
+        }
         if (pattern instanceof ASTTypePattern) {
             if (!((ASTTypePattern) pattern).getVarId().isUnnamed()) {
                 return BindSet.whenTrue(HashTreePSet.singleton(((ASTTypePattern) pattern).getVarId()));

@@ -224,8 +224,7 @@ public final class AssertionUtil {
         return exceptionMaker.apply(String.format("%s must be %s, got %s", name, condition, value));
     }
 
-    @NonNull
-    public static <T> T requireParamNotNull(String paramName, T obj) {
+    public static <T> @NonNull T requireParamNotNull(String paramName, T obj) {
         if (obj == null) {
             throw new NullPointerException("Parameter " + paramName + " is null");
         }

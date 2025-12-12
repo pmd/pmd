@@ -894,4 +894,23 @@ class ShouldIncludeAssertTest {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6188 [java] UnitTestsShouldIncludeAssert - false positive when TestNG @Test.expectedException is present</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.testng.annotations.Test;
+class Foo {
+    @Test(expectedExceptions = IOException.class)
+    public static void alwaysThrows() throws IOException {
+       throw new IOException("expected");
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    void alwaysThrows() throws IOException {
+       throw new IOException("expected");
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

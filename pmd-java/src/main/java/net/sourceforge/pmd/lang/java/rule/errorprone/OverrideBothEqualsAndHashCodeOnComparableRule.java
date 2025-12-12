@@ -4,9 +4,13 @@
 
 package net.sourceforge.pmd.lang.java.rule.errorprone;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
+import java.util.Set;
+
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
-import net.sourceforge.pmd.lang.java.types.JPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -24,30 +28,35 @@ public class OverrideBothEqualsAndHashCodeOnComparableRule extends OverrideBothE
     private static final String MISSING_HASH_CODE = MESSAGE_PREFIX + "hashCode() should be overridden";
     private static final String MISSING_EQUALS = MESSAGE_PREFIX + "equals() should be overridden";
     private static final String MISSING_EQUALS_AND_HASH_CODE = MESSAGE_PREFIX + "both equals() and hashCode() should be overridden";
+    private static final Set<String> LOMBOK_GENERATED_EQUALS_HASHCODE = setOf(
+            "lombok.EqualsAndHashCode",
+            "lombok.Data",
+            "lombok.Value"
+    );
 
     @Override
     protected boolean skipType(ASTTypeDeclaration node) {
         return !TypeTestUtil.isA(Comparable.class, node) || TypeTestUtil.isA(Enum.class, node);
     }
 
-    private static boolean isCompareToMethod(ASTMethodDeclaration method) {
-        return "compareTo".equals(method.getName())
-                && method.getArity() == 1
-                && method.getResultTypeNode().getTypeMirror().isPrimitive(JPrimitiveType.PrimitiveTypeKind.INT)
-                && !method.isStatic();
-    }
-
     @Override
     protected void maybeReport(RuleContext ctx, ASTTypeDeclaration node, ASTMethodDeclaration hashCodeMethod, ASTMethodDeclaration equalsMethod) {
         ASTMethodDeclaration compareToMethod = node
                 .getDeclarations(ASTMethodDeclaration.class)
-                .first(OverrideBothEqualsAndHashCodeOnComparableRule::isCompareToMethod);
+                .first(JavaAstUtils::isCompareToMethod);
         if (compareToMethod == null) {
             return;
         }
 
+        if (equalsMethod == null && hashCodeMethod == null
+            && JavaAstUtils.hasAnyAnnotation(node, LOMBOK_GENERATED_EQUALS_HASHCODE)) {
+            return;
+        }
+
         if (equalsMethod == null && hashCodeMethod == null) {
-            ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
+            if (!node.isRecord()) {
+                ctx.addViolationWithMessage(compareToMethod, MISSING_EQUALS_AND_HASH_CODE);
+            }
         } else if (equalsMethod == null) {
             ctx.addViolationWithMessage(hashCodeMethod, MISSING_EQUALS);
         } else if (hashCodeMethod == null) {

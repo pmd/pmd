@@ -6,11 +6,12 @@ package net.sourceforge.pmd.lang.java.symbols.table.internal
 
 import io.kotest.assertions.withClue
 import io.kotest.matchers.collections.shouldBeSingleton
-import io.kotest.matchers.collections.shouldMatchEach
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.since
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J17
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J22
+import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol
+import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.test.ast.shouldBeA
@@ -359,6 +360,41 @@ class PatternVarScopingTests : ProcessorTestSpec({
                 }
                 switch.varAccesses("string").shouldBeSingleton {
                     it shouldHaveType ts.STRING
+                }
+            }
+        }
+
+        doTest("Guarded branches in switch") {
+            val switch = parser.parse(
+                """
+                class Foo {
+                  int cs;
+                  Object foo(Object foo) {
+                    return switch (foo) {
+                        case char[] array when array.length > 0 -> 44;
+                        case String string when foo instanceof CharSequence cs -> cs; // cs in scope
+                        case String string when !(foo instanceof CharSequence cs) -> cs; // cs refers to field
+                        default -> throw new RuntimeException();
+                     };
+                  }
+                }
+            """
+            ).descendants(ASTSwitchExpression::class.java).firstOrThrow()
+
+            switch.withTypeDsl {
+                switch.varAccesses("array").shouldBeSingleton {
+                    it shouldHaveType char.toArray()
+                }
+                val (cs1, cs2) = switch.varAccesses("cs").toList()
+                cs1.referencedSym.shouldBeA<JLocalVariableSymbol>()
+                cs1 shouldHaveType java.lang.CharSequence::class.decl
+
+                cs2.referencedSym.shouldBeA<JFieldSymbol>()
+                cs2 shouldHaveType int
+
+                switch.varAccesses("foo").forEach {
+                    it.referencedSym.shouldBeA<JLocalVariableSymbol>()
+                    it shouldHaveType ts.OBJECT
                 }
             }
         }

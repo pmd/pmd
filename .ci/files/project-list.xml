@@ -38,6 +38,7 @@ mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.t
     <tag>v5.3.13</tag>
 
     <exclude-pattern>.*/build/generated-sources/.*</exclude-pattern>
+    <exclude-pattern>.*/build/resources/.*</exclude-pattern>
 
     <build-command><![CDATA[#!/usr/bin/env bash
 ## Skip gradle execution

@@ -49,8 +49,7 @@ public final class ASTCatchParameter extends AbstractJavaNode
     }
 
     @Override
-    @NonNull
-    public ASTVariableId getVarId() {
+    public @NonNull ASTVariableId getVarId() {
         return (ASTVariableId) getLastChild();
     }
 

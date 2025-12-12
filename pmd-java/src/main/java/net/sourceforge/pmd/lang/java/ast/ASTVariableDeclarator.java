@@ -47,8 +47,7 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
      * Returns the id of the declared variable.
      */
     @Override
-    @NonNull
-    public ASTVariableId getVarId() {
+    public @NonNull ASTVariableId getVarId() {
         return (ASTVariableId) getChild(0);
     }
 
@@ -65,8 +64,7 @@ public class ASTVariableDeclarator extends AbstractJavaNode implements InternalI
     /**
      * Returns the initializer, of the variable, or null if it doesn't exist.
      */
-    @Nullable
-    public ASTExpression getInitializer() {
+    public @Nullable ASTExpression getInitializer() {
         return hasInitializer() ? (ASTExpression) getLastChild() : null;
     }
 

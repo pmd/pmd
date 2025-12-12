@@ -8103,7 +8103,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/1005544?v=4",
       "profile": "https://www.elharo.com/blog/",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -8197,7 +8198,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/2975481?v=4",
       "profile": "https://github.com/mrclmh",
       "contributions": [
-        "bug"
+        "bug",
+        "code"
       ]
     },
     {
@@ -8313,6 +8315,51 @@
       "name": "rubenporras",
       "avatar_url": "https://avatars.githubusercontent.com/u/43636626?v=4",
       "profile": "https://github.com/rubenporras",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "mebigfatguy",
+      "name": "Dave Brosius",
+      "avatar_url": "https://avatars.githubusercontent.com/u/170161?v=4",
+      "profile": "http://www.jroller.com/dbrosius/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "kdandoy107255",
+      "name": "kdandoy107255",
+      "avatar_url": "https://avatars.githubusercontent.com/u/221576972?v=4",
+      "profile": "https://github.com/kdandoy107255",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Juneezee",
+      "name": "Eng Zer Jun",
+      "avatar_url": "https://avatars.githubusercontent.com/u/20135478?v=4",
+      "profile": "https://github.com/Juneezee",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "estekhin",
+      "name": "Oleg Estekhin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6337779?v=4",
+      "profile": "https://github.com/estekhin",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "frankk3",
+      "name": "frankk3",
+      "avatar_url": "https://avatars.githubusercontent.com/u/28110843?v=4",
+      "profile": "https://github.com/frankk3",
       "contributions": [
         "bug"
       ]

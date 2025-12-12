@@ -52,6 +52,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTModifierList;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
+import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
 import net.sourceforge.pmd.lang.java.ast.ASTResourceList;
 import net.sourceforge.pmd.lang.java.ast.ASTStatement;
@@ -259,6 +260,9 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(f.typeHeader(top(), node.getSymbol()));
 
             NodeStream<? extends JavaNode> notBody = node.children().drop(1).dropLast(1);
+            if (node instanceof ASTRecordDeclaration) {
+                notBody = notBody.drop(1); // drop record components
+            }
             for (JavaNode it : notBody) {
                 setTopSymbolTable(it);
             }
@@ -287,6 +291,10 @@ public final class SymbolTableResolver {
             pushed += pushOnStack(f.typeBody(top(), node.getTypeMirror()));
 
             setTopSymbolTable(node.getBody());
+            if (node instanceof ASTRecordDeclaration) {
+                // Members of a record declaration are in scope in the record header.
+                setTopSymbolTable(node.getRecordComponents());
+            }
 
             // preprocess siblings
             node.getDeclarations(ASTTypeDeclaration.class)
@@ -385,14 +393,16 @@ public final class SymbolTableResolver {
 
             for (ASTSwitchBranch branch : node.getBranches()) {
                 ASTSwitchLabel label = branch.getLabel();
-                // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
-                BindSet bindings =
-                    label.children(ASTPattern.class)
+                // Collect all bindings. Composite label with bindings would be a compilation error.
+                BindSet bindings = label.children(ASTPattern.class)
                          .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
                 int pushBindings = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
-                setTopSymbolTableAndVisit(label, ctx);
+                setTopSymbolTableAndVisit(label.getGuard(), ctx);
+                bindings = bindersOfExpr(label.getGuardExpression());
+
+                pushBindings += pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
 
                 if (branch instanceof ASTSwitchArrowBranch) {
                     pushed = pushBindings;

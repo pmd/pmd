@@ -205,6 +205,7 @@ public class Complicated {
 
     <rule name="ExcessiveClassLength"
           language="apex"
+          deprecated="true"
           since="5.5.0"
           message="Avoid really long classes ({0} lines - threshold is {1})."
           class="net.sourceforge.pmd.lang.apex.rule.design.ExcessiveClassLengthRule"
@@ -212,7 +213,9 @@ public class Complicated {
         <description>
 Excessive class file lengths are usually indications that the class may be burdened with excessive
 responsibilities that could be provided by external classes or functions. In breaking these methods
-apart the code becomes more managable and ripe for reuse.
+apart the code becomes more manageable and ripe for reuse.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {%rule NcssCount %} to find big classes.
         </description>
         <priority>3</priority>
         <example>
@@ -295,6 +298,7 @@ public class Foo {
 
     <rule name="NcssConstructorCount"
           language="apex"
+          deprecated="true"
           since="5.5.0"
           message="The constructor has an NCSS line count of {0}; current threshold is {1}."
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssConstructorCountRule"
@@ -303,6 +307,8 @@ public class Foo {
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given constructor. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {% rule NcssCount %} instead.
         </description>
         <priority>3</priority>
         <example>
@@ -322,8 +328,50 @@ public class Foo extends Bar {
         </example>
     </rule>
 
+    <rule name="NcssCount"
+          language="apex"
+          message="The {0} ''{1}'' has a NCSS line count of {2} (limit: {3})."
+          since="7.19.0"
+          class="net.sourceforge.pmd.lang.apex.rule.design.NcssCountRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_design.html#ncsscount">
+        <description>
+            This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of lines
+            of code in a class, method or constructor. NCSS ignores comments, blank lines, and only counts actual
+            statements. For more details on the calculation, see the documentation
+            {% jdoc apex::lang.apex.metrics.ApexMetrics#NCSS %}.
+        </description>
+        <priority>3</priority>
+        <example>
+            <![CDATA[
+class Foo {                         // +1, total Ncss = 12
+
+  public void bigMethod()           // +1
+  {
+    int x = 0, y = 2;               // +1
+    boolean a = false, b = true;    // +1
+
+    if (a || b) {                   // +1
+      try {                         // +1
+        do {                        // +1
+          x += 2;                   // +1
+        } while (x < 12);
+
+        System.exit(0);             // +1
+      } catch (IOException ioe) {   // +1
+        throw new PatheticFailException(ioe); // +1
+      }
+    } else {
+      System.out.println('false');  // +1
+    }
+  }
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="NcssMethodCount"
           language="apex"
+          deprecated="true"
           since="5.5.0"
           message="The method ''{0}()'' has an NCSS line count of {1} (limit: {2})"
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssMethodCountRule"
@@ -332,6 +380,8 @@ public class Foo extends Bar {
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given method. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {% rule NcssCount %} instead.
         </description>
         <priority>3</priority>
         <example>
@@ -352,6 +402,7 @@ public class Foo extends Bar {
 
     <rule name="NcssTypeCount"
           language="apex"
+          deprecated="true"
           since="5.5.0"
           message="The type has an NCSS line count of {0}; current threshold is {1}."
           class="net.sourceforge.pmd.lang.apex.rule.design.NcssTypeCountRule"
@@ -360,6 +411,8 @@ public class Foo extends Bar {
 This rule uses the NCSS (Non-Commenting Source Statements) algorithm to determine the number of lines
 of code for a given type. NCSS ignores comments, and counts actual statements. Using this algorithm,
 lines of code that are split are counted as one.
+
+**Deprecated:** This rule is deprecated since PMD 7.19.0 and will be removed with PMD 8.0.0. Use {% rule NcssCount %} instead.
         </description>
         <priority>3</priority>
         <example>
