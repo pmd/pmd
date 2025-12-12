@@ -1,88 +1,116 @@
-#!/bin/bash
+#!/bin/sh
 # BSD-style license; for more info see http://pmd.sourceforge.net/license.html
 
 #
 # Simple manual test script
 # - code is copied from run.sh to be tested here (so please check, it might be out of sync)
-# - mostly the function "determine_java_version" is tested here
+# - only the function "determine_java_version" is tested here
 # - just run it with "./runtest.sh" and look at the output
 # - test cases are at the end of this script
 #
 
 export LANG=en_US.UTF-8
 
-FULL_JAVA_VERSION=""
-
-get_full_java_version() {
-  #java -version 2>&1
-  #echo "openjdk version \"11.0.6\" 2022-08-12"
-  echo "$FULL_JAVA_VERSION"
+mock_show_settings_properties() {
+  # instead of: java -XshowSettings:properties 2>&1
+  echo "Property settings:
+    some.other.property1 = value
+    java.version = $MOCKED_JAVA_VERSION
+    some.other.property2 = value
+    java.home = $MOCKED_JAVA_HOME
+    some.other.property3 = value
+"
 }
 
+# See also
+# https://openjdk.org/jeps/223 JEP 223: New Version-String Scheme (Since Java 9)
+# https://openjdk.org/jeps/322 JEP 322: Time-Based Release Versioning (Since Java 10)
 determine_java_version() {
-    local full_ver=$(get_full_java_version)
-    # java_ver is eg "80" for java 1.8, "90" for java 9.0, "100" for java 10.0.x
-    java_ver=$(echo "$full_ver" | sed -n '{
-        # replace early access versions, e.g. 11-ea with 11.0.0
-        s/-ea/.0.0/
-        # replace versions such as 10 with 10.0.0
-        s/version "\([0-9]\{1,\}\)"/version "\1.0.0"/
-        # replace old java versions 1.x.* (java 1.7, java 1.8) with x.*
-        s/version "1\.\(.*\)"/version "\1"/
-        # extract the major and minor parts of the version
-        s/^.* version "\([0-9]\{1,\}\)\.\([0-9]\{1,\}\).*".*$/\1\2/p
+    #local all_props=$(java -XshowSettings:properties 2>&1)
+    all_props="$(mock_show_settings_properties)"
+    java_ver_normalized=$(echo "$all_props" | grep "java.version" | sed -n -e '{
+      s/^.*java\.version *= *//
+      # replace java versions java 1.7 and java 1.8 with 7 and 8
+      s/^1\.\([78]\)/\1/
+      # print what is left
+      p
     }')
-    # java_vendor is either java (oracle) or openjdk
-    java_vendor=$(echo "$full_ver" | sed -n -e 's/^\(.*\) version .*$/\1/p')
+    # 1. component: java_version_feature is e.g. "8" for java 1.8, "9" for java 9, "10" for java 10, ...
+    java_version_feature=$(echo "$java_ver_normalized" | sed -n -e 's/^\([0-9]\{1,\}\).*$/\1/p')
+    # 3. component: update release counter is e.g. "17" for java 11.0.17
+    java_version_update=$(echo "$java_ver_normalized" | sed -n -e 's/^\([0-9]\{1,\}\)\.\([0-9]\{1,\}\).\([0-9]\{1,\}\).*$/\3/p')
+    # if there was no 3rd component (eg. -ea or ga version), use "0"
+    java_version_update=${java_version_update:="0"}
+
+    java_home_property=$(echo "$all_props" | grep "java.home" | sed -n -e 's/^.*java\.home *= *\(.*\)$/\1/; p')
+    java_has_javafx=0
+    if [ -e "$java_home_property/lib/javafx.properties" ]; then
+      java_has_javafx=1
+    elif [ -e "$java_home_property/jre/lib/javafx.properties" ]; then
+      java_has_javafx=1
+    fi
 }
 
-jre_specific_vm_options() {
-    options=""
-    if [ "$java_ver" -ge 70 ] && [ "$java_ver" -lt 80 ]
-    then
-      options="detected java 7"
-    elif [ "$java_ver" -ge 80 ] && [ "$java_ver" -lt 90 ]
-    then
-      options="detected java 8"
-    elif [ "$java_ver" -ge 90 ] && [ "$java_ver" -lt 110 ] && [ "$java_vendor" = "java" ]
-    then
-      options="detected java 9 or 10 from oracle"
-    elif [ "$java_vendor" = "openjdk" ] || ( [ "$java_vendor" = "java" ] && [ "$java_ver" -ge 110 ] )
-    then
-      options="detected java 11 from oracle or any openjdk"
-    fi
-    echo $options
+pass() {
+  printf "\e[32mOK\e[0m%s\n" "$1"
+}
+
+fail() {
+  printf "\e[31mFAILED\e[0m\n"
+  exit 1
 }
 
 run_test() {
-  FULL_JAVA_VERSION="$1"
-  EXPECTED_VENDOR="$2"
-  EXPECTED_VER="$3"
-  EXPECTED="$4"
-  echo "Testing: '${FULL_JAVA_VERSION}'"
+  MOCKED_JAVA_VERSION="$1"
+  MOCKED_JAVA_HOME="$2"
+  EXPECTED_FEATURE="$3"
+  EXPECTED_UPDATE="$4"
+  EXPECTED_HAS_JAVAFX="$5"
+  echo "Testing: '${MOCKED_JAVA_VERSION}' in '${MOCKED_JAVA_HOME}"
+  # use mocked path relative to the test script
+  MOCKED_JAVA_HOME="$(dirname "$0")/$MOCKED_JAVA_HOME"
   determine_java_version
-  java_opts="$(jre_specific_vm_options)"
-  echo -n "java_ver: $java_ver "
-  if [ "$EXPECTED_VER" = "$java_ver" ]; then echo -e "\e[32mOK\e[0m"; else echo -e "\e[31mFAILED\e[0m"; fi
-  echo -n "java_vendor: $java_vendor "
-  if [ "$EXPECTED_VENDOR" = "$java_vendor" ]; then echo -e "\e[32mOK\e[0m"; else echo -e "\e[31mFAILED\e[0m"; fi
-  echo -n "java_opts: $java_opts "
-  if [ "$EXPECTED" = "$java_opts" ]; then echo -e "\e[32mOK\e[0m"; else echo -e "\e[31mFAILED\e[0m - expected: ${EXPECTED}"; fi
+  printf "java_version_feature: %s " "$java_version_feature"
+  if [ "$EXPECTED_FEATURE" = "$java_version_feature" ]; then pass; else fail; fi
+  printf "java_version_update: %s " "$java_version_update"
+  if [ "$EXPECTED_UPDATE" = "$java_version_update" ]; then pass; else fail; fi
+  printf "java_has_javafx: %s " "$java_has_javafx"
+  if [ "$EXPECTED_HAS_JAVAFX" = "yes" ] && [ "$java_has_javafx" = 1 ]; then pass;
+  elif [ "$EXPECTED_HAS_JAVAFX" = "no" ] && [ "$java_has_javafx" = 0 ]; then pass;
+  else fail; fi
   echo
 }
 
-run_test "java version \"1.7.0_80\""                "java"      "70"    "detected java 7"
-run_test "openjdk version \"1.7.0_352\""            "openjdk"   "70"    "detected java 7"
-run_test "java version \"1.8.0_271\""               "java"      "80"    "detected java 8"
-run_test "openjdk version \"1.8.0_345\""            "openjdk"   "80"    "detected java 8"
-run_test "java version \"9.0.4\""                   "java"      "90"    "detected java 9 or 10 from oracle"
-run_test "openjdk version \"9.0.4\""                "openjdk"   "90"    "detected java 11 from oracle or any openjdk"
-run_test "java version \"10.0.2\" 2018-07-17"       "java"      "100"   "detected java 9 or 10 from oracle"
-run_test "openjdk version \"11.0.6\" 2022-08-12"    "openjdk"   "110"   "detected java 11 from oracle or any openjdk"
-run_test "openjdk version \"11.0.6.1\" 2022-08-12"  "openjdk"   "110"   "detected java 11 from oracle or any openjdk"
-run_test "java version \"11.0.13\" 2021-10-19 LTS"  "java"      "110"   "detected java 11 from oracle or any openjdk"
-run_test "openjdk version \"17.0.4\" 2022-08-12"    "openjdk"   "170"   "detected java 11 from oracle or any openjdk"
-run_test "openjdk version \"17.1.4\" 2022-08-12"    "openjdk"   "171"   "detected java 11 from oracle or any openjdk"
-run_test "openjdk version \"17.0.4.1\" 2022-08-12"  "openjdk"   "170"   "detected java 11 from oracle or any openjdk"
-run_test "openjdk version \"18.0.2.1\" 2022-08-18"  "openjdk"   "180"   "detected java 11 from oracle or any openjdk"
-run_test "openjdk version \"19-ea\" 2022-09-20"     "openjdk"   "190"   "detected java 11 from oracle or any openjdk"
+
+# Some predefined variants. We only check for the existence of a javafx.properties file
+# at lib/ or jre/lib. java.home sometimes points already to jre (oracle), but openjdk
+# builds don't have a jre folder anymore. Anyway, both should work.
+JH_WITH_FX=java-with-fx
+JH_WITH_FX2=java-with-fx/jre
+JH_WITHOUT_FX=java-without-fx
+
+#exit
+
+run_test "1.7.0_80"  "$JH_WITH_FX"       "7"   "80" "yes"
+run_test "1.7.0_352" "$JH_WITH_FX"       "7"  "352" "yes"
+run_test "1.8.0_271" "$JH_WITH_FX"       "8"  "271" "yes"
+run_test "1.8.0_345" "$JH_WITH_FX"       "8"  "345" "yes"
+run_test "1.8.0_441" "$JH_WITH_FX"       "8"  "441" "yes"
+run_test "1.8.0_441" "$JH_WITH_FX2"      "8"  "441" "yes"
+run_test "1.8.0_471" "$JH_WITHOUT_FX"    "8"  "471" "no" # e.g. oracle
+run_test "1.8.0_471" "$JH_WITH_FX2"      "8"  "471" "yes" # e.g. azul
+run_test "9.0.4"     "$JH_WITHOUT_FX"    "9"    "4" "no"
+run_test "10.0.2"    "$JH_WITHOUT_FX"   "10"    "2" "no"
+run_test "11.0.6"    "$JH_WITHOUT_FX"   "11"    "6" "no"
+run_test "11.0.6.1"  "$JH_WITHOUT_FX"   "11"    "6" "no"
+run_test "11.0.13"   "$JH_WITHOUT_FX"   "11"   "13" "no"
+run_test '11.0.19'   "$JH_WITHOUT_FX"   "11"   "19" "no"
+run_test "17.0.4"    "$JH_WITHOUT_FX"   "17"    "4" "no"
+run_test "17.0.4.1"  "$JH_WITHOUT_FX"   "17"    "4" "no"
+run_test "17.0.17"   "$JH_WITH_FX"      "17"   "17" "yes"
+run_test "18.0.2.1"  "$JH_WITHOUT_FX"   "18"    "2" "no"
+run_test "19-ea"     "$JH_WITHOUT_FX"   "19"    "0" "no"
+run_test "25"        "$JH_WITHOUT_FX"   "25"    "0" "no"
+run_test '25.0.1'    "$JH_WITHOUT_FX"   "25"    "1" "no"
+
+pass " All tests passed. ✔️"
