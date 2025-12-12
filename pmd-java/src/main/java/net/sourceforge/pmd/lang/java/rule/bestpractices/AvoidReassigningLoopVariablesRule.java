@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import static net.sourceforge.pmd.properties.PropertyFactory.enumPropertyNew;
+import static net.sourceforge.pmd.properties.PropertyFactory.conventionalEnumProperty;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,13 +41,13 @@ import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
-        = enumPropertyNew("foreachReassign", ForeachReassignOption.class)
+        = conventionalEnumProperty("foreachReassign", ForeachReassignOption.class)
         .defaultValue(ForeachReassignOption.DENY)
         .desc("how/if foreach control variables may be reassigned")
         .build();
 
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
-        = enumPropertyNew("forReassign", ForReassignOption.class)
+        = conventionalEnumProperty("forReassign", ForReassignOption.class)
         .defaultValue(ForReassignOption.DENY)
         .desc("how/if for control variables may be reassigned")
         .build();

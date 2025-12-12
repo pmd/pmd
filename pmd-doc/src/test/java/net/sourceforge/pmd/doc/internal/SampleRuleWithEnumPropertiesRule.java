@@ -18,7 +18,7 @@ public class SampleRuleWithEnumPropertiesRule extends AbstractRule {
         OPTION_TWO
     }
 
-    private static final PropertyDescriptor<MyEnum> ENUM_PROPERTY_NEW = PropertyFactory.enumPropertyNew("enumPropertyNew", MyEnum.class)
+    private static final PropertyDescriptor<MyEnum> ENUM_PROPERTY_NEW = PropertyFactory.conventionalEnumProperty("enumPropertyNew", MyEnum.class)
             .desc("Description")
             .defaultValue(MyEnum.OPTION_ONE)
             .build();
@@ -29,7 +29,7 @@ public class SampleRuleWithEnumPropertiesRule extends AbstractRule {
             .defaultValue(MyEnum.OPTION_ONE)
             .build();
 
-    private static final PropertyDescriptor<List<MyEnum>> ENUMLIST_PROPERTY_NEW = PropertyFactory.enumListPropertyNew("enumListPropertyNew", MyEnum.class)
+    private static final PropertyDescriptor<List<MyEnum>> ENUMLIST_PROPERTY_NEW = PropertyFactory.conventionalEnumListProperty("enumListPropertyNew", MyEnum.class)
             .desc("Description")
             .emptyDefaultValue()
             .build();

@@ -42,7 +42,7 @@ public class CyclomaticComplexityRule extends AbstractJavaRulechainRule {
                          .require(positive()).defaultValue(10).build();
 
     private static final PropertyDescriptor<List<CycloOption>> CYCLO_OPTIONS_DESCRIPTOR
-            = PropertyFactory.enumListPropertyNew("cycloOptions", CycloOption.class)
+            = PropertyFactory.conventionalEnumListProperty("cycloOptions", CycloOption.class)
                              .desc("Choose options for the computation of Cyclo")
                              .emptyDefaultValue()
                              .build();

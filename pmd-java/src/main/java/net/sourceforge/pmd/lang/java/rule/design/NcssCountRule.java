@@ -47,7 +47,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
                        .build();
 
     private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR =
-            PropertyFactory.enumListPropertyNew("ncssOptions", NcssOption.class)
+            PropertyFactory.conventionalEnumListProperty("ncssOptions", NcssOption.class)
                                                  .desc("Choose options for the computation of Ncss")
                                                  .emptyDefaultValue()
                                                  .build();

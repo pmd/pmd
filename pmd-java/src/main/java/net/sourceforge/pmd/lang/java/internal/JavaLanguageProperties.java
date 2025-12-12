@@ -20,7 +20,7 @@ public class JavaLanguageProperties extends JvmLanguagePropertyBundle {
      * @since 7.0.0
      */
     static final PropertyDescriptor<InferenceLoggingVerbosity> INTERNAL_INFERENCE_LOGGING_VERBOSITY =
-        PropertyFactory.enumPropertyNew("xTypeInferenceLogging", InferenceLoggingVerbosity.class)
+        PropertyFactory.conventionalEnumProperty("xTypeInferenceLogging", InferenceLoggingVerbosity.class)
                        .desc("Verbosity of the type inference logging")
                        .defaultValue(InferenceLoggingVerbosity.DISABLED)
                        .build();

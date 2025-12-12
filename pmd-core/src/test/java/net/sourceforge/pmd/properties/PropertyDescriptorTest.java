@@ -222,7 +222,7 @@ class PropertyDescriptorTest {
 
     @Test
     void testEnumPropertyNew() {
-        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumPropertyNew("enumProp", SampleEnum.class)
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.conventionalEnumProperty("enumProp", SampleEnum.class)
                 .desc("hello")
                 .defaultValue(SampleEnum.B)
                 .build();
@@ -270,7 +270,7 @@ class PropertyDescriptorTest {
 
     @Test
     void testEnumListPropertyNew() {
-        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.enumListPropertyNew("enumListProp", SampleEnum.class)
+        PropertyDescriptor<List<SampleEnum>> listDescriptor = PropertyFactory.conventionalEnumListProperty("enumListProp", SampleEnum.class)
                 .desc("hello")
                 .defaultValues(SampleEnum.A, SampleEnum.B)
                 .build();
@@ -374,7 +374,7 @@ class PropertyDescriptorTest {
 
     @Test
     void testEnumPropertyNewInvalidValue() {
-        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.enumPropertyNew("enumProp", SampleEnum.class)
+        PropertyDescriptor<SampleEnum> descriptor = PropertyFactory.conventionalEnumProperty("enumProp", SampleEnum.class)
                 .desc("hello")
                 .defaultValue(SampleEnum.B)
                 .build();
