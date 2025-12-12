@@ -57,7 +57,7 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>, O
         this.metric = metric;
         if (metricOptionsEnum != null) {
             this.optionsDescriptor =
-                    PropertyFactory.enumListPropertyNew("metricOptions", metricOptionsEnum)
+                    PropertyFactory.conventionalEnumListProperty("metricOptions", metricOptionsEnum)
                             .desc("Choose a variant of the metric or the standard")
                             .emptyDefaultValue()
                             .build();

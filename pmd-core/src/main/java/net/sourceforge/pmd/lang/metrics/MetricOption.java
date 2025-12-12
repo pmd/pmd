@@ -31,7 +31,7 @@ public interface MetricOption {
      * @return The name of the option.
      * @deprecated Since 7.19.0. When metrics are used for (rule) properties, then the default
      * enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
-     * See {@link net.sourceforge.pmd.properties.PropertyFactory#enumListPropertyNew(String, Class)}.
+     * See {@link net.sourceforge.pmd.properties.PropertyFactory#conventionalEnumListProperty(String, Class)}.
      */
     @Deprecated
     default String valueName() {

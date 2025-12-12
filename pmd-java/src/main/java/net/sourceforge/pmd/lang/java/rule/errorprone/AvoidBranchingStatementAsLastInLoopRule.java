@@ -174,7 +174,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     }
 
     private static PropertyDescriptor<List<LoopTypes>> propertyForNew(String stmtName) {
-        return PropertyFactory.enumListPropertyNew("check" + StringUtils.capitalize(stmtName) + "LoopTypes", LoopTypes.class)
+        return PropertyFactory.conventionalEnumListProperty("check" + StringUtils.capitalize(stmtName) + "LoopTypes", LoopTypes.class)
                 .desc("List of loop types in which " + stmtName + " statements will be checked")
                 .defaultValue(DEFAULTS)
                 .build();
