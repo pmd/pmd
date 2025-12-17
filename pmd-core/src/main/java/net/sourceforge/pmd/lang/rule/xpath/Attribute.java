@@ -8,12 +8,14 @@ import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.annotation.InternalApi;
 import net.sourceforge.pmd.lang.ast.Node;
 
 /**
@@ -47,6 +49,7 @@ public final class Attribute {
 
     /** Must be non-null after {@link #getStringValue()} has been invoked. */
     private String stringValue;
+    private final Function<Method, Type> getType;
 
     /**
      * Creates a new attribute belonging to the given node using its accessor.
@@ -62,16 +65,32 @@ public final class Attribute {
         this.name = Objects.requireNonNull(name);
         this.handle = Objects.requireNonNull(handle);
         this.method = Objects.requireNonNull(method);
+        this.getType = Method::getGenericReturnType;
     }
 
     /** Creates a new attribute belonging to the given node using its string value. */
     public Attribute(@NonNull Node parent, @NonNull String name, @Nullable String value) {
+        this(parent, name, value, m -> String.class);
+    }
+
+    /**
+     * Creates a new attribute belonging to the given node using an arbitrary object value and a type.
+     * Note that the type must be supported by {@link net.sourceforge.pmd.lang.rule.xpath.internal.DomainConversion}
+     * if you want this attribute to be used from XPath.
+     */
+    @InternalApi // used for tests
+    public Attribute(@NonNull Node parent, @NonNull String name, @Nullable Object value, Type type) {
+        this(parent, name, value, m -> type);
+    }
+
+    private Attribute(@NonNull Node parent, @NonNull String name, @Nullable Object value, Function<Method, Type> getType) {
         this.parent = Objects.requireNonNull(parent);
         this.name = Objects.requireNonNull(name);
+        this.getType = getType;
         this.value = value;
         this.handle = null;
         this.method = null;
-        this.stringValue = value == null ? "" : value;
+        this.stringValue = value == null ? "" : value.toString();
         this.invoked = true;
     }
 
@@ -80,7 +99,7 @@ public final class Attribute {
      * Gets the generic type of the value of this attribute.
      */
     public Type getType() {
-        return method == null ? String.class : method.getGenericReturnType();
+        return getType.apply(this.method);
     }
 
     /** Return the name of the attribute (without leading @ sign). */
