@@ -85,7 +85,7 @@ class XMLRendererTest {
         FileId foo1 = CpdTestUtils.FOO_FILE_ID;
         Mark mark1 = builder.createMark("public", foo1, 1, lineCount);
         Mark mark2 = builder.createMark("stuff", foo1, 73, lineCount);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(Match.of(mark1, mark2));
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
@@ -105,7 +105,7 @@ class XMLRendererTest {
             assertEquals(foo1.getAbsolutePath(), file.getAttributes().getNamedItem("path").getNodeValue());
             assertEquals("6", file.getAttributes().getNamedItem("endline").getNodeValue());
             assertEquals("1", file.getAttributes().getNamedItem("column").getNodeValue());
-            assertEquals("1", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
+            assertEquals("2", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
             file = file.getNextSibling();
             while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
                 file = file.getNextSibling();
@@ -115,7 +115,7 @@ class XMLRendererTest {
             assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
             assertEquals("78", file.getAttributes().getNamedItem("endline").getNodeValue());
             assertEquals("1", file.getAttributes().getNamedItem("column").getNodeValue());
-            assertEquals("1", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
+            assertEquals("2", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
         }
         assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
         assertEquals(CpdTestUtils.generateDummyContent(lineCount), doc.getElementsByTagName("codefragment").item(0).getTextContent());
@@ -129,13 +129,13 @@ class XMLRendererTest {
         FileId foo1 = CpdTestUtils.FOO_FILE_ID;
         Mark mark1 = builder.createMark("public", foo1, 48, lineCount1);
         Mark mark2 = builder.createMark("void", foo1, 73, lineCount1);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(Match.of(mark1, mark2));
 
         int lineCount2 = 7;
         FileId foo2 = FileId.fromPathLikeString("/var/Foo2.java");
         Mark mark3 = builder.createMark("void", foo2, 49, lineCount2);
         Mark mark4 = builder.createMark("stuff", foo2, 74, lineCount2);
-        builder.addMatch(new Match(76, mark3, mark4));
+        builder.addMatch(Match.of(mark3, mark4));
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
@@ -156,7 +156,7 @@ class XMLRendererTest {
         FileId fileName = CpdTestUtils.FOO_FILE_ID;
         Mark mark1 = builder.createMark("public", fileName, 1, lineCount, 2, 3);
         Mark mark2 = builder.createMark("stuff", fileName, 24, lineCount, 4, 5);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(Match.of(mark1, mark2));
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
@@ -199,7 +199,7 @@ class XMLRendererTest {
         final String escapeChar = "&amp;";
         Mark mark1 = builder.createMark("public", FileId.fromPathLikeString("/var/A&oo.java"), 2, 6);
         Mark mark2 = builder.createMark("void", FileId.fromPathLikeString("/var/B&oo.java"), 17, 6);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(Match.of(mark1, mark2));
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
@@ -216,7 +216,7 @@ class XMLRendererTest {
         final int lineCount = 2;
         final Mark mark1 = builder.createMark("public", filename, 1, lineCount, 2, 3);
         final Mark mark2 = builder.createMark("stuff", filename, 3, lineCount, 4, 5);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(Match.of(mark1, mark2));
         builder.recordNumTokens(filename, 888);
 
         final CPDReport report = builder.build();
@@ -242,7 +242,7 @@ class XMLRendererTest {
         final int lineCount = 6;
         final Mark mark1 = builder.createMark("public", filename, 1, lineCount, 2, 3);
         final Mark mark2 = builder.createMark("stuff", filename, 73, lineCount, 4, 5);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(Match.of(mark1, mark2));
         builder.recordNumTokens(filename, 888);
 
         final CPDReport report = builder.build();
@@ -276,7 +276,7 @@ class XMLRendererTest {
         FileId file2 = FileId.fromPathLikeString("file2");
         Mark mark1 = builder.createMark("public", file1, 1, 5);
         Mark mark2 = builder.createMark("public", file2, 5, 5);
-        Match match1 = new Match(75, mark1, mark2);
+        Match match1 = Match.of(mark1, mark2);
         builder.addMatch(match1);
 
         builder.setFileContent(file1, codefragment);

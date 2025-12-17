@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 
 import net.sourceforge.pmd.cpd.CpdLanguageProperties;
 import net.sourceforge.pmd.cpd.CpdLexer;
+import net.sourceforge.pmd.cpd.Tokens;
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -38,11 +39,13 @@ class JavaCpdLexerTest extends CpdTextComparisonTest {
     @Test
     void testLexExceptionLocation() {
         CpdLexer cpdLexer = newCpdLexer(defaultProperties());
-        LexException lexException = assertThrows(LexException.class, () ->
-            CpdLexer.tokenize(cpdLexer,
-                    // note: the source deliberately contains an unbalanced quote, unterminated string literal
-                    TextDocument.readOnlyString("class F {\n    String s=\"abc\";\"\n}\n", FileId.UNKNOWN, getLanguage().getDefaultVersion()))
-        );
+        LexException lexException = assertThrows(
+            LexException.class,
+            () -> {
+                // note: the source deliberately contains an unbalanced quote, unterminated string literal
+                TextDocument doc = TextDocument.readOnlyString("class F {\n    String s=\"abc\";\"\n}\n", FileId.UNKNOWN, getLanguage().getDefaultVersion());
+                cpdLexer.tokenize(doc, new Tokens().factoryForFile(doc));
+            });
         // this shouldn't throw a IllegalArgumentException
         assertThat(lexException.getMessage(), containsString("at line 3, column 1"));
     }
