@@ -635,7 +635,7 @@ jobs:
         uses: ruby/setup-ruby@ac793fdd38cc468a4dd57246fa9d0e868aba9085 #v1.270.0
         with:
           ruby-version: 3.3
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
+      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           path: |
             ~/.m2/repository
