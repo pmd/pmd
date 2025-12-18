@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* maintenance
+  * [#6230](https://github.com/pmd/pmd/issues/6230): \[core] Single module snapshot build fails
 
 ### 🚨️ API Changes
 
