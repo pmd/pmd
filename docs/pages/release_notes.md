@@ -29,6 +29,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
 * java-codestyle
   * [#5043](https://github.com/pmd/pmd/issues/5043): \[java] LambdaCanBeMethodReference: False positive on overloaded methods
+  * [#6279](https://github.com/pmd/pmd/issues/6279): \[java] EmptyMethodInAbstractClassShouldBeAbstract: False positive for final empty methods
 * maintenance
   * [#6230](https://github.com/pmd/pmd/issues/6230): \[core] Single module snapshot build fails
 
