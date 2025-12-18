@@ -2166,6 +2166,13 @@ change one module, you build and test just this single module to speed up develo
 a rule in pmd-apex only, you can just build this:
     <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mvnw verify <span class="nt">-pl</span> pmd-apex
 </code></pre></div>    </div>
+  </li>
+  <li>If you are currently on a snapshot commit (as opposed to a release commit) you need snapshot modules as dependencies
+for the module you want to build. You can either build them yourself (line 1) or you can activate the snapshot
+repository (line 2) for your build:
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./mvnw verify <span class="nt">-pl</span> pmd-apex <span class="nt">-am</span>
+./mvnw verify <span class="nt">-pl</span> pmd-apex <span class="nt">-Pcentral-portal-snapshots</span>
+</code></pre></div>    </div>
     <p><strong>Caveats:</strong> We have some integration tests, that run only after all modules have been built. You could
 break these without noticing.<br />
 <strong>Note:</strong> In our CI (via GitHub Actions) we always build the complete project.</p>

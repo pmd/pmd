@@ -19,9 +19,12 @@ This is a minor release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
-
-- java-bestpractices
-  - [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
+* java-bestpractices
+  * [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
+* java-codestyle
+  * [#5043](https://github.com/pmd/pmd/issues/5043): \[java] LambdaCanBeMethodReference: False positive on overloaded methods
+* maintenance
+  * [#6230](https://github.com/pmd/pmd/issues/6230): \[core] Single module snapshot build fails
 
 ### 🚨️ API Changes
 

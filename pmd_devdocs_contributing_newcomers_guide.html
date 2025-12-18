@@ -2105,6 +2105,15 @@ module. In order to rebuild only pmd-apex, execute this command:</p>
 
     <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./mvnw clean verify <span class="nt">-pl</span> pmd-apex
 </code></pre></div>    </div>
+  </li>
+  <li>You might get an error about not being able to resolve a <code class="language-plaintext highlighter-rouge">snapshot</code> module:
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Could not resolve dependencies <span class="k">for </span>project net.sourceforge.pmd:pmd-apex:jar:7.20.0-SNAPSHOT
+</code></pre></div>    </div>
+    <p>Then you are on snapshot commit and need snapshot dependencies for your module. You can activate building the
+required dependencies yourself (line 1) or you can activate the snapshot repository (line 2) for your build:</p>
+    <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./mvnw clean verify <span class="nt">-pl</span> pmd-apex <span class="nt">-am</span>
+<span class="nv">$ </span>./mvnw clean verify <span class="nt">-pl</span> pmd-apex <span class="nt">-Pcentral-portal-snapshots</span>
+</code></pre></div>    </div>
 
     <p>We recommend to read the documentation <a href="pmd_devdocs_building_general.html">Building PMD General Info</a> and
 especially the IDE specific guides, such as <a href="pmd_devdocs_building_intellij.html">Building PMD with IntelliJ IDEA</a>.
