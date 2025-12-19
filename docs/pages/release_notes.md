@@ -26,6 +26,7 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 * java-bestpractices
+  * [#6028](https://github.com/pmd/pmd/issues/6028): \[java] UnusedPrivateMethod: False positive with raw type for generic method
   * [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
   * [#6291](https://github.com/pmd/pmd/issues/6291): \[java] EnumComparison: False positive for any object when object.equals(null)
 * java-codestyle

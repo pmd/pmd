@@ -462,4 +462,33 @@ class Scratch {
             d.methodType shouldBeSomeInstantiationOf  takes2ArgsLambda
         }
     }
+
+    parserTest("Test specificity between args with explicit cast") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface Collection<T> {}
+            interface Multiset<K> extends Collection<K> { }
+            public final class Scratch {
+                static <E> Multiset<E> addAllImpl(
+                        Multiset<E> self, Collection<?> elements) {
+                    return addAllImpl(self, (Multiset) elements);
+                }
+
+                private static <E> Multiset<E> addAllImpl(
+                        Multiset<E> self, Multiset<E> elements) {
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, multiSetTy) = acu.declaredTypeSignatures()
+        val (addAllImpl) = acu.methodCalls().toList()
+        val (_, multisetMethod) = acu.declaredMethodSignatures()
+
+        spy.shouldBeOk {
+            addAllImpl.methodType shouldBeSomeInstantiationOf multisetMethod
+            // since unchecked conversion is necessary the return type is erased
+            addAllImpl.typeMirror shouldBe multiSetTy.erasure
+        }
+    }
 })
