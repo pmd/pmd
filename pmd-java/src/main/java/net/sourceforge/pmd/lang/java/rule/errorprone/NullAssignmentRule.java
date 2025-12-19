@@ -11,7 +11,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
@@ -67,7 +66,7 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
 
         final JavaNode parent = currentTernary.getParent();
         boolean isAssignment = parent instanceof ASTAssignmentExpression;
-        if (isAssignment && isFinalFieldInitializer((ASTAssignmentExpression) parent)) {
+        if (isAssignment && isFinalField((ASTAssignmentExpression) parent)) {
             isInitializer = true;
         }
 
@@ -87,17 +86,9 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private boolean isFinalFieldInitializer(ASTAssignmentExpression expression) {
-        if (!isInsideConstructor(expression)) {
-            return false;
-        }
-
+    private boolean isFinalField(ASTAssignmentExpression expression) {
         @Nullable
         JVariableSymbol symbol = tryGetLeftOperandSymbol(expression);
         return symbol != null && symbol.isField() && symbol.isFinal();
-    }
-
-    private boolean isInsideConstructor(JavaNode node) {
-        return node.ancestors(ASTConstructorDeclaration.class).nonEmpty();
     }
 }
