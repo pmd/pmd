@@ -749,4 +749,19 @@ class Foo {
         ]]> </code>
         <source-type>java 21</source-type>
     </test-code>
+    <test-code>
+        <description>Pattern variable in for-each without brackets (Issue 6328)</description>
+        <expected-problems>0</expected-problems>
+        <code
+        ><![CDATA[
+        public class Foo {
+            public void test() {
+                Object[] array = {1, "a"};
+                for(Object o : array)
+                    if(o instanceof String s)
+                        System.out.println(s);
+            }
+        }
+        ]]></code>
+    </test-code>
 </test-data>
