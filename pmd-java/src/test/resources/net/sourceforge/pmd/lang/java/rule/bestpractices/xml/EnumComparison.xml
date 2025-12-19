@@ -85,7 +85,7 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Equals null</description>
+        <description>#6291 False positive for any object when object.equals(null)</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>8-8</expected-linenumbers>
         <code><![CDATA[
