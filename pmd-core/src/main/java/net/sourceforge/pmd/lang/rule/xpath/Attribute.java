@@ -77,6 +77,9 @@ public final class Attribute {
      * Creates a new attribute belonging to the given node using an arbitrary object value and a type.
      * Note that the type must be supported by {@link net.sourceforge.pmd.lang.rule.xpath.internal.DomainConversion}
      * if you want this attribute to be used from XPath.
+     *
+     * @apiNote Internal API
+     * @since 7.20.0
      */
     @InternalApi // used for tests
     public Attribute(@NonNull Node parent, @NonNull String name, @Nullable Object value, Type type) {
