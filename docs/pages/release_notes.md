@@ -27,6 +27,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛️ Fixed Issues
 * core
   * [#6330](https://github.com/pmd/pmd/issues/6330): \[core] "Unable to create ValueRepresentation" when using @<!-- -->LiteralText (XPath)
+* java
+  * [#6299](https://github.com/pmd/pmd/issues/6299): \[java] Fix grammar of switch label
 * java-bestpractices
   * [#4282](https://github.com/pmd/pmd/issues/4282): \[java] GuardLogStatement: False positive when guard is not a direct parent
   * [#6028](https://github.com/pmd/pmd/issues/6028): \[java] UnusedPrivateMethod: False positive with raw type for generic method
