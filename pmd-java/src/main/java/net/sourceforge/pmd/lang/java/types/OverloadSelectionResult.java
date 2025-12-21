@@ -107,6 +107,7 @@ public interface OverloadSelectionResult {
     /**
      * Return whether several overloads were applicable, and needed to
      * be disambiguated through specificity checks.
+     * @experimental Since 7.20.0
      */
     @Experimental
     boolean hadSeveralApplicableOverloads();

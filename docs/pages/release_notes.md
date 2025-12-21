@@ -25,8 +25,13 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java-codestyle
+  * [#6237](https://github.com/pmd/pmd/issues/6237): \[java] UnnecessaryCast: ContextedRuntimeException when parsing switch expression with lambdas
 
 ### 🚨️ API Changes
+
+#### Experimental API
+* pmd-java: {%jdoc !!java::lang.java.types.OverloadSelectionResult#hadSeveralApplicableOverloads()%}
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
