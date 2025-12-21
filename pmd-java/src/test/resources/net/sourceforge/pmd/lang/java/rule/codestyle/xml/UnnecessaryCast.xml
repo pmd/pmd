@@ -1175,5 +1175,29 @@ class Tester {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#6237 Error with lambdas in switch expr</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <code><![CDATA[
+            public class Foo {
+                void bar(int x) {
+                    foo(
+                            switch(x) {
+                                case 0 -> () -> (long) 1;  // this is necessary   int  -> long -> Long
+                                case 1 -> () -> (long) 2L; // this is unnecessary long -> long -> Long
+                                default -> throw new Error();
+                            }
+                    );
+                }
 
+                void foo(Supplier<Long> sup) {
+                    // intentionally empty
+                }
+            }
+            interface Supplier<T> {
+                T get();
+            }
+            ]]></code>
+    </test-code>
 </test-data>

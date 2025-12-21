@@ -33,6 +33,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#6291](https://github.com/pmd/pmd/issues/6291): \[java] EnumComparison: False positive for any object when object.equals(null)
 * java-codestyle
   * [#5043](https://github.com/pmd/pmd/issues/5043): \[java] LambdaCanBeMethodReference: False positive on overloaded methods
+  * [#6237](https://github.com/pmd/pmd/issues/6237): \[java] UnnecessaryCast: ContextedRuntimeException when parsing switch expression with lambdas
   * [#6279](https://github.com/pmd/pmd/issues/6279): \[java] EmptyMethodInAbstractClassShouldBeAbstract: False positive for final empty methods
 * java-errorprone
   * [#6276](https://github.com/pmd/pmd/issues/6276): \[java] NullAssignment: False positive when assigning null to a final field in a constructor
@@ -41,6 +42,9 @@ This is a {{ site.pmd.release_type }} release.
   * [#6230](https://github.com/pmd/pmd/issues/6230): \[core] Single module snapshot build fails
 
 ### 🚨️ API Changes
+
+#### Experimental API
+* pmd-java: {%jdoc !!java::lang.java.types.OverloadSelectionResult#hadSeveralApplicableOverloads()%}
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
