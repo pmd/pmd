@@ -54,6 +54,7 @@ public final class ASTSwitchLabel extends AbstractJavaNode implements Iterable<A
 
     /**
      * Returns true if this is the label {@code case null} or {@code case null, default}.
+     * @since 7.20.0
      */
     public boolean isCaseNull() {
         return getFirstChild() instanceof ASTNullLiteral;

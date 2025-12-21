@@ -26,6 +26,8 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🐛️ Fixed Issues
 
+* java
+  * [#6299](https://github.com/pmd/pmd/issues/6299): \[java] Fix grammar of switch label
 - java-bestpractices
   - [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
 
