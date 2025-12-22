@@ -24,10 +24,17 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ Changed Rules
+* The Java rule {%rule java/codestyle/OnlyOneReturn %} has a new property `ignoredMethodNames`. This property by
+  default is set to `compareTo` and `equals`, thus this rule now by default allows multiple return statements
+  for these methods. To restore the old behavior, simply set this property to an empty value.
+
 ### 🐛️ Fixed Issues
 
 - java-bestpractices
   - [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
+* java-codestyle
+  * [#4257](https://github.com/pmd/pmd/issues/4257): \[java] OnlyOneReturn: False positive with equals method
 
 ### 🚨️ API Changes
 
