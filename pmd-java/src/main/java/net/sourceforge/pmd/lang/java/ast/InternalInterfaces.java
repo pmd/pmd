@@ -17,10 +17,14 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
  * uniform names on related concepts. Maybe it makes sense to publish some of
  * them at some point.
  */
+// Suppressing MissingStaticMethodInNonInstantiatableClass: This class is used here as a namespace
+// for related interfaces. The outer class indeed cannot be instantiated and doesn't have any static
+// methods. This is similar like #1652.
+@SuppressWarnings("PMD.MissingStaticMethodInNonInstantiatableClass")
 final class InternalInterfaces {
 
     private InternalInterfaces() {
-        // utility class
+        // just a namespace for related interfaces
     }
 
     interface OperatorLike {

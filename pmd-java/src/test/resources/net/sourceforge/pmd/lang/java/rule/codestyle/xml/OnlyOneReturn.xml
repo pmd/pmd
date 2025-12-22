@@ -129,4 +129,66 @@ public class OnlyOneReturn {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4257 allow ignoring methods, compareTo and equals as default</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.util.Objects;
+
+public class Person implements Comparable<Person> {
+    private String name = "Name";
+    private int age = 27;
+
+    @Override
+    public int compareTo(Person other) {
+        if (other == null) return 1;
+        if (this.age < other.age) return -1;
+        if (this.age > other.age) return 1;
+        return this.name.compareTo(other.name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person other = (Person) obj;
+        if (this.age != other.age) return false;
+        return Objects.equals(this.name, other.name);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#4257 check compareTo and equals when property ignoredMethodNames is empty</description>
+        <rule-property name="ignoredMethodNames"/>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>9,10,11,17,18,20</expected-linenumbers>
+        <code><![CDATA[
+import java.util.Objects;
+
+public class Person implements Comparable<Person> {
+    private String name = "Name";
+    private int age = 27;
+
+    @Override
+    public int compareTo(Person other) {
+        if (other == null) return 1;            // line 9
+        if (this.age < other.age) return -1;    // line 10
+        if (this.age > other.age) return 1;     // line 11
+        return this.name.compareTo(other.name);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;                                   // line 17
+        if (obj == null || getClass() != obj.getClass()) return false;  // line 18
+        Person other = (Person) obj;
+        if (this.age != other.age) return false;                        // line 20
+        return Objects.equals(this.name, other.name);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

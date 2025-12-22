@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.ast;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -116,6 +117,9 @@ public class DummyNode extends AbstractNode<DummyNode, DummyNode> {
         attributes.add(new Attribute(this, name, value));
     }
 
+    public void setXPathAttribute(String name, Object value, Type type) {
+        attributes.add(new Attribute(this, name, value, type));
+    }
 
     public void clearXPathAttributes() {
         attributes.clear();

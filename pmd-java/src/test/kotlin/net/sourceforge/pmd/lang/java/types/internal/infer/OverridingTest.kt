@@ -7,7 +7,7 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.java.ast.*
+import net.sourceforge.pmd.lang.java.ast.ProcessorTestSpec
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.util.OptionalBool
 import kotlin.test.assertFalse
@@ -194,9 +194,12 @@ class Sub extends Sup {
 
 class F<G> {
     {
-        // Well it is ambiguous, though a nice compiler 
-        // wouldn't say it is, and rather consider the method hidden,
-        // and report an error on the declaration of Sub
+        // This is not ambiguous, as Sub.m is more specific than Sup.m.
+        // However, it is illegal to write the declaration of Sub.m above,
+        // because it has the same erasure as Sup.m but doesn't override
+        // it. If both `m` methods are placed in unrelated classes and then
+        // static imported, the method call is resolved to Sub.m through
+        // specificity rules.
         Sub.m(new F<List<G>>()); 
     }
 }
@@ -205,7 +208,6 @@ class F<G> {
 
         val (supE, subE) = acu.declaredMethodSignatures()
 
-
         // their type parameters have a different bound
         // technically this is a compile-time error:
         // both methods have the same erasure but neither hides the other
@@ -213,7 +215,7 @@ class F<G> {
             TypeOps.overrides(subE, supE, subE.declaringType)
         }
 
-        spy.shouldBeAmbiguous(acu.firstMethodCall())
+        spy.shouldHaveNoErrors()
         acu.firstMethodCall().methodType shouldBeSomeInstantiationOf subE
     }
 
