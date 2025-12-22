@@ -2038,6 +2038,13 @@
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
+<h3 id="️-changed-rules">🌟️ Changed Rules</h3>
+<ul>
+  <li>The Java rule <a href="pmd_rules_java_codestyle.html#onlyonereturn"><code class="language-plaintext highlighter-rouge">OnlyOneReturn</code></a> has a new property <code class="language-plaintext highlighter-rouge">ignoredMethodNames</code>. This property by
+default is set to <code class="language-plaintext highlighter-rouge">compareTo</code> and <code class="language-plaintext highlighter-rouge">equals</code>, thus this rule now by default allows multiple return statements
+for these methods. To restore the old behavior, simply set this property to an empty value.</li>
+</ul>
+
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
   <li>core
@@ -2060,6 +2067,7 @@
   </li>
   <li>java-codestyle
     <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4257">#4257</a>: [java] OnlyOneReturn: False positive with equals method</li>
       <li><a href="https://github.com/pmd/pmd/issues/5043">#5043</a>: [java] LambdaCanBeMethodReference: False positive on overloaded methods</li>
       <li><a href="https://github.com/pmd/pmd/issues/6237">#6237</a>: [java] UnnecessaryCast: ContextedRuntimeException when parsing switch expression with lambdas</li>
       <li><a href="https://github.com/pmd/pmd/issues/6279">#6279</a>: [java] EmptyMethodInAbstractClassShouldBeAbstract: False positive for final empty methods</li>
@@ -2123,7 +2131,7 @@
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 21, 2025 <br />
+             Site last generated: Dec 22, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

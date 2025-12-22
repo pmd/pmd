@@ -10,6 +10,7 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+* [🌟️ Changed Rules](#changed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
     * [Experimental API](#experimental-api)
@@ -18,6 +19,11 @@ This is a minor release.
 * [📈️ Stats](#stats)
 
 ### 🚀️ New and noteworthy
+
+### 🌟️ Changed Rules
+* The Java rule [`OnlyOneReturn`](https://docs.pmd-code.org/pmd-doc-7.20.0-SNAPSHOT/pmd_rules_java_codestyle.html#onlyonereturn) has a new property `ignoredMethodNames`. This property by
+  default is set to `compareTo` and `equals`, thus this rule now by default allows multiple return statements
+  for these methods. To restore the old behavior, simply set this property to an empty value.
 
 ### 🐛️ Fixed Issues
 * core
@@ -30,6 +36,7 @@ This is a minor release.
   * [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
   * [#6291](https://github.com/pmd/pmd/issues/6291): \[java] EnumComparison: False positive for any object when object.equals(null)
 * java-codestyle
+  * [#4257](https://github.com/pmd/pmd/issues/4257): \[java] OnlyOneReturn: False positive with equals method
   * [#5043](https://github.com/pmd/pmd/issues/5043): \[java] LambdaCanBeMethodReference: False positive on overloaded methods
   * [#6237](https://github.com/pmd/pmd/issues/6237): \[java] UnnecessaryCast: ContextedRuntimeException when parsing switch expression with lambdas
   * [#6279](https://github.com/pmd/pmd/issues/6279): \[java] EmptyMethodInAbstractClassShouldBeAbstract: False positive for final empty methods
