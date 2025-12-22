@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -53,6 +54,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
 public class ClasspathClassLoader extends URLClassLoader {
 
     private static final Logger LOG = LoggerFactory.getLogger(ClasspathClassLoader.class);
+    private static final AtomicInteger COUNTER = new AtomicInteger(0);
 
     String javaHome;
 
@@ -61,20 +63,39 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     static {
         registerAsParallelCapable();
+    }
 
+    private static void incrementCounter() {
         // Disable caching for jar files to prevent issues like #4899
-        try {
-            // Uses a pseudo URL to be able to call URLConnection#setDefaultUseCaches
-            // with Java9+ there is a static method for that per protocol:
-            // https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URLConnection.html#setDefaultUseCaches(java.lang.String,boolean)
-            URI.create("jar:file:file.jar!/").toURL().openConnection().setDefaultUseCaches(false);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        synchronized (COUNTER) {
+            if (COUNTER.incrementAndGet() > 1) {
+                try {
+                    // Uses a pseudo URL to be able to call URLConnection#setDefaultUseCaches
+                    // with Java9+ there is a static method for that per protocol:
+                    // https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URLConnection.html#setDefaultUseCaches(java.lang.String,boolean)
+                    URI.create("jar:file:file.jar!/").toURL().openConnection().setDefaultUseCaches(false);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
+
+    private static void decrementCounter() {
+        synchronized (COUNTER) {
+            if (COUNTER.decrementAndGet() == 0) {
+                try {
+                    URI.create("jar:file:file.jar!/").toURL().openConnection().setDefaultUseCaches(true);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 
     public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
         super(new URL[0], parent);
+        incrementCounter();
         for (URL url : fileToURL(files)) {
             addURL(url);
         }
@@ -82,9 +103,17 @@ public class ClasspathClassLoader extends URLClassLoader {
 
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(new URL[0], parent);
+        incrementCounter();
         for (URL url : initURLs(classpath)) {
             addURL(url);
         }
+    }
+
+    /* default */ ClasspathClassLoader(URL classpath, ClassLoader parent) throws IOException {
+        super(new URL[0], parent);
+        incrementCounter();
+
+        addURL(classpath);
     }
 
     private List<URL> fileToURL(List<File> files) throws IOException {
@@ -361,5 +390,6 @@ public class ClasspathClassLoader extends URLClassLoader {
             fileSystem = null;
         }
         super.close();
+        decrementCounter();
     }
 }
