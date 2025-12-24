@@ -48,6 +48,8 @@ This is a {{ site.pmd.release_type }} release.
 * java-errorprone
   * [#6276](https://github.com/pmd/pmd/issues/6276): \[java] NullAssignment: False positive when assigning null to a final field in a constructor
   * [#6343](https://github.com/pmd/pmd/issues/6343): \[java] MissingStaticMethodInNonInstantiatableClass: False negative when method in nested class returns null
+* java-performance
+  * [#4910](https://github.com/pmd/pmd/issues/4910): \[java] ConsecutiveAppendsShouldReuse: False positive within if-statement without curly braces
 * maintenance
   * [#6230](https://github.com/pmd/pmd/issues/6230): \[core] Single module snapshot build fails
 
