@@ -50,6 +50,7 @@ This is a {{ site.pmd.release_type }} release.
   * [#6343](https://github.com/pmd/pmd/issues/6343): \[java] MissingStaticMethodInNonInstantiatableClass: False negative when method in nested class returns null
 * java-performance
   * [#4910](https://github.com/pmd/pmd/issues/4910): \[java] ConsecutiveAppendsShouldReuse: False positive within if-statement without curly braces
+  * [#5877](https://github.com/pmd/pmd/issues/5877): \[java] AvoidArrayLoops: False negative when break inside switch statement
 * maintenance
   * [#6230](https://github.com/pmd/pmd/issues/6230): \[core] Single module snapshot build fails
 
