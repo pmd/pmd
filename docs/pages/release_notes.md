@@ -28,6 +28,8 @@ This is a {{ site.pmd.release_type }} release.
 
 - java-bestpractices
   - [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
+* java-performance
+  * [#5877](https://github.com/pmd/pmd/issues/5877): \[java] AvoidArrayLoops: False negative when break inside switch statement
 
 ### 🚨️ API Changes
 
