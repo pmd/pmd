@@ -28,6 +28,8 @@ This is a {{ site.pmd.release_type }} release.
 
 - java-bestpractices
   - [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
+* java-performance
+  * [#4910](https://github.com/pmd/pmd/issues/4910): \[java] ConsecutiveAppendsShouldReuse: False positive within if-statement without curly braces
 
 ### 🚨️ API Changes
 
