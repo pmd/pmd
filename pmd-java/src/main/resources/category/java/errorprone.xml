@@ -3234,6 +3234,12 @@ Do not use "if" statements whose conditionals are always true or always false.
                 <value>
  <![CDATA[
 //IfStatement[BooleanLiteral[1]]
+union
+//IfStatement/VariableAccess[@CompileTimeConstant = false()]
+[@Name = parent::IfStatement
+         /preceding-sibling::LocalVariableDeclaration[PrimitiveType[@Kind = "boolean"]]
+         /VariableDeclarator
+         /@Name]
 ]]>
                 </value>
             </property>
