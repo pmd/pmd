@@ -2063,6 +2063,7 @@ for these methods. To restore the old behavior, simply set this property to an e
       <li><a href="https://github.com/pmd/pmd/issues/6028">#6028</a>: [java] UnusedPrivateMethod: False positive with raw type for generic method</li>
       <li><a href="https://github.com/pmd/pmd/issues/6257">#6257</a>: [java] UnusedLocalVariable: False positive with instanceof pattern guard</li>
       <li><a href="https://github.com/pmd/pmd/issues/6291">#6291</a>: [java] EnumComparison: False positive for any object when object.equals(null)</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6328">#6328</a>: [java] UnusedLocalVariable: False positive for pattern variable in for-each without braces</li>
     </ul>
   </li>
   <li>java-codestyle
@@ -2078,6 +2079,12 @@ for these methods. To restore the old behavior, simply set this property to an e
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6276">#6276</a>: [java] NullAssignment: False positive when assigning null to a final field in a constructor</li>
       <li><a href="https://github.com/pmd/pmd/issues/6343">#6343</a>: [java] MissingStaticMethodInNonInstantiatableClass: False negative when method in nested class returns null</li>
+    </ul>
+  </li>
+  <li>java-performance
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/4910">#4910</a>: [java] ConsecutiveAppendsShouldReuse: False positive within if-statement without curly braces</li>
+      <li><a href="https://github.com/pmd/pmd/issues/5877">#5877</a>: [java] AvoidArrayLoops: False negative when break inside switch statement</li>
     </ul>
   </li>
   <li>maintenance
@@ -2132,7 +2139,7 @@ for these methods. To restore the old behavior, simply set this property to an e
         <div class="col-lg-12 footer">
             &copy;2025 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Dec 22, 2025 <br />
+             Site last generated: Dec 24, 2025 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
