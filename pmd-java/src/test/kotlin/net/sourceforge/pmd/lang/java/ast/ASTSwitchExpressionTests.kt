@@ -461,4 +461,32 @@ class ASTSwitchExpressionTests : ParserTestSpec({
             }
         }
     }
+
+    parserTest("Switch expression inside lambda passed to super() constructor call (#6234)", javaVersions = switchVersions) {
+        // https://github.com/pmd/pmd/issues/6234
+        // Parser fails when switch expression is used inside a lambda passed to super()
+        val code = """
+            import java.util.concurrent.Callable;
+
+            class A {
+              A(Callable<Boolean> x) {}
+            }
+
+            class B extends A {
+              private static final int X = 1;
+              B() {
+                super(
+                    () -> {
+                      return switch (1) {
+                        case X -> true;
+                        default -> false;
+                      };
+                    }
+                );
+              }
+            }
+        """.trimIndent()
+
+        parser.parse(code)
+    }
 })
