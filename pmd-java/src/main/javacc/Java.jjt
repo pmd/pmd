@@ -1439,17 +1439,47 @@ private void ConstructorBlock() #Block:
 {
     "{"
         (
-            LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation()
+            LOOKAHEAD(ExplicitCtorInvocLookahead()) ExplicitConstructorInvocation()
                |
             ( LOOKAHEAD(2) BlockStatement() )*
-            [ LOOKAHEAD(ExplicitConstructorInvocation()) ExplicitConstructorInvocation() ]
+            [ LOOKAHEAD(ExplicitCtorInvocLookahead()) ExplicitConstructorInvocation() ]
         )
         ( BlockStatement() )*
     "}"
 }
 
+// Lookahead for explicit constructor invocation that avoids parsing full argument lists.
+// This fixes issue #6234 where complex expressions in arguments (like switch expressions
+// inside lambdas) caused the lookahead to fail.
+// This mirrors the structure of ExplicitConstructorInvocation but stops at "(" instead
+// of parsing ArgumentList.
+private void ExplicitCtorInvocLookahead() #void:
+{}
+{
+    // Pattern: [TypeArguments] ("this" | "super") "("
+    // Use same LOOKAHEAD strategy as ExplicitConstructorInvocation
+  ( LOOKAHEAD("<")      TypeArguments() ("this" | "super") "("
+  | LOOKAHEAD("this")   "this" "("
+  | LOOKAHEAD("super")  "super" "("
+    // Qualified pattern: PrimaryExpression "." [TypeArguments] "super" "("
+    // Since "this" and "super" can't start the qualifier PrimaryExpression (per JLS),
+    // if we get here, it must be an identifier-based expression.
+  | PrimaryExpressionNoSuperThis() "." [ TypeArguments() ] "super" "("
+  )
+}
+
+// PrimaryExpression variant for explicit constructor invocation qualifier lookahead.
+// This is used during lookahead only, so we avoid complex expressions that could
+// cause lookahead issues. Handles: Outer, Outer.Inner, Outer.this, new Foo(), etc.
+private void PrimaryExpressionNoSuperThis() #void:
+{}
+{
+    ( AmbiguousName() | "new" [ TypeArguments() ] AnnotatedClassOrInterfaceType() ArgumentList() )
+    ( "." ( "this" | <IDENTIFIER> | TypeArguments() <IDENTIFIER> | "new" [ TypeArguments() ] AnnotatedClassOrInterfaceType() ArgumentList() ) | ArgumentList() )*
+}
+
 void ExplicitConstructorInvocation() :
-{boolean prev = inExplicitConstructorInvoc; inExplicitConstructorInvoc = true;}
+{boolean prev = inExplicitConstructorInvoc;}
 {
    // We may only lookahead one token here, because:
    // * "this" or "super" can't appear in the primary expression in case of
@@ -1461,10 +1491,8 @@ void ExplicitConstructorInvocation() :
   ( LOOKAHEAD("<")      TypeArguments() ( "this" | "super" {jjtThis.setIsSuper();} )
   | LOOKAHEAD("this")   "this"
   | LOOKAHEAD("super")  "super"                            {jjtThis.setIsSuper();}
-  | PrimaryExpression() "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
+  | {inExplicitConstructorInvoc = true;} PrimaryExpression() {inExplicitConstructorInvoc = prev;} "." [ TypeArguments() ] "super"    {jjtThis.setIsSuper();}
   )
-  // reset this before parsing the arguments list
-  {inExplicitConstructorInvoc = prev;}
   ArgumentList() ";"
 }
 
