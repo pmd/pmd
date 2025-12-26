@@ -71,7 +71,7 @@ If you want to copy/move elements inside the _same_ array (e.g. shift the elemen
 //(ForStatement[ForUpdate//(UnaryExpression[@Operator=('++','--')] | AssignmentExpression[@Operator = ('+=', '-=')][NumericLiteral[@Image = '1']])]
  | WhileStatement | DoStatement)
     [not(.//ContinueStatement)]
-    [not(.//BreakStatement)]
+    [not(.//BreakStatement[not(parent::SwitchFallthroughBranch)])]
     [not(.//ThrowStatement)]
     [not(.//ReturnStatement)]
     [count(Block//AssignmentExpression[@Operator='=']
