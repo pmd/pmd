@@ -43,7 +43,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
         }
 
         // might be a String, an Integer, a Long, a Double, or a BigInteger
-        Object constValue = arguments.get(0).getConstValue();
+        Object constValue = arguments.get(0).getConstFoldingResult().getValue();
 
         boolean java5 = languageVersion.compareToVersion("1.5") >= 0;
         boolean java9 = languageVersion.compareToVersion("9") >= 0;
