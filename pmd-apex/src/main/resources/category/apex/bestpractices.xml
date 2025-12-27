@@ -111,7 +111,7 @@ private class TestRunAs {
         <description>
 Apex test methods should have `@isTest` annotation instead of the `testMethod` keyword,
 as `testMethod` is deprecated.
-Salesforce advices to use [@isTest](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_isTest.htm)
+Salesforce advises to use [@isTest](https://developer.salesforce.com/docs/atlas.en-us.apexcode.meta/apexcode/apex_classes_annotation_isTest.htm)
 annotation for test classes and methods.
         </description>
         <priority>3</priority>
@@ -257,7 +257,7 @@ Many interfaces (e.g. Batch) required global modifiers in the past but don't req
         <example>
 <![CDATA[
 global class Unchangeable {
-    global UndeletableType unchangable(UndeletableType param) {
+    global UndeletableType unchangeable(UndeletableType param) {
         // ...
     }
 }

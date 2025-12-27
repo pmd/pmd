@@ -168,7 +168,7 @@ SKIP: {
 }
 
 
-// Copyed from cpp.jj
+// Copied from cpp.jj
 MORE:
 { "/*" : IN_MULTI_LINE_COMMENT }
 

@@ -46,7 +46,7 @@ cutting through 100% of the document.
 ]]>
                 </value>
             </property>
-            <property name="checkSelfDescendantAbreviation" type="Boolean" description="descendant::self abreviation, '//', will also trigger this rule." value="false"/>
+            <property name="checkSelfDescendantAbreviation" type="Boolean" description="descendant::self abbreviation, '//', will also trigger this rule." value="false"/>
         </properties>
         <example>
 <![CDATA[

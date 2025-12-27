@@ -2107,7 +2107,7 @@ L627
     [120]                                   37        40
     [)]                                     40        41
     [+]                                     42        43
-    [' open the attachement.']              44        68
+    [' open the attachment.']               44        67
 L629
     [DECLARE]                               1         8
     [@EMAILSUBJECTTEXT]                     9         26

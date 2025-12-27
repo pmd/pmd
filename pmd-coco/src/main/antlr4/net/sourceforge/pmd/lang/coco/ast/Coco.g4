@@ -210,7 +210,7 @@ nondetClause
 	: ( IF LP expression RP )? expression
 	;
 
-matchClauses      // COCOTEC: both comma and semicolon seem to be allowed (trailing one can be omited), only comma is documented
+matchClauses      // COCOTEC: both comma and semicolon seem to be allowed (trailing one can be omitted), only comma is documented
 	: matchClause ((COMMA|SEMI) matchClause )* (COMMA|SEMI)?
 	;
 

@@ -149,7 +149,7 @@ final class TypeAnnotationHelper {
                 JTypeMirror newBound = resolvePathStep(wild.getBound(), path, i + 1, annot);
                 return wild.getTypeSystem().wildcard(wild.isUpperBound(), newBound).withAnnotations(wild.getTypeAnnotations());
             }
-            throw new IllegalArgumentException("Expected wilcard type: " + t);
+            throw new IllegalArgumentException("Expected wildcard type: " + t);
         default:
             throw new IllegalArgumentException("Illegal path step for annotation TypePath" + i);
         }

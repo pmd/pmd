@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
 import com.google.summit.ast.expression.SoqlExpression;
 
 public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpression> {
-    private final String canoncialQuery;
+    private final String canonicalQuery;
 
     ASTSoqlExpression(SoqlExpression soqlExpression) {
         super(soqlExpression);
-        canoncialQuery = convertToCanonicalQuery(soqlExpression.getQuery());
+        canonicalQuery = convertToCanonicalQuery(soqlExpression.getQuery());
     }
 
 
@@ -34,7 +34,7 @@ public final class ASTSoqlExpression extends AbstractApexNode.Single<SoqlExpress
      * Returns the query with the SOQL keywords normalized as uppercase.
      */
     public String getCanonicalQuery() {
-        return canoncialQuery;
+        return canonicalQuery;
     }
 
     static String convertToCanonicalQuery(String rawQuery) {
