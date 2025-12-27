@@ -445,7 +445,7 @@ public final class ${token-constants-name} \{${line.separator}
             <replacevalue><![CDATA[
   };
 
-  /** Nams of the tokens, each index corresponds to a kind. See also {@link #describe(int)}. */
+  /** Names of the tokens, each index corresponds to a kind. See also {@link #describe(int)}. */
   public static final java.util.List<String> TOKEN_NAMES = java.util.Collections.unmodifiableList(java.util.Arrays.asList(tokenImage));
 ]]>            </replacevalue>
             <file name="${token-constants-file}" />

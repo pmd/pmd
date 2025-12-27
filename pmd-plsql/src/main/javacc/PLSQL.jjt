@@ -450,12 +450,12 @@ ASTSqlPlusCommand SqlPlusCommand() :
 /**
  * All global definitions of triggers, functions and procedures are evaluated here.
  * Every occurrence goes under a new PACKAGE-Node in the XML document.
- * This happens, cause a global "block" does not have a definied start and end token
+ * This happens, cause a global "block" does not have a defined start and end token
  * like a package specification or a package body.
  * Thats why every construct is handled like a new part of the global package.
  * To overcome this problem, I could use an infinity lookahead - which should solve the problem
  * and slow down the whole parsing.
- * Another idea would be to lookahead the next tokens and decide wether they belong to a package definition or not.
+ * Another idea would be to lookahead the next tokens and decide whether they belong to a package definition or not.
  * Then I could decide to stay in this global parsing state. By now lookahead gives the parser a hint to
  * choose the correct way on a given base. So we can't negate it easily.
  * On the other hand I could also hold the global state in a global variable.
@@ -635,7 +635,7 @@ ASTCompilationDeclarationFragment CompilationDeclarationFragment()  :
  * 2006-05-22 - Matthias Hendler - Printing of custom tag "@deprecated" removed.
  *                                 Printing of any custom tag added. Now user can define his own
  *								   custom tags which he can evaluate in the XSLT.
- *                                 This methode also documents global functions/procedures.
+ *                                 This method also documents global functions/procedures.
  */
 ASTProgramUnit ProgramUnit()  :
 {
@@ -3011,7 +3011,7 @@ ASTSubTypeDefinition SubTypeDefinition()  :
 			[<NOT> <NULL> ] //SRT 20110604
 		)
 		 |
-		( <TYPE> name = QualifiedID() // SRT 20110605 to Parse SYS.standars ned to allow nprmally reserved words which are low-level types
+		( <TYPE> name = QualifiedID() // SRT 20110605 to Parse SYS.standard need to allow nprmally reserved words which are low-level types
 			(<IS>|<AS>)
 			(
 				LOOKAHEAD(2) <NEW> (
@@ -3024,7 +3024,7 @@ ASTSubTypeDefinition SubTypeDefinition()  :
 				                   )
 
 				|
-				//SRT 20110606 SYS.STANDRD
+				//SRT 20110606 SYS.STANDARD
 				(<OBJECT>  "(" FieldDeclaration() ("," FieldDeclaration())* ")" )
 				|
 				(<RECORD>  "(" FieldDeclaration() ("," FieldDeclaration())* ")" )
@@ -3659,7 +3659,7 @@ ASTIsOfTypeCondition IsOfTypeCondition() #IsOfTypeCondition(>1) :
 
 /**
  * 2006-05-23 - Matthias Hendler - Added lookahead otherwise warning encountered.
- *                                 Warning arised while adding methode triggerUnit().
+ *                                 Warning arose while adding method triggerUnit().
  * 2011-04-27 - SRT - Add optional NEW Keyword to cope with Object Type constructors
  */
 ASTPrimaryExpression PrimaryExpression() #PrimaryExpression(>1) :
@@ -3845,7 +3845,7 @@ ASTNumericLiteral NumericLiteral() :
 }
 {
 	(
-	  //Essentially unchanged, as it previouly returned a Token
+	  //Essentially unchanged, as it previously returned a Token
 		t = <UNSIGNED_NUMERIC_LITERAL>
 	)
 	{
@@ -4367,7 +4367,7 @@ ASTTypeSpecification TypeSpecification()  :
         // //incomplete OBJECT TYPE and COLLECTION TYPEs will not have this
         [
 		("(" )
-                //Try matching against keywords first to allow FINCTION and procedure as a fallback
+                //Try matching against keywords first to allow FUNCTION and procedure as a fallback
 		(LOOKAHEAD(2)  TypeMethod() | AttributeDeclaration()
 		 | PragmaClause()
 		)* //SRT 20111125 This part may be completely empty if is a subtype which is effectively an alias for the supertype
@@ -4419,7 +4419,7 @@ ASTAlterTypeSpec AlterTypeSpec()  :
        (
         (<ADD> | <MODIFY> )
         (
-	      // Move typeMethidMatching above attribure matvhing becausse FUNCTION is a valid attribute name
+	      // Move TypeMethod matching above attribute matching because FUNCTION is a valid attribute name
              (
 		 (TypeMethod()  )
 		  //( "," ( typeMethod(,typeVersion, tokenAlterTypeString) ) )*
@@ -4855,7 +4855,7 @@ ASTNonDMLEvent NonDMLEvent(): {}
 
 /*
 When DBMS_METADATA.GET_DDL returns a trigger, it can come in 2 DDL statements.
-The first is the CREATE OR REPLACE TRIGER statement; the second is an ALTER TRIGGER statement,
+The first is the CREATE OR REPLACE TRIGGER statement; the second is an ALTER TRIGGER statement,
 enabling or disabling the trigger.
 
 Unlike the ALTER TYPE, it does not seem to alter the structure of the object.
@@ -4928,7 +4928,7 @@ SPECIAL_TOKEN :
 
 SPECIAL_TOKEN :
 {
-        //Remove terminating EOL from Single Comment Token definition: it causes failurs if no other newline exists before next production
+        //Remove terminating EOL from Single Comment Token definition: it causes failures if no other newline exists before next production
 	<SINGLE_LINE_COMMENT: "--"(~["\n","\r"])* >
 }
 
@@ -6679,7 +6679,7 @@ private void KEYWORD_NOT_RESERVED () #void: {}
 | <YEAR>
 | <YES>
 | <ZONE>
-| <WRAPPED>  // APEX_0400000.WWW_CALCUATOR.SHOW
+| <WRAPPED>  // APEX_0400000.WWW_CALCULATOR.SHOW
 | <SYS_REFCURSOR> //Not a keyword - just a type defined in standard
 | <EDITIONABLE>
 | <NONEDITIONABLE>

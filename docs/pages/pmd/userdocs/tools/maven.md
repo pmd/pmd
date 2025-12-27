@@ -39,7 +39,7 @@ section:
 </build>
 ```
 
-When defining the version in the pluginManagment section, then it doesn't need to be specified in the normal plugins
+When defining the version in the pluginManagement section, then it doesn't need to be specified in the normal plugins
 section. However, it should additionally be specified in the reporting section.
 
 More information, see [Guide to Configuring Plugin-ins](https://maven.apache.org/guides/mini/guide-configuring-plugins.html).

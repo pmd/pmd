@@ -1,0 +1,70 @@
+[files]
+extend-exclude = [
+    "*.min.js",
+    "*.min.js.map",
+    "*.min.css",
+    "*.svg",
+    "sample.txt",
+    "sample.for",
+    "release_notes_old.md",
+    "big_sample.txt",
+    "templateStrings.txt",
+    "Swift4.2.txt",
+    "Issue628.txt",
+    "sample-matlab.txt",
+    "sample_python.txt"
+]
+
+
+[default.extend-words]
+# public API
+verbatium="verbatium"
+# Apex terminology
+Createable = "Createable"
+# Generally acceptable
+incrementers = "incrementers"
+# lowercase for TestNG
+testng = "testng"
+# TSQL token name
+iif="iif"
+# Short strings used as identifiers
+typ = "typ"
+ba = "ba"
+fo="fo"
+thr="thr"
+strat = "strat"
+parm = "parm"
+nd = "nd"
+schem="schem"
+ois = "ois"
+parms = "parms"
+opps = "opps"
+
+[default.extend-identifiers]
+# public APIs
+isWilcardParameterized="isWilcardParameterized"
+checkSelfDescendantAbreviation="checkSelfDescendantAbreviation"
+ColonSubsript="ColonSubsript"
+XMLTableColum="XMLTableColum"
+ASTXMLTableColum="ASTXMLTableColum"
+# renamed
+InnaccurateNumericLiteral="InnaccurateNumericLiteral"
+# removed but mentioned in changelog
+AvoidConcateningNonLiteralsInStringBuffer="AvoidConcateningNonLiteralsInStringBuffer"
+isSupressed="isSupressed"
+# fingerprint
+9CAF="9CAF"
+# used in BSD license of Lua parser
+NAMEs="NAMEs"
+# used in parser
+IMPLication="IMPLication"
+#names in credits/license headers
+McCann="McCann"
+TehBakker="TehBakker"
+Stach="Stach"
+Loder="Loder"
+Hendler="Hendler"
+Ure="Ure"
+
+[default]
+extend-ignore-re = [".*pn\\\\3\\\\2" ]

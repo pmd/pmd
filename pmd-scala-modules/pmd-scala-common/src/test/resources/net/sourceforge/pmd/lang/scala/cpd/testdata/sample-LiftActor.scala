@@ -518,7 +518,7 @@ with ForwardableActor[Any, Any] {
 }
 
 /**
- * A MockLiftActor for use in testing other compnents that talk to actors.
+ * A MockLiftActor for use in testing other components that talk to actors.
  *
  * Much like MockSpecializedLiftActor, this class is intended to be injected into other
  * components, such as snippets, during testing. Whereas these components would normally

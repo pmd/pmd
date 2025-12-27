@@ -2024,7 +2024,7 @@ No changes.
 
 **Command Line Interface**
 
-The command line options for PMD and CPD now use GNU-syle long options format. E.g. instead of `-rulesets` the
+The command line options for PMD and CPD now use GNU-style long options format. E.g. instead of `-rulesets` the
 preferred usage is now `--rulesets`. Alternatively one can still use the short option `-R`.
 Some options also have been renamed to a more consistent casing pattern at the same time
 (`--fail-on-violation` instead of `-failOnViolation`).

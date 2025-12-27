@@ -171,7 +171,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     ASTStatement body = ((ASTLoopStatement) stmt).getBody();
                     for (JavaNode child : stmt.children()) {
                         if (child != body) {
-                            checkVorViolations(child);
+                            checkForViolations(child);
                         }
                     }
 
@@ -180,18 +180,18 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                 } else if (stmt instanceof ASTSwitchStatement) {
 
                     ASTSwitchStatement switchStmt = (ASTSwitchStatement) stmt;
-                    checkVorViolations(switchStmt.getTestedExpression());
+                    checkForViolations(switchStmt.getTestedExpression());
 
                     mayExit |= copy(true, true, false).roamStatementsForExit(switchStmt.getBranches());
 
                 } else if (stmt instanceof ASTIfStatement) {
 
                     ASTIfStatement ifStmt = (ASTIfStatement) stmt;
-                    checkVorViolations(ifStmt.getCondition());
+                    checkForViolations(ifStmt.getCondition());
                     mayExit |= withGuard(true).roamStatementsForExit(ifStmt.getThenBranch());
                     mayExit |= withGuard(this.guarded).roamStatementsForExit(ifStmt.getElseBranch());
                 } else if (stmt instanceof ASTExpression) { // these two catch-all clauses implement other statements & eg switch branches
-                    checkVorViolations(stmt);
+                    checkForViolations(stmt);
                 } else if (!(stmt instanceof ASTLocalClassStatement)) {
                     mayExit |= roamStatementsForExit(stmt.children());
                 }
@@ -199,7 +199,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
             return mayExit;
         }
 
-        private void checkVorViolations(JavaNode node) {
+        private void checkForViolations(JavaNode node) {
             if (node == null) {
                 return;
             }

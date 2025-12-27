@@ -25,7 +25,7 @@
 **/
 
 /**
- * Base class aiding in the implemetnation of a Domain Model around SObject collections
+ * Base class aiding in the implementation of a Domain Model around SObject collections
  * 
  * Domain (software engineering). “a set of common requirements, terminology, and functionality 
  * for any software program constructed to solve a problem in that field”,
@@ -62,7 +62,7 @@ public virtual with sharing class fflib_SObjectDomain
 	public static ErrorFactory Errors  {get; private set;}
 	
 	/**
-	 * Useful during unit testing to access mock support for database inserts and udpates (testing without DML)
+	 * Useful during unit testing to access mock support for database inserts and updates (testing without DML)
 	 **/
 	public static TestFactory Test  {get; private set;}
 	
@@ -72,7 +72,7 @@ public virtual with sharing class fflib_SObjectDomain
 	private static Map<Type, List<fflib_SObjectDomain>> TriggerStateByClass; 
 	
 	/**
-	 * Retains the trigger tracking configuraiton used for each domain
+	 * Retains the trigger tracking configuration used for each domain
 	 **/
 	private static Map<Type, TriggerEvent> TriggerEventByClass;
 
@@ -214,7 +214,7 @@ public virtual with sharing class fflib_SObjectDomain
     public virtual void handleAfterUpdate(Map<Id,SObject> existingRecords) 
     {    	
     	if(Configuration.EnforcingTriggerCRUDSecurity && !SObjectDescribe.isUpdateable()) 			    		
-    	   throw new DomainException('Permission to udpate an ' + SObjectDescribe.getName() + ' denied.');
+    	   throw new DomainException('Permission to update an ' + SObjectDescribe.getName() + ' denied.');
     	
     	if(Configuration.OldOnUpdateValidateBehaviour)
     		onValidate();
@@ -344,7 +344,7 @@ public virtual with sharing class fflib_SObjectDomain
 			Type constructableClass = domainClassName.endsWith('Constructor') ? Type.forName(domainClassName) : Type.forName(domainClassName+'.Constructor');
 			IConstructable domainConstructor = (IConstructable) constructableClass.newInstance();
 	
-			// Construct the domain class with the approprite record set		
+			// Construct the domain class with the appropriate record set
 	        if(isInsert) domainObject = domainConstructor.construct(newRecords);
 	        else if(isUpdate) domainObject = domainConstructor.construct(newRecords);
 	        else if(isDelete) domainObject = domainConstructor.construct(oldRecordsMap.values());
@@ -428,7 +428,7 @@ public virtual with sharing class fflib_SObjectDomain
 			this.enableAll();
 		}
 
-		// befores
+		// before
 		public TriggerEvent enableBeforeInsert() {BeforeInsertEnabled = true; return this;}
 		public TriggerEvent enableBeforeUpdate() {BeforeUpdateEnabled = true; return this;}
 		public TriggerEvent enableBeforeDelete() {BeforeDeleteEnabled = true; return this;}
@@ -437,7 +437,7 @@ public virtual with sharing class fflib_SObjectDomain
 		public TriggerEvent disableBeforeUpdate() {BeforeUpdateEnabled = false; return this;}
 		public TriggerEvent disableBeforeDelete() {BeforeDeleteEnabled = false; return this;}
 		
-		// afters
+		// after
 		public TriggerEvent enableAfterInsert() 	{AfterInsertEnabled 	= true; return this;}
 		public TriggerEvent enableAfterUpdate() 	{AfterUpdateEnabled 	= true; return this;}
 		public TriggerEvent enableAfterDelete() 	{AfterDeleteEnabled 	= true; return this;}
@@ -504,7 +504,7 @@ public virtual with sharing class fflib_SObjectDomain
 	public class Configuration
 	{
 		/** 
-		 * Backwards compatability mode for handleAfterUpdate routing to onValidate()
+		 * Backwards compatibility mode for handleAfterUpdate routing to onValidate()
 		 **/
 		public Boolean OldOnUpdateValidateBehaviour {get; private set;}		
 		/**
@@ -522,7 +522,7 @@ public virtual with sharing class fflib_SObjectDomain
 		 **/
 		public Configuration()
 		{
-			EnforcingTriggerCRUDSecurity = true; // Default is true for backwards compatability
+			EnforcingTriggerCRUDSecurity = true; // Default is true for backwards compatibility
 			TriggerStateEnabled = false;
 			OldOnUpdateValidateBehaviour = false; // Breaking change, but felt to better practice
 		}
@@ -859,12 +859,12 @@ public virtual with sharing class fflib_SObjectDomain
 		public override void onBeforeInsert()
 		{
 			// Assert this variable is null in the after insert (since this domain class is stateless)
-			someState = 'This should not survice the trigger after phase';
+			someState = 'This should not survive the trigger after phase';
 		}
 		
 		public override void onAfterInsert()
 		{
-			// This is a stateless domain class, so should not retain anything betweet before and after
+			// This is a stateless domain class, so should not retain anything between before and after
 			System.assertEquals(null, someState);
 		}
 	}	
@@ -913,7 +913,7 @@ public virtual with sharing class fflib_SObjectDomain
 					newOpps.add(new Opportunity ( Name = 'Test Recursive 2', Type = 'Existing Account' ));
 			}				
 			
-			// If testing recursiving emulate an insert 	
+			// If testing recursion emulate an insert
 			if(newOpps.size()>0)
 			{
 				// This will force recursion and thus validate via the above assert results in a new domain instance
@@ -959,7 +959,7 @@ public virtual with sharing class fflib_SObjectDomain
 		
 		public override void onValidate() 
 		{
-			// Throw exception to give the test somethign to assert on
+			// Throw exception to give the test something to assert on
 			throw new DomainException('onValidate called');
 		}
 	}	

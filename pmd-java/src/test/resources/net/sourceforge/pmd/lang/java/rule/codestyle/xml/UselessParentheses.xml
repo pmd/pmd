@@ -656,9 +656,9 @@ public class Test {
             public final class TestStringInterned {
 
                 public static void main(String[] args) {
-                    String hello = "Hello";
-                    String lo = "lo";
-                    System.out.println(hello == ("Hel" + lo).intern());
+                    String cargo = "Cargo";
+                    String go = "go";
+                    System.out.println(cargo == ("Car" + go).intern());
                 }
             }
             ]]></code>

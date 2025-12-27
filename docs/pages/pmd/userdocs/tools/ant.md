@@ -105,7 +105,7 @@ The examples below won't repeat this taskdef element, as this is always required
       <td>cacheLocation</td>
       <td>
         The location of the analysis cache file to be used.
-        Setting this property enables Incremental Analysis, which can greatly improve analysis time without loosing analysis quality.
+        Setting this property enables Incremental Analysis, which can greatly improve analysis time without losing analysis quality.
         <b>Its use is strongly recommended.</b>
       </td>
       <td>No</td>

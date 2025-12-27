@@ -1085,7 +1085,7 @@ for a list of common, shared parameters that are valid for both commands.
 * [#5736](https://github.com/pmd/pmd/pull/5736): Fix #5061: \[java] UnusedLocalVariable FP when using compound assignment - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5741](https://github.com/pmd/pmd/pull/5741): \[cli] Make CLI default to multithreaded - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5742](https://github.com/pmd/pmd/pull/5742): \[ci] publish-snapshot/old build: migrate to central portal - [Andreas Dangel](https://github.com/adangel) (@adangel)
-* [#5743](https://github.com/pmd/pmd/pull/5743): \[ci] Make build a reuseable workflow - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5743](https://github.com/pmd/pmd/pull/5743): \[ci] Make build a reusable workflow - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5744](https://github.com/pmd/pmd/pull/5744): Fix #5705: \[cli] Always determine PMD_HOME based on script location - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5748](https://github.com/pmd/pmd/pull/5748): \[core] Reformat SarifLog to comply to coding standards - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5763](https://github.com/pmd/pmd/pull/5763): \[java] Support annotated constructor return type in symbol API - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
@@ -7698,7 +7698,7 @@ This minor release will be the last one in 2021. The next release is scheduled t
 
 #### Command Line Interface
 
-The command line options for PMD and CPD now use GNU-syle long options format. E.g. instead of `-rulesets` the
+The command line options for PMD and CPD now use GNU-style long options format. E.g. instead of `-rulesets` the
 preferred usage is now `--rulesets`. Alternatively one can still use the short option `-R`.
 Some options also have been renamed to a more consistent casing pattern at the same time
 (`--fail-on-violation` instead of `-failOnViolation`).
@@ -14719,7 +14719,7 @@ public class Foo {
 Detects hardcoded credentials used in requests to an endpoint.
 
 You should refrain from hardcoding credentials:
-  * They are hard to mantain by being mixed in application code
+  * They are hard to maintain by being mixed in application code
   * Particularly hard to update them when used from different classes
   * Granting a developer access to the codebase means granting knowledge
      of credentials, keeping a two-level access is not possible.

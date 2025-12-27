@@ -14,8 +14,8 @@ INTO r_record
 --
 
 SELECT COUNT(qsec_id)
-      FROM quots_sections  qsec
-           INNER JOIN quots_sections_lang USING (qsec_id)
+      FROM quote_sections  qsec
+           INNER JOIN quote_sections_lang USING (qsec_id)
      WHERE qsec.wsh_id = 11
        AND qsec.revision = 1
        AND lang_code = 'en';

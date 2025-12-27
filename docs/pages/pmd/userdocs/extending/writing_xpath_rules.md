@@ -63,7 +63,7 @@ to XDM types.
 
 The same `conv` function is used to translate rule property values to XDM values.
 
-Additionaly, PMD's own `net.sourceforge.pmd.lang.document.Chars` is also translated to a `xs:string`
+Additionally, PMD's own `net.sourceforge.pmd.lang.document.Chars` is also translated to a `xs:string`
 
 
 ## Rule properties

@@ -3,7 +3,7 @@ title: Lua support
 permalink: pmd_languages_lua.html
 last_updated: September 2023 (7.0.0)
 tags: [languages, CpdCapableLanguage]
-summary: "Lua-specifc features and guidance"
+summary: "Lua-specific features and guidance"
 ---
 
 > [Lua](https://www.lua.org/) is a powerful, efficient, lightweight, embeddable scripting language.
