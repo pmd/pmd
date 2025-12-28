@@ -29,6 +29,7 @@ This is a minor release.
 * core
   * [#6330](https://github.com/pmd/pmd/issues/6330): \[core] "Unable to create ValueRepresentation" when using @<!-- -->LiteralText (XPath)
 * java
+  * [#6234](https://github.com/pmd/pmd/issues/6234): \[java] Parser fails to parse switch expressions in super() constructor calls
   * [#6299](https://github.com/pmd/pmd/issues/6299): \[java] Fix grammar of switch label
 * java-bestpractices
   * [#4282](https://github.com/pmd/pmd/issues/4282): \[java] GuardLogStatement: False positive when guard is not a direct parent
