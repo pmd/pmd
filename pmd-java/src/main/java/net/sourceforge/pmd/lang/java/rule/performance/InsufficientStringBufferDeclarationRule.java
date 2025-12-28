@@ -7,7 +7,9 @@ package net.sourceforge.pmd.lang.java.rule.performance;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
@@ -23,6 +25,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -157,8 +160,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     private void processMethodCall(State state, ASTMethodCall methodCall) {
         if ("append".equals(methodCall.getMethodName())) {
             int counter = 0;
-            Set<ASTLiteral> literals = new HashSet<>();
-            literals.addAll(methodCall.getArguments()
+            Set<ASTLiteral> literals = new HashSet<>(methodCall.getArguments()
                     .descendants(ASTLiteral.class)
                     // exclude literals, that belong to different method calls
                     .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall).toList());
@@ -176,7 +178,17 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                     counter += 1;
                 }
             }
-    
+
+            Set<Object> constValues = methodCall.getArguments().descendants(ASTVariableAccess.class).toStream()
+                    .map(ASTVariableAccess::getConstFoldingResult)
+                    .map(ASTExpression.ConstResult::getValue)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toSet());
+
+            for (Object constValue : constValues) {
+                counter += constValue.toString().length();
+            }
+
             ASTIfStatement ifStatement = methodCall.ancestors(ASTIfStatement.class).first();
             ASTSwitchStatement switchStatement = methodCall.ancestors(ASTSwitchStatement.class).first();
             if (ifStatement != null) {
