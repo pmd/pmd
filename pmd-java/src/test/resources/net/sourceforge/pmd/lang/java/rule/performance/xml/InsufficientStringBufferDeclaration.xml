@@ -1438,4 +1438,25 @@ public class StringBufferInstantiationWithCharTest {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#3857: InsufficientStringBufferDeclaration should consider constant String</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.ArrayList;
+import java.util.List;
+
+public class Example {
+    public List<String> list = new ArrayList<>();
+
+    public static final String PRE = "The size of list is: "; // 21 characters, exceed default 16
+
+    public void func() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(PRE);
+    }
+}
+
+]]></code>
+    </test-code>
 </test-data>
