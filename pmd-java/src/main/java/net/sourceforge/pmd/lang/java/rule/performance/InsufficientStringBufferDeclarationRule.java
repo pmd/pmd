@@ -15,14 +15,11 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
@@ -165,17 +162,11 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                     // exclude literals, that belong to different method calls
                     .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall).toList());
             for (ASTLiteral literal : literals) {
-                if (literal instanceof ASTStringLiteral) {
-                    counter += ((ASTStringLiteral) literal).length();
-                } else if (literal instanceof ASTNumericLiteral) {
-                    if (literal.getParent() instanceof ASTCastExpression
+                if (literal.getParent() instanceof ASTCastExpression
                         && TypeTestUtil.isA(char.class, (ASTCastExpression) literal.getParent())) {
-                        counter += 1;
-                    } else {
-                        counter += String.valueOf(((ASTNumericLiteral) literal).getConstValue()).length();
-                    }
-                } else if (literal instanceof ASTCharLiteral) {
                     counter += 1;
+                } else {
+                    counter += String.valueOf(literal.getConstValue()).length();
                 }
             }
 
