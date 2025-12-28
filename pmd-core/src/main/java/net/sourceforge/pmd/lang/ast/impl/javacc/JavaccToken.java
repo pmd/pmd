@@ -4,7 +4,14 @@
 
 package net.sourceforge.pmd.lang.ast.impl.javacc;
 
+import java.util.Optional;
+
+import org.checkerframework.checker.nullness.qual.NonNull;
+
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.GenericToken;
+import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.ast.internal.NodeFindingUtil;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextRegion;
@@ -173,6 +180,13 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     @Override
     public FileLocation getReportLocation() {
         return document.getTextDocument().toLocation(getRegion());
+    }
+
+    @Override
+    public @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+        Optional<Node> foundNode = NodeFindingUtil.findNodeAt(astInfo.getRootNode(), startOffset);
+        // default to the root node
+        return foundNode.orElse(astInfo.getRootNode());
     }
 
     @Override

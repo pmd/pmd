@@ -1465,6 +1465,39 @@ class SomeTestClass {
         </example>
     </rule>
 
+    <rule name="SimplifiableStreamExpression"
+          language="java"
+          since="7.14.0"
+          message="Stream call chain may be simplified: {0}"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.SimplifiableStreamExpressionRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#simplifiablestreamexpression">
+        <description>
+            Checks for usages of the Java Stream API that can be simplified by using
+            more specific methods.
+
+            This rule currently checks the following patterns:
+            - `.collect(Collectors.toList())` -> `.toList()` (Java 16+)
+            - `Arrays.asList(..).stream()` -> `Arrays.stream(..)` or `Stream.of(..)`
+            - `collection.stream().forEach(..)` -> `collection.forEach(..)`
+
+        </description>
+        <priority>3</priority>
+        <example>
+<![CDATA[
+            import java.util.List;
+            import java.util.stream.Collectors;
+
+            class SomeTestClass {
+                void example(List<String> strings) {
+                    var list = strings.stream().map(t -> t + ".java").collect(Collectors.toList());
+                    //  can be replaced with .toList() since Java 16 ------------------------------
+                }
+            }
+            ]]>
+        </example>
+    </rule>
+
+
     <rule name="SwitchStmtsShouldHaveDefault" deprecated="true" ref="NonExhaustiveSwitch"/>
 
     <rule name="SystemPrintln"
