@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -157,10 +158,14 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     private void processMethodCall(State state, ASTMethodCall methodCall) {
         if ("append".equals(methodCall.getMethodName())) {
             int counter = 0;
+            Predicate<ASTExpression> methodPredicate = n -> n.ancestors(ASTMethodCall.class).first() == methodCall;
+
             Set<ASTLiteral> literals = new HashSet<>(methodCall.getArguments()
                     .descendants(ASTLiteral.class)
                     // exclude literals, that belong to different method calls
-                    .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall).toList());
+                    .filter(methodPredicate)
+                    .toList());
+
             for (ASTLiteral literal : literals) {
                 if (literal.getParent() instanceof ASTCastExpression
                         && TypeTestUtil.isA(char.class, (ASTCastExpression) literal.getParent())) {
@@ -171,6 +176,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
             }
 
             Set<Object> constValues = methodCall.getArguments().descendants(ASTVariableAccess.class).toStream()
+                    .filter(methodPredicate)
                     .map(ASTVariableAccess::getConstFoldingResult)
                     .map(ASTExpression.ConstResult::getValue)
                     .filter(Objects::nonNull)

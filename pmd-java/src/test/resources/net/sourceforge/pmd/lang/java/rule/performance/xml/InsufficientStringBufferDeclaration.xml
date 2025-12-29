@@ -1442,18 +1442,13 @@ public class StringBufferInstantiationWithCharTest {
     <test-code>
         <description>#3857: InsufficientStringBufferDeclaration should consider constant Strings</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>10,15</expected-linenumbers>
+        <expected-linenumbers>5,10</expected-linenumbers>
         <expected-messages>
             <message>StringBuilder has been initialized with size 16, but has at least 21 characters appended.</message>
             <message>StringBuilder has been initialized with size 3, but has at least 6 characters appended.</message>
         </expected-messages>
         <code><![CDATA[
-import java.util.ArrayList;
-import java.util.List;
-
 public class Example {
-    public List<String> list = new ArrayList<>();
-
     public static final String PRE = "The size of list is: "; // 21 characters, exceed default 16
 
     public void compileTimeConstant() {
@@ -1465,6 +1460,25 @@ public class Example {
         StringBuilder builder = new StringBuilder(3);
         final String s = "Hello.";
         builder.append(s);
+    }
+}
+
+]]></code>
+    </test-code>
+    <test-code>
+        <description>Constant wrapped in method should be allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final String TEST = "Some String";
+
+    public void bar() {
+        StringBuilder builder = new StringBuilder(3);
+        builder.append(lengthOf(TEST));
+    }
+
+    public int lengthOf(String s) {
+        return s.length();
     }
 }
 
