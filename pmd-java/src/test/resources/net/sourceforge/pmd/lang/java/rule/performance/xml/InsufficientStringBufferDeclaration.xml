@@ -1467,9 +1467,9 @@ public class Example {
         builder.append(s);
     }
 }
-
 ]]></code>
     </test-code>
+
     <test-code>
         <description>Constant wrapped in method should be allowed</description>
         <expected-problems>0</expected-problems>
@@ -1486,7 +1486,28 @@ public class Foo {
         return s.length();
     }
 }
+]]></code>
+    </test-code>
 
+    <test-code>
+        <description>Mixing constant variables and literals</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuilder has been initialized with size 7, but has at least 8 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public static final String BAR = "Hello";
+    public static final int BAZ = 42;
+
+    public void bar() {
+        StringBuilder builder = new StringBuilder(7);
+        builder.append(BAR);
+        builder.append(':');
+        builder.append(BAZ);
+    }
+}
 ]]></code>
     </test-code>
 </test-data>
