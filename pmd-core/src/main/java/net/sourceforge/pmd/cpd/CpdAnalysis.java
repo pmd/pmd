@@ -8,19 +8,23 @@ import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
+import net.sourceforge.pmd.cpd.TokenFileSet.TokenFile;
 import net.sourceforge.pmd.internal.util.FileCollectionUtil;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
@@ -34,6 +38,7 @@ import net.sourceforge.pmd.lang.document.TextDocument;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.util.log.PmdReporter;
 
 /**
@@ -76,8 +81,6 @@ public final class CpdAnalysis implements AutoCloseable {
     private final CPDConfiguration configuration;
     private final FileCollector files;
     private final PmdReporter reporter;
-    private final Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
-    private final List<Report.ProcessingError> processingErrors = new ArrayList<>();
     private final @Nullable CPDReportRenderer renderer;
     private @NonNull CPDListener listener = new CPDNullListener();
 
@@ -89,6 +92,9 @@ public final class CpdAnalysis implements AutoCloseable {
             config.getLanguageVersionDiscoverer(),
             reporter
         );
+        if (config.getMinimumTileSize() < 1) {
+            throw new IllegalArgumentException("Minimum tile size must be greater than 0.");
+        }
 
         this.renderer = config.getCPDReportRenderer();
 
@@ -115,6 +121,20 @@ public final class CpdAnalysis implements AutoCloseable {
         if (sink.hasDescriptor(prop) && !sink.isPropertyOverridden(prop)) {
             sink.setProperty(prop, value);
         }
+    }
+
+    static List<Match> findMatches(SourceManager sourceManager, @NonNull CPDListener cpdListener, TokenFileSet tokens, int minTileSize) {
+        cpdListener.phaseUpdate(CPDListener.HASH);
+        tokens.setState(TokenFileSet.CpdState.HASHING);
+        List<List<TokenFileSet.SmallTokenEntry>> markGroups = tokens.hashAll(minTileSize);
+
+        MatchCollector matchCollector = new MatchCollector(sourceManager, tokens, minTileSize);
+        cpdListener.phaseUpdate(CPDListener.MATCH);
+        tokens.setState(TokenFileSet.CpdState.MATCHING);
+        markGroups.forEach(matchCollector::collect);
+
+        cpdListener.phaseUpdate(CPDListener.DONE);
+        return matchCollector.getMatches();
     }
 
     private void setLanguageProperties(Language language, CPDConfiguration configuration) {
@@ -144,11 +164,10 @@ public final class CpdAnalysis implements AutoCloseable {
         this.listener = cpdListener;
     }
 
-    private int doTokenize(TextDocument document, CpdLexer cpdLexer, Tokens tokens) throws IOException, LexException {
+    private int doTokenize(TextDocument document, CpdLexer cpdLexer, TokenFileSet tokens, int index) throws IOException, LexException {
         LOGGER.trace("Tokenizing {}", document.getFileId().getAbsolutePath());
-        int lastTokenSize = tokens.size();
-        CpdLexer.tokenize(cpdLexer, document, tokens);
-        return tokens.size() - lastTokenSize - 1; /* EOF */
+        TokenFile tokenFile = tokens.tokenize(document, cpdLexer, index);
+        return tokenFile.size();
     }
 
     public void performAnalysis() {
@@ -161,13 +180,10 @@ public final class CpdAnalysis implements AutoCloseable {
                 reporter.warn("No files to analyze. Check input paths and exclude parameters, use --debug to see file collection traces.");
             }
 
-            List<Match> matches = findMatches(sourceManager);
-            if (shouldAbortEarlyBecauseOfProcessingErrors()) {
-                reporter.error("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+            CPDReport cpdReport = findMatches(sourceManager);
+            if (cpdReport == null) {
                 return;
             }
-
-            CPDReport cpdReport = new CPDReport(sourceManager, matches, numberOfTokensPerFile, processingErrors);
 
             if (renderer != null) {
                 Path reportFilePath = configuration.getReportFilePath();
@@ -178,64 +194,110 @@ public final class CpdAnalysis implements AutoCloseable {
             }
 
             consumer.accept(cpdReport);
-        } catch (IOException e) {
+        } catch (IOException | ExecutionException | InterruptedException e) {
             reporter.errorEx("Exception while running CPD", e);
         }
         // source manager is closed and closes all text files now.
     }
 
-    private boolean shouldAbortEarlyBecauseOfProcessingErrors() {
-        return !processingErrors.isEmpty() && !configuration.isSkipLexicalErrors();
-    }
+    private CPDReport findMatches(SourceManager sourceManager) throws ExecutionException, InterruptedException {
+        Map<Language, CpdLexer> tokenizers =
+            sourceManager.getTextFiles().stream()
+                         .map(it -> it.getLanguageVersion().getLanguage())
+                         .distinct()
+                         .filter(it -> it instanceof CpdCapableLanguage)
+                         .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdLexer(configuration.getLanguageProperties(lang))));
 
-    private List<Match> findMatches(SourceManager sourceManager) {
         // Note: tokens contains all tokens of all analyzed files which is a huge data structure.
         // The tokens are only needed for finding the matches and can be garbage collected afterwards.
         // The report only needs the matches. Especially, the tokens are only referenced here and in
         // matchAlgorithm. When this method finishes, tokens should be eligible for garbage collection
         // making it possible to free up memory for render the report if needed.
+        TokenFileSet tokens = new TokenFileSet(sourceManager, configuration.getThreads());
+        for (CpdLexer tokenizer : tokenizers.values()) {
+            tokens.preallocImages(tokenizer.commonImages());
+        }
+        sourceManager.size();
+        tokens.setState(TokenFileSet.CpdState.BUILDING);
 
-        Tokens tokens = tokenizeFiles(sourceManager);
-        if (shouldAbortEarlyBecauseOfProcessingErrors()) {
-            return Collections.emptyList();
+        Map<FileId, Integer> numberOfTokensPerFile = new HashMap<>();
+        List<Report.ProcessingError> processingErrors = processAllFiles(
+            configuration.getThreads(),
+            sourceManager,
+            (textFile, index) -> {
+                try (TextDocument textDocument = sourceManager.load(textFile)) {
+                    CpdLexer lexer = tokenizers.get(textFile.getLanguageVersion().getLanguage());
+                    int newTokens = doTokenize(textDocument, lexer, tokens, index);
+                    synchronized (this) {
+                        numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
+                        listener.addedFile(1);
+                    }
+                    return null;
+                } catch (IOException | FileAnalysisException e) {
+                    if (e instanceof FileAnalysisException) { // NOPMD
+                        ((FileAnalysisException) e).setFileId(textFile.getFileId());
+                    }
+                    Level level = configuration.isFailOnError() ? Level.ERROR : Level.WARN;
+                    reporter.logEx(level, "Skipping file", new Object[0], e);
+                    return new Report.ProcessingError(e, textFile.getFileId());
+                }
+            });
+
+        if (!processingErrors.isEmpty() && !configuration.isSkipLexicalErrors()) {
+            reporter.error("Errors were detected while lexing source, exiting because --skip-lexical-errors is unset.");
+            return null;
         }
 
+        LOGGER.debug("Done lexing. CPD token count stats {}", tokens.getStats());
         LOGGER.debug("Running match algorithm on {} files...", sourceManager.size());
-        MatchAlgorithm matchAlgorithm = new MatchAlgorithm(tokens, configuration.getMinimumTileSize());
-        List<Match> matches = matchAlgorithm.findMatches(listener, sourceManager);
+        List<Match> matches = findMatches(sourceManager, listener, tokens, configuration.getMinimumTileSize());
         LOGGER.debug("Finished: {} duplicates found", matches.size());
-        return matches;
+
+        return new CPDReport(sourceManager, matches, numberOfTokensPerFile, processingErrors);
     }
 
-    @SuppressWarnings("PMD.CloseResource")
-    // TextFiles and TextDocuments are managed by sourceManager, which closes all text files in the end.
-    private Tokens tokenizeFiles(SourceManager sourceManager) {
-        Map<Language, CpdLexer> tokenizers =
-                sourceManager.getTextFiles().stream()
-                        .map(it -> it.getLanguageVersion().getLanguage())
-                        .distinct()
-                        .filter(it -> it instanceof CpdCapableLanguage)
-                        .collect(Collectors.toMap(lang -> lang, lang -> ((CpdCapableLanguage) lang).createCpdLexer(configuration.getLanguageProperties(lang))));
+    /**
+     * Execute a callback on all the files in the source manager.
+     * Errors are returned by the callback, not thrown.
+     */
+    private static List<ProcessingError> processAllFiles(
+        int threads, SourceManager sourceManager, ProcessFileFunc processFile)
+        throws InterruptedException, ExecutionException {
 
-        Tokens tokens = new Tokens();
-        for (TextFile textFile : sourceManager.getTextFiles()) {
-            TextDocument textDocument = sourceManager.get(textFile);
-            Tokens.State savedState = tokens.savePoint();
-            try {
-                int newTokens = doTokenize(textDocument, tokenizers.get(textFile.getLanguageVersion().getLanguage()), tokens);
-                numberOfTokensPerFile.put(textDocument.getFileId(), newTokens);
-                listener.addedFile(1);
-            } catch (IOException | FileAnalysisException e) {
-                if (e instanceof FileAnalysisException) { // NOPMD
-                    ((FileAnalysisException) e).setFileId(textFile.getFileId());
-                }
-                String message = configuration.isSkipLexicalErrors() ? "Skipping file" : "Error while tokenizing";
-                reporter.errorEx(message, e);
-                processingErrors.add(new Report.ProcessingError(e, textFile.getFileId()));
-                savedState.restore(tokens);
-            }
+        List<TextFile> textFiles = sourceManager.getTextFiles();
+        IntStream indexStream = IntStream.range(0, textFiles.size());
+
+        if (threads == 0) {
+            return processWithStream(indexStream, textFiles, processFile);
         }
-        return tokens;
+
+        // To make parallel streams use a custom ForkJoinPool, we need
+        // to execute it in its "context" using submit.
+
+        ForkJoinPool forkJoinPool = new ForkJoinPool(threads);
+        try {
+            return forkJoinPool
+                .submit(() -> processWithStream(indexStream.parallel(), textFiles, processFile))
+                .get();
+        } finally {
+            forkJoinPool.shutdown();
+        }
+    }
+
+    /** Process all files with the given callback. Errors are collected into the result list. */
+    private static List<ProcessingError> processWithStream(
+        IntStream indexStream, List<TextFile> files, ProcessFileFunc processFile) {
+
+        return indexStream.mapToObj(index -> processFile.process(files.get(index), index))
+                .filter(Objects::nonNull)
+                .sorted()
+                .collect(Collectors.toList());
+    }
+
+    @FunctionalInterface
+    private interface ProcessFileFunc {
+        @Nullable
+        ProcessingError process(TextFile file, int id);
     }
 
     @Override

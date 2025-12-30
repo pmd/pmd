@@ -227,6 +227,23 @@ public interface TextDocument extends Closeable {
      */
     int offsetAtLineColumn(TextPos2d position);
 
+
+    /**
+     * Translate a region given in the coordinate system of this
+     * document, to the coordinate system of the base document.
+     * This may give a region that has a different length. This is
+     * relevant when this document is a view on another document,
+     * e.g. a sub-region, or a "mapped" document where some characters
+     * are mapped to others (e.g. to implement escape translation).
+     *
+     * @param outputRegion Output region
+     *
+     * @return Input region
+     */
+    default @NonNull TextRegion inputRegion(TextRegion outputRegion) {
+        return outputRegion;
+    }
+
     /**
      * Closing a document closes the underlying {@link TextFile}.
      * New editors cannot be produced after that, and the document otherwise
