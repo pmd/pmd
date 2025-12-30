@@ -5,7 +5,7 @@ language_name: 3rd party rulesets
 tags: [rule_references, userdocs]
 summary: Lists rulesets and rules from the community
 permalink: pmd_userdocs_3rdpartyrulesets.html
-last_updated: December 2024 (7.9.0)
+last_updated: December 2025 (7.20.0)
 ---
 
 ## For Java
