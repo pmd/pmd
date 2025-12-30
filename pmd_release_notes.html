@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.20.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.21.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.20.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.21.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.20.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 28-December-2025</div>
+    <li class="sidebarTitle">PMD 7.21.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 30-January-2026</div>
     
     
     
@@ -2030,78 +2030,17 @@
     </details>
 
   
-<h2 id="28-december-2025---7200-snapshot">28-December-2025 - 7.20.0-SNAPSHOT</h2>
+<h2 id="30-january-2026---7210-snapshot">30-January-2026 - 7.21.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.20.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.21.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
-<h3 id="️-changed-rules">🌟️ Changed Rules</h3>
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_codestyle.html#onlyonereturn"><code class="language-plaintext highlighter-rouge">OnlyOneReturn</code></a> has a new property <code class="language-plaintext highlighter-rouge">ignoredMethodNames</code>. This property by
-default is set to <code class="language-plaintext highlighter-rouge">compareTo</code> and <code class="language-plaintext highlighter-rouge">equals</code>, thus this rule now by default allows multiple return statements
-for these methods. To restore the old behavior, simply set this property to an empty value.</li>
-</ul>
-
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6330">#6330</a>: [core] “Unable to create ValueRepresentation” when using @<!-- -->LiteralText (XPath)</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6234">#6234</a>: [java] Parser fails to parse switch expressions in super() constructor calls</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6299">#6299</a>: [java] Fix grammar of switch label</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4282">#4282</a>: [java] GuardLogStatement: False positive when guard is not a direct parent</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6028">#6028</a>: [java] UnusedPrivateMethod: False positive with raw type for generic method</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6257">#6257</a>: [java] UnusedLocalVariable: False positive with instanceof pattern guard</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6291">#6291</a>: [java] EnumComparison: False positive for any object when object.equals(null)</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6328">#6328</a>: [java] UnusedLocalVariable: False positive for pattern variable in for-each without braces</li>
-    </ul>
-  </li>
-  <li>java-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4257">#4257</a>: [java] OnlyOneReturn: False positive with equals method</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5043">#5043</a>: [java] LambdaCanBeMethodReference: False positive on overloaded methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6237">#6237</a>: [java] UnnecessaryCast: ContextedRuntimeException when parsing switch expression with lambdas</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6279">#6279</a>: [java] EmptyMethodInAbstractClassShouldBeAbstract: False positive for final empty methods</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6284">#6284</a>: [java] UnnecessaryConstructor: False positive for JavaDoc-bearing constructor</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6276">#6276</a>: [java] NullAssignment: False positive when assigning null to a final field in a constructor</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6343">#6343</a>: [java] MissingStaticMethodInNonInstantiatableClass: False negative when method in nested class returns null</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4158">#4158</a>: [java] BigIntegerInstantiation: False negative with compile-time constant</li>
-      <li><a href="https://github.com/pmd/pmd/issues/4910">#4910</a>: [java] ConsecutiveAppendsShouldReuse: False positive within if-statement without curly braces</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5877">#5877</a>: [java] AvoidArrayLoops: False negative when break inside switch statement</li>
-    </ul>
-  </li>
-  <li>maintenance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6230">#6230</a>: [core] Single module snapshot build fails</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
-
-<h4 id="experimental-api">Experimental API</h4>
-<ul>
-  <li>pmd-java: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.20.0-SNAPSHOT/net/sourceforge/pmd/lang/java/types/OverloadSelectionResult.html#hadSeveralApplicableOverloads()"><code>OverloadSelectionResult#hadSeveralApplicableOverloads</code></a></li>
-</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
