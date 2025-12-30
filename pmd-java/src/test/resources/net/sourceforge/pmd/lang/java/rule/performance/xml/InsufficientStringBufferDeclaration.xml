@@ -753,6 +753,11 @@ public class Foo {
         StringBuilder sb = new StringBuilder(1);
         sb.append((char) 0x0041);
     }
+    public void bar3() {
+        StringBuilder sb = new StringBuilder(1);
+        final int x = 0x0041;
+        sb.append((char) x);
+    }
 }
         ]]></code>
     </test-code>

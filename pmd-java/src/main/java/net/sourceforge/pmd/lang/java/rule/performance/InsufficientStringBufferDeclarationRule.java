@@ -5,11 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -158,32 +156,22 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     private void processMethodCall(State state, ASTMethodCall methodCall) {
         if ("append".equals(methodCall.getMethodName())) {
             int counter = 0;
-            Predicate<ASTExpression> methodPredicate = n -> n.ancestors(ASTMethodCall.class).first() == methodCall;
-
-            Set<ASTLiteral> literals = new HashSet<>(methodCall.getArguments()
-                    .descendants(ASTLiteral.class)
-                    // exclude literals, that belong to different method calls
-                    .filter(methodPredicate)
-                    .toList());
+            Set<ASTLiteral> literals = collectArgumentsOfType(methodCall, ASTLiteral.class);
 
             for (ASTLiteral literal : literals) {
-                if (literal.getParent() instanceof ASTCastExpression
-                        && TypeTestUtil.isA(char.class, (ASTCastExpression) literal.getParent())) {
-                    counter += 1;
-                } else {
-                    counter += String.valueOf(literal.getConstValue()).length();
-                }
+                counter += calculateExpectedLength(literal, value -> String.valueOf(value.getConstValue()).length());
             }
 
-            Set<Object> constValues = methodCall.getArguments().descendants(ASTVariableAccess.class).toStream()
-                    .filter(methodPredicate)
-                    .map(ASTVariableAccess::getConstFoldingResult)
-                    .map(ASTExpression.ConstResult::getValue)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toSet());
+            Set<ASTVariableAccess> variables = collectArgumentsOfType(methodCall, ASTVariableAccess.class);
+            for (ASTVariableAccess variable : variables) {
+                counter += calculateExpectedLength(variable, value -> {
+                    Object constValue = value.getConstFoldingResult().getValue();
+                    if (constValue == null) {
+                        return 0;
+                    }
 
-            for (Object constValue : constValues) {
-                counter += constValue.toString().length();
+                    return String.valueOf(constValue).length();
+                });
             }
 
             ASTIfStatement ifStatement = methodCall.ancestors(ASTIfStatement.class).first();
@@ -215,6 +203,23 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                 state.rootNode = methodCall;
             }
         }
+    }
+
+    private static  <T extends ASTExpression> int calculateExpectedLength(T expression, ToIntFunction<T> countingStrategy) {
+        if (expression.getParent() instanceof ASTCastExpression
+                && TypeTestUtil.isA(char.class, (ASTCastExpression) expression.getParent())) {
+            return 1;
+        }
+
+        return countingStrategy.applyAsInt(expression);
+    }
+
+    private static <T extends ASTExpression> Set<T> collectArgumentsOfType(ASTMethodCall methodCall, Class<T> type) {
+        return methodCall.getArguments()
+                .descendants(type)
+                // exclude literals, that belong to different method calls
+                .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall)
+                .collect(Collectors.toSet());
     }
 
     private State getConstructorCapacity(ASTVariableId variable, ASTExpression node) {
