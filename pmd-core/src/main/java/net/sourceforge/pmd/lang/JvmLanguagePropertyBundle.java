@@ -55,6 +55,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     /**
      * Return whether PMD should warn when the classpath is the default
      * used for PMD analysis. This hints at incomplete configuration.
+     * @since 7.20.0
      */
     public boolean shouldWarnIfImproperClasspath() {
         return getProperty(ENABLE_CLASSPATH_DIAGNOSTICS);
@@ -65,6 +66,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * setting of a classpath as a string via {@link #setProperty(PropertyDescriptor, Object)}.
      * If the parameter is null, the classpath config returned by {@link #getClasspathConfig()}
      * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
+     * @since 7.20.0
      */
     public void setClasspathConfig(@Nullable PmdClasspathConfig classpath) {
         this.classpathConfig = classpath;
@@ -72,6 +74,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
 
     /**
      * Return the classpath config, as specified by {@link #setClasspathConfig(PmdClasspathConfig)}.
+     * @since 7.20.0
      */
     public PmdClasspathConfig getClasspathConfig() {
         if (classpathConfig == null) {
@@ -88,7 +91,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * If the parameter is null, the classloader returned by {@link #getAnalysisClassLoader()}
      * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
      *
-     * @deprecated Use {@link #setClasspathConfig(PmdClasspathConfig)}
+     * @deprecated Since 7.20.0. Use {@link #setClasspathConfig(PmdClasspathConfig)}
      */
     @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
@@ -98,7 +101,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     /**
      * Returns the classloader to use to resolve classes for this language.
      *
-     * @deprecated Use {@link #getClasspathConfig()}
+     * @deprecated Since 7.20.0. Use {@link #getClasspathConfig()}
      */
     @Deprecated
     public @NonNull ClassLoader getAnalysisClassLoader() {
