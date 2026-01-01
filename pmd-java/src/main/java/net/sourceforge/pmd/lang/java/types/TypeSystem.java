@@ -187,7 +187,7 @@ public final class TypeSystem {
      *                                to populate the fields of the new type
      *                                system
      *
-     * @deprecated Use {@link #usingClasspath(Classpath)}
+     * @deprecated Since 7.20.0. Use {@link #usingClasspath(Classpath)}
      */
     @Deprecated
     public static TypeSystem usingClassLoaderClasspath(ClassLoader bootstrapResourceLoader) {
