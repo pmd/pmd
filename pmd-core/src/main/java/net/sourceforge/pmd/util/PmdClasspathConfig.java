@@ -53,7 +53,8 @@ import com.google.errorprone.annotations.CheckReturnValue;
  * the effective classloader and may allocate resources that MUST be
  * closed afterward, by the caller of {@link #open()}. This will most
  * typically be called internally by PMD.
- * @since 7.20.0
+ *
+ * @since 7.21.0
  */
 public final class PmdClasspathConfig {
     private static final @NonNull ParsedClassPath EMPTY_CP =
@@ -87,9 +88,8 @@ public final class PmdClasspathConfig {
      * it only matters if you are analyzing Java code.
      *
      * @return An instance for the boot classloader
-     *
      * @deprecated This is used only for compatibility. Will be removed
-     *  in PMD 8.
+     *     in PMD 8.
      */
     @Deprecated
     public static PmdClasspathConfig pmdClasspath() {

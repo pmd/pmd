@@ -163,7 +163,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the ClassLoader being used by PMD when processing Rules.
      *
      * @return The ClassLoader being used
-     * @deprecated Since 7.20.0. PMD will manage classpath handling internally and
+     * @deprecated Since 7.21.0. PMD will manage classpath handling internally and
      *     will not necessarily build a classloader. Use {@link #setAnalysisClasspath(PmdClasspathConfig)}
      *     or {@link #prependAuxClasspath(String)} and stop using the classloader directly.
      */
@@ -185,7 +185,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param classpathWrapper
      *            The ClassLoader to use
      *
-     * @deprecated Since 7.20.0. Use {@link #setAnalysisClasspath(PmdClasspathConfig)}
+     * @deprecated Since 7.21.0. Use {@link #setAnalysisClasspath(PmdClasspathConfig)}
      */
     @Deprecated
     public void setClassLoader(ClassLoader classpathWrapper) {

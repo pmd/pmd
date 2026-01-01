@@ -22,9 +22,9 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     public static final PropertyDescriptor<String> AUX_CLASSPATH
         = PropertyFactory.stringProperty("auxClasspath")
                          .desc("A classpath to use to resolve references to external types in the analysed sources. "
-                                   + "Individual paths are separated by ; on Windows and : on other platforms. "
-                                   + "All classes of the analysed project should be found on this classpath, including "
-                                   + "the compiled classes corresponding to the analyzed sources themselves, and the JDK classes.")
+                               + "Individual paths are separated by ; on Windows and : on other platforms. "
+                               + "All classes of the analysed project should be found on this classpath, including "
+                               + "the compiled classes corresponding to the analyzed sources themselves, and the JDK classes.")
                          .defaultValue("")
                          .build();
 
@@ -55,7 +55,8 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     /**
      * Return whether PMD should warn when the classpath is the default
      * used for PMD analysis. This hints at incomplete configuration.
-     * @since 7.20.0
+     *
+     * @since 7.21.0
      */
     public boolean shouldWarnIfImproperClasspath() {
         return getProperty(ENABLE_CLASSPATH_DIAGNOSTICS);
@@ -66,7 +67,8 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * setting of a classpath as a string via {@link #setProperty(PropertyDescriptor, Object)}.
      * If the parameter is null, the classpath config returned by {@link #getClasspathConfig()}
      * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
-     * @since 7.20.0
+     *
+     * @since 7.21.0
      */
     public void setClasspathConfig(@Nullable PmdClasspathConfig classpath) {
         this.classpathConfig = classpath;
@@ -74,7 +76,8 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
 
     /**
      * Return the classpath config, as specified by {@link #setClasspathConfig(PmdClasspathConfig)}.
-     * @since 7.20.0
+     *
+     * @since 7.21.0
      */
     public PmdClasspathConfig getClasspathConfig() {
         if (classpathConfig == null) {
@@ -91,7 +94,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      * If the parameter is null, the classloader returned by {@link #getAnalysisClassLoader()}
      * is constructed from the value of the {@link #AUX_CLASSPATH auxClasspath} property.
      *
-     * @deprecated Since 7.20.0. Use {@link #setClasspathConfig(PmdClasspathConfig)}
+     * @deprecated Since 7.21.0. Use {@link #setClasspathConfig(PmdClasspathConfig)}
      */
     @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
@@ -101,7 +104,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
     /**
      * Returns the classloader to use to resolve classes for this language.
      *
-     * @deprecated Since 7.20.0. Use {@link #getClasspathConfig()}
+     * @deprecated Since 7.21.0. Use {@link #getClasspathConfig()}
      */
     @Deprecated
     public @NonNull ClassLoader getAnalysisClassLoader() {
