@@ -190,6 +190,7 @@ public final class PmdClasspathConfig {
      * the caller when they are done.
      */
     @CheckReturnValue
+    @InternalApi
     public OpenClasspath open() {
         return new OpenClasspath(new ClasspathClassLoader(classpath, fallback));
     }
@@ -253,6 +254,7 @@ public final class PmdClasspathConfig {
      * A closeable instance that can be used to load resources from a classpath.
      * The caller of {@link #open()} is responsible for closing this instance.
      */
+    @InternalApi
     public static final class OpenClasspath implements AutoCloseable {
         private final AtomicBoolean shouldClose = new AtomicBoolean(true);
         // Note: we always need to create a ClasspathClassLoader as even with an empty
