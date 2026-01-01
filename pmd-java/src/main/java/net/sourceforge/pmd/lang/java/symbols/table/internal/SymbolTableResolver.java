@@ -471,24 +471,6 @@ public final class SymbolTableResolver {
         }
 
         @Override
-        public Void visit(ASTForeachStatement node, @NonNull ReferenceCtx ctx) {
-            // the varId is only in scope in the body and not the iterable expr
-            setTopSymbolTableAndVisit(node.getIterableExpr(), ctx);
-
-            ASTVariableId varId = node.getVarId();
-            setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
-
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
-            ASTStatement body = node.getBody();
-            // unless it's a block the body statement may never set a
-            // symbol table that would have this table as parent,
-            // so the table would be dangling
-            setTopSymbolTableAndVisit(body, ctx);
-            popStack(pushed);
-            return null;
-        }
-
-        @Override
         public Void visit(ASTTryStatement node, @NonNull ReferenceCtx ctx) {
 
             ASTResourceList resources = node.getResources();
@@ -702,6 +684,22 @@ public final class SymbolTableResolver {
                         return BindSet.noBindings();
                     }
                 }
+            }
+
+            @Override
+            public PSet<ASTVariableId> visit(ASTForeachStatement node, @NonNull ReferenceCtx ctx) {
+                MyVisitor.this.setTopSymbolTableAndVisit(node.getIterableExpr(), ctx);
+
+                ASTVariableId varId = node.getVarId();
+                MyVisitor.this.setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
+
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
+
+                setTopSymbolTableAndVisit(node.getBody(), ctx);
+
+                popStack(pushed);
+
+                return BindSet.noBindings();
             }
 
             private boolean hasNoBreakContainingStmt(ASTLoopStatement node) {

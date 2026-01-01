@@ -23,12 +23,12 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
-      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+      - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
           java-version: '17'
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
+      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -47,7 +47,7 @@ jobs:
           # version exactly is available in the staging repo. But if we rerun the build using the
           # older cache, it points to the old staging versions, which are not available anymore.
           find .m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" -and -not -path "*/pmd-designer/*" -print0 | xargs -0 rm -vrf
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
           name: compile-artifact
           if-no-files-found: error
@@ -58,12 +58,12 @@ jobs:
             !pmd-dist/target/pmd-dist-*-src.zip
             !pmd-dist/target/pmd-*-cyclonedx.xml
             !pmd-dist/target/pmd-*-cyclonedx.json
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
           name: staging-repository
           if-no-files-found: error
           path: target/staging
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
           name: dist-artifact
           if-no-files-found: error
@@ -81,18 +81,18 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
-      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+      - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
           java-version: '17'
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
+      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
         with:
           name: compile-artifact
       - name: Full Build with Maven
@@ -100,7 +100,7 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
               verify -DskipTests
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
           name: javadocs-artifact
           if-no-files-found: error
@@ -121,8 +121,8 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest, macos-latest ]
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
-      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+      - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         # under linux we execute more extensive integration tests with various java versions
         if: ${{ runner.os == 'Linux' }}
         with:
@@ -132,7 +132,7 @@ jobs:
             11
             21
             25
-      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
+      - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         # default java version for all os is 17
         with:
           distribution: 'temurin'
@@ -141,13 +141,13 @@ jobs:
       # Note: this works under Windows only if pom.xml files use LF, so that hashFiles('**/pom.xml')
       # gives the same result (line endings...).
       # see .gitattributes for pom.xml - it should always be using lf.
-      - uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
+      - uses: actions/cache/restore@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
         # we can only reuse compile-artifacts under linux due to file timestamp issues and
         # platform specific line endings in test resource files.
         if: ${{ runner.os == 'Linux' }}
@@ -172,21 +172,21 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
-      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+      - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
           java-version: '17'
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
+      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
         with:
           name: compile-artifact
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
         with:
           name: staging-repository
           path: target/staging
@@ -258,18 +258,18 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
-      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+      - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
           java-version: '17'
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
+      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
         with:
           name: compile-artifact
       - name: Generate rule docs
@@ -280,7 +280,7 @@ jobs:
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -Dassembly.skipAssembly=true
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@8aeb6ff8030dd539317f8e1769a044873b56ea71 #v1.268.0
+        uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b #v1.275.0
         with:
           ruby-version: 3.3
       - name: Setup bundler
@@ -296,7 +296,7 @@ jobs:
         run: |
           cd docs
           bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6 > _site/pmd_release_notes.md
-      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
           name: docs-artifact
           if-no-files-found: error
@@ -311,20 +311,20 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 #v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
         with:
           fetch-depth: 2
-      - uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 #v5.0.0
+      - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
           java-version: |
             11
             17
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@8aeb6ff8030dd539317f8e1769a044873b56ea71 #v1.268.0
+        uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b #v1.275.0
         with:
           ruby-version: 3.3
-      - uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 #v4.3.0
+      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           path: |
             ~/.m2/repository
@@ -333,7 +333,7 @@ jobs:
             .ci/files/vendor/bundle
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
-      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 #v6.0.0
+      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
         with:
           name: dist-artifact
           path: pmd-dist/target
@@ -354,7 +354,7 @@ jobs:
         run: |
           echo "artifacts_path=$(realpath ..)" >> "${GITHUB_ENV}"
       - name: Upload regression tester report
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 #v5.0.0
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
         with:
           name: pmd-regression-tester
           if-no-files-found: error
