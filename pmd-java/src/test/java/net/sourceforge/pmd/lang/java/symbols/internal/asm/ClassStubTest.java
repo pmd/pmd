@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
+import org.junit.jupiter.api.AutoClose;
 import org.junit.jupiter.api.Test;
 import org.pcollections.PSet;
 
@@ -38,8 +39,12 @@ import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 class ClassStubTest {
 
-    private static @NotNull TypeSystem newTypeSystem() {
-        return TypeSystem.usingClasspath(Classpath.forOpenClasspath(PmdClasspathConfig.pmdClasspath().open()));
+    @AutoClose
+    private PmdClasspathConfig.OpenClasspath classpath =
+        PmdClasspathConfig.pmdClasspath().open();
+
+    private @NotNull TypeSystem newTypeSystem() {
+        return TypeSystem.usingClasspath(Classpath.forOpenClasspath(classpath));
     }
 
     // while parsing the annotation type, ClassStub's parseLock.ensureParsed()

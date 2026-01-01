@@ -215,10 +215,12 @@ public class PMDConfiguration extends AbstractConfiguration {
      * <p>See {@link PmdClasspathConfig} for documentation about how to
      * build instances.
      *
-     * <p>PMD's default analysis classpath loads classes with
-     * {@link PmdClasspathConfig#pmdClasspath()}, which is likely
-     * to be insufficient. If you analyze Java sources, make sure to
-     * configure this appropriately.
+     * <p><b>PMD's default analysis classpath is wrong</b>. It loads
+     * classes with {@link PmdClasspathConfig#pmdClasspath()}, which is
+     * only for compatibility with previous versions of PMD. If you
+     * analyze Java sources, make sure to configure this properly and
+     * not use the default. A future version of PMD will remove this
+     * default behavior.
      *
      * @param classpath A classpath wrapper object
      * @see #prependAuxClasspath(String)
