@@ -44,7 +44,7 @@ class ClassLoadingChildFirstTest {
                 getClass().getPackage().getName().replace('.', '/'),
                 "custom_java_lang.jar");
 
-        PmdClasspathConfig config = PmdClasspathConfig.pmdClasspath();
+        PmdClasspathConfig config = PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(ClassLoader.getSystemClassLoader());
         config = config.prependClasspath(file.toAbsolutePath().toString());
 
         try (PmdClasspathConfig.OpenClasspath cp = config.open()) {

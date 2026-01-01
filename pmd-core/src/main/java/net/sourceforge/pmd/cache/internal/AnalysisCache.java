@@ -59,8 +59,7 @@ public interface AnalysisCache {
      * conditions the good behaviour of {@link #isUpToDate(TextDocument)}.
      *
      * @param ruleSets                The rulesets configured for this analysis.
-     * @param auxclasspath            The class loader for auxclasspath configured
-     *                                for this analysis.
+     * @param auxclasspath            The classpath configured for this analysis.
      * @param files                   Set of files in the current analysis. File
      *                                records in the cache are matched to the file
      *                                IDs of these files.

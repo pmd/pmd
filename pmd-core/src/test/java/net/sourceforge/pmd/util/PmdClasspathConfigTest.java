@@ -79,8 +79,8 @@ class PmdClasspathConfigTest {
     @Test
     void testEquals() {
         PmdClasspathConfig defaultConfig = new PMDConfiguration().getAnalysisClasspath();
-        assertNotSame(defaultConfig, PmdClasspathConfig.pmdClasspath());
-        assertEquals(defaultConfig, PmdClasspathConfig.pmdClasspath());
+        assertNotSame(defaultConfig, PmdClasspathConfig.defaultClasspath());
+        assertEquals(defaultConfig, PmdClasspathConfig.defaultClasspath());
     }
 
 

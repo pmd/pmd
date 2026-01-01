@@ -97,7 +97,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
 
-    private PmdClasspathConfig classpathConfig = PmdClasspathConfig.pmdClasspath();
+    private PmdClasspathConfig classpathConfig = PmdClasspathConfig.defaultClasspath();
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -190,7 +190,7 @@ public class PMDConfiguration extends AbstractConfiguration {
     @Deprecated
     public void setClassLoader(ClassLoader classpathWrapper) {
         setAnalysisClasspath(
-            classpathWrapper == null ? PmdClasspathConfig.pmdClasspath()
+            classpathWrapper == null ? PmdClasspathConfig.defaultClasspath()
                                      : PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(classpathWrapper)
         );
     }

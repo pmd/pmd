@@ -87,7 +87,7 @@ class PmdConfigurationTest {
             Paths.get("some.jar").toAbsolutePath().toUri().getPath());
         assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader().getParent(),
                 "parent classLoader");
-        configuration.setAnalysisClasspath(PmdClasspathConfig.pmdClasspath());
+        configuration.setAnalysisClasspath(PmdClasspathConfig.defaultClasspath());
         assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getAnalysisClasspath().getFallback(),
                 "Revert to default ClassLoader");
         assertTrue(configuration.getAnalysisClasspath().getClasspath().isEmpty(), "Default ClassLoader");

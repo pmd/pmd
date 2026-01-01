@@ -39,7 +39,8 @@ import com.google.errorprone.annotations.CheckReturnValue;
  * in which case the responsibility for closing it is on the caller. See
  * {@link #thisClassLoaderWillNotBeClosedByPmd(ClassLoader)}.
  * <li>{@link #pmdClasspath()} uses the classloader used to load this
- * class (and PMD sources).
+ * class (and PMD sources). This is not supposed to be used outside
+ * PMD and is deprecated.
  * </ul>
  *
  * <p>Any instance of this class may be additionally prepended with a
@@ -85,9 +86,24 @@ public final class PmdClasspathConfig {
      * it only matters if you are analyzing Java code.
      *
      * @return An instance for the boot classloader
+     *
+     * @deprecated This is used only for compatibility. Will be removed
+     *  in PMD 8.
      */
+    @Deprecated
     public static PmdClasspathConfig pmdClasspath() {
         return thisClassLoaderWillNotBeClosedByPmd(PmdClasspathConfig.class.getClassLoader());
+    }
+
+    /**
+     * Return PMD's default classpath. In PMD 7, this is {@link #pmdClasspath()}
+     * for compatibility with previous versions. This may change in the
+     * future, including to be an empty classpath.
+     *
+     * @return The default instance
+     */
+    public static PmdClasspathConfig defaultClasspath() {
+        return pmdClasspath();
     }
 
     /**
@@ -105,8 +121,7 @@ public final class PmdClasspathConfig {
     /**
      * Prepend the given classpath to this instance. This causes classes
      * and resources to be fetched first on the given classpath, and then
-     * defaulted to the behavior of the current instance if the resource
-     * is not found on the classpath.
+     * queried on this classpath if not found.
      *
      * <p>A classpath string (the parameter) must be a list of classpath
      * entries separated by {@link File#pathSeparatorChar} characters.

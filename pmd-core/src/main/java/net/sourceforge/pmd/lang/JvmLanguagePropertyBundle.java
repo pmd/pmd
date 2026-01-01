@@ -75,7 +75,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      */
     public PmdClasspathConfig getClasspathConfig() {
         if (classpathConfig == null) {
-            classpathConfig = PmdClasspathConfig.pmdClasspath()
+            classpathConfig = PmdClasspathConfig.defaultClasspath()
                                                 .prependClasspath(getProperty(AUX_CLASSPATH));
         }
         return classpathConfig;
