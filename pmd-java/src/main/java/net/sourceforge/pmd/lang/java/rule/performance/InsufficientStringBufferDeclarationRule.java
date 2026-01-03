@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
@@ -208,12 +209,19 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     }
 
     private static <T extends ASTExpression> Set<T> collectArgumentsOfType(ASTMethodCall methodCall, Class<T> type) {
+        Set<Node> conditionalNodes = methodCall.descendants(ASTConditionalExpression.class)
+                .map(ASTConditionalExpression::getCondition)
+                .descendants()
+                .collect(Collectors.toSet());
+
         return methodCall.getArguments()
                 .descendants(type)
                 // exclude arguments, that belong to different method calls
                 .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall)
                 // also exclude args that are used to access arrays
                 .filter(n -> !(n.getParent() instanceof ASTArrayAccess))
+                // also exclude args that are only used in the conditional part of a conditional expression
+                .filter(o -> !conditionalNodes.contains(o))
                 .collect(Collectors.toSet());
     }
 

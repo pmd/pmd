@@ -1525,4 +1525,17 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Ignore values used in conditional part of conditional expression</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(String s) {
+        StringBuilder builder = new StringBuilder(1);
+        builder.append(s != null ? "1" : "");
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
