@@ -48,7 +48,7 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
         }
     }
 
-    parserTestContainer("InstanceofExpression cannot test primitive types", JavaVersion.except(JavaVersion.J25__PREVIEW, JavaVersion.J25__PREVIEW)) {
+    parserTestContainer("InstanceofExpression cannot test primitive types", JavaVersion.except(JavaVersion.J25__PREVIEW, JavaVersion.J26__PREVIEW)) {
         inContext(ExpressionParsingCtx) {
             PrimitiveTypeKind.values().map { it.simpleName }.forEach {
                 "f instanceof $it" shouldNot parse()
@@ -60,7 +60,8 @@ class ASTInstanceOfExpressionTest : ParserTestSpec({
     // since Java 23 Preview, primitive types in instanceof are possible (JEP 455)
     // Java 24 Preview: JEP 488
     // Java 25 Preview: JEP 507
-    parserTestContainer("InstanceofExpression can test primitive types", listOf(JavaVersion.J25__PREVIEW, JavaVersion.J25__PREVIEW)) {
+    // Java 26 Preview: JEP 530
+    parserTestContainer("InstanceofExpression can test primitive types", listOf(JavaVersion.J25__PREVIEW, JavaVersion.J26__PREVIEW)) {
         inContext(ExpressionParsingCtx) {
             PrimitiveTypeKind.values().forEach { typeKind ->
                 "f instanceof ${typeKind.simpleName}" should parseAs {
