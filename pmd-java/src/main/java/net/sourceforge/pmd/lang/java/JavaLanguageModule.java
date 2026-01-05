@@ -46,7 +46,6 @@ public class JavaLanguageModule extends LanguageModuleBase implements PmdCapable
                               .addVersion("22")
                               .addVersion("23")
                               .addVersion("24")
-                              .addVersion("24-preview")
                               .addVersion("25")
                               .addVersion("25-preview")
                               .addDefaultVersion("26") // 26 is the default
