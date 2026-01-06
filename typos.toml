@@ -12,30 +12,29 @@ extend-exclude = [
     "Swift4.2.txt",
     "Issue628.txt",
     "sample-matlab.txt",
-    "sample_python.txt"
+    "sample_python.txt",
+    "btrfs.txt"
 ]
-
 
 [default.extend-words]
 # public API
 verbatium="verbatium"
 # Apex terminology
 Createable = "Createable"
-# Generally acceptable
-incrementers = "incrementers"
 # lowercase for TestNG
-testng = "testng"
+#
 # TSQL token name
 iif="iif"
+# Unicode range
+nd = "nd"
+# part of PROCEDURE_SCHEM
+schem="schem"
 # Short strings used as identifiers
 typ = "typ"
 ba = "ba"
-fo="fo"
-thr="thr"
-strat = "strat"
+fo = "fo"
 parm = "parm"
-nd = "nd"
-schem="schem"
+strat = "strat"
 ois = "ois"
 parms = "parms"
 opps = "opps"
@@ -67,4 +66,4 @@ Hendler="Hendler"
 Ure="Ure"
 
 [default]
-extend-ignore-re = [".*pn\\\\3\\\\2" ]
+extend-ignore-re = ["pn\\\\3\\\\2", "thr\\(ough", "org.testng" ]
