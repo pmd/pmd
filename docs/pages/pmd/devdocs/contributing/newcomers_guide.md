@@ -3,7 +3,7 @@ title: Newcomers' Guide
 tags: [devdocs]
 permalink: pmd_devdocs_contributing_newcomers_guide.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2025 (7.10.0)
+last_updated: November 2025 (7.20.0)
 ---
 
 This is a small guide for GSoC Students and new contributors.

@@ -1,7 +1,7 @@
 ---
 title: Merging pull requests
 permalink: pmd_projectdocs_committers_merging_pull_requests.html
-last_updated: October 2021
+last_updated: September 2024 (7.8.0)
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 

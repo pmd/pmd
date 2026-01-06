@@ -2,7 +2,7 @@
 title: Getting Help
 permalink: pmd_about_help.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: November 2024
+last_updated: November 2024 (7.8.0)
 ---
 
 There are numerous ways of getting help:

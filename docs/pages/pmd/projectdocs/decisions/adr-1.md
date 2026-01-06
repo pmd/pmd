@@ -6,7 +6,7 @@ sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
 adr_status: "Accepted"
-last_updated: September 2022
+last_updated: February 2024 (7.0.0)
 ---
 
 ## Context
