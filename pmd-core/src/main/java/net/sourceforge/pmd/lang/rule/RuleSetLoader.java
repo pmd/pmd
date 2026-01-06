@@ -48,7 +48,7 @@ public final class RuleSetLoader {
      * Create a new RuleSetLoader with a default configuration.
      * The defaults are described on each configuration method of this class.
      */
-    public RuleSetLoader() { // NOPMD UnnecessaryConstructor #6311 / #6284
+    public RuleSetLoader() {
         // default
     }
 
