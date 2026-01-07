@@ -4,21 +4,24 @@
 #
 
 # Helper script, that updates the "last_updated" field in the front matter based on the git info.
-# It searches in the current directory.
+# It searches in the current directory. The given version (first argument) is used, when the
+# version cannot be determined (because the file has been changed after the last release).
+# It should be the next release number.
 #
 # Usage:
-# ./update-last-updated.sh
+# ./update-last-updated.sh 7.21.0
 #
 # This will update all markdown files. Then review the changed files
 # and commit or revert.
 #
-# ./update-last-updated.sh pages/pmd/about/help.md
+# ./update-last-updated.sh 7.21.0 pages/pmd/about/help.md
 #
 # Updates a single file only.
 #
 
 function process_file() {
-  FILE="$1"
+  DEFAULT_VERSION="$1"
+  FILE="$2"
   echo -n "$FILE: "
 
   LINE_NUMBER_FRONT_MATTER_END=$(grep -n -e "---" "$FILE"|head -2|tail -1|cut -d ":" -f 1)
@@ -35,19 +38,29 @@ function process_file() {
   if [[ $TAG = 7.0.0-* ]]; then
     TAG="7.0.0"
   fi
+  if [ -z "$TAG" ]; then
+    TAG="$DEFAULT_VERSION"
+  fi
   #echo "Version: $TAG"
 
   LAST_UPDATED="last_updated: $DATE ($TAG)"
   echo "$LAST_UPDATED"
-  sed -i -e "s/^last_updated:.*\$/$LAST_UPDATED/" "$FILE"
+  sed -i -e "s/^last_updated: \([a-zA-Z]\+ [0-9]\{4,4\}\) ([0-9.]\+)\$/$LAST_UPDATED/" "$FILE"
 }
 
 # English locale - needed when creating the date
 export LANG="en_US.UTF-8"
 
-if [ -n "$1" ]; then
+if [ -z "$1" ]; then
+  echo "Please provide a default version (aka the next release)"
+  echo
+  echo "./update-last-updated.sh <version>"
+  exit 1
+fi
+
+if [ -n "$2" ]; then
   # single file given
-  process_file "$1"
+  process_file "$1" "$2"
 else
   # no file given, search for all markdown files in current directory
   # ignore files in directory "vendor"
@@ -55,7 +68,7 @@ else
   do
     # only consider files, that are under version control
     if git ls-files --error-unmatch "$i" >/dev/null 2>&1; then
-      process_file "$i"
+      process_file "$1" "$i"
     fi
   done < <(find . -type d -name vendor -prune -o -type f -name "*.md" -print0)
 fi
