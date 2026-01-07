@@ -233,6 +233,17 @@ public final class CollectionUtil {
         return Collections.unmodifiableMap(map);
     }
 
+    /**
+     * @since 7.21.0.
+     */
+    public static <K, V> Map<K, V> mapOf(K k1, V v1, K k2, V v2, K k3, V v3) {
+        Map<K, V> map = new LinkedHashMap<>();
+        map.put(k1, v1);
+        map.put(k2, v2);
+        map.put(k3, v3);
+        return Collections.unmodifiableMap(map);
+    }
+
     public static <K, V> Map<K, V> buildMap(Consumer<Map<K, V>> effect) {
         Map<K, V> map = new LinkedHashMap<>();
         effect.accept(map);

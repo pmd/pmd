@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -33,16 +34,25 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
 
     private final Function<? super T, @NonNull String> toString;
     private final Function<@NonNull String, ? extends T> fromString;
+    private final Function<@NonNull String, Boolean> deprecated;
+    private final boolean collection;
+    private final Set<?> enumeratedValues;
 
     // these are not applied, just used to document the possible values
     private final List<PropertyConstraint<? super T>> docConstraints;
 
     ValueSyntax(Function<? super T, String> toString,
                 Function<@NonNull String, ? extends T> fromString,
-                List<PropertyConstraint<? super T>> docConstraints) {
+                Function<@NonNull String, Boolean> deprecated,
+                List<PropertyConstraint<? super T>> docConstraints,
+                boolean collection,
+                Set<?> enumeratedValues) {
         this.toString = toString;
         this.fromString = fromString;
+        this.deprecated = deprecated;
         this.docConstraints = docConstraints;
+        this.collection = collection;
+        this.enumeratedValues = enumeratedValues;
     }
 
     @Override
@@ -56,8 +66,23 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
     }
 
     @Override
+    public boolean isFromStringDeprecated(@NonNull String attributeData) {
+        return deprecated.apply(attributeData);
+    }
+
+    @Override
     public @NonNull String toString(T data) {
         return toString.apply(data);
+    }
+
+    @Override
+    public boolean isCollection() {
+        return collection;
+    }
+
+    @Override
+    public Set<?> enumeratedValues() {
+        return enumeratedValues;
     }
 
     /**
@@ -68,7 +93,9 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
      */
     static <T> ValueSyntax<T> partialFunction(Function<? super T, @NonNull String> toString,
                                               Function<@NonNull String, ? extends T> fromString,
-                                              PropertyConstraint<? super @NonNull String> checker) {
+                                              Function<@NonNull String, Boolean> deprecated,
+                                              PropertyConstraint<? super @NonNull String> checker,
+                                              Set<?> enumeratedValues) {
         PropertyConstraint<T> docConstraint = PropertyConstraint.fromPredicate(
             PredicateUtil.always(),
             checker.getConstraintDescription()
@@ -80,16 +107,22 @@ class ValueSyntax<T> extends InternalApiBridge.InternalPropertySerializer<T> {
                 checker.validate(s);
                 return fromString.apply(s);
             },
-            listOf(docConstraint)
+            deprecated,
+            listOf(docConstraint),
+            false,
+            enumeratedValues
         );
     }
 
     static <T> ValueSyntax<T> withDefaultToString(Function<String, ? extends T> fromString) {
-        return new ValueSyntax<>(Objects::toString, fromString, Collections.emptyList());
+        return new ValueSyntax<>(Objects::toString, fromString, s -> false, Collections.emptyList(), false, Collections.emptySet());
     }
 
     static <T> ValueSyntax<T> create(Function<? super T, String> toString,
-                                     Function<String, ? extends T> fromString) {
-        return new ValueSyntax<>(toString, fromString, Collections.emptyList());
+                                     Function<String, ? extends T> fromString,
+                                     Function<@NonNull String, Boolean> deprecated,
+                                     boolean isCollection,
+                                     Set<?> enumeratedValues) {
+        return new ValueSyntax<>(toString, fromString, deprecated, Collections.emptyList(), isCollection, enumeratedValues);
     }
 }
