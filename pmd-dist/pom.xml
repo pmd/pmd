@@ -247,10 +247,10 @@
             </build>
         </profile>
         <profile>
-            <id>jdk21-compat-it</id>
+            <id>jdk17-compat-it</id>
             <activation>
                 <property>
-                    <name>java21.home</name>
+                    <name>java17.home</name>
                 </property>
             </activation>
             <build>
@@ -260,15 +260,15 @@
                         <artifactId>maven-failsafe-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>jdk21-compat-it</id>
+                                <id>jdk17-compat-it</id>
                                 <goals>
                                     <goal>integration-test</goal>
                                     <goal>verify</goal>
                                 </goals>
                                 <configuration>
                                     <environmentVariables>
-                                        <JAVA_HOME>${java21.home}</JAVA_HOME>
-                                        <PATH>${java21.home}/bin:${env.PATH}</PATH>
+                                        <JAVA_HOME>${java17.home}</JAVA_HOME>
+                                        <PATH>${java17.home}/bin:${env.PATH}</PATH>
                                     </environmentVariables>
                                 </configuration>
                             </execution>
