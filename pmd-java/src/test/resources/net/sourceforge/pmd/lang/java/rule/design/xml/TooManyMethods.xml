@@ -166,7 +166,7 @@ public class Foo {
     <test-code>
         <description>Verify location of violation</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>2-2</expected-linenumbers>
+        <expected-linenumbers>3-3</expected-linenumbers>
         <code><![CDATA[
 public
 class
