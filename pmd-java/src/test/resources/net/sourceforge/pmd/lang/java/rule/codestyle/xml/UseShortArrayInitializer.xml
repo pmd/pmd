@@ -106,18 +106,29 @@ public class UseShortArrayExample {
     </test-code>
     <test-code>
         <description>#4576 ignore arrays of parametrized types</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>19,20</expected-linenumbers>
         <code><![CDATA[
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-public class Foo  {
+public class Foo {
+    @SuppressWarnings("unchecked")
     public void bar() {
         Set<Integer> set1 = new HashSet<>();
+        Map<Integer, String> map1 = new HashMap<>();
 
-        // short version would be a 'generic array creation' compiler error
-        @SuppressWarnings("unchecked")
-        Set<Integer>[] setArray = new Set[] { set1 };
+        // skip with class type arguments or bounded wildcards
+        // the short version would be a 'generic array creation' compiler error
+        Set<Integer>[] skippedSets = new Set[] { set1 };
+        Map<?, String>[] skippedMaps1 = new Map[] { map1 };
+        Map<?, ? extends String>[] skippedMaps2 = new Map[] { map1 };
+
+        // type arguments of unbounded wildcards only are still reported
+        Set<?>[] reportedClasses = new Set[] { set1 };  // violation line 19
+        Map<?, ?>[] reportedMaps = new Map[] { map1 };  // violation line 20
     }
 }
         ]]></code>

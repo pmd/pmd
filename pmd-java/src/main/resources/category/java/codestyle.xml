@@ -2138,7 +2138,7 @@ E.g. `int[] x = new int[] { 1, 2, 3 };` can be written as `int[] x = { 1, 2, 3 }
             <property name="xpath">
                 <value><![CDATA[
 //VariableDeclarator
-    [not(parent::*/ArrayType/ClassType/TypeArguments)]
+    [not(parent::*/ArrayType/ClassType/TypeArguments[ClassType or WildcardType/ClassType])]
     [VariableId[@TypeInferred = false() and @ArrayType = true()]]
     [ArrayAllocation/ArrayInitializer]
                 ]]></value>
