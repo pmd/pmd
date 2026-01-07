@@ -1,7 +1,7 @@
 ---
 title: Merging pull requests
 permalink: pmd_projectdocs_committers_merging_pull_requests.html
-last_updated: October 2021
+last_updated: January 2026 (7.21.0)
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
@@ -56,19 +56,17 @@ author: Andreas Dangel <andreas.dangel@adangel.org>
 4.  Add the contributor to `.all-contributorsrc`:
     
     ```
-    npx all-contributors add
+    npx all-contributors add <username> code
     ```
     
-    And follow the instructions. This will create a new commit into to the current branch (pr-123) updating both
-    the file `.all-contributorsrc` and `docs/pages/pmd/projectdocs/credits.md`.
+    This will modify the files `.all-contributorsrc` and `docs/pages/pmd/projectdocs/credits.md`.
+    Commit them with `git commit -am "Add @<username> as a contributor` into the current branch (pr-123).
 
 5.  Now merge the pull request into the main branch:
 
     ```
     git checkout main
-    git merge --no-ff pr-123 -m "Full-title-of-the-pr (#123)
-    
-    Merge pull request #123 from xyz:branch" --log
+    git merge --no-ff pr-123 -m "Full-title-of-the-pr (#123)"
     ```
 
     {%include note.html content="If there are merge conflicts, you'll need to deal with them here." %}

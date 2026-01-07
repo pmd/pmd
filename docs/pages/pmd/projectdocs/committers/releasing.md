@@ -2,7 +2,7 @@
 title: Release process
 permalink: pmd_projectdocs_committers_releasing.html
 author: Romain Pelisse <rpelisse@users.sourceforge.net>, Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: June 2025 (7.15.0)
+last_updated: January 2026 (7.21.0)
 ---
 
 This page describes the current status of the release process.
@@ -53,6 +53,22 @@ e.g. it requires that the repo `pmd.github.io` is checked out aside the main pmd
 The script `do-release.sh` is called in the directory `/home/joe/source/pmd` and searches for `../pmd.github.io`.
 
 Also make sure, that the repo "pmd.github.io" is locally up-to-date and has no local changes.
+
+### All Contributors
+
+Before a release, it makes sense to ensure the .all-contributorsrc file is up to date.
+There is a simple script in `.ci/tools/check-all-contributors.sh`, that compares the issues and
+pull request from the given milestone with the users and suggests, whether the all contributors
+list should be updated.
+
+    $ .ci/tool/check-all-contributors.sh <new release version>
+
+This will ask for a GitHub Token to access the GitHub API to read the milestones. Without the token,
+you might run into API rate limiting.
+
+The script doesn't change the all contributors list directly, it only outputs when some contributor
+is missing. You'll need to call `npx all-contributors add <user> bug,code` (or only bug, or only code)
+additionally.
 
 ### The Release Notes and docs
 
