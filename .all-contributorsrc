@@ -7,7 +7,7 @@
     "docs/pages/pmd/projectdocs/credits.md"
   ],
   "imageSize": 100,
-  "commit": true,
+  "commit": false,
   "commitConvention": "none",
   "contributors": [
     {
