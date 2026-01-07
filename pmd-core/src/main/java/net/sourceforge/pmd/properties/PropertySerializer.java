@@ -51,7 +51,7 @@ public abstract class PropertySerializer<T> {
      * For properties that are based off enumerated values (see {@link #enumeratedValues()}, deprecated values
      * might be provided. This method checks whether the given attribute data is actually a deprecated value
      * so that we can issue a warning.
-     * @since 7.20.0
+     * @since 7.21.0
      */
     public abstract boolean isFromStringDeprecated(@NonNull String attributeData);
 
@@ -64,7 +64,7 @@ public abstract class PropertySerializer<T> {
 
     /**
      * Whether this property allows multiple values.
-     * @since 7.20.0
+     * @since 7.21.0
      */
     public abstract boolean isCollection();
 
@@ -73,7 +73,7 @@ public abstract class PropertySerializer<T> {
      * all possible values. This is useful for documentation.
      * If this property doesn't represent an enumerated property, then the returned
      * set will be empty.
-     * @since 7.20.0
+     * @since 7.21.0
      */
     public abstract Set<?> enumeratedValues();
 }

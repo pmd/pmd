@@ -608,7 +608,7 @@ public final class JavaMetrics {
         COUNT_IMPORTS;
 
         /**
-         * @deprecated Since 7.20.0. When metrics are used for (rule) properties, then the conventional
+         * @deprecated Since 7.21.0. When metrics are used for (rule) properties, then the conventional
          * enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
          * See {@link net.sourceforge.pmd.properties.PropertyFactory#conventionalEnumListProperty(String, Class)}.
          */
@@ -630,7 +630,7 @@ public final class JavaMetrics {
         CONSIDER_ASSERT;
 
         /**
-         * @deprecated Since 7.20.0. When metrics are used for (rule) properties, then the conventional
+         * @deprecated Since 7.21.0. When metrics are used for (rule) properties, then the conventional
          * enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
          * See {@link net.sourceforge.pmd.properties.PropertyFactory#conventionalEnumListProperty(String, Class)}.
          */
@@ -678,7 +678,7 @@ public final class JavaMetrics {
         INCLUDE_JAVA_LANG;
 
         /**
-         * @deprecated Since 7.20.0. When metrics are used for (rule) properties, then the conventional
+         * @deprecated Since 7.21.0. When metrics are used for (rule) properties, then the conventional
          * enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
          * See {@link net.sourceforge.pmd.properties.PropertyFactory#conventionalEnumListProperty(String, Class)}.
          */

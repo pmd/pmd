@@ -79,7 +79,7 @@ public abstract class AbstractMetricTestRule<N extends Number & Comparable<N>, O
      * Mappings of labels to options for use in the options property.
      *
      * @return A map of labels to options
-     * @deprecated Since 7.20.0. No extra mapping is required anymore. The {@link MetricOption} enum
+     * @deprecated Since 7.21.0. No extra mapping is required anymore. The {@link MetricOption} enum
      * values are used. See {@link #AbstractMetricTestRule(Metric, Class)} to provide the
      * enum at construction time.
      */

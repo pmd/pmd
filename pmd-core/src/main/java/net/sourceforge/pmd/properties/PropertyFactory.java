@@ -310,7 +310,7 @@ public final class PropertyFactory {
      *
      * @return A new builder
      *
-     * @deprecated Since 7.20.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
      */
     @Deprecated
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
@@ -332,7 +332,7 @@ public final class PropertyFactory {
      * @param <T>       Type of the enum class
      *
      * @return A new builder
-     * @deprecated Since 7.20.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
      */
     @Deprecated
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass) {
@@ -354,7 +354,7 @@ public final class PropertyFactory {
      * @throws IllegalArgumentException If the label maker returns null on some constant
      * @throws IllegalStateException    If the label maker maps two constants to the same label
      *
-     * @deprecated Since 7.20.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
      */
     @Deprecated
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name,
@@ -458,7 +458,7 @@ public final class PropertyFactory {
      *
      * @return A new builder
      *
-     * @deprecated Since 7.20.0. Use {@link #conventionalEnumListProperty(String, Class)} instead.
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumListProperty(String, Class)} instead.
      */
     @Deprecated
     public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
@@ -477,7 +477,7 @@ public final class PropertyFactory {
      *
      * @return A new builder
      *
-     * @deprecated Since 7.20.0. Use {@link #conventionalEnumListProperty(String, Class)} instead.
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumListProperty(String, Class)} instead.
      */
     @Deprecated
     public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {

@@ -29,7 +29,7 @@ public interface MetricOption {
      * Returns the name of the option as it should be used in properties.
      *
      * @return The name of the option.
-     * @deprecated Since 7.20.0. When metrics are used for (rule) properties, then the conventional
+     * @deprecated Since 7.21.0. When metrics are used for (rule) properties, then the conventional
      * enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
      * See {@link net.sourceforge.pmd.properties.PropertyFactory#conventionalEnumListProperty(String, Class)}.
      */

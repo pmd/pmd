@@ -29,19 +29,19 @@ import net.sourceforge.pmd.util.StringUtil;
 public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulechainRule {
 
     /**
-     * @since 7.20.0. Should have never been public.
+     * @since 7.21.0. Should have never been public.
      */
     @Deprecated
     public static final String CHECK_FOR = "for";
 
     /**
-     * @since 7.20.0. Should have never been public.
+     * @since 7.21.0. Should have never been public.
      */
     @Deprecated
     public static final String CHECK_DO = "do";
 
     /**
-     * @since 7.20.0. Should have never been public.
+     * @since 7.21.0. Should have never been public.
      */
     @Deprecated
     public static final String CHECK_WHILE = "while";
@@ -57,21 +57,21 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     // but I can't see a use case to e.g. report only breaks in 'for' loops but not in 'while'.
 
     /**
-     * @deprecated Since 7.20.0. Should have been private. This property descriptor is not used anymore.
+     * @deprecated Since 7.21.0. Should have been private. This property descriptor is not used anymore.
      * Use {@link #getPropertyDescriptor(String)} instead.
      */
     @Deprecated
     public static final PropertyDescriptor<List<String>> CHECK_BREAK_LOOP_TYPES = propertyForDeprecated("break");
 
     /**
-     * @deprecated Since 7.20.0. Should have been private. This property descriptor is not used anymore.
+     * @deprecated Since 7.21.0. Should have been private. This property descriptor is not used anymore.
      * Use {@link #getPropertyDescriptor(String)} instead.
      */
     @Deprecated
     public static final PropertyDescriptor<List<String>> CHECK_CONTINUE_LOOP_TYPES = propertyForDeprecated("continue");
 
     /**
-     * @deprecated Since 7.20.0. Should have been private. This property descriptor is not used anymore.
+     * @deprecated Since 7.21.0. Should have been private. This property descriptor is not used anymore.
      * Use {@link #getPropertyDescriptor(String)} instead.
      */
     @Deprecated
@@ -102,7 +102,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
 
 
     /**
-     * @deprecated Since 7.20.0. Should have been private.
+     * @deprecated Since 7.21.0. Should have been private.
      */
     @Deprecated
     protected Object check(PropertyDescriptor<List<LoopTypes>> property, Node node, Object data) {
@@ -137,7 +137,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
 
 
     /**
-     * @deprecated Since 7.20.0. Should have been private.
+     * @deprecated Since 7.21.0. Should have been private.
      */
     @Deprecated
     protected boolean hasPropertyValue(PropertyDescriptor<List<String>> property, String value) {
@@ -167,7 +167,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     }
 
     /**
-     * @deprecated Since 7.20.0
+     * @deprecated Since 7.21.0
      */
     @Deprecated
     private static PropertyDescriptor<List<String>> propertyForDeprecated(String stmtName) {
@@ -187,7 +187,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     }
 
     /**
-     * @deprecated Since 7.20.0. Should have been private.
+     * @deprecated Since 7.21.0. Should have been private.
      */
     @Deprecated
     public boolean checksNothing() {
