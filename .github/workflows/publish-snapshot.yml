@@ -36,7 +36,7 @@ jobs:
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - name: Determine Version
         id: version
         run: |
@@ -82,7 +82,7 @@ jobs:
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
           server-id: central
           server-username: MAVEN_USERNAME
           server-password: MAVEN_PASSWORD
@@ -647,7 +647,7 @@ jobs:
           distribution: 'temurin'
           java-version: |
             11
-            17
+            21
       - name: Set up Ruby 3.3
         uses: ruby/setup-ruby@b90be12699fdfcbee4440c2bba85f6f460446bb0 #v1.279.0
         with:
@@ -732,7 +732,7 @@ jobs:
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
@@ -769,7 +769,7 @@ jobs:
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
