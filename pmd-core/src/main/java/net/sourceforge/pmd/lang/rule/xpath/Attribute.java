@@ -78,7 +78,7 @@ public final class Attribute {
      * Note that the type must be supported by {@link net.sourceforge.pmd.lang.rule.xpath.internal.DomainConversion}
      * if you want this attribute to be used from XPath.
      *
-     * @apiNote Internal API
+     * @apiNote Internal API. None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      * @since 7.20.0
      */
     @InternalApi // used for tests
