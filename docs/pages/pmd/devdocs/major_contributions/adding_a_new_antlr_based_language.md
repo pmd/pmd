@@ -138,7 +138,7 @@ definitely don't come for free. It is much effort and requires perseverance to i
     you can create your own implementation of
     [`AntlrTokenFilter`](https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenFilter.java).
     You'll need to override then the protected method `getTokenFilter(AntlrTokenManager)`
-    and return your custom filter. See the CpdLexer for C# as an exmaple:
+    and return your custom filter. See the CpdLexer for C# as an example:
     [`CsCpdLexer`](https://github.com/pmd/pmd/blob/main/pmd-cs/src/main/java/net/sourceforge/pmd/lang/cs/cpd/CsCpdLexer.java).
     
     If you don't need a custom token filter, you don't need to override the method. It returns the default

@@ -6,7 +6,7 @@ Feature: Annotated Source
   1 Annotation metrics can be selected with a dropdown menu. Only enabled metrics must be shown.
   2 When the annotated source is opened while a specific metric is selected, only that metric should be selected.
   3 A user can scroll through the violations using two buttons (illustrated by up and down arrows). The arrows wrap around the document.
-  4 The table collumn "Type" is only shown when multiple metrics are selected
+  4 The table column "Type" is only shown when multiple metrics are selected
 
   Scenario: Select a metric type
    Given the Annotated Source for file "HIE://11261-37/main/monop/execute.c"

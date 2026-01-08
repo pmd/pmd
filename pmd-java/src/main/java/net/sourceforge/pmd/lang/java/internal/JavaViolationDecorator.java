@@ -58,7 +58,7 @@ final class JavaViolationDecorator implements ViolationDecorator {
             enclosing = javaNode.getRoot().getTypeDeclarations().first();
         }
         if (enclosing != null) {
-            String className = determineCanoncialName(enclosing);
+            String className = determineCanonicalName(enclosing);
             String packageName = enclosing.getPackageName();
             if (className != null && !packageName.isEmpty()) {
                 assert className.startsWith(packageName);
@@ -69,13 +69,13 @@ final class JavaViolationDecorator implements ViolationDecorator {
         return null;
     }
 
-    private String determineCanoncialName(ASTTypeDeclaration type) {
+    private String determineCanonicalName(ASTTypeDeclaration type) {
         final String canonicalName;
         ASTTypeDeclaration enclosingType = type.getEnclosingType();
         if (type.isLocal()) {
-            canonicalName = determineCanoncialName(enclosingType) + "." + type.getSimpleName();
+            canonicalName = determineCanonicalName(enclosingType) + "." + type.getSimpleName();
         } else if (type.isAnonymous()) {
-            canonicalName = determineCanoncialName(enclosingType);
+            canonicalName = determineCanonicalName(enclosingType);
         } else {
             canonicalName = type.getCanonicalName();
         }

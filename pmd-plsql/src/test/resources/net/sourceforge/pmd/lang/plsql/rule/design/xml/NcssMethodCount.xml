@@ -16,7 +16,7 @@ CREATE OR REPLACE PROCEDURE prc_test_unreserved_keyword
     /*
     <p>
         This procedure is based on {@link pkg_test_unreserved_keyword} and the variable definitions should be kept
-        sychronised to that package specification.
+        synchronised to that package specification.
     </p>
 
     <p>

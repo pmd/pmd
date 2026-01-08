@@ -245,7 +245,7 @@ public class Foo {
 Detects hardcoded credentials used in requests to an endpoint.
 
 You should refrain from hardcoding credentials:
-  * They are hard to mantain by being mixed in application code
+  * They are hard to maintain by being mixed in application code
   * Particularly hard to update them when used from different classes
   * Granting a developer access to the codebase means granting knowledge
      of credentials, keeping a two-level access is not possible.

@@ -12,7 +12,7 @@ last_updated: July 2025 (7.17.0)
 
 ## Build, Build Pull Request, Build Snapshot, Build Release
 
-"Build" itself is a [reuseable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows),
+"Build" itself is a [reusable workflow](https://docs.github.com/en/actions/sharing-automations/reusing-workflows),
 that is called by "Build Pull Request" and "Build Snapshot" and "Build Release".
 
 * Workflow files:

@@ -97,17 +97,17 @@ L9
     [4]                                     3         4
     [The]                                   5         8
     [table]                                 9         14
-    [collumn]                               15        22
-    ["Type"]                                23        29
-    [is]                                    30        32
-    [only]                                  33        37
-    [shown]                                 38        43
-    [when]                                  44        48
-    [multiple]                              49        57
-    [metrics]                               58        65
-    [are]                                   66        69
-    [selected]                              70        78
-    [\n]                                    78        79
+    [column]                                15        21
+    ["Type"]                                22        28
+    [is]                                    29        31
+    [only]                                  32        36
+    [shown]                                 37        42
+    [when]                                  43        47
+    [multiple]                              48        56
+    [metrics]                               57        64
+    [are]                                   65        68
+    [selected]                              69        77
+    [\n]                                    77        78
 L10
     [\n]                                    1         2
 L11

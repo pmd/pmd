@@ -34,7 +34,7 @@ classdef chebfun
 % CHEBFUN(A, 'equi') are similar, but here the data is assumed to come from a
 % 1st-kind Chebyshev or equispaced grid linspace(-1, 1, N), respectively. (In
 % the latter case, a smooth interpolant is constructed using an adaptive
-% Floater-Hormann scheme [Numer. Math. 107, 315-331 (2007)].). CHEBFUN(F, N) or
+% Floater-Hormann scheme [Numerische Mathematik 107, 315-331 (2007)].). CHEBFUN(F, N) or
 % CHEBFUN(F, N, 'chebkind', 2) is equivalent to CHEBFUN(feval(F, chebpts(N)).
 %
 % CHEBFUN(C, 'coeffs'), where C is an Nx1 matrix, constructs a CHEBFUN object
@@ -468,7 +468,7 @@ classdef chebfun
         varargin = fzero(varargout);
 
         % Get Delta functions within a CHEBFUN.
-        [deltaMag, deltLoc] = getDeltaFunctions(f);
+        [deltaMag, deltaLoc] = getDeltaFunctions(f);
 
         % Get roots of a CHEBFUN and polish for use as breakpoints.
         [rBreaks, rAll] = getRootsForBreaks(f, tol)

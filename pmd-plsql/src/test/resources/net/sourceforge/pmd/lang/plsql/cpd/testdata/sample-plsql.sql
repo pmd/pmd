@@ -246,7 +246,7 @@ IS
 /** 
 * ========================================================================<br/>
 * Project:         Test Project (<a href="http://pldoc.sourceforge.net">PLDoc</a>)<br/>
-* Description:     Advices<br/>
+* Description:     Advice<br/>
 * DB impact:       YES<br/>
 * Commit inside:   YES<br/>
 * Rollback inside: YES<br/>
@@ -260,7 +260,7 @@ TYPE advice_type_table IS TABLE OF advice_type_record INDEX BY BINARY_INTEGER;
 SUBTYPE advice_medium_record IS advice_medium%ROWTYPE;
 TYPE advice_medium_table IS TABLE OF advice_medium_record INDEX BY BINARY_INTEGER;
 
-SUBTYPE advice_record IS advices%ROWTYPE;
+SUBTYPE advice_record IS advice%ROWTYPE;
 TYPE advice_table IS TABLE OF advice_record INDEX BY BINARY_INTEGER;
 
 SUBTYPE sw_advice_record IS sw_advice%ROWTYPE;
@@ -328,14 +328,14 @@ PROCEDURE Get (
   r_result          IN OUT NUMBER,              -- return code, 0=ok
   r_message         IN OUT VARCHAR2);           -- return message
 
--- Get list of advices on contract
-PROCEDURE List_Advices (
+-- Get list of advice on contract
+PROCEDURE List_Advice (
   p_contract_id     VARCHAR2,                   -- contract ID
   p_step_seq        NUMBER,                     -- step number
   p_in_out          VARCHAR2,                   -- direction
   r_result          IN OUT NUMBER,              -- return code, 0=ok
   r_message         IN OUT VARCHAR2,            -- return message
-  r_list            IN OUT advice_table);       -- list of advices
+  r_list            IN OUT advice_table);       -- list of advice
 
 -- Register advice
 PROCEDURE Ins (
@@ -376,7 +376,7 @@ PROCEDURE Get_Files (
   r_message         IN OUT VARCHAR2);           -- return message
 
 /**
-* Clearance for release of outgoing advices.
+* Clearance for release of outgoing advice.
 * @param p_contract_id      contract ID
 * @param p_step             step number
 * @param p_app_user         application user
@@ -391,7 +391,7 @@ PROCEDURE CFR_Advice_Out (
   r_message         IN OUT VARCHAR2);
 
 /**
-* Clearance for release of incoming advices.
+* Clearance for release of incoming advice.
 * @param p_contract_id      contract ID
 * @param p_step             step number
 * @param p_app_user         application user
@@ -406,7 +406,7 @@ PROCEDURE CFR_Advice_In (
   r_message         IN OUT VARCHAR2);
   
 /**
-* Step release of outgoing advices.
+* Step release of outgoing advice.
 * @param p_contract_id      contract ID
 * @param p_step             step number
 * @param p_app_user         application user
@@ -421,7 +421,7 @@ PROCEDURE Release_Advice_Out (
   r_message         IN OUT VARCHAR2);
 
 /**
-* Step release of incoming advices.
+* Step release of incoming advice.
 * @param p_contract_id      contract ID
 * @param p_step             step number
 * @param p_app_user         application user

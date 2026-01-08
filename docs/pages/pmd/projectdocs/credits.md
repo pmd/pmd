@@ -1347,7 +1347,7 @@ According to the book [PMD Applied](https://pmdapplied.thomasleecopeland.com/) t
 *   Christopher Stach - bug report for VariableNamingConventions, bug report for CallSuperInConstructor,
     many bug reports for rules that didn't handle Java 1.5 constructs
 *   Matthew Harrah - noticed missing element in UseCorrectExceptionLogging definition, script bug report
-*   Mike Kaufman - Reported abug in UnnecessaryCaseChange
+*   Mike Kaufman - Reported a bug in UnnecessaryCaseChange
 *   [Elliotte Rusty Harold](http://www.cafeaulait.org/) - reported bug in UseAssertSameInsteadOfAssertTrue,
     suggested creating a new ruleset containing rules in each release, UncommentedEmptyConstructor suggestions,
     noted missed case for UnusedFormalParameter, documentation suggestions,

@@ -16,7 +16,7 @@
 
 /**
  * Common character classes used for input validation, output encoding, verifying password strength
- * CSRF token generation, generating salts, etc. I removed all the constatnts that are not used so we
+ * CSRF token generation, generating salts, etc. I removed all the constants that are not used so we
  * don't burn governor limits.
  */
 public with sharing class SFDCEncoderConstants {

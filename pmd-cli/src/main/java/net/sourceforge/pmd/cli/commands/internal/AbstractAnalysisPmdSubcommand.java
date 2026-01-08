@@ -101,7 +101,7 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
             this.inputPaths.addAll(inputPaths);
         }
 
-        @Option(names = "--non-recursive", description = "Don't scan subdirectiories when using the --d (-dir) option.")
+        @Option(names = "--non-recursive", description = "Don't scan subdirectories when using the --d (-dir) option.")
         private boolean nonRecursive;
 
 

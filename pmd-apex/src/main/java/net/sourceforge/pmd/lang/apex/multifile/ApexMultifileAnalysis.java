@@ -84,7 +84,7 @@ public final class ApexMultifileAnalysis {
             }
         } catch (Exception | ExceptionInInitializerError | NoClassDefFoundError e) {
             // Note: Org.newOrg() will try to find the base Apex Types through the current classloader
-            // in package "com.nawforce.runforce". This requires, that directory listings can be retrievied
+            // in package "com.nawforce.runforce". This requires, that directory listings can be retrieved
             // on the URL that the classloader returns from getResource("/com/nawforce/runforce"):
             // https://github.com/nawforce/apex-link/blob/7688adcb7a2d7f8aa28d0618ffb2a3aa81151858/apexlink/src/main/scala/com/nawforce/apexlink/types/platform/PlatformTypeDeclaration.scala#L260-L273
             // However, when running as an Eclipse plugin, we have a special bundle classloader, that returns
