@@ -30,7 +30,7 @@ public class SemanticException extends FileAnalysisException {
     }
 
     /**
-     * @apiNote Internal API
+     * @apiNote Internal API. None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     @InternalApi
     public void setReported() {
