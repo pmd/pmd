@@ -157,7 +157,8 @@ public final class RuleContext {
      * @param token   Report location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     * @experimental Since 7.17.0. This will probably never be stabilized, will instead be
+     * @since 7.17.0
+     * @experimental This will probably never be stabilized, will instead be
      *      replaced by a fluent API or something to report violations. Do not use
      *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
      */
@@ -178,7 +179,8 @@ public final class RuleContext {
      * @param location   Report location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     * @experimental Since 7.9.0. This will probably never be stabilized, will instead be
+     * @since 7.9.0
+     * @experimental This will probably never be stabilized, will instead be
      *      replaced by a fluent API or something to report violations. Do not use
      *      this outside of the PMD codebase. See <a href="https://github.com/pmd/pmd/issues/5039">[core] Add fluent API to report violations #5039</a>.
      */
@@ -201,7 +203,8 @@ public final class RuleContext {
     }
 
     /**
-     * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
+     * @since 7.14.0
+     * @experimental See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
      */
     @Experimental
     public void addViolationNoSuppress(Reportable reportable, AstInfo<?> astInfo,

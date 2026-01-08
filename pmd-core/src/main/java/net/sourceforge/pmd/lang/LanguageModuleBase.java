@@ -55,7 +55,8 @@ public abstract class LanguageModuleBase implements Language {
     }
 
     /**
-     * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+     * @since 7.13.0
+     * @experimental See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
      */
     @Experimental
     protected LanguageModuleBase(DialectLanguageMetadata metadata) {
@@ -375,7 +376,8 @@ public abstract class LanguageModuleBase implements Language {
          *
          * @param baseLanguageId The id of the base language this is a dialect of.
          * @return A new dialect language metadata model.
-         * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+         * @since 7.13.0
+         * @experimental See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
          */
         @Experimental
         public DialectLanguageMetadata asDialectOf(String baseLanguageId) {
@@ -442,7 +444,8 @@ public abstract class LanguageModuleBase implements Language {
 
     /**
      * Expresses the language as a dialect of another language.
-     * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+     * @since 7.13.0
+     * @experimental See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
      */
     @Experimental
     public static final class DialectLanguageMetadata {
