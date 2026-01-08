@@ -33,7 +33,7 @@ abstract class AbstractTypeDeclaration extends AbstractTypedSymbolDeclarator<JCl
             return super.getReportLocation();
         } else {
             // report on the identifier, not the entire class.
-            return getModifiers().getLastToken().getNext().getReportLocation();
+            return getModifiers().getLastToken().getNext().getNext().getReportLocation();
         }
     }
 

@@ -5,9 +5,34 @@
 
 package net.sourceforge.pmd.lang.java.ast
 
+import io.kotest.matchers.shouldBe
+import net.sourceforge.pmd.lang.test.ast.assertPosition
 import net.sourceforge.pmd.lang.test.ast.shouldBe
 
 class ASTClassDeclarationTest : ParserTestSpec({
+    parserTestContainer("Report location") {
+        inContext(RootParsingCtx) {
+            """
+                public
+                abstract
+                class
+                MyAbstractClass
+                {
+                }
+            """.trimIndent() should parseAs {
+                classDecl("MyAbstractClass", ) {
+                    it.assertPosition(4, 1, 4, 16)
+
+                    val identifier = it.textDocument.sliceOriginalText(it.reportLocation.regionInFile)
+                    identifier.toString() shouldBe "MyAbstractClass"
+
+                    child<ASTModifierList> {}
+                    child<ASTClassBody> {}
+                }
+            }
+        }
+    }
+
     parserTestContainer("Local classes") {
         inContext(StatementParsingCtx) {
             """

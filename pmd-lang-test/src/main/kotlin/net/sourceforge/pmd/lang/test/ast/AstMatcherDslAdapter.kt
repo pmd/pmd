@@ -9,6 +9,7 @@ import com.github.oowekyala.treeutils.matchers.MatchingConfig
 import com.github.oowekyala.treeutils.matchers.TreeNodeWrapper
 import com.github.oowekyala.treeutils.matchers.baseShouldMatchSubtree
 import com.github.oowekyala.treeutils.printers.KotlintestBeanTreePrinter
+import io.kotest.matchers.should
 import net.sourceforge.pmd.lang.ast.Node
 import io.kotest.matchers.should as ktShould
 
@@ -75,6 +76,13 @@ inline fun <reified N : Node> matchNode(ignoreChildren: Boolean = false, noinlin
  * DSL constructs like in the Java module.
  */
 fun Node.shouldMatchN(matcher: ValuedNodeSpec<Node, out Any>) {
+    // support RootParsingCtx, which has no parent...
+    if (parent == null) {
+        this should matchNode<Node> {
+            matcher()
+        }
+        return
+    }
     val idx = indexInParent
     parent ktShould matchNode<Node> {
         if (idx > 0) {

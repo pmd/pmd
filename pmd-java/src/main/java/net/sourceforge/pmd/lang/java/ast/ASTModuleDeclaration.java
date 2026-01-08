@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * A module declaration. This is found at the top-level of a
@@ -53,5 +54,10 @@ public final class ASTModuleDeclaration extends AbstractJavaNode implements Anno
 
     public boolean isOpen() {
         return open;
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return firstChild(ASTModuleName.class).getReportLocation();
     }
 }

@@ -101,4 +101,22 @@ public class Foo {
         </expected-messages>
         <code-ref id="id-3-public-methods"/>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="minimum">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-3</expected-linenumbers>
+        <code><![CDATA[
+public
+class
+Foo
+{
+    public int foo;
+    public int bif;
+    public int baz;
+    public int bof;
+}
+        ]]></code>
+    </test-code>
 </test-data>
