@@ -72,12 +72,14 @@ public class Foo {
         <description>Verify location of violation</description>
         <rule-property name="minimum">9</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>3-5</expected-linenumbers>
+        <expected-linenumbers>3-7</expected-linenumbers>
         <code><![CDATA[
 public class Foo {
     public void foo
     (
-        int p01, int p02, int p03, int p04, int p05, int p06, int p07, int p08, int p09, int p10
+        int p01, int p02, int p03, int p04, int p05, int p06,
+        int p07, int p08, int p09, int p10
+
     )
     { }
 }
