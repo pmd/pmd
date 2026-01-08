@@ -47,6 +47,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
         val configLanguageProperties: LanguagePropertyBundle.() -> Unit = {}
     ) {
 
+        /**
+         * @deprecated Since 7.12.0. Overload added for binary compatibility.
+         */
         @Deprecated("Overload added for binary compatibility")
         constructor(
             doProcess: Boolean,
@@ -64,6 +67,9 @@ abstract class BaseParsingHelper<Self : BaseParsingHelper<Self, T>, T : RootNode
             suppressMarker,
             configLanguageProperties = {})
 
+        /**
+         * @deprecated Since 7.12.0. Overload added for binary compatibility.
+         */
         @Deprecated("Overload added for binary compatibility")
         fun copy(
             doProcess: Boolean,

@@ -55,6 +55,9 @@ public abstract class AbstractAnalysisPmdSubcommand<C extends AbstractConfigurat
 
         boolean usesDeprecatedIgnoreListOption = false;
 
+        /**
+         * @deprecated Since 7.14.0. Use {@code --exclude-file-list} instead.
+         */
         @Option(names = "--ignore-list",
                 description = "(DEPRECATED: use --exclude-file-list) Path to a file containing a list of files to exclude from the analysis, one path per line. "
                               + "This option can be combined with --dir, --file-list and --uri.")
