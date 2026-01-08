@@ -18,7 +18,8 @@ class RuleContextTest {
 
     @Test
     void testMessage() throws Exception {
-        Report report = getReport(new FooRule(), (r, ctx) -> ctx.addViolationWithMessage(DummyTreeUtil.tree(DummyTreeUtil::root), "message with \"'{'\""));
+        DummyRootNode tree = DummyTreeUtil.tree(DummyTreeUtil::root);
+        Report report = getReport(new FooRule(), tree, (r, ctx) -> ctx.addViolationWithMessage(tree, "message with \"'{'\""));
 
         assertEquals("message with \"{\"", report.getViolations().get(0).getDescription());
     }
@@ -38,9 +39,9 @@ class RuleContextTest {
     }
 
     private RuleViolation makeViolation(String unescapedMessage, Object... args) throws Exception {
-        Report report = getReport(new FooRule(), (r, ctx) -> {
-            DummyRootNode node = DummyTreeUtil.tree(DummyTreeUtil::root);
-            ctx.addViolationWithMessage(node, unescapedMessage, args);
+        DummyRootNode node = DummyTreeUtil.tree(DummyTreeUtil::root);
+        Report report = getReport(new FooRule(), node, (r, ctx) -> {
+            ctx.at(node).warnWithMessage(unescapedMessage, args);
         });
         return report.getViolations().get(0);
     }
