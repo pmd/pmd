@@ -22,7 +22,7 @@ public class Foo {
         <description>3 fields, reduced max to 2</description>
         <rule-property name="maxfields">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1-1</expected-linenumbers>
+        <expected-linenumbers>1</expected-linenumbers>
         <code-ref id="id-3-fields"/>
     </test-code>
 
@@ -195,6 +195,23 @@ public class Foo {
     public static final int a15 = 2 ;
     public static final int a16 = 2 ;
     public static final int a17 = 2 ;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="maxfields">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-3</expected-linenumbers>
+        <code><![CDATA[
+public
+class
+Foo
+{
+    int a1;
+    int a2;
+    int a3;
 }
         ]]></code>
     </test-code>
