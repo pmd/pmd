@@ -18,6 +18,9 @@ interface IntelliMarker {
     fun primer() {
     }
 
+    /**
+     * @apiNote Internal API
+     */
     @Test
     @InternalApi
     fun dummyTestForIntelliJIntegration() {
