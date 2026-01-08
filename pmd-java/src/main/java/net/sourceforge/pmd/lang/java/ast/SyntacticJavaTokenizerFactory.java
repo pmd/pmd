@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.java.internal.JavaLanguageProperties;
  * Creates a tokenizer, that uses the syntactic grammar to provide context
  * for the tokenizer when reducing the input characters to tokens.
  *
- * @deprecated This implementation has been superseded. It is not necessary to parse Java code in order to tokenize it.
+ * @deprecated Since 7.2.0. This implementation has been superseded. It is not necessary to parse Java code in order to tokenize it.
  */
 @Deprecated
 public final class SyntacticJavaTokenizerFactory {
@@ -27,6 +27,9 @@ public final class SyntacticJavaTokenizerFactory {
         // factory class
     }
 
+    /**
+     * @deprecated Since 7.2.0. This implementation has been superseded. It is not necessary to parse Java code in order to tokenize it.
+     */
     @Deprecated
     public static TokenManager<JavaccToken> createTokenizer(CharStream cs) {
         final List<JavaccToken> tokenList = new ArrayList<>();

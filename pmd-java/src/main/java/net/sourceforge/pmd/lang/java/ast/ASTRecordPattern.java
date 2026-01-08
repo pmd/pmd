@@ -49,7 +49,7 @@ public final class ASTRecordPattern extends AbstractJavaPattern {
     /**
      * Returns the declared variable.
      *
-     * @deprecated This method was added here by mistake. Record patterns don't declare a pattern variable
+     * @deprecated Since 7.3.0. This method was added here by mistake. Record patterns don't declare a pattern variable
      * for the whole pattern, but rather for individual record components, which can be accessed via
      * {@link #getComponentPatterns()}.
      */
