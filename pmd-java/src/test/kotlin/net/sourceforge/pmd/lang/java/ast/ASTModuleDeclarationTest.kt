@@ -13,12 +13,32 @@ import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.Companion.since
 import net.sourceforge.pmd.lang.java.ast.JavaVersion.J9
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol
+import net.sourceforge.pmd.lang.test.ast.assertPosition
 
 /**
  * @author Clément Fournier
  * @since 7.0.0
  */
 class ASTModuleDeclarationTest : ParserTestSpec({
+    parserTestContainer("Report location", javaVersions = since(J9)) {
+        inContext(RootParsingCtx) {
+            """
+                module
+                foo
+                {
+                }
+            """.trimIndent() should parseAs {
+                child<ASTModuleDeclaration> {
+                    modName("foo")
+                    it.assertPosition(2, 1, 2, 4)
+
+                    val identifier = it.textDocument.sliceOriginalText(it.reportLocation.regionInFile)
+                    identifier.toString() shouldBe "foo"
+                }
+            }
+        }
+    }
+
     parserTest("Test annotations on module", javaVersions = since(J9)) {
         val root: ASTCompilationUnit = parser.withProcessing(true).parse("@A @a.B module foo { } ")
         root.moduleDeclaration.shouldMatchNode<ASTModuleDeclaration> {
