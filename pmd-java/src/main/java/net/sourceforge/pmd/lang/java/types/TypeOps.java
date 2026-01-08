@@ -407,6 +407,9 @@ public final class TypeOps {
         return SubtypeVisitor.INFERENCE.isConvertible(t, s, true);
     }
 
+    /**
+     * @deprecated Since 7.2.0. Use {@link #isConvertible(JTypeMirror, JTypeMirror)} or {@link #isConvertibleNoCapture(JTypeMirror, JTypeMirror)} instead.
+     */
     @Deprecated // unused
     public static Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean capture) {
         return SubtypeVisitor.PURE.isConvertible(t, s, capture);

@@ -51,7 +51,7 @@ public final class ASTFieldDeclaration extends AbstractJavaNode
      *
      * @return a String representing the name of the variable
      *
-     * @deprecated FieldDeclaration may declare several variables, so this is not exhaustive
+     * @deprecated Since 6.10.0. FieldDeclaration may declare several variables, so this is not exhaustive
      *     Iterate on the {@linkplain ASTVariableId VariableIds} instead
      */
     @Deprecated
