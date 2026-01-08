@@ -96,4 +96,24 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-4</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.*;
+public
+class
+Foo {
+    public List foo() {return null;}
+    public ArrayList foo() {return null;}
+    public Vector foo() {return null;}
+}
+        ]]></code>
+    </test-code>
 </test-data>
