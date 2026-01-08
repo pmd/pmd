@@ -54,12 +54,14 @@ public @interface MyAnnotation {}
     <test-code>
         <description>Verify location of violation</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>4-4</expected-linenumbers>
+        <expected-linenumbers>6-6</expected-linenumbers>
         <code><![CDATA[
 /**
  * javadoc
  */
-public class Foo
+public
+class
+Foo
 {
 }
         ]]></code>
