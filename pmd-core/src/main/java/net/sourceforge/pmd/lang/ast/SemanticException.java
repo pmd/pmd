@@ -29,6 +29,9 @@ public class SemanticException extends FileAnalysisException {
         super(message, cause);
     }
 
+    /**
+     * @apiNote Internal API
+     */
     @InternalApi
     public void setReported() {
         reported = true;
