@@ -13,6 +13,19 @@ import java.lang.annotation.Documented;
  * The API members can be modified in any way, or even removed, at any time, without warning.
  * You should not use or rely on them in any production code. They are purely to allow broad testing and feedback.
  *
+ * <p>Example usage:
+ * <pre>
+ * public class Example
+ *     /**
+ *      * @since 7.21.0
+ *      * @experimental New way to do x.
+ *      &#x2a;/
+ *     {@literal @}Experimental
+ *     public void calculateLength() {
+ *         ...
+ *     }
+ * </pre>
+
  * @since 6.7.0
  */
 @Documented
