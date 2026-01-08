@@ -48,7 +48,8 @@ public class Test {
         <code><![CDATA[
 public class Test {
     public static void foo() {
-        synchronized(Test.class)
+        synchronized // <--violation: line 3
+        (Test.class)
         {
             // only a block is synchronized on Test.class
         }
