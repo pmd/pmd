@@ -106,9 +106,11 @@ public class Foo {
         <description>Verify location of violation</description>
         <rule-property name="minimum">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1-1</expected-linenumbers>
+        <expected-linenumbers>2-2</expected-linenumbers>
         <code><![CDATA[
-public class Foo {
+public class
+Foo // <--violation: line 2
+{
     public int foo;
     public int bif;
     public int baz;
