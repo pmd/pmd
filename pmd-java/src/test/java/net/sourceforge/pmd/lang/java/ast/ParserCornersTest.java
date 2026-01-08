@@ -196,6 +196,27 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
     }
 
     @Test
+    void testYieldStmtWithLambda() {
+        java15.parse(
+            "public class Lambda {\n"
+            + "    interface Func {\n"
+            + "        String apply(Lambda a, Lambda b);\n"
+            + "    }\n"
+            + "\n"
+            + "   public static void main( String[] args ) {\n"
+            + "      foo(switch ( args[0] ) {\n"
+            + "         default:\n"
+            + "            yield (Lambda a, Lambda b) -> \"hello\";\n"
+            + "      });\n"
+            + "   }\n"
+            + "\n"
+            + "   private static void foo(Func f)  {}        \n"
+            + "}"
+        );
+    }
+
+
+    @Test
     void testUnicodeIndent() {
         // https://github.com/pmd/pmd/issues/3423
         java7.parseResource("UnicodeIdentifier.java");
