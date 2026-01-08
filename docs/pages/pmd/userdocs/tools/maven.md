@@ -2,7 +2,7 @@
 title: Maven PMD Plugin
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_maven.html
-last_updated: June 2024 (7.3.0)
+last_updated: July 2024 (7.4.0)
 mpmd_version: 3.23.0
 author: >
     Miguel Griffa <mikkey@users.sourceforge.net>,

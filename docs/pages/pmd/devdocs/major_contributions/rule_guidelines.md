@@ -3,7 +3,7 @@ title: Guidelines for standard rules
 short_title: Rule guidelines
 tags: [devdocs, extending]
 summary: "Guidelines for rules that are included in the standard distribution"
-last_updated: August, 2021
+last_updated: August 2021 (6.38.0)
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_rule_guidelines.html
 ---

@@ -2,7 +2,7 @@
 title: Release schedule and version policies
 permalink: pmd_about_release_policies.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: June 2024 (PMD 7.3.0)
+last_updated: September 2024 (7.6.0)
 ---
 
 ## Release schedule

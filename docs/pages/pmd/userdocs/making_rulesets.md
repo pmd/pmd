@@ -8,7 +8,7 @@ summary: "A ruleset is an XML configuration file, which describes a collection o
           users are encouraged to make their own rulesets from the start, because they allow for so much
           configurability. This page walk you through the creation of a ruleset and the multiple configuration
           features offered by rulesets."
-last_updated: October 2022 (6.51.0)
+last_updated: November 2022 (6.52.0)
 permalink: pmd_userdocs_making_rulesets.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---

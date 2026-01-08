@@ -1,7 +1,7 @@
 ---
 title: Velocity Template Language (VTL) support
 permalink: pmd_languages_velocity.html
-last_updated: February 2024 (7.0.0)
+last_updated: March 2024 (7.0.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "VTL-specific features and guidance"
 ---

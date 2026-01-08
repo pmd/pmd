@@ -3,7 +3,7 @@ title: The rule designer
 short_title: Rule designer
 tags: [extending, userdocs]
 summary: "Learn about the usage and features of the rule designer."
-last_updated: March 2024 (7.0.0)
+last_updated: April 2025 (7.13.0)
 permalink: pmd_userdocs_extending_designer_reference.html
 author: Clément Fournier <clement.fournier76@gmail.com>
 ---
