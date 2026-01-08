@@ -27,7 +27,8 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * by {@link RuleSets} to execute after all other rules, so that whether
  * those produce warnings or not is known to this rule.
  *
- * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
+ * @since 7.14.0
+ * @experimental See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
  */
 @Experimental
 public class UnnecessaryPmdSuppressionRule extends AbstractRule {
