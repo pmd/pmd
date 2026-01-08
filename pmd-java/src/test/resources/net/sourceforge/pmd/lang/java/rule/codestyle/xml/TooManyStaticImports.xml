@@ -46,11 +46,15 @@ public class AllTheBeatles {}
     <test-code>
         <description>Verify location of violation</description>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>5-5</expected-linenumbers>
+        <expected-linenumbers>2-4</expected-linenumbers>
         <code><![CDATA[
-import static Lennon;
+import java.util.ArrayList; // unrelated import (non-static)
+import
+    static
+        Lennon; // the first static import is reported
 import static Ringo;
 import static George;
+import java.util.List; // unrelated import (non-static)
 import static Paul;
 import static Yoko; // Too much !
 public class Split {}
