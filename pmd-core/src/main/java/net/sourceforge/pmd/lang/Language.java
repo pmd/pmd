@@ -69,7 +69,8 @@ public interface Language extends Comparable<Language> {
      * Dialects are for example different flavors of XML. Dialects must share
      * the same AST as their base language. This makes it so that rules written
      * for the base language can be applied files of all dialects uniformly.
-     * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+     * @since 7.13.0
+     * @experimental See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
      */
     @Experimental
     default @Nullable String getBaseLanguageId() {
@@ -80,7 +81,8 @@ public interface Language extends Comparable<Language> {
      * Return true if this language is a dialect of the given language.
      *
      * @param language A language (not null)
-     * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+     * @since 7.13.0
+     * @experimental See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
      */
     @Experimental
     @SuppressWarnings("PMD.SimplifyBooleanReturns")

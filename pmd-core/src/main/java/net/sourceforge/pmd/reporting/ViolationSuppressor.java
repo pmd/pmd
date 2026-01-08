@@ -221,7 +221,8 @@ public interface ViolationSuppressor {
     /**
      * Wrapper around a suppression comment.
      *
-     * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
+     * @since 7.14.0
+     * @experimental See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
      */
     @Experimental
     interface SuppressionCommentWrapper {
