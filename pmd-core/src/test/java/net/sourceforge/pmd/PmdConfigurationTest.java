@@ -7,19 +7,16 @@ package net.sourceforge.pmd;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collections;
@@ -30,7 +27,6 @@ import org.junit.jupiter.api.io.TempDir;
 
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.CpdOnlyDummyLanguage;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RulePriority;
@@ -58,62 +54,26 @@ class PmdConfigurationTest {
     @Test
     void testClassLoader() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(), "Default ClassLoader");
+        assertNull(configuration.getClassLoader(), "No default ClassLoader");
         configuration.prependAuxClasspath("some.jar");
-        assertEquals(ClasspathClassLoader.class, configuration.getClassLoader().getClass(),
-                "Prepended ClassLoader class");
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals(1, urls.length, "urls length");
-        assertTrue(urls[0].toString().endsWith("/some.jar"), "url[0]");
-        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader().getParent(),
-                "parent classLoader");
+        assertEquals("some.jar", configuration.getAuxClasspath());
+        assertNull(configuration.getClassLoader(), "Still no ClassLoader");
+
         configuration.setClassLoader(null);
-        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader(),
-                "Revert to default ClassLoader");
+        assertEquals("some.jar", configuration.getAuxClasspath());
+        assertNull(configuration.getClassLoader(), "Still no ClassLoader");
+        configuration.setClassLoader(PMDConfiguration.class.getClassLoader());
+        assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader());
     }
 
     @Test
-    void auxClasspathWithRelativeFileEmpty() {
-        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
+    void testAuxClasspath() {
         PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals(0, urls.length);
-    }
-
-    @Test
-    void auxClasspathWithRelativeFileEmpty2() {
-        String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
-        PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        assertEquals(0, urls.length);
-    }
-
-    @Test
-    void auxClasspathWithRelativeFile() throws URISyntaxException {
-        final String FILE_SCHEME = "file";
-
-        String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
-        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath.cp";
-        PMDConfiguration configuration = new PMDConfiguration();
-        configuration.prependAuxClasspath("file:" + relativeFilePath);
-        URL[] urls = ((ClasspathClassLoader) configuration.getClassLoader()).getURLs();
-        URI[] uris = new URI[urls.length];
-        for (int i = 0; i < urls.length; i++) {
-            uris[i] = urls[i].toURI();
-        }
-        URI[] expectedUris = new URI[] {
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "lib1.jar", null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "other/directory/lib2.jar", null),
-            new URI(FILE_SCHEME, null, new File("/home/jondoe/libs/lib3.jar").getAbsoluteFile().toURI().getPath(), null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes", null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes2", null),
-            new URI(FILE_SCHEME, null, new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(), null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
-            new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
-        };
-        assertArrayEquals(expectedUris, uris);
+        assertEquals("", configuration.getAuxClasspath());
+        configuration.setAuxClasspath("file1.jar");
+        assertEquals("file1.jar", configuration.getAuxClasspath());
+        configuration.prependAuxClasspath("prepended.jar");
+        assertEquals("prepended.jar" + File.pathSeparator + "file1.jar", configuration.getAuxClasspath());
     }
 
     @Test

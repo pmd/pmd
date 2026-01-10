@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -40,8 +39,6 @@ import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.sourceforge.pmd.util.AssertionUtil;
 
 /**
  * Create a ClassLoader which loads classes using a CLASSPATH like String. If
@@ -73,77 +70,64 @@ public class ClasspathClassLoader extends URLClassLoader {
         }
     }
 
-    public ClasspathClassLoader(List<File> files, ClassLoader parent) throws IOException {
-        super(new URL[0], parent);
-        for (URL url : fileToURL(files)) {
-            addURL(url);
-        }
-    }
-
     public ClasspathClassLoader(String classpath, ClassLoader parent) throws IOException {
         super(new URL[0], parent);
-        for (URL url : initURLs(classpath)) {
-            addURL(url);
+        for (URL url : parseClasspath(classpath)) {
+
+            Path filePath = Paths.get(URI.create(url.toString()));
+            if (filePath.endsWith(Paths.get("lib", "jrt-fs.jar"))) {
+                initializeJrtFilesystem(filePath);
+                // don't add jrt-fs.jar to the normal aux classpath
+            } else {
+                addURL(url);
+            }
         }
     }
 
-    private List<URL> fileToURL(List<File> files) throws IOException {
-        List<URL> urlList = new ArrayList<>();
-        for (File f : files) {
-            urlList.add(createURLFromPath(f.getAbsolutePath()));
+    public static List<URL> parseClasspath(String classpath) {
+        if (StringUtils.isBlank(classpath)) {
+            return Collections.emptyList();
         }
-        return urlList;
-    }
-
-    private List<URL> initURLs(String classpath) {
-        AssertionUtil.requireParamNotNull("classpath", classpath);
-        final List<URL> urls = new ArrayList<>();
         try {
             if (classpath.startsWith("file:")) {
                 // Treat as file URL
-                addFileURLs(urls, new URL(classpath));
+                return readClasspathFromFile(new URL(classpath));
             } else {
                 // Treat as classpath
-                addClasspathURLs(urls, classpath);
+                return tokenizeClasspath(classpath);
             }
         } catch (IOException e) {
             throw new IllegalArgumentException("Cannot prepend classpath " + classpath + "\n" + e.getMessage(), e);
         }
-        return urls;
     }
 
-    private void addClasspathURLs(final List<URL> urls, final String classpath) throws MalformedURLException {
-        StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
-        while (toker.hasMoreTokens()) {
-            String token = toker.nextToken();
-            LOG.debug("Adding classpath entry: <{}>", token);
-            urls.add(createURLFromPath(token));
-        }
-    }
-
-    private void addFileURLs(List<URL> urls, URL fileURL) throws IOException {
-        try (BufferedReader in = new BufferedReader(new InputStreamReader(fileURL.openStream(), Charset.defaultCharset()))) {
+    private static List<URL> readClasspathFromFile(URL file) throws IOException {
+        final List<URL> urls = new ArrayList<>();
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(file.openStream(), Charset.defaultCharset()))) {
             String line;
             while ((line = in.readLine()) != null) {
                 LOG.debug("Read classpath entry line: <{}>", line);
                 line = line.trim();
                 if (line.length() > 0 && line.charAt(0) != '#') {
                     LOG.debug("Adding classpath entry: <{}>", line);
-                    urls.add(createURLFromPath(line));
+                    Path filePath = Paths.get(line).toAbsolutePath();
+                    urls.add(filePath.toUri().normalize().toURL());
                 }
             }
         }
+        return urls;
     }
 
-    private URL createURLFromPath(String path) throws MalformedURLException {
-        Path filePath = Paths.get(path).toAbsolutePath();
-        if (filePath.endsWith(Paths.get("lib", "jrt-fs.jar"))) {
-            initializeJrtFilesystem(filePath);
-            // don't add jrt-fs.jar to the normal aux classpath
-            return null;
+    private static List<URL> tokenizeClasspath(String classpath) throws IOException {
+        List<URL> urls = new ArrayList<>();
+        StringTokenizer toker = new StringTokenizer(classpath, File.pathSeparator);
+        while (toker.hasMoreTokens()) {
+            String token = toker.nextToken();
+            LOG.debug("Adding classpath entry: <{}>", token);
+            Path filePath = Paths.get(token).toAbsolutePath();
+            urls.add(filePath.toUri().normalize().toURL());
         }
-
-        return filePath.toUri().normalize().toURL();
+        return urls;
     }
 
     /**

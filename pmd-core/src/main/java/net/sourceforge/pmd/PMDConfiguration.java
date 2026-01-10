@@ -5,7 +5,6 @@
 package net.sourceforge.pmd;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.file.Path;
@@ -14,13 +13,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.cache.internal.AnalysisCache;
 import net.sourceforge.pmd.cache.internal.FileAnalysisCache;
 import net.sourceforge.pmd.cache.internal.NoopAnalysisCache;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.LanguageVersion;
@@ -77,8 +76,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <h2>Language configuration</h2>
  * <ul>
  * <li>Use {@link #setSuppressMarker(String)} to change the comment marker for suppression comments. Defaults to {@value #DEFAULT_SUPPRESS_MARKER}.</li>
- * <li>See {@link #setClassLoader(ClassLoader)} and {@link #prependAuxClasspath(String)} for
- *  information for how to configure classpath for Java analysis.</li>
+ * <li>See {@link #setAuxClasspath(String)} for information for how to configure classpath for Java analysis.</li>
  * <li>You can set additional language properties with {@link #getLanguageProperties(Language)}</li>
  * </ul>
  *
@@ -97,7 +95,6 @@ public class PMDConfiguration extends AbstractConfiguration {
     // General behavior options
     private String suppressMarker = DEFAULT_SUPPRESS_MARKER;
     private int threads = Runtime.getRuntime().availableProcessors();
-    private ClassLoader classLoader = getClass().getClassLoader();
 
     // Rule and source file options
     private List<String> ruleSets = new ArrayList<>();
@@ -110,6 +107,10 @@ public class PMDConfiguration extends AbstractConfiguration {
 
     private AnalysisCache analysisCache = new NoopAnalysisCache();
     private boolean ignoreIncrementalAnalysis;
+
+    // Aux Classpath (Analysis Classpath) options
+    private ClassLoader classLoader = null;
+    private String auxClasspath = "";
 
     public PMDConfiguration() {
         this(DEFAULT_REGISTRY);
@@ -163,7 +164,9 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the ClassLoader being used by PMD when processing Rules.
      *
      * @return The ClassLoader being used
+     * @deprecated Since 7.21.0. Use {@link #getAuxClasspath()} instead.
      */
+    @Deprecated
     public ClassLoader getClassLoader() {
         return classLoader;
     }
@@ -174,20 +177,16 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param classLoader
      *            The ClassLoader to use
+     * @deprecated Since 7.21.0. Use {@link #setAuxClasspath(String)} instead.
      */
+    @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
-        if (classLoader == null) {
-            this.classLoader = getClass().getClassLoader();
-        } else {
-            this.classLoader = classLoader;
-        }
+        this.classLoader = classLoader;
     }
 
     /**
-     * Prepend the specified classpath like string to the current ClassLoader of
-     * the configuration. If no ClassLoader is currently configured, the
-     * ClassLoader used to load the {@link PMDConfiguration} class will be used
-     * as the parent ClassLoader of the created ClassLoader.
+     * Prepend the specified classpath like string to the current analysis classpath of
+     * the configuration.
      *
      * <p>If the classpath String looks like a URL to a file (i.e. starts with
      * <code>file://</code>) the file will be read with each line representing
@@ -199,21 +198,35 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param classpath The prepended classpath.
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
-     * @see PMDConfiguration#setClassLoader(ClassLoader)
+     * @see PMDConfiguration#setAuxClasspath(String)
      */
     public void prependAuxClasspath(String classpath) {
-        try {
-            if (classLoader == null) {
-                classLoader = PMDConfiguration.class.getClassLoader();
-            }
-            if (classpath != null) {
-                classLoader = new ClasspathClassLoader(classpath, classLoader);
-            }
-        } catch (IOException e) {
-            // Note: IOExceptions shouldn't appear anymore, they should already be converted
-            // to IllegalArgumentException in ClasspathClassLoader.
-            throw new IllegalArgumentException(e);
+        if (StringUtils.isBlank(classpath)) {
+            return;
         }
+
+        if (auxClasspath.isEmpty()) {
+            auxClasspath = classpath;
+        } else {
+            auxClasspath = classpath + File.pathSeparator + auxClasspath;
+        }
+    }
+
+    /**
+     * You can specify multiple class paths separated by `:` on Unix-systems or `;` under Windows.
+     * See {@link File#pathSeparator}.
+     * @since 7.21.0
+     */
+    public void setAuxClasspath(String classpath) {
+        auxClasspath = classpath;
+    }
+
+    /**
+     * @return
+     * @since 7.21.0
+     */
+    public String getAuxClasspath() {
+        return auxClasspath;
     }
 
     /**

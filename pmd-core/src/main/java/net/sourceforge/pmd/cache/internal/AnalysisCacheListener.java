@@ -19,10 +19,10 @@ public class AnalysisCacheListener implements GlobalAnalysisListener {
 
     private final AnalysisCache cache;
 
-    public AnalysisCacheListener(AnalysisCache cache, RuleSets ruleSets, ClassLoader classLoader,
+    public AnalysisCacheListener(AnalysisCache cache, RuleSets ruleSets, String auxClasspath,
                                  Collection<? extends TextFile> textFiles) {
         this.cache = cache;
-        cache.checkValidity(ruleSets, classLoader, textFiles);
+        cache.checkValidity(ruleSets, auxClasspath, textFiles);
     }
 
     @Override

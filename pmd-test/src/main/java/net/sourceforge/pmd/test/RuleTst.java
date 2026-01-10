@@ -31,7 +31,7 @@ import org.xml.sax.InputSource;
 
 import net.sourceforge.pmd.PMDConfiguration;
 import net.sourceforge.pmd.PmdAnalysis;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
+import net.sourceforge.pmd.lang.JvmLanguagePropertyBundle;
 import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
@@ -269,7 +269,7 @@ public abstract class RuleTst {
         return runTestFromString(test.getCode(), rule, test.getLanguageVersion());
     }
 
-    private static final ClassLoader TEST_AUXCLASSPATH_CLASSLOADER;
+    private static final String TEST_AUXCLASSPATH;
 
     static {
         final Path PATH_TO_JRT_FS_JAR;
@@ -290,11 +290,7 @@ public abstract class RuleTst {
             }
         }
 
-        try {
-            TEST_AUXCLASSPATH_CLASSLOADER = new ClasspathClassLoader(PATH_TO_JRT_FS_JAR.toString(), PMDConfiguration.class.getClassLoader());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        TEST_AUXCLASSPATH = PATH_TO_JRT_FS_JAR.toString();
     }
 
     /**
@@ -305,7 +301,8 @@ public abstract class RuleTst {
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setDefaultLanguageVersion(languageVersion);
         configuration.setThreads(0); // don't use separate threads
-        configuration.setClassLoader(TEST_AUXCLASSPATH_CLASSLOADER);
+        configuration.setAuxClasspath(TEST_AUXCLASSPATH);
+        JvmLanguagePropertyBundle.enabledCacheClassLoader();
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
