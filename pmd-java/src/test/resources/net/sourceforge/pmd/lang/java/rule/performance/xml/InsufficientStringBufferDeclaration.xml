@@ -1538,4 +1538,20 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+    <test-code>
+        <description>String representation of null is counted as four characters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuilder has been initialized with size 1, but has at least 4 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder builder = new StringBuilder(1);
+        builder.append((String) null);
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
