@@ -5,24 +5,26 @@
 package net.sourceforge.pmd.lang.java.rule.performance;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTCharLiteral;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
-import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
-import net.sourceforge.pmd.lang.java.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -156,27 +158,17 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
 
     private void processMethodCall(State state, ASTMethodCall methodCall) {
         if ("append".equals(methodCall.getMethodName())) {
-            int counter = 0;
-            Set<ASTLiteral> literals = new HashSet<>();
-            literals.addAll(methodCall.getArguments()
-                    .descendants(ASTLiteral.class)
-                    // exclude literals, that belong to different method calls
-                    .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall).toList());
-            for (ASTLiteral literal : literals) {
-                if (literal instanceof ASTStringLiteral) {
-                    counter += ((ASTStringLiteral) literal).length();
-                } else if (literal instanceof ASTNumericLiteral) {
-                    if (literal.getParent() instanceof ASTCastExpression
-                        && TypeTestUtil.isA(char.class, (ASTCastExpression) literal.getParent())) {
-                        counter += 1;
-                    } else {
-                        counter += String.valueOf(((ASTNumericLiteral) literal).getConstValue()).length();
-                    }
-                } else if (literal instanceof ASTCharLiteral) {
-                    counter += 1;
-                }
-            }
-    
+            Set<ASTLiteral> literals = collectArgumentsOfType(methodCall, ASTLiteral.class);
+            ToIntFunction<ASTLiteral> literalCounter = value -> String.valueOf(value.getConstValue()).length();
+            int literalsCount = literals.stream().mapToInt(value -> calculateExpectedLength(value, literalCounter)).sum();
+
+            Set<ASTVariableAccess> variables = collectArgumentsOfType(methodCall, ASTVariableAccess.class);
+            ToIntFunction<ASTVariableAccess> variablesCounter = value -> Optional.ofNullable(value.getConstFoldingResult().getValue())
+                    .map(constValue -> String.valueOf(constValue).length())
+                    .orElse(0);
+            int variablesCount = variables.stream().mapToInt(value -> calculateExpectedLength(value, variablesCounter)).sum();
+
+            int counter = literalsCount + variablesCount;
             ASTIfStatement ifStatement = methodCall.ancestors(ASTIfStatement.class).first();
             ASTSwitchStatement switchStatement = methodCall.ancestors(ASTSwitchStatement.class).first();
             if (ifStatement != null) {
@@ -206,6 +198,31 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                 state.rootNode = methodCall;
             }
         }
+    }
+
+    private static <T extends ASTExpression> int calculateExpectedLength(T expression, ToIntFunction<T> countingStrategy) {
+        if (expression.getParent() instanceof ASTCastExpression
+                && TypeTestUtil.isA(char.class, (ASTCastExpression) expression.getParent())) {
+            return 1;
+        }
+        return countingStrategy.applyAsInt(expression);
+    }
+
+    private static <T extends ASTExpression> Set<T> collectArgumentsOfType(ASTMethodCall methodCall, Class<T> type) {
+        Set<Node> conditionalNodes = methodCall.descendants(ASTConditionalExpression.class)
+                .map(ASTConditionalExpression::getCondition)
+                .descendants()
+                .collect(Collectors.toSet());
+
+        return methodCall.getArguments()
+                .descendants(type)
+                // exclude arguments, that belong to different method calls
+                .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall)
+                // also exclude args that are used to access arrays
+                .filter(n -> !(n.getParent() instanceof ASTArrayAccess))
+                // also exclude args that are only used in the conditional part of a conditional expression
+                .filter(o -> !conditionalNodes.contains(o))
+                .collect(Collectors.toSet());
     }
 
     private State getConstructorCapacity(ASTVariableId variable, ASTExpression node) {
