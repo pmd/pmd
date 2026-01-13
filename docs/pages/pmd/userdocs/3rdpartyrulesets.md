@@ -27,6 +27,8 @@ last_updated: December 2025 (7.20.0)
 ## For Apex
 * **unhappy-soup**, a repository with problematic Salesforce code to showcase PMD, the SFDX Scanner CLI
   * <https://github.com/rsoesemann/unhappy-soup/blob/master/ruleset.xml>
- * **sca-extra**, additional PMD and Regex rules for testing Salesforce Apex code using Salesforce Code Analyzer
+* **sca-extra**, additional PMD and Regex rules for testing Salesforce Apex code using Salesforce Code Analyzer
   * <https://github.com/starch-uk/sca-extra>
+* **test-pmd-rule**, tests PMD XPath rules for coverage using its own examples as unit tests
+  * <https://github.com/starch-uk/test-pmd-rule>
 
