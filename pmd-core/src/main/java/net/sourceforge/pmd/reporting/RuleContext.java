@@ -58,6 +58,7 @@ public final class RuleContext {
 
     // Default message, parsed only once to avoid overhead of parsing.
     private MessageFormat defaultMessageFormat;
+    private final LanguageVersionHandler services;
 
     RuleContext(FileAnalysisListener listener, Rule rule, RootNode rootNode) {
         Objects.requireNonNull(listener, "Listener was null");
@@ -66,6 +67,7 @@ public final class RuleContext {
         this.listener = listener;
         this.rule = rule;
         this.rootNode = rootNode;
+        this.services = rootNode.getAstInfo().getLanguageProcessor().services();
     }
 
     /**
@@ -74,10 +76,6 @@ public final class RuleContext {
      */
     Rule getRule() {
         return rule;
-    }
-
-    private LanguageVersionHandler getLanguageServices() {
-        return rootNode.getAstInfo().getLanguageProcessor().services();
     }
 
     /**
@@ -106,13 +104,12 @@ public final class RuleContext {
      * @param reportable A node or token
      * @return A violation builder
      *
-     * @since 7.20.0
+     * @since 7.21.0
      */
     @CheckReturnValue
     public ViolationBuilder at(Reportable reportable) {
-        LanguageVersionHandler services = getLanguageServices();
         Node node = reportable.getReportedNode(rootNode.getAstInfo());
-        return new ViolationBuilder(node, reportable.getReportLocation(), services);
+        return new ViolationBuilder(node, reportable.getReportLocation(), this.services);
     }
 
     /**
@@ -122,7 +119,7 @@ public final class RuleContext {
      *
      * @param lineNumber A line number (>= 1)
      * @return A violation builder
-     * @since 7.20.0
+     * @since 7.21.0
      */
     @CheckReturnValue
     public ViolationBuilder atLine(int lineNumber) {
@@ -141,7 +138,7 @@ public final class RuleContext {
     /**
      * A staged builder for violations. Instances should not be discarded,
      * you need to call one of the methods of this class to emit the violation.
-     * @since 7.20.0
+     * @since 7.21.0
      */
     public final class ViolationBuilder {
         private final Node suppressionNode;
@@ -154,7 +151,7 @@ public final class RuleContext {
             this.languageServices = languageServices;
         }
 
-        private void reportImpl(MessageFormat messageFormat, Object... args) {
+        private void reportImpl(MessageFormat messageFormat, Object[] args) {
             Objects.requireNonNull(messageFormat, "Message was null");
             Objects.requireNonNull(args, "Format arguments were null, use an empty array");
 
