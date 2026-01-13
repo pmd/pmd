@@ -71,7 +71,9 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
      */
     @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
-        this.classLoader = classLoader;
+        if (classLoader != null) {
+            this.classLoader = new UncloseableClassLoader(classLoader);
+        }
     }
 
     /**
@@ -114,7 +116,7 @@ public class JvmLanguagePropertyBundle extends LanguagePropertyBundle {
             }
         }
         // default fallback, when no analysis classpath has been configured
-        return PMDConfiguration.class.getClassLoader();
+        return new UncloseableClassLoader(PMDConfiguration.class.getClassLoader());
     }
 
     // not closeable anymore, so that this classloader can be cached and reused
