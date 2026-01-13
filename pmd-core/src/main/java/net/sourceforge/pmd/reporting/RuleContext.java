@@ -138,6 +138,43 @@ public final class RuleContext {
     /**
      * A staged builder for violations. Instances should not be discarded,
      * you need to call one of the methods of this class to emit the violation.
+     * You can get an instance with {@link #at(Reportable)} or {@link #atLine(int)}.
+     *
+     * <h2>Example usages</h2>
+     * <pre>{@code
+     * // report with default message
+     * ctx.at(node).report();
+     * // report with default message and format arguments
+     * ctx.at(node).reportWithArgs("arg", 2);
+     * // report with non-default message
+     * ctx.at(node).reportWithMessage("message");
+     * // report with non-default message and format arguments
+     * ctx.at(node).reportWithMessage("message", "arg", 2);
+     * }</pre>
+     *
+     * <h2>About messages</h2>
+     *
+     * <p>Messages must be valid {@link MessageFormat} instances.
+     * This means you can use <i>placeholders</i>, such as {@code {0}} to interpolate different
+     * values into a message. If your message has placeholders, you
+     * must provide arguments using the varargs parameter of {@link #reportWithMessage(String, Object...)}
+     * or {@link #reportWithArgs(Object...)}.
+     *
+     * <p>Even if your message has no placeholders, it must respect
+     * the MessageFormat specification. This means single quotes
+     * and curly braces must be escaped by prepending a single quote
+     * to them.
+     *
+     * <p>Additionally, placeholders such as {@code ${propertyName}} can be used to interpolate
+     * rule property values, e.g. including the threshold a rule uses for reporting.
+     * Some languages also support additional placeholder variables.
+     * E.g. for Java, you can use {@code ${methodName}} to insert the name of the method in which
+     * the violation occurred. See <a href="https://docs.pmd-code.org/latest/pmd_languages_java.html#violation-decorators">Java-specific features and guidance</a>.
+     *
+     * <p>Those rules hold both for a custom message you specify with {@link #reportWithMessage(String)}
+     * and for the default message specified in the XML definition of
+     * the rule in the ruleset.
+     *
      * @since 7.21.0
      */
     public final class ViolationBuilder {
@@ -174,9 +211,8 @@ public final class RuleContext {
          * rule message specified in the XML rule definition) and the given
          * extra arguments.
          *
-         * <p>Note that the message must be in valid {@link MessageFormat}
-         * format (even if it has no arguments). Single quotes and curly
-         * braces must be escaped by prepending a single quote.
+         * <p>See Javadoc on {@link ViolationBuilder} for information about
+         * the message format and possible placeholders.
          */
         public void reportWithMessage(String message, Object... formatArgs) {
             MessageFormat parsed = parseMessage(message);
@@ -188,9 +224,8 @@ public final class RuleContext {
          * rule message specified in the XML rule definition) and no
          * extra arguments.
          *
-         * <p>Note that the message must be in valid {@link MessageFormat}
-         * format (even if it has no arguments). Single quotes and curly
-         * braces must be escaped by prepending a single quote.
+         * <p>See Javadoc on {@link ViolationBuilder} for information about
+         * the message format and possible placeholders.
          */
         public void reportWithMessage(String message) {
             reportWithMessage(message, NO_ARGS);
