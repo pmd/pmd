@@ -7,12 +7,12 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd</artifactId>
-        <version>7.20.0-SNAPSHOT</version>
+        <version>7.21.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
     <properties>
-        <log4j.version>2.25.2</log4j.version>
+        <log4j.version>2.25.3</log4j.version>
     </properties>
 
     <build>
@@ -121,6 +121,19 @@
                 <configuration>
                     <suppressionsLocation>pmd-java-checkstyle-suppressions.xml</suppressionsLocation>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>pmd-main</id>
+                        <configuration combine.children="append">
+                            <excludeFromFailureFile>${project.basedir}/pmd-java-exclude-pmd.properties</excludeFromFailureFile>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>

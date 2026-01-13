@@ -304,4 +304,22 @@ class Tester {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6276: NullAssignment should not report assigning null to a final field in a constructor</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.time.Instant;
+
+public class Foo {
+    private final Instant buildTimestamp;
+
+    public Foo(String timestamp) {
+        String bar = "0";
+        this.buildTimestamp = bar.equals(timestamp) ? null : Instant.parse(timestamp);
+    }
+}
+
+]]></code>
+    </test-code>
 </test-data>

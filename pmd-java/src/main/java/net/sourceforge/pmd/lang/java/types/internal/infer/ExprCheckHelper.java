@@ -391,9 +391,15 @@ final class ExprCheckHelper {
             // to resolve input vars before resolving the constraint:
             // https://docs.oracle.com/javase/specs/jls/se12/html/jls-18.html#jls-18.5.2.2
 
-            // here we defer the check until the variables are ground
+            Set<InferenceVar> inputIvars = infCtx.freeVarsIn(fun.getFormalParameters());
+            // The free vars of the return type depend on the free vars of the parameters.
+            // This explicit dependency is there to prevent solving the variables in the
+            // return type before solving those of the parameters. That is because the variables
+            // mentioned in the return type may be further constrained by adding the return constraints
+            // below (in the listener), which is only triggered when the input ivars have been instantiated.
+            infCtx.addInstantiationDependencies(infCtx.freeVarsIn(fun.getReturnType()), inputIvars);
             infCtx.addInstantiationListener(
-                infCtx.freeVarsIn(fun.getFormalParameters()),
+                inputIvars,
                 solvedCtx -> solveInexactMethodRefCompatibility(mref, solvedCtx.ground(nonWildcard), solvedCtx.ground(fun))
             );
         }
@@ -493,7 +499,7 @@ final class ExprCheckHelper {
     }
 
     MethodCtDecl mrefSigAsCtDecl(JMethodSig sig) {
-        return new MethodCtDecl(sig, MethodResolutionPhase.INVOC_LOOSE, false, OptionalBool.UNKNOWN, false, null);
+        return new MethodCtDecl(sig, MethodResolutionPhase.INVOC_LOOSE, false, OptionalBool.UNKNOWN, false, null, false);
     }
 
     MethodCtDecl inferMethodRefInvocation(MethodRefMirror mref, JMethodSig targetType, MethodCtDecl ctdecl) {

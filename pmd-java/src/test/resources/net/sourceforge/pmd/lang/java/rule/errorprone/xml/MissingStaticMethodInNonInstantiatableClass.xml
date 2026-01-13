@@ -642,4 +642,24 @@ public class MyClass {
 ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#6343 False negative when method in nested class returns null</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+
+    private MyClass() {
+    }
+
+    public static class NotABuilder {
+
+        private NotABuilder() {}
+
+        public NotABuilder notABuilder() {
+            return null;
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

@@ -40,13 +40,13 @@ public class UnusedLocalVariableRule extends AbstractJavaRule {
         ASTVariableId varId = pattern.getVarId();
         if (JavaAstUtils.isNeverUsed(varId)
                 && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())
-                && !neededForSwitchOrRcord(pattern)) {
+                && !neededForSwitchOrRecord(pattern)) {
             asCtx(data).addViolation(varId, varId.getName());
         }
         return data;
     }
 
-    private boolean neededForSwitchOrRcord(ASTTypePattern pattern) {
+    private boolean neededForSwitchOrRecord(ASTTypePattern pattern) {
         JavaNode parent = pattern.getParent();
         return (parent instanceof ASTSwitchLabel || parent instanceof ASTPatternList)
             && pattern.getLanguageVersion().compareToVersion("22") < 0;

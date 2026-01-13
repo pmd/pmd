@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
@@ -36,7 +37,10 @@ public class ConsecutiveAppendsShouldReuseRule extends AbstractJavaRule {
             @Nullable JVariableSymbol variable = getVariableAppended(node);
             if (variable != null) {
                 @Nullable JVariableSymbol nextVariable = getVariableAppended((ASTExpressionStatement) nextSibling);
-                if (nextVariable != null && nextVariable.equals(variable)) {
+                if (nextVariable != null
+                        && nextVariable.equals(variable)
+                        && !(node.getParent() instanceof ASTIfStatement)
+                ) {
                     asCtx(data).addViolation(node);
                 }
             }

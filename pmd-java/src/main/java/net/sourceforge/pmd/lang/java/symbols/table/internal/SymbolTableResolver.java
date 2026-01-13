@@ -393,14 +393,16 @@ public final class SymbolTableResolver {
 
             for (ASTSwitchBranch branch : node.getBranches()) {
                 ASTSwitchLabel label = branch.getLabel();
-                // collect all bindings. Maybe it's illegal to use composite label with bindings, idk
-                BindSet bindings =
-                    label.children(ASTPattern.class)
+                // Collect all bindings. Composite label with bindings would be a compilation error.
+                BindSet bindings = label.children(ASTPattern.class)
                          .reduce(BindSet.EMPTY, (bindSet, pat) -> bindSet.union(bindersOfPattern(pat)));
 
                 // visit guarded patterns in label
                 int pushBindings = pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
-                setTopSymbolTableAndVisit(label, ctx);
+                setTopSymbolTableAndVisit(label.getGuard(), ctx);
+                bindings = bindersOfExpr(label.getGuardExpression());
+
+                pushBindings += pushOnStack(f.localVarSymTable(top(), enclosing(), bindings.getTrueBindings()));
 
                 if (branch instanceof ASTSwitchArrowBranch) {
                     pushed = pushBindings;
@@ -466,24 +468,6 @@ public final class SymbolTableResolver {
                 setTopSymbolTableAndVisit(declarator.getInitializer(), ctx);
             }
             return pushed;
-        }
-
-        @Override
-        public Void visit(ASTForeachStatement node, @NonNull ReferenceCtx ctx) {
-            // the varId is only in scope in the body and not the iterable expr
-            setTopSymbolTableAndVisit(node.getIterableExpr(), ctx);
-
-            ASTVariableId varId = node.getVarId();
-            setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
-
-            int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
-            ASTStatement body = node.getBody();
-            // unless it's a block the body statement may never set a
-            // symbol table that would have this table as parent,
-            // so the table would be dangling
-            setTopSymbolTableAndVisit(body, ctx);
-            popStack(pushed);
-            return null;
         }
 
         @Override
@@ -700,6 +684,22 @@ public final class SymbolTableResolver {
                         return BindSet.noBindings();
                     }
                 }
+            }
+
+            @Override
+            public PSet<ASTVariableId> visit(ASTForeachStatement node, @NonNull ReferenceCtx ctx) {
+                MyVisitor.this.setTopSymbolTableAndVisit(node.getIterableExpr(), ctx);
+
+                ASTVariableId varId = node.getVarId();
+                MyVisitor.this.setTopSymbolTableAndVisit(varId.getTypeNode(), ctx);
+
+                int pushed = pushOnStack(f.localVarSymTable(top(), enclosing(), varId));
+
+                setTopSymbolTableAndVisit(node.getBody(), ctx);
+
+                popStack(pushed);
+
+                return BindSet.noBindings();
             }
 
             private boolean hasNoBreakContainingStmt(ASTLoopStatement node) {
