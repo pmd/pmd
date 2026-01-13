@@ -50,7 +50,7 @@ public class CommentContentRule extends AbstractJavaRulechainRule {
         int lineNumber = comment.getReportLocation().getStartLine();
         for (Chars line : comment.getFilteredLines(true)) {
             if (violationRegex.matcher(line).find()) {
-                ctx.atLine(lineNumber).warnWithArgs(violationRegex.pattern());
+                ctx.atLine(lineNumber).reportWithArgs(violationRegex.pattern());
             }
             lineNumber++;
         }

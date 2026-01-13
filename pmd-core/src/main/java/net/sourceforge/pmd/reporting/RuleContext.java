@@ -154,7 +154,7 @@ public final class RuleContext {
             this.languageServices = languageServices;
         }
 
-        private void warnImpl(MessageFormat messageFormat, Object... args) {
+        private void reportImpl(MessageFormat messageFormat, Object... args) {
             Objects.requireNonNull(messageFormat, "Message was null");
             Objects.requireNonNull(args, "Format arguments were null, use an empty array");
 
@@ -181,9 +181,9 @@ public final class RuleContext {
          * format (even if it has no arguments). Single quotes and curly
          * braces must be escaped by prepending a single quote.
          */
-        public void warnWithMessage(String message, Object... formatArgs) {
+        public void reportWithMessage(String message, Object... formatArgs) {
             MessageFormat parsed = parseMessage(message);
-            warnImpl(parsed, formatArgs);
+            reportImpl(parsed, formatArgs);
         }
 
         /**
@@ -195,27 +195,27 @@ public final class RuleContext {
          * format (even if it has no arguments). Single quotes and curly
          * braces must be escaped by prepending a single quote.
          */
-        public void warnWithMessage(String message) {
-            warnWithMessage(message, NO_ARGS);
+        public void reportWithMessage(String message) {
+            reportWithMessage(message, NO_ARGS);
         }
 
         /**
          * Emit the violation with the default message (specified in the XML
          * rule definition) and the given extra arguments.
          */
-        public void warnWithArgs(Object... formatArgs) {
+        public void reportWithArgs(Object... formatArgs) {
             if (defaultMessageFormat == null) {
                 defaultMessageFormat = parseMessage(rule.getMessage());
             }
-            warnImpl(defaultMessageFormat, formatArgs);
+            reportImpl(defaultMessageFormat, formatArgs);
         }
 
         /**
          * Emit the violation with the default message (specified in the XML
          * rule definition) and no extra arguments.
          */
-        public void warn() {
-            warnWithArgs(NO_ARGS);
+        public void report() {
+            reportWithArgs(NO_ARGS);
         }
 
     }
@@ -232,7 +232,7 @@ public final class RuleContext {
      * @param location Location of the violation
      */
     public void addViolation(Node location) {
-        at(location).warn();
+        at(location).report();
     }
 
     /**
@@ -246,7 +246,7 @@ public final class RuleContext {
      * @see MessageFormat
      */
     public void addViolation(Node location, Object... formatArgs) {
-        at(location).warnWithArgs(formatArgs);
+        at(location).reportWithArgs(formatArgs);
     }
 
     /**
@@ -259,7 +259,7 @@ public final class RuleContext {
      * @param message  Violation message
      */
     public void addViolationWithMessage(Node location, String message) {
-        at(location).warnWithMessage(message);
+        at(location).reportWithMessage(message);
     }
 
     /**
@@ -273,7 +273,7 @@ public final class RuleContext {
      * @param formatArgs Format arguments for the message
      */
     public void addViolationWithMessage(Node location, String message, Object... formatArgs) {
-        at(location).warnWithMessage(message, formatArgs);
+        at(location).reportWithMessage(message, formatArgs);
     }
 
     /**
@@ -294,9 +294,9 @@ public final class RuleContext {
             FileLocation location = FileLocation.range(node.getTextDocument().getFileId(),
                 TextRange2d.range2d(beginLine, 1, endLine, 1));
 
-            at(node.atLocation(location)).warnWithMessage(message, formatArgs);
+            at(node.atLocation(location)).reportWithMessage(message, formatArgs);
         } else {
-            at(node).warnWithMessage(message, formatArgs);
+            at(node).reportWithMessage(message, formatArgs);
         }
     }
 

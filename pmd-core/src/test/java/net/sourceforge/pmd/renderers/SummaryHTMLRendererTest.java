@@ -150,7 +150,7 @@ class SummaryHTMLRendererTest extends AbstractRendererTest {
             root = root.withNoPmdComments(new SuppressionCommentImpl<>(root, "test"));
 
             RuleContext ruleContext = InternalApiBridge.createRuleContext(listener, new FooRule(), root);
-            ruleContext.at(root).warnWithMessage("suppress test");
+            ruleContext.at(root).reportWithMessage("suppress test");
         };
     }
 }

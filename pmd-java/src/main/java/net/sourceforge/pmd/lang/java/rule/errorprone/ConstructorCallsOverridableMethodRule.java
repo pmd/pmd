@@ -86,7 +86,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
                 String message = unsafeMethod.equals(overload) ? MESSAGE : MESSAGE_TRANSITIVE;
                 String lastMethod = PrettyPrintingUtil.prettyPrintOverload(unsafetyReason.getLast());
                 String stack = unsafetyReason.stream().map(PrettyPrintingUtil::prettyPrintOverload).collect(Collectors.joining(", "));
-                asCtx(data).at(call).warnWithMessage(message, lastMethod, stack);
+                asCtx(data).at(call).reportWithMessage(message, lastMethod, stack);
             }
         }
         return null;

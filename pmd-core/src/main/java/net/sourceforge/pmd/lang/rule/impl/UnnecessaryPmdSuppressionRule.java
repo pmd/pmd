@@ -45,7 +45,7 @@ public class UnnecessaryPmdSuppressionRule extends AbstractRule implements Canno
         for (ViolationSuppressor suppressor : suppressors) {
             Set<UnusedSuppressorNode> unusedSuppressors = suppressor.getUnusedSuppressors((RootNode) rootNode);
             for (UnusedSuppressorNode unusedSuppressor : unusedSuppressors) {
-                ctx.at(unusedSuppressor.getLocation()).warnWithMessage(unusedSuppressor.unusedReason());
+                ctx.at(unusedSuppressor.getLocation()).reportWithMessage(unusedSuppressor.unusedReason());
             }
         }
     }

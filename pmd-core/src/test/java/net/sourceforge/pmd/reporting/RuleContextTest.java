@@ -41,7 +41,7 @@ class RuleContextTest {
     private RuleViolation makeViolation(String unescapedMessage, Object... args) throws Exception {
         DummyRootNode node = DummyTreeUtil.tree(DummyTreeUtil::root);
         Report report = getReport(new FooRule(), node, (r, ctx) -> {
-            ctx.at(node).warnWithMessage(unescapedMessage, args);
+            ctx.at(node).reportWithMessage(unescapedMessage, args);
         });
         return report.getViolations().get(0);
     }
