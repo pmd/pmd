@@ -15,6 +15,8 @@ import java.util.function.Function;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.java.ast.ASTPrimitiveType;
+import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
@@ -24,6 +26,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JFormalParamSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JRecordComponentSymbol;
+import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.JTypeVar;
 import net.sourceforge.pmd.lang.java.types.Substitution;
@@ -162,6 +165,28 @@ public final class ImplicitMemberSymbols {
                 Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
                 (ts, s) ->
                         ts.declaration(processor.findSymbolCannotFail("org.slf4j.Logger"))
+        );
+    }
+
+    public static JMethodSymbol lombokGetter(JClassSymbol classSym, JFieldSymbol field, int accessModifier) {
+        String fieldName = field.getSimpleName();
+        String prefix = "get";
+        ASTVariableId varId = field.tryGetNode();
+        if (varId != null) {
+            ASTType typeNode = varId.getTypeNode();
+            if (typeNode instanceof ASTPrimitiveType
+                    && ((ASTPrimitiveType) typeNode).getKind() == PrimitiveTypeKind.BOOLEAN) {
+                prefix = "is";
+            }
+        }
+        String name = prefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+
+        return new FakeMethodSym(
+                classSym,
+                name,
+                accessModifier,
+                (ts, s) -> field.getTypeMirror(Substitution.EMPTY),
+                emptyList()
         );
     }
 
