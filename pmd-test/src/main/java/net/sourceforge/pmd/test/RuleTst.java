@@ -12,11 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -47,6 +42,7 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.test.schema.RuleTestCollection;
 import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 import net.sourceforge.pmd.test.schema.TestSchemaParser;
+import net.sourceforge.pmd.util.AnalysisClasspath;
 
 /**
  * Advanced methods for test cases
@@ -269,30 +265,6 @@ public abstract class RuleTst {
         return runTestFromString(test.getCode(), rule, test.getLanguageVersion());
     }
 
-    private static final String TEST_AUXCLASSPATH;
-
-    static {
-        final Path PATH_TO_JRT_FS_JAR;
-        // find jrt-fs.jar to be added to auxclasspath
-        // Similar logic like jdk.internal.jrtfs.SystemImage
-        CodeSource codeSource = Object.class.getProtectionDomain().getCodeSource();
-        if (codeSource == null) {
-            PATH_TO_JRT_FS_JAR = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar");
-        } else {
-            URL location = codeSource.getLocation();
-            if (!"file".equalsIgnoreCase(location.getProtocol())) {
-                throw new IllegalStateException("Object.class loaded in unexpected way from " + location);
-            }
-            try {
-                PATH_TO_JRT_FS_JAR = Paths.get(location.toURI());
-            } catch (URISyntaxException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-
-        TEST_AUXCLASSPATH = PATH_TO_JRT_FS_JAR.toString();
-    }
-
     /**
      * Run the rule on the given code and put the violations in the report.
      */
@@ -301,7 +273,7 @@ public abstract class RuleTst {
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setDefaultLanguageVersion(languageVersion);
         configuration.setThreads(0); // don't use separate threads
-        configuration.setAuxClasspath(TEST_AUXCLASSPATH);
+        configuration.setAnalysisClasspath(AnalysisClasspath.currentJvm());
         JvmLanguagePropertyBundle.enabledCacheClassLoader();
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {

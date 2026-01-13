@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 
-import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.LoggerFactory;
 
@@ -28,6 +27,7 @@ import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.lang.rule.RuleSetLoader;
 import net.sourceforge.pmd.renderers.Renderer;
 import net.sourceforge.pmd.renderers.RendererFactory;
+import net.sourceforge.pmd.util.AnalysisClasspath;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
 
@@ -76,7 +76,7 @@ import net.sourceforge.pmd.util.log.internal.SimpleMessageReporter;
  * <h2>Language configuration</h2>
  * <ul>
  * <li>Use {@link #setSuppressMarker(String)} to change the comment marker for suppression comments. Defaults to {@value #DEFAULT_SUPPRESS_MARKER}.</li>
- * <li>See {@link #setAuxClasspath(String)} for information for how to configure classpath for Java analysis.</li>
+ * <li>See {@link #setAnalysisClasspath(AnalysisClasspath)} for information for how to configure classpath for Java analysis.</li>
  * <li>You can set additional language properties with {@link #getLanguageProperties(Language)}</li>
  * </ul>
  *
@@ -109,8 +109,12 @@ public class PMDConfiguration extends AbstractConfiguration {
     private boolean ignoreIncrementalAnalysis;
 
     // Aux Classpath (Analysis Classpath) options
+    /**
+     * @deprecated Since 7.21.0. Only kept for backwards compatibility.
+     */
+    @Deprecated
     private ClassLoader classLoader = null;
-    private String auxClasspath = "";
+    private AnalysisClasspath analysisClasspath = new AnalysisClasspath();
 
     public PMDConfiguration() {
         this(DEFAULT_REGISTRY);
@@ -164,7 +168,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      * Get the ClassLoader being used by PMD when processing Rules.
      *
      * @return The ClassLoader being used
-     * @deprecated Since 7.21.0. Use {@link #getAuxClasspath()} instead.
+     * @deprecated Since 7.21.0. Use {@link #getAnalysisClasspath()} instead.
      */
     @Deprecated
     public ClassLoader getClassLoader() {
@@ -177,7 +181,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param classLoader
      *            The ClassLoader to use
-     * @deprecated Since 7.21.0. Use {@link #setAuxClasspath(String)} instead.
+     * @deprecated Since 7.21.0. Use {@link #setAnalysisClasspath(AnalysisClasspath)} instead.
      */
     @Deprecated
     public void setClassLoader(ClassLoader classLoader) {
@@ -198,18 +202,11 @@ public class PMDConfiguration extends AbstractConfiguration {
      * @param classpath The prepended classpath.
      *
      * @throws IllegalArgumentException if the given classpath is invalid (e.g. does not exist)
-     * @see PMDConfiguration#setAuxClasspath(String)
+     * @see PMDConfiguration#setAnalysisClasspath(AnalysisClasspath)
+     * @see AnalysisClasspath#prepend(String)
      */
     public void prependAuxClasspath(String classpath) {
-        if (StringUtils.isBlank(classpath)) {
-            return;
-        }
-
-        if (auxClasspath.isEmpty()) {
-            auxClasspath = classpath;
-        } else {
-            auxClasspath = classpath + File.pathSeparator + auxClasspath;
-        }
+        analysisClasspath.prepend(classpath);
     }
 
     /**
@@ -217,16 +214,16 @@ public class PMDConfiguration extends AbstractConfiguration {
      * See {@link File#pathSeparator}.
      * @since 7.21.0
      */
-    public void setAuxClasspath(String classpath) {
-        auxClasspath = classpath;
+    public void setAnalysisClasspath(AnalysisClasspath classpath) {
+        analysisClasspath = classpath;
     }
 
     /**
      * @return
      * @since 7.21.0
      */
-    public String getAuxClasspath() {
-        return auxClasspath;
+    public AnalysisClasspath getAnalysisClasspath() {
+        return analysisClasspath;
     }
 
     /**

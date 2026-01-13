@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Properties;
 
@@ -32,6 +33,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.rule.RulePriority;
 import net.sourceforge.pmd.renderers.CSVRenderer;
 import net.sourceforge.pmd.renderers.Renderer;
+import net.sourceforge.pmd.util.AnalysisClasspath;
 
 class PmdConfigurationTest {
 
@@ -56,11 +58,11 @@ class PmdConfigurationTest {
         PMDConfiguration configuration = new PMDConfiguration();
         assertNull(configuration.getClassLoader(), "No default ClassLoader");
         configuration.prependAuxClasspath("some.jar");
-        assertEquals("some.jar", configuration.getAuxClasspath());
+        assertEquals(Paths.get("some.jar").toAbsolutePath().toString(), configuration.getAnalysisClasspath().asString());
         assertNull(configuration.getClassLoader(), "Still no ClassLoader");
 
         configuration.setClassLoader(null);
-        assertEquals("some.jar", configuration.getAuxClasspath());
+        assertEquals(Paths.get("some.jar").toAbsolutePath().toString(), configuration.getAnalysisClasspath().asString());
         assertNull(configuration.getClassLoader(), "Still no ClassLoader");
         configuration.setClassLoader(PMDConfiguration.class.getClassLoader());
         assertEquals(PMDConfiguration.class.getClassLoader(), configuration.getClassLoader());
@@ -69,11 +71,12 @@ class PmdConfigurationTest {
     @Test
     void testAuxClasspath() {
         PMDConfiguration configuration = new PMDConfiguration();
-        assertEquals("", configuration.getAuxClasspath());
-        configuration.setAuxClasspath("file1.jar");
-        assertEquals("file1.jar", configuration.getAuxClasspath());
+        assertEquals("", configuration.getAnalysisClasspath().asString());
+        configuration.setAnalysisClasspath(AnalysisClasspath.from("file1.jar"));
+        assertEquals(Paths.get("file1.jar").toAbsolutePath().toString(), configuration.getAnalysisClasspath().asString());
         configuration.prependAuxClasspath("prepended.jar");
-        assertEquals("prepended.jar" + File.pathSeparator + "file1.jar", configuration.getAuxClasspath());
+        assertEquals(Paths.get("prepended.jar").toAbsolutePath()
+                + File.pathSeparator + Paths.get("file1.jar").toAbsolutePath(), configuration.getAnalysisClasspath().asString());
     }
 
     @Test

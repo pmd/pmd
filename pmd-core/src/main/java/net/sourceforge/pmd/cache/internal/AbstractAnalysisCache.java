@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cache.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
@@ -28,7 +29,6 @@ import net.sourceforge.pmd.PMDVersion;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimedOperation;
 import net.sourceforge.pmd.benchmark.TimedOperationCategory;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextDocument;
@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.AnalysisClasspath;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -115,7 +116,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(RuleSets ruleSets, String auxClasspath, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, AnalysisClasspath auxClasspath, Collection<? extends TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
@@ -124,7 +125,14 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
                 cacheIsValid = false;
             }
 
-            final long currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(ClasspathClassLoader.parseClasspath(auxClasspath).toArray(new URL[0]));
+            URL[] auxClasspathUrls = auxClasspath.getClasspath().stream().map(Path::toUri).map(uri -> {
+                try {
+                    return uri.toURL();
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
+                }
+            }).toArray(URL[]::new);
+            final long currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(auxClasspathUrls);
             if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
                 // TODO some rules don't need that (in fact, some languages)
                 LOG.debug("Analysis cache invalidated, auxclasspath changed.");

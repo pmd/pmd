@@ -59,6 +59,7 @@ import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.Report.GlobalReportBuilderListener;
 import net.sourceforge.pmd.reporting.ReportStats;
 import net.sourceforge.pmd.reporting.ReportStatsListener;
+import net.sourceforge.pmd.util.AnalysisClasspath;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.StringUtil;
@@ -128,7 +129,7 @@ import net.sourceforge.pmd.util.log.PmdReporter;
  * <h2>Specifying the Java classpath</h2>
  *
  * <p>Java rules work better if you specify the path to the compiled classes
- * of the analysed sources. See {@link PMDConfiguration#setAuxClasspath(String)}.
+ * of the analysed sources. See {@link PMDConfiguration#setAnalysisClasspath(AnalysisClasspath)}.
  *
  * <h2>Customizing message output</h2>
  *
@@ -216,7 +217,7 @@ public final class PmdAnalysis implements AutoCloseable {
             //  CLI syntax is implemented. #2947
             props.setProperty(LanguagePropertyBundle.SUPPRESS_MARKER, config.getSuppressMarker());
             if (props.hasDescriptor(JvmLanguagePropertyBundle.AUX_CLASSPATH)) {
-                props.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, config.getAuxClasspath());
+                props.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, config.getAnalysisClasspath().asString());
                 // kept only for backwards compatibility, must be called after the property is set, as
                 // setting AUX_CLASSPATH will reset the classloader...
                 ((JvmLanguagePropertyBundle) props).setClassLoader(config.getClassLoader());
@@ -397,7 +398,7 @@ public final class PmdAnalysis implements AutoCloseable {
             @SuppressWarnings("PMD.CloseResource")
             AnalysisCacheListener cacheListener = new AnalysisCacheListener(configuration.getAnalysisCache(),
                                                                             rulesets,
-                                                                            configuration.getAuxClasspath(),
+                                                                            configuration.getAnalysisClasspath(),
                                                                             textFiles);
             listener = GlobalAnalysisListener.tee(listOf(createComposedRendererListener(renderers),
                                                          GlobalAnalysisListener.tee(listeners),

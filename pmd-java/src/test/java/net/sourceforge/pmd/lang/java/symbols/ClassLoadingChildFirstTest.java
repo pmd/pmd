@@ -49,7 +49,7 @@ class ClassLoadingChildFirstTest {
         config.prependAuxClasspath(file.toAbsolutePath().toString());
 
         JvmLanguagePropertyBundle props = (JvmLanguagePropertyBundle) JavaLanguageModule.getInstance().newPropertyBundle();
-        props.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, config.getAuxClasspath());
+        props.setProperty(JvmLanguagePropertyBundle.AUX_CLASSPATH, config.getAnalysisClasspath().asString());
         TypeSystem typeSystem = TypeSystem.usingClassLoaderClasspath(props.getAnalysisClassLoader());
 
         JClassType voidClass = typeSystem.BOXED_VOID;
