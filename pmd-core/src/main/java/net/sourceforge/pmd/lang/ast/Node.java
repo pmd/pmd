@@ -126,7 +126,7 @@ public interface Node extends Reportable {
      * <p>This implementation returns this node.
      */
     @Override
-    default @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+    default @NonNull Node getReportedNode(AstInfo<?> astInfo) {
         return this;
     }
 
@@ -139,7 +139,7 @@ public interface Node extends Reportable {
      * @return A {@link Reportable} instance, suitable for use with {@link RuleContext#at(Reportable)}.
      * @throws AssertionError If the location is not contained within this node
      * @experimental Will be stabilized in a few versions if it is useful
-     * @since 7.20.0
+     * @since 7.21.0
      */
     @Experimental
     default Reportable atLocation(FileLocation loc) {
@@ -151,7 +151,7 @@ public interface Node extends Reportable {
             }
 
             @Override
-            public @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+            public @NonNull Node getReportedNode(AstInfo<?> astInfo) {
                 return Node.this;
             }
         };
@@ -167,7 +167,7 @@ public interface Node extends Reportable {
      * @return A {@link Reportable} instance, suitable for use with {@link RuleContext#at(Reportable)}.
      * @throws AssertionError If the token is not contained within this node
      * @experimental Will be stabilized in a few versions if it is useful
-     * @since 7.20.0
+     * @since 7.21.0
      */
     @Experimental
     default Reportable atToken(GenericToken<?> token) {

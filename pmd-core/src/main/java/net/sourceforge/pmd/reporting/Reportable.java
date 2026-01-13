@@ -42,11 +42,15 @@ public interface Reportable {
      * annotation. When reporting objects that are not nodes (such as tokens),
      * a specific node that covers the token's region is searched from the tree.
      *
+     * <p>This note is also used to apply decorations with {@link ViolationDecorator}.
+     *
      * @param astInfo The AstInfo for the source file where the violation was reported.
      * @implNote The default implementation finds a node by searching
-     * through descendants and is relatively expensive.
+     * through descendants and is relatively expensive. {@link Node} overrides
+     * this to make it return {@code this} and avoid this search.
+     * @since 7.21.0
      */
-    default @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+    default @NonNull Node getReportedNode(AstInfo<?> astInfo) {
         FileLocation loc = getReportLocation();
         int startOffset = astInfo.getTextDocument().offsetAtLineColumn(loc.getStartPos());
 

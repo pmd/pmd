@@ -32,11 +32,8 @@ public class ExcessiveParameterListRule extends AbstractCounterCheckRule<ASTMeth
         if (lastParameter == null) {
             lastParameter = node;
         }
-        TextRegion region = TextRegion.fromBothOffsets(
-            node.getTextRegion().getStartOffset(),
-            lastParameter.getTextRegion().getEndOffset());
-
-        return node.getAstInfo().getTextDocument().toLocation(region);
+        TextRegion region = TextRegion.union(node.getTextRegion(), lastParameter.getTextRegion());
+        return node.getTextDocument().toLocation(region);
     }
 
     @Override

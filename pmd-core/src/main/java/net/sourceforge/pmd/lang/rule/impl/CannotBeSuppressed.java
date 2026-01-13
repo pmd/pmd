@@ -4,14 +4,16 @@
 
 package net.sourceforge.pmd.lang.rule.impl;
 
-import net.sourceforge.pmd.annotation.Experimental;
 import net.sourceforge.pmd.lang.rule.Rule;
 
 /**
- * Marker interface for rules that cannot be suppressed.
+ * Marker interface for rules that cannot be suppressed. Those rules
+ * are excluded from {@link UnnecessaryPmdSuppressionRule}. Other rules
+ * must run before that rule for their violations to be handled properly
+ * by the rule. As of PMD 7.21.0, the only rule that needs to implement
+ * this interface is {@link UnnecessaryPmdSuppressionRule} itself.
  *
- * @experimental For now this is only needed to implement {@link UnnecessaryPmdSuppressionRule}.
+ * @since 7.21.0
  */
-@Experimental
 public interface CannotBeSuppressed extends Rule {
 }

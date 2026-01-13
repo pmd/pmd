@@ -184,10 +184,8 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>,
     }
 
     @Override
-    public final @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+    public final @NonNull Node getReportedNode(AstInfo<?> astInfo) {
         // Final implementation for now, as overrides are likely mistakes.
-        // The only exception I can think of is wrapper nodes around another
-        // tree, but then they would probably not extend AbstractNode.
         return this;
     }
 

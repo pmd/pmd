@@ -183,7 +183,7 @@ public class JavaccToken implements GenericToken<JavaccToken> {
     }
 
     @Override
-    public @NonNull Node getSuppressionNode(AstInfo<?> astInfo) {
+    public @NonNull Node getReportedNode(AstInfo<?> astInfo) {
         Optional<Node> foundNode = NodeFindingUtil.findNodeAt(astInfo.getRootNode(), startOffset);
         // default to the root node
         return foundNode.orElse(astInfo.getRootNode());

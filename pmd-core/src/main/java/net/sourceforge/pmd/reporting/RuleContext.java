@@ -59,9 +59,6 @@ public final class RuleContext {
     // Default message, parsed only once to avoid overhead of parsing.
     private MessageFormat defaultMessageFormat;
 
-    /**
-     * @apiNote Internal API
-     */
     RuleContext(FileAnalysisListener listener, Rule rule, RootNode rootNode) {
         Objects.requireNonNull(listener, "Listener was null");
         Objects.requireNonNull(rule, "Rule was null");
@@ -114,7 +111,7 @@ public final class RuleContext {
     @CheckReturnValue
     public ViolationBuilder at(Reportable reportable) {
         LanguageVersionHandler services = getLanguageServices();
-        Node node = reportable.getSuppressionNode(rootNode.getAstInfo());
+        Node node = reportable.getReportedNode(rootNode.getAstInfo());
         return new ViolationBuilder(node, reportable.getReportLocation(), services);
     }
 
@@ -147,12 +144,12 @@ public final class RuleContext {
      * @since 7.20.0
      */
     public final class ViolationBuilder {
-        private final Node nearestNode;
+        private final Node suppressionNode;
         private final FileLocation location;
         private final LanguageVersionHandler languageServices;
 
-        ViolationBuilder(Node nearestNode, FileLocation location, LanguageVersionHandler languageServices) {
-            this.nearestNode = nearestNode;
+        ViolationBuilder(Node suppressionNode, FileLocation location, LanguageVersionHandler languageServices) {
+            this.suppressionNode = suppressionNode;
             this.location = location;
             this.languageServices = languageServices;
         }
@@ -161,11 +158,11 @@ public final class RuleContext {
             Objects.requireNonNull(messageFormat, "Message was null");
             Objects.requireNonNull(args, "Format arguments were null, use an empty array");
 
-            RuleViolation violation = createViolation(location, nearestNode, languageServices, messageFormat, args);
+            RuleViolation violation = createViolation(location, suppressionNode, languageServices, messageFormat, args);
 
             SuppressedViolation suppressed = null;
             if (!(rule instanceof CannotBeSuppressed)) {
-                suppressed = suppressOrNull(nearestNode, violation, languageServices);
+                suppressed = suppressOrNull(suppressionNode, violation, languageServices);
             }
 
             if (suppressed != null) {
