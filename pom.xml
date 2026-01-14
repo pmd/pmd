@@ -1138,7 +1138,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.33.2</version>
+                <version>4.33.4</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit6 needs.
