@@ -4,11 +4,7 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-    <test-code>
-        <description>Use sun.misc.Unsafe, bad</description>
-        <expected-problems>2</expected-problems>
-        <expected-linenumbers>2-2,10-10</expected-linenumbers>
-        <code><![CDATA[
+    <code-fragment id="basic-setMemory-call"><![CDATA[
 import java.lang.reflect.Field;
 import sun.misc.Unsafe; // violation: package sun
 
@@ -22,7 +18,20 @@ class BadUnsafeSun {
     }
 
 }
-        ]]></code>
+        ]]></code-fragment>
+    
+    <test-code>
+        <description>Use sun.misc.Unsafe, bad</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2,10</expected-linenumbers>
+        <code-ref id="basic-setMemory-call"/>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2-2,10-10</expected-linenumbers>
+        <code-ref id="basic-setMemory-call"/>
     </test-code>
 
     <test-code>
@@ -46,7 +55,6 @@ class BadUnsafeSunQualified {
 
     <test-code>
         <description>Use jdk.internal.misc.Unsafe, bad</description>
-
         <expected-problems>2</expected-problems>
         <expected-linenumbers>2-2,10-10</expected-linenumbers>
         <code><![CDATA[
