@@ -6,10 +6,11 @@
 
     <test-code>
         <description>Use sun.misc.Unsafe, bad</description>
-        <expected-problems>1</expected-problems>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2-2,10-10</expected-linenumbers>
         <code><![CDATA[
 import java.lang.reflect.Field;
-import sun.misc.Unsafe;
+import sun.misc.Unsafe; // violation: package sun
 
 class BadUnsafeSun {
 
@@ -17,7 +18,7 @@ class BadUnsafeSun {
         final Field f = Unsafe.class.getDeclaredField("theUnsafe");
         f.setAccessible(true);
         final Unsafe unsafe = (Unsafe) f.get(null);
-        unsafe.setMemory(0L, 0L, (byte) 0);
+        unsafe.setMemory(0L, 0L, (byte) 0); // violation: method call
     }
 
 }
@@ -103,10 +104,11 @@ class GoodUnsafe {
     </test-code>
 
     <test-code>
-        <description>Do not sun.misc.Unsafe, good</description>
-        <expected-problems>0</expected-problems>
+        <description>Only import sun.misc.Unsafe, no usage</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1-1</expected-linenumbers>
         <code><![CDATA[
-import sun.misc.Unsafe;
+import sun.misc.Unsafe; // violation
 
 class GoodNoUnsafe {
 
@@ -117,4 +119,23 @@ class GoodNoUnsafe {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>bad, import from sun. (from rule DontImportSun)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import sun.Foo;
+public class Bar {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>signal is not ok (from rule DontImportSun)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import sun.misc.Signal;
+public class Bar {}
+        ]]></code>
+    </test-code>
+
 </test-data>

@@ -239,7 +239,6 @@
     <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
     <!-- <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard" /> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally" /> -->
-    <!-- <rule ref="category/java/errorprone.xml/DoNotUseUnsafe" /> -->
     <!--<rule ref="category/java/errorprone.xml/DontImportSun" />-->
     <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices"/>
     <rule ref="category/java/errorprone.xml/EqualsNull"/>
@@ -286,6 +285,7 @@
     <!-- <rule ref="category/java/errorprone.xml/UnnecessaryCaseChange" /> -->
     <rule ref="category/java/errorprone.xml/UnnecessaryConversionTemporary"/>
     <rule ref="category/java/errorprone.xml/UnusedNullCheckInEquals"/>
+    <!-- <rule ref="category/java/errorprone.xml/UnsupportedJdkApiUsage" /> -->
     <!-- <rule ref="category/java/errorprone.xml/UseCorrectExceptionLogging" /> -->
     <rule ref="category/java/errorprone.xml/UseEqualsToCompareStrings"/>
     <rule ref="category/java/errorprone.xml/UselessPureMethodCall"/>

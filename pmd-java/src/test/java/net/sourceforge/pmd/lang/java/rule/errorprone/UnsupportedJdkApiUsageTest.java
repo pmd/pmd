@@ -6,6 +6,6 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
-class DoNotUseUnsafeTest extends PmdRuleTst {
+class UnsupportedJdkApiUsageTest extends PmdRuleTst {
     // no additional unit tests
 }

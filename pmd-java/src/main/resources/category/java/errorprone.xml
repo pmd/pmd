@@ -1553,41 +1553,6 @@ public class Foo {
         </example>
     </rule>
 
-    <rule name="DoNotUseUnsafe"
-          language="java"
-          since="7.21.0"
-          message="Do not use the Unsafe class"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
-          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#donotuseunsafe">
-        <description>
-Do not use either `sun.misc.Unsafe` or `jdk.internal.misc.Unsafe`. As there class name indicates,
-these methods are not safe to use. They have been superseded by official APIs like the VarHandle API (JDK 9)
-and the Foreign Function &amp; Memory API (JDK 22). See [JEP 471](https://openjdk.org/jeps/471) for details
-on the safer alternatives including before and after code samples.
-        </description>
-        <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>//MethodCall[pmd-java:matchesSig('sun.misc.Unsafe#_(_*)') or pmd-java:matchesSig('jdk.internal.misc.Unsafe#_(_*)')]</value>
-            </property>
-        </properties>
-        <example>
-            <![CDATA[
-import sun.misc.Unsafe;
-
-public final class MemoryWiper {
-
-  public static void main(final String[] args) throws NoSuchFieldException, IllegalAccessException {
-    for (final String s : args) {
-      Unsafe.getUnsafe().putAddress(Long.parseLong(s), 0L); // bad
-    }
-  }
-
-}
-]]>
-        </example>
-    </rule>
-
     <rule name="DontImportSun"
           language="java"
           since="1.5"
@@ -3390,6 +3355,51 @@ public String convert(int x) {
     String foo = new Integer(x).toString(); // this wastes an object
 
     return Integer.toString(x);             // preferred approach
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnsupportedJdkApiUsage"
+          language="java"
+          since="7.21.0"
+          message="Do not use unsupported JDK API"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unsupportedjdkapiusage">
+        <description>
+            Avoid importing classes or using APIs from the `sun.*` packages, including `sun.misc.Unsafe` or
+            `jdk.internal.misc.Unsafe`. These packages are neither portable nor stable and may change or be removed in future
+            versions of the JDK. As the name implies, the `Unsafe` class methods are particularly dangerous and have been
+            superseded by safer alternatives, such as the VarHandle API (introduced in JDK 9) and the
+            Foreign Function &amp; Memory API (introduced in JDK 22). Refer to [JEP 471](https://openjdk.org/jeps/471)
+            for safer alternatives with examples.
+
+            If you must depend on Sun APIs, confine their usage to a minimal, isolated scope, such as within a stable
+            wrapper class. You may suppress this rule in the implementation of such a wrapper, but it’s strongly
+            recommended to migrate to official APIs wherever possible.
+
+            The use of such unsupported APIs will also be flagged by the Java compiler, as they are intended
+            strictly for internal purposes. This PMD rule has been added to facilitate independent code reviews
+            and to catch instances where compiler warnings may have been overlooked.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //ImportDeclaration[starts-with(@ImportedName, 'sun.')]
+                    |
+                    //MethodCall[pmd-java:matchesSig('sun.misc.Unsafe#_(_*)') or pmd-java:matchesSig('jdk.internal.misc.Unsafe#_(_*)')]
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public final class MemoryWiper {
+  public static void main(final String[] args) throws NoSuchFieldException, IllegalAccessException {
+    for (final String s : args) {
+      sun.misc.Unsafe.getUnsafe().putAddress(Long.parseLong(s), 0L); // bad
+    }
+  }
 }
 ]]>
         </example>
