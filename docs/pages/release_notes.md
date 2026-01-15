@@ -24,7 +24,20 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### New Rules
+* The new Java rule {% rule java/errorprone/UnsupportedJdkApiUsage %} flags the use of unsupported and non-portable
+  JDK APIs, including `sun.*` packages, `sun.misc.Unsafe`, and `jdk.internal.misc.Unsafe`. These APIs are unstable,
+  intended for internal use, and may change or be removed. The rule complements Java compiler warnings by
+  highlighting such usage during code reviews and encouraging migration to official APIs like VarHandle and
+  the Foreign Function & Memory API.
+#### Deprecated Rules
+* The Java rule {% rule java/errorprone/DontImportSun %} has been deprecated. It is replaced by
+  {% rule java/error/UnsupportedJdkApiUsage %}.
+
 ### 🐛️ Fixed Issues
+* java
+  * [#5923](https://github.com/pmd/pmd/issues/5923): \[java] New rule: Catch usages of sun.misc.Unsafe or jdk.internal.misc.Unsafe
 
 ### 🚨️ API Changes
 
