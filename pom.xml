@@ -890,6 +890,12 @@
                 <version>4.0.2</version>
             </dependency>
             <dependency>
+                <groupId>it.unimi.dsi</groupId>
+                <artifactId>fastutil-core</artifactId>
+                <version>8.5.13</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
                 <groupId>net.sourceforge.pmd</groupId>
                 <artifactId>pmd-core</artifactId>
                 <version>${project.version}</version>

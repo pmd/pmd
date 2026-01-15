@@ -15,11 +15,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.LexException;
 import net.sourceforge.pmd.lang.document.FileId;
+import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
  * Global token collector for CPD. This is populated by lexing all files,
- * after which the match algorithm proceeds.
+ * after which the match algorithm proceeds. Note that this is not thread-safe.
  */
 public class Tokens {
 
@@ -29,14 +31,6 @@ public class Tokens {
     // the first ID is 1, 0 is the ID of the EOF token.
     private int curImageId = 1;
 
-    /**
-     * Create a new instance.
-     *
-     * @apiNote  Internal API
-     */
-    Tokens() {
-        // constructor is package private
-    }
 
     private void add(TokenEntry tokenEntry) {
         this.tokens.add(tokenEntry);
@@ -71,22 +65,14 @@ public class Tokens {
         return tokens.size();
     }
 
-    TokenEntry getEndToken(TokenEntry mark, Match match) {
-        return getToken(mark.getIndex() + match.getTokenCount() - 1);
-    }
-
     public List<TokenEntry> getTokens() {
         return tokens;
     }
 
     TokenEntry addToken(String image, FileId fileName, int startLine, int startCol, int endLine, int endCol) {
-        TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size());
+        TokenEntry newToken = new TokenEntry(getImageId(image), fileName, startLine, startCol, endLine, endCol, tokens.size(), -1);
         add(newToken);
         return newToken;
-    }
-
-    State savePoint() {
-        return new State(this);
     }
 
     /**
@@ -95,23 +81,27 @@ public class Tokens {
      * Tokens are accumulated in the {@link Tokens} parameter.
      *
      * @param file   Document for the file to process
-     * @param tokens Token sink
-     *
      * @return A new token factory
      */
-    static TokenFactory factoryForFile(TextDocument file, Tokens tokens) {
+    public TokenFactory factoryForFile(TextDocument file) {
         return new TokenFactory() {
             final FileId fileId = file.getFileId();
-            final int firstToken = tokens.size();
+            final int firstToken = size();
 
             @Override
             public void recordToken(@NonNull String image, int startLine, int startCol, int endLine, int endCol) {
-                tokens.addToken(image, fileId, startLine, startCol, endLine, endCol);
+                addToken(image, fileId, startLine, startCol, endLine, endCol);
+            }
+
+            @Override
+            public void recordToken(@NonNull String image, int startOffset, int endOffset) {
+                FileLocation loc = file.toLocation(TextRegion.fromBothOffsets(startOffset, endOffset));
+                recordToken(image, loc);
             }
 
             @Override
             public void setImage(TokenEntry entry, @NonNull String newImage) {
-                tokens.setImage(entry, newImage);
+                Tokens.this.setImage(entry, newImage);
             }
 
             @Override
@@ -121,45 +111,21 @@ public class Tokens {
 
             @Override
             public @Nullable TokenEntry peekLastToken() {
-                if (tokens.size() <= firstToken) {
+                if (size() <= firstToken) {
                     return null; // no token has been added yet in this file
                 }
-                return tokens.peekLastToken();
+                return Tokens.this.peekLastToken();
             }
 
             @Override
             public void close() {
                 TokenEntry tok = peekLastToken();
                 if (tok == null) {
-                    tokens.addEof(fileId, 1, 1);
+                    addEof(fileId, 1, 1);
                 } else {
-                    tokens.addEof(fileId, tok.getEndLine(), tok.getEndColumn());
+                    addEof(fileId, tok.getEndLine(), tok.getEndColumn());
                 }
             }
         };
     }
-
-    /**
-     * Helper class to preserve and restore the current state of the token
-     * entries.
-     */
-    static final class State {
-
-        private final int tokenCount;
-        private final int curImageId;
-
-        State(Tokens tokens) {
-            this.tokenCount = tokens.tokens.size();
-            this.curImageId = tokens.curImageId;
-        }
-
-        public void restore(Tokens tokens) {
-            tokens.images.entrySet().removeIf(e -> e.getValue() >= curImageId);
-            tokens.curImageId = this.curImageId;
-
-            final List<TokenEntry> entries = tokens.getTokens();
-            entries.subList(tokenCount, entries.size()).clear();
-        }
-    }
-
 }

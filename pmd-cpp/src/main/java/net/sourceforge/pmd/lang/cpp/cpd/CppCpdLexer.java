@@ -88,11 +88,11 @@ public class CppCpdLexer extends JavaccCpdLexer {
             image = CppTokenKinds.describe(kind);
         }
 
-        if (ignoreIdentifiers && (kind == CppTokenKinds.ID)) {
+        if (ignoreIdentifiers && kind == CppTokenKinds.ID) {
             image = CppTokenKinds.describe(kind);
         }
 
-        tokenEntries.recordToken(image, currentToken.getReportLocation());
+        tokenEntries.recordToken(image, currentToken.getInputRegion());
     }
 
     private static class CppTokenFilter extends JavaCCTokenFilter {

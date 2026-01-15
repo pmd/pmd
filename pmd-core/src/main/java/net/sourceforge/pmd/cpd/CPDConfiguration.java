@@ -6,6 +6,7 @@ package net.sourceforge.pmd.cpd;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
+import java.io.Writer;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.util.Collections;
@@ -44,10 +45,23 @@ public class CPDConfiguration extends AbstractConfiguration {
         RENDERERS.put("csv_with_linecount_per_file", CSVWithLinecountPerFileRenderer.class);
         RENDERERS.put("vs", VSRenderer.class);
         RENDERERS.put("markdown", MarkdownRenderer.class);
+        RENDERERS.put("empty", EmptyRenderer.class);
+    }
+
+    /**
+     * A renderer that outputs nothing. This can be used to benchmark
+     * CPD's performance, to remove the overhead of rendering.
+     */
+    static final class EmptyRenderer implements CPDReportRenderer {
+
+        @Override
+        public void render(CPDReport report, Writer writer) {
+            // do nothing
+        }
     }
 
 
-    private int minimumTileSize;
+    private int minimumTileSize = 64;
 
     private boolean skipDuplicates;
 

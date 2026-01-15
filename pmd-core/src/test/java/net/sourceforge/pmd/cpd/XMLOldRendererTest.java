@@ -51,7 +51,7 @@ class XMLOldRendererTest {
         FileId foo1 = CpdTestUtils.FOO_FILE_ID;
         Mark mark1 = builder.createMark("public", foo1, 1, lineCount);
         Mark mark2 = builder.createMark("stuff", foo1, 73, lineCount);
-        builder.addMatch(new Match(75, mark1, mark2));
+        builder.addMatch(mark1, mark2);
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
@@ -70,7 +70,7 @@ class XMLOldRendererTest {
             assertEquals(foo1.getAbsolutePath(), file.getAttributes().getNamedItem("path").getNodeValue());
             assertEquals("6", file.getAttributes().getNamedItem("endline").getNodeValue());
             assertEquals("1", file.getAttributes().getNamedItem("column").getNodeValue());
-            assertEquals("1", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
+            assertEquals("2", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
             file = file.getNextSibling();
             while (file != null && file.getNodeType() != Node.ELEMENT_NODE) {
                 file = file.getNextSibling();
@@ -80,7 +80,7 @@ class XMLOldRendererTest {
             assertEquals("73", file.getAttributes().getNamedItem("line").getNodeValue());
             assertEquals("78", file.getAttributes().getNamedItem("endline").getNodeValue());
             assertEquals("1", file.getAttributes().getNamedItem("column").getNodeValue());
-            assertEquals("1", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
+            assertEquals("2", file.getAttributes().getNamedItem("endcolumn").getNodeValue());
         }
         assertEquals(1, doc.getElementsByTagName("codefragment").getLength());
         assertEquals(CpdTestUtils.generateDummyContent(lineCount), doc.getElementsByTagName("codefragment").item(0).getTextContent());

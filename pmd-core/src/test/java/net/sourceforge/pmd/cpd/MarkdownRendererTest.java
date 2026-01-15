@@ -24,19 +24,19 @@ class MarkdownRendererTest {
         FileId bar = CpdTestUtils.BAR_FILE_ID;
 
         int lineCount1 = 6;
-        Mark mark1 = builder.createMark("public", foo, 48, lineCount1);
-        Mark mark2 = builder.createMark("void", foo, 73, lineCount1);
-        builder.addMatch(new Match(75, mark1, mark2));
+        Mark mark1 = builder.createMark("public", foo, 48, lineCount1, 15, 15);
+        Mark mark2 = builder.createMark("void", foo, 73, lineCount1, 15, 15);
+        builder.addMatch(mark1, mark2);
 
         int lineCount2 = 5;
-        Mark mark3 = builder.createMark("void", bar, 49, lineCount2);
-        Mark mark4 = builder.createMark("stuff", bar, 74, lineCount2);
-        builder.addMatch(new Match(50, mark3, mark4));
+        Mark mark3 = builder.createMark("public", bar, 49, lineCount2, 15, 15);
+        Mark mark4 = builder.createMark("void", bar, 74, lineCount2, 15, 15);
+        builder.addMatch(mark3, mark4);
 
         StringWriter sw = new StringWriter();
         renderer.render(builder.build(), sw);
         String report = sw.toString();
-        String expectedReport = "Found a 6 line (75 tokens) duplication in the following files:\n"
+        String expectedReport = "Found a 6 line (2 tokens) duplication in the following files:\n"
                 + "* Starting at line 48 of " + foo.getAbsolutePath() + "\n"
                 + "* Starting at line 73 of " + foo.getAbsolutePath() + "\n"
                 + "\n"
@@ -51,7 +51,7 @@ class MarkdownRendererTest {
                 + "\n"
                 + "---\n"
                 + "\n"
-                + "Found a 5 line (50 tokens) duplication in the following files:\n"
+                + "Found a 5 line (2 tokens) duplication in the following files:\n"
                 + "* Starting at line 49 of " + bar.getAbsolutePath() + "\n"
                 + "* Starting at line 74 of " + bar.getAbsolutePath() + "\n"
                 + "\n"

@@ -155,6 +155,11 @@
             <groupId>com.github.oowekyala.ooxml</groupId>
             <artifactId>nice-xml-messages</artifactId>
         </dependency>
+        <dependency>
+            <groupId>it.unimi.dsi</groupId>
+            <artifactId>fastutil-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.slf4j</groupId>

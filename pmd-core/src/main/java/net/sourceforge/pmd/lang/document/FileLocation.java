@@ -169,6 +169,23 @@ public final class FileLocation {
         return new FileLocation(fileName, line, column, line, column);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof FileLocation)) {
+            return false;
+        }
+        FileLocation that = (FileLocation) o;
+        return beginLine == that.beginLine && endLine == that.endLine && beginColumn == that.beginColumn
+            && endColumn == that.endColumn && Objects.equals(fileName, that.fileName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(beginLine, endLine, beginColumn, endColumn, fileName);
+    }
 
     @Override
     public String toString() {

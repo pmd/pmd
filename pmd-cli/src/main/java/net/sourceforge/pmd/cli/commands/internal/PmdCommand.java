@@ -25,7 +25,6 @@ import net.sourceforge.pmd.benchmark.TextTimingReportRenderer;
 import net.sourceforge.pmd.benchmark.TimeTracker;
 import net.sourceforge.pmd.benchmark.TimingReport;
 import net.sourceforge.pmd.benchmark.TimingReportRenderer;
-import net.sourceforge.pmd.cli.commands.typesupport.internal.NumThreadsConverter;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.PmdLanguageVersionTypeSupport;
 import net.sourceforge.pmd.cli.commands.typesupport.internal.RulePriorityTypeSupport;
@@ -80,11 +79,9 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     }
 
     private List<String> rulesets;
-    
+
 
     private String format;
-
-    private int threads;
 
     private boolean benchmark;
 
@@ -215,20 +212,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         this.noCache = noCache;
     }
 
-    @Option(names = {"--threads", "-t"}, description =
-        "Set the number of threads used by PMD. This can be an integer, or a float (or int) followed by the letter `C`, eg `0.5C` or `1C`. "
-            + "In the latter case, the float will be multiplied by the number of cores of the host machine, and rounded down to an integer. "
-            + "If the specified number of threads is zero, then PMD will use the main thread for everything. If it is `n` > 0, "
-            + "PMD will spawn `n` separate analysis threads besides the main thread.",
-        defaultValue = "1C", converter = NumThreadsConverter.class)
-    public void setThreads(final int threads) {
-        if (threads < 0) {
-            throw new ParameterException(spec.commandLine(), "Thread count should be a positive number or zero, found " + threads + " instead.");
-        }
-        
-        this.threads = threads;
-    }
-
     @Option(names = "--no-progress", negatable = true, defaultValue = "true",
             description = "Enables / disables progress bar indicator of live analysis progress.")
     public void setShowProgressBar(final boolean showProgressBar) {
@@ -252,7 +235,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
     protected PMDConfiguration toConfiguration() {
         final PMDConfiguration configuration = new PMDConfiguration();
         setCommonConfigProperties(configuration);
-
         configuration.setReportFormat(format);
         configuration.setMinimumPriority(minimumPriority);
         configuration.setReportProperties(properties);
@@ -261,7 +243,6 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         configuration.setSuppressMarker(suppressMarker);
         configuration.setAnalysisCacheLocation(cacheLocation != null ? cacheLocation.toString() : null);
         configuration.setIgnoreIncrementalAnalysis(noCache);
-        configuration.setThreads(threads);
 
         if (languageVersion != null) {
             configuration.setDefaultLanguageVersions(languageVersion);

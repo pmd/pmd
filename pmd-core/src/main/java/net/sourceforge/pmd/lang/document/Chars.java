@@ -184,8 +184,12 @@ public final class Chars implements CharSequence {
      * See {@link String#indexOf(String, int)}.
      */
     public int indexOf(String searched, int fromIndex) {
+        if (isFullString()) {
+            return str.indexOf(searched, fromIndex);
+        }
+
         // max index in the string at which the search string may start
-        final int max = start + len - searched.length();
+        final int max = start + len - searched.length() + 1;
 
         if (fromIndex < 0 || max < start + fromIndex) {
             return NOT_FOUND;
@@ -193,13 +197,10 @@ public final class Chars implements CharSequence {
             return 0;
         }
 
-        final char fst = searched.charAt(0);
-        int strpos = str.indexOf(fst, idx(fromIndex));
-        while (strpos != NOT_FOUND && strpos <= max) {
-            if (str.startsWith(searched, strpos)) {
-                return strpos - start;
+        for (int i = idx(fromIndex); i < max; i++) {
+            if (str.startsWith(searched, i)) {
+                return i - start;
             }
-            strpos = str.indexOf(fst, strpos + 1);
         }
         return NOT_FOUND;
     }
@@ -237,6 +238,8 @@ public final class Chars implements CharSequence {
 
         if (fromIndex >= len || toIndex <= 0) {
             return NOT_FOUND;
+        } else if (isFullString() && toIndex >= len) {
+            return str.indexOf(ch, fromIndex);
         }
 
         if (toIndex == len && start + len == str.length()) {
@@ -292,6 +295,12 @@ public final class Chars implements CharSequence {
         }
         return str.startsWith(prefix, idx(fromIndex));
     }
+
+    /** Return true if this contains the given substring. */
+    public boolean contains(String s) {
+        return indexOf(s, 0) != NOT_FOUND;
+    }
+
 
     /**
      * See {@link String#startsWith(String)}.

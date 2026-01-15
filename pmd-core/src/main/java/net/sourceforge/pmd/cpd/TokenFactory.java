@@ -8,13 +8,56 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.sourceforge.pmd.lang.ast.LexException;
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
 import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.document.TextDocument;
+import net.sourceforge.pmd.lang.document.TextRegion;
 
 /**
  * Proxy to record tokens from within {@link CpdLexer#tokenize(TextDocument, TokenFactory)}.
  */
 public interface TokenFactory extends AutoCloseable {
+
+    /**
+     * Record a token given its offset coordinates. This is more
+     * space-efficient as start/end line/col coordinates, so it is
+     * recommended your lexer use this overload. You cannot mix
+     * calls to this method and calls to {@link #recordToken(String, int, int, int, int)},
+     * you need to pick one of the two coordinate modes.
+     *
+     * <p>Note that the coordinates need to be in the source coordinate
+     * system. Use {@link TextDocument#inputRegion(TextRegion)} or
+     * {@link JavaccToken#getInputRegion()} if you interpret escapes
+     * before lexing.
+     *
+     * @implNote The default implementation throws an exception, please
+     * implement it. This method will be made abstract in a future version of CPD.
+     *
+     * @param image       Image of the token. This will be taken into account
+     *                    to determine the hash value of the token.
+     * @param startOffset Start offset
+     * @param endOffset   End offset
+     */
+    default void recordToken(@NonNull String image, int startOffset, int endOffset) {
+        throw new UnsupportedOperationException("TODO next major version: make this abstract.");
+    }
+
+    /**
+     * Record a token using its offset coordinates.
+     *
+     * <p>Note that the coordinates need to be in the source coordinate
+     * system. Use {@link TextDocument#inputRegion(TextRegion)} or
+     * {@link JavaccToken#getInputRegion()} if you interpret escapes
+     * before lexing.
+     *
+     * @param image  Image of the token. This will be taken into account
+     *               to determine the hash value of the token.
+     * @param region Text region for the coordinates
+     * @see #recordToken(String, int, int)
+     */
+    default void recordToken(@NonNull String image, TextRegion region) {
+        recordToken(image, region.getStartOffset(), region.getEndOffset());
+    }
 
     /**
      * Record a token given its coordinates. Coordinates must match the

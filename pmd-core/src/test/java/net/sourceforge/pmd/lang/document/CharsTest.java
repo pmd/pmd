@@ -182,6 +182,15 @@ class CharsTest {
         assertEquals(2, bc.indexOf("bx", 0));
     }
 
+
+    @Test
+    void indexOfFullString() {
+        Chars bc = Chars.wrap("abc");
+        //                          --
+        assertEquals(0, bc.indexOf("abc", 0));
+    }
+
+
     @Test
     void lastIndexOf() {
         Chars bc = Chars.wrap("aaaaabcdb").slice(5, 2);
