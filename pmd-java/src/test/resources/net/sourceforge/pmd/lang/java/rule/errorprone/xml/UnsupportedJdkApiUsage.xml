@@ -46,7 +46,9 @@ class BadUnsafeSunQualified {
 
     <test-code>
         <description>Use jdk.internal.misc.Unsafe, bad</description>
-        <expected-problems>1</expected-problems>
+
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2-2,10-10</expected-linenumbers>
         <code><![CDATA[
 import java.lang.reflect.Field;
 import jdk.internal.misc.Unsafe;
@@ -138,4 +140,21 @@ public class Bar {}
         ]]></code>
     </test-code>
 
+    <test-code>
+        <description>package com.sun is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import com.sun.net.httpserver.HttpHandler; // from module jdk.httpserver
+class Bar {}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>package jdk.internal is internal</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import jdk.internal.vm.VMSupport;
+class Bar {}
+]]></code>
+    </test-code>
 </test-data>

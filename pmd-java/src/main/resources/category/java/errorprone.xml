@@ -3371,7 +3371,7 @@ public String convert(int x) {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unsupportedjdkapiusage">
         <description>
-            Avoid importing classes or using APIs from the `sun.*` packages, including `sun.misc.Unsafe` or
+            Avoid importing classes or using APIs from the `sun.*` or `jdk.internal.*` packages, including `sun.misc.Unsafe` or
             `jdk.internal.misc.Unsafe`. These packages are neither portable nor stable and may change or be removed in future
             versions of the JDK. As the name implies, the `Unsafe` class methods are particularly dangerous and have been
             superseded by safer alternatives, such as the VarHandle API (introduced in JDK 9) and the
@@ -3390,7 +3390,7 @@ public String convert(int x) {
         <properties>
             <property name="xpath">
                 <value>
-                    //ImportDeclaration[starts-with(@ImportedName, 'sun.')]
+                    //ImportDeclaration[starts-with(@ImportedName, 'sun.') or starts-with(@ImportedName, 'jdk.internal.')]
                     |
                     //MethodCall[pmd-java:matchesSig('sun.misc.Unsafe#_(_*)') or pmd-java:matchesSig('jdk.internal.misc.Unsafe#_(_*)')]
                 </value>
