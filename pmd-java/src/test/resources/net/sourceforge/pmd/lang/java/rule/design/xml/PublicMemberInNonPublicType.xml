@@ -7,7 +7,11 @@
     <test-code>
         <description>Rule example</description>
         <expected-problems>2</expected-problems>
-        <expected-linenumbers>2,3</expected-linenumbers>
+        <expected-linenumbers>2-2,3-3</expected-linenumbers>
+        <expected-messages>
+            <message>Public member 'method' declared in a non-public type</message>
+            <message>Public member 'field' declared in a non-public type</message>
+        </expected-messages>
         <code><![CDATA[
 class Wrong {
     public void method() {} // violation
@@ -30,6 +34,16 @@ class Correct {
         <description>More declarations</description>
         <expected-problems>8</expected-problems>
         <expected-linenumbers>2,3,8,10,11,14,15,19</expected-linenumbers>
+        <expected-messages>
+            <message>Public member 'PackagePrivateClass' declared in a non-public type</message>
+            <message>Public member 'publicMethod' declared in a non-public type</message>
+            <message>Public member 'field' declared in a non-public type</message>
+            <message>Public member 'Nested' declared in a non-public type</message>
+            <message>Public member 'Foo' declared in a non-public type</message>
+            <message>Public member 'Intf' declared in a non-public type</message>
+            <message>Public member 'Annotation' declared in a non-public type</message>
+            <message>Public member 'MyRecord' declared in a non-public type</message>
+        </expected-messages>
         <code><![CDATA[
 class PackagePrivateClass {
   public PackagePrivateClass() {} // violation, line 2
@@ -51,6 +65,30 @@ class PackagePrivateClass {
 record MyRecord(String a) {
   public MyRecord { // violation, line 19
   }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4-4,10-10,14-14,15-15</expected-linenumbers>
+        <code><![CDATA[
+class Wrong {
+    public
+    void
+    method // violation
+    ()
+    {
+    }
+    public
+    int
+    field // violation
+    ;
+    public
+    int
+    iField1, // violation
+    iField2; // violation
 }
 ]]></code>
     </test-code>
