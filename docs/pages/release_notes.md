@@ -27,7 +27,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🌟️ New and Changed Rules
 #### New Rules
 * The new Java rule {% rule java/design/PublicMemberInNonPublicType %} finds public members
-  (like methods or fields) in types, that are not public as well but package-private. Their effective
+  (like methods or fields) in types, that are not public. Their effective
   visibility will be package-private anyway, so declaring them "public" is just confusing.
 
 ### 🐛️ Fixed Issues

@@ -1060,8 +1060,7 @@ public class Foo {
 
     <rule name="PublicMemberInNonPublicType"
           language="java"
-          since="7.19.0"
-          message="A member in a non-public type should not be public"
+          since="7.21.0"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_design.html#publicmemberinnonpublictype">
         <description>
@@ -1069,7 +1068,7 @@ A package-private type should not contain members that are public. Their effecti
 be package-private anyway, so declaring them "public" is just confusing. If the type is later
 made public, then suddenly all members are public as well, which might not be intended.
 
-These members should be made package-private as well or even private.
+These members should be made package-private or even private.
         </description>
         <priority>3</priority>
         <properties>
