@@ -239,6 +239,7 @@
     <rule ref="category/java/errorprone.xml/DoNotExtendJavaLangThrowable"/>
     <!-- <rule ref="category/java/errorprone.xml/DoNotHardCodeSDCard" /> -->
     <!-- <rule ref="category/java/errorprone.xml/DoNotThrowExceptionInFinally" /> -->
+    <!-- <rule ref="category/java/errorprone.xml/DoNotUseUnsafe" /> -->
     <!--<rule ref="category/java/errorprone.xml/DontImportSun" />-->
     <rule ref="category/java/errorprone.xml/DontUseFloatTypeForLoopIndices"/>
     <rule ref="category/java/errorprone.xml/EqualsNull"/>
@@ -339,5 +340,4 @@
 
     <!-- <rule ref="category/java/security.xml/HardCodedCryptoKey" /> -->
     <!-- <rule ref="category/java/security.xml/InsecureCryptoIv" /> -->
-    <!-- <rule ref="category/java/security.xml/DoNotUseUnsafe" /> -->
 </ruleset>
