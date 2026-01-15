@@ -33,7 +33,7 @@ This is a {{ site.pmd.release_type }} release.
   the Foreign Function & Memory API.
 #### Deprecated Rules
 * The Java rule {% rule java/errorprone/DontImportSun %} has been deprecated. It is replaced by
-  {% rule java/error/UnsupportedJdkApiUsage %}.
+  {% rule java/errorprone/UnsupportedJdkApiUsage %}.
 
 ### 🐛️ Fixed Issues
 * java
