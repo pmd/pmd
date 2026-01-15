@@ -1080,6 +1080,7 @@ These members should be made package-private or even private.
   [@EffectiveVisibility != 'public']
   [@Visibility = 'public']
   [@Overridden = false() or not(@Overridden)]
+  [not(ancestor::ClassDeclaration[@Interface = true()] or ancestor::AnnotationTypeDeclaration)]
 ]]></value>
             </property>
         </properties>
