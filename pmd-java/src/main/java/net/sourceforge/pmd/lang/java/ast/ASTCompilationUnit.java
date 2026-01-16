@@ -13,7 +13,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.RootNode;
-import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.ast.internal.LazyTypeResolver;
@@ -164,19 +163,5 @@ public final class ASTCompilationUnit extends AbstractJavaNode implements RootNo
      */
     public boolean isCompact() {
         return children(ASTImplicitClassDeclaration.class).nonEmpty();
-    }
-
-    @Override
-    public FileLocation getReportLocation() {
-        JavaNode typeOrModuleDeclaration = children().filter(node ->
-                node instanceof ASTTypeDeclaration
-                    || node instanceof ASTModuleDeclaration
-        ).first();
-
-        if (typeOrModuleDeclaration == null) {
-            return super.getReportLocation();
-        }
-
-        return typeOrModuleDeclaration.getReportLocation();
     }
 }
