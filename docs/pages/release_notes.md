@@ -23,6 +23,51 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
+#### 🌟️ Changed Rules
+* We are continuously working to improve the precision of violation reporting for various rules.
+  The goal is to ensure that rules report issues on the correct line and highlight only the relevant lines.
+  For example, instead of flagging an entire class declaration (including its body), we now generally report only
+  the class name. For more details, see [[java] Single Line Warnings #730](https://github.com/pmd/pmd/issues/730)
+  and [[java] Review reported locations of rules #3769](https://github.com/pmd/pmd/issues/3769). While this effort
+  is still ongoing, the following Java rules have been updated in this release:
+  * {% rule java/bestpractices/AbstractClassWithoutAbstractMethod %}
+  * {% rule java/design/AbstractClassWithoutAnyMethod %}
+  * {% rule java/codestyle/AtLeastOneConstructor %}
+  * {% rule java/codestyle/AvoidDollarSigns %}
+  * {% rule java/errorprone/AvoidCatchingGenericException %}
+  * {% rule java/multithreading/AvoidSynchronizedStatement %} (now reports only on synchronized keyword and not the whole synchronized block)
+  * {% rule java/codestyle/ClassNamingConventions %}
+  * {% rule java/design/ClassWithOnlyPrivateConstructorsShouldBeFinal %}
+  * {% rule java/codestyle/CommentDefaultAccessModifier %}
+  * {% rule java/documentation/CommentRequired %}
+  * {% rule java/design/CouplingBetweenObjects %} (now reports only on class identifier and not whole compilation unit anymore)
+  * {% rule java/design/CyclomaticComplexity %}
+  * {% rule java/design/DataClass %}
+  * {% rule java/design/ExcessiveImports %} (now reports only on imports and not the whole compilation unit anymore)
+  * {% rule java/design/ExcessiveParameterList %}
+  * {% rule java/design/ExcessivePublicCount %}
+  * {% rule java/bestpractices/ExhaustiveSwitchHasDefault %} (now reports only on switch keyword and not the whole switch block)
+  * {% rule java/design/GodClass %}
+  * {% rule java/bestpractices/ImplicitFunctionalInterface %}
+  * {% rule java/bestpractices/JUnit5TestShouldBePackagePrivate %}
+  * {% rule java/codestyle/LocalHomeNamingConvention %}
+  * {% rule java/codestyle/LocalInterfaceSessionNamingConvention %}
+  * {% rule java/errorprone/MissingSerialVersionUID %}
+  * {% rule java/errorprone/MissingStaticMethodInNonInstantiatableClass %}
+  * {% rule java/design/NcssCount %}
+  * {% rule java/bestpractices/NonExhaustiveSwitch %} (now reports only on switch keyword and not the whole switch block)
+  * {% rule java/codestyle/NoPackage %}
+  * {% rule java/design/PublicMemberInNonPublicType %}
+  * {% rule java/codestyle/ShortClassName %}
+  * {% rule java/errorprone/SingleMethodSingleton %}
+  * {% rule java/design/SwitchDensity %} (now reports only on switch keyword and not the whole switch block)
+  * {% rule java/errorprone/TestClassWithoutTestCases %}
+  * {% rule java/performance/TooFewBranchesForSwitch %} (now reports only on switch keyword and not the whole switch block)
+  * {% rule java/design/TooManyFields %} (now reports only on class identifier and not the whole class body anymore)
+  * {% rule java/design/TooManyMethods %} (now reports only on class identifier and not the whole class body anymore)
+  * {% rule java/codestyle/TooManyStaticImports %} (now reports only on the first static import and not the whole compilation unit anymore)
+  * {% rule java/codestyle/UnnecessaryModifier %}
+  * {% rule java/design/UseUtilityClass %}
 
 ### 🐛️ Fixed Issues
 
