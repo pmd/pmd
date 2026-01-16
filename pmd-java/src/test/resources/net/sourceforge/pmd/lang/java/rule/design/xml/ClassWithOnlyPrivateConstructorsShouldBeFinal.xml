@@ -386,4 +386,22 @@ class AllArgs6 { private AllArgs6(String a) {} } // no violation
 class OtherClass { private OtherClass(String a) {} } // violation: only private ctors
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-3</expected-linenumbers>
+        <code><![CDATA[
+public
+class
+Foo
+{
+    private
+    Foo
+    ()
+    {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
