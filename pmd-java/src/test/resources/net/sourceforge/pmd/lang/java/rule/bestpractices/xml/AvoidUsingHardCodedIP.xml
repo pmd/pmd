@@ -57,8 +57,15 @@ public class Foo {
     ]]></code-fragment>
 
     <test-code>
-        <description>Comprehensive, check for IPv4 mapped IPv6 xxx</description>
+        <description>Comprehensive, check for IPv4 mapped IPv6 xxx (deprecated property value test)</description>
         <rule-property name="checkAddressTypes">IPv4 mapped IPv6</rule-property>
+        <expected-problems>4</expected-problems>
+        <code-ref id="addresses"/>
+    </test-code>
+
+    <test-code>
+        <description>Comprehensive, check for IPv4 mapped IPv6 xxx</description>
+        <rule-property name="checkAddressTypes">ipv4MappedIpv6</rule-property>
         <expected-problems>4</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
@@ -135,28 +142,28 @@ class Foo {
 
     <test-code>
         <description>Comprehensive, check for IPv4</description>
-        <rule-property name="checkAddressTypes">IPv4</rule-property>
+        <rule-property name="checkAddressTypes">ipv4</rule-property>
         <expected-problems>6</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
 
     <test-code>
         <description>Comprehensive, check for IPv6</description>
-        <rule-property name="checkAddressTypes">IPv6</rule-property>
+        <rule-property name="checkAddressTypes">ipv6</rule-property>
         <expected-problems>11</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
 
     <test-code>
         <description>Comprehensive, check for IPv4 mapped IPv6</description>
-        <rule-property name="checkAddressTypes">IPv4 mapped IPv6</rule-property>
+        <rule-property name="checkAddressTypes">ipv4MappedIpv6</rule-property>
         <expected-problems>4</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
 
     <test-code>
         <description>Comprehensive, check for IPv6 and IPv4 mapped IPv6</description>
-        <rule-property name="checkAddressTypes">IPv6,IPv4 mapped IPv6</rule-property>
+        <rule-property name="checkAddressTypes">ipv6,ipv4MappedIpv6</rule-property>
         <expected-problems>15</expected-problems>
         <code-ref id="addresses"/>
     </test-code>
