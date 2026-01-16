@@ -2365,12 +2365,12 @@ is always the one thrown in a try block.</p>
     <tr>
       <td>foreachReassign</td>
       <td>deny</td>
-      <td>how/if foreach control variables may be reassigned</td>
+      <td>how/if foreach control variables may be reassigned<br />One of: <code class="language-plaintext highlighter-rouge">allow</code>, <code class="language-plaintext highlighter-rouge">deny</code>, <code class="language-plaintext highlighter-rouge">firstOnly</code></td>
     </tr>
     <tr>
       <td>forReassign</td>
       <td>deny</td>
-      <td>how/if for control variables may be reassigned</td>
+      <td>how/if for control variables may be reassigned<br />One of: <code class="language-plaintext highlighter-rouge">allow</code>, <code class="language-plaintext highlighter-rouge">deny</code>, <code class="language-plaintext highlighter-rouge">skip</code></td>
     </tr>
   </tbody>
 </table>
@@ -2481,8 +2481,8 @@ Externalizing IP addresses is preferable.</p>
   <tbody>
     <tr>
       <td>checkAddressTypes</td>
-      <td>IPv4 , IPv6 , IPv4 mapped IPv6</td>
-      <td>Check for IP address types.</td>
+      <td>ipv4 , ipv6 , ipv4MappedIpv6</td>
+      <td>Check for IP address types.<br />Zero or more of: <code class="language-plaintext highlighter-rouge">ipv4MappedIpv6</code>, <code class="language-plaintext highlighter-rouge">ipv4</code>, <code class="language-plaintext highlighter-rouge">ipv6</code></td>
     </tr>
   </tbody>
 </table>
@@ -2494,7 +2494,7 @@ Externalizing IP addresses is preferable.</p>
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/bestpractices.xml/AvoidUsingHardCodedIP"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkAddressTypes"</span> <span class="na">value=</span><span class="s">"IPv4,IPv6,IPv4 mapped IPv6"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"checkAddressTypes"</span> <span class="na">value=</span><span class="s">"ipv4,ipv6,ipv4MappedIpv6"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -5338,7 +5338,7 @@ a block <code class="language-plaintext highlighter-rouge">{}</code> is sufficie
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 15, 2026 <br />
+             Site last generated: Jan 16, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

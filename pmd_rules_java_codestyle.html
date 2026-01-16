@@ -2529,8 +2529,8 @@ to enforce either style and disallow the other, use the property <code class="la
     </tr>
     <tr>
       <td>nullCheckBranch</td>
-      <td>Any</td>
-      <td>One of <code class="language-plaintext highlighter-rouge">Any</code>, <code class="language-plaintext highlighter-rouge">Then</code>, <code class="language-plaintext highlighter-rouge">Else</code>. For <code class="language-plaintext highlighter-rouge">Any</code> null checks may have any form, for <code class="language-plaintext highlighter-rouge">Then</code> only <code class="language-plaintext highlighter-rouge">foo == null</code> is allowed, for <code class="language-plaintext highlighter-rouge">Else</code> only <code class="language-plaintext highlighter-rouge">foo != null</code> is allowed</td>
+      <td>any</td>
+      <td>For <code class="language-plaintext highlighter-rouge">any</code> null checks may have any form, for <code class="language-plaintext highlighter-rouge">then</code> only <code class="language-plaintext highlighter-rouge">foo == null</code> is allowed, for <code class="language-plaintext highlighter-rouge">else</code> only <code class="language-plaintext highlighter-rouge">foo != null</code> is allowed<br />One of: <code class="language-plaintext highlighter-rouge">any</code>, <code class="language-plaintext highlighter-rouge">else</code>, <code class="language-plaintext highlighter-rouge">then</code></td>
     </tr>
   </tbody>
 </table>
@@ -2543,7 +2543,7 @@ to enforce either style and disallow the other, use the property <code class="la
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/codestyle.xml/ConfusingTernary"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"ignoreElseIf"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"nullCheckBranch"</span> <span class="na">value=</span><span class="s">"Any"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"nullCheckBranch"</span> <span class="na">value=</span><span class="s">"any"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -3811,8 +3811,8 @@ By setting the property <code class="language-plaintext highlighter-rouge">typeA
 annotations appear right of the modifier keywords, next to the type they apply to.
 This property can have three values:</p>
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">ontype</code>: Type annotations must be placed next to the type they apply to</li>
-  <li><code class="language-plaintext highlighter-rouge">ondecl</code>: Type annotations must be placed with other annotations, before modifiers.
+  <li><code class="language-plaintext highlighter-rouge">onType</code>: Type annotations must be placed next to the type they apply to</li>
+  <li><code class="language-plaintext highlighter-rouge">onDecl</code>: Type annotations must be placed with other annotations, before modifiers.
 This is not enforced if the type annotations syntactically appears within the type, e.g.
 in <code class="language-plaintext highlighter-rouge">public Map.@Nullable Entry&lt;K,V&gt; method()</code> or <code class="language-plaintext highlighter-rouge">public &lt;T&gt; @NonNull T method()</code>.</li>
   <li><code class="language-plaintext highlighter-rouge">anywhere</code> (default): Either position fits. They still cannot be interspersed within keyword
@@ -3858,7 +3858,7 @@ modifiers.</li>
     <tr>
       <td>typeAnnotations</td>
       <td>anywhere</td>
-      <td>Whether type annotations should be placed next to the type they qualify and not before modifiers.</td>
+      <td>Whether type annotations should be placed next to the type they qualify and not before modifiers.<br />One of: <code class="language-plaintext highlighter-rouge">anywhere</code>, <code class="language-plaintext highlighter-rouge">onDecl</code>, <code class="language-plaintext highlighter-rouge">onType</code></td>
     </tr>
   </tbody>
 </table>
@@ -5327,7 +5327,7 @@ It is often simpler and cleaner to return or throw the value directly.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 15, 2026 <br />
+             Site last generated: Jan 16, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

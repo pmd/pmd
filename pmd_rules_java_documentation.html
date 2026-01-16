@@ -2110,48 +2110,48 @@
   <tbody>
     <tr>
       <td>methodWithOverrideCommentRequirement</td>
-      <td>Ignored</td>
-      <td>Comments on @Override methods. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>ignored</td>
+      <td>Comments on @Override methods<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
     <tr>
       <td>accessorCommentRequirement</td>
-      <td>Ignored</td>
-      <td>Comments on getters and setters". Possible values: [Required, Ignored, Unwanted]</td>
+      <td>ignored</td>
+      <td>Comments on getters and setters"<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
     <tr>
       <td>classCommentRequirement</td>
-      <td>Required</td>
-      <td>Class comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>required</td>
+      <td>Class comments<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
     <tr>
       <td>fieldCommentRequirement</td>
-      <td>Required</td>
-      <td>Field comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>required</td>
+      <td>Field comments<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
     <tr>
       <td>publicMethodCommentRequirement</td>
-      <td>Required</td>
-      <td>Public method and constructor comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>required</td>
+      <td>Public method and constructor comments<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
     <tr>
       <td>protectedMethodCommentRequirement</td>
-      <td>Required</td>
-      <td>Protected method constructor comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>required</td>
+      <td>Protected method constructor comments<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
     <tr>
       <td>enumCommentRequirement</td>
-      <td>Required</td>
-      <td>Enum comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>required</td>
+      <td>Enum comments<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
     <tr>
       <td>serialVersionUIDCommentRequired</td>
-      <td>Ignored</td>
-      <td>Serial version UID comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>ignored</td>
+      <td>Serial version UID comments<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
     <tr>
       <td>serialPersistentFieldsCommentRequired</td>
-      <td>Ignored</td>
-      <td>Serial persistent fields comments. Possible values: [Required, Ignored, Unwanted]</td>
+      <td>ignored</td>
+      <td>Serial persistent fields comments<br />One of: <code class="language-plaintext highlighter-rouge">ignored</code>, <code class="language-plaintext highlighter-rouge">required</code>, <code class="language-plaintext highlighter-rouge">unwanted</code></td>
     </tr>
   </tbody>
 </table>
@@ -2163,15 +2163,15 @@
 <p><strong>Use this rule and customize it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/documentation.xml/CommentRequired"</span><span class="nt">&gt;</span>
     <span class="nt">&lt;properties&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"methodWithOverrideCommentRequirement"</span> <span class="na">value=</span><span class="s">"Ignored"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"accessorCommentRequirement"</span> <span class="na">value=</span><span class="s">"Ignored"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"classCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"fieldCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"publicMethodCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"protectedMethodCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enumCommentRequirement"</span> <span class="na">value=</span><span class="s">"Required"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"serialVersionUIDCommentRequired"</span> <span class="na">value=</span><span class="s">"Ignored"</span> <span class="nt">/&gt;</span>
-        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"serialPersistentFieldsCommentRequired"</span> <span class="na">value=</span><span class="s">"Ignored"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"methodWithOverrideCommentRequirement"</span> <span class="na">value=</span><span class="s">"ignored"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"accessorCommentRequirement"</span> <span class="na">value=</span><span class="s">"ignored"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"classCommentRequirement"</span> <span class="na">value=</span><span class="s">"required"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"fieldCommentRequirement"</span> <span class="na">value=</span><span class="s">"required"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"publicMethodCommentRequirement"</span> <span class="na">value=</span><span class="s">"required"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"protectedMethodCommentRequirement"</span> <span class="na">value=</span><span class="s">"required"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"enumCommentRequirement"</span> <span class="na">value=</span><span class="s">"required"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"serialVersionUIDCommentRequired"</span> <span class="na">value=</span><span class="s">"ignored"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"serialPersistentFieldsCommentRequired"</span> <span class="na">value=</span><span class="s">"ignored"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
@@ -2394,7 +2394,7 @@ empty methods.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 15, 2026 <br />
+             Site last generated: Jan 16, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
