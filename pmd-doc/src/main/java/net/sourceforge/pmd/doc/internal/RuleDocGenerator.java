@@ -496,7 +496,7 @@ public class RuleDocGenerator {
                             Set<?> enumValues = propertyDescriptor.serializer().enumeratedValues();
                             if (!enumValues.isEmpty()) {
                                 if (propertyDescriptor.serializer().isCollection()) {
-                                    enumValuesDescription = "<br>One or more of: ";
+                                    enumValuesDescription = "<br>Zero or more of: ";
                                     enumValues = enumValues.stream().map(Collections::singleton).collect(Collectors.toSet());
                                 } else {
                                     enumValuesDescription = "<br>One of: ";

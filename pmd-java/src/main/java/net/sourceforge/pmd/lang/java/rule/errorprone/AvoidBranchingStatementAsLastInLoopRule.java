@@ -29,19 +29,19 @@ import net.sourceforge.pmd.util.StringUtil;
 public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulechainRule {
 
     /**
-     * @since 7.21.0. Should have never been public.
+     * @deprecated Since 7.21.0. Should have never been public.
      */
     @Deprecated
     public static final String CHECK_FOR = "for";
 
     /**
-     * @since 7.21.0. Should have never been public.
+     * @deprecated Since 7.21.0. Should have never been public.
      */
     @Deprecated
     public static final String CHECK_DO = "do";
 
     /**
-     * @since 7.21.0. Should have never been public.
+     * @deprecated Since 7.21.0. Should have never been public.
      */
     @Deprecated
     public static final String CHECK_WHILE = "while";
@@ -167,7 +167,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
     }
 
     /**
-     * @deprecated Since 7.21.0
+     * @deprecated Since 7.21.0. Only used for backwards compatible property values.
      */
     @Deprecated
     private static PropertyDescriptor<List<String>> propertyForDeprecated(String stmtName) {

@@ -379,6 +379,7 @@ public final class PropertyFactory {
      * @param <T>       Type of the enum class
      *
      * @return A new builder
+     * @since 7.21.0
      */
     public static <T extends Enum<T>> GenericPropertyBuilder<T> conventionalEnumProperty(String name, Class<T> enumClass) {
         return enumPropertyTransitional(name, enumClass, Collections.emptyMap());
@@ -401,6 +402,7 @@ public final class PropertyFactory {
      * @param <T>               Type of the enum class
      *
      * @return a new builder
+     * @since 7.21.0
      */
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumPropertyTransitional(String name,
                                                                              Class<T> enumClass,
@@ -421,6 +423,7 @@ public final class PropertyFactory {
      * @param <T>         Value type of the property
      *
      * @return A new builder
+     * @since 7.21.0
      */
     public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> conventionalEnumListProperty(String name, Class<T> enumClass) {
         return conventionalEnumProperty(name, enumClass).toList();

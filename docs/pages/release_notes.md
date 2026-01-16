@@ -55,7 +55,7 @@ rule properties:
 
 #### Deprecations
 * core
-  * {%jdoc !!core::lang.metrics.MetricOption#valueName %}: When metrics are used for (rule) properties,
+  * {%jdoc !!core::lang.metrics.MetricOption#valueName() %}: When metrics are used for (rule) properties,
     then the conventional enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
     See {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %}.
   * In {%jdoc core::properties.PropertyFactory %}:
@@ -91,6 +91,9 @@ rule properties:
     This method should have been private and will be internalized.
   * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#checksNothing() %}.
     This method should have been private and will be internalized.
+  * {%jdoc !!java::lang.java.metrics.JavaMetrics.ClassFanOutOption#valueName() %},
+    {%jdoc !!java::lang.java.metrics.JavaMetrics.CycloOption#valueName() %},
+    {%jdoc !!java::lang.java.metrics.JavaMetrics.NcssOption#valueName() %}
 * lang-test
   * {%jdoc !c!lang-test::lang.test.AbstractMetricTestRule#optionMappings() %}. No extra mapping is required anymore.
     The {%jdoc core::lang.metrics.MetricOption %} enum values are used. See 

@@ -4,11 +4,11 @@
 
 package net.sourceforge.pmd.lang.rule;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 public class MockRuleWithDeprecatedProperties extends MockRuleWithNoProperties {
     static final PropertyDescriptor<String> STRING_PROPERTY = PropertyFactory.stringProperty("stringProp")
@@ -25,10 +25,10 @@ public class MockRuleWithDeprecatedProperties extends MockRuleWithNoProperties {
             .build();
 
     private static Map<String, SampleEnum> getDeprecatedMapping() {
-        Map<String, SampleEnum> map = new HashMap<>();
-        map.put("a", SampleEnum.VALUE_A);
-        map.put("b", SampleEnum.VALUE_B);
-        return map;
+        return CollectionUtil.mapOf(
+            "a", SampleEnum.VALUE_A,
+            "b", SampleEnum.VALUE_B
+        );
     }
 
     public MockRuleWithDeprecatedProperties() {

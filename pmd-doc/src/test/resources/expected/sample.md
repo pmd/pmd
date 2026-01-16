@@ -603,9 +603,9 @@ This rule is for testing enum properties
 |Name|Default Value|Description|
 |----|-------------|-----------|
 |enumPropertyNew|optionOne|Description<br>One of: `optionOne`, `optionTwo`|
-|enumListPropertyNew||Description<br>One or more of: `optionOne`, `optionTwo`|
+|enumListPropertyNew||Description<br>Zero or more of: `optionOne`, `optionTwo`|
 |enumProperty|OPTION\_ONE|Description<br>One of: `OPTION\_ONE`, `OPTION\_TWO`|
-|enumListProperty||Description<br>One or more of: `OPTION\_ONE`, `OPTION\_TWO`|
+|enumListProperty||Description<br>Zero or more of: `OPTION\_ONE`, `OPTION\_TWO`|
 
 **Use this rule with the default properties by just referencing it:**
 ``` xml
