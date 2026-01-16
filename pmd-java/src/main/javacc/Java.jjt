@@ -1181,7 +1181,7 @@ void ClassOrInterfaceDeclaration() #ClassDeclaration:
 {}
 {
   ( "class" | "interface" { jjtThis.setInterface(); } )
-  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0)); }
   [ TypeParameters() ]
   [ ExtendsList() ]
   [ ImplementsList() ]
@@ -1215,7 +1215,7 @@ void EnumDeclaration():
 {}
 {
   softKeyword("enum")
-  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0)); }
   [ ImplementsList() ]
   EnumBody()
 }
@@ -1240,7 +1240,7 @@ void RecordDeclaration():
 {}
 {
   softKeyword("record")
-  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
+  <IDENTIFIER> { jjtThis.setSimpleName(getToken(0)); }
   [ TypeParameters() ]
   RecordHeader()
   [ ImplementsList() ]
@@ -2868,7 +2868,7 @@ void TypeAnnotation() #void:
 void AnnotationTypeDeclaration():
 {}
 {
-  "@" "interface" <IDENTIFIER> { jjtThis.setSimpleName(getToken(0).getImage()); }
+  "@" "interface" <IDENTIFIER> { jjtThis.setSimpleName(getToken(0)); }
   AnnotationTypeBody()
 }
 
