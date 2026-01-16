@@ -778,4 +778,48 @@ public interface FooInterface {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>4-4,9-9,14-14,19-19,24-24,32-32,32-32</expected-linenumbers>
+        <code><![CDATA[
+public interface Foo {
+    public
+    int
+    X
+    = 0;
+
+    static
+    int
+    Y
+    = 1;
+
+    public
+    void
+    bar
+    ();
+
+    abstract
+    void
+    baz
+    ();
+
+    public
+    class
+    Bar
+    {}
+}
+
+public class FooClass {
+    final
+    static
+    record
+    BarRecord
+    ()
+    {}
+}
+
+]]></code>
+    </test-code>
 </test-data>
