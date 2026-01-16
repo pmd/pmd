@@ -10,7 +10,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -48,26 +47,26 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
     }
 
-    @Override
-    public Object visit(ASTCompilationUnit cu, Object data) {
-        super.visit(cu, data);
-
-        Integer threshold = getProperty(THRESHOLD_DESCRIPTOR);
-        if (couplingCount > threshold) {
-            asCtx(data).addViolation(cu, couplingCount, threshold);
-        }
-
+    private void resetCounter() {
         couplingCount = 0;
         typesFoundSoFar.clear();
-        return null;
     }
 
     @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        resetCounter();
+
         boolean prev = inInterface;
         inInterface = node.isInterface();
         super.visit(node, data);
         inInterface = prev;
+
+        Integer threshold = getProperty(THRESHOLD_DESCRIPTOR);
+        if (couplingCount > threshold) {
+            asCtx(data).addViolation(node, couplingCount, threshold);
+        }
+
+        resetCounter();
         return null;
     }
 
