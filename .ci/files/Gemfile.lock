@@ -1,3 +1,19 @@
+GIT
+  remote: https://github.com/adangel/pmd-regression-tester.git
+  revision: ebeb272ea1055484b5153296ae199e67b82da828
+  branch: issue-148-violation-location
+  specs:
+    pmdtester (1.6.3.pre.SNAPSHOT)
+      base64 (~> 0.3)
+      bigdecimal (~> 3.2)
+      differ (~> 0.1)
+      liquid (~> 5.8)
+      logger (~> 1.7)
+      logger-colors (~> 1.0)
+      nokogiri (~> 1.18)
+      rufus-scheduler (~> 3.9)
+      slop (~> 4.10)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -18,16 +34,6 @@ GEM
     nokogiri (1.18.10-x86_64-linux-gnu)
       racc (~> 1.4)
     ostruct (0.6.3)
-    pmdtester (1.6.2)
-      base64 (~> 0.3)
-      bigdecimal (~> 3.2)
-      differ (~> 0.1)
-      liquid (~> 5.8)
-      logger (~> 1.7)
-      logger-colors (~> 1.0)
-      nokogiri (~> 1.18)
-      rufus-scheduler (~> 3.9)
-      slop (~> 4.10)
     raabro (1.4.0)
     racc (1.8.1)
     rufus-scheduler (3.9.2)
@@ -44,7 +50,7 @@ DEPENDENCIES
   base64
   logger
   ostruct
-  pmdtester
+  pmdtester!
 
 BUNDLED WITH
    2.6.9
