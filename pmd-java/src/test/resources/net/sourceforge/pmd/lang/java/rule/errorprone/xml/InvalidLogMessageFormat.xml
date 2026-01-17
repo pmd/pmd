@@ -1379,11 +1379,23 @@ public class InvalidLogMessageFormat{
                     return () -> { ex.printStackTrace(); return ex; };
                 }
 
+                private Supplier<Throwable> exceptionSupplier() {
+                    return () -> { throw new RuntimeException(); };
+                }
+
                 public void supplierMethod(Object id) {
                     try {
                         throw new Exception("aaa");
                     } catch (final Exception exception) {
-                        logger.warn("Object with ID {} had a problem.", () -> String.valueOf(id), exceptionHandler(exception));
+                        logger.warn("Object with ID {} had a problem.", () -> String.valueOf(id), () -> exceptionHandler(exception));
+                    }
+                }
+
+                public void supplierMethodReference(Object id) {
+                    try {
+                        throw new Exception("aaa");
+                    } catch (final Exception exception) {
+                        logger.warn("Object with ID {} had a problem.", () -> String.valueOf(id), this::exceptionSupplier);
                     }
                 }
             }

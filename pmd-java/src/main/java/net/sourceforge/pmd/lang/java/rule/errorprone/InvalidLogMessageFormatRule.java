@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -80,7 +81,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
 
             if (providedArguments == 1 && JavaAstUtils.isArrayInitializer(args.getLastChild())) {
                 providedArguments = ((ASTArrayAllocation) args.getLastChild()).getArrayInitializer().length();
-            } else if (isThrowable(args)
+            } else if (isThrowable(args.getLastChild())
                 && providedArguments > expectedArguments) {
                 // Remove throwable param, since it is shown separately.
                 // But only, if it is not used as a placeholder argument
@@ -108,8 +109,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private static boolean isThrowable(ASTArgumentList args) {
-        ASTExpression lastArg = args.getLastChild();
+    private static boolean isThrowable(ASTExpression lastArg) {
         if (TypeTestUtil.isA(Throwable.class, lastArg)) {
             return true;
         }
@@ -118,18 +118,27 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             if (lastArg instanceof ASTLambdaExpression) {
                 ASTExpression expressionBody = ((ASTLambdaExpression) lastArg).getExpressionBody();
                 if (expressionBody != null) {
-                    return TypeTestUtil.isA(Throwable.class, expressionBody);
+                    if (expressionBody instanceof ASTMethodCall) {
+                        return hasThrowableTypeArgument(expressionBody.getTypeMirror());
+                    } else {
+                        return TypeTestUtil.isA(Throwable.class, expressionBody);
+                    }
                 }
                 return lastArg.descendants(ASTReturnStatement.class).all(ret -> TypeTestUtil.isA(Throwable.class, ret.getExpr()));
-            } else if (lastArg instanceof ASTMethodCall) {
-                JTypeMirror typeMirror = lastArg.getTypeMirror();
-                if (typeMirror instanceof JClassType) {
-                    List<JTypeMirror> typeArgs = ((JClassType) typeMirror).getTypeArgs();
-                    return typeArgs.size() == 1 && TypeTestUtil.isA(Throwable.class, typeArgs.get(0));
-                }
+            } else if (lastArg instanceof ASTMethodReference) {
+                JTypeMirror returnType = ((ASTMethodReference) lastArg).getReferencedMethod().getReturnType();
+                return hasThrowableTypeArgument(returnType);
             }
         }
 
+        return false;
+    }
+
+    private static boolean hasThrowableTypeArgument(JTypeMirror type) {
+        if (type instanceof JClassType) {
+            List<JTypeMirror> typeArgs = ((JClassType) type).getTypeArgs();
+            return typeArgs.size() == 1 && TypeTestUtil.isA(Throwable.class, typeArgs.get(0));
+        }
         return false;
     }
 
