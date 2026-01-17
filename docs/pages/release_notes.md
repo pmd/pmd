@@ -79,6 +79,7 @@ checkstyle version during the build.
   * [#5871](https://github.com/pmd/pmd/issues/5871): \[java] Support Java 26
 * java-errorprone
   * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
+  * [#3601](https://github.com/pmd/pmd/issues/3601): \[java] InvalidLogMessageFormat: False positive when final parameter is Supplier<Throwable>
 * java-performance
   * [#3857](https://github.com/pmd/pmd/issues/3857): \[java] InsufficientStringBufferDeclaration: False negatives with String constants
 
