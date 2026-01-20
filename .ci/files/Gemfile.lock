@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/adangel/pmd-regression-tester.git
-  revision: ebeb272ea1055484b5153296ae199e67b82da828
+  revision: 4bf4c90eed48bdba7e7babea1fa793de94ccc70c
   branch: issue-148-violation-location
   specs:
     pmdtester (1.6.3.pre.SNAPSHOT)
