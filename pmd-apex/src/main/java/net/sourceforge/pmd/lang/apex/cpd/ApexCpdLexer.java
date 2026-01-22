@@ -4,40 +4,35 @@
 
 package net.sourceforge.pmd.lang.apex.cpd;
 
-import java.io.IOException;
 import java.util.Locale;
 
 import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.Lexer;
 
-import net.sourceforge.pmd.cpd.CpdLexer;
-import net.sourceforge.pmd.cpd.TokenFactory;
+import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
+import net.sourceforge.pmd.cpd.impl.BaseTokenFilter;
+import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
-import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrTokenManager;
-import net.sourceforge.pmd.lang.document.TextDocument;
 
 import io.github.apexdevtools.apexparser.ApexLexer;
 import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
 
-public class ApexCpdLexer implements CpdLexer {
+public class ApexCpdLexer extends AntlrCpdLexer {
+
     @Override
-    public void tokenize(TextDocument document, TokenFactory tokenEntries) throws IOException {
-
-        CharStream charStream = CharStreams.fromReader(document.newReader());
+    protected Lexer getLexerForSource(CharStream charStream) {
         CaseInsensitiveInputStream caseInsensitiveInputStream = new CaseInsensitiveInputStream(charStream);
-        ApexLexer lexer = new ApexLexer(caseInsensitiveInputStream);
-        AntlrTokenManager tokenManager = new AntlrTokenManager(lexer, document);
+        return new ApexLexer(caseInsensitiveInputStream);
+    }
 
-        AntlrToken token = tokenManager.getNextToken();
+    @Override
+    protected TokenManager<AntlrToken> filterTokenStream(TokenManager<AntlrToken> tokenManager) {
+        return new BaseTokenFilter<>(tokenManager);
+    }
 
-        while (!token.isEof()) {
-            if (token.isDefault()) { // excludes WHITESPACE_CHANNEL and COMMENT_CHANNEL
-                String tokenText = token.getImage();
-                // be case-insensitive
-                tokenText = tokenText.toLowerCase(Locale.ROOT);
-                tokenEntries.recordToken(tokenText, token.getReportLocation());
-            }
-            token = tokenManager.getNextToken();
-        }
+    @Override
+    protected String getImage(AntlrToken token) {
+        // be case-insensitive
+        return token.getImage().toLowerCase(Locale.ROOT);
     }
 }

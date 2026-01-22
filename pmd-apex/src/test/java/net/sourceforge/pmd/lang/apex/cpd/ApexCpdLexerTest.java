@@ -42,4 +42,9 @@ class ApexCpdLexerTest extends CpdTextComparisonTest {
     void caseInsensitiveStringLiterals() {
         doTest("StringLiterals5053");
     }
+
+    @Test
+    void testIgnoreBetweenSpecialComments() {
+        doTest("specialComments");
+    }
 }
