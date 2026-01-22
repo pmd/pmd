@@ -255,4 +255,30 @@ public sealed class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="minimumNumberCaseForASwitch">3</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3-3,11-11</expected-linenumbers>
+        <code><![CDATA[
+public class DumbSwitch {
+    public void foo(int i) {
+        switch // line 3
+        (i) {
+            case 0:
+            {
+                System.err.println("I am a fish.");
+            }
+        }
+        System.out.println(
+            switch // line 11
+            (i) {
+                case 0 -> "fish";
+                default -> "bat";
+            });
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
