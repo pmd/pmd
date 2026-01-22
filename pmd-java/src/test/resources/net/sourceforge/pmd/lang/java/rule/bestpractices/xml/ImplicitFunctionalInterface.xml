@@ -63,4 +63,16 @@ interface Bar extends Foo { // warn
     </test-code>
 
 
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+interface
+Bar // line 2
+{
+    void run();
+}
+        ]]></code>
+    </test-code>
 </test-data>
