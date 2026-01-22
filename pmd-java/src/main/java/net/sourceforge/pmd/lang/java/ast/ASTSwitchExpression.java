@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.ast;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
  * A switch expression, as introduced in Java 12. This node only occurs
@@ -61,5 +62,10 @@ public final class ASTSwitchExpression extends AbstractJavaExpr implements ASTSw
                     .map(ASTSwitchArrowBranch::getRightHandSide)
                     .filterIs(ASTExpression.class)
         );
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        return getFirstToken().getReportLocation();
     }
 }

@@ -77,4 +77,33 @@ sealed interface Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5-5,13-13</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    enum MyEnum { A, B };
+
+    void doSomething(MyEnum e) {
+        switch // line 5
+        (e)
+        {
+            case A -> System.out.println("a");
+            case B -> System.out.println("b");
+            default -> System.out.println("unnecessary default");
+        };
+        String s =
+        switch // line 13
+        (e)
+        {
+            case A -> "a";
+            case B -> "b";
+            default -> "unnecessary default";
+        };
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
