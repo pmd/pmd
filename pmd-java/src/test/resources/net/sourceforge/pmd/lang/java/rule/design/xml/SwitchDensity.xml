@@ -255,4 +255,44 @@ public class SwitchWithRecordPattern {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="minimum">4</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4-4,16-16</expected-linenumbers>
+        <code><![CDATA[
+// Switch Density = 5.0
+public class SwitchDensity1 {
+    public void foo(int i) {
+        switch // line 4
+        (i) {
+            case 0:
+            {
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+            }
+        }
+        String s =
+        switch // line 16
+        (i) {
+            case 0:
+            {
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                System.err.println("I am a fish.");
+                yield "x";
+            }
+            default: yield "y";
+        };
+
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
