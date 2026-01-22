@@ -53,20 +53,37 @@ This is a {{ site.pmd.release_type }} release.
   and [[java] Review reported locations of rules #3769](https://github.com/pmd/pmd/issues/3769). While this effort
   is still ongoing, the following rules have been updated in this release:
   * {% rule java/bestpractices/AbstractClassWithoutAbstractMethod %}
+  * {% rule java/design/AbstractClassWithoutAnyMethod %}
   * {% rule java/codestyle/AtLeastOneConstructor %}
+  * {% rule java/codestyle/AvoidDollarSigns %}
   * {% rule java/errorprone/AvoidCatchingGenericException %}
   * {% rule java/multithreading/AvoidSynchronizedStatement %}
+  * {% rule java/codestyle/ClassNamingConventions %}
   * {% rule java/design/ClassWithOnlyPrivateConstructorsShouldBeFinal %}
   * {% rule java/codestyle/CommentDefaultAccessModifier %}
   * {% rule java/documentation/CommentRequired %}
   * {% rule java/design/CouplingBetweenObjects %}
+  * {% rule java/design/CyclomaticComplexity %}
+  * {% rule java/design/DataClass %}
   * {% rule java/design/ExcessiveImports %}
   * {% rule java/design/ExcessiveParameterList %}
   * {% rule java/design/ExcessivePublicCount %}
+  * {% rule java/bestpractices/ExhaustiveSwitchHasDefault %}
+  * {% rule java/design/GodClass %}
+  * {% rule java/bestpractices/ImplicitFunctionalInterface %}
+  * {% rule java/bestpractices/JUnit5TestShouldBePackagePrivate %}
+  * {% rule java/codestyle/LocalHomeNamingConvention %}
+  * {% rule java/codestyle/LocalInterfaceSessionNamingConvention %}
+  * {% rule java/errorprone/MissingSerialVersionUID %}
+  * {% rule java/errorprone/MissingStaticMethodInNonInstantiatableClass %}
+  * {% rule java/design/NcssCount %}
   * {% rule java/codestyle/NoPackage %}
   * {% rule java/bestpractices/NonExhaustiveSwitch %}
   * {% rule java/codestyle/ShortClassName %}
+  * {% rule java/errorprone/SingleMethodSingleton %}
+  * {% rule java/design/SwitchDensity %}
   * {% rule java/errorprone/TestClassWithoutTestCases %}
+  * {% rule java/performance/TooFewBranchesForSwitch %}
   * {% rule java/design/TooManyFields %}
   * {% rule java/design/TooManyMethods %}
   * {% rule java/codestyle/TooManyStaticImports %}
