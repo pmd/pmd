@@ -548,6 +548,23 @@ public class Foo {
     }
 }
         ]]></code>
+    </test-code>
 
+    <test-code>
+        <description>Verify location of violation (switch, synchronized)</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3-3,6-6</expected-linenumbers>
+        <code><![CDATA[
+public class Empty {
+    public void bar(int x) {
+        switch // line 3
+        (x)
+        {}
+        synchronized // line 6
+        (this)
+        {}
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>
