@@ -113,4 +113,17 @@ public interface IDomainObject<ID extends Serializable & Comparable<? super ID>>
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-4</expected-linenumbers>
+        <code><![CDATA[
+import java.io.Serializable;
+
+public class
+Foo // line 4
+implements Serializable {}
+        ]]></code>
+    </test-code>
 </test-data>
