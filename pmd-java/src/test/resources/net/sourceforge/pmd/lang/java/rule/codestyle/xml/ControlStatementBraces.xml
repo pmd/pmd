@@ -492,4 +492,23 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation (reported on synchronized)</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5-5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    void foo() {
+        int x = 0;
+        if (x == 0)
+            synchronized // line 5
+            (Foo.class)
+            {
+                x++;
+            }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
