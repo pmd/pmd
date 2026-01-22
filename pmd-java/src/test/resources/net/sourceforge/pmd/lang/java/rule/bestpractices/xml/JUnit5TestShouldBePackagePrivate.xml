@@ -129,4 +129,22 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>4-4,8-8</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+public class
+MyTests // line 4
+{
+    @Test
+    public void
+    testRegular // line 8
+    () { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
