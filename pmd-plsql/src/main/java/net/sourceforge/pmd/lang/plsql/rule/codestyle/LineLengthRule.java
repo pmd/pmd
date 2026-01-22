@@ -42,10 +42,9 @@ public class LineLengthRule extends AbstractPLSQLRule {
         int maxLineLength = getProperty(MAX_LINE_LENGTH);
 
         int lineNumber = 1;
-        for (Chars line : node.getText().lines()) {
+        for (Chars line : node.getTextDocument().getText().lines()) {
             if (line.length() > maxLineLength) {
-                asCtx(data).addViolationWithPosition(node, lineNumber, lineNumber,
-                        "The line is too long. Only " + maxLineLength + " characters are allowed.");
+                asCtx(data).atLine(lineNumber).warnWithArgs(line.length(), maxLineLength);
 
                 if (!eachLine) {
                     break;

@@ -2203,9 +2203,9 @@ void MemberSelector() #void :
    */
   {forceExprContext();} QualifiedAllocationExpr()
   // if there are type arguments, this is a method call
-|              (TypeArguments() <IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())   #MethodCall(3)
-| LOOKAHEAD(2) (<IDENTIFIER> {setLastTokenImage(jjtThis);} ArgumentList())                   #MethodCall(2)
-|              (<IDENTIFIER> {setLastTokenImage(jjtThis);})                                  #FieldAccess(1)
+|              (TypeArguments() <IDENTIFIER> {jjtThis.setNameToken(getToken(0));} ArgumentList())   #MethodCall(3)
+| LOOKAHEAD(2) (<IDENTIFIER> {jjtThis.setNameToken(getToken(0));} ArgumentList())                   #MethodCall(2)
+|              (<IDENTIFIER> {setLastTokenImage(jjtThis);})                                         #FieldAccess(1)
 }
 
 void MethodReference() #MethodReference(jjtree.nodeArity() + 1): // LHS is injected

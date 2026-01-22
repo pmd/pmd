@@ -7,6 +7,8 @@ package net.sourceforge.pmd.lang.java.ast;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.impl.javacc.JavaccToken;
+
 /**
  * A method invocation expression. This node represents both qualified (with a left-hand side)
  * and unqualified invocation expressions.
@@ -21,10 +23,21 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class ASTMethodCall extends AbstractInvocationExpr implements QualifiableExpression {
 
+    private JavaccToken nameToken;
+
     ASTMethodCall(int id) {
         super(id);
     }
 
+    void setNameToken(JavaccToken nameToken) {
+        this.nameToken = nameToken;
+        super.setImage(nameToken.getImage());
+    }
+
+    /** Return the token for the method identifier. */
+    public JavaccToken getNameToken() {
+        return nameToken;
+    }
 
     @Override
     public void jjtClose() {
@@ -33,6 +46,7 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
         // we need to set the name.
 
         if (getMethodName() != null || getChild(0) instanceof ASTSuperExpression) {
+            assert nameToken != null;
             return;
         }
 
@@ -44,8 +58,8 @@ public final class ASTMethodCall extends AbstractInvocationExpr implements Quali
 
         fstChild.shrinkOrDeleteInParentSetImage();
 
+        assert nameToken != null;
         assert getMethodName() != null;
-
     }
 
     @Override

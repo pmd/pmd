@@ -156,7 +156,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
      * @return The node that will replace this one.
      */
     private <T extends AbstractJavaNode> T shrinkOneSegment(Function<ASTAmbiguousName, T> simpleNameHandler,
-                                                            BiFunction<ASTAmbiguousName, String, T> splitNameConsumer) {
+                                                            BiFunction<ASTAmbiguousName, JavaccToken, T> splitNameConsumer) {
 
         JavaccToken lastToken = getLastToken();
         JavaccToken firstToken = getFirstToken();
@@ -169,9 +169,7 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
             return res;
         }
 
-        String lastSegment = lastToken.getImage();
-
-        T res = splitNameConsumer.apply(this, lastSegment);
+        T res = splitNameConsumer.apply(this, lastToken);
         // copy coordinates before shrinking
         if (res != null) {
             res.copyTextCoordinates(this);
@@ -202,25 +200,30 @@ public final class ASTAmbiguousName extends AbstractJavaExpr implements ASTRefer
         // this reference and the lambdas can be optimised to a singleton
         shrinkOneSegment(
             simpleName -> {
-                String simpleNameImage = simpleName.getFirstToken().getImage();
                 AbstractJavaNode parent = (AbstractJavaNode) simpleName.getParent();
-                if (parent instanceof ASTClassType) {
-                    ((ASTClassType) parent).setSimpleName(simpleNameImage);
-                } else {
-                    parent.setImage(simpleNameImage);
-                }
+                setNameToken(parent, simpleName.getFirstToken());
                 parent.removeChildAtIndex(simpleName.getIndexInParent());
                 return null;
             },
             (ambig, simpleName) -> {
                 AbstractJavaNode parent = (AbstractJavaNode) ambig.getParent();
-                if (parent instanceof ASTClassType) {
-                    ((ASTClassType) parent).setSimpleName(simpleName);
-                } else {
-                    parent.setImage(simpleName);
-                }
+                setNameToken(parent, simpleName);
                 return null;
             }
         );
+    }
+
+    static void setNameToken(AbstractJavaNode parent, JavaccToken token) {
+        if (parent instanceof ASTMethodCall) {
+            ((ASTMethodCall) parent).setNameToken(token);
+            return;
+        }
+
+        String simpleName = token.getImage();
+        if (parent instanceof ASTClassType) {
+            ((ASTClassType) parent).setSimpleName(simpleName);
+        } else {
+            parent.setImage(simpleName);
+        }
     }
 }
