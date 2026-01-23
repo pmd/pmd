@@ -69,7 +69,9 @@ The jobs are:
 * "compile": First a fast compile job to sort out any basic problems at the beginning. If this job fails, nothing
   else is executed. It also populates the build cache (maven dependencies) that is reused for the following jobs.
   The created artifacts are: "compile-artifact", "staging-repository", "dist-artifact".
-* After this first job, a bunch of other jobs are run in parallel:
+* "spelling": runs the [typos](https://github.com/crate-ci/typos) GitHub action that adds annotations
+  to the pull request/commit for any misspelled word in documentation and source code.
+* After the "compile" job, a bunch of other jobs are run in parallel:
     - "verify": runs a complete `./mvnw verify` with all code checks like checkstyle, japicmp, javadoc, etc.
       but excluding unit tests (these are run in a separate job).
       This job is only run on linux. It reuses the already compiled artifacts from the first "compile" job.
