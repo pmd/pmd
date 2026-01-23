@@ -793,9 +793,9 @@ jobs:
           COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
         run: |
           # note: generate-sources is needed, so that antlr4 generated directories are on the compileSourceRoots
-          # compile is needed to that dependency resolution within this multi-module build works
+          # test-compile is needed to that dependency resolution within this multi-module build works
           ./mvnw \
               --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
-              generate-sources compile \
+              generate-sources test-compile \
               coveralls:report -DrepoToken="${COVERALLS_REPO_TOKEN}" -Pcoveralls,fastSkip
