@@ -72,6 +72,44 @@ class UnconditionalIfStatementBug {
     </test-code>
 
     <test-code>
+        <description>#5882 false-negative if true/false is not literal but local variable negated</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class UnconditionalIfStatementBug {
+    public static void main(String[] args) {
+        boolean condition = true;
+        if (!condition) {            // violation line 4
+            System.out.println("This will never print.");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5882 false-negative if true/false is not literal but local variable nested</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>6,7,8</expected-linenumbers>
+        <code><![CDATA[
+class UnconditionalIfStatementBug {
+    public static void main(String[] args) {
+        boolean b1 = true;
+        boolean b2 = false;
+        boolean b3 = true;
+        if (b1) {               // violation line 6
+            if (!b2) {          // violation line 7
+                if (b3) {       // violation line 8
+                    System.out.println("This will always print.");
+                }
+            }
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
         <description>#5882 false-positive if true/false is not literal but local variable modified</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
