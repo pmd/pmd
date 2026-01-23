@@ -7,7 +7,7 @@
     "docs/pages/pmd/projectdocs/credits.md"
   ],
   "imageSize": 100,
-  "commit": true,
+  "commit": false,
   "commitConvention": "none",
   "contributors": [
     {
@@ -7796,7 +7796,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/48957581?v=4",
       "profile": "https://github.com/lukasgraef",
       "contributions": [
-        "code"
+        "code",
+        "bug"
       ]
     },
     {
@@ -8362,6 +8363,69 @@
       "profile": "https://github.com/frankk3",
       "contributions": [
         "bug"
+      ]
+    },
+    {
+      "login": "FabioMarangonSMI",
+      "name": "FabioMarangonSMI",
+      "avatar_url": "https://avatars.githubusercontent.com/u/74663033?v=4",
+      "profile": "https://github.com/FabioMarangonSMI",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "Frettman",
+      "name": "Patrick Schmidt",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24453813?v=4",
+      "profile": "https://github.com/Frettman",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "sarser2048",
+      "name": "sarser.eth",
+      "avatar_url": "https://avatars.githubusercontent.com/u/120093137?v=4",
+      "profile": "https://github.com/sarser2048",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "styurin",
+      "name": "Sergey Tyurin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2167790?v=4",
+      "profile": "https://github.com/styurin",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "gianmarcoschifone",
+      "name": "Gianmarco",
+      "avatar_url": "https://avatars.githubusercontent.com/u/133696105?v=4",
+      "profile": "https://github.com/gianmarcoschifone",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "mdhamed238",
+      "name": "Mohamed Hamed",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79021260?v=4",
+      "profile": "https://www.mdhamed.dev/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "metalshark",
+      "name": "Beech Horn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/146708?v=4",
+      "profile": "https://github.com/metalshark",
+      "contributions": [
+        "doc"
       ]
     }
   ],

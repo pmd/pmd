@@ -1150,8 +1150,8 @@ public class Foo {
             By setting the property `typeAnnotations`, you can also enforce that type
             annotations appear right of the modifier keywords, next to the type they apply to.
             This property can have three values:
-            - `ontype`: Type annotations must be placed next to the type they apply to
-            - `ondecl`: Type annotations must be placed with other annotations, before modifiers.
+            - `onType`: Type annotations must be placed next to the type they apply to
+            - `onDecl`: Type annotations must be placed with other annotations, before modifiers.
             This is not enforced if the type annotations syntactically appears within the type, e.g.
             in `public Map.@Nullable Entry&lt;K,V&gt; method()` or `public &lt;T&gt; @NonNull T method()`.
             - `anywhere` (default): Either position fits. They still cannot be interspersed within keyword

@@ -24,41 +24,112 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
-### 🌟️ Changed Rules
-* The Java rule {%rule java/codestyle/OnlyOneReturn %} has a new property `ignoredMethodNames`. This property by
-  default is set to `compareTo` and `equals`, thus this rule now by default allows multiple return statements
-  for these methods. To restore the old behavior, simply set this property to an empty value.
+#### 🚀️ New: Java 26 Support
+This release of PMD brings support for Java 26.
+
+There are no new standard language features.
+
+There is one preview language feature:
+* [JEP 530: Primitive Types in Patterns, instanceof, and switch (Fourth Preview)](https://openjdk.org/jeps/530)
+
+In order to analyze a project with PMD that uses these preview language features,
+you'll need to select the new language version `26-preview`:
+
+    pmd check --use-version java-26-preview ...
+
+Note: Support for Java 24 preview language features have been removed. The version "24-preview"
+is no longer available.
+
+#### Changed Rules
+The following rules have been changed to use a consistent implementation of enum based
+rule properties:
+* The property `checkAddressTypes` of rule {%rule java/bestpractices/AvoidUsingHardCodedIP %} has changed:
+  * Instead of `IPv4` use `ipv4`
+  * Instead of `IPv6` use `ipv6`
+  * Instead of `IPv4 mapped IPv6` use `ipv4MappedIpv6`
+  * The old values still work, but you'll see a deprecation warning.
+* The property `nullCheckBranch` of rule {%rule java/codestyle/ConfusingTernary %} has changed:
+  * Instead of `Any` use `any`
+  * Instead of `Then` use `then`
+  * Instead of `Else` use `else`
+  * The old values still work, but you'll see a deprecation warning.
+* The property `typeAnnotations` of rule {%rule java/codestyle/ModifierOrder %} has changed:
+  * Instead of `ontype` use `onType`
+  * Instead of `ondecl` use `onDecl`
+  * The old values still work, but you'll see a deprecation warning.
+* The values of the properties of rule {%rule java/documentation/CommentRequired %} have changed:
+  * Instead of `Required` use `required`
+  * Instead of `Ignored` use `ignored`
+  * Instead of `Unwanted` use `unwanted`
+  * The old values still work, but you'll see a deprecation warning.
+
+#### Build Requirement is Java 21
+From now on, Java 21 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
+so that it still can be used in a pure Java 8 environment. This allows us to use the latest
+checkstyle version during the build.
 
 ### 🐛️ Fixed Issues
 * core
-  * [#6330](https://github.com/pmd/pmd/issues/6330): \[core] "Unable to create ValueRepresentation" when using @<!-- -->LiteralText (XPath)
+  * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
+* apex-codestyle
+  * [#6349](https://github.com/pmd/pmd/issues/6349): \[apex] FieldDeclarationsShouldBeAtStart: False positive with properties
+* cli
+  * [#6290](https://github.com/pmd/pmd/issues/6290): \[cli] Improve Designer start script
 * java
-  * [#6299](https://github.com/pmd/pmd/issues/6299): \[java] Fix grammar of switch label
-* java-bestpractices
-  * [#4282](https://github.com/pmd/pmd/issues/4282): \[java] GuardLogStatement: False positive when guard is not a direct parent
-  * [#6028](https://github.com/pmd/pmd/issues/6028): \[java] UnusedPrivateMethod: False positive with raw type for generic method
-  * [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
-  * [#6291](https://github.com/pmd/pmd/issues/6291): \[java] EnumComparison: False positive for any object when object.equals(null)
-  * [#6328](https://github.com/pmd/pmd/issues/6328): \[java] UnusedLocalVariable: False positive for pattern variable in for-each without braces
-* java-codestyle
-  * [#4257](https://github.com/pmd/pmd/issues/4257): \[java] OnlyOneReturn: False positive with equals method
-  * [#5043](https://github.com/pmd/pmd/issues/5043): \[java] LambdaCanBeMethodReference: False positive on overloaded methods
-  * [#6237](https://github.com/pmd/pmd/issues/6237): \[java] UnnecessaryCast: ContextedRuntimeException when parsing switch expression with lambdas
-  * [#6279](https://github.com/pmd/pmd/issues/6279): \[java] EmptyMethodInAbstractClassShouldBeAbstract: False positive for final empty methods
-  * [#6284](https://github.com/pmd/pmd/issues/6284): \[java] UnnecessaryConstructor: False positive for JavaDoc-bearing constructor
+  * [#5871](https://github.com/pmd/pmd/issues/5871): \[java] Support Java 26
 * java-errorprone
-  * [#6276](https://github.com/pmd/pmd/issues/6276): \[java] NullAssignment: False positive when assigning null to a final field in a constructor
-  * [#6343](https://github.com/pmd/pmd/issues/6343): \[java] MissingStaticMethodInNonInstantiatableClass: False negative when method in nested class returns null
+  * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
 * java-performance
-  * [#4910](https://github.com/pmd/pmd/issues/4910): \[java] ConsecutiveAppendsShouldReuse: False positive within if-statement without curly braces
-  * [#5877](https://github.com/pmd/pmd/issues/5877): \[java] AvoidArrayLoops: False negative when break inside switch statement
-* maintenance
-  * [#6230](https://github.com/pmd/pmd/issues/6230): \[core] Single module snapshot build fails
+  * [#3857](https://github.com/pmd/pmd/issues/3857): \[java] InsufficientStringBufferDeclaration: False negatives with String constants
 
 ### 🚨️ API Changes
 
-#### Experimental API
-* pmd-java: {%jdoc !!java::lang.java.types.OverloadSelectionResult#hadSeveralApplicableOverloads()%}
+#### Deprecations
+* core
+  * {%jdoc !!core::lang.metrics.MetricOption#valueName() %}: When metrics are used for (rule) properties,
+    then the conventional enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
+    See {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %}.
+  * In {%jdoc core::properties.PropertyFactory %}:
+    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.util.Map) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
+    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.lang.Class) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
+    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.lang.Class, java.util.function.Function) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
+    * {%jdoc !a!core::properties.PropertyFactory#enumListProperty(java.lang.String, java.util.Map) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %} instead.
+    * {%jdoc !a!core::properties.PropertyFactory#enumListProperty(java.lang.String, java.lang.Class, java.util.function.Function) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %} instead.
+* java
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_FOR %}. This constant should
+    have never been public.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_DO %}. This constant should
+    have never been public.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_WHILE %}. This constant should
+    have never been public.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_BREAK_LOOP_TYPES %}. This property
+    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
+    on the rule to retrieve the property descriptor.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_CONTINUE_LOOP_TYPES %}. This property
+    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
+    on the rule to retrieve the property descriptor.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_RETURN_LOOP_TYPES %}. This property
+    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
+    on the rule to retrieve the property descriptor.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#check(core::properties.PropertyDescriptor, core::lang.ast.Node, java.lang.Object) %}.
+    This method should have been private and will be internalized.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#hasPropertyValue(core::properties.PropertyDescriptor, java.lang.String) %}.
+    This method should have been private and will be internalized.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#checksNothing() %}.
+    This method should have been private and will be internalized.
+  * {%jdoc !!java::lang.java.metrics.JavaMetrics.ClassFanOutOption#valueName() %},
+    {%jdoc !!java::lang.java.metrics.JavaMetrics.CycloOption#valueName() %},
+    {%jdoc !!java::lang.java.metrics.JavaMetrics.NcssOption#valueName() %}
+* lang-test
+  * {%jdoc !c!lang-test::lang.test.AbstractMetricTestRule#optionMappings() %}. No extra mapping is required anymore.
+    The {%jdoc core::lang.metrics.MetricOption %} enum values are used. See 
+    {%jdoc !a!lang-test::lang.test.AbstractMetricTestRule#AbstractMetricTestRule(core::lang.metrics.Metric, java.lang.Class) %}
+    to provide the enum at construction time.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -70,3 +141,4 @@ This is a {{ site.pmd.release_type }} release.
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
+

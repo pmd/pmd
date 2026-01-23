@@ -27,8 +27,8 @@ jobs:
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
-          java-version: '17'
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
+          java-version: '21'
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 #v5.0.2
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -85,8 +85,8 @@ jobs:
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
-          java-version: '17'
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
+          java-version: '21'
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 #v5.0.2
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -130,18 +130,18 @@ jobs:
           java-version: |
             8
             11
-            21
+            17
             25
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
-        # default java version for all os is 17
+        # default java version for all os is 21
         with:
           distribution: 'temurin'
-          java-version: '17'
+          java-version: '21'
       # only restore the cache, don't create a new cache
       # Note: this works under Windows only if pom.xml files use LF, so that hashFiles('**/pom.xml')
       # gives the same result (line endings...).
       # see .gitattributes for pom.xml - it should always be using lf.
-      - uses: actions/cache/restore@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
+      - uses: actions/cache/restore@8b402f58fbc84540c8b491a91e594a4576fec3d7 #v5.0.2
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -161,7 +161,7 @@ jobs:
               -PfastSkip -Dcyclonedx.skip=false \
               -Djava8.home="${JAVA_HOME_8_X64}" \
               -Djava11.home="${JAVA_HOME_11_X64}" \
-              -Djava21.home="${JAVA_HOME_21_X64}" \
+              -Djava17.home="${JAVA_HOME_17_X64}" \
               -Djava25.home="${JAVA_HOME_25_X64}"
 
   dogfood:
@@ -176,8 +176,8 @@ jobs:
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
-          java-version: '17'
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
+          java-version: '21'
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 #v5.0.2
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -262,8 +262,8 @@ jobs:
       - uses: actions/setup-java@f2beeb24e141e01a676f977032f5a29d81c9e27e #v5.1.0
         with:
           distribution: 'temurin'
-          java-version: '17'
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
+          java-version: '21'
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 #v5.0.2
         with:
           key: maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: maven-
@@ -280,7 +280,7 @@ jobs:
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -Dassembly.skipAssembly=true
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b #v1.275.0
+        uses: ruby/setup-ruby@90be1154f987f4dc0fe0dd0feedac9e473aa4ba8 #v1.286.0
         with:
           ruby-version: 3.3
       - name: Setup bundler
@@ -319,12 +319,12 @@ jobs:
           distribution: 'temurin'
           java-version: |
             11
-            17
+            21
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@d354de180d0c9e813cfddfcbdc079945d4be589b #v1.275.0
+        uses: ruby/setup-ruby@90be1154f987f4dc0fe0dd0feedac9e473aa4ba8 #v1.286.0
         with:
           ruby-version: 3.3
-      - uses: actions/cache@9255dc7a253b0ccc959486e2bca901246202afeb #v5.0.1
+      - uses: actions/cache@8b402f58fbc84540c8b491a91e594a4576fec3d7 #v5.0.2
         with:
           path: |
             ~/.m2/repository

@@ -741,19 +741,19 @@ class VfDocStyleTest extends AbstractVfTest {
     private static final String TEST_MULTIPLE_NESTED_TAGS = "<html> <a1> <a2> <a3> </a2> </a1> <b/> <a4/> </html>";
 
     /**
-     * </x> will close before </a>, thus leaving <a> to remain unclosed
+     * &lt;/x&gt; will close before &lt;/a&gt;, thus leaving &lt;a&gt; to remain unclosed
      */
     private static final String TEST_UNCLOSED_END_AFTER_PARENT_CLOSE = "<x> <a> <b> <b> </x> </a> aa </x> bb </x>";
 
     /**
-     * </z> is just a dangling closing tag not matching any parent. The parser
+     * &lt;/z&gt; is just a dangling closing tag not matching any parent. The parser
      * should disregard it
      */
     private static final String TEST_UNCLOSED_UNMATCHED_CLOSING_TAG = "<x> <a> <b> <b> </z> </a> </x>";
 
     /**
-     * First <a> tag does not close. The first closing of </a> will match the
-     * second opening of a. Another rogue </z> is there for testing compliance
+     * First &lt;a&gt; tag does not close. The first closing of &lt;/a&gt; will match the
+     * second opening of a. Another rogue &lt;/z&gt; is there for testing compliance
      */
     private static final String TEST_UNCLOSED_START_TAG_WITH_UNMATCHED_CLOSE = "<a> <x> <a> <b> <b> </z> </a> </x>";
 

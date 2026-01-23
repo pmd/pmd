@@ -3,7 +3,7 @@ title: Adding PMD support for a new ANTLR grammar based language
 short_title: Adding a new language with ANTLR
 tags: [devdocs, extending]
 summary: "How to add a new language to PMD using ANTLR grammar."
-last_updated: December 2023 (7.0.0)
+last_updated: April 2025 (7.13.0)
 sidebar: pmd_sidebar
 permalink: pmd_devdocs_major_adding_new_language_antlr.html
 folder: pmd/devdocs

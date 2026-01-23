@@ -3234,6 +3234,14 @@ Do not use "if" statements whose conditionals are always true or always false.
                 <value>
  <![CDATA[
 //IfStatement[BooleanLiteral[1]]
+union
+//IfStatement/(VariableAccess|UnaryExpression[@Operator = '!']/VariableAccess)/self::VariableAccess[@CompileTimeConstant = false()]
+[@Name = ancestor::IfStatement
+         /preceding-sibling::LocalVariableDeclaration[PrimitiveType[@Kind = "boolean"]]
+         /VariableDeclarator[@Initializer = true()][BooleanLiteral]
+         /@Name]
+(: var is only initialized with a literal and used only with the if statement, there is no other var access :)
+[let $name := @Name return count(ancestor::Block//VariableAccess[@Name = $name]) = 1]
 ]]>
                 </value>
             </property>
