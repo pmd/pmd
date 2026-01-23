@@ -1544,12 +1544,20 @@ public class Foo {
 
     <test-code>
         <description>Ignore values used in conditional part of conditional expression</description>
-        <expected-problems>0</expected-problems>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuilder has been initialized with size 0, but has at least 14 characters appended.</message>
+        </expected-messages>
         <code><![CDATA[
 public class Foo {
+    private static final String CONST = "1";
     public void bar(String s) {
-        StringBuilder builder = new StringBuilder(1);
-        builder.append(s != null ? "1" : "");
+        StringBuilder builder = new StringBuilder(0);
+        builder.append(s != null ? "4444" : "333");
+        builder.append(s.equals("55555") ? "333" : "4444");
+        builder.append(s.equals("55555") ? "333" : CONST);
+        builder.append(s.equals("55555") ? CONST : "333");
     }
 }
 ]]></code>

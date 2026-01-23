@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
@@ -16,12 +15,14 @@ import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
@@ -160,26 +161,22 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     private void processMethodCall(State state, ASTMethodCall methodCall) {
         if ("append".equals(methodCall.getMethodName())) {
             Set<ASTLiteral> literals = collectArgumentsOfType(methodCall, ASTLiteral.class);
-            ToIntFunction<ASTLiteral> literalCounter = value -> String.valueOf(value.getConstValue()).length();
-            int literalsCount = literals.stream().mapToInt(value -> calculateExpectedLength(value, literalCounter)).sum();
+            int literalsCount = literals.stream().mapToInt(value -> calculateExpectedLength(value)).sum();
 
             Set<ASTVariableAccess> variables = collectArgumentsOfType(methodCall, ASTVariableAccess.class);
-            ToIntFunction<ASTVariableAccess> variablesCounter = value -> Optional.ofNullable(value.getConstFoldingResult().getValue())
-                    .map(constValue -> String.valueOf(constValue).length())
-                    .orElse(0);
-            int variablesCount = variables.stream().mapToInt(value -> calculateExpectedLength(value, variablesCounter)).sum();
+            int variablesCount = variables.stream().mapToInt(value -> calculateExpectedLength(value)).sum();
 
             int counter = literalsCount + variablesCount;
             ASTIfStatement ifStatement = methodCall.ancestors(ASTIfStatement.class).first();
-            ASTSwitchStatement switchStatement = methodCall.ancestors(ASTSwitchStatement.class).first();
+            ASTSwitchBranch switchBranch = methodCall.ancestors(ASTSwitchBranch.class).first();
             if (ifStatement != null) {
                 if (ifStatement.getThenBranch().descendants().any(n -> n == methodCall)) {
                     state.addBranch(ifStatement.getThenBranch(), counter);
                 } else if (ifStatement.getElseBranch() != null) {
                     state.addBranch(ifStatement.getElseBranch(), counter);
                 }
-            } else if (switchStatement != null) {
-                state.addBranch(methodCall.ancestors(ASTSwitchBranch.class).first(), counter);
+            } else if (switchBranch != null) {
+                state.addBranch(switchBranch, counter);
             } else {
                 state.addAnticipatedLength(counter);
             }
@@ -201,12 +198,39 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         }
     }
 
-    private static <T extends ASTExpression> int calculateExpectedLength(T expression, ToIntFunction<T> countingStrategy) {
+    private static int countExpression(ASTExpression expr) {
+        return Optional.of(expr.getConstFoldingResult())
+                .map(ASTExpression.ConstResult::getValue)
+                .map(String::valueOf)
+                .map(String::length)
+                .orElse(0);
+    }
+
+    private static int calculateExpectedLength(ASTExpression expression) {
+        if (expression instanceof ASTNullLiteral) {
+            return "null".length();
+        }
         if (expression.getParent() instanceof ASTCastExpression
                 && TypeTestUtil.isA(char.class, (ASTCastExpression) expression.getParent())) {
             return 1;
         }
-        return countingStrategy.applyAsInt(expression);
+        if (expression.getParent() instanceof ASTConditionalExpression) {
+            ASTConditionalExpression conditionalExpression = (ASTConditionalExpression) expression.getParent();
+            final ASTExpression other;
+            if (expression == conditionalExpression.getThenBranch()) {
+                other = conditionalExpression.getElseBranch();
+            } else {
+                other = conditionalExpression.getThenBranch();
+            }
+            int thisExpression = countExpression(expression);
+            int otherExpression = countExpression(other);
+            if (thisExpression > otherExpression) {
+                return thisExpression;
+            } else {
+                return 0;
+            }
+        }
+        return countExpression(expression);
     }
 
     private static <T extends ASTExpression> Set<T> collectArgumentsOfType(ASTMethodCall methodCall, Class<T> type) {
@@ -219,7 +243,12 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                         .descendants(type),
                 // cast expressions
                 methodCall.getArguments().children(ASTCastExpression.class)
-                        .children(type)
+                        .children(type),
+                // conditional expression
+                methodCall.getArguments().children(ASTConditionalExpression.class)
+                        .children()
+                        .drop(1) // drop condition
+                        .filterIs(type)
             ).collect(Collectors.toSet());
     }
 
