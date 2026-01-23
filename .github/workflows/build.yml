@@ -73,6 +73,16 @@ jobs:
             pmd-dist/target/pmd-*-cyclonedx.xml
             pmd-dist/target/pmd-*-cyclonedx.json
 
+  spelling:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+      - name: Spell Check Repo
+        uses: crate-ci/typos@65120634e79d8374d1aa2f27e54baa0c364fff5a #v1.42.1
+        with:
+          config: .ci/files/typos.toml
+
   verify:
     needs: compile
     timeout-minutes: 30
