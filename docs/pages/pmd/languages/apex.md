@@ -1,7 +1,7 @@
 ---
 title: Apex support
 permalink: pmd_languages_apex.html
-last_updated: September 2023 (7.0.0)
+last_updated: March 2024 (7.0.0)
 author: Clément Fournier
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
 summary: "Apex-specific features and guidance"
