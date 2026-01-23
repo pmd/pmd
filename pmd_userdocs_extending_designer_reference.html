@@ -2036,31 +2036,35 @@
 <p>The designer is part of PMD’s binary distributions. To <strong>install a distribution</strong>, see the
 <a href="pmd_userdocs_installation.html">documentation page about installing PMD</a>.</p>
 
-<p>The designer still works with Java 8 from Oracle, which includes JavaFX. If you use this Java version, then
-all is set. However, it is recommended to use OpenJDK along with OpenJFX. The recommended Java Runtime is
+<p>The designer still works with Java 8 from Oracle, which includes JavaFX up until Java 8u441. It also works
+with Java 8+ from Azul (Zulu JDK FX) or Bellsoft (Liberica Full JDK) which also include JavaFX.
+Note: The latest Java 8 from Oracle does <em>not</em> include JavaFX anymore, see <a href="https://www.oracle.com/javase/javafx/">https://www.oracle.com/javase/javafx/</a>.</p>
+
+<p>If you use a Java version, which includes JavaFX, then all is set.</p>
+
+<p>However, it is recommended to use OpenJDK along with OpenJFX. The recommended Java Runtime is
 Java 11 (or later) with OpenJFX 17 (or later).</p>
 
 <p>You can get OpenJDK from <a href="https://adoptium.net">Adoptium</a>, <a href="https://www.azul.com/downloads/#zulu">Azul</a>,
+<a href="https://bell-sw.com/pages/downloads/">Bellsoft</a>,
 <a href="https://learn.microsoft.com/en-us/java/openjdk/download">Microsoft</a>, <a href="https://sap.github.io/SapMachine/">SAP</a>,
-<a href="https://downloads.corretto.aws/#/overview">Amazon</a> and other OpenJDK vendors.
-Note: Azul provides a JDK which includes JavaFX - this variant is currently not supported. You always need
-to install OpenJFX separately.</p>
+<a href="https://downloads.corretto.aws/#/overview">Amazon</a> and other OpenJDK vendors.</p>
 
 <p><a href="https://openjfx.io/">OpenJFX</a> is available from <a href="https://gluonhq.com/products/javafx/">JavaFX download page</a>.
 You need the SDK. Extract the zip file, and set the <code class="language-plaintext highlighter-rouge">JAVAFX_HOME</code> environment variable to the extracted
-directory. It should be the directory, that contain the sub-folder “lib” in it.</p>
+directory. It should be the directory, that contains the sub-folder “lib” in it.</p>
 
 <p>Example (for linux x64 only, with Java 21 and OpenJFX 21):</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir</span> <span class="nv">$HOME</span>/openjdk
 <span class="nv">$ </span><span class="nb">cd</span> <span class="nv">$HOME</span>/openjdk
-<span class="nv">$ </span>wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.2%2B13/OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz
-<span class="nv">$ </span><span class="nb">tar </span>xfz OpenJDK21U-jdk_x64_linux_hotspot_21.0.2_13.tar.gz
-<span class="nv">$ </span><span class="nb">export </span><span class="nv">JAVA_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/openjdk/jdk-21.0.2+13
+<span class="nv">$ </span>wget https://github.com/adoptium/temurin21-binaries/releases/download/jdk-21.0.9%2B10/OpenJDK21U-jdk_x64_linux_hotspot_21.0.9_10.tar.gz
+<span class="nv">$ </span><span class="nb">tar </span>xfz OpenJDK21U-jdk_x64_linux_hotspot_21.0.9_10.tar.gz
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">JAVA_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/openjdk/jdk-21.0.9+10
 <span class="nv">$ </span><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$JAVA_HOME</span>/bin:<span class="nv">$PATH</span>
-<span class="nv">$ </span>wget https://download2.gluonhq.com/openjfx/21.0.2/openjfx-21.0.2_linux-x64_bin-sdk.zip
-<span class="nv">$ </span>unzip <span class="nt">-q</span> openjfx-21.0.2_linux-x64_bin-sdk.zip
-<span class="nv">$ </span><span class="nb">export </span><span class="nv">JAVAFX_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/openjdk/javafx-sdk-21.0.2
+<span class="nv">$ </span>wget https://download2.gluonhq.com/openjfx/21.0.9/openjfx-21.0.9_linux-x64_bin-sdk.zip
+<span class="nv">$ </span>unzip <span class="nt">-q</span> openjfx-21.0.9_linux-x64_bin-sdk.zip
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">JAVAFX_HOME</span><span class="o">=</span><span class="nv">$HOME</span>/openjdk/javafx-sdk-21.0.9
 </code></pre></div></div>
 
 <p>If the bin directory of your PMD distribution is on your shell’s path, then you can then <strong>launch the app</strong> with</p>
@@ -2391,7 +2395,7 @@ explained in <a href="pmd_userdocs_extending_testing.html#where-to-place-the-tes
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            April 2025 (7.13.0)<br /> Site last generated: Jan 23, 2026 <br />
+            January 2026 (7.21.0)<br /> Site last generated: Jan 23, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
