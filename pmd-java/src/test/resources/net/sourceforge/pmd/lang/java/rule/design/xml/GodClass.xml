@@ -4,35 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-    <test-code>
-        <description>Simple god class</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Foreigner {
-    public int data;
-    private double other;
-
-    public void getData() {
-        return data;
-    }
-
-    public void setData(int data) {
-        this.data = data;
-    }
-
-    public double getOther() {
-        return other;
-    }
-
-    public void setOther(double other) {
-        this.other = other;
-    }
-
-    public void someOtherNonDataMethod() {
-    }
-}
-
-public class Foo {
+    <code-fragment id="simple-god-class"><![CDATA[
+public class
+Foo
+{
     int myown = 2;
 
     private int somePrivateFunction() {
@@ -127,7 +102,35 @@ public class Foo {
         }
     }
 }
-        ]]></code>
+class Foreigner {
+    public int data;
+    private double other;
+
+    public void getData() {
+        return data;
+    }
+
+    public void setData(int data) {
+        this.data = data;
+    }
+
+    public double getOther() {
+        return other;
+    }
+
+    public void setOther(double other) {
+        this.other = other;
+    }
+
+    public void someOtherNonDataMethod() {
+    }
+}
+]]></code-fragment>
+
+    <test-code>
+        <description>Simple god class</description>
+        <expected-problems>1</expected-problems>
+        <code-ref id="simple-god-class"/>
     </test-code>
 
     <test-code>
@@ -178,5 +181,12 @@ public class Pack implements IPack {
     }
 }
         ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code-ref id="simple-god-class"/>
     </test-code>
 </test-data>

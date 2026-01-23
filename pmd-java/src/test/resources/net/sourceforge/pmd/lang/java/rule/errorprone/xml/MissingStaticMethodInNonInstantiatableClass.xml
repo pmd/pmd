@@ -662,4 +662,18 @@ public class MyClass {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+public class
+Foo
+{
+    private Foo() {}
+    public void bar() {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

@@ -6,6 +6,8 @@ package net.sourceforge.pmd.lang.java.ast;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.document.FileLocation;
+
 /**
  * A class declaration added by the compiler implicitly in a compact compilation unit (see JEP 512, Java 25).
  *
@@ -35,5 +37,11 @@ public final class ASTImplicitClassDeclaration extends AbstractTypeDeclaration {
     @Override
     public @NonNull String getSimpleName() {
         return "";
+    }
+
+    @Override
+    public FileLocation getReportLocation() {
+        // implicit class has no simpleName token
+        return getAstInfo().getTextDocument().toLocation(getTextRegion());
     }
 }

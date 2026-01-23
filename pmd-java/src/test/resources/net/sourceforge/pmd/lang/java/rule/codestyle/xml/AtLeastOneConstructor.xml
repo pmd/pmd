@@ -190,4 +190,17 @@ public class TestAtLeastOneConstructor {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-3</expected-linenumbers>
+        <code><![CDATA[
+public
+class
+Foo
+{
+}
+        ]]></code>
+    </test-code>
 </test-data>

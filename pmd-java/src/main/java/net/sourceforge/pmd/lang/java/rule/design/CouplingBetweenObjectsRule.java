@@ -6,11 +6,12 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
-import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
@@ -40,34 +41,28 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
                          .desc("Unique type reporting threshold")
                          .require(positive()).defaultValue(20).build();
 
-    private int couplingCount;
     private boolean inInterface;
-    private final Set<JTypeMirror> typesFoundSoFar = new HashSet<>();
+    private final Deque<Set<JTypeMirror>> encounteredTypes = new ArrayDeque<>();
 
     public CouplingBetweenObjectsRule() {
         definePropertyDescriptor(THRESHOLD_DESCRIPTOR);
     }
 
     @Override
-    public Object visit(ASTCompilationUnit cu, Object data) {
-        super.visit(cu, data);
-
-        Integer threshold = getProperty(THRESHOLD_DESCRIPTOR);
-        if (couplingCount > threshold) {
-            asCtx(data).addViolation(cu, couplingCount, threshold);
-        }
-
-        couplingCount = 0;
-        typesFoundSoFar.clear();
-        return null;
-    }
-
-    @Override
     public Object visit(ASTClassDeclaration node, Object data) {
+        encounteredTypes.push(new HashSet<>());
         boolean prev = inInterface;
         inInterface = node.isInterface();
         super.visit(node, data);
         inInterface = prev;
+
+        Integer threshold = getProperty(THRESHOLD_DESCRIPTOR);
+        int count = encounteredTypes.peek().size();
+        if (count > threshold) {
+            asCtx(data).addViolation(node, count, threshold);
+        }
+
+        encounteredTypes.pop();
         return null;
     }
 
@@ -112,8 +107,8 @@ public class CouplingBetweenObjectsRule extends AbstractJavaRule {
         // if the field is of any type other than the class type
         // increment the count
         JTypeMirror t = typeNode.getTypeMirror();
-        if (!this.ignoreType(typeNode, t) && this.typesFoundSoFar.add(t)) {
-            couplingCount++;
+        if (!this.ignoreType(typeNode, t) && !encounteredTypes.isEmpty()) {
+            encounteredTypes.peek().add(t);
         }
     }
 

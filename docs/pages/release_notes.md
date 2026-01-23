@@ -23,29 +23,72 @@ This is a {{ site.pmd.release_type }} release.
 {% tocmaker is_release_notes_processor %}
 
 ### 🚀️ New and noteworthy
-
-#### Changed Rules
-The following rules have been changed to use a consistent implementation of enum based
-rule properties:
-* The property `checkAddressTypes` of rule {%rule java/bestpractices/AvoidUsingHardCodedIP %} has changed:
-  * Instead of `IPv4` use `ipv4`
-  * Instead of `IPv6` use `ipv6`
-  * Instead of `IPv4 mapped IPv6` use `ipv4MappedIpv6`
-  * The old values still work, but you'll see a deprecation warning.
-* The property `nullCheckBranch` of rule {%rule java/codestyle/ConfusingTernary %} has changed:
-  * Instead of `Any` use `any`
-  * Instead of `Then` use `then`
-  * Instead of `Else` use `else`
-  * The old values still work, but you'll see a deprecation warning.
-* The property `typeAnnotations` of rule {%rule java/codestyle/ModifierOrder %} has changed:
-  * Instead of `ontype` use `onType`
-  * Instead of `ondecl` use `onDecl`
-  * The old values still work, but you'll see a deprecation warning.
-* The values of the properties of rule {%rule java/documentation/CommentRequired %} have changed:
-  * Instead of `Required` use `required`
-  * Instead of `Ignored` use `ignored`
-  * Instead of `Unwanted` use `unwanted`
-  * The old values still work, but you'll see a deprecation warning.
+#### 🌟️ Changed Rules
+* Rule property changes
+  The following rules have been changed to use a consistent implementation of enum based
+  rule properties:
+  * The property `checkAddressTypes` of rule {%rule java/bestpractices/AvoidUsingHardCodedIP %} has changed:
+    * Instead of `IPv4` use `ipv4`
+    * Instead of `IPv6` use `ipv6`
+    * Instead of `IPv4 mapped IPv6` use `ipv4MappedIpv6`
+    * The old values still work, but you'll see a deprecation warning.
+  * The property `nullCheckBranch` of rule {%rule java/codestyle/ConfusingTernary %} has changed:
+    * Instead of `Any` use `any`
+    * Instead of `Then` use `then`
+    * Instead of `Else` use `else`
+    * The old values still work, but you'll see a deprecation warning.
+  * The property `typeAnnotations` of rule {%rule java/codestyle/ModifierOrder %} has changed:
+    * Instead of `ontype` use `onType`
+    * Instead of `ondecl` use `onDecl`
+    * The old values still work, but you'll see a deprecation warning.
+  * The values of the properties of rule {%rule java/documentation/CommentRequired %} have changed:
+    * Instead of `Required` use `required`
+    * Instead of `Ignored` use `ignored`
+    * Instead of `Unwanted` use `unwanted`
+    * The old values still work, but you'll see a deprecation warning.
+* We are continuously working to improve the precision of violation reporting for various rules.
+  The goal is to ensure that rules report issues on the correct line and highlight only the necessary lines.
+  For example, instead of flagging an entire class declaration (including its body), we now generally report only
+  the class name. For more details, see [[java] Single Line Warnings #730](https://github.com/pmd/pmd/issues/730)
+  and [[java] Review reported locations of rules #3769](https://github.com/pmd/pmd/issues/3769). While this effort
+  is still ongoing, the following rules have been updated in this release:
+  * {% rule java/bestpractices/AbstractClassWithoutAbstractMethod %}
+  * {% rule java/design/AbstractClassWithoutAnyMethod %}
+  * {% rule java/codestyle/AtLeastOneConstructor %}
+  * {% rule java/codestyle/AvoidDollarSigns %}
+  * {% rule java/errorprone/AvoidCatchingGenericException %}
+  * {% rule java/multithreading/AvoidSynchronizedStatement %}
+  * {% rule java/codestyle/ClassNamingConventions %}
+  * {% rule java/design/ClassWithOnlyPrivateConstructorsShouldBeFinal %}
+  * {% rule java/codestyle/CommentDefaultAccessModifier %}
+  * {% rule java/documentation/CommentRequired %}
+  * {% rule java/design/CouplingBetweenObjects %}
+  * {% rule java/design/CyclomaticComplexity %}
+  * {% rule java/design/DataClass %}
+  * {% rule java/design/ExcessiveImports %}
+  * {% rule java/design/ExcessiveParameterList %}
+  * {% rule java/design/ExcessivePublicCount %}
+  * {% rule java/bestpractices/ExhaustiveSwitchHasDefault %}
+  * {% rule java/design/GodClass %}
+  * {% rule java/bestpractices/ImplicitFunctionalInterface %}
+  * {% rule java/bestpractices/JUnit5TestShouldBePackagePrivate %}
+  * {% rule java/codestyle/LocalHomeNamingConvention %}
+  * {% rule java/codestyle/LocalInterfaceSessionNamingConvention %}
+  * {% rule java/errorprone/MissingSerialVersionUID %}
+  * {% rule java/errorprone/MissingStaticMethodInNonInstantiatableClass %}
+  * {% rule java/design/NcssCount %}
+  * {% rule java/codestyle/NoPackage %}
+  * {% rule java/bestpractices/NonExhaustiveSwitch %}
+  * {% rule java/codestyle/ShortClassName %}
+  * {% rule java/errorprone/SingleMethodSingleton %}
+  * {% rule java/design/SwitchDensity %}
+  * {% rule java/errorprone/TestClassWithoutTestCases %}
+  * {% rule java/performance/TooFewBranchesForSwitch %}
+  * {% rule java/design/TooManyFields %}
+  * {% rule java/design/TooManyMethods %}
+  * {% rule java/codestyle/TooManyStaticImports %}
+  * {% rule java/codestyle/UnnecessaryModifier %}
+  * {% rule java/design/UseUtilityClass %}
 
 ### 🐛️ Fixed Issues
 * core

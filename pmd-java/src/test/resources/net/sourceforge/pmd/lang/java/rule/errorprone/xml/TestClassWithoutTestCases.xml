@@ -390,4 +390,16 @@ public class MyTests {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+class
+FooTest
+{
+}
+]]></code>
+    </test-code>
 </test-data>

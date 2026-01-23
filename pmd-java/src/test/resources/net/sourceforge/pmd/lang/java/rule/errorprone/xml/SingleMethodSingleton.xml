@@ -5,7 +5,7 @@
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
     <test-code>
-        <description>Not OK! Has overridden getInstance() methods</description>
+        <description>Not OK! Has overloaded getInstance() methods</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>1</expected-linenumbers>
         <code><![CDATA[
@@ -58,6 +58,20 @@ final class Siblings {
     static class Inner2 {
         static Inner2 getInstance() { return null; }
     }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code><![CDATA[
+class
+Singleton
+{
+    static Singleton getInstance() { return null; }
+    static Singleton getInstance(int a) { return null; }
 }
         ]]></code>
     </test-code>

@@ -250,4 +250,21 @@ public enum EnumWithAnonymousInnerClass {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="methodReportLevel">1</rule-property>
+        <rule-property name="classReportLevel">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2-2,5-5</expected-linenumbers>
+        <code><![CDATA[
+class
+Foo // line 2
+{
+    void
+    bar // line 5
+    () {}
+}
+        ]]></code>
+    </test-code>
 </test-data>

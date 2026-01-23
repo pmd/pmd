@@ -599,4 +599,36 @@ public class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>3-3,7-7,11-11,15-15,21-21</expected-linenumbers>
+        <code><![CDATA[
+public
+class
+Foo
+{
+    public
+    int
+    bar;
+
+    public
+    enum
+    Enum
+    {}
+
+    public
+    Foo
+    ()
+    {}
+
+    public
+    void
+    doNothing
+    ()
+    {}
+}
+]]></code>
+    </test-code>
 </test-data>

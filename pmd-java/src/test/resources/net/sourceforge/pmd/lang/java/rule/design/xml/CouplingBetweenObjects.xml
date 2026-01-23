@@ -8,7 +8,7 @@
         <description>lots of coupling</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>2-2</expected-linenumbers>
         <expected-messages>
             <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
         </expected-messages>
@@ -53,7 +53,7 @@ public interface Foo {
         <description>lots of coupling in inner class in interfaces</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>3-3</expected-linenumbers>
         <expected-messages>
             <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
         </expected-messages>
@@ -73,7 +73,7 @@ public interface Foo {
         <description>[java] CouplingBetweenObjectsRule does not count attribute and local variable couplings properly #2818</description>
         <rule-property name="threshold">2</rule-property>
         <expected-problems>1</expected-problems>
-        <expected-linenumbers>1</expected-linenumbers>
+        <expected-linenumbers>6-6</expected-linenumbers>
         <expected-messages>
             <message>A value of 4 may denote a high amount of coupling within the class (threshold: 2)</message>
         </expected-messages>
@@ -94,6 +94,58 @@ public class Foo {
   }
 
 }
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <rule-property name="threshold">2</rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4-4</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 3 may denote a high amount of coupling within the class (threshold: 2)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.util.*;
+public
+class
+Foo {
+    public List foo() {return null;}
+    public ArrayList foo() {return null;}
+    public Vector foo() {return null;}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Only report the classes, consider nested classes on their own</description>
+        <rule-property name="threshold">1</rule-property>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5-5,8-8</expected-linenumbers>
+        <expected-messages>
+            <message>A value of 2 may denote a high amount of coupling within the class (threshold: 1)</message>
+            <message>A value of 2 may denote a high amount of coupling within the class (threshold: 1)</message>
+        </expected-messages>
+        <code><![CDATA[
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
+import java.util.Set;
+class OuterClass { // line 5
+    private BigInteger field1;
+    private List<String> field2;
+    class InnerClass { // line 8
+        private BigDecimal field3;
+        private Set<String> field4;
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>NPE for enums</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public enum Foo { A, B; private java.util.List field = 1; }
 ]]></code>
     </test-code>
 </test-data>
