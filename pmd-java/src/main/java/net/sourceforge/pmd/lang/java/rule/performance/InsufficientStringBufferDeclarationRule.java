@@ -12,20 +12,21 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import net.sourceforge.pmd.lang.ast.Node;
-import net.sourceforge.pmd.lang.java.ast.ASTArrayAccess;
+import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTCastExpression;
-import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchBranch;
 import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
+import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
@@ -209,20 +210,17 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     }
 
     private static <T extends ASTExpression> Set<T> collectArgumentsOfType(ASTMethodCall methodCall, Class<T> type) {
-        Set<Node> conditionalNodes = methodCall.descendants(ASTConditionalExpression.class)
-                .map(ASTConditionalExpression::getCondition)
-                .descendants()
-                .collect(Collectors.toSet());
-
-        return methodCall.getArguments()
-                .descendants(type)
-                // exclude arguments, that belong to different method calls
-                .filter(n -> n.ancestors(ASTMethodCall.class).first() == methodCall)
-                // also exclude args that are used to access arrays
-                .filter(n -> !(n.getParent() instanceof ASTArrayAccess))
-                // also exclude args that are only used in the conditional part of a conditional expression
-                .filter(o -> !conditionalNodes.contains(o))
-                .collect(Collectors.toSet());
+        return NodeStream.union(
+                // direct children
+                methodCall.getArguments().children(type),
+                // string concatenation
+                methodCall.getArguments().children(ASTInfixExpression.class)
+                        .filter(e -> e.getOperator() == BinaryOp.ADD && TypeTestUtil.isA(String.class, e.getTypeMirror()))
+                        .descendants(type),
+                // cast expressions
+                methodCall.getArguments().children(ASTCastExpression.class)
+                        .children(type)
+            ).collect(Collectors.toSet());
     }
 
     private State getConstructorCapacity(ASTVariableId variable, ASTExpression node) {

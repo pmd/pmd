@@ -1519,8 +1519,24 @@ public class Foo {
     public static final String[] TEST = { "xyz" };
 
     public void bar() {
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder(0);
         builder.append(TEST[0]);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Access expression from array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final String[] TEST = { "abc", "xyz" };
+
+    public void bar() {
+        StringBuilder builder = new StringBuilder(0);
+        int i = 0;
+        builder.append(TEST[i + 1]);
     }
 }
 ]]></code>
