@@ -48,6 +48,8 @@ rule properties:
   * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
 * java-errorprone
   * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
+* java-performance
+  * [#3857](https://github.com/pmd/pmd/issues/3857): \[java] InsufficientStringBufferDeclaration: False negatives with String constants
 
 ### 🚨️ API Changes
 
