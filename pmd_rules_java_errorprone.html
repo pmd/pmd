@@ -5553,6 +5553,14 @@ possible test classes by name, set this property to an empty string.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">IfStatement</span><span class="p">[</span><span class="nt">BooleanLiteral</span><span class="p">[</span><span class="m">1</span><span class="p">]]</span><span class="w">
+</span><span class="kr">union</span><span class="w">
+</span><span class="o">//</span><span class="nt">IfStatement</span><span class="err">/</span><span class="p">(</span><span class="nt">VariableAccess</span><span class="p">|</span><span class="nt">UnaryExpression</span><span class="p">[</span><span class="na">@Operator</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'!'</span><span class="p">]</span><span class="o">/</span><span class="nt">VariableAccess</span><span class="p">)</span><span class="o">/</span><span class="kn">self::</span><span class="nt">VariableAccess</span><span class="p">[</span><span class="na">@CompileTimeConstant</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()]</span><span class="w">
+</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">IfStatement</span><span class="w">
+         </span><span class="o">/</span><span class="kn">preceding-sibling::</span><span class="nt">LocalVariableDeclaration</span><span class="p">[</span><span class="nt">PrimitiveType</span><span class="p">[</span><span class="na">@Kind</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">]]</span><span class="w">
+         </span><span class="o">/</span><span class="nt">VariableDeclarator</span><span class="p">[</span><span class="na">@Initializer</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()][</span><span class="nt">BooleanLiteral</span><span class="p">]</span><span class="w">
+         </span><span class="err">/</span><span class="na">@Name</span><span class="p">]</span><span class="w">
+</span><span class="c">(: var is only initialized with a literal and used only with the if statement, there is no other var access :)</span><span class="w">
+</span><span class="p">[</span><span class="ow">le</span><span class="nt">t</span><span class="w"> </span><span class="nv">$name</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="na">@Name</span><span class="w"> </span><span class="kr">return</span><span class="w"> </span><span class="nf">count</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">Block</span><span class="o">//</span><span class="nt">VariableAccess</span><span class="p">[</span><span class="na">@Name</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nv">$name</span><span class="p">])</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="m">1</span><span class="p">]</span><span class="w">
 </span></code></pre></div></div>
 
 <p><strong>Example(s):</strong></p>
@@ -5963,7 +5971,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Jan 22, 2026 <br />
+             Site last generated: Jan 23, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
