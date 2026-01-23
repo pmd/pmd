@@ -67,7 +67,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
     private List<? extends ApexNode<?>> getMethodNodes(ASTUserClass node) {
         return node.descendants(ASTMethod.class)
-                .filter(m -> m.ancestors(ASTProperty.class).isEmpty())
+                .filterNot(m -> m.getParent() instanceof ASTProperty)
                 .map(m -> (ApexNode<?>) m)
                 .toList();
     }

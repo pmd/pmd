@@ -77,12 +77,16 @@ public class fooClass { } // This will be reported unless you change the regex
           class="net.sourceforge.pmd.lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart">
         <description>
-            Field declarations should appear before method declarations within a class.
+Field declarations should appear before method declarations within a class.
+
+Note: Since PMD 7.21.0 properties are treated like fields. That means both fields and properties (in no specific
+order) need to be before any method declaration.
         </description>
         <priority>3</priority>
         <example>
 <![CDATA[
 class Foo {
+    public Integer someProperty { get; set; } // good
     public Integer someField; // good
 
     public void someMethod() {
