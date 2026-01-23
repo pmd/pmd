@@ -50,6 +50,8 @@ rule properties:
 ### 🐛️ Fixed Issues
 * core
   * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
+* apex-codestyle
+  * [#6349](https://github.com/pmd/pmd/issues/6349): \[apex] FieldDeclarationsShouldBeAtStart: False positive with properties
 * java-errorprone
   * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
 * java-performance
