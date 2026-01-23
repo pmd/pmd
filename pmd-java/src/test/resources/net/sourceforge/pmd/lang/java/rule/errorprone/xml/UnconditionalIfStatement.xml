@@ -56,7 +56,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>#5882 false-negative if true/false is not literal</description>
+        <description>#5882 false-negative if true/false is not literal but local variable</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[
@@ -65,6 +65,41 @@ class UnconditionalIfStatementBug {
         boolean condition = true;
         if (condition) {            // violation line 4
             System.out.println("This will always print.");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5882 false-positive if true/false is not literal but local variable modified</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class UnconditionalIfStatementBug {
+    public static void main(String[] args) {
+        boolean condition = false;
+        for (String arg : args) {
+            if ("bar".equals(arg)) {
+                condition |= true;
+            }
+        }
+        if (condition) {
+            System.out.println("bar was given.");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#5882 false-positive if true/false is not literal but local variable not a literal</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class UnconditionalIfStatementBug {
+    public static void main(String[] args) {
+        boolean condition = args.length == 0;
+        if (condition) {
+            System.out.println("No args given.");
         }
     }
 }

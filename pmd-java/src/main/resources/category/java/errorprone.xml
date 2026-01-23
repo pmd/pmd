@@ -3238,8 +3238,10 @@ union
 //IfStatement/VariableAccess[@CompileTimeConstant = false()]
 [@Name = parent::IfStatement
          /preceding-sibling::LocalVariableDeclaration[PrimitiveType[@Kind = "boolean"]]
-         /VariableDeclarator
+         /VariableDeclarator[@Initializer = true()][BooleanLiteral]
          /@Name]
+(: var is only initialized with a literal and used only with the if statement, there is no other var access :)
+[let $name := @Name return count(ancestor::Block//VariableAccess[@Name = $name]) = 1]
 ]]>
                 </value>
             </property>
