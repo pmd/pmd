@@ -51,7 +51,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Missing comments - only class level required.</description>
+        <description>Missing comments - only class level required. (deprecate property values test)</description>
         <rule-property name="classCommentRequirement">Required</rule-property>
         <rule-property name="fieldCommentRequirement">Ignored</rule-property>
         <rule-property name="publicMethodCommentRequirement">Ignored</rule-property>
@@ -62,12 +62,23 @@ public class Foo {
     </test-code>
 
     <test-code>
+        <description>Missing comments - only class level required.</description>
+        <rule-property name="classCommentRequirement">required</rule-property>
+        <rule-property name="fieldCommentRequirement">ignored</rule-property>
+        <rule-property name="publicMethodCommentRequirement">ignored</rule-property>
+        <rule-property name="protectedMethodCommentRequirement">ignored</rule-property>
+        <rule-property name="enumCommentRequirement">ignored</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="without-any-comments"/>
+    </test-code>
+
+    <test-code>
         <description>Too many comments - all comments are unwanted.</description>
-        <rule-property name="classCommentRequirement">Unwanted</rule-property>
-        <rule-property name="fieldCommentRequirement">Unwanted</rule-property>
-        <rule-property name="publicMethodCommentRequirement">Unwanted</rule-property>
-        <rule-property name="protectedMethodCommentRequirement">Unwanted</rule-property>
-        <rule-property name="enumCommentRequirement">Unwanted</rule-property>
+        <rule-property name="classCommentRequirement">unwanted</rule-property>
+        <rule-property name="fieldCommentRequirement">unwanted</rule-property>
+        <rule-property name="publicMethodCommentRequirement">unwanted</rule-property>
+        <rule-property name="protectedMethodCommentRequirement">unwanted</rule-property>
+        <rule-property name="enumCommentRequirement">unwanted</rule-property>
         <expected-problems>6</expected-problems>
         <code-ref id="with-all-comments"/>
     </test-code>
@@ -151,7 +162,7 @@ public class CommentRequired implements java.io.Serializable {
 
     <test-code>
         <description>serialVersionUID comment required</description>
-        <rule-property name="serialVersionUIDCommentRequired">Required</rule-property>
+        <rule-property name="serialVersionUIDCommentRequired">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
         <code><![CDATA[
@@ -242,7 +253,7 @@ public class CommentRequired implements java.io.Serializable {
 
     <test-code>
         <description>#1684 serialPersistentFields comment required</description>
-        <rule-property name="serialPersistentFieldsCommentRequired">Required</rule-property>
+        <rule-property name="serialPersistentFieldsCommentRequired">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -332,7 +343,7 @@ public class CommentRequired {
 
     <test-code>
         <description>Test @override methods reporting</description>
-        <rule-property name="methodWithOverrideCommentRequirement">Required</rule-property>
+        <rule-property name="methodWithOverrideCommentRequirement">required</rule-property>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 /**
@@ -355,7 +366,7 @@ public class CommentRequired {
 
     <test-code>
         <description>Test @override methods reporting #2</description>
-        <rule-property name="methodWithOverrideCommentRequirement">Required</rule-property>
+        <rule-property name="methodWithOverrideCommentRequirement">required</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
@@ -384,7 +395,7 @@ public class CommentRequired {
 
     <test-code>
         <description>Test @override methods unwanted</description>
-        <rule-property name="methodWithOverrideCommentRequirement">Unwanted</rule-property>
+        <rule-property name="methodWithOverrideCommentRequirement">unwanted</rule-property>
         <expected-problems>2</expected-problems>
         <!-- Not the line of the annotation, the line of the identifier. -->
         <expected-linenumbers>9,16</expected-linenumbers>
@@ -415,7 +426,7 @@ public class CommentRequired {
 
     <test-code>
         <description>Test getter or setter comments are ignored by default</description>
-        <rule-property name="fieldCommentRequirement">Ignored</rule-property>
+        <rule-property name="fieldCommentRequirement">ignored</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 /**
@@ -446,8 +457,8 @@ public class CommentRequired {
 
     <test-code>
         <description>Test accessors are reported when required</description>
-        <rule-property name="fieldCommentRequirement">Ignored</rule-property>
-        <rule-property name="accessorCommentRequirement">Required</rule-property>
+        <rule-property name="fieldCommentRequirement">ignored</rule-property>
+        <rule-property name="accessorCommentRequirement">required</rule-property>
         <expected-problems>3</expected-problems>
         <code><![CDATA[
 /**
@@ -478,8 +489,8 @@ public class CommentRequired {
 
     <test-code>
         <description>Test accessors are reported when unwanted</description>
-        <rule-property name="fieldCommentRequirement">Ignored</rule-property>
-        <rule-property name="accessorCommentRequirement">Unwanted</rule-property>
+        <rule-property name="fieldCommentRequirement">ignored</rule-property>
+        <rule-property name="accessorCommentRequirement">unwanted</rule-property>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 /**
@@ -515,7 +526,7 @@ public class CommentRequired {
 
     <test-code>
         <description>#1683 [java] CommentRequired property names are inconsistent</description>
-        <rule-property name="classCommentRequirement">Unwanted</rule-property>
+        <rule-property name="classCommentRequirement">unwanted</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[
 /** Unwanted class comment */
@@ -525,7 +536,7 @@ public class CommentRequirement {}
 
     <test-code>
         <description>Method overridden without @Override (#3123)</description>
-        <rule-property name="methodWithOverrideCommentRequirement">Required</rule-property>
+        <rule-property name="methodWithOverrideCommentRequirement">required</rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>4</expected-linenumbers>
         <code><![CDATA[

@@ -6,9 +6,7 @@ package net.sourceforge.pmd.lang.java.rule.design;
 
 import static net.sourceforge.pmd.properties.NumericConstraints.positive;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTExecutableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
@@ -48,18 +46,11 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
                        .defaultValue(1500)
                        .build();
 
-    private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR;
-
-    static {
-        Map<String, NcssOption> options = new HashMap<>();
-        options.put(NcssOption.COUNT_IMPORTS.valueName(), NcssOption.COUNT_IMPORTS);
-
-        NCSS_OPTIONS_DESCRIPTOR = PropertyFactory.enumListProperty("ncssOptions", options)
+    private static final PropertyDescriptor<List<NcssOption>> NCSS_OPTIONS_DESCRIPTOR =
+            PropertyFactory.conventionalEnumListProperty("ncssOptions", NcssOption.class)
                                                  .desc("Choose options for the computation of Ncss")
                                                  .emptyDefaultValue()
                                                  .build();
-
-    }
 
 
     public NcssCountRule() {

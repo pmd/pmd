@@ -24,17 +24,17 @@ class CommentRequiredTest extends PmdRuleTst {
 
         List<PropertyDescriptor<?>> propertyDescriptors = getProperties(rule);
         for (PropertyDescriptor<?> property : propertyDescriptors) {
-            setPropertyValue(rule, property, "Ignored");
+            setPropertyValue(rule, property, "ignored");
         }
 
         assertNotNull(rule.dysfunctionReason(), "All properties are ignored, rule should be dysfunctional");
 
         // now, try out combinations: only one of the properties is required.
         for (PropertyDescriptor<?> property : propertyDescriptors) {
-            setPropertyValue(rule, property, "Required");
+            setPropertyValue(rule, property, "required");
             assertNull(rule.dysfunctionReason(),
                     "The property " + property.name() + " is set to required, the rule should be functional.");
-            setPropertyValue(rule, property, "Ignored");
+            setPropertyValue(rule, property, "ignored");
         }
     }
 
