@@ -752,7 +752,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Field Declarations Should Be At Start",
   "url": "pmd_rules_apex_codestyle.html#fielddeclarationsshouldbeatstart",
-  "summary": "Field declarations should appear before method declarations within a class."
+  "summary": "Field declarations should appear before method declarations within a class. Note: Since PMD 7.21.0, properties..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/apex/codestyle.md",

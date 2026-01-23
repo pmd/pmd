@@ -2168,11 +2168,16 @@ properties.</p>
 
 <p>Field declarations should appear before method declarations within a class.</p>
 
+<p>Note: Since PMD 7.21.0, properties are ignored. This means that fields can appear before
+or after properties (or fields and properties can be mixed) as long as all fields are placed
+before the first method declaration.</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/codestyle/FieldDeclarationsShouldBeAtStartRule.java">net.sourceforge.pmd.lang.apex.rule.codestyle.FieldDeclarationsShouldBeAtStartRule</a></p>
 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Foo</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">Integer</span> <span class="n">someProperty</span> <span class="o">{</span> <span class="n">get</span><span class="o">;</span> <span class="n">set</span><span class="o">;</span> <span class="o">}</span> <span class="c1">// good</span>
     <span class="kd">public</span> <span class="nc">Integer</span> <span class="n">someField</span><span class="o">;</span> <span class="c1">// good</span>
 
     <span class="kd">public</span> <span class="kt">void</span> <span class="nf">someMethod</span><span class="o">()</span> <span class="o">{</span>
