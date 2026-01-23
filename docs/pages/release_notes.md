@@ -57,6 +57,8 @@ checkstyle version during the build.
   * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
 * apex-codestyle
   * [#6349](https://github.com/pmd/pmd/issues/6349): \[apex] FieldDeclarationsShouldBeAtStart: False positive with properties
+* cli
+  * [#6290](https://github.com/pmd/pmd/issues/6290): \[cli] Improve Designer start script
 * java-errorprone
   * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
 * java-performance
