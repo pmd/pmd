@@ -2,8 +2,8 @@ PROCEDURE IsOfType (
 inChannelID IN number,
 inOperID IN number,
 inClientId IN number,
-ioFPOobj IN FPO_OBJ,
-inPackageIDout IN number,
+ioFPOObj IN FPO_OBJ,
+inPackageIDOut IN number,
 inStatusId IN number)
 is
 loFPOGE_OBJ FPOGE_OBJ;

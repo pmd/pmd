@@ -906,7 +906,7 @@ extension BTree {
           without "escaping" single quotes.
 
           The indentation of the closing quotes
-               below deside where the text line
+               below decide where the text line
           begins.
 
           You can even dynamically add values

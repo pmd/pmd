@@ -50,8 +50,8 @@ class UnusedMethodTest {
 
     private Report runRule(Path testProjectDir) throws IOException {
         Option<PathLike> pathLikeOption = Option.apply(new com.nawforce.runtime.platform.Path(tempDir));
-        Option<Option<PathLike>> cachDirOption = Option.apply(pathLikeOption);
-        Environment.setCacheDirOverride(cachDirOption);
+        Option<Option<PathLike>> cacheDirOption = Option.apply(pathLikeOption);
+        Environment.setCacheDirOverride(cacheDirOption);
 
         Language apexLanguage = ApexLanguageModule.getInstance();
         LanguageVersion languageVersion = apexLanguage.getDefaultVersion();

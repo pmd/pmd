@@ -7,8 +7,8 @@ package net.sourceforge.pmd.lang.ecmascript.ast;
 import org.mozilla.javascript.ast.Assignment;
 
 public final class ASTAssignment extends AbstractInfixEcmascriptNode<Assignment> {
-    ASTAssignment(Assignment asssignment) {
-        super(asssignment);
+    ASTAssignment(Assignment assignment) {
+        super(assignment);
     }
 
     @Override

@@ -1,0 +1,81 @@
+#
+# Configuration for [typos](https://github.com/crate-ci/typos) - source spell checker
+#
+# To run the tool locally:
+#
+#     TYPOS_VERSION="v1.42.1"
+#     wget https://github.com/crate-ci/typos/releases/download/${TYPOS_VERSION}/typos-${TYPOS_VERSION}-x86_64-unknown-linux-musl.tar.gz
+#     tar -x -v -f typos-${TYPOS_VERSION}-x86_64-unknown-linux-musl.tar.gz ./typos
+#     ./typos -c .ci/files/typos.toml --format brief .
+#
+
+[files]
+extend-exclude = [
+    "*.min.js",
+    "*.min.js.map",
+    "*.min.css",
+    "*.svg",
+    "sample.txt",
+    "sample.for",
+    "release_notes_old.md",
+    "big_sample.txt",
+    "templateStrings.txt",
+    "Swift4.2.txt",
+    "Issue628.txt",
+    "sample-matlab.txt",
+    "sample_python.txt",
+    "btrfs.txt"
+]
+
+[default.extend-words]
+# public API
+verbatium="verbatium"
+# Apex terminology
+Createable = "Createable"
+# lowercase for TestNG
+#
+# TSQL token name
+iif="iif"
+# Unicode range
+nd = "nd"
+# part of PROCEDURE_SCHEM
+schem="schem"
+# Short strings used as identifiers
+typ = "typ"
+ba = "ba"
+fo = "fo"
+parm = "parm"
+strat = "strat"
+ois = "ois"
+parms = "parms"
+opps = "opps"
+
+[default.extend-identifiers]
+# public APIs
+isWilcardParameterized="isWilcardParameterized"
+checkSelfDescendantAbreviation="checkSelfDescendantAbreviation"
+ColonSubsript="ColonSubsript"
+XMLTableColum="XMLTableColum"
+ASTXMLTableColum="ASTXMLTableColum"
+# renamed but mentioned in release_notes_old.md / category/ecmascript/errorprone.xml
+InnaccurateNumericLiteral="InnaccurateNumericLiteral"
+# removed but mentioned in credits.md
+AvoidConcateningNonLiteralsInStringBuffer="AvoidConcateningNonLiteralsInStringBuffer"
+# removed method, mentioned in release_notes_old.md
+isSupressed="isSupressed"
+# fingerprint
+9CAF="9CAF"
+# used in BSD license of Lua parser
+NAMEs="NAMEs"
+# used in parser
+IMPLication="IMPLication"
+#names in credits/license headers
+McCann="McCann"
+TehBakker="TehBakker"
+Stach="Stach"
+Loder="Loder"
+Hendler="Hendler"
+Ure="Ure"
+
+[default]
+extend-ignore-re = ["pn\\\\3\\\\2", "thr\\(ough", "org.testng" ]

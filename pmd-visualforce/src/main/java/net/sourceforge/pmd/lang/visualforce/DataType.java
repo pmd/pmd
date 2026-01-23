@@ -50,7 +50,7 @@ public enum DataType {
     Time(false, "Time"),
     Url(false),
     /**
-     * Indicates that Metatada was found, but its type was not mappable. This could because it is a type which isn't
+     * Indicates that Metadata was found, but its type was not mappable. This could because it is a type which isn't
      * mapped, or it was an edge case where the type was ambiguously defined in the Metadata.
      */
     Unknown(true);

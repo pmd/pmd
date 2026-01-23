@@ -406,7 +406,7 @@ TOKEN:
      *  to render properly in front of the block
      *
      *  This is really simplistic.  I actually would prefer to find them in
-     *  grammatical context, but I am neither smart nor rested, a receipe
+     *  grammatical context, but I am neither smart nor rested, a recipe
      *  for disaster, another long night with Mr. Parser, or both.
      */
 
@@ -424,9 +424,9 @@ TOKEN:
  * address JIRA issue VELOCITY-631. With SET_DIRECTIVE only in the
  * DEFAULT lexical state the following VTL fails "$a#set($b = 1)"
  * because the Reference token uses LOOKAHEAD(2) combined with the
- * fact that we explicity set the lex state to REFERENCE with the $
- * token, which means we would never evaulate this token during the
- * look ahead.  This general issue is disscussed here:
+ * fact that we explicitly set the lex state to REFERENCE with the $
+ * token, which means we would never evaluate this token during the
+ * look ahead.  This general issue is discussed here:
  *
  *  http://www.engr.mun.ca/~theo/JavaCC-FAQ/javacc-faq-ie.htm#tth_sEc3.12
  *
@@ -716,7 +716,7 @@ TOKEN :
     {
         /*
          *  - if we are in DIRECTIVE and haven't seen ( yet, then also drop out.
-         *      don't forget to account for the beloved yet wierd #set
+         *      don't forget to account for the beloved yet weird #set
          *  - finally, if we are in REFMOD2 (remember : $foo.bar( ) then " is ok!
          */
 
@@ -1595,7 +1595,7 @@ void PrimaryExpression() #void : {}
 
     DIRECTIVE : This state is triggered by the a match of a DD or a PD.
 
-    REFERENCE : Triggered by '$'. Analagous to PRE_DIRECTIVE.
+    REFERENCE : Triggered by '$'. Analogous to PRE_DIRECTIVE.
 
     REFMODIFIER : Triggered by .<alpha> when in REFERENCE.
 
@@ -1612,9 +1612,9 @@ void PrimaryExpression() #void : {}
 
     A VTL element is either :
 
-        1) It preceeds a reference that is in the context.
+        1) It precedes a reference that is in the context.
 
-        2) It preceeds a defined directive (#set, #if, #end, etc) or a valid
+        2) It precedes a defined directive (#set, #if, #end, etc) or a valid
         pluggable directive, such as #foreach
 
     In all other cases the '\' is just another piece of text.  The purpose of this

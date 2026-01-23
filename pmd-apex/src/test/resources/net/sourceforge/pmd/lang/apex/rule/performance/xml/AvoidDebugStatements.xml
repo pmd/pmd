@@ -25,7 +25,7 @@ public class Foo {
         <code><![CDATA[
 @SuppressWarnings('PMD.AvoidDebugStatements') //logging classes may need the debugs
 public class LoggingManager {
-    public static void log(LoggingLevel leve, Object data) {
+    public static void log(LoggingLevel level, Object data) {
         System.debug(level, data);
     }
 }
@@ -33,7 +33,7 @@ public class LoggingManager {
     </test-code>
 
     <test-code>
-        <description>Unnecesary debug statements</description>
+        <description>Unnecessary debug statements</description>
         <expected-problems>2</expected-problems>
         <code><![CDATA[
 public class Foo {

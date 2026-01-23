@@ -65,7 +65,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
                     || Helper.isMethodName(methodCall, CRYPTO, ENCRYPT_WITH_MANAGED_IV)
                     || Helper.isMethodName(methodCall, CRYPTO, DECRYPT_WITH_MANAGED_IV)) {
 
-                validateStaticIVorKey(methodCall, data);
+                validateStaticIVOrKey(methodCall, data);
             }
         }
 
@@ -84,7 +84,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
         }
     }
 
-    private void validateStaticIVorKey(ASTMethodCallExpression methodCall, Object data) {
+    private void validateStaticIVOrKey(ASTMethodCallExpression methodCall, Object data) {
         // .encrypt('AES128', key, exampleIv, data);
         int numberOfChildren = methodCall.getNumChildren();
         switch (numberOfChildren) {

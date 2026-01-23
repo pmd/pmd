@@ -38,7 +38,7 @@ private with sharing class fflib_SObjectUnitOfWorkTest
 	@isTest
 	private static void testUnitOfWorkNewDirtyDelete()
 	{
-		// Insert Opporunities with UnitOfWork
+		// Insert Opportunities with UnitOfWork
 		{
 			fflib_SObjectUnitOfWork uow = new fflib_SObjectUnitOfWork(MY_SOBJECTS);
 			for(Integer o=0; o<10; o++)
@@ -176,7 +176,7 @@ private with sharing class fflib_SObjectUnitOfWorkTest
 	@isTest
 	private static void testDerivedUnitOfWork_CommitSuccess() 
 	{
-		// Insert Opporunities with UnitOfWork
+		// Insert Opportunities with UnitOfWork
 		DerivedUnitOfWork uow = new DerivedUnitOfWork(MY_SOBJECTS);
 		for(Integer o=0; o<10; o++)
 		{
@@ -231,7 +231,7 @@ private with sharing class fflib_SObjectUnitOfWorkTest
 	@isTest
 	private static void testDerivedUnitOfWork_CommitDMLFail() 
 	{
-		// Insert Opporunities with UnitOfWork forcing a failure on DML by not setting 'Name' field
+		// Insert Opportunities with UnitOfWork forcing a failure on DML by not setting 'Name' field
 		DerivedUnitOfWork uow = new DerivedUnitOfWork(MY_SOBJECTS);
 		Opportunity opp = new Opportunity();
 		uow.registerNew(new List<SObject>{opp});
@@ -269,7 +269,7 @@ private with sharing class fflib_SObjectUnitOfWorkTest
 	@isTest
 	private static void testDerivedUnitOfWork_CommitDoWorkFail() 
 	{
-		// Insert Opporunities with UnitOfWork
+		// Insert Opportunities with UnitOfWork
 		DerivedUnitOfWork uow = new DerivedUnitOfWork(MY_SOBJECTS);
 		Opportunity opp = new Opportunity();
 		opp.Name = 'UoW Test Name 1';
