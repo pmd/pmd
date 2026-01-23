@@ -2097,19 +2097,17 @@ This will automatically close the github issue.</p>
   <li>
     <p>Add the contributor to <code class="language-plaintext highlighter-rouge">.all-contributorsrc</code>:</p>
 
-    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx all-contributors add
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npx all-contributors add &lt;username&gt; code
 </code></pre></div>    </div>
 
-    <p>And follow the instructions. This will create a new commit into to the current branch (pr-123) updating both
-the file <code class="language-plaintext highlighter-rouge">.all-contributorsrc</code> and <code class="language-plaintext highlighter-rouge">docs/pages/pmd/projectdocs/credits.md</code>.</p>
+    <p>This will modify the files <code class="language-plaintext highlighter-rouge">.all-contributorsrc</code> and <code class="language-plaintext highlighter-rouge">docs/pages/pmd/projectdocs/credits.md</code>.
+Commit them with <code class="language-plaintext highlighter-rouge">git commit -am "Add @&lt;username&gt; as a contributor</code> into the current branch (pr-123).</p>
   </li>
   <li>
     <p>Now merge the pull request into the main branch:</p>
 
     <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git checkout main
-git merge --no-ff pr-123 -m "Full-title-of-the-pr (#123)
-    
-Merge pull request #123 from xyz:branch" --log
+git merge --no-ff pr-123 -m "Full-title-of-the-pr (#123)"
 </code></pre></div>    </div>
 
     <div class="alert alert-info" role="alert">
@@ -2298,7 +2296,7 @@ integrated (e.g. gitk and github show the branches, from which the specific comm
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            October 2021<br /> Site last generated: Jan 23, 2026 <br />
+            January 2026 (7.21.0)<br /> Site last generated: Jan 23, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

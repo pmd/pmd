@@ -2083,6 +2083,23 @@ e.g. it requires that the repo <code class="language-plaintext highlighter-rouge
 
 <p>Also make sure, that the repo “pmd.github.io” is locally up-to-date and has no local changes.</p>
 
+<h3 id="all-contributors">All Contributors</h3>
+
+<p>Before a release, it makes sense to ensure the .all-contributorsrc file is up to date.
+There is a simple script in <code class="language-plaintext highlighter-rouge">.ci/tools/check-all-contributors.sh</code>, that compares the issues and
+pull request from the given milestone with the users and suggests, whether the all contributors
+list should be updated.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ .ci/tool/check-all-contributors.sh &lt;new release version&gt;
+</code></pre></div></div>
+
+<p>This will ask for a GitHub Token to access the GitHub API to read the milestones. Without the token,
+you might run into API rate limiting.</p>
+
+<p>The script doesn’t change the all contributors list directly, it only outputs when some contributor
+is missing. You’ll need to call <code class="language-plaintext highlighter-rouge">npx all-contributors add &lt;user&gt; bug,code</code> (or only bug, or only code)
+additionally.</p>
+
 <h3 id="the-release-notes-and-docs">The Release Notes and docs</h3>
 
 <p>Before the release, you need to verify the release notes: Does it contain all the relevant changes for the
@@ -2537,7 +2554,7 @@ the tag. Here are the steps:</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            June 2025 (7.15.0)<br /> Site last generated: Jan 23, 2026 <br />
+            January 2026 (7.21.0)<br /> Site last generated: Jan 23, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

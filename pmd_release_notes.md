@@ -11,6 +11,7 @@ This is a minor release.
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
     * [Changed Rules](#changed-rules)
+    * [Build Requirement is Java 21](#build-requirement-is-java-21)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
@@ -42,6 +43,11 @@ rule properties:
   * Instead of `Ignored` use `ignored`
   * Instead of `Unwanted` use `unwanted`
   * The old values still work, but you'll see a deprecation warning.
+
+#### Build Requirement is Java 21
+From now on, Java 21 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
+so that it still can be used in a pure Java 8 environment. This allows us to use the latest
+checkstyle version during the build.
 
 ### 🐛️ Fixed Issues
 * core
