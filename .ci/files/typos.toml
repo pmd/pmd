@@ -6,7 +6,7 @@
 #     TYPOS_VERSION="v1.42.1"
 #     wget https://github.com/crate-ci/typos/releases/download/${TYPOS_VERSION}/typos-${TYPOS_VERSION}-x86_64-unknown-linux-musl.tar.gz
 #     tar -x -v -f typos-${TYPOS_VERSION}-x86_64-unknown-linux-musl.tar.gz ./typos
-#     ./typos -c typos.toml --format brief .
+#     ./typos -c .ci/files/typos.toml --format brief .
 #
 
 [files]
