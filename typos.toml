@@ -1,3 +1,14 @@
+#
+# Configuration for [typos](https://github.com/crate-ci/typos) - source spell checker
+#
+# To run the tool locally:
+#
+#     TYPOS_VERSION="v1.42.1"
+#     wget https://github.com/crate-ci/typos/releases/download/${TYPOS_VERSION}/typos-${TYPOS_VERSION}-x86_64-unknown-linux-musl.tar.gz
+#     tar -x -v -f typos-${TYPOS_VERSION}-x86_64-unknown-linux-musl.tar.gz ./typos
+#     ./typos -c typos.toml --format brief .
+#
+
 [files]
 extend-exclude = [
     "*.min.js",
@@ -46,10 +57,11 @@ checkSelfDescendantAbreviation="checkSelfDescendantAbreviation"
 ColonSubsript="ColonSubsript"
 XMLTableColum="XMLTableColum"
 ASTXMLTableColum="ASTXMLTableColum"
-# renamed
+# renamed but mentioned in release_notes_old.md / category/ecmascript/errorprone.xml
 InnaccurateNumericLiteral="InnaccurateNumericLiteral"
-# removed but mentioned in changelog
+# removed but mentioned in credits.md
 AvoidConcateningNonLiteralsInStringBuffer="AvoidConcateningNonLiteralsInStringBuffer"
+# removed method, mentioned in release_notes_old.md
 isSupressed="isSupressed"
 # fingerprint
 9CAF="9CAF"
