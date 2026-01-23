@@ -3588,7 +3588,7 @@ and uses Long instead of BigInteger.</li>
   <li><a href="https://github.com/pmd/pmd/pull/5736">#5736</a>: Fix #5061: [java] UnusedLocalVariable FP when using compound assignment - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5741">#5741</a>: [cli] Make CLI default to multithreaded - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5742">#5742</a>: [ci] publish-snapshot/old build: migrate to central portal - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/5743">#5743</a>: [ci] Make build a reuseable workflow - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
+  <li><a href="https://github.com/pmd/pmd/pull/5743">#5743</a>: [ci] Make build a reusable workflow - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5744">#5744</a>: Fix #5705: [cli] Always determine PMD_HOME based on script location - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5748">#5748</a>: [core] Reformat SarifLog to comply to coding standards - <a href="https://github.com/adangel">Andreas Dangel</a> (@adangel)</li>
   <li><a href="https://github.com/pmd/pmd/pull/5763">#5763</a>: [java] Support annotated constructor return type in symbol API - <a href="https://github.com/oowekyala">Clément Fournier</a> (@oowekyala)</li>
@@ -12304,7 +12304,7 @@ report which is uploaded as a build artifact. Furthermore the build can be faile
 
 <h4 id="command-line-interface">Command Line Interface</h4>
 
-<p>The command line options for PMD and CPD now use GNU-syle long options format. E.g. instead of <code class="language-plaintext highlighter-rouge">-rulesets</code> the
+<p>The command line options for PMD and CPD now use GNU-style long options format. E.g. instead of <code class="language-plaintext highlighter-rouge">-rulesets</code> the
 preferred usage is now <code class="language-plaintext highlighter-rouge">--rulesets</code>. Alternatively one can still use the short option <code class="language-plaintext highlighter-rouge">-R</code>.
 Some options also have been renamed to a more consistent casing pattern at the same time
 (<code class="language-plaintext highlighter-rouge">--fail-on-violation</code> instead of <code class="language-plaintext highlighter-rouge">-failOnViolation</code>).
@@ -21673,7 +21673,7 @@ forces the developer to take access restrictions into account before modifying o
 
 <p>You should refrain from hardcoding credentials:</p>
 <ul>
-  <li>They are hard to mantain by being mixed in application code</li>
+  <li>They are hard to maintain by being mixed in application code</li>
   <li>Particularly hard to update them when used from different classes</li>
   <li>Granting a developer access to the codebase means granting knowledge
  of credentials, keeping a two-level access is not possible.</li>

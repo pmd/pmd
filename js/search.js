@@ -368,7 +368,7 @@ let pmd_doc_search_index = [
   "tags": "languagesCpdCapableLanguage",
   "keywords": "",
   "url": "pmd_languages_lua.html",
-  "summary": "Lua-specifc features and guidance"
+  "summary": "Lua-specific features and guidance"
 },{
   "type": "page",
   "source": "pages/pmd/languages/matlab.md",
@@ -1272,7 +1272,7 @@ let pmd_doc_search_index = [
   "tags": "",
   "keywords": "Global Variable",
   "url": "pmd_rules_ecmascript_bestpractices.html#globalvariable",
-  "summary": "This rule helps to avoid using accidently global variables by simply missing the &quot;var&quot; declaration...."
+  "summary": "This rule helps to avoid using accidentally global variables by simply missing the &quot;var&quot; declaration...."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/ecmascript/bestpractices.md",

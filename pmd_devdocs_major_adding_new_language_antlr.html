@@ -2175,7 +2175,7 @@ source control.</li>
 you can create your own implementation of
 <a href="https://github.com/pmd/pmd/blob/main/pmd-core/src/main/java/net/sourceforge/pmd/cpd/impl/AntlrTokenFilter.java"><code class="language-plaintext highlighter-rouge">AntlrTokenFilter</code></a>.
 You’ll need to override then the protected method <code class="language-plaintext highlighter-rouge">getTokenFilter(AntlrTokenManager)</code>
-and return your custom filter. See the CpdLexer for C# as an exmaple:
+and return your custom filter. See the CpdLexer for C# as an example:
 <a href="https://github.com/pmd/pmd/blob/main/pmd-cs/src/main/java/net/sourceforge/pmd/lang/cs/cpd/CsCpdLexer.java"><code class="language-plaintext highlighter-rouge">CsCpdLexer</code></a>.</p>
 
     <p>If you don’t need a custom token filter, you don’t need to override the method. It returns the default
