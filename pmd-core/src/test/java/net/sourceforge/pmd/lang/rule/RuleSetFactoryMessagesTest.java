@@ -142,4 +142,47 @@ class RuleSetFactoryMessagesTest extends RulesetFactoryTestBase {
                         + "    ^^^^^^^^^ Not a valid priority: 'not a priority', expected a number in [1,5]"
         ));
     }
+
+    @Test
+    void deprecatedPropertyUsed() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> assertEquals("a", loadFirstRule(
+                rulesetXml(
+                        dummyRule(
+                                attrs -> attrs.put(SchemaConstants.CLASS, MockRuleWithDeprecatedProperties.class.getName()),
+                                properties(
+                                        "<property name='" + MockRuleWithDeprecatedProperties.STRING_PROPERTY.name() + "'>\n"
+                                                + "  <value>a</value>\n"
+                                                + "</property>\n"
+                                )
+                        )
+                )
+        ).getProperty(MockRuleWithDeprecatedProperties.STRING_PROPERTY)));
+
+        assertThat(log, containsString(
+                " 10| <property name='stringProp'>\n"
+                        + "     ^^^^^^^^^ The property 'stringProp' on rule MockRuleName is deprecated."
+        ));
+    }
+
+    @Test
+    void enumPropertyWithDeprecatedValueUsed() throws Exception {
+        String log = SystemLambda.tapSystemErr(() -> assertEquals(MockRuleWithDeprecatedProperties.SampleEnum.VALUE_A, loadFirstRule(
+                rulesetXml(
+                        dummyRule(
+                                attrs -> attrs.put(SchemaConstants.CLASS, MockRuleWithDeprecatedProperties.class.getName()),
+                                properties(
+                                        "<property name='" + MockRuleWithDeprecatedProperties.ENUM_PROPERTY.name() + "'>\n"
+                                                + "  <value>a</value>\n"
+                                                + "</property>\n"
+                                )
+                        )
+                )
+        ).getProperty(MockRuleWithDeprecatedProperties.ENUM_PROPERTY)));
+
+        assertThat(log, containsString(
+                " 10| <property name='enumProp'>\n"
+                        + " 11|   <value>a</value>\n"
+                        + "       ^^^^^^ The value 'a' for property 'enumProp' is deprecated. Use 'valueA' instead."
+        ));
+    }
 }
