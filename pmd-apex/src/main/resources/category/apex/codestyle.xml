@@ -79,8 +79,9 @@ public class fooClass { } // This will be reported unless you change the regex
         <description>
 Field declarations should appear before method declarations within a class.
 
-Note: Since PMD 7.21.0 properties are treated like fields. That means both fields and properties (in no specific
-order) need to be before any method declaration.
+Note: Since PMD 7.21.0, properties are ignored. This means that fields can appear before
+or after properties (or fields and properties can be mixed) as long as all fields are placed
+before the first method declaration.
         </description>
         <priority>3</priority>
         <example>
