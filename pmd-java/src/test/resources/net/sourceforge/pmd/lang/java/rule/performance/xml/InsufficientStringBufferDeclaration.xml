@@ -1471,15 +1471,38 @@ public class Example {
     </test-code>
 
     <test-code>
-        <description>Constant wrapped in method should be allowed</description>
+        <description>Constant/literal wrapped in method should be allowed</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class Foo {
     public static final String TEST = "Some String";
 
-    public void bar() {
-        StringBuilder builder = new StringBuilder(3);
+    public void bar(String s) {
+        StringBuilder builder = new StringBuilder(0);
         builder.append(lengthOf(TEST));
+        builder.append(lengthOf("55555"));
+        builder.append(s.charAt(0));
+    }
+
+    public int lengthOf(String s) {
+        return s.length();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constant/literal wrapped in method in string concat should be allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final String TEST = "Some String";
+
+    public void bar(String s) {
+        StringBuilder builder = new StringBuilder(3);
+        builder.append(lengthOf(TEST) + "1");
+        builder.append("1" + lengthOf("55555"));
+        builder.append(s.charAt(0) + "1");
     }
 
     public int lengthOf(String s) {

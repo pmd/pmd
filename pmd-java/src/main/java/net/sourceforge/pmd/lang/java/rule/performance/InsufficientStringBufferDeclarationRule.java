@@ -240,7 +240,8 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
                 // string concatenation
                 methodCall.getArguments().children(ASTInfixExpression.class)
                         .filter(e -> e.getOperator() == BinaryOp.ADD && TypeTestUtil.isA(String.class, e.getTypeMirror()))
-                        .descendants(type),
+                        .descendants(type)
+                        .filter(n -> n.getParent() instanceof ASTInfixExpression),
                 // cast expressions
                 methodCall.getArguments().children(ASTCastExpression.class)
                         .children(type),
