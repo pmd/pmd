@@ -24,12 +24,81 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
-### 🐛️ Fixed Issues
+#### Changed Rules
+The following rules have been changed to use a consistent implementation of enum based
+rule properties:
+* The property `checkAddressTypes` of rule {%rule java/bestpractices/AvoidUsingHardCodedIP %} has changed:
+  * Instead of `IPv4` use `ipv4`
+  * Instead of `IPv6` use `ipv6`
+  * Instead of `IPv4 mapped IPv6` use `ipv4MappedIpv6`
+  * The old values still work, but you'll see a deprecation warning.
+* The property `nullCheckBranch` of rule {%rule java/codestyle/ConfusingTernary %} has changed:
+  * Instead of `Any` use `any`
+  * Instead of `Then` use `then`
+  * Instead of `Else` use `else`
+  * The old values still work, but you'll see a deprecation warning.
+* The property `typeAnnotations` of rule {%rule java/codestyle/ModifierOrder %} has changed:
+  * Instead of `ontype` use `onType`
+  * Instead of `ondecl` use `onDecl`
+  * The old values still work, but you'll see a deprecation warning.
+* The values of the properties of rule {%rule java/documentation/CommentRequired %} have changed:
+  * Instead of `Required` use `required`
+  * Instead of `Ignored` use `ignored`
+  * Instead of `Unwanted` use `unwanted`
+  * The old values still work, but you'll see a deprecation warning.
 
-- java-bestpractices
-  - [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
+### 🐛️ Fixed Issues
+* core
+  * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
 
 ### 🚨️ API Changes
+
+#### Deprecations
+* core
+  * {%jdoc !!core::lang.metrics.MetricOption#valueName() %}: When metrics are used for (rule) properties,
+    then the conventional enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
+    See {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %}.
+  * In {%jdoc core::properties.PropertyFactory %}:
+    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.util.Map) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
+    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.lang.Class) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
+    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.lang.Class, java.util.function.Function) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
+    * {%jdoc !a!core::properties.PropertyFactory#enumListProperty(java.lang.String, java.util.Map) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %} instead.
+    * {%jdoc !a!core::properties.PropertyFactory#enumListProperty(java.lang.String, java.lang.Class, java.util.function.Function) %}. Use
+      {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %} instead.
+* java
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_FOR %}. This constant should
+    have never been public.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_DO %}. This constant should
+    have never been public.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_WHILE %}. This constant should
+    have never been public.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_BREAK_LOOP_TYPES %}. This property
+    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
+    on the rule to retrieve the property descriptor.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_CONTINUE_LOOP_TYPES %}. This property
+    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
+    on the rule to retrieve the property descriptor.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_RETURN_LOOP_TYPES %}. This property
+    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
+    on the rule to retrieve the property descriptor.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#check(core::properties.PropertyDescriptor, core::lang.ast.Node, java.lang.Object) %}.
+    This method should have been private and will be internalized.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#hasPropertyValue(core::properties.PropertyDescriptor, java.lang.String) %}.
+    This method should have been private and will be internalized.
+  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#checksNothing() %}.
+    This method should have been private and will be internalized.
+  * {%jdoc !!java::lang.java.metrics.JavaMetrics.ClassFanOutOption#valueName() %},
+    {%jdoc !!java::lang.java.metrics.JavaMetrics.CycloOption#valueName() %},
+    {%jdoc !!java::lang.java.metrics.JavaMetrics.NcssOption#valueName() %}
+* lang-test
+  * {%jdoc !c!lang-test::lang.test.AbstractMetricTestRule#optionMappings() %}. No extra mapping is required anymore.
+    The {%jdoc core::lang.metrics.MetricOption %} enum values are used. See 
+    {%jdoc !a!lang-test::lang.test.AbstractMetricTestRule#AbstractMetricTestRule(core::lang.metrics.Metric, java.lang.Class) %}
+    to provide the enum at construction time.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->

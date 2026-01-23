@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
+import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 
@@ -42,18 +43,13 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     }
 
     private boolean isAssignmentToFinal(ASTAssignmentExpression n) {
-        @NonNull
-        ASTAssignableExpr leftOperand = n.getLeftOperand();
-        if (leftOperand instanceof ASTNamedReferenceExpr) {
-            @Nullable
-            JVariableSymbol symbol = ((ASTNamedReferenceExpr) leftOperand).getReferencedSym();
-            return symbol != null && symbol.isFinal();
-        }
-        return false;
+        @Nullable
+        JVariableSymbol symbol = tryGetLeftOperandSymbol(n);
+        return symbol != null && symbol.isFinal();
     }
 
     private boolean isBadTernary(ASTConditionalExpression ternary, ASTNullLiteral nullLiteral) {
-        boolean isInitializer = false;
+        boolean isInitializer;
 
         ASTVariableDeclarator variableDeclarator = ternary.ancestors(ASTVariableDeclarator.class).first();
         isInitializer = variableDeclarator != null && variableDeclarator.getInitializer() == ternary;
@@ -68,10 +64,31 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
             currentTernary = parentTernary;
         }
 
-        boolean isAssignment = currentTernary.getParent() instanceof ASTAssignmentExpression;
+        final JavaNode parent = currentTernary.getParent();
+        boolean isAssignment = parent instanceof ASTAssignmentExpression;
+        if (isAssignment && isFinalField((ASTAssignmentExpression) parent)) {
+            isInitializer = true;
+        }
 
         return isThenOrElse
                 && isAssignment
                 && !isInitializer;
+    }
+
+    private @Nullable JVariableSymbol tryGetLeftOperandSymbol(ASTAssignmentExpression expression) {
+        @NonNull
+        ASTAssignableExpr leftOperand = expression.getLeftOperand();
+        if (leftOperand instanceof ASTNamedReferenceExpr) {
+            @Nullable
+            JVariableSymbol symbol = ((ASTNamedReferenceExpr) leftOperand).getReferencedSym();
+            return symbol;
+        }
+        return null;
+    }
+
+    private boolean isFinalField(ASTAssignmentExpression expression) {
+        @Nullable
+        JVariableSymbol symbol = tryGetLeftOperandSymbol(expression);
+        return symbol != null && symbol.isField() && symbol.isFinal();
     }
 }

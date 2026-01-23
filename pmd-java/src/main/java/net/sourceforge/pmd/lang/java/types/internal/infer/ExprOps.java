@@ -8,7 +8,6 @@ import static net.sourceforge.pmd.lang.java.types.TypeConversion.capture;
 import static net.sourceforge.pmd.lang.java.types.internal.InternalMethodTypeItf.cast;
 import static net.sourceforge.pmd.util.CollectionUtil.listOf;
 
-import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -100,9 +99,23 @@ public final class ExprOps {
 
             } else {
                 // is method reference
-
-                // TODO need to look for potentially applicable methods
-                return true;
+                MethodRefMirror mref = (MethodRefMirror) e;
+                if (TypeOps.isUnresolved(mref.getTypeToSearch())) {
+                    // don't fail if the LHS is not known or not fully known
+                    return true;
+                }
+                if (mref.isLhsAType() && !mref.isConstructorRef()) {
+                    // The method reference expression has the form
+                    // ReferenceType :: [TypeArguments] Identifier and
+                    // at least one potentially applicable method is
+                    // either (i) static and supports arity n, or
+                    // (ii) not static and supports arity n-1.
+                    return hasCandidate(mref, fun, false, true)
+                        || hasCandidate(mref, fun, true, false);
+                } else {
+                    // The method reference expression has some other form and at least one potentially applicable method is not static.
+                    return hasCandidate(mref, fun, false, false);
+                }
             }
         }
 
@@ -110,6 +123,17 @@ public final class ExprOps {
         // a standalone form (§15.2) is potentially compatible with any type.
         // (ie anything else)
         return true;
+    }
+
+    private boolean hasCandidate(MethodRefMirror mref, JMethodSig fun, boolean firstParamIsReceiver, boolean expectStatic) {
+        InvocationMirror asMethodCall = methodRefAsInvocation(mref, fun, firstParamIsReceiver);
+        for (JMethodSig cand : asMethodCall.getAccessibleCandidates()) {
+            if (cand.isStatic() == expectStatic
+                && infer.isPotentiallyApplicable(cand, asMethodCall)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -143,26 +167,25 @@ public final class ExprOps {
                     return false;
                 }
             }
-
-            //  If m is a generic method and the method invocation does
-            //  not provide explicit type arguments, an explicitly typed
-            //  lambda expression for which the corresponding target type
-            //  (as derived from the signature of m) is a type parameter of m.
-            return !m.isGeneric()
-                    || !invoc.getExplicitTypeArguments().isEmpty()
-                    || !formalType.isTypeVariable();
         }
 
         if (arg instanceof MethodRefMirror) {
             // An inexact method reference expression(§ 15.13 .1).
-            return getExactMethod((MethodRefMirror) arg) != null
-                    //  If m is a generic method and the method invocation does
-                    //  not provide explicit type arguments, an exact method
-                    //  reference expression for which the corresponding target type
-                    //  (as derived from the signature of m) is a type parameter of m.
-                    && (!m.isGeneric()
-                        || !invoc.getExplicitTypeArguments().isEmpty()
-                        || !formalType.isTypeVariable());
+            if (getExactMethod((MethodRefMirror) arg) == null) {
+                return false;
+            }
+        }
+
+        if (arg instanceof FunctionalExprMirror) {
+            //  If m is a generic method and the method invocation does
+            //  not provide explicit type arguments, an explicitly typed
+            //  lambda expression or an exact method reference expression
+            //  for which the corresponding target type (as derived from
+            //  the signature of m) is a type parameter of m.
+            if (m.isGeneric() && !invoc.getExplicitTypeArguments().isEmpty()
+                && m.getTypeParameters().contains(formalType)) {
+                return false;
+            }
         }
 
         if (arg instanceof BranchingMirror) {
@@ -273,18 +296,24 @@ public final class ExprOps {
         boolean acceptLowerArity = lhsIfType != null && lhsIfType.isClassOrInterface() && !mref.isConstructorRef();
 
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
-        site1.setLogging(!acceptLowerArity); // if we do only one search, then failure matters
-        MethodCtDecl ctd1 = infer.determineInvocationTypeOrFail(site1);
+        site1.setLogging(!acceptLowerArity);
+        MethodCtDecl ctd1 = infer.LOG.inContext("Method ref ctdectl search 1 (static) ", () -> infer.determineInvocationTypeOrFail(site1));
         JMethodSig m1 = ctd1.getMethodType();
 
-        if (acceptLowerArity) {
+        if (lhsIfType != null && !mref.isConstructorRef()) {
             // then we need to perform two searches, one with arity n, looking for static methods,
             // one with n-1, looking for instance methods
 
-            MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
-            site2.setLogging(false);
-            MethodCtDecl ctd2 = infer.determineInvocationTypeOrFail(site2);
-            JMethodSig m2 = ctd2.getMethodType();
+            MethodCtDecl ctd2 = null;
+            JMethodSig m2 = ts.UNRESOLVED_METHOD;
+            if (!targetType.getFormalParameters().isEmpty()
+                && targetType.getFormalParameters().get(0).isSubtypeOf(lhsIfType)) {
+                // todo prevent this to add constraints to variables in the target type?
+                MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
+                site1.setLogging(false);
+                ctd2 = infer.LOG.inContext("Method ref ctdectl search 2 (instance) ", () -> infer.determineInvocationTypeOrFail(site2));
+                m2 = ctd2.getMethodType();
+            }
 
             //  If the first search produces a most specific method that is static,
             //  and the set of applicable methods produced by the second search
@@ -368,6 +397,11 @@ public final class ExprOps {
             @Override
             public JavaNode getLocation() {
                 return mref.getLocation();
+            }
+
+            @Override
+            public CharSequence getLocationText() {
+                return mref.getLocationText() + " (viewed as method call)";
             }
 
             @Override
@@ -500,29 +534,11 @@ public final class ExprOps {
             // TypeName.super :: [TypeArguments] Identifier
             // ReferenceType :: [TypeArguments] Identifier
 
-            boolean acceptsInstanceMethods = canUseInstanceMethods(actualTypeToSearch, targetType, mref);
-
-            Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol())
-                                                        .and(m -> Modifier.isStatic(m.getModifiers())
-                                                            || acceptsInstanceMethods);
+            Predicate<JMethodSymbol> prefilter = TypeOps.accessibleMethodFilter(mref.getMethodName(), mref.getEnclosingType().getSymbol());
             return actualTypeToSearch.streamMethods(prefilter).collect(Collectors.toList());
         }
     }
 
-    private static boolean canUseInstanceMethods(JTypeMirror typeToSearch, JMethodSig sig, MethodRefMirror mref) {
-        // For example, if you write
-        // stringStream.map(Objects::toString),
-
-        // The type to search is Objects. But Objects inherits Object.toString(),
-        // which could not be called on a string (String.toString() != Objects.toString()).
-
-        if (mref.getLhsIfType() != null && !sig.getFormalParameters().isEmpty()) {
-            // ReferenceType :: [TypeArguments] Identifier
-            JTypeMirror firstFormal = sig.getFormalParameters().get(0);
-            return firstFormal.isSubtypeOf(typeToSearch);
-        }
-        return true;
-    }
 
 
     /**
