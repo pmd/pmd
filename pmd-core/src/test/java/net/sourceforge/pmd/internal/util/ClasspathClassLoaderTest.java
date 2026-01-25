@@ -15,8 +15,11 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -186,7 +189,7 @@ class ClasspathClassLoaderTest {
      * </p>
      */
     @ParameterizedTest
-    @ValueSource(ints = {11, 17, 21})
+    @ValueSource(ints = {11, 17, 21, 25})
     void loadFromJava(int javaVersion) throws IOException {
         Path javaHome = Paths.get(System.getProperty("user.home"), "openjdk" + javaVersion);
         assumeTrue(Files.isDirectory(javaHome), "Couldn't find java" + javaVersion + " installation at " + javaHome);
@@ -250,4 +253,56 @@ class ClasspathClassLoaderTest {
             assertArrayEquals(fromUrl, fromStream, "getResource and getResourceAsStream should return the same module");
         }
     }
+
+    @Test
+    void auxClasspathEmpty() {
+        List<URL> urls = ClasspathClassLoader.parseClasspath(null);
+        assertTrue(urls.isEmpty());
+    }
+
+    @Test
+    void auxClasspathBlank() {
+        List<URL> urls = ClasspathClassLoader.parseClasspath(" ");
+        assertTrue(urls.isEmpty());
+    }
+
+    @Test
+    void auxClasspathWithRelativeFileEmpty() {
+        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
+        List<URL> urls = ClasspathClassLoader.parseClasspath("file:" + relativeFilePath);
+        assertTrue(urls.isEmpty());
+    }
+
+    @Test
+    void auxClasspathWithRelativeFileEmpty2() {
+        String relativeFilePath = "./src/test/resources/net/sourceforge/pmd/auxclasspath-empty.cp";
+        List<URL> urls = ClasspathClassLoader.parseClasspath("file:" + relativeFilePath);
+        assertTrue(urls.isEmpty());
+    }
+
+    @Test
+    void auxClasspathWithRelativeFile() throws URISyntaxException {
+        final String FILE_SCHEME = "file";
+
+        String currentWorkingDirectory = new File("").getAbsoluteFile().toURI().getPath();
+        String relativeFilePath = "src/test/resources/net/sourceforge/pmd/auxclasspath.cp";
+        List<URL> urls = ClasspathClassLoader.parseClasspath("file:" + relativeFilePath);
+
+        URI[] uris = urls.stream()
+                .map(URL::toString)
+                .map(URI::create)
+                .toArray(URI[]::new);
+        URI[] expectedUris = new URI[] {
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "lib1.jar", null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "other/directory/lib2.jar", null),
+            new URI(FILE_SCHEME, null, new File("/home/jondoe/libs/lib3.jar").getAbsoluteFile().toURI().getPath(), null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes", null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "classes2", null),
+            new URI(FILE_SCHEME, null, new File("/home/jondoe/classes").getAbsoluteFile().toURI().getPath(), null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory, null),
+            new URI(FILE_SCHEME, null, currentWorkingDirectory + "relative source dir/bar", null),
+        };
+        assertArrayEquals(expectedUris, uris);
+    }
+
 }
