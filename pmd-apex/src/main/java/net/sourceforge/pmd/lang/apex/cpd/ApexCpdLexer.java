@@ -11,8 +11,10 @@ import org.antlr.v4.runtime.Lexer;
 
 import net.sourceforge.pmd.cpd.impl.AntlrCpdLexer;
 import net.sourceforge.pmd.cpd.impl.BaseTokenFilter;
+import net.sourceforge.pmd.cpd.TokenFactory;
 import net.sourceforge.pmd.lang.TokenManager;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.AntlrToken;
+import net.sourceforge.pmd.lang.document.TextDocument;
 
 import io.github.apexdevtools.apexparser.ApexLexer;
 import io.github.apexdevtools.apexparser.CaseInsensitiveInputStream;
