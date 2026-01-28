@@ -65,10 +65,6 @@
                             <exclude>net.sourceforge.pmd.lang.apex.internal</exclude>
                             <exclude>net.sourceforge.pmd.lang.apex.metrics.internal</exclude>
                             <exclude>net.sourceforge.pmd.lang.apex.rule.internal</exclude>
-                            <!-- Exclude tokenize() method that moved to AntlrCpdLexer superclass -->
-                            <!-- This is not a breaking change for consumers as the method is still available via inheritance -->
-                            <!-- TODO: Remove this exclusion after 7.21.0 is released (only needed for 7.20.0 -> 7.21.0 transition) -->
-                            <exclude>net.sourceforge.pmd.lang.apex.cpd.ApexCpdLexer#tokenize(net.sourceforge.pmd.lang.document.TextDocument,net.sourceforge.pmd.cpd.TokenFactory)</exclude>
                         </excludes>
                     </parameter>
                 </configuration>

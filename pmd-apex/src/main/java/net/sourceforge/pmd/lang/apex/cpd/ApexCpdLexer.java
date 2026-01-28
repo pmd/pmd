@@ -29,6 +29,11 @@ public class ApexCpdLexer extends AntlrCpdLexer {
     protected TokenManager<AntlrToken> filterTokenStream(TokenManager<AntlrToken> tokenManager) {
         return new BaseTokenFilter<>(tokenManager);
     }
+    
+    @Override
+    public void tokenize(TextDocument document, TokenFactory tokenFactory) {
+        super.tokenize(document, tokenFactory);
+    }
 
     @Override
     protected String getImage(AntlrToken token) {
