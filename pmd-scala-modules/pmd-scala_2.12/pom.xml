@@ -12,7 +12,7 @@
     </parent>
 
     <properties>
-        <scalaVersion>2.12</scalaVersion>
+        <scalaVersion>3.8.1</scalaVersion>
     </properties>
 
     <build>
@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>${scalaVersion}.20</version>
+            <version>${scalaVersion}</version>
         </dependency>
         <dependency>
             <groupId>org.scalameta</groupId>
