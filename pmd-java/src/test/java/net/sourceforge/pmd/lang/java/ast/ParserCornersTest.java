@@ -195,6 +195,9 @@ class ParserCornersTest extends BaseJavaTreeDumpTest {
         java7.parse(code);
     }
 
+    /**
+     * @see <a href="https://github.com/pmd/pmd/issues/6364">[java] Parse error with yield lambda inside switch #6364</a>
+     */
     @Test
     void testYieldStmtWithLambda() {
         java15.parse(

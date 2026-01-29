@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java
+  * [#6364](https://github.com/pmd/pmd/issues/6364): \[java] Parse error with yield lambda inside switch
 
 ### 🚨️ API Changes
 
