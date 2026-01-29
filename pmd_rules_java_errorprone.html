@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingGenericException, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CollectionTypeMismatch, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, IdenticalConditionalBranches, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitch, NonCaseLabelInSwitchStatement, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader">
+<meta name="keywords" content=" Error Prone, AssignmentInOperand, AssignmentToNonFinalStatic, AvoidAccessibilityAlteration, AvoidAssertAsIdentifier, AvoidBranchingStatementAsLastInLoop, AvoidCallingFinalize, AvoidCatchingGenericException, AvoidCatchingNPE, AvoidCatchingThrowable, AvoidDecimalLiteralsInBigDecimalConstructor, AvoidDuplicateLiterals, AvoidEnumAsIdentifier, AvoidFieldNameMatchingMethodName, AvoidFieldNameMatchingTypeName, AvoidInstanceofChecksInCatchClause, AvoidLiteralsInIfCondition, AvoidLosingExceptionInformation, AvoidMultipleUnaryOperators, AvoidUsingOctalValues, BrokenNullCheck, CallSuperFirst, CallSuperLast, CheckSkipResult, ClassCastExceptionWithToArray, CloneMethodMustBePublic, CloneMethodMustImplementCloneable, CloneMethodReturnTypeMustMatchClassName, CloseResource, CollectionTypeMismatch, CompareObjectsWithEquals, ComparisonWithNaN, ConfusingArgumentToVarargsMethod, ConstructorCallsOverridableMethod, DetachedTestCase, DoNotCallGarbageCollectionExplicitly, DoNotExtendJavaLangThrowable, DoNotHardCodeSDCard, DoNotTerminateVM, DoNotThrowExceptionInFinally, DontImportSun, DontUseFloatTypeForLoopIndices, EmptyCatchBlock, EmptyFinalizer, EqualsNull, FinalizeDoesNotCallSuperFinalize, FinalizeOnlyCallsSuperFinalize, FinalizeOverloaded, FinalizeShouldBeProtected, IdempotentOperations, IdenticalConditionalBranches, ImplicitSwitchFallThrough, InstantiationToGetClass, InvalidLogMessageFormat, JumbledIncrementer, JUnitSpelling, JUnitStaticSuite, MethodWithSameNameAsEnclosingClass, MisplacedNullCheck, MissingSerialVersionUID, MissingStaticMethodInNonInstantiatableClass, MoreThanOneLogger, NonCaseLabelInSwitch, NonCaseLabelInSwitchStatement, NonSerializableClass, NonStaticInitializer, NullAssignment, OverrideBothEqualsAndHashcode, OverrideBothEqualsAndHashCodeOnComparable, ProperCloneImplementation, ProperLogger, ReplaceJavaUtilCalendar, ReplaceJavaUtilDate, ReturnEmptyCollectionRatherThanNull, ReturnFromFinallyBlock, SimpleDateFormatNeedsLocale, SingleMethodSingleton, SingletonClassReturningNewInstance, StaticEJBFieldShouldBeFinal, StringBufferInstantiationWithChar, SuspiciousEqualsMethodName, SuspiciousHashcodeMethodName, SuspiciousOctalEscape, TestClassWithoutTestCases, UnconditionalIfStatement, UnnecessaryBooleanAssertion, UnnecessaryCaseChange, UnnecessaryConversionTemporary, UnsupportedJdkApiUsage, UnusedNullCheckInEquals, UseCorrectExceptionLogging, UseEqualsToCompareStrings, UselessOperationOnImmutable, UselessPureMethodCall, UseLocaleWithCaseConversions, UseProperClassLoader">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -3796,6 +3796,8 @@ Note: This is a PMD implementation of the Lint4j rule "A throw in a finally bloc
 
 <h2 id="dontimportsun">DontImportSun</h2>
 
+<p><span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f;">Deprecated</span></p>
+
 <p><strong>Since:</strong> PMD 1.5</p>
 
 <p><strong>Priority:</strong> Medium Low (4)</p>
@@ -3806,6 +3808,9 @@ and are likely to change.</p>
 <p>If you find yourself having to depend on Sun APIs, confine this dependency to as
 small a scope as possible, for instance by writing a stable wrapper class around
 the unstable API. You can then suppress this rule in the implementation of the wrapper.</p>
+
+<p><strong>Deprecated:</strong> This rule is deprecated since PMD 7.21.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by <a href="pmd_rules_java_errorprone.html#unsupportedjdkapiusage"><code class="language-plaintext highlighter-rouge">UnsupportedJdkApiUsage</code></a>.</p>
 
 <p><strong>This rule is defined by the following XPath expression:</strong></p>
 <div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ImportDeclaration</span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@ImportedName</span><span class="p">,</span><span class="w"> </span><span class="s1">'sun.'</span><span class="p">)]</span><span class="w">
@@ -5677,6 +5682,48 @@ on the wrapper classes instead.</p>
 
 <p><strong>Use this rule by referencing it:</strong></p>
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/UnnecessaryConversionTemporary"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
+<h2 id="unsupportedjdkapiusage">UnsupportedJdkApiUsage</h2>
+
+<p><strong>Since:</strong> PMD 7.21.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Avoid importing classes or using APIs from the <code class="language-plaintext highlighter-rouge">sun.*</code> or <code class="language-plaintext highlighter-rouge">jdk.internal.*</code> packages, including <code class="language-plaintext highlighter-rouge">sun.misc.Unsafe</code> or
+<code class="language-plaintext highlighter-rouge">jdk.internal.misc.Unsafe</code>. These packages are neither portable nor stable and may change or be removed in future
+versions of the JDK. As the name implies, the <code class="language-plaintext highlighter-rouge">Unsafe</code> class methods are particularly dangerous and have been
+superseded by safer alternatives, such as the VarHandle API (introduced in JDK 9) and the
+Foreign Function &amp; Memory API (introduced in JDK 22). Refer to <a href="https://openjdk.org/jeps/471">JEP 471</a>
+for safer alternatives with examples.</p>
+
+<p>If you must depend on Sun APIs, confine their usage to a minimal, isolated scope, such as within a stable
+wrapper class. You may suppress this rule in the implementation of such a wrapper, but it’s strongly
+recommended to migrate to official APIs wherever possible.</p>
+
+<p>The use of such unsupported APIs will also be flagged by the Java compiler, as they are intended
+strictly for internal purposes. This PMD rule has been added to facilitate independent code reviews
+and to catch instances where compiler warnings may have been overlooked.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ImportDeclaration</span><span class="p">[</span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@ImportedName</span><span class="p">,</span><span class="w"> </span><span class="s1">'sun.'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nf">starts-with</span><span class="p">(</span><span class="na">@ImportedName</span><span class="p">,</span><span class="w"> </span><span class="s1">'jdk.internal.'</span><span class="p">)]</span><span class="w">
+                    </span><span class="p">|</span><span class="w">
+                    </span><span class="o">//</span><span class="nt">MethodCall</span><span class="p">[</span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s1">'sun.misc.Unsafe#_(_*)'</span><span class="p">)</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">matchesSig</span><span class="p">(</span><span class="s1">'jdk.internal.misc.Unsafe#_(_*)'</span><span class="p">)]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">final</span> <span class="kd">class</span> <span class="nc">MemoryWiper</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="kd">final</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">NoSuchFieldException</span><span class="o">,</span> <span class="nc">IllegalAccessException</span> <span class="o">{</span>
+    <span class="k">for</span> <span class="o">(</span><span class="kd">final</span> <span class="nc">String</span> <span class="n">s</span> <span class="o">:</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">sun</span><span class="o">.</span><span class="na">misc</span><span class="o">.</span><span class="na">Unsafe</span><span class="o">.</span><span class="na">getUnsafe</span><span class="o">().</span><span class="na">putAddress</span><span class="o">(</span><span class="nc">Long</span><span class="o">.</span><span class="na">parseLong</span><span class="o">(</span><span class="n">s</span><span class="o">),</span> <span class="mi">0L</span><span class="o">);</span> <span class="c1">// bad</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/errorprone.xml/UnsupportedJdkApiUsage"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="unusednullcheckinequals">UnusedNullCheckInEquals</h2>

@@ -11,9 +11,12 @@ This is a minor release.
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
     * [🚀️ New: Java 26 Support](#new-java-26-support)
-    * [Changed Rules](#changed-rules)
     * [Build Requirement is Java 21](#build-requirement-is-java-21)
     * [CPD](#cpd)
+* [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [New Rules](#new-rules)
+    * [Changed Rules](#changed-rules)
+    * [Deprecated Rules](#deprecated-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
@@ -39,6 +42,25 @@ you'll need to select the new language version `26-preview`:
 Note: Support for Java 24 preview language features have been removed. The version "24-preview"
 is no longer available.
 
+#### Build Requirement is Java 21
+From now on, Java 21 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
+so that it still can be used in a pure Java 8 environment. This allows us to use the latest
+checkstyle version during the build.
+
+#### CPD
+* The Apex module now supports [suppression](https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs. See [#6417](https://github.com/pmd/pmd/pull/6417)
+
+### 🌟️ New and Changed Rules
+#### New Rules
+* The new Java rule [`PublicMemberInNonPublicType`](https://docs.pmd-code.org/pmd-doc-7.21.0-SNAPSHOT/pmd_rules_java_design.html#publicmemberinnonpublictype) detects public members (such as methods
+  or fields) within non-public types. Non-public types should not declare public members, as their effective
+  visibility is limited, and using the `public` modifier can create confusion.
+* The new Java rule [`UnsupportedJdkApiUsage`](https://docs.pmd-code.org/pmd-doc-7.21.0-SNAPSHOT/pmd_rules_java_errorprone.html#unsupportedjdkapiusage) flags the use of unsupported and non-portable
+  JDK APIs, including `sun.*` packages, `sun.misc.Unsafe`, and `jdk.internal.misc.Unsafe`. These APIs are unstable,
+  intended for internal use, and may change or be removed. The rule complements Java compiler warnings by
+  highlighting such usage during code reviews and encouraging migration to official APIs like VarHandle and
+  the Foreign Function & Memory API.
+
 #### Changed Rules
 The following rules have been changed to use a consistent implementation of enum based
 rule properties:
@@ -62,13 +84,9 @@ rule properties:
   * Instead of `Unwanted` use `unwanted`
   * The old values still work, but you'll see a deprecation warning.
 
-#### Build Requirement is Java 21
-From now on, Java 21 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
-so that it still can be used in a pure Java 8 environment. This allows us to use the latest
-checkstyle version during the build.
-
-#### CPD
-* The Apex module now supports [suppression](https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs. See [#6417](https://github.com/pmd/pmd/pull/6417)
+#### Deprecated Rules
+* The Java rule [`DontImportSun`](https://docs.pmd-code.org/pmd-doc-7.21.0-SNAPSHOT/pmd_rules_java_errorprone.html#dontimportsun) has been deprecated. It is replaced by
+  [`UnsupportedJdkApiUsage`](https://docs.pmd-code.org/pmd-doc-7.21.0-SNAPSHOT/pmd_rules_java_errorprone.html#unsupportedjdkapiusage).
 
 ### 🐛️ Fixed Issues
 * core
@@ -82,9 +100,12 @@ checkstyle version during the build.
 * java
   * [#5871](https://github.com/pmd/pmd/issues/5871): \[java] Support Java 26
   * [#6364](https://github.com/pmd/pmd/issues/6364): \[java] Parse error with yield lambda inside switch
+* java-design
+  * [#6231](https://github.com/pmd/pmd/issues/6231): \[java] New Rule: PublicMemberInNonPublicType
 * java-errorprone
   * [#3601](https://github.com/pmd/pmd/issues/3601): \[java] InvalidLogMessageFormat: False positive when final parameter is Supplier&lt;Throwable&gt;
   * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
+  * [#5923](https://github.com/pmd/pmd/issues/5923): \[java] New Rule: Catch usages of sun.misc.Unsafe or jdk.internal.misc.Unsafe
 * java-performance
   * [#3857](https://github.com/pmd/pmd/issues/3857): \[java] InsufficientStringBufferDeclaration: False negatives with String constants
 

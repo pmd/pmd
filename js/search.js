@@ -2748,6 +2748,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/design.md",
+  "title": "PublicMemberInNonPublicType (Java, Design)",
+  "tags": "",
+  "keywords": "Public Member In Non Public Type",
+  "url": "pmd_rules_java_design.html#publicmemberinnonpublictype",
+  "summary": "A non-public type should not declare its own members as public, as their visibility is..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/design.md",
   "title": "SignatureDeclareThrowsException (Java, Design)",
   "tags": "",
   "keywords": "Signature Declare Throws Exception",
@@ -3601,6 +3609,14 @@ let pmd_doc_search_index = [
   "keywords": "Unnecessary Conversion Temporary",
   "url": "pmd_rules_java_errorprone.html#unnecessaryconversiontemporary",
   "summary": "Avoid the use temporary objects when converting primitives to Strings. Use the static conversion methods..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/errorprone.md",
+  "title": "UnsupportedJdkApiUsage (Java, Error Prone)",
+  "tags": "",
+  "keywords": "Unsupported Jdk Api Usage",
+  "url": "pmd_rules_java_errorprone.html#unsupportedjdkapiusage",
+  "summary": "Avoid importing classes or using APIs from the `sun.*` or `jdk.internal.*` packages, including `sun.misc.Unsafe` or..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/errorprone.md",

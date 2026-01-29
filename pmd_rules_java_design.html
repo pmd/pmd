@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that help you discover design issues.">
-<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, AvoidUncheckedExceptionsInSignatures, ClassWithOnlyPrivateConstructorsShouldBeFinal, CognitiveComplexity, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveImports, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, InvalidJavaBean, LawOfDemeter, LogicInversion, LoosePackageCoupling, MutableStaticState, NcssCount, NPathComplexity, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass">
+<meta name="keywords" content=" Design, AbstractClassWithoutAnyMethod, AvoidCatchingGenericException, AvoidDeeplyNestedIfStmts, AvoidRethrowingException, AvoidThrowingNewInstanceOfSameException, AvoidThrowingNullPointerException, AvoidThrowingRawExceptionTypes, AvoidUncheckedExceptionsInSignatures, ClassWithOnlyPrivateConstructorsShouldBeFinal, CognitiveComplexity, CollapsibleIfStatements, CouplingBetweenObjects, CyclomaticComplexity, DataClass, DoNotExtendJavaLangError, ExceptionAsFlowControl, ExcessiveImports, ExcessiveParameterList, ExcessivePublicCount, FinalFieldCouldBeStatic, GodClass, ImmutableField, InvalidJavaBean, LawOfDemeter, LogicInversion, LoosePackageCoupling, MutableStaticState, NcssCount, NPathComplexity, PublicMemberInNonPublicType, SignatureDeclareThrowsException, SimplifiedTernary, SimplifyBooleanExpressions, SimplifyBooleanReturns, SimplifyConditional, SingularField, SwitchDensity, TooManyFields, TooManyMethods, UselessOverridingMethod, UseObjectForClearerAPI, UseUtilityClass">
 <title>Design | PMD Source Code Analyzer</title>
 
 
@@ -3550,6 +3550,59 @@ complexity and increase readability.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"reportLevel"</span> <span class="na">value=</span><span class="s">"200"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
+</code></pre></div></div>
+
+<h2 id="publicmemberinnonpublictype">PublicMemberInNonPublicType</h2>
+
+<p><strong>Since:</strong> PMD 7.21.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>A non-public type should not declare its own members as public, as their visibility is effectively limited
+to private, package-private, or protected, making the use of the public modifier misleading.
+Declaring members as public within a non-public type creates confusion and can lead to unintended consequences
+if the type is later made public, as this would expose all its public members.
+However, it is acceptable for a non-public type to inherit public members from a superclass, as this is part of
+the superclass’s design.</p>
+
+<p>To avoid such issues, these members should be declared as protected, package-private, or even private,
+as appropriate. Note that altering the visibility of such members might unintentionally affect the API
+of a public subtype. Specifically, a public subtype of a package-private supertype inherits all public
+methods of the supertype. Converting these methods to private removes them from the subtype as well, which
+can inadvertently change the subtype’s public API.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">//</span><span class="p">(</span><span class="nt">MethodDeclaration</span><span class="p">|</span><span class="nt">ConstructorDeclaration</span><span class="p">|</span><span class="nt">CompactConstructorDeclaration</span><span class="p">|</span><span class="w">
+   </span><span class="nt">FieldDeclaration</span><span class="p">|</span><span class="w">
+   </span><span class="nt">ClassDeclaration</span><span class="p">|</span><span class="nt">EnumDeclaration</span><span class="p">|</span><span class="nt">AnnotationTypeDeclaration</span><span class="p">)</span><span class="w">
+  </span><span class="p">[</span><span class="na">@EffectiveVisibility</span><span class="w"> </span><span class="p">!</span><span class="err">=</span><span class="w"> </span><span class="s1">'public'</span><span class="p">]</span><span class="w">
+  </span><span class="p">[</span><span class="na">@Visibility</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="s1">'public'</span><span class="p">]</span><span class="w">
+  </span><span class="p">[</span><span class="na">@Overridden</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">false</span><span class="p">()</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="ow">not</span><span class="p">(</span><span class="na">@Overridden</span><span class="p">)]</span><span class="w">
+  </span><span class="p">[</span><span class="ow">not</span><span class="p">(</span><span class="kn">ancestor::</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="na">@Interface</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="nf">true</span><span class="p">()]</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="kn">ancestor::</span><span class="nt">AnnotationTypeDeclaration</span><span class="p">)]</span><span class="w">
+</span><span class="c">(: Make sure, we return nodes that implement getName() for {0} in the rule message :)</span><span class="w">
+</span><span class="p">!(</span><span class="kr">if</span><span class="w"> </span><span class="p">(</span><span class="kn">self::</span><span class="nt">FieldDeclaration</span><span class="p">)</span><span class="w"> </span><span class="kr">then</span><span class="w"> </span><span class="nt">VariableDeclarator</span><span class="w"> </span><span class="kr">else</span><span class="w"> </span><span class="p">.)</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nc">Wrong</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span> <span class="c1">// violation</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="n">field</span><span class="o">;</span> <span class="c1">// violation</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Correct</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{}</span>
+    <span class="c1">// or even</span>
+    <span class="kd">private</span> <span class="kt">void</span> <span class="nf">privateMethod</span><span class="o">()</span> <span class="o">{}</span>
+
+    <span class="kt">int</span> <span class="n">field</span><span class="o">;</span>
+    <span class="c1">// or even</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">privateField</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/design.xml/PublicMemberInNonPublicType"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
 <h2 id="signaturedeclarethrowsexception">SignatureDeclareThrowsException</h2>

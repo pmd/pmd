@@ -2199,6 +2199,7 @@
   <li><a href="pmd_rules_java_design.html#mutablestaticstate">MutableStaticState</a>: Non-private static fields should be made constants (or immutable references) by             decla…</li>
   <li><a href="pmd_rules_java_design.html#ncsscount">NcssCount</a>: This rule uses the NCSS (Non-Commenting Source Statements) metric to determine the number of line…</li>
   <li><a href="pmd_rules_java_design.html#npathcomplexity">NPathComplexity</a>: The NPath complexity of a method is the number of acyclic execution paths through that method. Wh…</li>
+  <li><a href="pmd_rules_java_design.html#publicmemberinnonpublictype">PublicMemberInNonPublicType</a>: A non-public type should not declare its own members as public, as their visibility is effectivel…</li>
   <li><a href="pmd_rules_java_design.html#signaturedeclarethrowsexception">SignatureDeclareThrowsException</a>: A method/constructor shouldn’t explicitly throw the generic java.lang.Exception, since it is uncl…</li>
   <li><a href="pmd_rules_java_design.html#simplifiedternary">SimplifiedTernary</a>: Reports ternary expression with the form ‘condition ? literalBoolean : foo’ or ‘condition ? foo :…</li>
   <li><a href="pmd_rules_java_design.html#simplifybooleanexpressions">SimplifyBooleanExpressions</a>: Avoid unnecessary comparisons in boolean expressions, they serve no purpose and impacts readability.</li>
@@ -2270,7 +2271,7 @@
   <li><a href="pmd_rules_java_errorprone.html#donothardcodesdcard">DoNotHardCodeSDCard</a>: Use Environment.getExternalStorageDirectory() instead of "/sdcard"</li>
   <li><a href="pmd_rules_java_errorprone.html#donotterminatevm">DoNotTerminateVM</a>: Web applications should not call ‘System.exit()’, since only the web container or the application…</li>
   <li><a href="pmd_rules_java_errorprone.html#donotthrowexceptioninfinally">DoNotThrowExceptionInFinally</a>: Throwing exceptions within a ‘finally’ block is confusing since they may mask other exceptions or…</li>
-  <li><a href="pmd_rules_java_errorprone.html#dontimportsun">DontImportSun</a>: Avoid importing anything from the ‘sun.’ packages. These packages are not portable and are likely…</li>
+  <li><a href="pmd_rules_java_errorprone.html#dontimportsun">DontImportSun</a>: <span style="border-radius: 0.25em; color: #fff; padding: 0.2em 0.6em 0.3em; display: inline; background-color: #d9534f; font-size: 75%;">Deprecated</span> Avoid importing anything from the ‘sun.’ packages. These packages are not portable and are likely…</li>
   <li><a href="pmd_rules_java_errorprone.html#dontusefloattypeforloopindices">DontUseFloatTypeForLoopIndices</a>: Don’t use floating point for loop indices. If you must use floating point, use double unless you’…</li>
   <li><a href="pmd_rules_java_errorprone.html#emptycatchblock">EmptyCatchBlock</a>: Empty Catch Block finds instances where an exception is caught, but nothing is done. In most circ…</li>
   <li><a href="pmd_rules_java_errorprone.html#emptyfinalizer">EmptyFinalizer</a>: Empty finalize methods serve no purpose and should be removed. Note that Oracle has declared Obje…</li>
@@ -2318,6 +2319,7 @@
   <li><a href="pmd_rules_java_errorprone.html#unnecessarybooleanassertion">UnnecessaryBooleanAssertion</a>: A JUnit test assertion with a boolean literal is unnecessary since it always will evaluate to the…</li>
   <li><a href="pmd_rules_java_errorprone.html#unnecessarycasechange">UnnecessaryCaseChange</a>: Using equalsIgnoreCase() is faster than using toUpperCase/toLowerCase().equals()</li>
   <li><a href="pmd_rules_java_errorprone.html#unnecessaryconversiontemporary">UnnecessaryConversionTemporary</a>: Avoid the use temporary objects when converting primitives to Strings. Use the static conversion …</li>
+  <li><a href="pmd_rules_java_errorprone.html#unsupportedjdkapiusage">UnsupportedJdkApiUsage</a>: Avoid importing classes or using APIs from the ‘sun.’ or ‘jdk.internal.’ packages, including ‘sun…</li>
   <li><a href="pmd_rules_java_errorprone.html#unusednullcheckinequals">UnusedNullCheckInEquals</a>: After checking an object reference for null, you should invoke equals() on that object rather tha…</li>
   <li><a href="pmd_rules_java_errorprone.html#usecorrectexceptionlogging">UseCorrectExceptionLogging</a>: To make sure the full stacktrace is printed out, use the logging statement with two arguments: a …</li>
   <li><a href="pmd_rules_java_errorprone.html#useequalstocomparestrings">UseEqualsToCompareStrings</a>: Using ‘==’ or ‘!=’ to compare strings is only reliable if the interned string (‘String#intern()’)…</li>
