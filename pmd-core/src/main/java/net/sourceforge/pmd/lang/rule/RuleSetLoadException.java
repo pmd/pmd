@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
 public class RuleSetLoadException extends RuntimeException {
 
     /**
-     * @internalApi Internal API.
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     RuleSetLoadException(RuleSetReferenceId rsetId, @NonNull Throwable cause) {
         super("Cannot load ruleset " + rsetId + ": " + cause.getMessage(), cause);

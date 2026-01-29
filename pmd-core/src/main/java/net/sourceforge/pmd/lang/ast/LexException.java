@@ -44,7 +44,7 @@ public final class LexException extends FileAnalysisException {
     /**
      * Constructor called by JavaCC.
      *
-     * @internalApi Internal API.
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     LexException(boolean eofSeen, String lexStateName, int errorLine, int errorColumn, String errorAfter, char curChar) {
         super(makeReason(eofSeen, lexStateName, errorAfter, curChar));

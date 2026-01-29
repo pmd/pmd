@@ -95,7 +95,7 @@ public final class TypeOps {
      * Return true if t and s are the same type. This may perform side effects
      * on inference variables. Annotations are ignored.
      *
-     * @internalApi Internal API
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     static boolean isSameTypeInInference(JTypeMirror t, JTypeMirror s) {
         return isSameType(t, s, false, false);

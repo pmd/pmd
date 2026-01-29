@@ -120,7 +120,7 @@ public final class Attribute {
      * Returns null for "not deprecated", empty string for "deprecated without replacement",
      * otherwise name of replacement attribute.
      *
-     * @internalApi Internal API
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     String replacementIfDeprecated() {
         if (method == null) {
