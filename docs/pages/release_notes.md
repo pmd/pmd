@@ -31,6 +31,8 @@ This is a {{ site.pmd.release_type }} release.
   visibility is limited, and using the `public` modifier can create confusion.
 
 ### 🐛️ Fixed Issues
+* java-design
+  * [#6231](https://github.com/pmd/pmd/issues/6231): \[java] New Rule: PublicMemberInNonPublicType
 
 ### 🚨️ API Changes
 
