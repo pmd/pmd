@@ -53,7 +53,7 @@ public final class RuleContext {
     private final Rule rule;
 
     /**
-     * @apiNote Internal API
+     * @internalApi Internal API
      */
     RuleContext(FileAnalysisListener listener, Rule rule) {
         Objects.requireNonNull(listener, "Listener was null");
@@ -63,7 +63,7 @@ public final class RuleContext {
     }
 
     /**
-     * @apiNote Internal API. Used in {@link AbstractRule} in {@code asCtx(Object)},
+     * @internalApi Internal API. Used in {@link AbstractRule} in {@code asCtx(Object)},
      * through {@link InternalApiBridge}.
      */
     Rule getRule() {

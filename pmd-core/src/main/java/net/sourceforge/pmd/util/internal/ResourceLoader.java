@@ -22,7 +22,7 @@ import net.sourceforge.pmd.lang.rule.xpath.InternalApiBridge;
 import net.sourceforge.pmd.lang.rule.xpath.XPathRule;
 
 /**
- * @apiNote  Internal API
+ * @internalApi Internal API
  */
 public class ResourceLoader {
 

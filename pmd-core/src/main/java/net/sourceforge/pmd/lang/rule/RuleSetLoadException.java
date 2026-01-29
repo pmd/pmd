@@ -17,14 +17,14 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSetReferenceId;
 public class RuleSetLoadException extends RuntimeException {
 
     /**
-     * @apiNote Internal API.
+     * @internalApi Internal API.
      */
     RuleSetLoadException(RuleSetReferenceId rsetId, @NonNull Throwable cause) {
         super("Cannot load ruleset " + rsetId + ": " + cause.getMessage(), cause);
     }
 
     /**
-     * @apiNote Internal API.
+     * @internalApi Internal API.
      */
     RuleSetLoadException(RuleSetReferenceId rsetId, String message) {
         super("Cannot load ruleset " + rsetId + ": " + message);

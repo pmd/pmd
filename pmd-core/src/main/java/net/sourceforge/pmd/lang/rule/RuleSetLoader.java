@@ -190,7 +190,7 @@ public final class RuleSetLoader {
      * Loads a list of rulesets, if any has an error, report it on the contextual
      * error reporter instead of aborting, and continue loading the rest.
      *
-     * @apiNote Internal API: might be published later, or maybe this
+     * @internalApi Internal API: might be published later, or maybe this
      * will be the default behaviour of every method of this class.
      */
     List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {

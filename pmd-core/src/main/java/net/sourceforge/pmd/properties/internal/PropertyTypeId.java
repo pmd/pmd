@@ -28,7 +28,7 @@ import net.sourceforge.pmd.properties.PropertySerializer;
  *
  * @author Clément Fournier
  * @since 6.0.0
- * @apiNote Internal API
+ * @internalApi Internal API
  */
 public enum PropertyTypeId {
     // These are exclusively used for XPath rules. It would make more sense to model the supported

@@ -365,7 +365,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @return The currently used analysis cache. Never null.
      *
-     * @apiNote This is internal API.
+     * @internalApi This is internal API.
      */
     AnalysisCache getAnalysisCache() {
         // Make sure we are not null
@@ -385,7 +385,7 @@ public class PMDConfiguration extends AbstractConfiguration {
      *
      * @param cache The analysis cache to be used.
      *
-     * @apiNote This is internal API. Use {@link #setAnalysisCacheLocation(String)} to configure a cache.
+     * @internalApi This is internal API. Use {@link #setAnalysisCacheLocation(String)} to configure a cache.
      */
     void setAnalysisCache(final AnalysisCache cache) {
         // the doc says it's a noop if incremental analysis was disabled,

@@ -30,7 +30,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitorBase;
  * Abstract superclass for NCSS counting methods. Analogous to and cribbed from
  * the Java version of the rule.
  *
- * @apiNote Internal API
+ * @internalApi Internal API
  * @deprecated Since 7.19.0.
  */
 @Deprecated

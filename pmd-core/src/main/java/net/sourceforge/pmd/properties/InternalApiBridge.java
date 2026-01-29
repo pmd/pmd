@@ -18,7 +18,7 @@ import net.sourceforge.pmd.properties.internal.PropertyTypeId;
  * <p><b>None of this is published API, and compatibility can be broken anytime!</b>
  * Use this only at your own risk.
  *
- * @apiNote Internal API. None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+ * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
  */
 @InternalApi
 public final class InternalApiBridge {

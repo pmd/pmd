@@ -32,7 +32,7 @@ public class Tokens {
     /**
      * Create a new instance.
      *
-     * @apiNote  Internal API
+     * @internalApi Internal API
      */
     Tokens() {
         // constructor is package private

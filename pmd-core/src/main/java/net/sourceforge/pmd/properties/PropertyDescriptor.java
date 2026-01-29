@@ -106,7 +106,7 @@ public final class PropertyDescriptor<T> {
      * null if this property was defined in Java code and not in XML. This
      * is used to write the property back to XML, when using a {@link RuleSetWriter}.
      *
-     * @apiNote Internal API
+     * @internalApi Internal API
      */
     @Nullable PropertyTypeId getTypeId() {
         return typeId;

@@ -47,7 +47,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
  *
  * @author Clément Fournier
  * @since 7.0.0
- * @apiNote Internal API. None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+ * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
  */
 @InternalApi
 public final class InternalApiBridge {
