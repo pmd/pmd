@@ -153,7 +153,9 @@ jobs:
         if: ${{ runner.os == 'Linux' }}
         with:
           name: compile-artifact
-      - name: Build with Maven and run unit tests
+      - name: Build with Maven and run unit and integration tests (linux)
+        # under linux we execute more extensive integration tests with various java versions
+        if: ${{ runner.os == 'Linux' }}
         run: |
           ./mvnw --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
@@ -163,6 +165,13 @@ jobs:
               -Djava11.home="${JAVA_HOME_11_X64}" \
               -Djava17.home="${JAVA_HOME_17_X64}" \
               -Djava25.home="${JAVA_HOME_25_X64}"
+      - name: Build with Maven and run unit tests
+        if: ${{ runner.os != 'Linux' }}
+        run: |
+          ./mvnw --show-version --errors --batch-mode \
+              -Dmaven.repo.local=.m2/repository \
+              verify \
+              -PfastSkip -Dcyclonedx.skip=false
 
   dogfood:
     needs: compile
