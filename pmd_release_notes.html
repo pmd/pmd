@@ -2099,11 +2099,21 @@ rule properties:</p>
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.</p>
 
+<h4 id="cpd">CPD</h4>
+<ul>
+  <li>The Apex module now supports <a href="https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html#suppression">suppression</a> through <code class="language-plaintext highlighter-rouge">CPD-ON</code>/<code class="language-plaintext highlighter-rouge">CPD-OFF</code> comment pairs. See <a href="https://github.com/pmd/pmd/pull/6417">#6417</a></li>
+</ul>
+
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6184">#6184</a>: [core] Consistent implementation of enum properties</li>
+    </ul>
+  </li>
+  <li>apex
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6417">#6417</a>: [apex] Support CPD suppression with “CPD-OFF” &amp; “CPD-ON”</li>
     </ul>
   </li>
   <li>apex-codestyle
