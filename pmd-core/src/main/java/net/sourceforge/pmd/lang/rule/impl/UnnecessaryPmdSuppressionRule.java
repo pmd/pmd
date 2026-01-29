@@ -30,7 +30,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * @experimental Since 7.14.0. See <a href="https://github.com/pmd/pmd/pull/5609">[core] Add rule to report unnecessary suppression comments/annotations #5609</a>
  */
 @Experimental
-public class UnnecessaryPmdSuppressionRule extends AbstractRule {
+public class UnnecessaryPmdSuppressionRule extends AbstractRule implements CannotBeSuppressed {
 
     @Override
     public void apply(Node rootNode, RuleContext ctx) {
@@ -45,11 +45,7 @@ public class UnnecessaryPmdSuppressionRule extends AbstractRule {
         for (ViolationSuppressor suppressor : suppressors) {
             Set<UnusedSuppressorNode> unusedSuppressors = suppressor.getUnusedSuppressors((RootNode) rootNode);
             for (UnusedSuppressorNode unusedSuppressor : unusedSuppressors) {
-                ctx.addViolationNoSuppress(
-                    unusedSuppressor.getLocation(),
-                    rootNode.getAstInfo(),
-                    unusedSuppressor.unusedReason()
-                );
+                ctx.at(unusedSuppressor.getLocation()).reportWithMessage(unusedSuppressor.unusedReason());
             }
         }
     }

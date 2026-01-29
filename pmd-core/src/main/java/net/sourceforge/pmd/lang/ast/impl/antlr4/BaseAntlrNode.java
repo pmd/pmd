@@ -9,7 +9,10 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
+import net.sourceforge.pmd.lang.ast.AstInfo;
+import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.impl.GenericNode;
 import net.sourceforge.pmd.lang.ast.impl.antlr4.BaseAntlrNode.AntlrToPmdParseTreeAdapter;
 import net.sourceforge.pmd.lang.document.TextRegion;
@@ -106,6 +109,12 @@ public abstract class BaseAntlrNode<A extends AntlrToPmdParseTreeAdapter<N>, N e
             userMap = DataMap.newDataMap();
         }
         return userMap;
+    }
+
+    @Override
+    public final @NonNull Node getReportedNode(AstInfo<?> astInfo) {
+        // Final implementation for now, as overrides are likely mistakes.
+        return this;
     }
 
     protected abstract A asAntlrNode();

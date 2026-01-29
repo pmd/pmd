@@ -5,8 +5,10 @@
 package net.sourceforge.pmd.lang.ast.impl;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.lang.ast.AstInfo;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.NodeStream;
 import net.sourceforge.pmd.lang.ast.internal.StreamImpl;
@@ -181,6 +183,11 @@ public abstract class AbstractNode<B extends AbstractNode<B, N>,
         return userData;
     }
 
+    @Override
+    public final @NonNull Node getReportedNode(AstInfo<?> astInfo) {
+        // Final implementation for now, as overrides are likely mistakes.
+        return this;
+    }
 
     @Override
     public String toString() {
