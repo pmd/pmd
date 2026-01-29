@@ -81,6 +81,7 @@ checkstyle version during the build.
   * [#6290](https://github.com/pmd/pmd/issues/6290): \[cli] Improve Designer start script
 * java
   * [#5871](https://github.com/pmd/pmd/issues/5871): \[java] Support Java 26
+  * [#6364](https://github.com/pmd/pmd/issues/6364): \[java] Parse error with yield lambda inside switch
 * java-errorprone
   * [#3601](https://github.com/pmd/pmd/issues/3601): \[java] InvalidLogMessageFormat: False positive when final parameter is Supplier&lt;Throwable&gt;
   * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
