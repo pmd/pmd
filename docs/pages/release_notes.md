@@ -68,9 +68,14 @@ From now on, Java 21 or newer is required to build PMD. PMD itself still remains
 so that it still can be used in a pure Java 8 environment. This allows us to use the latest
 checkstyle version during the build.
 
+#### CPD
+* The Apex module now supports [suppression](https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs. See [#6417](https://github.com/pmd/pmd/pull/6417)
+
 ### 🐛️ Fixed Issues
 * core
   * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
+* apex
+  * [#6417](https://github.com/pmd/pmd/issues/6417): \[apex] Support CPD suppression with "CPD-OFF" & "CPD-ON"
 * apex-codestyle
   * [#6349](https://github.com/pmd/pmd/issues/6349): \[apex] FieldDeclarationsShouldBeAtStart: False positive with properties
 * cli
