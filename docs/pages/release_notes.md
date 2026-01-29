@@ -47,9 +47,14 @@ rule properties:
   * Instead of `Unwanted` use `unwanted`
   * The old values still work, but you'll see a deprecation warning.
 
+#### CPD
+* The Apex module now supports [suppression](https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs. See [#6417](https://github.com/pmd/pmd/pull/6417)
+
 ### 🐛️ Fixed Issues
 * core
   * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
+* apex
+  * [#6417](https://github.com/pmd/pmd/issues/6417): \[apex] Support CPD suppression with "CPD-OFF" & "CPD-ON"
 
 ### 🚨️ API Changes
 
