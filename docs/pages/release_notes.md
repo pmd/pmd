@@ -53,6 +53,11 @@ checkstyle version during the build.
 * The new Java rule {% rule java/design/PublicMemberInNonPublicType %} detects public members (such as methods
   or fields) within non-public types. Non-public types should not declare public members, as their effective
   visibility is limited, and using the `public` modifier can create confusion.
+* The new Java rule {% rule java/errorprone/UnsupportedJdkApiUsage %} flags the use of unsupported and non-portable
+  JDK APIs, including `sun.*` packages, `sun.misc.Unsafe`, and `jdk.internal.misc.Unsafe`. These APIs are unstable,
+  intended for internal use, and may change or be removed. The rule complements Java compiler warnings by
+  highlighting such usage during code reviews and encouraging migration to official APIs like VarHandle and
+  the Foreign Function & Memory API.
 
 #### Changed Rules
 The following rules have been changed to use a consistent implementation of enum based
@@ -77,6 +82,10 @@ rule properties:
   * Instead of `Unwanted` use `unwanted`
   * The old values still work, but you'll see a deprecation warning.
 
+#### Deprecated Rules
+* The Java rule {% rule java/errorprone/DontImportSun %} has been deprecated. It is replaced by
+  {% rule java/errorprone/UnsupportedJdkApiUsage %}.
+
 ### 🐛️ Fixed Issues
 * core
   * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
@@ -94,6 +103,7 @@ rule properties:
 * java-errorprone
   * [#3601](https://github.com/pmd/pmd/issues/3601): \[java] InvalidLogMessageFormat: False positive when final parameter is Supplier&lt;Throwable&gt;
   * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
+  * [#5923](https://github.com/pmd/pmd/issues/5923): \[java] New Rule: Catch usages of sun.misc.Unsafe or jdk.internal.misc.Unsafe
 * java-performance
   * [#3857](https://github.com/pmd/pmd/issues/3857): \[java] InsufficientStringBufferDeclaration: False negatives with String constants
 

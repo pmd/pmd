@@ -1556,6 +1556,7 @@ public class Foo {
     <rule name="DontImportSun"
           language="java"
           since="1.5"
+          deprecated="true"
           message="Avoid importing anything from the 'sun.*' packages"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#dontimportsun">
@@ -1566,6 +1567,9 @@ and are likely to change.
 If you find yourself having to depend on Sun APIs, confine this dependency to as
 small a scope as possible, for instance by writing a stable wrapper class around
 the unstable API. You can then suppress this rule in the implementation of the wrapper.
+
+**Deprecated:** This rule is deprecated since PMD 7.21.0 and will be removed with PMD 8.0.0.
+This rule has been replaced by {% rule UnsupportedJdkApiUsage %}.
         </description>
         <priority>4</priority>
         <properties>
@@ -3363,6 +3367,51 @@ public String convert(int x) {
     String foo = new Integer(x).toString(); // this wastes an object
 
     return Integer.toString(x);             // preferred approach
+}
+]]>
+        </example>
+    </rule>
+
+    <rule name="UnsupportedJdkApiUsage"
+          language="java"
+          since="7.21.0"
+          message="Do not use unsupported JDK API"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#unsupportedjdkapiusage">
+        <description>
+            Avoid importing classes or using APIs from the `sun.*` or `jdk.internal.*` packages, including `sun.misc.Unsafe` or
+            `jdk.internal.misc.Unsafe`. These packages are neither portable nor stable and may change or be removed in future
+            versions of the JDK. As the name implies, the `Unsafe` class methods are particularly dangerous and have been
+            superseded by safer alternatives, such as the VarHandle API (introduced in JDK 9) and the
+            Foreign Function &amp; Memory API (introduced in JDK 22). Refer to [JEP 471](https://openjdk.org/jeps/471)
+            for safer alternatives with examples.
+
+            If you must depend on Sun APIs, confine their usage to a minimal, isolated scope, such as within a stable
+            wrapper class. You may suppress this rule in the implementation of such a wrapper, but it’s strongly
+            recommended to migrate to official APIs wherever possible.
+
+            The use of such unsupported APIs will also be flagged by the Java compiler, as they are intended
+            strictly for internal purposes. This PMD rule has been added to facilitate independent code reviews
+            and to catch instances where compiler warnings may have been overlooked.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    //ImportDeclaration[starts-with(@ImportedName, 'sun.') or starts-with(@ImportedName, 'jdk.internal.')]
+                    |
+                    //MethodCall[pmd-java:matchesSig('sun.misc.Unsafe#_(_*)') or pmd-java:matchesSig('jdk.internal.misc.Unsafe#_(_*)')]
+                </value>
+            </property>
+        </properties>
+        <example>
+            <![CDATA[
+public final class MemoryWiper {
+  public static void main(final String[] args) throws NoSuchFieldException, IllegalAccessException {
+    for (final String s : args) {
+      sun.misc.Unsafe.getUnsafe().putAddress(Long.parseLong(s), 0L); // bad
+    }
+  }
 }
 ]]>
         </example>
