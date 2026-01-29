@@ -14,6 +14,18 @@ import java.lang.annotation.Documented;
  * <p>Such members may be removed, renamed, moved, or otherwise broken at any time and should not be
  * relied upon outside the main PMD codebase.
  *
+ * <p>Example usage:
+ * <pre>
+ * public class Example
+ *     /**
+ *      * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+ *      &#x2a;/
+ *     {@literal @}InternalApi
+ *     public void internalHelperMethod() {
+ *         ...
+ *     }
+ * </pre>
+ *
  * @since 6.7.0
  */
 @Documented
