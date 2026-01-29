@@ -15,7 +15,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 
 /**
- * @apiNote  Internal API
+ * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
  */
 public abstract class AbstractIgnoredAnnotationRule extends AbstractJavaRule {
 

@@ -436,6 +436,11 @@
                                 <head>Implementation Note:</head>
                             </tag>
                             <tag>
+                                <name>internalApi</name>
+                                <placement>a</placement>
+                                <head>Internal API:</head>
+                            </tag>
+                            <tag>
                                 <name>experimental</name>
                                 <placement>a</placement>
                                 <head>Experimental Status:</head>
