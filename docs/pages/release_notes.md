@@ -26,9 +26,9 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🌟️ New and Changed Rules
 #### New Rules
-* The new Java rule {% rule java/design/PublicMemberInNonPublicType %} finds public members
-  (like methods or fields) in types, that are not public. A non-public type should not have public members,
-  as their visibility is effectively limited and using the public modifier creates confusion.
+* The new Java rule {% rule java/design/PublicMemberInNonPublicType %} detects public members (such as methods 
+  or fields) within non-public types. Non-public types should not declare public members, as their effective
+  visibility is limited, and using the `public` modifier can create confusion.
 
 ### 🐛️ Fixed Issues
 
