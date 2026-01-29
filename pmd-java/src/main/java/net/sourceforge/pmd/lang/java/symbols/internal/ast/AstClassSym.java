@@ -4,11 +4,20 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
+import net.sourceforge.pmd.lang.java.ast.Annotatable;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
@@ -52,7 +61,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
 final class AstClassSym
     extends AbstractAstTParamOwner<ASTTypeDeclaration>
     implements JClassSymbol {
-
     private final @Nullable JTypeParameterOwnerSymbol enclosing;
     private final List<JClassSymbol> declaredClasses;
     private final List<JMethodSymbol> declaredMethods;
@@ -159,8 +167,78 @@ final class AstClassSym
         if (node.isAnnotationPresent("lombok.extern.slf4j.Slf4j")) {
             declaredFields.add(ImplicitMemberSymbols.lombokSlf4jLoggerField(this, processor));
         }
+
+        for (JFieldSymbol field : new ArrayList<>(declaredFields)) {
+            if (!field.isStatic()) {
+                ASTVariableId varId = field.tryGetNode();
+                if (varId == null) {
+                    continue;
+                }
+                ASTAnnotation fieldGetter = getAnnotation(varId, "lombok.Getter");
+                int accessModifier = -1;
+
+                if (fieldGetter != null) {
+                    accessModifier = getLombokAccessModifier(fieldGetter);
+                } else {
+                    ASTAnnotation classGetter = getAnnotation(node, "lombok.Getter");
+                    if (classGetter != null) {
+                        accessModifier = getLombokAccessModifier(classGetter);
+                    } else if (JavaAstUtils.hasAnyAnnotation(node, setOf("lombok.Data", "lombok.Value"))) {
+                        accessModifier = Modifier.PUBLIC;
+                    }
+                }
+
+                if (accessModifier != -1 && accessModifier != 0 /* AccessLevel.NONE */) {
+                    JMethodSymbol getter = ImplicitMemberSymbols.lombokGetter(this, field, accessModifier);
+                    String getterName = getter.getSimpleName();
+                    if (declaredMethods.stream().noneMatch(m -> m.getSimpleName().equals(getterName) && m.getArity() == 0)) {
+                        declaredMethods.add(getter);
+                    }
+                }
+            }
+        }
     }
 
+    private int getLombokAccessModifier(ASTAnnotation annot) {
+        ASTMemberValue value = annot.getAttribute("value");
+        if (value != null) {
+            String image = null;
+            if (value instanceof ASTNamedReferenceExpr) {
+                image = ((ASTNamedReferenceExpr) value).getName();
+            } else if (value instanceof ASTAmbiguousName) {
+                image = ((ASTAmbiguousName) value).getName();
+            }
+
+            if (image != null) {
+                if (image.endsWith("PUBLIC")) {
+                    return Modifier.PUBLIC;
+                } else if (image.endsWith("PROTECTED")) {
+                    return Modifier.PROTECTED;
+                } else if (image.endsWith("PACKAGE")) {
+                    return Modifier.PROTECTED;
+                } else if (image.endsWith("PRIVATE")) {
+                    return Modifier.PRIVATE;
+                } else if (image.endsWith("NONE")) {
+                    return 0; // special value for NONE, we'll use 0 as a flag or handle it
+                }
+            }
+        }
+
+        return Modifier.PUBLIC;
+    }
+
+
+    private @Nullable ASTAnnotation getAnnotation(Annotatable annotatable, String canonName) {
+        String simpleName = canonName.substring(canonName.lastIndexOf('.') + 1);
+        for (ASTAnnotation annot : annotatable.getDeclaredAnnotations()) {
+            ASTClassType typeNode = annot.getTypeNode();
+            String name = typeNode.getSimpleName();
+            if (simpleName.equals(name)) {
+                return annot;
+            }
+        }
+        return null;
+    }
 
     private List<JRecordComponentSymbol> mapComponentsToMutableList(AstSymFactory factory,
                                                           ASTRecordComponentList components,

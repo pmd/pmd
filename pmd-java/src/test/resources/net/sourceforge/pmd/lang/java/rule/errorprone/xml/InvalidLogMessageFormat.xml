@@ -1348,4 +1348,139 @@ public class InvalidLogMessageFormat{
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Lombok @Data/@Value getters are not recognized as returning Throwable #1234</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import lombok.Getter;
+import lombok.AccessLevel;
+
+@Slf4j
+public class Main {
+    public static void main(String[] args) {
+        var abcd = new AClass(new Exception("abcd"));
+        log.error("Hello World", abcd.getT());
+
+        var b = new BClass(new Exception("b"));
+        log.error("Hello World", b.getT());
+
+        var c = new CClass(new Exception("c"));
+        log.error("Hello World", c.getT());
+
+        var d = new DClass(new Exception("d"));
+        log.error("Hello World", d.getT());
+
+        var e = new EClass(new Exception("e"));
+        log.error("Hello World", e.getT());
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class AClass {
+        Throwable t;
+    }
+
+    private static class BClass {
+        @Getter
+        Throwable t;
+
+        BClass(Throwable t) { this.t = t; }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    private static class CClass {
+        Throwable t;
+    }
+
+    @lombok.Value
+    @AllArgsConstructor
+    private static class DClass {
+        Throwable t;
+    }
+
+    @Data
+    @AllArgsConstructor
+    private static class EClass {
+        @Getter(AccessLevel.NONE)
+        Throwable t;
+
+        public Throwable getT() { return t; }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lombok @Data/@Value ignore AccessLevel.NONE on them (it's not valid but PMD should be robust)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import lombok.Data;
+import lombok.AccessLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Test {
+    private static final Logger log = LoggerFactory.getLogger(Test.class);
+
+    public void test() {
+        var a = new AClass();
+        log.error("Hello World", a.getT());
+    }
+
+    @Data
+    private static class AClass {
+        Throwable t;
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lombok @Value ignores manual @Getter(AccessLevel.NONE) on field if it's not detected correctly (sanity check)</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.Value;
+import lombok.Getter;
+import lombok.AccessLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Value
+public class Test {
+    private static final Logger log = LoggerFactory.getLogger(Test.class);
+    @Getter(AccessLevel.NONE)
+    Throwable t;
+
+    public void test() {
+        log.error("Hello World", getT());
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Lombok @Getter(AccessLevel.NONE) on class suppresses getter generation</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import lombok.Getter;
+import lombok.AccessLevel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Getter(AccessLevel.NONE)
+public class Test {
+    private static final Logger log = LoggerFactory.getLogger(Test.class);
+    Throwable t;
+
+    public void test() {
+        log.error("Hello World", getT()); // This should fail to resolve getT()
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
