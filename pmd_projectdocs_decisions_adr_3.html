@@ -2137,7 +2137,9 @@ may be modified in any way, or even removed, at any time without a MAJOR version
 
     <p>The <code class="language-plaintext highlighter-rouge">@InternalApi</code> annotation will be used for types that have to live outside of
 these packages, e.g. methods of a public type that shouldn’t be used outside PMD (again,
-these can be removed anytime).</p>
+these can be removed anytime).
+The javadoc tag <code class="language-plaintext highlighter-rouge">@internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.</code>
+will be added additionally.</p>
   </li>
   <li>
     <p>Any package that contains an <code class="language-plaintext highlighter-rouge">impl</code> segment is considered internal. E.g. <code class="language-plaintext highlighter-rouge">net.sourceforge.pmd.lang.impl</code>.
@@ -2156,7 +2158,8 @@ internal</strong> until this decision is revised.</p>
 
 <ul>
   <li>APIs can be deprecated at any time (even in PATCH versions). Deprecated APIs are marked with the
-<code class="language-plaintext highlighter-rouge">@Deprecated</code> annotation.</li>
+<code class="language-plaintext highlighter-rouge">@Deprecated</code> annotation.
+The javadoc tag <code class="language-plaintext highlighter-rouge">@deprecated Since x.y.z. Description</code> will be added additionally.</li>
   <li>Deprecations should be listed in the release notes.</li>
   <li>Deprecated APIs can only be removed with a MAJOR version change.</li>
 </ul>
@@ -2165,7 +2168,8 @@ internal</strong> until this decision is revised.</p>
 
 <ul>
   <li>New features often introduce new APIs. These new APIs can be marked with the annotation <code class="language-plaintext highlighter-rouge">@Experimental</code> at
-the class or method level.</li>
+the class or method level.
+These new APIs should use the javadoc tags <code class="language-plaintext highlighter-rouge">@since x.y.z</code> and <code class="language-plaintext highlighter-rouge">@experimental Description</code>.</li>
   <li>APIs marked with the <code class="language-plaintext highlighter-rouge">@Experimental</code> annotation are subject to change and are considered <strong>not stable</strong>.
 They can be modified in any way, or even removed, at any time. You should not use or rely
 on them in any production code. They are purely to allow broad testing and feedback.</li>
@@ -2226,7 +2230,7 @@ removed with the next MAJOR release.</p>
 
 <h2 id="status">Status</h2>
 
-<p>Accepted (Last updated: February 2024 (7.0.0))</p>
+<p>Accepted (Last updated: January 2026 (7.21.0))</p>
 
 <h2 id="consequences">Consequences</h2>
 
@@ -2238,6 +2242,8 @@ Java <a href="https://openjdk.org/jeps/261">Module System</a>.</li>
 </ul>
 
 <h2 id="change-history">Change History</h2>
+
+<p>2026-01-29: Added details on how to use javadoc tags for deprecated, experimental and internal APIs. (<a href="https://github.com/pmd/pmd/pull/6392">#6392</a>)</p>
 
 <p>2024-02-01: Changed status to “Accepted”. (<a href="https://github.com/pmd/pmd/pull/4756">#4756</a>)</p>
 
@@ -2272,7 +2278,7 @@ Java <a href="https://openjdk.org/jeps/261">Module System</a>.</li>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            February 2024 (7.0.0)<br /> Site last generated: Jan 29, 2026 <br />
+            January 2026 (7.21.0)<br /> Site last generated: Jan 29, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
