@@ -30,6 +30,7 @@ import net.sourceforge.pmd.lang.metrics.LanguageMetricsProvider;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
 import net.sourceforge.pmd.reporting.ViolationDecorator;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 import net.sourceforge.pmd.util.designerbindings.DesignerBindings;
 
 /**
@@ -44,21 +45,28 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parser;
     private final JavaParser parserWithoutProcessing;
     private final boolean firstClassLombok;
+    private final PmdClasspathConfig.OpenClasspath openClasspath;
     private TypeSystem typeSystem;
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties, TypeSystem typeSystem) {
+    public JavaLanguageProcessor(JavaLanguageProperties properties) {
         super(properties);
-        this.typeSystem = typeSystem;
+        PmdClasspathConfig classpathConfig = properties.getClasspathConfig();
+        LOG.debug("Using analysis classloader: {}", classpathConfig);
+
+        if (classpathConfig.equals(PmdClasspathConfig.defaultClasspath())
+            && properties.shouldWarnIfImproperClasspath()) {
+            LOG.warn("No analysis classpath configured. This may cause false positives. "
+                     + "See https://docs.pmd-code.org/latest/pmd_languages_java.html#providing-the-auxiliary-classpath");
+        }
+
+        // record that this wrapper should not be closed before we're done with it.
+        this.openClasspath = classpathConfig.open();
+        this.typeSystem = TypeSystem.usingClasspath(openClasspath::findResource);
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
         this.parserWithoutProcessing = new JavaParser(suppressMarker, this, false);
         this.firstClassLombok = properties.getProperty(JavaLanguageProperties.FIRST_CLASS_LOMBOK);
-    }
-
-    public JavaLanguageProcessor(JavaLanguageProperties properties) {
-        this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
-        LOG.debug("Using analysis classloader: {}", properties.getAnalysisClassLoader());
     }
 
     @Override
@@ -139,6 +147,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public void close() throws Exception {
         this.typeSystem.logStats();
+        openClasspath.close();
         super.close();
     }
 }

@@ -116,6 +116,14 @@ The Java language can be configured with the following properties:
   Environment variable: `PMD_JAVA_LOMBOK`  
   Default: "true"
 
+- `enableClasspathDiagnostics`: Whether to warn about missing auxclasspath
+  and other possible classpath configuration mistakes. This is enabled 
+  by default, but can be disabled in tests for instance.
+
+  Since: 7.21.0
+  Environment variable: `PMD_JAVA_ENABLE_CLASSPATH_DIAGNOSTICS`
+  Default: "true"
+
 ## Apex language properties
 
 - `rootDirectory`: With this property the root directory of the Salesforce metadata, where `sfdx-project.json`

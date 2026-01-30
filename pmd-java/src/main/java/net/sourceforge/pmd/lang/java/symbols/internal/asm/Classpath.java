@@ -9,6 +9,8 @@ import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import net.sourceforge.pmd.util.PmdClasspathConfig;
+
 /**
  * Classpath abstraction. PMD's symbol resolver uses the classpath to
  * find class files.
@@ -62,6 +64,11 @@ public interface Classpath {
     static Classpath forClassLoader(ClassLoader classLoader) {
         return classLoader::getResourceAsStream;
     }
+
+    static Classpath forOpenClasspath(PmdClasspathConfig.OpenClasspath cp) {
+        return cp::findResource;
+    }
+
 
     static Classpath contextClasspath() {
         return forClassLoader(Thread.currentThread().getContextClassLoader());
