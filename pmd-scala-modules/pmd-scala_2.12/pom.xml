@@ -7,7 +7,7 @@
     <parent>
         <groupId>net.sourceforge.pmd</groupId>
         <artifactId>pmd-scala-common</artifactId>
-        <version>7.21.0-SNAPSHOT</version>
+        <version>7.21.0</version>
         <relativePath>../pmd-scala-common/pom.xml</relativePath>
     </parent>
 
