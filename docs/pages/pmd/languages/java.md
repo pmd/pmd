@@ -4,6 +4,7 @@ permalink: pmd_languages_java.html
 author: Clément Fournier
 last_updated: January 2026 (7.21.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
+keywords: [auxclasspath, auxiliary, classpath, type resolution]
 summary: "Java-specific features and guidance"
 ---
 
