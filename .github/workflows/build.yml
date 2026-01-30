@@ -73,6 +73,17 @@ jobs:
             pmd-dist/target/pmd-*-cyclonedx.xml
             pmd-dist/target/pmd-*-cyclonedx.json
 
+  spelling:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+      - name: Spell Check Repo
+        run: |
+          # note: don't fail the build on typos, just annotate them
+          # so that publish-pull-requests job still runs.
+          TYPOS_GH_ANNOTATE=1 .ci/tools/typos.sh . || true
+
   verify:
     needs: compile
     timeout-minutes: 30
