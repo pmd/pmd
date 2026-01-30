@@ -29,4 +29,6 @@ last_updated: January 2026 (7.21.0)
   * <https://github.com/rsoesemann/unhappy-soup/blob/master/ruleset.xml>
 * **sca-extra**, additional PMD and Regex rules for testing Salesforce Apex code using Salesforce Code Analyzer
   * <https://github.com/starch-uk/sca-extra>
+* **test-pmd-tool**, tests PMD XPath rules for coverage using its own examples as unit tests
+  * <https://github.com/starch-uk/test-pmd-tool>
 
