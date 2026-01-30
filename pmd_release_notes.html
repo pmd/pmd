@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.21.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.22.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.21.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.22.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.21.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 30-January-2026</div>
+    <li class="sidebarTitle">PMD 7.22.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 27-February-2026</div>
     
     
     
@@ -2030,208 +2030,17 @@
     </details>
 
   
-<h2 id="30-january-2026---7210-snapshot">30-January-2026 - 7.21.0-SNAPSHOT</h2>
+<h2 id="27-february-2026---7220-snapshot">27-February-2026 - 7.22.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.21.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.22.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
-<h4 id="️-new-java-26-support">🚀️ New: Java 26 Support</h4>
-<p>This release of PMD brings support for Java 26.</p>
-
-<p>There are no new standard language features.</p>
-
-<p>There is one preview language feature:</p>
-<ul>
-  <li><a href="https://openjdk.org/jeps/530">JEP 530: Primitive Types in Patterns, instanceof, and switch (Fourth Preview)</a></li>
-</ul>
-
-<p>In order to analyze a project with PMD that uses these preview language features,
-you’ll need to select the new language version <code class="language-plaintext highlighter-rouge">26-preview</code>:</p>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check --use-version java-26-preview ...
-</code></pre></div></div>
-
-<p>Note: Support for Java 24 preview language features have been removed. The version “24-preview”
-is no longer available.</p>
-
-<h4 id="build-requirement-is-java-21">Build Requirement is Java 21</h4>
-<p>From now on, Java 21 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
-so that it still can be used in a pure Java 8 environment. This allows us to use the latest
-checkstyle version during the build.</p>
-
-<h4 id="cpd">CPD</h4>
-<ul>
-  <li>The Apex module now supports <a href="https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html#suppression">suppression</a> through <code class="language-plaintext highlighter-rouge">CPD-ON</code>/<code class="language-plaintext highlighter-rouge">CPD-OFF</code> comment pairs. See <a href="https://github.com/pmd/pmd/pull/6417">#6417</a></li>
-</ul>
-
-<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
-<h4 id="new-rules">New Rules</h4>
-<ul>
-  <li>The new Java rule <a href="pmd_rules_java_design.html#publicmemberinnonpublictype"><code class="language-plaintext highlighter-rouge">PublicMemberInNonPublicType</code></a> detects public members (such as methods
-or fields) within non-public types. Non-public types should not declare public members, as their effective
-visibility is limited, and using the <code class="language-plaintext highlighter-rouge">public</code> modifier can create confusion.</li>
-  <li>The new Java rule <a href="pmd_rules_java_errorprone.html#unsupportedjdkapiusage"><code class="language-plaintext highlighter-rouge">UnsupportedJdkApiUsage</code></a> flags the use of unsupported and non-portable
-JDK APIs, including <code class="language-plaintext highlighter-rouge">sun.*</code> packages, <code class="language-plaintext highlighter-rouge">sun.misc.Unsafe</code>, and <code class="language-plaintext highlighter-rouge">jdk.internal.misc.Unsafe</code>. These APIs are unstable,
-intended for internal use, and may change or be removed. The rule complements Java compiler warnings by
-highlighting such usage during code reviews and encouraging migration to official APIs like VarHandle and
-the Foreign Function &amp; Memory API.</li>
-</ul>
-
-<h4 id="changed-rules">Changed Rules</h4>
-<p>The following rules have been changed to use a consistent implementation of enum based
-rule properties:</p>
-<ul>
-  <li>The property <code class="language-plaintext highlighter-rouge">checkAddressTypes</code> of rule <a href="pmd_rules_java_bestpractices.html#avoidusinghardcodedip"><code class="language-plaintext highlighter-rouge">AvoidUsingHardCodedIP</code></a> has changed:
-    <ul>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">IPv4</code> use <code class="language-plaintext highlighter-rouge">ipv4</code></li>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">IPv6</code> use <code class="language-plaintext highlighter-rouge">ipv6</code></li>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">IPv4 mapped IPv6</code> use <code class="language-plaintext highlighter-rouge">ipv4MappedIpv6</code></li>
-      <li>The old values still work, but you’ll see a deprecation warning.</li>
-    </ul>
-  </li>
-  <li>The property <code class="language-plaintext highlighter-rouge">nullCheckBranch</code> of rule <a href="pmd_rules_java_codestyle.html#confusingternary"><code class="language-plaintext highlighter-rouge">ConfusingTernary</code></a> has changed:
-    <ul>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">Any</code> use <code class="language-plaintext highlighter-rouge">any</code></li>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">Then</code> use <code class="language-plaintext highlighter-rouge">then</code></li>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">Else</code> use <code class="language-plaintext highlighter-rouge">else</code></li>
-      <li>The old values still work, but you’ll see a deprecation warning.</li>
-    </ul>
-  </li>
-  <li>The property <code class="language-plaintext highlighter-rouge">typeAnnotations</code> of rule <a href="pmd_rules_java_codestyle.html#modifierorder"><code class="language-plaintext highlighter-rouge">ModifierOrder</code></a> has changed:
-    <ul>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">ontype</code> use <code class="language-plaintext highlighter-rouge">onType</code></li>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">ondecl</code> use <code class="language-plaintext highlighter-rouge">onDecl</code></li>
-      <li>The old values still work, but you’ll see a deprecation warning.</li>
-    </ul>
-  </li>
-  <li>The values of the properties of rule <a href="pmd_rules_java_documentation.html#commentrequired"><code class="language-plaintext highlighter-rouge">CommentRequired</code></a> have changed:
-    <ul>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">Required</code> use <code class="language-plaintext highlighter-rouge">required</code></li>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">Ignored</code> use <code class="language-plaintext highlighter-rouge">ignored</code></li>
-      <li>Instead of <code class="language-plaintext highlighter-rouge">Unwanted</code> use <code class="language-plaintext highlighter-rouge">unwanted</code></li>
-      <li>The old values still work, but you’ll see a deprecation warning.</li>
-    </ul>
-  </li>
-</ul>
-
-<h4 id="deprecated-rules">Deprecated Rules</h4>
-<ul>
-  <li>The Java rule <a href="pmd_rules_java_errorprone.html#dontimportsun"><code class="language-plaintext highlighter-rouge">DontImportSun</code></a> has been deprecated. It is replaced by
-<a href="pmd_rules_java_errorprone.html#unsupportedjdkapiusage"><code class="language-plaintext highlighter-rouge">UnsupportedJdkApiUsage</code></a>.</li>
-</ul>
-
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6184">#6184</a>: [core] Consistent implementation of enum properties</li>
-    </ul>
-  </li>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6417">#6417</a>: [apex] Support CPD suppression with “CPD-OFF” &amp; “CPD-ON”</li>
-    </ul>
-  </li>
-  <li>apex-codestyle
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6349">#6349</a>: [apex] FieldDeclarationsShouldBeAtStart: False positive with properties</li>
-    </ul>
-  </li>
-  <li>cli
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6290">#6290</a>: [cli] Improve Designer start script</li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5871">#5871</a>: [java] Support Java 26</li>
-      <li><a href="https://github.com/pmd/pmd/issues/6364">#6364</a>: [java] Parse error with yield lambda inside switch</li>
-    </ul>
-  </li>
-  <li>java-design
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6231">#6231</a>: [java] New Rule: PublicMemberInNonPublicType</li>
-    </ul>
-  </li>
-  <li>java-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3601">#3601</a>: [java] InvalidLogMessageFormat: False positive when final parameter is Supplier&lt;Throwable&gt;</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5882">#5882</a>: [java] UnconditionalIfStatement: False negative when true/false is not literal but local variable</li>
-      <li><a href="https://github.com/pmd/pmd/issues/5923">#5923</a>: [java] New Rule: Catch usages of sun.misc.Unsafe or jdk.internal.misc.Unsafe</li>
-    </ul>
-  </li>
-  <li>java-performance
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/3857">#3857</a>: [java] InsufficientStringBufferDeclaration: False negatives with String constants</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
-
-<h4 id="deprecations">Deprecations</h4>
-<ul>
-  <li>core
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricOption.html#valueName()"><code>MetricOption#valueName</code></a>: When metrics are used for (rule) properties,
-then the conventional enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
-See <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumListProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumListProperty</code></a>.</li>
-      <li>In <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>:
-        <ul>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.util.Map)"><code>enumProperty(String, Map)</code></a>. Use
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumProperty</code></a> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.lang.Class)"><code>enumProperty(String, Class)</code></a>. Use
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumProperty</code></a> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.lang.Class,java.util.function.Function)"><code>enumProperty(String, Class, Function)</code></a>. Use
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumProperty</code></a> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.util.Map)"><code>enumListProperty(String, Map)</code></a>. Use
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumListProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumListProperty</code></a> instead.</li>
-          <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.lang.Class,java.util.function.Function)"><code>enumListProperty(String, Class, Function)</code></a>. Use
-<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumListProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumListProperty</code></a> instead.</li>
-        </ul>
-      </li>
-    </ul>
-  </li>
-  <li>java
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_FOR"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_FOR</code></a>. This constant should
-have never been public.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_DO"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_DO</code></a>. This constant should
-have never been public.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_WHILE"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_WHILE</code></a>. This constant should
-have never been public.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_BREAK_LOOP_TYPES"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_BREAK_LOOP_TYPES</code></a>. This property
-descriptor should have been private. It won’t be used anymore. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptor(java.lang.String)"><code>getPropertyDescriptor</code></a>
-on the rule to retrieve the property descriptor.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_CONTINUE_LOOP_TYPES"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_CONTINUE_LOOP_TYPES</code></a>. This property
-descriptor should have been private. It won’t be used anymore. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptor(java.lang.String)"><code>getPropertyDescriptor</code></a>
-on the rule to retrieve the property descriptor.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_RETURN_LOOP_TYPES"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_RETURN_LOOP_TYPES</code></a>. This property
-descriptor should have been private. It won’t be used anymore. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptor(java.lang.String)"><code>getPropertyDescriptor</code></a>
-on the rule to retrieve the property descriptor.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#check(net.sourceforge.pmd.properties.PropertyDescriptor,net.sourceforge.pmd.lang.ast.Node,java.lang.Object)"><code>AvoidBranchingStatementAsLastInLoopRule#check</code></a>.
-This method should have been private and will be internalized.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#hasPropertyValue(net.sourceforge.pmd.properties.PropertyDescriptor,java.lang.String)"><code>AvoidBranchingStatementAsLastInLoopRule#hasPropertyValue</code></a>.
-This method should have been private and will be internalized.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#checksNothing()"><code>AvoidBranchingStatementAsLastInLoopRule#checksNothing</code></a>.
-This method should have been private and will be internalized.</li>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.ClassFanOutOption.html#valueName()"><code>ClassFanOutOption#valueName</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.CycloOption.html#valueName()"><code>CycloOption#valueName</code></a>,
-<a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.NcssOption.html#valueName()"><code>NcssOption#valueName</code></a></li>
-    </ul>
-  </li>
-  <li>lang-test
-    <ul>
-      <li><a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/test/AbstractMetricTestRule.html#optionMappings()"><code>AbstractMetricTestRule#optionMappings</code></a>. No extra mapping is required anymore.
-The <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/metrics/MetricOption.html#"><code>MetricOption</code></a> enum values are used. See 
-<a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.21.0-SNAPSHOT/net/sourceforge/pmd/lang/test/AbstractMetricTestRule.html#AbstractMetricTestRule(net.sourceforge.pmd.lang.metrics.Metric,java.lang.Class)"><code>AbstractMetricTestRule(Metric, Class)</code></a>
-to provide the enum at construction time.</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
