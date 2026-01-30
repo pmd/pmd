@@ -4,18 +4,29 @@
 
 package net.sourceforge.pmd.renderers;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Structure for the Code Climate Issue spec
- * (https://github.com/codeclimate/spec/blob/master/SPEC.md#issues)
+ * (https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#issues)
+ *
+ * @deprecated Since 7.22.0. This class is an implementation detail of CodeClimateRenderer. It will be internalized in a future release.
  */
+@Deprecated
 public class CodeClimateIssue {
     public String type;
+    @SuppressWarnings("PMD.FieldNamingConventions")
+    @Deprecated
+    @SerializedName("check_name")
     public String check_name; // SUPPRESS CHECKSTYLE underscore is required per codeclimate format
     public String description;
     public Content content;
     public String[] categories;
     public Location location;
     public String severity;
+    @SuppressWarnings("PMD.FieldNamingConventions")
+    @Deprecated
+    @SerializedName("remediation_points")
     public int remediation_points; // SUPPRESS CHECKSTYLE underscore is required per codeclimate format
 
     public CodeClimateIssue() {
