@@ -318,7 +318,7 @@ let pmd_doc_search_index = [
   "source": "pages/pmd/languages/java.md",
   "title": "Java support",
   "tags": "languagesPmdCapableLanguageCpdCapableLanguage",
-  "keywords": "",
+  "keywords": "auxclasspathauxiliaryclasspathtype resolution",
   "url": "pmd_languages_java.html",
   "summary": "Java-specific features and guidance"
 },{
