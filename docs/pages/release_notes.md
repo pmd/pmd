@@ -158,12 +158,65 @@ rule properties:
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6231](https://github.com/pmd/pmd/pull/6231): \[java] New Rule: PublicMemberInNonPublicType - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6232](https://github.com/pmd/pmd/pull/6232): \[java] New Rule: UnsupportedJdkApiUsage - [Thomas Leplus](https://github.com/thomasleplus) (@thomasleplus)
+* [#6233](https://github.com/pmd/pmd/pull/6233): \[core] Fix #6184: More consistent enum properties - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6290](https://github.com/pmd/pmd/pull/6290): \[cli] Improve Designer start script - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6315](https://github.com/pmd/pmd/pull/6315): \[java] Fix #5882: UnconditionalIfStatement false-negative if true/false is not literal - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6362](https://github.com/pmd/pmd/pull/6362): chore: Fix typos - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6366](https://github.com/pmd/pmd/pull/6366): \[java] Fix #3857: InsufficientStringBufferDeclaration should consider constant Strings - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6373](https://github.com/pmd/pmd/pull/6373): \[java] Support Java 26 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6377](https://github.com/pmd/pmd/pull/6377): \[doc] chore: update last_updated - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6384](https://github.com/pmd/pmd/pull/6384): chore: helper script check-all-contributors.sh - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6386](https://github.com/pmd/pmd/pull/6386): \[core] chore: Bump minimum Java version required for building to 21 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6387](https://github.com/pmd/pmd/pull/6387): \[ci] publish-pull-requests: download latest build result - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6389](https://github.com/pmd/pmd/pull/6389): chore: update javadoc deprecated tags - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6390](https://github.com/pmd/pmd/pull/6390): chore: update javadoc experimental tags - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6391](https://github.com/pmd/pmd/pull/6391): chore: update javadoc internal API tags - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6392](https://github.com/pmd/pmd/pull/6392): \[doc] ADR 3: Clarify javadoc tags - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6394](https://github.com/pmd/pmd/pull/6394): \[apex] Fix #6349: FieldDeclarationsShouldBeAtStart false positive with properties - [Mohamed Hamed](https://github.com/mdhamed238) (@mdhamed238)
+* [#6407](https://github.com/pmd/pmd/pull/6407): \[java]  Fix #3601: InvalidLogMessageFormat: False positive when final parameter is Supplier<Throwable>  - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6417](https://github.com/pmd/pmd/pull/6417): \[apex] Support CPD suppression with "CPD-OFF" & "CPD-ON" - [Jade](https://github.com/goto-dev-null) (@goto-dev-null)
+* [#6428](https://github.com/pmd/pmd/pull/6428): \[ci] chore: run extensive integration tests under linux only - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6429](https://github.com/pmd/pmd/pull/6429): \[doc] chore: add keywords for auxclasspath in Java documentation - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6430](https://github.com/pmd/pmd/pull/6430): \[java] Fix #6364: Parse error with yield lambda - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6367](https://github.com/pmd/pmd/pull/6367): Bump PMD from 7.19.0 to 7.20.0
+* [#6369](https://github.com/pmd/pmd/pull/6369): chore(deps): bump ruby/setup-ruby from 1.275.0 to 1.277.0
+* [#6370](https://github.com/pmd/pmd/pull/6370): chore(deps): bump org.apache.groovy:groovy from 5.0.2 to 5.0.3
+* [#6371](https://github.com/pmd/pmd/pull/6371): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.2 to 1.18.3
+* [#6372](https://github.com/pmd/pmd/pull/6372): chore(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.6.2 to 3.6.3
+* [#6375](https://github.com/pmd/pmd/pull/6375): chore: Bump maven from 3.9.11 to 3.9.12
+* [#6378](https://github.com/pmd/pmd/pull/6378): chore(deps): bump ruby/setup-ruby from 1.277.0 to 1.279.0
+* [#6379](https://github.com/pmd/pmd/pull/6379): chore(deps): bump scalameta.version from 4.14.2 to 4.14.4
+* [#6380](https://github.com/pmd/pmd/pull/6380): chore(deps): bump junit.version from 6.0.1 to 6.0.2
+* [#6381](https://github.com/pmd/pmd/pull/6381): chore(deps): bump org.jsoup:jsoup from 1.21.2 to 1.22.1
+* [#6382](https://github.com/pmd/pmd/pull/6382): chore(deps): bump org.checkerframework:checker-qual from 3.52.1 to 3.53.0
+* [#6383](https://github.com/pmd/pmd/pull/6383): chore(deps): bump com.puppycrawl.tools:checkstyle from 12.3.0 to 13.0.0
+* [#6385](https://github.com/pmd/pmd/pull/6385): chore(deps): bump uri from 1.0.3 to 1.0.4 in /docs
+* [#6399](https://github.com/pmd/pmd/pull/6399): chore(deps): bump ruby/setup-ruby from 1.279.0 to 1.282.0
+* [#6400](https://github.com/pmd/pmd/pull/6400): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.25.1 to 0.25.4
+* [#6401](https://github.com/pmd/pmd/pull/6401): chore(deps): bump org.sonatype.central:central-publishing-maven-plugin from 0.9.0 to 0.10.0
+* [#6403](https://github.com/pmd/pmd/pull/6403): chore(deps): bump com.google.protobuf:protobuf-java from 4.33.2 to 4.33.4
+* [#6410](https://github.com/pmd/pmd/pull/6410): chore(deps): bump ruby/setup-ruby from 1.282.0 to 1.285.0
+* [#6411](https://github.com/pmd/pmd/pull/6411): chore(deps): bump actions/cache from 5.0.1 to 5.0.2
+* [#6412](https://github.com/pmd/pmd/pull/6412): chore(deps): bump scalameta.version from 4.14.4 to 4.14.5
+* [#6413](https://github.com/pmd/pmd/pull/6413): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.3 to 1.18.4
+* [#6414](https://github.com/pmd/pmd/pull/6414): chore(deps-dev): bump org.codehaus.mojo:versions-maven-plugin from 2.20.1 to 2.21.0
+* [#6415](https://github.com/pmd/pmd/pull/6415): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.3 to 1.18.4
+* [#6419](https://github.com/pmd/pmd/pull/6419): chore(deps-dev): bump lodash from 4.17.21 to 4.17.23
+* [#6421](https://github.com/pmd/pmd/pull/6421): chore(deps): bump actions/setup-java from 5.1.0 to 5.2.0
+* [#6422](https://github.com/pmd/pmd/pull/6422): chore(deps): bump actions/checkout from 6.0.1 to 6.0.2
+* [#6423](https://github.com/pmd/pmd/pull/6423): chore(deps): bump scalameta.version from 4.14.5 to 4.14.6
+* [#6424](https://github.com/pmd/pmd/pull/6424): chore(deps-dev): bump org.assertj:assertj-core from 3.27.6 to 3.27.7
+* [#6425](https://github.com/pmd/pmd/pull/6425): chore(deps): bump org.apache.groovy:groovy from 5.0.3 to 5.0.4
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 146 commits
+* 30 closed tickets & PRs
+* Days since last release: 30
 
 {% endtocmaker %}
-
