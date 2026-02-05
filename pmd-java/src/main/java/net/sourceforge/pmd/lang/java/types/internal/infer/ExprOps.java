@@ -297,7 +297,7 @@ public final class ExprOps {
 
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
         site1.setLogging(!acceptLowerArity);
-        MethodCtDecl ctd1 = infer.LOG.inContext("Method ref ctdectl search 1 (static) ", () -> infer.determineInvocationTypeOrFail(site1));
+        MethodCtDecl ctd1 = infer.getLogger().inContext("Method ref ctdectl search 1 (static) ", () -> infer.determineInvocationTypeOrFail(site1));
         JMethodSig m1 = ctd1.getMethodType();
 
         if (lhsIfType != null && !mref.isConstructorRef()) {
@@ -311,7 +311,7 @@ public final class ExprOps {
                 // todo prevent this to add constraints to variables in the target type?
                 MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
                 site1.setLogging(false);
-                ctd2 = infer.LOG.inContext("Method ref ctdectl search 2 (instance) ", () -> infer.determineInvocationTypeOrFail(site2));
+                ctd2 = infer.getLogger().inContext("Method ref ctdectl search 2 (instance) ", () -> infer.determineInvocationTypeOrFail(site2));
                 m2 = ctd2.getMethodType();
             }
 
