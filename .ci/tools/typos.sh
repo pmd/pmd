@@ -4,7 +4,7 @@ set -eu
 # whether to output GitHub annotations for typos (e.g. in pull requests)
 TYPOS_GH_ANNOTATE=${TYPOS_GH_ANNOTATE:=""}
 
-TYPOS_VERSION="v1.42.3"
+TYPOS_VERSION="v1.43.1"
 REPO_ROOT="$(git rev-parse --path-format=relative --show-toplevel)"
 TYPOS_INSTALL_DIR="${REPO_ROOT}.ci/tools/typos"
 TYPOS_EXECUTABLE="${TYPOS_INSTALL_DIR}/typos-${TYPOS_VERSION}"
