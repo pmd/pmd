@@ -43,17 +43,12 @@ if [ -n "$TYPOS_GH_ANNOTATE" ]; then
   # so that the annotations show up in the pull request changes.
   #
   "${TYPOS_EXECUTABLE}" -c "${TYPOS_CONFIG}" --format json "$@" | (
-    grep '"type":"typo"' | (
-      typo="$(cat)"
+    grep '"type":"typo"' | while IFS= read -r typo; do
       original_path="$(echo "$typo" | jq --raw-output '.path')"
       relative_path="$(realpath --relative-to="$GITHUB_WORKSPACE" "$original_path")"
-      updated_typo="$(echo "$typo" | jq --arg path "$relative_path" '.path=$path')"
-      echo "$updated_typo"
-    ) |
-      jq --raw-output '"::warning file=\(.path),line=\(.line_num),col=\(.byte_offset + 1)::\"\(.typo)\" should be \"" + (.corrections // [] | join("\" or \"") + "\".")' |
-      while IFS= read -r line; do
-        echo "$line"
-      done
+      echo "$typo" | jq --arg relative_path "$relative_path" --raw-output \
+        '"::warning file=\($relative_path),line=\(.line_num),col=\(.byte_offset + 1)::\"\(.typo)\" should be \"" + (.corrections // [] | join("\" or \"") + "\".")'
+    done
   ) || true
 fi
 
