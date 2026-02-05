@@ -2109,7 +2109,9 @@ The jobs are:</p>
   <li>“compile”: First a fast compile job to sort out any basic problems at the beginning. If this job fails, nothing
 else is executed. It also populates the build cache (maven dependencies) that is reused for the following jobs.
 The created artifacts are: “compile-artifact”, “staging-repository”, “dist-artifact”.</li>
-  <li>After this first job, a bunch of other jobs are run in parallel:
+  <li>“spelling”: runs <a href="https://github.com/crate-ci/typos">typos</a> and adds annotations
+to the pull request/commit for any misspelled word in documentation and source code.</li>
+  <li>After the “compile” job, a bunch of other jobs are run in parallel:
     <ul>
       <li>“verify”: runs a complete <code class="language-plaintext highlighter-rouge">./mvnw verify</code> with all code checks like checkstyle, japicmp, javadoc, etc.
 but excluding unit tests (these are run in a separate job).
@@ -2814,7 +2816,7 @@ curl 'http://pgp.mit.edu/pks/lookup?op=get&amp;search=0x2EFA55D0785C31F956F2F87E
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            July 2025 (7.17.0)<br /> Site last generated: Feb 1, 2026 <br />
+            February 2026 (7.22.0)<br /> Site last generated: Feb 5, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
