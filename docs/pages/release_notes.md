@@ -28,6 +28,17 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚨️ API Changes
 
+#### Deprecations
+* core
+  * {%jdoc core::renderers.CodeClimateIssue %}: This class is an implementation detail of
+    {%jdoc core::renderers.CodeClimateRenderer %}. It will be internalized in a future release.
+* visualforce
+  * {%jdoc visualforce::lang.visualforce.DataType %}. The enum constants have been renamed to follow Java naming
+    conventions. The old enum constants are deprecated and should no longer be used.  
+    The method {%jdoc !!visualforce::lang.visualforce.DataType#fromString(java.lang.String) %} will return the new
+    enum constants.  
+    Use {%jdoc !!visualforce::lang.visualforce.DataType#fieldTypeNameOf() %} to get the original field type name.
+
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
 
