@@ -15,6 +15,9 @@ import com.google.gson.annotations.SerializedName;
 @Deprecated
 public class CodeClimateIssue {
     public String type;
+    /**
+     * @deprecated Since 7.22.0.
+     */
     @SuppressWarnings("PMD.FieldNamingConventions")
     @Deprecated
     @SerializedName("check_name")
@@ -24,6 +27,9 @@ public class CodeClimateIssue {
     public String[] categories;
     public Location location;
     public String severity;
+    /**
+     * @deprecated Since 7.22.0.
+     */
     @SuppressWarnings("PMD.FieldNamingConventions")
     @Deprecated
     @SerializedName("remediation_points")
