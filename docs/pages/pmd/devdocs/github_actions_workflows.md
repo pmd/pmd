@@ -5,7 +5,7 @@ summary: |
   PMD uses GitHub Actions as the CI/CD infrastructure to build and release new versions.
   This page gives an overview of how these workflows work and how to use them.
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: July 2025 (7.17.0)
+last_updated: February 2026 (7.22.0)
 ---
 
 {%include note.html content="This page is work in progress and does not yet describe all workflows."%}
@@ -69,7 +69,7 @@ The jobs are:
 * "compile": First a fast compile job to sort out any basic problems at the beginning. If this job fails, nothing
   else is executed. It also populates the build cache (maven dependencies) that is reused for the following jobs.
   The created artifacts are: "compile-artifact", "staging-repository", "dist-artifact".
-* "spelling": runs the [typos](https://github.com/crate-ci/typos) GitHub action that adds annotations
+* "spelling": runs [typos](https://github.com/crate-ci/typos) and adds annotations
   to the pull request/commit for any misspelled word in documentation and source code.
 * After the "compile" job, a bunch of other jobs are run in parallel:
     - "verify": runs a complete `./mvnw verify` with all code checks like checkstyle, japicmp, javadoc, etc.
