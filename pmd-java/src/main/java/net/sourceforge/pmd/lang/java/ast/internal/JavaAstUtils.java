@@ -303,7 +303,7 @@ public final class JavaAstUtils {
     public static @NonNull ASTExpression getTopLevelExpr(ASTExpression expr) {
         JavaNode last = expr.ancestorsOrSelf()
                             .takeWhile(it ->
-                                    it instanceof ASTExpression && !(it instanceof ASTLambdaExpression)
+                                it instanceof ASTExpression && !(it instanceof ASTLambdaExpression)
                                         || it instanceof ASTArgumentList && it.getParent() instanceof ASTExpression
                             )
                             .last();

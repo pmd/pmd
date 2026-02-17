@@ -2,7 +2,7 @@
 title: PMD Security
 permalink: pmd_about_security.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2025 (PMD 7.11.0)
+last_updated: January 2025 (7.11.0)
 ---
 
 For reporting security issues, see [SECURITY.md](https://github.com/pmd/pmd/blob/main/SECURITY.md).

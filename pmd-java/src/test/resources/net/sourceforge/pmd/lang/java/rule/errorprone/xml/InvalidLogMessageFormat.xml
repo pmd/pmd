@@ -1348,4 +1348,57 @@ public class InvalidLogMessageFormat{
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>#3601 [java] False positive when final parameter is Supplier of Throwable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            import org.apache.logging.log4j.LogManager;
+            import org.apache.logging.log4j.Logger;
+            import java.util.function.Supplier;
+
+            public class Foo {
+                private static final Logger logger = LogManager.getLogger();
+
+                public void lambdaExpression(Object id) {
+                    try {
+                        throw new Exception("aaa");
+                    } catch (final Exception exception) {
+                        logger.warn("Object with ID {} had a problem.", () -> String.valueOf(id), () -> exception);
+                    }
+                }
+
+                public void lambdaStatement(Object id) {
+                    try {
+                        throw new Exception("aaa");
+                    } catch (final Exception exception) {
+                        logger.warn("Object with ID {} had a problem.", () -> String.valueOf(id), () -> { return exception; });
+                    }
+                }
+
+                private static Supplier<Throwable> exceptionHandler(Exception ex) {
+                    return () -> { ex.printStackTrace(); return ex; };
+                }
+
+                private Supplier<Throwable> exceptionSupplier() {
+                    return () -> { throw new RuntimeException(); };
+                }
+
+                public void supplierMethod(Object id) {
+                    try {
+                        throw new Exception("aaa");
+                    } catch (final Exception exception) {
+                        logger.warn("Object with ID {} had a problem.", () -> String.valueOf(id), () -> exceptionHandler(exception));
+                    }
+                }
+
+                public void supplierMethodReference(Object id) {
+                    try {
+                        throw new Exception("aaa");
+                    } catch (final Exception exception) {
+                        logger.warn("Object with ID {} had a problem.", () -> String.valueOf(id), this::exceptionSupplier);
+                    }
+                }
+            }
+            ]]></code>
+    </test-code>
 </test-data>

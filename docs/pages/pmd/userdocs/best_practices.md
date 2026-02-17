@@ -3,7 +3,7 @@ title: Best Practices
 tags: [userdocs]
 permalink: pmd_userdocs_best_practices.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: November 2017
+last_updated: December 2018 (6.11.0)
 ---
 
 ## Choose the rules that are right for you

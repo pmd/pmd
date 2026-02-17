@@ -4,7 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.bestpractices;
 
-import static net.sourceforge.pmd.properties.PropertyFactory.enumProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.conventionalEnumProperty;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,13 +41,13 @@ import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<ForeachReassignOption> FOREACH_REASSIGN
-        = enumProperty("foreachReassign", ForeachReassignOption.class, ForeachReassignOption::getDisplayName)
+        = conventionalEnumProperty("foreachReassign", ForeachReassignOption.class)
         .defaultValue(ForeachReassignOption.DENY)
         .desc("how/if foreach control variables may be reassigned")
         .build();
 
     private static final PropertyDescriptor<ForReassignOption> FOR_REASSIGN
-        = enumProperty("forReassign", ForReassignOption.class, ForReassignOption::getDisplayName)
+        = conventionalEnumProperty("forReassign", ForReassignOption.class)
         .defaultValue(ForReassignOption.DENY)
         .desc("how/if for control variables may be reassigned")
         .build();
@@ -171,7 +171,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     ASTStatement body = ((ASTLoopStatement) stmt).getBody();
                     for (JavaNode child : stmt.children()) {
                         if (child != body) {
-                            checkVorViolations(child);
+                            checkForViolations(child);
                         }
                     }
 
@@ -180,18 +180,18 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                 } else if (stmt instanceof ASTSwitchStatement) {
 
                     ASTSwitchStatement switchStmt = (ASTSwitchStatement) stmt;
-                    checkVorViolations(switchStmt.getTestedExpression());
+                    checkForViolations(switchStmt.getTestedExpression());
 
                     mayExit |= copy(true, true, false).roamStatementsForExit(switchStmt.getBranches());
 
                 } else if (stmt instanceof ASTIfStatement) {
 
                     ASTIfStatement ifStmt = (ASTIfStatement) stmt;
-                    checkVorViolations(ifStmt.getCondition());
+                    checkForViolations(ifStmt.getCondition());
                     mayExit |= withGuard(true).roamStatementsForExit(ifStmt.getThenBranch());
                     mayExit |= withGuard(this.guarded).roamStatementsForExit(ifStmt.getElseBranch());
                 } else if (stmt instanceof ASTExpression) { // these two catch-all clauses implement other statements & eg switch branches
-                    checkVorViolations(stmt);
+                    checkForViolations(stmt);
                 } else if (!(stmt instanceof ASTLocalClassStatement)) {
                     mayExit |= roamStatementsForExit(stmt.children());
                 }
@@ -199,7 +199,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
             return mayExit;
         }
 
-        private void checkVorViolations(JavaNode node) {
+        private void checkForViolations(JavaNode node) {
             if (node == null) {
                 return;
             }
@@ -297,21 +297,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
         /**
          * Allow reassigning the 'foreach' control variable.
          */
-        ALLOW;
-
-        /**
-         * The RuleDocGenerator uses toString() to determine the default value.
-         *
-         * @return the mapped property value instead of the enum name
-         */
-        @Override
-        public String toString() {
-            return getDisplayName();
-        }
-
-        public String getDisplayName() {
-            return CaseConvention.SCREAMING_SNAKE_CASE.convertTo(CaseConvention.CAMEL_CASE, name());
-        }
+        ALLOW
     }
 
     private enum ForReassignOption {

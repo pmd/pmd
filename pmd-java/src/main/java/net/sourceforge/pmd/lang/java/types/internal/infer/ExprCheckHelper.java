@@ -317,8 +317,8 @@ final class ExprCheckHelper {
 
         JMethodSig exactMethod = ExprOps.getExactMethod(mref);
         if (exactMethod != null) {
-            //  if the method reference is exact (§15.13.1), then let P1, ..., Pn be the parameter
-            //  types of the function type of T, and let F1, ..., Fk be
+            //  if the method reference is exact (§15.13.1), then let P_1, ..., P_n be the parameter
+            //  types of the function type of T, and let F_1, ..., F_k be
             //  the parameter types of the potentially applicable method
             List<JTypeMirror> ps = fun.getFormalParameters();
             List<JTypeMirror> fs = exactMethod.getFormalParameters();

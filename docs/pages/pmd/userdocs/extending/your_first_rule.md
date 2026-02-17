@@ -2,7 +2,7 @@
 title:  Your first rule
 tags: [extending, userdocs]
 summary: "Introduction to rule writing through an example for a XPath rule."
-last_updated: December 2023 (7.0.0)
+last_updated: January 2024 (7.0.0)
 permalink: pmd_userdocs_extending_your_first_rule.html
 author: Miguel Griffa <mikkey@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---

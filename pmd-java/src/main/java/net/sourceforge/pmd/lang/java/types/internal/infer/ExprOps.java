@@ -508,13 +508,13 @@ public final class ExprOps {
 
                 if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType
                     && targetType.getArity() > 0) {
-                    //  In the second search, if P1, ..., Pn is not empty
+                    //  In the second search, if P_1, ..., P_n is not empty
                     //  and P1 is a subtype of ReferenceType, then the
                     //  method reference expression is treated as if it were
                     //  a method invocation expression with argument expressions
-                    //  of types P2, ..., Pn. If ReferenceType is a raw type,
+                    //  of types P_2, ..., P_n. If ReferenceType is a raw type,
                     //  and there exists a parameterization of this type, G<...>,
-                    //  that is a supertype of P1, the type to search is the result
+                    //  that is a supertype of P_1, the type to search is the result
                     //  of capture conversion (§5.1.10) applied to G<...>; otherwise,
                     //  the type to search is the same as the type of the first search.
 

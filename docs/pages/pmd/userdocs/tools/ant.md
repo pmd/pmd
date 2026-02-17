@@ -6,7 +6,7 @@ author: >
     David Dixon-Peugh <dpeugh@users.sourceforge.net>,
     Tom Copeland <tom@infoether.com>,
     Xavier Le Vourch <xlv@users.sourceforge.net>
-last_updated: July 2025 (7.16.0)
+last_updated: January 2026 (7.21.0)
 ---
 
 ## PMD
@@ -105,7 +105,7 @@ The examples below won't repeat this taskdef element, as this is always required
       <td>cacheLocation</td>
       <td>
         The location of the analysis cache file to be used.
-        Setting this property enables Incremental Analysis, which can greatly improve analysis time without loosing analysis quality.
+        Setting this property enables Incremental Analysis, which can greatly improve analysis time without losing analysis quality.
         <b>Its use is strongly recommended.</b>
       </td>
       <td>No</td>
@@ -213,7 +213,7 @@ accordingly and this rule won't be executed.
 The specific version of a language to be used is selected via the `sourceLanguage`
 nested element. Example:
 
-    <sourceLanguage name="java" version="25"/>
+    <sourceLanguage name="java" version="26"/>
 
 The available versions depend on the language. You can get a list of the currently supported language versions
 via the CLI option `--help`.

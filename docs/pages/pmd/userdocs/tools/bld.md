@@ -2,7 +2,7 @@
 title: bld PMD Extension
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_bld.html
-last_updated: September 2023
+last_updated: September 2023 (7.0.0)
 ---
 
 > [bld](https://rife2.com/bld) is a new build system that allows you to write your build logic in pure Java.

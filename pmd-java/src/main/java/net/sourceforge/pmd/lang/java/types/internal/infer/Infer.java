@@ -655,7 +655,7 @@ public final class Infer {
             // this means we're not in an invocation context,
             // if we are, we must ignore it in java 7
             if (site.getOuterCtx().isEmpty()) {
-                // Then add the return contraints late
+                // Then add the return constraints late
                 // Java 7 only uses the context type if the arguments are not enough
                 // https://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.12.2.8
                 m = doReturnChecksAndChangeReturnType(m, site, infCtx);

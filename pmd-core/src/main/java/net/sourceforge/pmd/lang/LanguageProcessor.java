@@ -72,7 +72,7 @@ public interface LanguageProcessor extends AutoCloseable {
          * Create a new task. This constructor is internal and will be
          * called by PMD.
          *
-         * @apiNote Internal API
+         * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
          */
         AnalysisTask(RuleSets rulesets,
                             List<TextFile> files,
@@ -121,7 +121,7 @@ public interface LanguageProcessor extends AutoCloseable {
         /**
          * Produce a new analysis task with just different files.
          *
-         * @apiNote Internal API
+         * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
          */
         AnalysisTask withFiles(List<TextFile> newFiles) {
             return new AnalysisTask(

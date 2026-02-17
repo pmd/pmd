@@ -5,7 +5,7 @@ keywords: [formats, renderers]
 summary: "Overview of the built-in report formats for CPD"
 permalink: pmd_userdocs_cpd_report_formats.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: August 2025 (7.17.0)
+last_updated: September 2025 (7.17.0)
 ---
 
 ## Overview

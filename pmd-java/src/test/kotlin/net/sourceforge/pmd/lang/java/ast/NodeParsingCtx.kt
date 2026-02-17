@@ -39,7 +39,7 @@ abstract class NodeParsingCtx<T : Node>(val constructName: String) {
     /**
      * Parse the string the context described by this object, and finds the first descendant of type [N].
      * The descendant is searched for by [findFirstNodeOnStraightLine], to prevent accidental
-     * mis-selection of a node. In such a case, a [NoSuchElementException] is thrown, and you
+     * selection of a wrong node. In such a case, a [NoSuchElementException] is thrown, and you
      * should fix your test case.
      *
      * @param construct The construct to parse

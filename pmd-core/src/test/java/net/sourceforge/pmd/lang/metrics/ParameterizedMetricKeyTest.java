@@ -67,13 +67,7 @@ class ParameterizedMetricKeyTest {
 
     private enum Options implements MetricOption {
         DUMMY1,
-        DUMMY2;
-
-
-        @Override
-        public String valueName() {
-            return null;
-        }
+        DUMMY2
     }
 
 
