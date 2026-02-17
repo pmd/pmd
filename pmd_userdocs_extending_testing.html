@@ -2041,6 +2041,19 @@ with which the behavior can be modified, then these different cases can also be 
 <p>And if there is a bug fix for a rule, be it a false positive or a false negative case, it should be accompanied
 by an additional test case, so that the bug is not accidentally reintroduced later on.</p>
 
+<div class="alert alert-info" role="alert">
+  <p><i class="fas fa-info-circle"></i>
+<strong>Note:</strong></p>
+
+  <p>This page describes how PMD tests its own rules internally. This approach can also be used
+outside PMD to test custom rules and rulesets, though alternative methods are available.</p>
+
+  <p>One alternative is <strong>test-pmd-tool</strong>, which tests PMD XPath rules for coverage using their own examples
+as unit tests. Written in TypeScript, it only requires PMD to be in the PATH to execute a ruleset.
+For more information, see <a href="https://github.com/starch-uk/test-pmd-tool">https://github.com/starch-uk/test-pmd-tool</a>.</p>
+
+</div>
+
 <h2 id="how-it-works">How it works</h2>
 
 <p>PMD’s built-in rules are organized in rulesets, where all rules belonging to the same category are placed
@@ -2412,7 +2425,7 @@ create custom PMD rules for different languages including tests.</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            August 2025 (7.17.0)<br /> Site last generated: Feb 16, 2026 <br />
+            February 2026 (7.22.0)<br /> Site last generated: Feb 17, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
