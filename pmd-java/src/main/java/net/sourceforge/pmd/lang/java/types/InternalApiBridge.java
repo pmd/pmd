@@ -24,4 +24,8 @@ public final class InternalApiBridge {
     public static boolean isSameTypeInInference(JTypeMirror t, JTypeMirror s) {
         return TypeOps.isSameTypeInInference(t, s);
     }
+
+    public static JTypeVar freshCapture(JWildcardType wild) {
+        return TypeVarImpl.freshCapture(wild);
+    }
 }
