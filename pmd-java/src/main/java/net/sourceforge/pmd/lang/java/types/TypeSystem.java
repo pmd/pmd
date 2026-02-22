@@ -180,10 +180,16 @@ public final class TypeSystem {
      * Builds a new type system. Its public fields will be initialized
      * with fresh types, unrelated to other types.
      *
+     * <p>Note: the lifecycle of the classloader is not managed by this class.
+     * Responsibility for closing it is on the caller.
+     *
      * @param bootstrapResourceLoader Classloader used to resolve class files
      *                                to populate the fields of the new type
      *                                system
+     *
+     * @deprecated Since 7.21.0. Use {@link #usingClasspath(Classpath)}
      */
+    @Deprecated
     public static TypeSystem usingClassLoaderClasspath(ClassLoader bootstrapResourceLoader) {
         return usingClasspath(Classpath.forClassLoader(bootstrapResourceLoader));
     }

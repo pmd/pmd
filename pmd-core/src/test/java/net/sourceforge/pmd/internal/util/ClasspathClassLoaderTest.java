@@ -30,6 +30,7 @@ import java.util.concurrent.Semaphore;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -102,7 +103,7 @@ class ClasspathClassLoaderTest {
     /**
      * @see <a href="https://github.com/pmd/pmd/issues/4899">[java] Parsing failed in ParseLock#doParse() java.io.IOException: Stream closed #4899</a>
      */
-    @Test
+    @RepeatedTest(100)
     void loadMultithreadedFromJar() throws IOException, InterruptedException {
         Path jarPath = prepareCustomJar();
         String classpath = jarPath.toString();
@@ -250,4 +251,5 @@ class ClasspathClassLoaderTest {
             assertArrayEquals(fromUrl, fromStream, "getResource and getResourceAsStream should return the same module");
         }
     }
+
 }

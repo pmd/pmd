@@ -280,7 +280,8 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
         try {
             configuration.prependAuxClasspath(auxClasspath);
         } catch (IllegalArgumentException e) {
-            throw new ParameterException(spec.commandLine(), "Invalid auxiliary classpath: " + e.getMessage(), e);
+            throw new ParameterException(spec.commandLine(),
+                "Invalid auxiliary classpath: ", e, spec.findOption("--aux-classpath"), auxClasspath);
         }
         return configuration;
     }
@@ -304,7 +305,7 @@ public class PmdCommand extends AbstractAnalysisPmdSubcommand<PMDConfiguration> 
                 }
 
                 LOG.debug("Runtime classpath:\n{}", System.getProperty("java.class.path"));
-                LOG.debug("Aux classpath: {}", configuration.getClassLoader());
+                LOG.debug("Aux classpath: {}", configuration.getAnalysisClasspath().toString());
 
                 if (showProgressBar) {
                     if (configuration.getReportFilePath() == null) {

@@ -47,6 +47,7 @@ import net.sourceforge.pmd.reporting.RuleViolation;
 import net.sourceforge.pmd.test.schema.RuleTestCollection;
 import net.sourceforge.pmd.test.schema.RuleTestDescriptor;
 import net.sourceforge.pmd.test.schema.TestSchemaParser;
+import net.sourceforge.pmd.util.PmdClasspathConfig;
 
 /**
  * Advanced methods for test cases
@@ -308,7 +309,7 @@ public abstract class RuleTst {
         configuration.setIgnoreIncrementalAnalysis(true);
         configuration.setDefaultLanguageVersion(languageVersion);
         configuration.setThreads(0); // don't use separate threads
-        configuration.setClassLoader(TEST_AUXCLASSPATH_CLASSLOADER);
+        configuration.setAnalysisClasspath(PmdClasspathConfig.thisClassLoaderWillNotBeClosedByPmd(TEST_AUXCLASSPATH_CLASSLOADER));
 
         try (PmdAnalysis pmd = PmdAnalysis.create(configuration)) {
             pmd.files().addFile(TextFile.forCharSeq(code, FileId.fromPathLikeString("file"), languageVersion));
