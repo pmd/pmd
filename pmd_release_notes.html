@@ -2049,6 +2049,25 @@
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
 
+<h4 id="deprecations">Deprecations</h4>
+<ul>
+  <li>core
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-core/7.22.0-SNAPSHOT/net/sourceforge/pmd/renderers/CodeClimateIssue.html#"><code>CodeClimateIssue</code></a>: This class is an implementation detail of
+<a href="https://docs.pmd-code.org/apidocs/pmd-core/7.22.0-SNAPSHOT/net/sourceforge/pmd/renderers/CodeClimateRenderer.html#"><code>CodeClimateRenderer</code></a>. It will be internalized in a future release.</li>
+    </ul>
+  </li>
+  <li>visualforce
+    <ul>
+      <li><a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.22.0-SNAPSHOT/net/sourceforge/pmd/lang/visualforce/DataType.html#"><code>DataType</code></a>. The enum constants have been renamed to follow Java naming
+conventions. The old enum constants are deprecated and should no longer be used.<br />
+The method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.22.0-SNAPSHOT/net/sourceforge/pmd/lang/visualforce/DataType.html#fromString(java.lang.String)"><code>DataType#fromString</code></a> will return the new
+enum constants.<br />
+Use <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.22.0-SNAPSHOT/net/sourceforge/pmd/lang/visualforce/DataType.html#fieldTypeNameOf()"><code>DataType#fieldTypeNameOf</code></a> to get the original field type name.</li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
 
@@ -2087,7 +2106,7 @@
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 17, 2026 <br />
+             Site last generated: Feb 22, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
