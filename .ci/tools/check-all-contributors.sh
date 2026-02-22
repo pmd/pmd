@@ -95,6 +95,7 @@ echo "Found $(echo "$ISSUES_JSON" | jq length) issues/pull requests"
 
 # Users which reported a bug, that has been fixed now (assigned to the milestone)
 BUG_USERS="$(echo "$ISSUES_JSON" | jq 'map(select(has("pull_request") | not)) | [ .[].user.login ] | unique')"
+MISSING_BUG_USERS=()
 
 COL_GREEN="\e[32m"
 COL_RED="\e[31m"
@@ -111,6 +112,7 @@ for login in $(echo "$BUG_USERS" | jq --raw-output .[]); do
   if [ -z "$USER_JSON" ]; then
     echo -e "${COL_RED}Missing user entirely${COL_RESET}"
     echo "$BUGS"
+    MISSING_BUG_USERS+=("$login")
   else
     HAS_BUG="$(echo "$USER_JSON" | jq --raw-output 'if .contributions | contains(["bug"]) | not then "false" else "true" end')"
     if [ "$HAS_BUG" = "true" ]; then
@@ -118,6 +120,7 @@ for login in $(echo "$BUG_USERS" | jq --raw-output .[]); do
     else
       echo -e "${COL_RED}bug is missing${COL_RESET}"
       echo "$BUGS"
+      MISSING_BUG_USERS+=("$login")
     fi
   fi
 done
@@ -126,6 +129,7 @@ echo
 echo "Checking for code contributions..."
 # Users which submitted a pull request that has been merged (assigned to the milestone)
 CODE_USERS="$(echo "$ISSUES_JSON" | jq 'map(select(has("pull_request"))) | [ .[].user.login ] | unique')"
+MISSING_CODE_USERS=()
 
 # for each user, check if "code" is already present
 for login in $(echo "$CODE_USERS" | jq --raw-output .[]); do
@@ -135,6 +139,7 @@ for login in $(echo "$CODE_USERS" | jq --raw-output .[]); do
   if [ -z "$USER_JSON" ]; then
     echo -e "${COL_RED}Missing user entirely${COL_RESET}"
     echo "$PRS"
+    MISSING_CODE_USERS+=("$login")
   else
     HAS_CODE="$(echo "$USER_JSON" | jq --raw-output 'if .contributions | contains(["code"]) | not then "false" else "true" end')"
     if [ "$HAS_CODE" = "true" ]; then
@@ -142,7 +147,31 @@ for login in $(echo "$CODE_USERS" | jq --raw-output .[]); do
     else
       echo -e "${COL_RED}code is missing${COL_RESET}"
       echo "$PRS"
+      MISSING_CODE_USERS+=("$login")
     fi
   fi
 done
 
+if [ ${#MISSING_BUG_USERS[@]} -eq 0 ] && [ ${#MISSING_CODE_USERS[@]} -eq 0 ]; then
+  echo
+  echo -e "${COL_GREEN}All contributors are up to date!${COL_RESET}"
+  exit 0
+fi
+
+echo
+echo "Please execute the following commands to update the contributors list:"
+echo
+if [ ${#MISSING_BUG_USERS[@]} -gt 0 ]; then
+  for login in "${MISSING_BUG_USERS[@]}"; do
+    echo "npx all-contributors add $login bug"
+  done
+fi
+if [ ${#MISSING_CODE_USERS[@]} -gt 0 ]; then
+  for login in "${MISSING_CODE_USERS[@]}"; do
+    echo "npx all-contributors add $login code"
+  done
+fi
+echo
+echo "git add .all-contributorsrc docs/pages/pmd/projectdocs/credits.md"
+echo "git commit -m \"Update contributors for $NEW_VERSION\""
+echo

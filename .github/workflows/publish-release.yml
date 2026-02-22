@@ -709,7 +709,7 @@ jobs:
           rm -rf "${HOME}/.ssh"
 
   upload-regression-tester-baseline-sourceforge:
-    needs: [check-version, deploy-to-maven-central, create-regression-tester-baseline]
+    needs: [check-version, create-regression-tester-baseline]
     # use environment sourceforge, where secrets/vars are configured for PMD_WEB_SOURCEFORGE_NET_DEPLOY_KEY
     # and PMD_WEB_SOURCEFORGE_NET_KNOWN_HOSTS and PMD_SF_APIKEY
     environment:
