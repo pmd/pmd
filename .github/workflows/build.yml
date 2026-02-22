@@ -79,12 +79,12 @@ jobs:
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
       - name: Spell Check Repo
+        uses: crate-ci/typos@57b11c6b7e54c402ccd9cda953f1072ec4f78e33 #v1.43.5
         # note: don't fail the build on typos, just annotate them
         # so that publish-pull-requests job still runs.
         continue-on-error: true
-        env:
-          TYPOS_GH_ANNOTATE: 1
-        run: .ci/tools/typos.sh
+        with:
+          config: .ci/files/typos.toml
 
   verify:
     needs: compile
