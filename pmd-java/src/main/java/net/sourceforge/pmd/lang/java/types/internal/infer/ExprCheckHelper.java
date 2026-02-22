@@ -163,8 +163,8 @@ final class ExprCheckHelper {
 
         JTypeMirror actualType = mostSpecific.getReturnType();
 
-        if (argCtDecl == infer.FAILED_INVOCATION) {
-            throw ResolutionFailedException.incompatibleFormal(infer.LOG, invoc, ts.ERROR, targetType);
+        if (argCtDecl == infer.getFailedInvocation()) {
+            throw ResolutionFailedException.incompatibleFormal(infer.getLogger(), invoc, ts.ERROR, targetType);
         } else if (argCtDecl == infer.getMissingCtDecl()) {
             JTypeMirror fallback = invoc.unresolvedType();
             if (fallback != null) {
@@ -219,7 +219,7 @@ final class ExprCheckHelper {
                  * bounds may be contributed by the invocation constraints of an enclosing
                  * inference process.
                  */
-                infer.LOG.functionalExprNeedsInvocationCtx(targetType, expr);
+                infer.getLogger().functionalExprNeedsInvocationCtx(targetType, expr);
                 return null; // defer
             }
         } else {
@@ -234,11 +234,11 @@ final class ExprCheckHelper {
             // the types of lambda parameters may be unresolved.
             JTypeMirror target = asClass != null ? asClass : targetType;
             handleFunctionalExprWithoutTargetType(expr, target);
-            infer.LOG.functionalExprHasUnresolvedTargetType(targetType, expr);
+            infer.getLogger().functionalExprHasUnresolvedTargetType(targetType, expr);
             return null;
         }
         if (asClass == null) {
-            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, targetType, expr);
+            throw ResolutionFailedException.notAFunctionalInterface(infer.getLogger(), targetType, expr);
         }
         return asClass;
     }
@@ -307,12 +307,12 @@ final class ExprCheckHelper {
 
         JClassType nonWildcard = nonWildcardParameterization(functionalItf);
         if (nonWildcard == null) {
-            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, mref);
+            throw ResolutionFailedException.notAFunctionalInterface(infer.getLogger(), functionalItf, mref);
         }
 
         JMethodSig fun = findFunctionalInterfaceMethod(nonWildcard);
         if (fun == null) {
-            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, mref);
+            throw ResolutionFailedException.notAFunctionalInterface(infer.getLogger(), functionalItf, mref);
         }
 
         JMethodSig exactMethod = ExprOps.getExactMethod(mref);
@@ -340,7 +340,7 @@ final class ExprCheckHelper {
                 // The receiver may not be boxed
                 JTypeMirror receiver = ps.get(0);
                 if (receiver.isPrimitive()) {
-                    throw ResolutionFailedException.cannotInvokeInstanceMethodOnPrimitive(infer.LOG, receiver, mref);
+                    throw ResolutionFailedException.cannotInvokeInstanceMethodOnPrimitive(infer.getLogger(), receiver, mref);
                 }
                 checker.checkExprConstraint(infCtx, receiver, lhs);
 
@@ -348,7 +348,7 @@ final class ExprCheckHelper {
                     checker.checkExprConstraint(infCtx, ps.get(i), fs.get(i - 1));
                 }
             } else if (n != k) {
-                throw ResolutionFailedException.incompatibleArity(infer.LOG, k, n, mref);
+                throw ResolutionFailedException.incompatibleArity(infer.getLogger(), k, n, mref);
             } else {
                 // n == k
                 for (int i = 0; i < n; i++) {
@@ -412,7 +412,7 @@ final class ExprCheckHelper {
 
         // If there is no compile-time declaration for the method reference, the constraint reduces to false.
         if (ctdecl0 == null) {
-            throw ResolutionFailedException.noCtDeclaration(infer.LOG, fun, mref);
+            throw ResolutionFailedException.noCtDeclaration(infer.getLogger(), fun, mref);
         }
 
         JMethodSig ctdecl = ctdecl0.getMethodType();
@@ -446,7 +446,7 @@ final class ExprCheckHelper {
 
                 if (!TypeOps.haveSameTypeParams(ctdecl, fun)) {
                     // then we really can't do anything
-                    throw ResolutionFailedException.unsolvableDependency(infer.LOG);
+                    throw ResolutionFailedException.unsolvableDependency(infer.getLogger());
                 } else {
                     fixInstantiation = true;
                 }
@@ -475,7 +475,7 @@ final class ExprCheckHelper {
             // type of the invocation type (§15.12.2.6) of the compile-time declaration. If R' is void,
             // the constraint reduces to false; otherwise, the constraint reduces to ‹R' → R›.
             if (ctdecl.getReturnType() == ts.NO_TYPE) {
-                throw ResolutionFailedException.incompatibleReturn(infer.LOG, mref, ctdecl.getReturnType(), r);
+                throw ResolutionFailedException.incompatibleReturn(infer.getLogger(), mref, ctdecl.getReturnType(), r);
             } else {
                 checker.checkExprConstraint(infCtx, capture(ctdecl.getReturnType()), r);
                 completeMethodRefInference(mref, nonWildcard, fun, mrefSigAsCtDecl(ctdecl), false);
@@ -517,12 +517,12 @@ final class ExprCheckHelper {
 
         JClassType groundTargetType = groundTargetType(functionalItf, lambda);
         if (groundTargetType == null) {
-            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, lambda);
+            throw ResolutionFailedException.notAFunctionalInterface(infer.getLogger(), functionalItf, lambda);
         }
 
         JMethodSig groundFun = findFunctionalInterfaceMethod(groundTargetType);
         if (groundFun == null) {
-            throw ResolutionFailedException.notAFunctionalInterface(infer.LOG, functionalItf, lambda);
+            throw ResolutionFailedException.notAFunctionalInterface(infer.getLogger(), functionalItf, lambda);
         }
 
 
@@ -569,14 +569,14 @@ final class ExprCheckHelper {
                                       LambdaExprMirror lambda) {
 
         if (groundFun.isGeneric()) {
-            throw ResolutionFailedException.lambdaCannotTargetGenericFunction(infer.LOG, groundFun, lambda);
+            throw ResolutionFailedException.lambdaCannotTargetGenericFunction(infer.getLogger(), groundFun, lambda);
         }
 
         //  If the number of lambda parameters differs from the number
         //  of parameter types of the function type, the constraint
         //  reduces to false.
         if (groundFun.getArity() != lambda.getParamCount()) {
-            throw ResolutionFailedException.incompatibleArity(infer.LOG, lambda.getParamCount(), groundFun.getArity(), lambda);
+            throw ResolutionFailedException.incompatibleArity(infer.getLogger(), lambda.getParamCount(), groundFun.getArity(), lambda);
         }
 
         // If the function type's result is void and the lambda body is
@@ -584,14 +584,14 @@ final class ExprCheckHelper {
         // the constraint reduces to false.
         JTypeMirror result = groundFun.getReturnType();
         if (result == ts.NO_TYPE && !lambda.isVoidCompatible()) {
-            throw ResolutionFailedException.lambdaCannotTargetVoidMethod(infer.LOG, lambda);
+            throw ResolutionFailedException.lambdaCannotTargetVoidMethod(infer.getLogger(), lambda);
         }
 
         // If the function type's result is not void and the lambda
         // body is a block that is not value-compatible, the constraint
         // reduces to false.
         if (result != ts.NO_TYPE && !lambda.isValueCompatible()) {
-            throw ResolutionFailedException.lambdaCannotTargetValueMethod(infer.LOG, lambda);
+            throw ResolutionFailedException.lambdaCannotTargetValueMethod(infer.getLogger(), lambda);
         }
 
         // If the lambda parameters have explicitly declared types F1, ..., Fn
@@ -599,7 +599,7 @@ final class ExprCheckHelper {
         // i) for all i (1 ≤ i ≤ n), ‹Fi = Gi›
         if (lambda.isExplicitlyTyped()
             && !areSameTypesInInference(groundFun.getFormalParameters(), lambda.getExplicitParameterTypes())) {
-            throw ResolutionFailedException.mismatchedLambdaParameters(infer.LOG, groundFun, lambda.getExplicitParameterTypes(), lambda);
+            throw ResolutionFailedException.mismatchedLambdaParameters(infer.getLogger(), groundFun, lambda.getExplicitParameterTypes(), lambda);
         }
 
         // and ii) ‹T' <: T›.
