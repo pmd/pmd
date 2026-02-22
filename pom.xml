@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sourceforge.pmd</groupId>
     <artifactId>pmd</artifactId>
-    <version>7.21.0-SNAPSHOT</version>
+    <version>7.22.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>PMD</name>
 
@@ -73,7 +73,7 @@
     </issueManagement>
 
     <properties>
-        <project.build.outputTimestamp>2025-12-30T14:37:52Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-01-30T08:58:29Z</project.build.outputTimestamp>
 
         <java.version>8</java.version>
 
@@ -86,12 +86,12 @@
         <kotlin.compiler.jvmTarget>${maven.compiler.test.target}</kotlin.compiler.jvmTarget>
         <kotlin.version>2.2.10</kotlin.version>
         <kotest.version>5.9.1</kotest.version>
-        <junit.version>6.0.2</junit.version>
+        <junit.version>6.0.3</junit.version>
         <dokka.version>2.0.0</dokka.version>
 
         <javacc.version>5.0</javacc.version>
         <surefire.version>3.5.4</surefire.version>
-        <checkstyle.version>13.0.0</checkstyle.version>
+        <checkstyle.version>13.2.0</checkstyle.version>
         <checkstyle.plugin.version>3.6.0</checkstyle.plugin.version>
         <pmd.plugin.version>3.28.0</pmd.plugin.version>
         <ant.version>1.10.15</ant.version>
@@ -107,7 +107,7 @@
         <argLine>-Xmx512m -Dfile.encoding=${project.build.sourceEncoding} ${extraArgLine}</argLine>
         <extraArgLine /> <!-- empty by default, profiles set it as needed -->
 
-        <pmd.build-tools.version>36</pmd.build-tools.version>
+        <pmd.build-tools.version>37</pmd.build-tools.version>
 
         <pmd-designer.version>7.19.2</pmd-designer.version>
 
@@ -178,7 +178,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>3.9.0</version>
+                    <version>3.10.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -271,7 +271,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.14.1</version>
+                    <version>3.15.0</version>
                     <configuration>
                         <release>${java.version}</release>
                         <failOnWarning>true</failOnWarning>
@@ -434,6 +434,11 @@
                                 <name>implNote</name>
                                 <placement>a</placement>
                                 <head>Implementation Note:</head>
+                            </tag>
+                            <tag>
+                                <name>internalApi</name>
+                                <placement>a</placement>
+                                <head>Internal API:</head>
                             </tag>
                             <tag>
                                 <name>experimental</name>
@@ -606,27 +611,27 @@
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-core</artifactId>
-                            <version>7.20.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.21.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-java</artifactId>
-                            <version>7.20.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.21.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-jsp</artifactId>
-                            <version>7.20.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.21.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-javascript</artifactId>
-                            <version>7.20.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.21.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <dependency>
                             <groupId>net.sourceforge.pmd</groupId>
                             <artifactId>pmd-xml</artifactId>
-                            <version>7.20.0</version> <!-- pmd.dogfood.version -->
+                            <version>7.21.0</version> <!-- pmd.dogfood.version -->
                         </dependency>
                         <!-- This contains the dogfood ruleset -->
                         <dependency>
@@ -907,7 +912,7 @@
             <dependency>
                 <groupId>org.checkerframework</groupId>
                 <artifactId>checker-qual</artifactId>
-                <version>3.53.0</version>
+                <version>3.53.1</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.saxon</groupId>
@@ -942,7 +947,7 @@
             <dependency>
                 <groupId>org.apache.groovy</groupId>
                 <artifactId>groovy</artifactId>
-                <version>5.0.3</version>
+                <version>5.0.4</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.gson</groupId>
@@ -1048,7 +1053,7 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.18.4</version>
+                <version>1.18.5</version>
                 <scope>test</scope>
             </dependency>
 
@@ -1138,7 +1143,7 @@
             <dependency>
                 <groupId>com.google.protobuf</groupId>
                 <artifactId>protobuf-java</artifactId>
-                <version>4.33.4</version>
+                <version>4.33.5</version>
             </dependency>
 
             <!-- Make sure to use the correct version that JUnit6 needs.

@@ -122,7 +122,7 @@ if [ "${BUILD_TOOLS_VERSION}" != "${BUILD_TOOLS_VERSION_RELEASE}" ]; then
   exit 1
 fi
 
-echo "*   Run '.ci/tools/check-all-contributors $RELEASE_VERSION' and update contributors"
+echo "*   Run '.ci/tools/check-all-contributors.sh $RELEASE_VERSION' and update contributors"
 echo "    by calling 'npx all-contributors add <username> bug,code' accordingly"
 echo
 echo "*   Update version info in **docs/_config.yml**."

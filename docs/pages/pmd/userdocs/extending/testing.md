@@ -3,7 +3,7 @@ title: Testing your rules
 tags: [extending, userdocs]
 summary: "Learn how to use PMD's simple test framework for unit testing rules."
 permalink: pmd_userdocs_extending_testing.html
-last_updated: August 2025 (7.17.0)
+last_updated: February 2026 (7.22.0)
 author: Andreas Dangel <andreas.dangel@adangel.org>
 ---
 
@@ -16,6 +16,16 @@ with which the behavior can be modified, then these different cases can also be 
 
 And if there is a bug fix for a rule, be it a false positive or a false negative case, it should be accompanied
 by an additional test case, so that the bug is not accidentally reintroduced later on.
+
+{% capture note %}
+This page describes how PMD tests its own rules internally. This approach can also be used
+outside PMD to test custom rules and rulesets, though alternative methods are available.
+
+One alternative is **test-pmd-tool**, which tests PMD XPath rules for coverage using their own examples
+as unit tests. Written in TypeScript, it only requires PMD to be in the PATH to execute a ruleset.
+For more information, see <https://github.com/starch-uk/test-pmd-tool>.
+{% endcapture %}
+{% include note.html content=note %}
 
 ## How it works
 
