@@ -932,7 +932,7 @@ class SomeTest {
     @Nested
     class SomeNestedTest {
         @Test
-        void nestedTest(SoftAssertions softly) {
+        void nestedTest(SoftAssertions softly) { // false positive (fixed)
             softly.assertThat(42).isEqualTo(42);
         }
 
@@ -963,12 +963,12 @@ class ShouldIncludeAssertTest {
     @Nested
     class NestedTest {
         @Test
-        void falseNegative() {
+        void falseNegative() { // line 14
         }
         @Nested
         class DeeplyNestedTest {
             @Test
-            void extensionIsDeclaredOnGrandparentClass(SoftAssertions softly) {
+            void extensionIsDeclaredOnGrandparentClass(SoftAssertions softly) { // false positive (fixed)
                 softly.assertThat(42).isEqualTo(42);
             }
         }
@@ -995,7 +995,7 @@ class ShouldIncludeAssertTest {
     @ExtendWith(SoftAssertionsExtension.class)
     class NestedTest {
         @Test
-        void falseNegative() {
+        void falseNegative() { // line 14
         }
         @Nested
         class DeeplyNestedTest {
@@ -1027,7 +1027,7 @@ class ShouldIncludeAssertTest {
     @ExtendWith(SoftAssertionsExtension.class)
     class NestedTest {
         @Test
-        void falseNegative() {
+        void falseNegative() { // line 14
         }
         @Test
         void extensionIsDeclaredOnTheNestedTest(SoftAssertions softly) {
