@@ -22,6 +22,8 @@ This is a minor release.
 ### 🐛️ Fixed Issues
 * doc
   * [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing
+* java-bestpractices
+  * [#6431](https://github.com/pmd/pmd/issues/6431): \[java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes
 
 ### 🚨️ API Changes
 
