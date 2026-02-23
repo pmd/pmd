@@ -1804,6 +1804,34 @@ public class Foo {
         </example>
     </rule>
 
+    <rule name="UnnecessaryInterfaceDeclaration"
+          language="java"
+          since="7.22.0"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryInterfaceDeclarationRule"
+          message="Unnecessary interface declaration ''{0}'', already provided by ''{1}''."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryinterfacedeclaration">
+        <description>
+            Implicitly declaring that a class implements an interface already implemented by its
+            superclass or parent interface is not necessary.
+        </description>
+        <priority>4</priority>
+        <example>
+            <![CDATA[
+interface I {
+}
+
+interface J extends I {
+}
+
+class A implements I, J { // Unnecessary to declare that A implements I, since J already extends I
+}
+
+class C extends A implements J { // Unnecessary to declare that C implements J, since A already implements J
+}
+]]>
+        </example>
+    </rule>
+
     <rule name="UnnecessaryLocalBeforeReturn"
           language="java"
           deprecated="true"
