@@ -10,6 +10,8 @@ This is a minor release.
 ### Table Of Contents
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
+* [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [Changed Rules](#changed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
     * [Deprecations](#deprecations)
@@ -19,11 +21,23 @@ This is a minor release.
 
 ### 🚀️ New and noteworthy
 
+### 🌟️ New and Changed Rules
+#### Changed Rules
+* The rule [`CloseResource`](https://docs.pmd-code.org/pmd-doc-7.22.0-SNAPSHOT/pmd_rules_java_errorprone.html#closeresource) introduces a new property, `allowedResourceMethodPatterns`,
+  which lets you specify method invocation patterns whose return values are resources managed externally.
+  This is useful for ignoring managed resources - for example, `Reader`/`Writer` instances obtained from
+  `HttpServletRequest`/`HttpServletResponse` - because the servlet container, not application code,
+  is responsible for closing them. By default, the rule ignores `InputStream`/`OutputStream`/`Reader`/`Writer`
+  resources returned by methods on `(Http)ServletRequest` and `(Http)ServletResponse`
+  (both `javax.servlet` and `jakarta.servlet`).
+
 ### 🐛️ Fixed Issues
 * doc
   * [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing
 * java-bestpractices
   * [#6431](https://github.com/pmd/pmd/issues/6431): \[java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes
+* java-errorprone
+  * [#6436](https://github.com/pmd/pmd/issues/6436): \[java] CloseResource: Allow to ignore managed resources
 
 ### 🚨️ API Changes
 
@@ -46,6 +60,5 @@ This is a minor release.
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
-
 
 

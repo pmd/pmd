@@ -3267,6 +3267,12 @@ the types, if the type resolution / auxclasspath is not correctly setup.</p>
 now cases where the standard <code class="language-plaintext highlighter-rouge">java.io.*Stream</code> classes are involved. In order to restore the old behaviour,
 just remove "AutoCloseable" from the types.</p>
 
+<p>The property <code class="language-plaintext highlighter-rouge">allowedResourceMethodPatterns</code> can be used to specify method invocation patterns that return
+resources which are managed externally and don’t need to be closed by the caller. This is useful for
+servlet-related streams like <code class="language-plaintext highlighter-rouge">HttpServletRequest.getReader()</code> or <code class="language-plaintext highlighter-rouge">HttpServletResponse.getWriter()</code>,
+which are managed by the servlet container. The patterns use InvocationMatcher syntax
+(e.g., <code class="language-plaintext highlighter-rouge">javax.servlet.ServletRequest#getReader()</code>).</p>
+
 <p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-java/src/main/java/net/sourceforge/pmd/lang/java/rule/errorprone/CloseResourceRule.java">net.sourceforge.pmd.lang.java.rule.errorprone.CloseResourceRule</a></p>
 
 <p><strong>Example(s):</strong></p>
@@ -3329,6 +3335,11 @@ just remove "AutoCloseable" from the types.</p>
       <td>Exact class names that do not need to be closed</td>
     </tr>
     <tr>
+      <td>allowedResourceMethodPatterns</td>
+      <td>javax.servlet.ServletRequest#getReader() , javax.servlet.ServletResponse#getWriter() , javax.servlet.ServletResponse#getOutputStream() , javax.servlet.http.HttpServletRequest#getReader() , javax.servlet.http.HttpServletResponse#getWriter() , javax.servlet.http.HttpServletResponse#getOutputStream() , jakarta.servlet.ServletRequest#getReader() , jakarta.servlet.ServletResponse#getWriter() , jakarta.servlet.ServletResponse#getOutputStream() , jakarta.servlet.http.HttpServletRequest#getReader() , jakarta.servlet.http.HttpServletResponse#getWriter() , jakarta.servlet.http.HttpServletResponse#getOutputStream()</td>
+      <td>Method invocation patterns that return resources managed externally (InvocationMatcher syntax)</td>
+    </tr>
+    <tr>
       <td>closeNotInFinally</td>
       <td>false</td>
       <td>Detect if ‘close’ (or other closeTargets) is called outside of a finally-block</td>
@@ -3347,6 +3358,7 @@ just remove "AutoCloseable" from the types.</p>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"types"</span> <span class="na">value=</span><span class="s">"java.lang.AutoCloseable,java.sql.Connection,java.sql.Statement,java.sql.ResultSet"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeAsDefaultTarget"</span> <span class="na">value=</span><span class="s">"true"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedResourceTypes"</span> <span class="na">value=</span><span class="s">"java.io.ByteArrayOutputStream,java.io.ByteArrayInputStream,java.io.StringWriter,java.io.CharArrayWriter,java.util.stream.Stream,java.util.stream.IntStream,java.util.stream.LongStream,java.util.stream.DoubleStream"</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"allowedResourceMethodPatterns"</span> <span class="na">value=</span><span class="s">"javax.servlet.ServletRequest#getReader(),javax.servlet.ServletResponse#getWriter(),javax.servlet.ServletResponse#getOutputStream(),javax.servlet.http.HttpServletRequest#getReader(),javax.servlet.http.HttpServletResponse#getWriter(),javax.servlet.http.HttpServletResponse#getOutputStream(),jakarta.servlet.ServletRequest#getReader(),jakarta.servlet.ServletResponse#getWriter(),jakarta.servlet.ServletResponse#getOutputStream(),jakarta.servlet.http.HttpServletRequest#getReader(),jakarta.servlet.http.HttpServletResponse#getWriter(),jakarta.servlet.http.HttpServletResponse#getOutputStream()"</span> <span class="nt">/&gt;</span>
         <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"closeNotInFinally"</span> <span class="na">value=</span><span class="s">"false"</span> <span class="nt">/&gt;</span>
     <span class="nt">&lt;/properties&gt;</span>
 <span class="nt">&lt;/rule&gt;</span>
@@ -6018,7 +6030,7 @@ Thread.currentThread().getContextClassLoader() instead.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 22, 2026 <br />
+             Site last generated: Feb 23, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2038,6 +2038,18 @@
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
+<h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
+<h4 id="changed-rules">Changed Rules</h4>
+<ul>
+  <li>The rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="language-plaintext highlighter-rouge">CloseResource</code></a> introduces a new property, <code class="language-plaintext highlighter-rouge">allowedResourceMethodPatterns</code>,
+which lets you specify method invocation patterns whose return values are resources managed externally.
+This is useful for ignoring managed resources - for example, <code class="language-plaintext highlighter-rouge">Reader</code>/<code class="language-plaintext highlighter-rouge">Writer</code> instances obtained from
+<code class="language-plaintext highlighter-rouge">HttpServletRequest</code>/<code class="language-plaintext highlighter-rouge">HttpServletResponse</code> - because the servlet container, not application code,
+is responsible for closing them. By default, the rule ignores <code class="language-plaintext highlighter-rouge">InputStream</code>/<code class="language-plaintext highlighter-rouge">OutputStream</code>/<code class="language-plaintext highlighter-rouge">Reader</code>/<code class="language-plaintext highlighter-rouge">Writer</code>
+resources returned by methods on <code class="language-plaintext highlighter-rouge">(Http)ServletRequest</code> and <code class="language-plaintext highlighter-rouge">(Http)ServletResponse</code>
+(both <code class="language-plaintext highlighter-rouge">javax.servlet</code> and <code class="language-plaintext highlighter-rouge">jakarta.servlet</code>).</li>
+</ul>
+
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
 <ul>
   <li>doc
@@ -2048,6 +2060,11 @@
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6431">#6431</a>: [java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes</li>
+    </ul>
+  </li>
+  <li>java-errorprone
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/issues/6436">#6436</a>: [java] CloseResource: Allow to ignore managed resources</li>
     </ul>
   </li>
 </ul>
@@ -2111,7 +2128,7 @@ Use <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.22.0-SNAPSHOT/n
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Feb 22, 2026 <br />
+             Site last generated: Feb 23, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
