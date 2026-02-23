@@ -2039,6 +2039,14 @@
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
+<h4 id="new-rules">New Rules</h4>
+<ul>
+  <li>The new Java rule <a href="pmd_rules_java_codestyle.html#unnecessaryinterfacedeclaration"><code class="language-plaintext highlighter-rouge">UnnecessaryInterfaceDeclaration</code></a> detects classes that
+implement interfaces that are already implemented by its superclass, and interfaces
+that extend other interfaces already declared by their superinterfaces.<br />
+These declarations are redundant and can be removed to simplify the code.</li>
+</ul>
+
 <h4 id="changed-rules">Changed Rules</h4>
 <ul>
   <li>The rule <a href="pmd_rules_java_errorprone.html#closeresource"><code class="language-plaintext highlighter-rouge">CloseResource</code></a> introduces a new property, <code class="language-plaintext highlighter-rouge">allowedResourceMethodPatterns</code>,
@@ -2060,6 +2068,11 @@ resources returned by methods on <code class="language-plaintext highlighter-rou
   <li>java-bestpractices
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6431">#6431</a>: [java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes</li>
+    </ul>
+  </li>
+  <li>java-codestyle
+    <ul>
+      <li><a href="https://github.com/pmd/pmd/pull/6458">#6458</a>: [java] New Rule: UnnecessaryInterfaceDeclaration</li>
     </ul>
   </li>
   <li>java-errorprone

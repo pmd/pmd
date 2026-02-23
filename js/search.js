@@ -2420,6 +2420,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/codestyle.md",
+  "title": "UnnecessaryInterfaceDeclaration (Java, Code Style)",
+  "tags": "",
+  "keywords": "Unnecessary Interface Declaration",
+  "url": "pmd_rules_java_codestyle.html#unnecessaryinterfacedeclaration",
+  "summary": "Implicitly declaring that a class implements an interface already implemented by its superclass or parent..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/codestyle.md",
   "title": "UnnecessaryLocalBeforeReturn (Java, Code Style)",
   "tags": "",
   "keywords": "Unnecessary Local Before Return",

@@ -11,6 +11,7 @@ This is a minor release.
 
 * [🚀️ New and noteworthy](#new-and-noteworthy)
 * [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [New Rules](#new-rules)
     * [Changed Rules](#changed-rules)
 * [🐛️ Fixed Issues](#fixed-issues)
 * [🚨️ API Changes](#api-changes)
@@ -22,6 +23,12 @@ This is a minor release.
 ### 🚀️ New and noteworthy
 
 ### 🌟️ New and Changed Rules
+#### New Rules
+* The new Java rule [`UnnecessaryInterfaceDeclaration`](https://docs.pmd-code.org/pmd-doc-7.22.0-SNAPSHOT/pmd_rules_java_codestyle.html#unnecessaryinterfacedeclaration) detects classes that
+  implement interfaces that are already implemented by its superclass, and interfaces
+  that extend other interfaces already declared by their superinterfaces.  
+  These declarations are redundant and can be removed to simplify the code.
+
 #### Changed Rules
 * The rule [`CloseResource`](https://docs.pmd-code.org/pmd-doc-7.22.0-SNAPSHOT/pmd_rules_java_errorprone.html#closeresource) introduces a new property, `allowedResourceMethodPatterns`,
   which lets you specify method invocation patterns whose return values are resources managed externally.
@@ -36,6 +43,8 @@ This is a minor release.
   * [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing
 * java-bestpractices
   * [#6431](https://github.com/pmd/pmd/issues/6431): \[java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes
+* java-codestyle
+  * [#6458](https://github.com/pmd/pmd/pull/6458): \[java] New Rule: UnnecessaryInterfaceDeclaration
 * java-errorprone
   * [#6436](https://github.com/pmd/pmd/issues/6436): \[java] CloseResource: Allow to ignore managed resources
 
