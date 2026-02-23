@@ -24,112 +24,36 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
-#### 🚀️ New: Java 26 Support
-This release of PMD brings support for Java 26.
-
-There are no new standard language features.
-
-There is one preview language feature:
-* [JEP 530: Primitive Types in Patterns, instanceof, and switch (Fourth Preview)](https://openjdk.org/jeps/530)
-
-In order to analyze a project with PMD that uses these preview language features,
-you'll need to select the new language version `26-preview`:
-
-    pmd check --use-version java-26-preview ...
-
-Note: Support for Java 24 preview language features have been removed. The version "24-preview"
-is no longer available.
-
+### 🌟️ New and Changed Rules
 #### Changed Rules
-The following rules have been changed to use a consistent implementation of enum based
-rule properties:
-* The property `checkAddressTypes` of rule {%rule java/bestpractices/AvoidUsingHardCodedIP %} has changed:
-  * Instead of `IPv4` use `ipv4`
-  * Instead of `IPv6` use `ipv6`
-  * Instead of `IPv4 mapped IPv6` use `ipv4MappedIpv6`
-  * The old values still work, but you'll see a deprecation warning.
-* The property `nullCheckBranch` of rule {%rule java/codestyle/ConfusingTernary %} has changed:
-  * Instead of `Any` use `any`
-  * Instead of `Then` use `then`
-  * Instead of `Else` use `else`
-  * The old values still work, but you'll see a deprecation warning.
-* The property `typeAnnotations` of rule {%rule java/codestyle/ModifierOrder %} has changed:
-  * Instead of `ontype` use `onType`
-  * Instead of `ondecl` use `onDecl`
-  * The old values still work, but you'll see a deprecation warning.
-* The values of the properties of rule {%rule java/documentation/CommentRequired %} have changed:
-  * Instead of `Required` use `required`
-  * Instead of `Ignored` use `ignored`
-  * Instead of `Unwanted` use `unwanted`
-  * The old values still work, but you'll see a deprecation warning.
-
-#### Build Requirement is Java 21
-From now on, Java 21 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
-so that it still can be used in a pure Java 8 environment. This allows us to use the latest
-checkstyle version during the build.
+* The rule {% rule java/errorprone/CloseResource %} introduces a new property, `allowedResourceMethodPatterns`,
+  which lets you specify method invocation patterns whose return values are resources managed externally.
+  This is useful for ignoring managed resources - for example, `Reader`/`Writer` instances obtained from
+  `HttpServletRequest`/`HttpServletResponse` - because the servlet container, not application code,
+  is responsible for closing them. By default, the rule ignores `InputStream`/`OutputStream`/`Reader`/`Writer`
+  resources returned by methods on `(Http)ServletRequest` and `(Http)ServletResponse`
+  (both `javax.servlet` and `jakarta.servlet`).
 
 ### 🐛️ Fixed Issues
-* core
-  * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
-* apex-codestyle
-  * [#6349](https://github.com/pmd/pmd/issues/6349): \[apex] FieldDeclarationsShouldBeAtStart: False positive with properties
-* cli
-  * [#6290](https://github.com/pmd/pmd/issues/6290): \[cli] Improve Designer start script
-* java
-  * [#5871](https://github.com/pmd/pmd/issues/5871): \[java] Support Java 26
+* doc
+  * [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing
+* java-bestpractices
+  * [#6431](https://github.com/pmd/pmd/issues/6431): \[java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes
 * java-errorprone
-  * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
-* java-performance
-  * [#3857](https://github.com/pmd/pmd/issues/3857): \[java] InsufficientStringBufferDeclaration: False negatives with String constants
+  * [#6436](https://github.com/pmd/pmd/issues/6436): \[java] CloseResource: Allow to ignore managed resources
 
 ### 🚨️ API Changes
 
 #### Deprecations
 * core
-  * {%jdoc !!core::lang.metrics.MetricOption#valueName() %}: When metrics are used for (rule) properties,
-    then the conventional enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
-    See {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %}.
-  * In {%jdoc core::properties.PropertyFactory %}:
-    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.util.Map) %}. Use
-      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
-    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.lang.Class) %}. Use
-      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
-    * {%jdoc !a!core::properties.PropertyFactory#enumProperty(java.lang.String, java.lang.Class, java.util.function.Function) %}. Use
-      {%jdoc core::properties.PropertyFactory#conventionalEnumProperty(java.lang.String, java.lang.Class) %} instead.
-    * {%jdoc !a!core::properties.PropertyFactory#enumListProperty(java.lang.String, java.util.Map) %}. Use
-      {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %} instead.
-    * {%jdoc !a!core::properties.PropertyFactory#enumListProperty(java.lang.String, java.lang.Class, java.util.function.Function) %}. Use
-      {%jdoc core::properties.PropertyFactory#conventionalEnumListProperty(java.lang.String, java.lang.Class) %} instead.
-* java
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_FOR %}. This constant should
-    have never been public.
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_DO %}. This constant should
-    have never been public.
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_WHILE %}. This constant should
-    have never been public.
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_BREAK_LOOP_TYPES %}. This property
-    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
-    on the rule to retrieve the property descriptor.
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_CONTINUE_LOOP_TYPES %}. This property
-    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
-    on the rule to retrieve the property descriptor.
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#CHECK_RETURN_LOOP_TYPES %}. This property
-    descriptor should have been private. It won't be used anymore. Use {%jdoc core::properties.AbstractPropertySource#getPropertyDescriptor(java.lang.String) %}
-    on the rule to retrieve the property descriptor.
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#check(core::properties.PropertyDescriptor, core::lang.ast.Node, java.lang.Object) %}.
-    This method should have been private and will be internalized.
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#hasPropertyValue(core::properties.PropertyDescriptor, java.lang.String) %}.
-    This method should have been private and will be internalized.
-  * {%jdoc !c!java::lang.java.rule.errorprone.AvoidBranchingStatementAsLastInLoopRule#checksNothing() %}.
-    This method should have been private and will be internalized.
-  * {%jdoc !!java::lang.java.metrics.JavaMetrics.ClassFanOutOption#valueName() %},
-    {%jdoc !!java::lang.java.metrics.JavaMetrics.CycloOption#valueName() %},
-    {%jdoc !!java::lang.java.metrics.JavaMetrics.NcssOption#valueName() %}
-* lang-test
-  * {%jdoc !c!lang-test::lang.test.AbstractMetricTestRule#optionMappings() %}. No extra mapping is required anymore.
-    The {%jdoc core::lang.metrics.MetricOption %} enum values are used. See 
-    {%jdoc !a!lang-test::lang.test.AbstractMetricTestRule#AbstractMetricTestRule(core::lang.metrics.Metric, java.lang.Class) %}
-    to provide the enum at construction time.
+  * {%jdoc core::renderers.CodeClimateIssue %}: This class is an implementation detail of
+    {%jdoc core::renderers.CodeClimateRenderer %}. It will be internalized in a future release.
+* visualforce
+  * {%jdoc visualforce::lang.visualforce.DataType %}. The enum constants have been renamed to follow Java naming
+    conventions. The old enum constants are deprecated and should no longer be used.  
+    The method {%jdoc !!visualforce::lang.visualforce.DataType#fromString(java.lang.String) %} will return the new
+    enum constants.  
+    Use {%jdoc !!visualforce::lang.visualforce.DataType#fieldTypeNameOf() %} to get the original field type name.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
@@ -141,4 +65,3 @@ checkstyle version during the build.
 <!-- content will be automatically generated, see /do-release.sh -->
 
 {% endtocmaker %}
-

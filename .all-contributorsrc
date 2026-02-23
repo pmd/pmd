@@ -8427,6 +8427,43 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "kelunik",
+      "name": "Niklas Keller",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2743004?v=4",
+      "profile": "https://blog.kelunik.com/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "parsam97",
+      "name": "parsam97",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32430185?v=4",
+      "profile": "https://github.com/parsam97",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "thomasleplus",
+      "name": "Thomas Leplus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1929743?v=4",
+      "profile": "https://www.leplus.org/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "goto-dev-null",
+      "name": "Jade",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2322497?v=4",
+      "profile": "https://codeberg.org/cat-dev-null",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,

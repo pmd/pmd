@@ -3,7 +3,7 @@ create or replace procedure InOutNoCopyTest(blankParam       varchar2,
                                             outParam         out varchar2,
                                             inOutParam       in out date,
                                             inOutNoCopyParam in out nocopy clob,
-                                            outNoCpyParam    out nocopy blob)
+                                            outNoCopyParam   out nocopy blob)
 is
 begin
    null;
@@ -17,7 +17,7 @@ create or replace package InOutNoCopyTestPck is
                              outParam         out varchar2,
                              inOutParam       in out date,
                              inOutNoCopyParam in out nocopy clob,
-                             outNoCpyParam    out nocopy blob);
+                             outNoCopyParam   out nocopy blob);
 
 end InOutNoCopyTestPck;
 /
@@ -29,7 +29,7 @@ create or replace package body InOutNoCopyTestPck is
                              outParam         out varchar2,
                              inOutParam       in out date,
                              inOutNoCopyParam in out nocopy clob,
-                             outNoCpyParam    out nocopy blob) is
+                             outNoCopyParam   out nocopy blob) is
    begin
       null;
    end;
