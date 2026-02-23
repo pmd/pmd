@@ -9,6 +9,6 @@ import net.sourceforge.pmd.test.PmdRuleTst;
 /**
  * Test for {@link UnnecessaryInterfaceDeclarationRule}.
  */
-public class UnnecessaryInterfaceDeclarationTest extends PmdRuleTst {
+class UnnecessaryInterfaceDeclarationTest extends PmdRuleTst {
     // no additional unit tests
 }

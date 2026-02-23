@@ -22,6 +22,9 @@ import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 
+/**
+ * @since 7.22.0
+ */
 public class UnnecessaryInterfaceDeclarationRule extends AbstractJavaRulechainRule {
 
     private static final PropertyDescriptor<List<String>> ALLOWED_INTERFACES
