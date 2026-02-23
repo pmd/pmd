@@ -2137,7 +2137,7 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>Servlet managed resource should not be reported (javax.servlet)</description>
+        <description>#6436 Servlet managed resource should not be reported (javax.servlet)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.BufferedReader;
@@ -2163,7 +2163,7 @@ public class ServletExample {
     </test-code>
 
     <test-code>
-        <description>Regular PrintWriter not from servlet should still be reported</description>
+        <description>#6436 Regular PrintWriter not from servlet should still be reported</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
         <code><![CDATA[
@@ -2181,7 +2181,7 @@ public class RegularWriter {
     </test-code>
 
     <test-code>
-        <description>Custom allowedResourceMethodPatterns property</description>
+        <description>#6436 Custom allowedResourceMethodPatterns property</description>
         <rule-property name="allowedResourceMethodPatterns">com.example.MyFactory#getResource()</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -2198,7 +2198,7 @@ public class CustomPattern {
     </test-code>
 
     <test-code>
-        <description>Empty allowedResourceMethodPatterns should not cause issues</description>
+        <description>#6436 Empty allowedResourceMethodPatterns should not cause issues</description>
         <rule-property name="allowedResourceMethodPatterns"></rule-property>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>7</expected-linenumbers>
@@ -2217,7 +2217,7 @@ public class ServletExample {
     </test-code>
 
     <test-code>
-        <description>Explicit allowedResourceMethodPatterns with jakarta.servlet patterns</description>
+        <description>#6436 Explicit allowedResourceMethodPatterns with jakarta.servlet patterns</description>
         <rule-property name="allowedResourceMethodPatterns">jakarta.servlet.ServletRequest#getReader(),jakarta.servlet.ServletResponse#getWriter()</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
@@ -2239,7 +2239,7 @@ public class ServletExample {
     </test-code>
 
     <test-code>
-        <description>Wrapped servlet stream (ObjectOutputStream wrapping response.getOutputStream()) should not be reported</description>
+        <description>#6436 Wrapped servlet stream (ObjectOutputStream wrapping response.getOutputStream()) should not be reported</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.ObjectOutputStream;
@@ -2255,7 +2255,7 @@ public class ServletExample {
     </test-code>
 
     <test-code>
-        <description>Wrapped servlet stream (BufferedReader wrapping request.getReader()) should not be reported</description>
+        <description>#6436 Wrapped servlet stream (BufferedReader wrapping request.getReader()) should not be reported</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import java.io.BufferedReader;
