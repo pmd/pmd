@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java-errorprone
+  * [#5787](https://github.com/pmd/pmd/issues/5787): \[java] InvalidLogMessageFormat: false positive with lombok @Value generated methods
 
 ### 🚨️ API Changes
 
