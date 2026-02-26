@@ -58,7 +58,7 @@ final class AstDisambiguationPass {
         nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx));
     }
 
-    public static void retryDisambigWithCtx(NodeStream<? extends ASTAmbiguousName> nodes, ReferenceCtx ctx, JSymbolTable symbolTable) {
+    static void retryDisambigWithCtx(NodeStream<? extends ASTAmbiguousName> nodes, ReferenceCtx ctx, JSymbolTable symbolTable) {
         assert ctx != null : "Null context";
         nodes.forEach(it -> {
             it.allowReprocessing();
