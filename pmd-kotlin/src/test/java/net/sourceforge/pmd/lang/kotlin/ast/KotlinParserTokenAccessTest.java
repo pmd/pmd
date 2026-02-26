@@ -1,13 +1,18 @@
+/*
+ * BSD-style license; for more info see http://pmd.sourceforge.net/license.html
+ */
+
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
-import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.junit.jupiter.api.Test;
 
-import static net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtAssignmentAndOperator;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtFunctionDeclaration;
+import net.sourceforge.pmd.lang.kotlin.ast.KotlinParser.KtKotlinFile;
 
 /**
  * Minimal test that parses a Kotlin snippet and asserts generated token accessors
@@ -15,10 +20,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  *
  * This is to show a bug where antlr4.BaseAntlrTerminalNode#getTokenKind() returns index instead of type (aka kind).
  */
-public class KotlinParserTokenAccessTest {
+class KotlinParserTokenAccessTest {
 
     @Test
-    public void testGetTokensInKtAssignmentAndOperator() {
+    void testGetTokensInKtAssignmentAndOperator() {
         String code = "class Foo { fun foo() { var a = 42; a += 1 } }";
 
         // Parse using KotlinParsingHelper
@@ -39,6 +44,6 @@ public class KotlinParserTokenAccessTest {
         TerminalNode tn = idNode.ADD_ASSIGNMENT();
         assertNotNull(tn, "Expected an ADD_ASSIGNMENT terminal node");
         assertEquals("+=", tn.getText());
-        assertEquals(ADD_ASSIGNMENT, tn.getSymbol().getType());
+        assertEquals(KotlinParser.ADD_ASSIGNMENT, tn.getSymbol().getType());
     }
 }
