@@ -13,10 +13,11 @@ import static net.sourceforge.pmd.util.OptionalBool.NO;
 import static net.sourceforge.pmd.util.OptionalBool.UNKNOWN;
 import static net.sourceforge.pmd.util.OptionalBool.YES;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.annotation.Annotation;
@@ -29,10 +30,9 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.pcollections.PSet;
 
+import net.sourceforge.pmd.lang.ast.SemanticException;
 import net.sourceforge.pmd.lang.java.JavaParsingHelper;
-import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.symbols.SymbolicValue.SymAnnot;
 import net.sourceforge.pmd.lang.java.symbols.internal.SymImplementation;
@@ -169,17 +169,13 @@ class AnnotationReflectionTest {
 
     @Test
     void testAnnotWithInvalidType() {
-        @NonNull ASTVariableId field =
-            JavaParsingHelper.DEFAULT.parse(
+        SemanticException semanticException = assertThrows(SemanticException.class, () -> JavaParsingHelper.DEFAULT.parse(
                 "@interface A {}\n"
-                    + "class C<A> { @A int a; }\n"
-            ).descendants(ASTFieldDeclaration.class).firstOrThrow().getVarIds().firstOrThrow();
-
-        // The annotation actually refers to the type parameter A. Since
-        // this is invalid code, it is filtered out.
-        PSet<SymAnnot> annots = field.getSymbol().getDeclaredAnnotations();
-        assertThat(annots, empty());
-
+                        + "class C<A> { @A int a; }\n"
+        ));
+        // The annotation "@A" actually refers to the type parameter A.
+        // This is invalid code.
+        assertThat(semanticException.getMessage(), containsString("Expected an annotation type"));
     }
 
     private void assertHasAnnotations(Set<? extends Annotation> expected, AnnotableSymbol annotable) {

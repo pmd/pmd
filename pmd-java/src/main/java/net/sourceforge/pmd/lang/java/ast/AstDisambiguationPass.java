@@ -58,6 +58,14 @@ final class AstDisambiguationPass {
         nodes.forEach(it -> it.acceptVisitor(DisambigVisitor.INSTANCE, ctx));
     }
 
+    public static void retryDisambigWithCtx(NodeStream<? extends ASTAmbiguousName> nodes, ReferenceCtx ctx, JSymbolTable symbolTable) {
+        assert ctx != null : "Null context";
+        nodes.forEach(it -> {
+            it.allowReprocessing();
+            it.setSymbolTable(symbolTable);
+            it.acceptVisitor(DisambigVisitor.INSTANCE, ctx);
+        });
+    }
 
     // those ignore JTypeParameterSymbol, for error handling logic to be uniform
 
@@ -140,6 +148,7 @@ final class AstDisambiguationPass {
             }
 
             if (resolved != name) {
+                InternalApiBridge.setSymbolTable(resolved, symbolTable);
                 ((AbstractJavaNode) name.getParent()).setChild((AbstractJavaNode) resolved, name.getIndexInParent());
             }
 
