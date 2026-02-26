@@ -50,6 +50,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTLambdaParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalClassStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTLocalVariableDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTLoopStatement;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.ast.ASTPattern;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTResource;
@@ -114,10 +115,12 @@ public final class SymbolTableResolver {
         root.descendants(ASTTypeDeclaration.class).forEach(td -> {
             SymbolResolutionPass.desugarLombokMembers(ctx.processor, td);
 
-            // we now have new fields and/or methods, that were not known before.
-            // The updated symboltable now also knows about them.
+            // we now have new fields, that were not known before.
+            // The updated symbol table now also knows about them.
+            // Try to disambiguate now possible method calls on those fields.
             JSymbolTable updatedSymbolTable = helper.typeBody(td.getSymbolTable(), td.getTypeMirror());
-            InternalApiBridge.retryDisambigWithCtx(td.descendants(ASTAmbiguousName.class), ctx, updatedSymbolTable);
+            InternalApiBridge.retryDisambigWithCtx(td.descendants(ASTMethodCall.class)
+                    .children(ASTAmbiguousName.class), ctx, updatedSymbolTable);
         });
     }
 
