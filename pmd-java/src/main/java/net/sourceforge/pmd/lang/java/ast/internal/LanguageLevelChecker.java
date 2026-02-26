@@ -130,39 +130,13 @@ public class LanguageLevelChecker<T> {
      */
     private enum PreviewFeature implements LanguageFeature {
         /**
-         * Compact Source Files and Instance Main Methods
-         * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
-         * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
-         * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
-         * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)
-         * @see <a href="https://openjdk.org/jeps/512">JEP 512: Compact Source Files and Instance Main Methods</a> (Java 25)
-         */
-        COMPACT_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(22, 24, true),
-
-        /**
-         * Flexible Constructor Bodies
-         * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
-         * @see <a href="https://openjdk.org/jeps/482">JEP 482: Flexible Constructor Bodies (Second Preview)</a> (Java 23)
-         * @see <a href="https://openjdk.org/jeps/492">JEP 492: Flexible Constructor Bodies (Third Preview)</a> (Java 24)
-         * @see <a href="https://openjdk.org/jeps/513">JEP 513: Flexible Constructor Bodies</a> (Java 25)
-         */
-        FLEXIBLE_CONSTRUCTOR_BODIES(22, 24, true),
-
-        /**
-         * Module import declarations
-         * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
-         * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java 24)
-         * @see <a href="https://openjdk.org/jeps/511">JEP 511: Module Import Declarations</a> (Java 25)
-         */
-        MODULE_IMPORT_DECLARATIONS(23, 24, true),
-
-        /**
          * Primitive types in patterns, instanceof, and switch
          * @see <a href="https://openjdk.org/jeps/455">JEP 455: Primitive Types in Patterns, instanceof, and switch (Preview)</a> (Java 23)
          * @see <a href="https://openjdk.org/jeps/488">JEP 488: Primitive Types in Patterns, instanceof, and switch (Second Preview)</a> (Java 24)
          * @see <a href="https://openjdk.org/jeps/507">JEP 507: Primitive Types in Patterns, instanceof, and switch (Third Preview)</a> (Java 25)
+         * @see <a href="https://openjdk.org/jeps/530">JEP 530: Primitive Types in Patterns, instanceof, and switch (Fourth Preview)</a> (Java 26)
          */
-        PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 25, false),
+        PRIMITIVE_TYPES_IN_PATTERNS_INSTANCEOF_AND_SWITCH(23, 26, false),
 
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
@@ -403,6 +377,33 @@ public class LanguageLevelChecker<T> {
          */
         UNNAMED_VARIABLES_AND_PATTERNS(22),
 
+        /**
+         * Compact Source Files and Instance Main Methods
+         * @see <a href="https://openjdk.org/jeps/445">JEP 445: Unnamed Classes and Instance Main Methods (Preview)</a> (Java 21)
+         * @see <a href="https://openjdk.org/jeps/463">JEP 463: Implicitly Declared Classes and Instance Main Methods (Second Preview)</a> (Java 22)
+         * @see <a href="https://openjdk.org/jeps/477">JEP 477: Implicitly Declared Classes and Instance Main Methods (Third Preview)</a> (Java 23)
+         * @see <a href="https://openjdk.org/jeps/495">JEP 495: Simple Source Files and Instance Main Methods (Fourth Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/512">JEP 512: Compact Source Files and Instance Main Methods</a> (Java 25)
+         */
+        COMPACT_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS(25),
+
+        /**
+         * Flexible Constructor Bodies
+         * @see <a href="https://openjdk.org/jeps/447">JEP 447: Statements before super(...) (Preview)</a> (Java 22)
+         * @see <a href="https://openjdk.org/jeps/482">JEP 482: Flexible Constructor Bodies (Second Preview)</a> (Java 23)
+         * @see <a href="https://openjdk.org/jeps/492">JEP 492: Flexible Constructor Bodies (Third Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/513">JEP 513: Flexible Constructor Bodies</a> (Java 25)
+         */
+        FLEXIBLE_CONSTRUCTOR_BODIES(25),
+
+        /**
+         * Module import declarations
+         * @see <a href="https://openjdk.org/jeps/476">JEP 476: Module Import Declarations (Preview)</a> (Java 23)
+         * @see <a href="https://openjdk.org/jeps/494">JEP 494: Module Import Declarations (Second Preview)</a> (Java 24)
+         * @see <a href="https://openjdk.org/jeps/511">JEP 511: Module Import Declarations</a> (Java 25)
+         */
+        MODULE_IMPORT_DECLARATIONS(25),
+
         ;  // SUPPRESS CHECKSTYLE enum trailing semi is awesome
 
         private final int minJdkLevel;
@@ -444,7 +445,7 @@ public class LanguageLevelChecker<T> {
 
         @Override
         public Void visit(ASTImplicitClassDeclaration node, T data) {
-            check(node, PreviewFeature.COMPACT_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS, data);
+            check(node, RegularLanguageFeature.COMPACT_SOURCE_FILES_AND_INSTANCE_MAIN_METHODS, data);
             return null;
         }
 
@@ -465,7 +466,7 @@ public class LanguageLevelChecker<T> {
                 check(node, RegularLanguageFeature.STATIC_IMPORT, data);
             }
             if (node.isModuleImport()) {
-                check(node, PreviewFeature.MODULE_IMPORT_DECLARATIONS, data);
+                check(node, RegularLanguageFeature.MODULE_IMPORT_DECLARATIONS, data);
             }
             return null;
         }
@@ -726,7 +727,7 @@ public class LanguageLevelChecker<T> {
             super.visit(node, data);
             if (node.getBody().descendants(ASTExplicitConstructorInvocation.class).nonEmpty()) {
                 if (!(node.getBody().getFirstChild() instanceof ASTExplicitConstructorInvocation)) {
-                    check(node, PreviewFeature.FLEXIBLE_CONSTRUCTOR_BODIES, data);
+                    check(node, RegularLanguageFeature.FLEXIBLE_CONSTRUCTOR_BODIES, data);
                 }
             }
             return null;

@@ -139,14 +139,13 @@ class Foo {
     </test-code>
 
     <test-code>
-        <description>Fields should go before properties too</description>
-        <expected-problems>1</expected-problems>
-        <expected-linenumbers>4</expected-linenumbers>
+        <description>Fields can come after properties (properties are field-like)</description>
+        <expected-problems>0</expected-problems>
         <code><![CDATA[
 class Foo {
     public Integer someProperty { get; }
 
-    public Integer thisIsNotOkay;
+    public Integer thisIsOkay;
 }
         ]]></code>
     </test-code>
@@ -191,6 +190,115 @@ class Foo {
 
     public Integer thisIsNotOkay =  // <--- this line should be reported
         1;  // and not that
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Issue #6349: Properties with accessors are field-like declarations</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class MyClass {
+    public String var1 { get; set; }
+    public String var2;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Properties and fields can be intermixed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    public String prop1 { get; set; }
+    private Integer field1;
+    public Boolean prop2 { get; }
+    private String field2;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Fields should still come before methods even with properties present</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'thisIsNotOkay' should be before method declarations in its class</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    public String prop1 { get; set; }
+    public void someMethod() {}
+
+    public Integer thisIsNotOkay;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Complex mix of properties and fields before methods is valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    public String prop1 { get; set; }
+    private Integer field1;
+    public Boolean prop2 { get; }
+    private String field2;
+
+    public void someMethod() {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Properties can come before regular fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    public String prop1 { get; set; }
+    public Integer field1;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Fields before methods is valid</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    public Integer field1;
+    public String aMethod() {
+        return 'A';
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Methods before fields triggers violation</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <expected-messages>
+            <message>Field declaration for 'field1' should be before method declarations in its class</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    public String aMethod() {
+        return 'A';
+    }
+    public Integer field1;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Property declaration after method is ok</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    public String aMethod() { return 'A'; }
+
+    public Integer prop1 { get; set; }
 }
 ]]></code>
     </test-code>

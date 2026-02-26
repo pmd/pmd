@@ -78,7 +78,7 @@ abstract public class Foo { // warn l1
     </test-code>
 
     <test-code>
-        <description>Annotation order (property=ontype)</description>
+        <description>Annotation order (property=ontype) (deprecated property value test)</description>
         <rule-property name="typeAnnotations">ontype</rule-property>
         <expected-problems>7</expected-problems>
         <expected-linenumbers>7,10,14,16,19,22,24</expected-linenumbers>
@@ -93,10 +93,43 @@ abstract public class Foo { // warn l1
         </expected-messages>
         <code-ref id="annotations"/>
     </test-code>
-    
+
+    <test-code>
+        <description>Annotation order (property=ontype)</description>
+        <rule-property name="typeAnnotations">onType</rule-property>
+        <expected-problems>7</expected-problems>
+        <expected-linenumbers>7,10,14,16,19,22,24</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `@TypeA public`. Type annotations should be placed before the type they qualify.</message>
+            <message>Missorted modifiers `static @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `@TypeA static`. Type annotations should be placed before the type they qualify.</message>
+        </expected-messages>
+        <code-ref id="annotations"/>
+    </test-code>
+
+    <test-code>
+        <description>Annotation order (property=ondecl) (deprecated property value test)</description>
+        <rule-property name="typeAnnotations">ondecl</rule-property>
+        <expected-problems>6</expected-problems>
+        <expected-linenumbers>5,8,14,17,22,24</expected-linenumbers>
+        <expected-messages>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `static @Decl`. Non-type annotations should be placed before modifiers.</message>
+            <message>Missorted modifiers `public @TypeA`. Type annotations should be placed before modifiers.</message>
+        </expected-messages>
+        <code-ref id="annotations"/>
+    </test-code>
+
     <test-code>
         <description>Annotation order (property=ondecl)</description>
-        <rule-property name="typeAnnotations">ondecl</rule-property>
+        <rule-property name="typeAnnotations">onDecl</rule-property>
         <expected-problems>6</expected-problems>
         <expected-linenumbers>5,8,14,17,22,24</expected-linenumbers>
         <expected-messages>

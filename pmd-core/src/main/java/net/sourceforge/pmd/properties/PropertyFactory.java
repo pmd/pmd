@@ -8,12 +8,14 @@ import static java.util.Arrays.asList;
 import static net.sourceforge.pmd.properties.internal.PropertyParsingUtil.enumerationParser;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.properties.PropertyBuilder.GenericCollectionPropertyBuilder;
@@ -21,6 +23,7 @@ import net.sourceforge.pmd.properties.PropertyBuilder.GenericPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.internal.PropertyParsingUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
+import net.sourceforge.pmd.util.StringUtil;
 
 //@formatter:off
 /**
@@ -306,10 +309,14 @@ public final class PropertyFactory {
      * @throws IllegalArgumentException If the map contains a null value or key
      *
      * @return A new builder
+     *
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
      */
+    @Deprecated
     public static <T> GenericPropertyBuilder<T> enumProperty(String name, Map<String, T> nameToValue) {
         PropertySerializer<T> parser = enumerationParser(
             nameToValue,
+            Collections.emptyMap(),
             t -> Objects.requireNonNull(CollectionUtil.getKeyOfValue(nameToValue, t))
         );
         return new GenericPropertyBuilder<>(name, parser);
@@ -325,7 +332,9 @@ public final class PropertyFactory {
      * @param <T>       Type of the enum class
      *
      * @return A new builder
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
      */
+    @Deprecated
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name, Class<T> enumClass) {
         return enumProperty(name, enumClass, Object::toString);
     }
@@ -344,7 +353,10 @@ public final class PropertyFactory {
      * @throws NullPointerException     If any of the arguments is null
      * @throws IllegalArgumentException If the label maker returns null on some constant
      * @throws IllegalStateException    If the label maker maps two constants to the same label
+     *
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumProperty(String, Class)} instead.
      */
+    @Deprecated
     public static <T extends Enum<T>> GenericPropertyBuilder<T> enumProperty(String name,
                                                                              Class<T> enumClass,
                                                                              Function<? super T, @NonNull String> labelMaker) {
@@ -353,7 +365,89 @@ public final class PropertyFactory {
         Map<String, T> labelsToValues = Arrays.stream(enumClass.getEnumConstants())
                                               .collect(Collectors.toMap(labelMaker, t -> t));
 
-        return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, labelMaker));
+        return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, Collections.emptyMap(), labelMaker));
+    }
+
+    /**
+     * Returns a builder for an enumerated property for the given enum
+     * class. It is using the conventional mapping of its enum constants
+     * to labels. Enum constants are expected to be in "SCREAMING_SNAKE_CASE",
+     * the labels are in "camelCase".
+     *
+     * @param name      Property name
+     * @param enumClass Enum class
+     * @param <T>       Type of the enum class
+     *
+     * @return A new builder
+     * @since 7.21.0
+     */
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> conventionalEnumProperty(String name, Class<T> enumClass) {
+        return enumPropertyTransitional(name, enumClass, Collections.emptyMap());
+    }
+
+    /**
+     * Returns a builder for an enumerated property for the given enum
+     * class. It is using the conventional mapping of its enum constants
+     * to labels. Enum constants are expected to be in "SCREAMING_SNAKE_CASE",
+     * the labels are in "camelCase".
+     *
+     * <p>It uses additionally the given mapping to support deprecated (old) values in addition to the
+     * default mapping.</p>
+     *
+     * <p>This builder should only be used for maintaining backwards compatibility.</p>
+     *
+     * @param name              Property name
+     * @param enumClass         Enum class
+     * @param deprecatedMapping Map with still allowed, but deprecated values
+     * @param <T>               Type of the enum class
+     *
+     * @return a new builder
+     * @since 7.21.0
+     */
+    public static <T extends Enum<T>> GenericPropertyBuilder<T> enumPropertyTransitional(String name,
+                                                                             Class<T> enumClass,
+                                                                             Map<String, T> deprecatedMapping) {
+        // default mapping using the default naming convention of enum properties: camel case
+        Function<T, String> toString = v -> StringUtil.CaseConvention.SCREAMING_SNAKE_CASE.convertTo(StringUtil.CaseConvention.CAMEL_CASE, v.name());
+        Map<String, T> labelsToValues = EnumUtils.getEnumMap(enumClass, toString);
+
+        return new GenericPropertyBuilder<>(name, enumerationParser(labelsToValues, deprecatedMapping, toString));
+    }
+
+    /**
+     * Returns a builder for a property having as value a list of the given enum class {@code <T>}. The
+     * format of the individual items is the same as for {@linkplain #conventionalEnumProperty(String, Class)}.
+     *
+     * @param name        Name of the property to build
+     * @param enumClass   Enum class
+     * @param <T>         Value type of the property
+     *
+     * @return A new builder
+     * @since 7.21.0
+     */
+    public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> conventionalEnumListProperty(String name, Class<T> enumClass) {
+        return conventionalEnumProperty(name, enumClass).toList();
+    }
+
+    /**
+     * Returns a builder for a property having as value a list of the given enum class {@code <T>}. The
+     * format of the individual items is the same as for {@linkplain #conventionalEnumProperty(String, Class)}.
+     *
+     * <p>It uses additionally the given mapping to support deprecated (old) values in addition to the
+     * default mapping.</p>
+     *
+     * <p>This build should only be used for maintaining backwards compatibility.</p>
+     *
+     * @param name        Name of the property to build
+     * @param enumClass   Enum class
+     * @param deprecatedMapping Map with still allowed, but deprecated values
+     * @param <T>         Value type of the property
+     *
+     * @return A new builder
+     */
+    public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> enumListPropertyTransitional(String name,
+                                                                                                                Class<T> enumClass, Map<String, T> deprecatedMapping) {
+        return enumPropertyTransitional(name, enumClass, deprecatedMapping).toList();
     }
 
 
@@ -366,7 +460,10 @@ public final class PropertyFactory {
      * @param <T>         Value type of the property
      *
      * @return A new builder
+     *
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumListProperty(String, Class)} instead.
      */
+    @Deprecated
     public static <T> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Map<String, T> nameToValue) {
         return enumProperty(name, nameToValue).toList();
     }
@@ -382,7 +479,10 @@ public final class PropertyFactory {
      * @param <T>        Value type of the property
      *
      * @return A new builder
+     *
+     * @deprecated Since 7.21.0. Use {@link #conventionalEnumListProperty(String, Class)} instead.
      */
+    @Deprecated
     public static <T extends Enum<T>> GenericCollectionPropertyBuilder<T, List<T>> enumListProperty(String name, Class<T> enumClass, Function<? super T, String> labelMaker) {
         Map<String, T> enumMap = CollectionUtil.associateBy(asList(enumClass.getEnumConstants()), labelMaker);
         return enumListProperty(name, enumMap);

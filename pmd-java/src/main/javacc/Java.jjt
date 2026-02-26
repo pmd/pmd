@@ -501,18 +501,19 @@ class JavaParserImpl {
                int lookahead = offset + 1;
                int balance = 1;
                JavaccToken t;
+               boolean hasComma = false;
                while ((t = getToken(lookahead)) != null && balance > 0) {
                    switch (t.kind) {
                        case LPAREN: balance++; break;
                        case RPAREN: balance--; break;
-                       case COMMA: if (balance == 1) return false; // a method call, eg yield(1, 2);
+                       case COMMA: if (balance == 1) { hasComma = true; } break;
                    }
                    lookahead++;
                }
                // lambda:       yield () -> {};
                // method call:  yield ();
                return t != null
-                   && (lookahead != offset + 2 // ie ()
+                   && (!hasComma && lookahead != offset + 2 // ie ()
                    || t.kind == LAMBDA);
            default:
                return false;

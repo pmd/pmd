@@ -60,7 +60,7 @@ final class AbruptCompletionAnalysis {
      * complete normally, while a return or throw always complete abruptly.
      */
     static boolean canCompleteNormally(ASTStatement stmt) {
-        return stmt.acceptVisitor(new ReachabilityVisitor(), new SubtreeState(f -> VisitResult.Continue));
+        return stmt.acceptVisitor(new ReachabilityVisitor(), new SubtreeState(f -> VisitResult.CONTINUE));
     }
 
     /**
@@ -77,8 +77,8 @@ final class AbruptCompletionAnalysis {
     static final class ReachabilityVisitor extends JavaVisitorBase<SubtreeState, Boolean> {
 
         enum VisitResult {
-            Continue,
-            Abort
+            CONTINUE,
+            ABORT
         }
 
         static class VisitAbortedException extends RuntimeException {
@@ -309,7 +309,7 @@ final class AbruptCompletionAnalysis {
         }
 
         private void recordReachableNode(ASTStatement node, SubtreeState data) {
-            if (data.shouldContinue.apply(node) == VisitResult.Abort) {
+            if (data.shouldContinue.apply(node) == VisitResult.ABORT) {
                 throw abortVisit();
             }
         }

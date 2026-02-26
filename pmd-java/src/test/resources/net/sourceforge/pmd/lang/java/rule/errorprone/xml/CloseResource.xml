@@ -2135,4 +2135,139 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6436 Servlet managed resource should not be reported (javax.servlet)</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.BufferedReader;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class ServletExample {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        BufferedReader reader = request.getReader();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
+
+        PrintWriter writer = response.getWriter();
+        writer.println("Hello World");
+
+        ServletOutputStream out = response.getOutputStream();
+        out.write(new byte[] {1, 2, 3});
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6436 Regular PrintWriter not from servlet should still be reported</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.PrintWriter;
+import java.io.FileWriter;
+
+public class RegularWriter {
+    public void write() throws Exception {
+        // Regular PrintWriter should still be flagged
+        PrintWriter writer = new PrintWriter(new FileWriter("test.txt"));
+        writer.println("Hello");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6436 Custom allowedResourceMethodPatterns property</description>
+        <rule-property name="allowedResourceMethodPatterns">com.example.MyFactory#getResource()</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.InputStream;
+import com.example.MyFactory;
+
+public class CustomPattern {
+    public void read(MyFactory factory) throws Exception {
+        InputStream stream = factory.getResource();
+        int c = stream.read();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6436 Empty allowedResourceMethodPatterns should not cause issues</description>
+        <rule-property name="allowedResourceMethodPatterns"></rule-property>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <code><![CDATA[
+import java.io.BufferedReader;
+import javax.servlet.http.HttpServletRequest;
+
+public class ServletExample {
+    public void doPost(HttpServletRequest request) throws Exception {
+        // When patterns are empty, servlet streams should be reported
+        BufferedReader reader = request.getReader();
+        String line = reader.readLine();
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6436 Explicit allowedResourceMethodPatterns with jakarta.servlet patterns</description>
+        <rule-property name="allowedResourceMethodPatterns">jakarta.servlet.ServletRequest#getReader(),jakarta.servlet.ServletResponse#getWriter()</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
+
+public class ServletExample {
+    public void doRequest(ServletRequest request, ServletResponse response) throws Exception {
+        BufferedReader reader = request.getReader();
+        String line = reader.readLine();
+
+        PrintWriter writer = response.getWriter();
+        writer.println(line);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6436 Wrapped servlet stream (ObjectOutputStream wrapping response.getOutputStream()) should not be reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.ObjectOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
+public class ServletExample {
+    public void doGet(HttpServletResponse response) throws Exception {
+        ObjectOutputStream oos = new ObjectOutputStream(response.getOutputStream());
+        oos.writeObject("Hello");
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6436 Wrapped servlet stream (BufferedReader wrapping request.getReader()) should not be reported</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.BufferedReader;
+import java.io.LineNumberReader;
+import javax.servlet.http.HttpServletRequest;
+
+public class ServletExample {
+    public void doPost(HttpServletRequest request) throws Exception {
+        LineNumberReader lnr = new LineNumberReader(request.getReader());
+        String line = lnr.readLine();
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

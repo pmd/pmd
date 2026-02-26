@@ -6,8 +6,10 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 
 import static net.sourceforge.pmd.util.CollectionUtil.immutableSetOf;
 
+import java.util.List;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,13 +20,18 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTArrayAllocation;
 import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
+import net.sourceforge.pmd.lang.java.ast.ASTLambdaExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
+import net.sourceforge.pmd.lang.java.ast.ASTMethodReference;
+import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
+import net.sourceforge.pmd.lang.java.types.JClassType;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 
@@ -74,7 +81,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
 
             if (providedArguments == 1 && JavaAstUtils.isArrayInitializer(args.getLastChild())) {
                 providedArguments = ((ASTArrayAllocation) args.getLastChild()).getArrayInitializer().length();
-            } else if (TypeTestUtil.isA(Throwable.class, args.getLastChild())
+            } else if (isThrowable(args.getLastChild())
                 && providedArguments > expectedArguments) {
                 // Remove throwable param, since it is shown separately.
                 // But only, if it is not used as a placeholder argument
@@ -100,6 +107,39 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
         }
 
         return null;
+    }
+
+    private static boolean isThrowable(ASTExpression lastArg) {
+        if (TypeTestUtil.isA(Throwable.class, lastArg)) {
+            return true;
+        }
+
+        if (TypeTestUtil.isA(Supplier.class, lastArg)) {
+            if (lastArg instanceof ASTLambdaExpression) {
+                ASTExpression expressionBody = ((ASTLambdaExpression) lastArg).getExpressionBody();
+                if (expressionBody != null) {
+                    if (expressionBody instanceof ASTMethodCall) {
+                        return hasThrowableTypeArgument(expressionBody.getTypeMirror());
+                    } else {
+                        return TypeTestUtil.isA(Throwable.class, expressionBody);
+                    }
+                }
+                return lastArg.descendants(ASTReturnStatement.class).all(ret -> TypeTestUtil.isA(Throwable.class, ret.getExpr()));
+            } else if (lastArg instanceof ASTMethodReference) {
+                JTypeMirror returnType = ((ASTMethodReference) lastArg).getReferencedMethod().getReturnType();
+                return hasThrowableTypeArgument(returnType);
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean hasThrowableTypeArgument(JTypeMirror type) {
+        if (type instanceof JClassType) {
+            List<JTypeMirror> typeArgs = ((JClassType) type).getTypeArgs();
+            return typeArgs.size() == 1 && TypeTestUtil.isA(Throwable.class, typeArgs.get(0));
+        }
+        return false;
     }
 
     private boolean isLoggerCall(ASTMethodCall call, String loggerType, Set<String> methodNames) {

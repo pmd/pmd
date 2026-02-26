@@ -95,7 +95,7 @@ public final class TypeOps {
      * Return true if t and s are the same type. This may perform side effects
      * on inference variables. Annotations are ignored.
      *
-     * @apiNote Internal API
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     static boolean isSameTypeInInference(JTypeMirror t, JTypeMirror s) {
         return isSameType(t, s, false, false);
@@ -407,6 +407,9 @@ public final class TypeOps {
         return SubtypeVisitor.INFERENCE.isConvertible(t, s, true);
     }
 
+    /**
+     * @deprecated Since 7.2.0. Use {@link #isConvertible(JTypeMirror, JTypeMirror)} or {@link #isConvertibleNoCapture(JTypeMirror, JTypeMirror)} instead.
+     */
     @Deprecated // unused
     public static Convertibility isConvertible(@NonNull JTypeMirror t, @NonNull JTypeMirror s, boolean capture) {
         return SubtypeVisitor.PURE.isConvertible(t, s, capture);

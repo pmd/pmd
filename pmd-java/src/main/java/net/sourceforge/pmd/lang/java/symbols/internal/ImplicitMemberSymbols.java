@@ -164,7 +164,7 @@ public final class ImplicitMemberSymbols {
                 "log",
                 Modifier.PRIVATE | Modifier.STATIC | Modifier.FINAL,
                 (ts, s) ->
-                        ts.declaration(processor.findSymbolCannotFail("org.slf4j.Logger"))
+                    ts.declaration(processor.findSymbolCannotFail("org.slf4j.Logger"))
         );
     }
 
