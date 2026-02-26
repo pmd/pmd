@@ -269,9 +269,13 @@ public final class SymbolTableResolver {
 
             popStack(pushed - 1);
 
-            // resolve annotations, necessary for lombok
-            f.disambig(node.getModifiers().asStream(), ctx);
-            SymbolResolutionPass.desugarLombokMembers(ctx.processor, node);
+            if (ctx.processor.hasFirstClassLombokSupport()) {
+                // resolve class annotations, necessary for lombok
+                f.disambig(node.getModifiers().asStream(), ctx);
+                // resolve field annotations, necessary for lombok
+                f.disambig(node.getDeclarations(ASTFieldDeclaration.class).children(ASTModifierList.class), ctx);
+                SymbolResolutionPass.desugarLombokMembers(ctx.processor, node);
+            }
 
             // resolve the supertypes, necessary for TypeMemberSymTable
             f.disambig(notBody, ctx); // extends/implements

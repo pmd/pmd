@@ -12,18 +12,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import net.sourceforge.pmd.lang.java.ast.ASTAmbiguousName;
-import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
-import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
-import net.sourceforge.pmd.lang.java.ast.ASTMemberValue;
-import net.sourceforge.pmd.lang.java.ast.Annotatable;
-import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
@@ -31,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
@@ -39,6 +36,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -164,81 +162,71 @@ final class AstClassSym
     }
 
     public void processLombok(JavaAstProcessor processor) {
-        if (node.isAnnotationPresent("lombok.extern.slf4j.Slf4j")) {
+        final String LOMBOK_SLF4J = "lombok.extern.slf4j.Slf4j";
+        final String LOMBOK_GETTER = "lombok.Getter";
+        final String LOMBOK_DATA = "lombok.Data";
+        final String LOMBOK_VALUE = "lombok.Value";
+
+        if (node.isAnnotationPresent(LOMBOK_SLF4J)) {
             declaredFields.add(ImplicitMemberSymbols.lombokSlf4jLoggerField(this, processor));
         }
 
-        for (JFieldSymbol field : new ArrayList<>(declaredFields)) {
-            if (!field.isStatic()) {
-                ASTVariableId varId = field.tryGetNode();
-                if (varId == null) {
-                    continue;
-                }
-                ASTAnnotation fieldGetter = getAnnotation(varId, "lombok.Getter");
-                int accessModifier = -1;
+        declaredFields.stream()
+                .filter(f -> !f.isStatic())
+                .map(f -> f.tryGetNode())
+                .filter(Objects::nonNull)
+                .filter(varId -> !varId.isRecordComponent())
+                .forEach(varId -> {
+                    ASTAnnotation fieldGetter = varId.getAnnotation(LOMBOK_GETTER);
+                    int accessModifier = -1;
 
-                if (fieldGetter != null) {
-                    accessModifier = getLombokAccessModifier(fieldGetter);
-                } else {
-                    ASTAnnotation classGetter = getAnnotation(node, "lombok.Getter");
-                    if (classGetter != null) {
-                        accessModifier = getLombokAccessModifier(classGetter);
-                    } else if (JavaAstUtils.hasAnyAnnotation(node, setOf("lombok.Data", "lombok.Value"))) {
-                        accessModifier = Modifier.PUBLIC;
+                    if (fieldGetter != null) {
+                        accessModifier = getLombokAccessModifier(fieldGetter);
+                    } else {
+                        ASTAnnotation classGetter = node.getAnnotation(LOMBOK_GETTER);
+                        if (classGetter != null) {
+                            accessModifier = getLombokAccessModifier(classGetter);
+                        } else if (JavaAstUtils.hasAnyAnnotation(node, setOf(LOMBOK_DATA, LOMBOK_VALUE))) {
+                            accessModifier = Modifier.PUBLIC;
+                        }
                     }
-                }
 
-                if (accessModifier != -1 && accessModifier != 0 /* AccessLevel.NONE */) {
-                    JMethodSymbol getter = ImplicitMemberSymbols.lombokGetter(this, field, accessModifier);
-                    String getterName = getter.getSimpleName();
-                    if (declaredMethods.stream().noneMatch(m -> m.getSimpleName().equals(getterName) && m.getArity() == 0)) {
-                        declaredMethods.add(getter);
+                    if (accessModifier != -1) {
+                        JMethodSymbol getter = ImplicitMemberSymbols.lombokGetter(this,
+                                (JFieldSymbol) varId.getSymbol(), accessModifier);
+                        String getterName = getter.getSimpleName();
+                        if (declaredMethods.stream().noneMatch(m -> m.getSimpleName().equals(getterName) && m.getArity() == 0)) {
+                            declaredMethods.add(getter);
+                        }
                     }
-                }
-            }
-        }
+                });
     }
 
     private int getLombokAccessModifier(ASTAnnotation annot) {
-        ASTMemberValue value = annot.getAttribute("value");
-        if (value != null) {
-            String image = null;
-            if (value instanceof ASTNamedReferenceExpr) {
-                image = ((ASTNamedReferenceExpr) value).getName();
-            } else if (value instanceof ASTAmbiguousName) {
-                image = ((ASTAmbiguousName) value).getName();
-            }
-
-            if (image != null) {
-                if (image.endsWith("PUBLIC")) {
-                    return Modifier.PUBLIC;
-                } else if (image.endsWith("PROTECTED")) {
-                    return Modifier.PROTECTED;
-                } else if (image.endsWith("PACKAGE")) {
-                    return Modifier.PROTECTED;
-                } else if (image.endsWith("PRIVATE")) {
-                    return Modifier.PRIVATE;
-                } else if (image.endsWith("NONE")) {
-                    return 0; // special value for NONE, we'll use 0 as a flag or handle it
-                }
-            }
-        }
-
-        return Modifier.PUBLIC;
+        return annot.getFlatValue(ASTMemberValuePair.VALUE_ATTR)
+                .filter(v -> v instanceof ASTNamedReferenceExpr)
+                .toStream()
+                .map(ASTNamedReferenceExpr.class::cast)
+                .map(ASTNamedReferenceExpr::getName)
+                .findFirst()
+                .map(accessLevel -> {
+                    switch (accessLevel) {
+                    case "PROTECTED":
+                        return Modifier.PROTECTED;
+                    case "PACKAGE":
+                        return 0;
+                    case "PRIVATE":
+                        return Modifier.PRIVATE;
+                    case "NONE":
+                        return -1; // special value for NONE, we'll use -1 as a flag or handle it
+                    case "PUBLIC":
+                    default:
+                        return Modifier.PUBLIC;
+                    }
+                })
+                .orElse(Modifier.PUBLIC); // lombok generates by default public getters
     }
 
-
-    private @Nullable ASTAnnotation getAnnotation(Annotatable annotatable, String canonName) {
-        String simpleName = canonName.substring(canonName.lastIndexOf('.') + 1);
-        for (ASTAnnotation annot : annotatable.getDeclaredAnnotations()) {
-            ASTClassType typeNode = annot.getTypeNode();
-            String name = typeNode.getSimpleName();
-            if (simpleName.equals(name)) {
-                return annot;
-            }
-        }
-        return null;
-    }
 
     private List<JRecordComponentSymbol> mapComponentsToMutableList(AstSymFactory factory,
                                                           ASTRecordComponentList components,
