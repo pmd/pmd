@@ -24,6 +24,16 @@ This is a {{ site.pmd.release_type }} release.
 
 ### 🚀️ New and noteworthy
 
+#### Security fixes
+* This release fixes a stored XSS vulnerability in VBHTMLRenderer and YAHTMLRenderer via unescaped violation messages.  
+  Affects CI/CD pipelines that run PMD with `--format vbhtml` or `--format yahtml` on untrusted source code
+  (e.g. pull requests from external contributors) and expose the HTML report as a build artifact.
+  JavaScript executes in the browser context of anyone who opens the report.  
+  Note: The default `html` format is **not affected** by unescaped violation messages, but a similar problem
+  existed with suppressed violation markers.  
+  If you use these reports, it is recommended to upgrade PMD.  
+  Reported by [Smaran Chand](https://github.com/smaranchand) (@smaranchand).
+
 ### 🌟️ New and Changed Rules
 #### New Rules
 * The new Java rule {% rule java/codestyle/UnnecessaryInterfaceDeclaration %} detects classes that
@@ -43,6 +53,7 @@ This is a {{ site.pmd.release_type }} release.
 ### 🐛️ Fixed Issues
 * core
   * [#6471](https://github.com/pmd/pmd/issues/6471): \[core] BaseAntlrTerminalNode should return type instead of index for getTokenKind()
+  * [#6475](https://github.com/pmd/pmd/issues/6475): \[core] Fix stored XSS in VBHTMLRenderer and YAHTMLRenderer
 * doc
   * [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing
 * java-bestpractices
