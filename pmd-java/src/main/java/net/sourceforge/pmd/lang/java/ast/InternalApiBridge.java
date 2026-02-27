@@ -77,6 +77,10 @@ public final class InternalApiBridge {
         AstDisambiguationPass.disambigWithCtx(nodes, ctx);
     }
 
+    public static void retryDisambigWithCtx(NodeStream<? extends ASTAmbiguousName> nodes, ReferenceCtx ctx, JSymbolTable symbolTable) {
+        AstDisambiguationPass.retryDisambigWithCtx(nodes, ctx, symbolTable);
+    }
+
     /**
      * Forcing type resolution allows us to report errors more cleanly
      * than if it was done completely lazy. Failures (other than semantic exceptions)

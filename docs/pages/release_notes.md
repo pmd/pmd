@@ -48,6 +48,7 @@ This is a {{ site.pmd.release_type }} release.
 * java-codestyle
   * [#6458](https://github.com/pmd/pmd/pull/6458): \[java] New Rule: UnnecessaryInterfaceDeclaration
 * java-errorprone
+  * [#5787](https://github.com/pmd/pmd/issues/5787): \[java] InvalidLogMessageFormat: False positive with lombok @<!-- -->Value generated methods
   * [#6436](https://github.com/pmd/pmd/issues/6436): \[java] CloseResource: Allow to ignore managed resources
 
 ### 🚨️ API Changes
