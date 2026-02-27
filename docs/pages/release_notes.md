@@ -79,11 +79,45 @@ This is a {{ site.pmd.release_type }} release.
 
 ### ✨️ Merged pull requests
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing - [Beech Horn](https://github.com/metalshark) (@metalshark)
+* [#6397](https://github.com/pmd/pmd/pull/6397): \[java] Add support for Lombok-generated getters in symbol resolution - [Anurag Agarwal](https://github.com/altaiezior) (@altaiezior)
+* [#6420](https://github.com/pmd/pmd/pull/6420): \[ci] build: Add typos as spell checker - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6432](https://github.com/pmd/pmd/pull/6432): \[java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes - [Artur Kalimullin](https://github.com/kaliy) (@kaliy)
+* [#6434](https://github.com/pmd/pmd/pull/6434): \[java] chore(style): Fix lambda argument indentation for checkstyle compliance - [Kai](https://github.com/aclfe) (@aclfe)
+* [#6437](https://github.com/pmd/pmd/pull/6437): \[java] CloseResource: Allow to ignore managed resources - [Gildas Cuisinier](https://github.com/gcuisinier) (@gcuisinier)
+* [#6445](https://github.com/pmd/pmd/pull/6445): chore: Fix FieldNamingConventions - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6446](https://github.com/pmd/pmd/pull/6446): \[doc] Add new IntelliJ Plugin "PMD X" - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6447](https://github.com/pmd/pmd/pull/6447): chore: Small release process fixes - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6458](https://github.com/pmd/pmd/pull/6458): \[java] New Rule: UnnecessaryInterfaceDeclaration - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6472](https://github.com/pmd/pmd/pull/6472): \[core] Fix BaseAntlrTerminalNode getTokenKind to return type instead of index - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#6475](https://github.com/pmd/pmd/pull/6475): \[core] Fix stored XSS in VBHTMLRenderer and YAHTMLRenderer - [Andreas Dangel](https://github.com/adangel) (@adangel)
 
 ### 📦️ Dependency updates
 <!-- content will be automatically generated, see /do-release.sh -->
+* [#6433](https://github.com/pmd/pmd/pull/6433): Bump PMD from 7.20.0 to 7.21.0
+* [#6438](https://github.com/pmd/pmd/pull/6438): chore(deps): bump actions/cache from 5.0.2 to 5.0.3
+* [#6439](https://github.com/pmd/pmd/pull/6439): chore(deps): bump ruby/setup-ruby from 1.286.0 to 1.288.0
+* [#6440](https://github.com/pmd/pmd/pull/6440): chore(deps): bump scalameta.version from 4.14.6 to 4.14.7
+* [#6441](https://github.com/pmd/pmd/pull/6441): chore(deps): bump org.apache.maven.plugins:maven-compiler-plugin from 3.14.1 to 3.15.0
+* [#6442](https://github.com/pmd/pmd/pull/6442): chore(deps): bump org.checkerframework:checker-qual from 3.53.0 to 3.53.1
+* [#6443](https://github.com/pmd/pmd/pull/6443): chore(deps): bump com.puppycrawl.tools:checkstyle from 13.0.0 to 13.1.0
+* [#6444](https://github.com/pmd/pmd/pull/6444): chore(deps): bump com.google.protobuf:protobuf-java from 4.33.4 to 4.33.5
+* [#6452](https://github.com/pmd/pmd/pull/6452): chore(deps): bump actions/checkout from 6.0.1 to 6.0.2
+* [#6455](https://github.com/pmd/pmd/pull/6455): chore(deps): bump org.apache.maven.plugins:maven-dependency-plugin from 3.9.0 to 3.10.0
+* [#6456](https://github.com/pmd/pmd/pull/6456): chore(deps): bump com.puppycrawl.tools:checkstyle from 13.1.0 to 13.2.0
+* [#6462](https://github.com/pmd/pmd/pull/6462): chore(deps): bump junit.version from 6.0.2 to 6.0.3
+* [#6463](https://github.com/pmd/pmd/pull/6463): chore(deps): bump scalameta.version from 4.14.7 to 4.15.2
+* [#6465](https://github.com/pmd/pmd/pull/6465): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.4 to 1.18.5
+* [#6468](https://github.com/pmd/pmd/pull/6468): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.4 to 1.18.5
+* [#6469](https://github.com/pmd/pmd/pull/6469): chore(deps): bump surefire.version from 3.5.4 to 3.5.5
+* [#6470](https://github.com/pmd/pmd/pull/6470): chore(deps): bump org.jetbrains:annotations from 26.0.2-1 to 26.1.0
+* [#6473](https://github.com/pmd/pmd/pull/6473): chore(deps): bump nokogiri to 1.19.1
+* [#6474](https://github.com/pmd/pmd/pull/6474): chore(deps): bump faraday from 2.13.3 to 2.14.1
 
 ### 📈️ Stats
 <!-- content will be automatically generated, see /do-release.sh -->
+* 66 commits
+* 16 closed tickets & PRs
+* Days since last release: 28
 
 {% endtocmaker %}
