@@ -2038,6 +2038,18 @@
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
+<h4 id="security-fixes">Security fixes</h4>
+<ul>
+  <li>This release fixes a stored XSS vulnerability in VBHTMLRenderer and YAHTMLRenderer via unescaped violation messages.<br />
+Affects CI/CD pipelines that run PMD with <code class="language-plaintext highlighter-rouge">--format vbhtml</code> or <code class="language-plaintext highlighter-rouge">--format yahtml</code> on untrusted source code
+(e.g. pull requests from external contributors) and expose the HTML report as a build artifact.
+JavaScript executes in the browser context of anyone who opens the report.<br />
+Note: The default <code class="language-plaintext highlighter-rouge">html</code> format is <strong>not affected</strong> by unescaped violation messages, but a similar problem
+existed with suppressed violation markers.<br />
+If you use these reports, it is recommended to upgrade PMD.<br />
+Reported by <a href="https://github.com/smaranchand">Smaran Chand</a> (@smaranchand).</li>
+</ul>
+
 <h3 id="️-new-and-changed-rules">🌟️ New and Changed Rules</h3>
 <h4 id="new-rules">New Rules</h4>
 <ul>
@@ -2063,6 +2075,7 @@ resources returned by methods on <code class="language-plaintext highlighter-rou
   <li>core
     <ul>
       <li><a href="https://github.com/pmd/pmd/issues/6471">#6471</a>: [core] BaseAntlrTerminalNode should return type instead of index for getTokenKind()</li>
+      <li><a href="https://github.com/pmd/pmd/issues/6475">#6475</a>: [core] Fix stored XSS in VBHTMLRenderer and YAHTMLRenderer</li>
     </ul>
   </li>
   <li>doc
