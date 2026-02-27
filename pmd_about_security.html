@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.22.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.23.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.22.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.23.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.22.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 27-February-2026</div>
+    <li class="sidebarTitle">PMD 7.23.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 27-March-2026</div>
     
     
     
@@ -2032,6 +2032,103 @@
   <p>For reporting security issues, see <a href="https://github.com/pmd/pmd/blob/main/SECURITY.md">SECURITY.md</a>.</p>
 
 <h2 id="security-vulnerabilities">Security Vulnerabilities</h2>
+<h3 id="cve-2026-tbd">CVE-2026 TBD</h3>
+<p><strong>Published:</strong> 2026-02-27</p>
+
+<p><strong>Severity:</strong> Medium</p>
+
+<p><strong>Summary:</strong> Stored XSS in HTML renderers via unescaped violation messages</p>
+
+<p><strong>Versions Affected:</strong></p>
+<ul>
+  <li>net.sourceforge.pmd:pmd-core 7.21.0 and earlier</li>
+</ul>
+
+<p><strong>Description:</strong>
+PMD’s <code class="language-plaintext highlighter-rouge">vbhtml</code> and <code class="language-plaintext highlighter-rouge">yahtml</code> report formats insert rule violation messages into HTML output without escaping.
+When PMD analyzes untrusted source code containing crafted string literals, the generated HTML report contains
+executable JavaScript that runs when opened in a browser.</p>
+
+<p>While the default <code class="language-plaintext highlighter-rouge">html</code> format is not affected via rule violation messages (it correctly uses
+<code class="language-plaintext highlighter-rouge">StringEscapeUtils.escapeHtml4()</code>), it has a similar problem when rendering suppressed violations.
+The user supplied message (the reason for the suppression) was not escaped.</p>
+
+<p><strong>Details:</strong>
+<code class="language-plaintext highlighter-rouge">VBHTMLRenderer.java</code> line 71 appends <code class="language-plaintext highlighter-rouge">rv.getDescription()</code> directly into HTML:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sb</span><span class="o">.</span><span class="na">append</span><span class="o">(</span><span class="s">"&lt;td&gt;&lt;font class=body&gt;"</span><span class="o">).</span><span class="na">append</span><span class="o">(</span><span class="n">rv</span><span class="o">.</span><span class="na">getDescription</span><span class="o">()).</span><span class="na">append</span><span class="o">(</span><span class="s">"&lt;/font&gt;&lt;/td&gt;"</span><span class="o">);</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">YAHTMLRenderer.java</code> lines 196–203 does the same via <code class="language-plaintext highlighter-rouge">renderViolationRow()</code>:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">String</span> <span class="nf">renderViolationRow</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">return</span> <span class="s">"&lt;tr&gt;&lt;td&gt;&lt;b&gt;"</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s">"&lt;/b&gt;&lt;/td&gt;"</span> <span class="o">+</span> <span class="s">"&lt;td&gt;"</span> <span class="o">+</span> <span class="n">value</span> <span class="o">+</span> <span class="s">"&lt;/td&gt;&lt;/tr&gt;"</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Called at line 172:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">renderViolationRow</span><span class="o">(</span><span class="s">"Description:"</span><span class="o">,</span> <span class="n">violation</span><span class="o">.</span><span class="na">getDescription</span><span class="o">()));</span>
+</code></pre></div></div>
+
+<p>The violation message originates from <code class="language-plaintext highlighter-rouge">AvoidDuplicateLiteralsRule.java</code> line 91, which embeds raw string literal
+values via <code class="language-plaintext highlighter-rouge">first.toPrintableString()</code>. This calls <code class="language-plaintext highlighter-rouge">StringUtil.escapeJava()</code> (line 476–480), which is a Java source
+escaper — it passes <code class="language-plaintext highlighter-rouge">&lt;</code>, <code class="language-plaintext highlighter-rouge">&gt;</code>, and <code class="language-plaintext highlighter-rouge">&amp;</code> through unchanged because they are printable ASCII (0x20–0x7e).</p>
+
+<p>By contrast, <code class="language-plaintext highlighter-rouge">HTMLRenderer.java</code> line 143 properly escapes:</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">String</span> <span class="n">d</span> <span class="o">=</span> <span class="nc">StringEscapeUtils</span><span class="o">.</span><span class="na">escapeHtml4</span><span class="o">(</span><span class="n">rv</span><span class="o">.</span><span class="na">getDescription</span><span class="o">());</span>
+</code></pre></div></div>
+
+<p><strong>PoC:</strong></p>
+
+<ol>
+  <li>Create a Java file with 4+ duplicate string literals containing an HTML payload:</li>
+</ol>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Exploit</span> <span class="o">{</span>
+    <span class="nc">String</span> <span class="n">a</span> <span class="o">=</span> <span class="s">"&lt;img src=x onerror=alert(document.domain)&gt;"</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">b</span> <span class="o">=</span> <span class="s">"&lt;img src=x onerror=alert(document.domain)&gt;"</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">c</span> <span class="o">=</span> <span class="s">"&lt;img src=x onerror=alert(document.domain)&gt;"</span><span class="o">;</span>
+    <span class="nc">String</span> <span class="n">d</span> <span class="o">=</span> <span class="s">"&lt;img src=x onerror=alert(document.domain)&gt;"</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<ol>
+  <li>Run PMD with the <code class="language-plaintext highlighter-rouge">vbhtml</code> format:</li>
+</ol>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pmd check <span class="nt">-R</span> category/java/errorprone.xml <span class="nt">-f</span> vbhtml <span class="nt">-d</span> Exploit.java <span class="nt">-r</span> report.html
+</code></pre></div></div>
+
+<ol>
+  <li>Open <code class="language-plaintext highlighter-rouge">report.html</code> in a browser. A JavaScript alert executes showing <code class="language-plaintext highlighter-rouge">document.domain</code>.</li>
+</ol>
+
+<p>The generated HTML contains the unescaped tag:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;td&gt;&lt;font</span> <span class="na">class=</span><span class="s">body</span><span class="nt">&gt;</span>The String literal "<span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">x</span> <span class="na">onerror=</span><span class="s">alert(document.domain)</span><span class="nt">&gt;</span>" appears 4 times in this file<span class="nt">&lt;/font&gt;&lt;/td&gt;</span>
+</code></pre></div></div>
+
+<p>Tested and confirmed on PMD 7.22.0-SNAPSHOT (commit bcc646c53d).</p>
+
+<p><strong>Impact:</strong>
+Stored cross-site scripting (XSS). Affects CI/CD pipelines that run PMD with <code class="language-plaintext highlighter-rouge">--format vbhtml</code> or <code class="language-plaintext highlighter-rouge">--format yahtml</code>
+on untrusted source code (e.g., pull requests from external contributors) and expose the HTML report as a build
+artifact. JavaScript executes in the browser context of anyone who opens the report.</p>
+
+<p>Practical impact is limited because <code class="language-plaintext highlighter-rouge">vbhtml</code> and <code class="language-plaintext highlighter-rouge">yahtml</code> are legacy formats rarely used in practice.
+The default <code class="language-plaintext highlighter-rouge">html</code> format has a similar issue with user messages from suppressed violations.</p>
+
+<p><strong>Fixes</strong></p>
+<ul>
+  <li>See <a href="https://github.com/pmd/pmd/issues/6475">#6475</a>: [core] Fix stored XSS in VBHTMLRenderer and YAHTMLRenderer</li>
+</ul>
+
+<p><strong>References:</strong></p>
+<ul>
+  <li><a href="https://github.com/pmd/pmd/security/advisories/GHSA-8rr6-2qw5-pc7r">GHSA-8rr6-2qw5-pc7r</a></li>
+</ul>
 
 <h3 id="cve-2025-23215">CVE-2025-23215</h3>
 <p><strong>Published:</strong> 2025-01-31</p>
@@ -2177,7 +2274,7 @@ because of a 2017-09-15 change.)</p>
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            January 2025 (7.11.0)<br /> Site last generated: Feb 27, 2026 <br />
+            February 2026 (7.22.0)<br /> Site last generated: Feb 27, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
