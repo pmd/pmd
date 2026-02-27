@@ -7,6 +7,8 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import net.sourceforge.pmd.reporting.Report;
 import net.sourceforge.pmd.reporting.RuleViolation;
 
@@ -26,6 +28,10 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public String defaultFileExtension() {
         return "vb.html";
+    }
+
+    private static String escape(String s) {
+        return StringEscapeUtils.escapeHtml4(s);
     }
 
     @Override
@@ -55,7 +61,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
                 }
                 filename = nextFilename;
                 sb.append("<table border=\"0\" width=\"80%\">");
-                sb.append("<tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;").append(filename)
+                sb.append("<tr id=TableHeader><td colspan=\"2\"><font class=title>&nbsp;").append(escape(filename))
                         .append("</font></tr>");
                 sb.append(lineSep);
             }
@@ -68,7 +74,7 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
 
             colorize = !colorize;
             sb.append("<td width=\"50\" align=\"right\"><font class=body>").append(rv.getBeginLine()).append("&nbsp;&nbsp;&nbsp;</font></td>");
-            sb.append("<td><font class=body>").append(rv.getDescription()).append("</font></td>");
+            sb.append("<td><font class=body>").append(escape(rv.getDescription())).append("</font></td>");
             sb.append("</tr>");
             sb.append(lineSep);
             writer.write(sb.toString());
@@ -97,8 +103,8 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
                     sb.append("<tr id=RowColor2>");
                 }
                 colorize = !colorize;
-                sb.append("<td><font class=body>").append(determineFileName(error.getFileId())).append("</font></td>");
-                sb.append("<td><font class=body><pre>").append(error.getDetail()).append("</pre></font></td></tr>");
+                sb.append("<td><font class=body>").append(escape(determineFileName(error.getFileId()))).append("</font></td>");
+                sb.append("<td><font class=body><pre>").append(escape(error.getDetail())).append("</pre></font></td></tr>");
             }
             sb.append("</table>");
             writer.write(sb.toString());
@@ -116,8 +122,8 @@ public class VBHTMLRenderer extends AbstractIncrementingRenderer {
                     sb.append("<tr id=RowColor2>");
                 }
                 colorize = !colorize;
-                sb.append("<td><font class=body>").append(error.rule().getName()).append("</font></td>");
-                sb.append("<td><font class=body>").append(error.issue()).append("</font></td></tr>");
+                sb.append("<td><font class=body>").append(escape(error.rule().getName())).append("</font></td>");
+                sb.append("<td><font class=body>").append(escape(error.issue())).append("</font></td></tr>");
             }
             sb.append("</table>");
             writer.write(sb.toString());
