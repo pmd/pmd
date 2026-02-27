@@ -8425,7 +8425,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/146708?v=4",
       "profile": "https://github.com/metalshark",
       "contributions": [
-        "doc"
+        "doc",
+        "code"
       ]
     },
     {
@@ -8463,6 +8464,54 @@
       "profile": "https://codeberg.org/cat-dev-null",
       "contributions": [
         "code"
+      ]
+    },
+    {
+      "login": "altaiezior",
+      "name": "Anurag Agarwal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6075379?v=4",
+      "profile": "https://github.com/altaiezior",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "gcuisinier",
+      "name": "Gildas Cuisinier",
+      "avatar_url": "https://avatars.githubusercontent.com/u/135300?v=4",
+      "profile": "https://www.gcuisinier.net/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "kaliy",
+      "name": "Artur Kalimullin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/756639?v=4",
+      "profile": "https://github.com/kaliy",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "aclfe",
+      "name": "Kai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/210241585?v=4",
+      "profile": "https://aclfe.github.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "smaranchand",
+      "name": "Smaran Chand",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36672015?v=4",
+      "profile": "https://smaranchand.com.np/",
+      "contributions": [
+        "security"
       ]
     }
   ],
