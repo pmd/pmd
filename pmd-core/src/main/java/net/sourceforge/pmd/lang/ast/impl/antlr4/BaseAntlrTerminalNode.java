@@ -63,7 +63,7 @@ public abstract class BaseAntlrTerminalNode<N extends AntlrNode<N>>
     }
 
     protected int getTokenKind() {
-        return antlrNode.symbol.getTokenIndex();
+        return antlrNode.symbol.getType();
     }
 
     @Override

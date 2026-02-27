@@ -41,6 +41,8 @@ This is a {{ site.pmd.release_type }} release.
   (both `javax.servlet` and `jakarta.servlet`).
 
 ### 🐛️ Fixed Issues
+* core
+  * [#6471](https://github.com/pmd/pmd/issues/6471): \[core] BaseAntlrTerminalNode should return type instead of index for getTokenKind()
 * doc
   * [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing
 * java-bestpractices
