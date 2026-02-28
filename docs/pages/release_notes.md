@@ -16,7 +16,7 @@ in the release notes on GitHub (as an absolute url) and on the rendered document
 
 ## {{ site.pmd.date | date: "%d-%B-%Y" }} - {{ site.pmd.version }}
 
-The PMD team is pleased to announce PMD {{ site.pmd.version }}.
+The PMD team is pleased to anounce PMD {{ site.pmd.version }}.
 
 This is a {{ site.pmd.release_type }} release.
 
