@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.AnalysisClasspath;
 
 /**
  * A NOOP analysis cache. Easier / safer than null-checking.
@@ -35,7 +36,7 @@ public class NoopAnalysisCache implements AnalysisCache {
     }
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, AnalysisClasspath auxClasspath, Collection<? extends TextFile> files) {
         // noop
     }
 

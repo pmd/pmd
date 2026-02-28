@@ -32,7 +32,6 @@ import net.sourceforge.pmd.ant.InternalApiBridge;
 import net.sourceforge.pmd.ant.PMDTask;
 import net.sourceforge.pmd.ant.SourceLanguage;
 import net.sourceforge.pmd.internal.Slf4jSimpleConfiguration;
-import net.sourceforge.pmd.internal.util.ClasspathClassLoader;
 import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.Language;
 import net.sourceforge.pmd.lang.LanguageRegistry;
@@ -244,15 +243,7 @@ public class PMDTaskImpl {
         // need to reload the logger with the new configuration
         Logger log = LoggerFactory.getLogger(PMDTaskImpl.class);
         log.info("Logging is at {}", level);
-        try {
-            doTask();
-        } finally {
-            // only close the classloader, if it is ours. Otherwise we end up with class not found
-            // exceptions
-            if (configuration.getClassLoader() instanceof ClasspathClassLoader) {
-                IOUtil.tryCloseClassLoader(configuration.getClassLoader());
-            }
-        }
+        doTask();
     }
 
 }

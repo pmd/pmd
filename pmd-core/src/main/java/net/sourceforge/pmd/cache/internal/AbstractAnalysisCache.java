@@ -6,8 +6,8 @@ package net.sourceforge.pmd.cache.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.nio.file.FileVisitOption;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.rule.internal.RuleSets;
 import net.sourceforge.pmd.reporting.FileAnalysisListener;
 import net.sourceforge.pmd.reporting.Report.ProcessingError;
 import net.sourceforge.pmd.reporting.RuleViolation;
+import net.sourceforge.pmd.util.AnalysisClasspath;
 
 /**
  * Abstract implementation of the analysis cache. Handles all operations, except for persistence.
@@ -115,7 +116,7 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
 
 
     @Override
-    public void checkValidity(RuleSets ruleSets, ClassLoader auxclassPathClassLoader, Collection<? extends TextFile> files) {
+    public void checkValidity(RuleSets ruleSets, AnalysisClasspath auxClasspath, Collection<? extends TextFile> files) {
         try (TimedOperation ignored = TimeTracker.startOperation(TimedOperationCategory.ANALYSIS_CACHE, "validity check")) {
             boolean cacheIsValid = cacheExists();
 
@@ -124,19 +125,18 @@ abstract class AbstractAnalysisCache implements AnalysisCache {
                 cacheIsValid = false;
             }
 
-            final long currentAuxClassPathChecksum;
-            if (auxclassPathClassLoader instanceof URLClassLoader) {
-                // not using try-with-resources as we don't want to close our aux classpath loader - we still need it...
-                final URLClassLoader urlClassLoader = (URLClassLoader) auxclassPathClassLoader;
-                currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(urlClassLoader.getURLs());
-
-                if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
-                    // TODO some rules don't need that (in fact, some languages)
-                    LOG.debug("Analysis cache invalidated, auxclasspath changed.");
-                    cacheIsValid = false;
+            URL[] auxClasspathUrls = auxClasspath.getClasspath().stream().map(Path::toUri).map(uri -> {
+                try {
+                    return uri.toURL();
+                } catch (MalformedURLException e) {
+                    throw new RuntimeException(e);
                 }
-            } else {
-                currentAuxClassPathChecksum = 0;
+            }).toArray(URL[]::new);
+            final long currentAuxClassPathChecksum = FINGERPRINTER.fingerprint(auxClasspathUrls);
+            if (cacheIsValid && currentAuxClassPathChecksum != auxClassPathChecksum) {
+                // TODO some rules don't need that (in fact, some languages)
+                LOG.debug("Analysis cache invalidated, auxclasspath changed.");
+                cacheIsValid = false;
             }
 
             final long currentExecutionClassPathChecksum = FINGERPRINTER.fingerprint(getClassPathEntries());
