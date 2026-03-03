@@ -43,6 +43,7 @@ import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet;
 import net.sourceforge.pmd.util.AssertionUtil;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
+import net.sourceforge.pmd.util.OptionalBool;
 
 /**
  * Common operations on types.
@@ -552,7 +553,11 @@ public final class TypeOps {
 
     }
 
-    private static JTypeMirror wildUpperBound(JTypeMirror type) {
+    /**
+     * If the type is a wildcard or a type var, return the upper bound.
+     * Otherwise return the type itself.
+     */
+    public static JTypeMirror wildUpperBound(JTypeMirror type) {
         if (type instanceof JWildcardType) {
             JWildcardType wild = (JWildcardType) type;
             if (wild.isUpperBound()) {
@@ -796,6 +801,14 @@ public final class TypeOps {
                     // Test L(S) <: L(T), we already know U(T) <: U(S), because U(S) is top
                     return this.isConvertible(sw.asLowerBound(), wildLowerBound(t));
                 }
+            }
+
+            if (isSpecialUnresolved(s) || isSpecialUnresolved(t)
+                || s instanceof InferenceVar && !isTypeRange(t)
+                || t instanceof InferenceVar) {
+                // In these cases we still don't want to fail. It could be
+                // that adding bounds later will make the test succeed.
+                return Convertibility.SUBTYPING;
             }
 
             return Convertibility.NEVER;
@@ -1871,6 +1884,10 @@ public final class TypeOps {
         return type.acceptVisitor(MentionsVisitor.INSTANCE, Collections.singleton(parent));
     }
 
+    public static boolean mentions(@NonNull JTypeVisitable type, @NonNull SubstVar parent) {
+        return type.acceptVisitor(MentionsVisitor.INSTANCE, Collections.singleton(parent));
+    }
+
     public static boolean mentionsAny(JTypeVisitable t, Collection<? extends SubstVar> vars) {
         return !vars.isEmpty() && t.acceptVisitor(MentionsVisitor.INSTANCE, vars);
     }
@@ -2122,6 +2139,32 @@ public final class TypeOps {
     }
 
     /**
+     * Test whether the given type is an intersection type that is uninhabited,
+     * meaning there are no valid concrete types that can implement this type.
+     * This is the case if any bound is a final class (in which case it must also
+     * be the primary bound). Return unknown if we don't know whether
+     * there are final bounds or not.
+     *
+     * @param t A type
+     * @return Whether the type is an uninhabited intersection
+     */
+    public static OptionalBool isUninhabitedIntersection(JTypeMirror t) {
+        if (t instanceof JIntersectionType) {
+            JTypeMirror primary = ((JIntersectionType) t).getPrimaryBound();
+            JTypeDeclSymbol sym = primary.getSymbol();
+            if (sym instanceof JClassSymbol && ((JClassSymbol) sym).isFinal()) {
+                return OptionalBool.YES;
+            }
+            // We have to test all the components bc unresolved types may
+            // be any bound
+            if (((JIntersectionType) t).getComponents().stream().anyMatch(TypeOps::isUnresolved)) {
+                return OptionalBool.UNKNOWN;
+            }
+        }
+        return OptionalBool.NO;
+    }
+
+    /**
      * Returns true if the type is {@link TypeSystem#UNKNOWN},
      * {@link TypeSystem#ERROR}, or a class type with unresolved
      * symbol.
@@ -2225,12 +2268,42 @@ public final class TypeOps {
     public static boolean isContextDependent(JExecutableSymbol symbol) {
         if (symbol.isGeneric() || symbol.getEnclosingClass().isGeneric()) {
             if (symbol instanceof JMethodSymbol) {
-                JTypeMirror returnType = ((JMethodSymbol) symbol).getReturnType(EMPTY);
+                JTypeMirror returnType = symbol.getReturnType(EMPTY);
                 return mentionsAny(returnType, symbol.getTypeParameters())
                     || mentionsAny(returnType, symbol.getEnclosingClass().getTypeParameters());
             }
             // generic ctors are context dependent
             return true;
+        }
+        return false;
+    }
+
+    /**
+     * Return true if the method is purely context dependent, which means
+     * some of its type parameters depend entirely on the target type of
+     * the call expression and not on any parameter. That's the case for
+     * methods of the style of {@link Collections#emptyList()}.
+     */
+    public static boolean isPurelyContextDependent(JExecutableSymbol symbol) {
+        if (!isContextDependent(symbol)) {
+            return false;
+        }
+        List<JTypeMirror> formals = symbol.getFormalParameterTypes(EMPTY);
+        JTypeMirror resultTy = symbol.getReturnType(EMPTY);
+        List<JTypeVar> allTypeVars = CollectionUtil.concatView(
+            symbol.getTypeParameters(), symbol.getEnclosingClass().getTypeParameters());
+        outer:
+        for (JTypeVar tvar : allTypeVars) {
+            for (JTypeMirror formalType : formals) {
+                if (mentions(formalType, tvar)) {
+                    continue outer;
+                }
+            }
+            if (mentions(resultTy, tvar)) {
+                // At least one type var is not constrained by the parameters
+                // and is therefore entirely constrained by the return type.
+                return true;
+            }
         }
         return false;
     }
