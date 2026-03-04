@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
 import net.sourceforge.pmd.lang.document.FileLocation;
-import net.sourceforge.pmd.lang.document.TextRegion;
+import net.sourceforge.pmd.lang.document.TextRange2d;
 
 /**
  * This rule detects an abnormally long parameter list.
@@ -30,10 +30,12 @@ public class ExcessiveParameterListRule extends AbstractCounterCheckRule<ASTMeth
     protected FileLocation getReportLocation(ASTMethod node) {
         ApexNode<?> lastParameter = node.children(ASTParameter.class).last();
         if (lastParameter == null) {
-            lastParameter = node;
+            return node.getReportLocation();
         }
-        TextRegion region = TextRegion.union(node.getTextRegion(), lastParameter.getTextRegion());
-        return node.getTextDocument().toLocation(region);
+        return FileLocation.range(node.getTextDocument().getFileId(),
+            TextRange2d.range2d(
+                node.getReportLocation().getStartPos(),
+                lastParameter.getReportLocation().getEndPos()));
     }
 
     @Override
