@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Strings;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -107,7 +107,7 @@ public final class RuleContext {
      * @param reportable A node or token
      * @return A violation builder
      *
-     * @since 7.21.0
+     * @since 7.23.0
      */
     @CheckReturnValue
     public ViolationBuilder at(Reportable reportable) {
@@ -120,9 +120,9 @@ public final class RuleContext {
      * of the violation will enclose the full range of the line, from
      * the first to the last character.
      *
-     * @param lineNumber A line number (>= 1)
+     * @param lineNumber A line number (1-based)
      * @return A violation builder
-     * @since 7.21.0
+     * @since 7.23.0
      */
     @CheckReturnValue
     public ViolationBuilder atLine(int lineNumber) {
@@ -178,7 +178,7 @@ public final class RuleContext {
      * and for the default message specified in the XML definition of
      * the rule in the ruleset.
      *
-     * @since 7.21.0
+     * @since 7.23.0
      */
     public final class ViolationBuilder {
         private final Node suppressionNode;
@@ -321,7 +321,7 @@ public final class RuleContext {
      * @param node       Location of the violation
      * @param message    Violation message
      * @param formatArgs Format arguments for the message
-     * @deprecated Since 7.20.0, use the new reporting API (See {@link #at(Reportable)})
+     * @deprecated Since 7.23.0, use the new reporting API (See {@link #at(Reportable)})
      */
     @Deprecated
     public void addViolationWithPosition(Node node, int beginLine, int endLine, String message, Object... formatArgs) {
@@ -357,7 +357,7 @@ public final class RuleContext {
     private static MessageFormat parseMessage(String message) {
         // Escape PMD specific variable message format, specifically the {
         // in the ${, so MessageFormat doesn't bitch.
-        final String escapedMessage = StringUtils.replace(message, "${", "$'{'");
+        final String escapedMessage = Strings.CS.replace(message, "${", "$'{'");
         return new MessageFormat(escapedMessage, Locale.ROOT);
     }
 
