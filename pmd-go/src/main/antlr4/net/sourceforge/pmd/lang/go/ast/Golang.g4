@@ -98,11 +98,11 @@ grammar Golang;
     }
 
      /**
-     * Returns {@code true} if no line terminator exists after any encounterd
+     * Returns {@code true} if no line terminator exists after any encountered
      * parameters beyond the specified token offset and the next on the
      * {@code HIDDEN} channel.
      *
-     * @return {@code true} if no line terminator exists after any encounterd
+     * @return {@code true} if no line terminator exists after any encountered
      * parameters beyond the specified token offset and the next on the
      * {@code HIDDEN} channel.
      */

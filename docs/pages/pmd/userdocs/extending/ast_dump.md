@@ -2,7 +2,7 @@
 title: Creating XML dump of the AST
 tags: [userdocs]
 summary: Creating a XML representation of the AST allows to analyze the AST with other tools.
-last_updated: January 2024 (7.0.0)
+last_updated: February 2024 (7.0.0)
 permalink: pmd_userdocs_extending_ast_dump.html
 ---
 

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_2_0_0.xsd">
+
+    <test-code>
+        <description>class and interfaces</description>
+        <expected-problems>3</expected-problems>
+        <expected-linenumbers>7,12,15</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary interface declaration 'I', already provided by 'J'.</message>
+            <message>Unnecessary interface declaration 'I', already provided by 'J'.</message>
+            <message>Unnecessary interface declaration 'J', already provided by 'A'.</message>
+        </expected-messages>
+        <code><![CDATA[
+interface I {
+}
+
+interface J extends I {
+}
+
+class A implements I,
+    J {
+}
+
+class B implements J,
+    I {
+}
+
+class C extends A implements J {
+}
+
+class D implements I {
+}
+
+class E extends D implements J {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>interfaces</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>7</expected-linenumbers>
+        <expected-messages>
+            <message>Unnecessary interface declaration 'I', already provided by 'J'.</message>
+        </expected-messages>
+        <code><![CDATA[
+interface I {
+}
+
+interface J extends I {
+}
+
+interface K extends I,
+  J {
+}
+
+interface L extends I {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>serializable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import java.io.Serializable;
+
+interface J extends Serializable {
+}
+
+interface K extends J, Serializable {
+}
+
+class A implements J, Serializable {
+}
+
+class B extends A implements Serializable {
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>serializable disallowed</description>
+        <rule-property name="allowedInterfaces"/>
+        <expected-problems>3</expected-problems>
+        <code><![CDATA[
+interface J extends java.io.Serializable {
+}
+
+interface K extends J, java.io.Serializable {
+}
+
+class A implements J, java.io.Serializable {
+}
+
+class B extends A implements java.io.Serializable {
+}
+        ]]></code>
+    </test-code>
+</test-data>
+

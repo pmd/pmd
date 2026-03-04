@@ -216,7 +216,7 @@ return z;
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_codestyle.html#unnecessaryblock">
         <description>
 An unnecessary Block is present.  Such Blocks are often used in other languages to
-introduce a new variable scope.  Blocks do not behave like this in ECMAScipt, and using them can
+introduce a new variable scope.  Blocks do not behave like this in ECMAScript, and using them can
 be misleading.  Considering removing this unnecessary Block.
         </description>
         <priority>3</priority>

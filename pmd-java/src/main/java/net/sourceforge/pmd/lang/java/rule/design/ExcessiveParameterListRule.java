@@ -38,7 +38,7 @@ public class ExcessiveParameterListRule extends AbstractJavaCounterCheckRule<AST
     }
 
     /**
-     * @deprecated since 7.18.0. This method is not used anymore and shouldn't be implemented.
+     * @deprecated Since 7.18.0. This method is not used anymore and shouldn't be implemented.
      */
     @Deprecated
     protected boolean isViolation(ASTFormalParameters node, int reportLevel) {

@@ -38,7 +38,7 @@ def run_pmdtester
       end
 
     rescue StandardError => e
-      message = "⚠ Running pmdtester failed, this message is mainly used to remind the maintainers of PMD."
+      message = "⚠️ Running pmdtester failed, this message is mainly used to remind the maintainers of PMD."
       conclusion = "failure"
       @logger.error "Running pmdtester failed: #{e.inspect}"
     end

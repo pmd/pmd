@@ -627,7 +627,7 @@ public class RuleSet implements ChecksumAware {
      * @return <code>true</code> if the file should be checked,
      *     <code>false</code> otherwise
      *
-     * @apiNote Internal API.
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     boolean applies(FileId qualFileName) {
         return filter.test(qualFileName.getAbsolutePath());
@@ -646,7 +646,7 @@ public class RuleSet implements ChecksumAware {
      * @return <code>true</code> if the given rule matches the given language,
      *         which means, that the rule would be executed.
      *
-     * @apiNote This is internal API.
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     static boolean applies(Rule rule, LanguageVersion languageVersion) {
         assert rule.getLanguage() != null : "Rule has no language " + rule;

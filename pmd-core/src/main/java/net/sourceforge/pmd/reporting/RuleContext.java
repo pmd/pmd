@@ -60,6 +60,9 @@ public final class RuleContext {
     private MessageFormat defaultMessageFormat;
     private final LanguageVersionHandler services;
 
+    /**
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+     */
     RuleContext(FileAnalysisListener listener, Rule rule, RootNode rootNode) {
         Objects.requireNonNull(listener, "Listener was null");
         Objects.requireNonNull(rule, "Rule was null");
@@ -71,8 +74,8 @@ public final class RuleContext {
     }
 
     /**
-     * @apiNote Internal API. Used in {@link AbstractRule} in {@code asCtx(Object)},
-     * through {@link InternalApiBridge}.
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+     * Used in {@link AbstractRule} in {@code asCtx(Object)}, through {@link InternalApiBridge}.
      */
     Rule getRule() {
         return rule;

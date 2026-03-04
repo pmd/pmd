@@ -32,7 +32,7 @@ public class Tokens {
     /**
      * Create a new instance.
      *
-     * @apiNote  Internal API
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
      */
     Tokens() {
         // constructor is package private

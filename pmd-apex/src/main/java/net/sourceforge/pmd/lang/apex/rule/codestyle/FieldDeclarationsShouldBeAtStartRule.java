@@ -45,7 +45,6 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         nonFieldDeclarations.addAll(getMethodNodes(node));
         nonFieldDeclarations.addAll(node.children(ASTUserClass.class).toList());
-        nonFieldDeclarations.addAll(node.children(ASTProperty.class).toList());
         nonFieldDeclarations.addAll(node.children(ASTBlockStatement.class).toList());
 
         Optional<ApexNode<?>> firstNonFieldDeclaration = nonFieldDeclarations.stream()
@@ -67,6 +66,9 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
     }
 
     private List<? extends ApexNode<?>> getMethodNodes(ASTUserClass node) {
-        return node.descendants(ASTMethod.class).map(m -> (ApexNode<?>) m).toList();
+        return node.descendants(ASTMethod.class)
+                .filterNot(m -> m.getParent() instanceof ASTProperty)
+                .map(m -> (ApexNode<?>) m)
+                .toList();
     }
 }

@@ -1150,8 +1150,8 @@ public class Foo {
             By setting the property `typeAnnotations`, you can also enforce that type
             annotations appear right of the modifier keywords, next to the type they apply to.
             This property can have three values:
-            - `ontype`: Type annotations must be placed next to the type they apply to
-            - `ondecl`: Type annotations must be placed with other annotations, before modifiers.
+            - `onType`: Type annotations must be placed next to the type they apply to
+            - `onDecl`: Type annotations must be placed with other annotations, before modifiers.
             This is not enforced if the type annotations syntactically appears within the type, e.g.
             in `public Map.@Nullable Entry&lt;K,V&gt; method()` or `public &lt;T&gt; @NonNull T method()`.
             - `anywhere` (default): Either position fits. They still cannot be interspersed within keyword
@@ -1801,6 +1801,34 @@ public class Foo {
                 }
             }
             ]]>
+        </example>
+    </rule>
+
+    <rule name="UnnecessaryInterfaceDeclaration"
+          language="java"
+          since="7.22.0"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.UnnecessaryInterfaceDeclarationRule"
+          message="Unnecessary interface declaration ''{0}'', already provided by ''{1}''."
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#unnecessaryinterfacedeclaration">
+        <description>
+            Implicitly declaring that a class implements an interface already implemented by its
+            superclass or parent interface is not necessary.
+        </description>
+        <priority>4</priority>
+        <example>
+            <![CDATA[
+interface I {
+}
+
+interface J extends I {
+}
+
+class A implements I, J { // Unnecessary to declare that A implements I, since J already extends I
+}
+
+class C extends A implements J { // Unnecessary to declare that C implements J, since A already implements J
+}
+]]>
         </example>
     </rule>
 

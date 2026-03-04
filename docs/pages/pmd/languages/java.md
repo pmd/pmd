@@ -2,8 +2,9 @@
 title: Java support
 permalink: pmd_languages_java.html
 author: Clément Fournier
-last_updated: July 2025 (7.16.0)
+last_updated: January 2026 (7.21.0)
 tags: [languages, PmdCapableLanguage, CpdCapableLanguage]
+keywords: [auxclasspath, auxiliary, classpath, type resolution]
 summary: "Java-specific features and guidance"
 ---
 
@@ -15,9 +16,10 @@ Usually the latest non-preview Java Version is the default version.
 
 | Java Version | Alias | Supported by PMD since |
 |--------------|-------|------------------------|
+| 26-preview   |       | 7.21.0                 |
+| 26 (default) |       | 7.21.0                 |
 | 25-preview   |       | 7.16.0                 |
-| 25 (default) |       | 7.16.0                 |
-| 24-preview   |       | 7.10.0                 |
+| 25           |       | 7.16.0                 |
 | 24           |       | 7.10.0                 |
 | 23           |       | 7.5.0                  |
 | 22           |       | 7.0.0                  |
@@ -43,11 +45,10 @@ Usually the latest non-preview Java Version is the default version.
 
 ## Using Java preview features
 
-In order to analyze a project with PMD that uses preview language features, you'll need to enable
-it via the environment variable `PMD_JAVA_OPTS` and select the new language version, e.g. `24-preview`:
+In order to analyze a project with PMD that uses preview language features, you'll need to
+select the new language version, e.g. `26-preview`:
 
-    export PMD_JAVA_OPTS=--enable-preview
-    pmd check --use-version java-24-preview ...
+    pmd check --use-version java-26-preview ...
 
 Note: we only support preview language features for the latest two java versions.
 

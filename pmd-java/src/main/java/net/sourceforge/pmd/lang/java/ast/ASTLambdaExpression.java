@@ -86,7 +86,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     /**
      * Returns the body of this expression, if it is a block.
      *
-     * @deprecated Use {@link #getBlockBody()}
+     * @deprecated Since 7.1.0. Use {@link #getBlockBody()}
      */
     @Deprecated
     public @Nullable ASTBlock getBlock() {
@@ -96,7 +96,7 @@ public final class ASTLambdaExpression extends AbstractJavaExpr implements Funct
     /**
      * Returns the body of this expression, if it is an expression.
      *
-     * @deprecated Use {@link #getExpressionBody()}
+     * @deprecated Since 7.1.0. Use {@link #getExpressionBody()}
      */
     @Deprecated
     public @Nullable ASTExpression getExpression() {

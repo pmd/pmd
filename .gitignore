@@ -24,3 +24,6 @@ node_modules
 # rule docs are generated
 docs/pages/pmd/rules
 .history/*
+
+# typos
+.ci/tools/typos/

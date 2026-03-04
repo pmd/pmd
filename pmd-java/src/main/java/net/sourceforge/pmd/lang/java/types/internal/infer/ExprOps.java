@@ -297,7 +297,7 @@ public final class ExprOps {
 
         MethodCallSite site1 = infer.newCallSite(methodRefAsInvocation(mref, targetType, false), null);
         site1.setLogging(!acceptLowerArity);
-        MethodCtDecl ctd1 = infer.LOG.inContext("Method ref ctdectl search 1 (static) ", () -> infer.determineInvocationTypeOrFail(site1));
+        MethodCtDecl ctd1 = infer.getLogger().inContext("Method ref ctdectl search 1 (static) ", () -> infer.determineInvocationTypeOrFail(site1));
         JMethodSig m1 = ctd1.getMethodType();
 
         if (lhsIfType != null && !mref.isConstructorRef()) {
@@ -311,7 +311,7 @@ public final class ExprOps {
                 // todo prevent this to add constraints to variables in the target type?
                 MethodCallSite site2 = infer.newCallSite(methodRefAsInvocation(mref, targetType, true), null);
                 site1.setLogging(false);
-                ctd2 = infer.LOG.inContext("Method ref ctdectl search 2 (instance) ", () -> infer.determineInvocationTypeOrFail(site2));
+                ctd2 = infer.getLogger().inContext("Method ref ctdectl search 2 (instance) ", () -> infer.determineInvocationTypeOrFail(site2));
                 m2 = ctd2.getMethodType();
             }
 
@@ -508,13 +508,13 @@ public final class ExprOps {
 
                 if (asInstanceMethod && typeToSearch.isRaw() && typeToSearch instanceof JClassType
                     && targetType.getArity() > 0) {
-                    //  In the second search, if P1, ..., Pn is not empty
+                    //  In the second search, if P_1, ..., P_n is not empty
                     //  and P1 is a subtype of ReferenceType, then the
                     //  method reference expression is treated as if it were
                     //  a method invocation expression with argument expressions
-                    //  of types P2, ..., Pn. If ReferenceType is a raw type,
+                    //  of types P_2, ..., P_n. If ReferenceType is a raw type,
                     //  and there exists a parameterization of this type, G<...>,
-                    //  that is a supertype of P1, the type to search is the result
+                    //  that is a supertype of P_1, the type to search is the result
                     //  of capture conversion (§5.1.10) applied to G<...>; otherwise,
                     //  the type to search is the same as the type of the first search.
 

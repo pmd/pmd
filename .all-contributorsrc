@@ -7,7 +7,7 @@
     "docs/pages/pmd/projectdocs/credits.md"
   ],
   "imageSize": 100,
-  "commit": true,
+  "commit": false,
   "commitConvention": "none",
   "contributors": [
     {
@@ -8425,7 +8425,93 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/146708?v=4",
       "profile": "https://github.com/metalshark",
       "contributions": [
-        "doc"
+        "doc",
+        "code"
+      ]
+    },
+    {
+      "login": "kelunik",
+      "name": "Niklas Keller",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2743004?v=4",
+      "profile": "https://blog.kelunik.com/",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "parsam97",
+      "name": "parsam97",
+      "avatar_url": "https://avatars.githubusercontent.com/u/32430185?v=4",
+      "profile": "https://github.com/parsam97",
+      "contributions": [
+        "bug"
+      ]
+    },
+    {
+      "login": "thomasleplus",
+      "name": "Thomas Leplus",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1929743?v=4",
+      "profile": "https://www.leplus.org/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "goto-dev-null",
+      "name": "Jade",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2322497?v=4",
+      "profile": "https://codeberg.org/cat-dev-null",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "altaiezior",
+      "name": "Anurag Agarwal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6075379?v=4",
+      "profile": "https://github.com/altaiezior",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "gcuisinier",
+      "name": "Gildas Cuisinier",
+      "avatar_url": "https://avatars.githubusercontent.com/u/135300?v=4",
+      "profile": "https://www.gcuisinier.net/",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "kaliy",
+      "name": "Artur Kalimullin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/756639?v=4",
+      "profile": "https://github.com/kaliy",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "aclfe",
+      "name": "Kai",
+      "avatar_url": "https://avatars.githubusercontent.com/u/210241585?v=4",
+      "profile": "https://aclfe.github.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "smaranchand",
+      "name": "Smaran Chand",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36672015?v=4",
+      "profile": "https://smaranchand.com.np/",
+      "contributions": [
+        "security"
       ]
     }
   ],

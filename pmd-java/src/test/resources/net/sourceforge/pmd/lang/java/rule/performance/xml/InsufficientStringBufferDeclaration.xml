@@ -753,6 +753,11 @@ public class Foo {
         StringBuilder sb = new StringBuilder(1);
         sb.append((char) 0x0041);
     }
+    public void bar3() {
+        StringBuilder sb = new StringBuilder(1);
+        final int x = 0x0041;
+        sb.append((char) x);
+    }
 }
         ]]></code>
     </test-code>
@@ -1434,6 +1439,164 @@ public class StringBufferInstantiationWithCharTest {
         // in these forms, just single characters are allocated
         StringBuffer  sb3 = new StringBuffer("c");
         StringBuilder sb4 = new StringBuilder("c");
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#3857: InsufficientStringBufferDeclaration should consider constant Strings</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>5,10</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuilder has been initialized with size 16, but has at least 21 characters appended.</message>
+            <message>StringBuilder has been initialized with size 3, but has at least 6 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Example {
+    public static final String PRE = "The size of list is: "; // 21 characters, exceed default 16
+
+    public void compileTimeConstant() {
+        StringBuilder builder = new StringBuilder();
+        builder.append(PRE);
+    }
+
+    public void effectivelyConstant() {
+        StringBuilder builder = new StringBuilder(3);
+        final String s = "Hello.";
+        builder.append(s);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constant/literal wrapped in method should be allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final String TEST = "Some String";
+
+    public void bar(String s) {
+        StringBuilder builder = new StringBuilder(0);
+        builder.append(lengthOf(TEST));
+        builder.append(lengthOf("55555"));
+        builder.append(s.charAt(0));
+    }
+
+    public int lengthOf(String s) {
+        return s.length();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Constant/literal wrapped in method in string concat should be allowed</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final String TEST = "Some String";
+
+    public void bar(String s) {
+        StringBuilder builder = new StringBuilder(3);
+        builder.append(lengthOf(TEST) + "1");
+        builder.append("1" + lengthOf("55555"));
+        builder.append(s.charAt(0) + "1");
+    }
+
+    public int lengthOf(String s) {
+        return s.length();
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Mixing constant variables and literals</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>6</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuilder has been initialized with size 7, but has at least 8 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public static final String BAR = "Hello";
+    public static final int BAZ = 42;
+
+    public void bar() {
+        StringBuilder builder = new StringBuilder(7);
+        builder.append(BAR);
+        builder.append(':');
+        builder.append(BAZ);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Access constant from array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final String[] TEST = { "xyz" };
+
+    public void bar() {
+        StringBuilder builder = new StringBuilder(0);
+        builder.append(TEST[0]);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Access expression from array</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final String[] TEST = { "abc", "xyz" };
+
+    public void bar() {
+        StringBuilder builder = new StringBuilder(0);
+        int i = 0;
+        builder.append(TEST[i + 1]);
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Ignore values used in conditional part of conditional expression</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuilder has been initialized with size 0, but has at least 14 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    private static final String CONST = "1";
+    public void bar(String s) {
+        StringBuilder builder = new StringBuilder(0);
+        builder.append(s != null ? "4444" : "333");
+        builder.append(s.equals("55555") ? "333" : "4444");
+        builder.append(s.equals("55555") ? "333" : CONST);
+        builder.append(s.equals("55555") ? CONST : "333");
+    }
+}
+]]></code>
+    </test-code>
+    <test-code>
+        <description>String representation of null is counted as four characters</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>StringBuilder has been initialized with size 1, but has at least 4 characters appended.</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        StringBuilder builder = new StringBuilder(1);
+        builder.append((String) null);
     }
 }
 ]]></code>

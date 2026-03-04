@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import java.util.List;
+import java.util.Map;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -27,7 +28,7 @@ import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
 import net.sourceforge.pmd.reporting.RuleContext;
-import net.sourceforge.pmd.util.AssertionUtil;
+import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.OptionalBool;
 
 /**
@@ -47,8 +48,11 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
     private static final String MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE =
         "Missorted modifiers `{0} {1}`. Type annotations should be placed before the type they qualify.";
 
+    private static final Map<String, TypeAnnotationPosition> TYPE_ANNOT_POLICY_DEPRECATED_MAPPING =
+            CollectionUtil.mapOf("ontype", TypeAnnotationPosition.ON_TYPE, "ondecl", TypeAnnotationPosition.ON_DECL);
+
     private static final PropertyDescriptor<TypeAnnotationPosition> TYPE_ANNOT_POLICY
-        = PropertyFactory.enumProperty("typeAnnotations", TypeAnnotationPosition.class, TypeAnnotationPosition::label)
+        = PropertyFactory.enumPropertyTransitional("typeAnnotations", TypeAnnotationPosition.class, TYPE_ANNOT_POLICY_DEPRECATED_MAPPING)
                          .desc("Whether type annotations should be placed next to the type they qualify and not before modifiers.")
                          .defaultValue(TypeAnnotationPosition.ANYWHERE)
                          .build();
@@ -56,19 +60,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
     public enum TypeAnnotationPosition {
         ON_TYPE,
         ON_DECL,
-        ANYWHERE;
-
-        String label() {
-            switch (this) {
-            case ON_TYPE:
-                return "ontype";
-            case ON_DECL:
-                return "ondecl";
-            case ANYWHERE:
-                return "anywhere";
-            }
-            throw AssertionUtil.shouldNotReachHere("exhaustive switch");
-        }
+        ANYWHERE
     }
 
     private TypeAnnotationPosition typeAnnotPosition;

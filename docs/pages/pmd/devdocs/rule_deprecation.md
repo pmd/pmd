@@ -2,7 +2,7 @@
 title: Rule deprecation policy
 tags: [devdocs]
 summary: Describes when and how rules are deprecated
-last_updated: November 15, 2019
+last_updated: November 2019 (6.20.0)
 permalink: pmd_devdocs_rule_deprecation_policy.html
 author: Andreas Dangel
 ---

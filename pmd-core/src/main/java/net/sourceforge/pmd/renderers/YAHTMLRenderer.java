@@ -7,6 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.properties.PropertyDescriptor;
@@ -45,6 +47,10 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
     @Override
     public String defaultFileExtension() {
         return "html";
+    }
+
+    private static String escape(String s) {
+        return StringEscapeUtils.escapeHtml4(s);
     }
 
     private void addViolation(RuleViolation violation) {
@@ -118,17 +124,17 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
 
             for (ReportNode node : reportNodesByPackage.values()) {
                 out.print("        <tr><td><b>");
-                out.print(node.getPackageName());
+                out.print(escape(node.getPackageName()));
                 out.print("</b></td> <td>");
                 if (node.hasViolations()) {
                     out.print("<a href=\"");
-                    out.print(node.getClassName());
+                    out.print(URLEncoder.encode(node.getClassName(), "UTF-8"));
                     out.print(".html");
                     out.print("\">");
-                    out.print(node.getClassName());
+                    out.print(escape(node.getClassName()));
                     out.print("</a>");
                 } else {
-                    out.print(node.getClassName());
+                    out.print(escape(node.getClassName()));
                 }
                 out.print("</td> <td>");
                 out.print(node.getViolationCount());
@@ -151,32 +157,32 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
                     out.println("    <head>");
                     out.println("        <meta charset=\"UTF-8\">");
                     out.print("        <title>PMD - ");
-                    out.print(node.getClassName());
+                    out.print(escape(node.getClassName()));
                     out.println("</title>");
                     out.println("    </head>");
                     out.println("    <body>");
                     out.println("        <h2>Class View</h2>");
                     out.print("        <h3 align=\"center\">Class: ");
-                    out.print(node.getClassName());
+                    out.print(escape(node.getClassName()));
                     out.println("</h3>");
                     out.println("        <table border=\"\" align=\"center\" cellspacing=\"0\" cellpadding=\"3\">");
                     out.println("        <tr><th>Method</th><th>Violation</th></tr>");
                     for (RuleViolation violation : node.getViolations()) {
                         out.print("        <tr><td>");
                         String methodName = violation.getAdditionalInfo().get(RuleViolation.METHOD_NAME);
-                        out.print(StringUtil.nullToEmpty(methodName));
+                        out.print(escape(StringUtil.nullToEmpty(methodName)));
                         out.print("</td><td>");
                         out.print("<table border=\"0\">");
 
-                        out.print(renderViolationRow("Rule:", violation.getRule().getName()));
-                        out.print(renderViolationRow("Description:", violation.getDescription()));
+                        out.print(renderViolationRowEscaped("Rule:", violation.getRule().getName()));
+                        out.print(renderViolationRowEscaped("Description:", violation.getDescription()));
 
                         String variableName = violation.getAdditionalInfo().get(RuleViolation.VARIABLE_NAME);
                         if (StringUtils.isNotBlank(variableName)) {
-                            out.print(renderViolationRow("Variable:", variableName));
+                            out.print(renderViolationRowEscaped("Variable:", variableName));
                         }
 
-                        out.print(renderViolationRow("Line:", violation.getEndLine() > 0
+                        out.print(renderViolationRowEscaped("Line:", violation.getEndLine() > 0
                                 ? violation.getBeginLine() + " and " + violation.getEndLine()
                                 : String.valueOf(violation.getBeginLine())));
 
@@ -193,12 +199,12 @@ public class YAHTMLRenderer extends AbstractAccumulatingRenderer {
         }
     }
 
-    private String renderViolationRow(String name, String value) {
+    private String renderViolationRowEscaped(String name, String value) {
         return "<tr><td><b>"
-            + name
+            + escape(name)
             + "</b></td>"
             + "<td>"
-            + value
+            + escape(value)
             + "</td></tr>";
     }
 

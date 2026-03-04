@@ -75,7 +75,7 @@ function bar() {
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_ecmascript_bestpractices.html#globalvariable">
         <description>
-This rule helps to avoid using accidently global variables by simply missing the "var" declaration.
+This rule helps to avoid using accidentally global variables by simply missing the "var" declaration.
 Global variables can lead to side-effects that are hard to debug.
         </description>
         <priority>1</priority>

@@ -28,23 +28,23 @@ class ObjectFieldTypesTest {
 
     static {
         EXPECTED_SFDX_DATA_TYPES = new HashMap<>();
-        EXPECTED_SFDX_DATA_TYPES.put("Account.Checkbox__c", DataType.Checkbox);
-        EXPECTED_SFDX_DATA_TYPES.put("Account.DateTime__c", DataType.DateTime);
-        EXPECTED_SFDX_DATA_TYPES.put("Account.LongTextArea__c", DataType.LongTextArea);
-        EXPECTED_SFDX_DATA_TYPES.put("Account.Picklist__c", DataType.Picklist);
-        EXPECTED_SFDX_DATA_TYPES.put("Account.Text__c", DataType.Text);
-        EXPECTED_SFDX_DATA_TYPES.put("Account.TextArea__c", DataType.TextArea);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.Checkbox__c", DataType.CHECKBOX);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.DateTime__c", DataType.DATE_TIME);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.LongTextArea__c", DataType.LONG_TEXT_AREA);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.Picklist__c", DataType.PICKLIST);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.Text__c", DataType.TEXT);
+        EXPECTED_SFDX_DATA_TYPES.put("Account.TextArea__c", DataType.TEXT_AREA);
         // Edge Cases
         // Invalid property should return null
         EXPECTED_SFDX_DATA_TYPES.put("Account.DoesNotExist__c", null);
 
         EXPECTED_MDAPI_DATA_TYPES = new HashMap<>();
-        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDCheckbox__c", DataType.Checkbox);
-        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDDateTime__c", DataType.DateTime);
-        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDLongTextArea__c", DataType.LongTextArea);
-        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDPicklist__c", DataType.Picklist);
-        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDText__c", DataType.Text);
-        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDTextArea__c", DataType.TextArea);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDCheckbox__c", DataType.CHECKBOX);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDDateTime__c", DataType.DATE_TIME);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDLongTextArea__c", DataType.LONG_TEXT_AREA);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDPicklist__c", DataType.PICKLIST);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDText__c", DataType.TEXT);
+        EXPECTED_MDAPI_DATA_TYPES.put("Account.MDTextArea__c", DataType.TEXT_AREA);
         // Edge Cases
         // Invalid property should return null
         EXPECTED_MDAPI_DATA_TYPES.put("Account.DoesNotExist__c", null);

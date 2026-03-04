@@ -4,7 +4,7 @@ summary: How to contribute to PMD
 tags: [devdocs]
 permalink: pmd_devdocs_contributing.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2025 (7.10.0)
+last_updated: January 2026 (7.21.0)
 ---
 
 First off, thanks for taking the time to contribute!
@@ -100,6 +100,7 @@ Or use the CLI:
 
 1. Install the CLI: `npm i` (in PMD's top level directory)
 2. Add yourself: `npx all-contributors add <username> <contribution>`
+3. Commit the changes: `git commit -am "Add @<username> as contributor`
 
 Where `username` is your GitHub username and `contribution` is a `,`-separated list
 of contributions. See [Emoji Key](https://allcontributors.org/docs/en/emoji-key) for a list

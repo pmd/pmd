@@ -48,7 +48,7 @@ public final class RuleSetLoader {
      * Create a new RuleSetLoader with a default configuration.
      * The defaults are described on each configuration method of this class.
      */
-    public RuleSetLoader() { // NOPMD UnnecessaryConstructor #6311 / #6284
+    public RuleSetLoader() {
         // default
     }
 
@@ -190,8 +190,8 @@ public final class RuleSetLoader {
      * Loads a list of rulesets, if any has an error, report it on the contextual
      * error reporter instead of aborting, and continue loading the rest.
      *
-     * @apiNote Internal API: might be published later, or maybe this
-     * will be the default behaviour of every method of this class.
+     * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
+     * It might be published later, or maybe this will be the default behaviour of every method of this class.
      */
     List<RuleSet> loadRuleSetsWithoutException(List<String> rulesetPaths) {
         List<RuleSet> ruleSets = new ArrayList<>(rulesetPaths.size());

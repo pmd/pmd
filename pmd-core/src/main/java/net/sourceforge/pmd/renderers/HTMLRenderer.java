@@ -7,6 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -66,6 +67,10 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
     @Override
     public String defaultFileExtension() {
         return "html";
+    }
+
+    private static String escape(String s) {
+        return StringEscapeUtils.escapeHtml4(s);
     }
 
     /**
@@ -135,16 +140,16 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             buf.append("> ").append(System.lineSeparator());
             buf.append("<td align=\"center\">").append(violationCount).append("</td>").append(System.lineSeparator());
             buf.append("<td width=\"*%\">")
-               .append(renderFileName(rv.getFileId(), rv.getBeginLine()))
+               .append(renderFileNameEscaped(rv.getFileId(), rv.getBeginLine()))
                .append("</td>")
                 .append(System.lineSeparator());
             buf.append("<td align=\"center\" width=\"5%\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
 
-            String d = StringEscapeUtils.escapeHtml4(rv.getDescription());
+            String d = escape(rv.getDescription());
 
             String infoUrl = rv.getRule().getExternalInfoUrl();
             if (StringUtils.isNotBlank(infoUrl)) {
-                d = "<a href=\"" + infoUrl + "\">" + d + "</a>";
+                d = "<a href=\"" + URLEncoder.encode(infoUrl, "UTF-8") + "\">" + d + "</a>";
             }
             buf.append("<td width=\"*\">")
                .append(d)
@@ -157,13 +162,13 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
         }
     }
 
-    private String renderFileName(FileId fileId, int beginLine) {
-        return maybeWrap(StringEscapeUtils.escapeHtml4(determineFileName(fileId)),
+    private String renderFileNameEscaped(FileId fileId, int beginLine) {
+        return maybeWrap(escape(determineFileName(fileId)),
                 linePrefix == null || beginLine < 0 ? "" : linePrefix + beginLine);
     }
 
-    private String renderRuleName(Rule rule) {
-        String name = rule.getName();
+    private String renderRuleNameEscaped(Rule rule) {
+        String name = escape(rule.getName());
         String infoUrl = rule.getExternalInfoUrl();
         if (StringUtils.isNotBlank(infoUrl)) {
             return "<a href=\"" + infoUrl + "\">" + name + "</a>";
@@ -192,8 +197,8 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> ").append(System.lineSeparator());
-            buf.append("<td>").append(renderFileName(pe.getFileId(), -1)).append("</td>").append(System.lineSeparator());
-            buf.append("<td><pre>").append(pe.getDetail()).append("</pre></td>").append(System.lineSeparator());
+            buf.append("<td>").append(renderFileNameEscaped(pe.getFileId(), -1)).append("</td>").append(System.lineSeparator());
+            buf.append("<td><pre>").append(escape(pe.getDetail())).append("</pre></td>").append(System.lineSeparator());
             buf.append("</tr>").append(System.lineSeparator());
             writer.write(buf.toString());
         }
@@ -221,11 +226,12 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             colorize = !colorize;
             buf.append("> ").append(System.lineSeparator());
             RuleViolation rv = sv.getRuleViolation();
-            buf.append("<td align=\"left\">").append(renderFileName(rv.getFileId(), rv.getBeginLine())).append("</td>").append(System.lineSeparator());
+            String userMessage = Optional.ofNullable(sv.getUserMessage()).orElse("");
+            buf.append("<td align=\"left\">").append(renderFileNameEscaped(rv.getFileId(), rv.getBeginLine())).append("</td>").append(System.lineSeparator());
             buf.append("<td align=\"center\">").append(rv.getBeginLine()).append("</td>").append(System.lineSeparator());
-            buf.append("<td align=\"center\">").append(renderRuleName(rv.getRule())).append("</td>").append(System.lineSeparator());
-            buf.append("<td align=\"center\">").append(sv.getSuppressor().getId()).append("</td>").append(System.lineSeparator());
-            buf.append("<td align=\"center\">").append(sv.getUserMessage() == null ? "" : sv.getUserMessage()).append("</td>").append(System.lineSeparator());
+            buf.append("<td align=\"center\">").append(renderRuleNameEscaped(rv.getRule())).append("</td>").append(System.lineSeparator());
+            buf.append("<td align=\"center\">").append(escape(sv.getSuppressor().getId())).append("</td>").append(System.lineSeparator());
+            buf.append("<td align=\"center\">").append(escape(userMessage)).append("</td>").append(System.lineSeparator());
             buf.append("</tr>").append(System.lineSeparator());
             writer.write(buf.toString());
         }
@@ -252,24 +258,24 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
             }
             colorize = !colorize;
             buf.append("> ").append(System.lineSeparator());
-            buf.append("<td>").append(renderRuleName(ce.rule())).append("</td>").append(System.lineSeparator());
-            buf.append("<td>").append(ce.issue()).append("</td>").append(System.lineSeparator());
+            buf.append("<td>").append(renderRuleNameEscaped(ce.rule())).append("</td>").append(System.lineSeparator());
+            buf.append("<td>").append(escape(ce.issue())).append("</td>").append(System.lineSeparator());
             buf.append("</tr>").append(System.lineSeparator());
             writer.write(buf.toString());
         }
         writer.write("</table>");
     }
 
-    private String maybeWrap(String filename, String line) {
+    private String maybeWrap(String filenameEscaped, String line) {
         if (StringUtils.isBlank(linkPrefix)) {
-            return filename;
+            return filenameEscaped;
         }
-        String newFileName = filename.replace('\\', '/');
+        String newFileName = filenameEscaped.replace('\\', '/');
 
         if (replaceHtmlExtension) {
-            int index = filename.lastIndexOf('.');
+            int index = filenameEscaped.lastIndexOf('.');
             if (index >= 0) {
-                newFileName = filename.substring(0, index);
+                newFileName = filenameEscaped.substring(0, index);
             }
         }
 

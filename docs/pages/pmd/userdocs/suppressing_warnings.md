@@ -5,7 +5,7 @@ tags: [userdocs]
 summary: "Learn how to suppress some rule violations, from the source code using annotations or comments, or globally from the ruleset"
 permalink: pmd_userdocs_suppressing_warnings.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: July 2025 (7.17.0)
+last_updated: August 2025 (7.17.0)
 ---
 
 PMD provides several methods by which Rule violations can be suppressed.

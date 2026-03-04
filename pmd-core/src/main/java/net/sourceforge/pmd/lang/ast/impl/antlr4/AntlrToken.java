@@ -34,7 +34,7 @@ public class AntlrToken implements GenericToken<AntlrToken> {
      * @param previousComment The previous comment
      * @param textDoc         The text document
      *
-     * @deprecated Don't create antlr tokens directly, use an {@link AntlrTokenManager}
+     * @deprecated Since 7.3.0. Don't create antlr tokens directly, use an {@link AntlrTokenManager}
      */
     @Deprecated
     public AntlrToken(final Token token, final AntlrToken previousComment, TextDocument textDoc) {

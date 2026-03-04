@@ -163,7 +163,7 @@ public with sharing class SObjectDataLoader
 		 **/
 		private void searchRelationships(Schema.SObjectType sObjectType, Integer lookupDepth, Integer childDepth, Boolean searchChildren, Set<Schema.SObjectType> searched, Set<Schema.SObjectType> searchedParentOnly)
 		{		
-			// Stop infinite recursion and checks that an object shuold not be searched twice, unless the scope of the search is different	
+			// Stop infinite recursion and checks that an object should not be searched twice, unless the scope of the search is different
 			if(searched.contains(sObjectType) || (searchChildren == false && searchedParentOnly.contains(sObjectType)) || lookupDepth > 2 || childDepth > 3) // TODO: Make max depth configurable
 				return;
 
@@ -217,12 +217,12 @@ public with sharing class SObjectDataLoader
 			for(Schema.SObjectField sObjectField : sObjectFields.values())
 				if(sObjectField.getDescribe().getType() == Schema.DisplayType.Reference)
 				{
-					Boolean omitRefernceToFields = false;
-					for(Schema.sObjectType refernceToType : sObjectField.getDescribe().getReferenceTo()){
-						if(referenceToWhitelist.contains(refernceToType.getDescribe().getName()))
-							omitRefernceToFields = true;
+					Boolean omitReferenceToFields = false;
+					for(Schema.sObjectType referenceToType : sObjectField.getDescribe().getReferenceTo()){
+						if(referenceToWhitelist.contains(referenceToType.getDescribe().getName()))
+							omitReferenceToFields = true;
 					}
-					if(!followChildRelationships.contains(sObjectField) && !relationshipWhitelist.contains(sObjectField.getDescribe().getName()) && !omitRefernceToFields && !userWhiteListSet.contains(sObjectField.getDescribe().getName()) && !matchNameSpaceForObject(sObjectField.getDescribe().getName()))
+					if(!followChildRelationships.contains(sObjectField) && !relationshipWhitelist.contains(sObjectField.getDescribe().getName()) && !omitReferenceToFields && !userWhiteListSet.contains(sObjectField.getDescribe().getName()) && !matchNameSpaceForObject(sObjectField.getDescribe().getName()))
 					{
 						if(sObjectField.getDescribe().getReferenceTo()!=null && sObjectField.getDescribe().getReferenceTo().size()>0)
 							follow(sObjectField).
@@ -282,14 +282,14 @@ public with sharing class SObjectDataLoader
                   'RecordAssociatedGroups'
 				  };		
 	
-		// Standard RefernceTo that are not included when using the auto config	
+		// Standard ReferenceTo that are not included when using the auto config
 		private Set<String> referenceToWhitelist = 
 			new Set<String>
 				{ 'User',
 				  'Organization'
 				};
     
-        // Standard fiels to be omitted
+        // Standard fields to be omitted
         private Set<String> fieldWhitelist = 
             new Set<String>
                 {
@@ -436,9 +436,9 @@ public with sharing class SObjectDataLoader
 			Map<String, Schema.SObjectField> sObjectFields;
 			sObjectFields = sObjectType.getDescribe().fields.getMap();
 			List<Schema.SObjectField> relationshipsFields = new List<Schema.SObjectField>();
-			//adding selfrefernce Fields in set 
+			//adding self-reference Fields in set
 			Set<String> selfReferenceFields = new Set<String>();
-			// Unresolved refrences list for callback
+			// Unresolved references list for callback
 			List<UnresolvedReferences> callbackUnresolvedReferencesList= new List<UnresolvedReferences>(); 
 			for(Schema.SObjectField sObjectField : sObjectFields.values())
 			{
@@ -540,19 +540,19 @@ public with sharing class SObjectDataLoader
 	/*
     *  Method to Update foreign key references / lookups / master-detail relationships
     */
-    private static void updateReferenceFieldsInRecords(List<Schema.SObjectField> relationshipsFields,Set<Schema.SObjectField> filteredUnresolvedFieldReferences,Map<Id, SObject> recordsByOriginalId,Sobject orignalRecord,Set<Schema.SObjectField> allUnresolvedFieldReferences)
+    private static void updateReferenceFieldsInRecords(List<Schema.SObjectField> relationshipsFields,Set<Schema.SObjectField> filteredUnresolvedFieldReferences,Map<Id, SObject> recordsByOriginalId,Sobject originalRecord,Set<Schema.SObjectField> allUnresolvedFieldReferences)
     {
     	for(Schema.SObjectField sObjectField : relationshipsFields)
 		{                           
 			// Obtained original related record Id and search map over new records by old Ids
-			Id oldRelatedRecordId = (Id) orignalRecord.get(sObjectField);
+			Id oldRelatedRecordId = (Id) originalRecord.get(sObjectField);
 			if(oldRelatedRecordId!=null )
 			{
 				SObject newRelatedRecord = recordsByOriginalId.get(oldRelatedRecordId);
 				Sobject newRecord ;
 				if(newRelatedRecord!=null && newRelatedRecord.Id!=null)
 				{
-					newRecord = recordsByOriginalId.get(orignalRecord.ID);
+					newRecord = recordsByOriginalId.get(originalRecord.ID);
 					newRecord.put(sObjectField, newRelatedRecord.Id);
 				}
 				else
@@ -615,8 +615,8 @@ public with sharing class SObjectDataLoader
      * @param Set<Id> The set of IDs of the main records that should be serialized
      * @param Schema.SObjectType The sObject type that is being serialised
      * @param SerializeConfig Configuration object that controls which relationships etc should be processed
-     * @param Integer The current lookup depth. This is incremented for each recurssion that looks at lookup links and is used to prevent infinate loops
-     * @param Integer The current child depth. This is incremented for each recurssion that looks at related child records links and is used to prevent infinate loops
+     * @param Integer The current lookup depth. This is incremented for each recursion that looks at lookup links and is used to prevent infinite loops
+     * @param Integer The current child depth. This is incremented for each recursion that looks at related child records links and is used to prevent infinite loops
      * @param RecordsBundle The bundle of records that is being added to
      * @param Set<Id> A set of record IDs that have already been serialised
      **/
@@ -659,7 +659,7 @@ public with sharing class SObjectDataLoader
 		if(recordsToSerializeById.size()==0)
 			return;
 		
-		// Any lookup relationships to folow?
+		// Any lookup relationships to follow?
 		Set<Schema.SObjectField> sObjectFollowRelationships = config.followRelationships.clone();
 		sObjectFollowRelationships.retainAll(sObjectFields.values());
 		if(sObjectFollowRelationships.size()>0)
@@ -790,7 +790,7 @@ public with sharing class SObjectDataLoader
 	}
 	
 	/**
-	 * Internal Apex represnetation of the serialized output for all recordsets
+	 * Internal Apex representation of the serialized output for all recordsets
 	 **/
 	private class RecordsBundle
 	{
@@ -835,7 +835,7 @@ public with sharing class SObjectDataLoader
 	}
 	
 	/**
-	 * Internal Apex represnetation of the serialized output for a given recordset
+	 * Internal Apex representation of the serialized output for a given recordset
 	 **/
 	private class RecordSetBundle
 	{
