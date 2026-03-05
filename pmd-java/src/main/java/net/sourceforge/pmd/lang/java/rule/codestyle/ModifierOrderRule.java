@@ -101,7 +101,7 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         @Override
         boolean checkNextKeyword(KwMod next, RuleContext ctx) {
             if (mod.compareTo(next.mod) > 0) {
-                ctx.addViolationWithPosition(reportNode, token, MSG_KEYWORD_ORDER, this, next);
+                ctx.at(reportNode.atToken(token)).reportWithMessage(MSG_KEYWORD_ORDER, this, next);
                 return true;
             }
             return false;
@@ -115,9 +115,9 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
             }
 
             if (next.isTypeAnnot.isTrue()) {
-                ctx.addViolationWithPosition(reportNode, token, MSG_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
+                ctx.at(reportNode.atToken(token)).reportWithMessage(MSG_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
             } else {
-                ctx.addViolationWithPosition(reportNode, token, MSG_NON_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
+                ctx.at(reportNode.atToken(token)).reportWithMessage(MSG_NON_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, this, next);
             }
             return true;
 
@@ -149,18 +149,18 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
         @Override
         boolean checkNextKeyword(KwMod next, RuleContext ctx) {
             if (isTypeAnnot.isTrue() && typeAnnotPosition == TypeAnnotationPosition.ON_TYPE) {
-                ctx.addViolationWithMessage(annot, MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE, this, next);
+                ctx.at(annot).reportWithMessage(MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE, this, next);
                 return true;
             }
 
             if (previous instanceof KwMod) {
                 // annotation sandwiched between keywords
                 if (isTypeAnnot.isTrue() && typeAnnotPosition != TypeAnnotationPosition.ON_DECL) {
-                    ctx.addViolationWithMessage(annot, MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE, this, next);
+                    ctx.at(annot).reportWithMessage(MSG_TYPE_ANNOT_SHOULD_BE_BEFORE_TYPE, this, next);
                 } else if (isTypeAnnot.isTrue()) {
                     ctx.addViolationWithMessage(annot, MSG_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, previous, this);
                 } else {
-                    ctx.addViolationWithMessage(annot, MSG_NON_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, previous, this);
+                    ctx.at(annot).reportWithMessage(MSG_NON_TYPE_ANNOTATIONS_SHOULD_BE_BEFORE_MODS, previous, this);
                 }
                 return true;
             }
