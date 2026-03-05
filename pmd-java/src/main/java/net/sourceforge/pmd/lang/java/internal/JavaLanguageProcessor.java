@@ -11,6 +11,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sourceforge.pmd.internal.util.IOUtil;
 import net.sourceforge.pmd.lang.LanguageVersionHandler;
 import net.sourceforge.pmd.lang.ast.Parser;
 import net.sourceforge.pmd.lang.impl.BatchLanguageProcessor;
@@ -45,20 +46,18 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     private final JavaParser parserWithoutProcessing;
     private final boolean firstClassLombok;
     private TypeSystem typeSystem;
+    private final ClassLoader analysisClassLoader;
 
-    public JavaLanguageProcessor(JavaLanguageProperties properties, TypeSystem typeSystem) {
+    public JavaLanguageProcessor(JavaLanguageProperties properties) {
         super(properties);
-        this.typeSystem = typeSystem;
+        this.analysisClassLoader = properties.getAnalysisClassLoader();
+        this.typeSystem = TypeSystem.usingClassLoaderClasspath(analysisClassLoader);
+        LOG.debug("Using analysis classloader: {}", analysisClassLoader);
 
         String suppressMarker = properties.getSuppressMarker();
         this.parser = new JavaParser(suppressMarker, this, true);
         this.parserWithoutProcessing = new JavaParser(suppressMarker, this, false);
         this.firstClassLombok = properties.getProperty(JavaLanguageProperties.FIRST_CLASS_LOMBOK);
-    }
-
-    public JavaLanguageProcessor(JavaLanguageProperties properties) {
-        this(properties, TypeSystem.usingClassLoaderClasspath(properties.getAnalysisClassLoader()));
-        LOG.debug("Using analysis classloader: {}", properties.getAnalysisClassLoader());
     }
 
     @Override
@@ -139,6 +138,7 @@ public class JavaLanguageProcessor extends BatchLanguageProcessor<JavaLanguagePr
     @Override
     public void close() throws Exception {
         this.typeSystem.logStats();
+        IOUtil.tryCloseClassLoader(analysisClassLoader);
         super.close();
     }
 }
