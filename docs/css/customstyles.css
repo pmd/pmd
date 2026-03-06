@@ -1169,6 +1169,12 @@ p.post-meta time {
     margin-right: 0px;
 }
 
+span.label {
+    border-radius: 0.375rem;
+    padding: 0.35em 0.64em;
+    font-size: 0.75em;
+}
+
 span.label.label-default {
     background-color: gray;
 }
@@ -1176,6 +1182,11 @@ span.label.label-default {
 span.label.label-primary {
     background-color: #f0ad4e;
 }
+
+span.label.label-info {
+    background-color: deepskyblue;
+}
+
 .col-lg-12 .nav li a {
     background-color: white;
 }

@@ -4,7 +4,7 @@ tags: [cpd, userdocs]
 summary: "Learn how to use CPD, the copy-paste detector shipped with PMD."
 permalink: pmd_userdocs_cpd.html
 author: Tom Copeland <tom@infoether.com>
-last_updated: August 2025 (7.17.0)
+last_updated: March 2026 (7.23.0)
 ---
 
 ## Overview
@@ -77,7 +77,7 @@ exactly identical.
 
 {% include callout.html 
     type="primary"
-    content="The file collection options are common to PMD and CPD and [described over there](pmd_userdocs_cli_reference.html#file-collection-options)." %}
+    content="<span class='label label-info'>Since 7.14.0</span> The file collection options are common to PMD and CPD and [described over there](pmd_userdocs_cli_reference.html#file-collection-options)." %}
 
 <table>
     <tr>
@@ -113,6 +113,10 @@ exactly identical.
                description="Output format of the analysis report. The available formats
                             are described [here](#available-report-formats)."
                default="text"
+    %}
+    {% include custom/cli_option_row.html options="--report-file,-r"
+               option_arg="path"
+               description="<span class='label label-info'>Since 7.14.0</span> Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output."
     %}
     {% include custom/cli_option_row.html options="--[no-]fail-on-error"
                description="Specifies whether CPD exits with non-zero status if recoverable errors occurred.
