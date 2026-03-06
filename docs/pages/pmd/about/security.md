@@ -2,13 +2,13 @@
 title: PMD Security
 permalink: pmd_about_security.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: February 2026 (7.22.0)
+last_updated: March 2026 (7.23.0)
 ---
 
 For reporting security issues, see [SECURITY.md](https://github.com/pmd/pmd/blob/main/SECURITY.md).
 
 ## Security Vulnerabilities
-### CVE-2026 TBD
+### CVE-2026-28338
 **Published:** 2026-02-27
 
 **Severity:** Medium
@@ -100,6 +100,7 @@ The default `html` format has a similar issue with user messages from suppressed
 
 **References:**
 * [GHSA-8rr6-2qw5-pc7r](https://github.com/pmd/pmd/security/advisories/GHSA-8rr6-2qw5-pc7r)
+* [CVE-2026-28338](https://www.cve.org/CVERecord?id=CVE-2026-28338)
 
 ### CVE-2025-23215
 **Published:** 2025-01-31
