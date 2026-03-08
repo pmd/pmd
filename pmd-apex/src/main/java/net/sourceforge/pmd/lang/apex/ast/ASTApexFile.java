@@ -61,6 +61,10 @@ public final class ASTApexFile extends AbstractApexNode.Single<CompilationUnit> 
         return multifileAnalysis.getFileIssues(fileId.getAbsolutePath());
     }
 
+    public @NonNull ApexMultifileAnalysis getMultifileAnalysis() {
+        return multifileAnalysis;
+    }
+
     @Override
     public String getDefiningType() {
         // an apex file can contain only one top level type
