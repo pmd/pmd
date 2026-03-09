@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -20,15 +21,11 @@ import org.slf4j.LoggerFactory;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
-import com.nawforce.apexlink.api.MethodSummary;
 import com.nawforce.apexlink.api.Org;
 import com.nawforce.apexlink.api.Package;
-import com.nawforce.apexlink.api.ParameterSummary;
 import com.nawforce.apexlink.api.TypeSummary;
 import com.nawforce.pkgforce.diagnostics.LoggerOps;
-import com.nawforce.pkgforce.modifiers.Modifier;
 import com.nawforce.pkgforce.names.TypeIdentifier;
-import com.nawforce.pkgforce.names.TypeName;
 import io.github.apexdevtools.api.Issue;
 
 /**
@@ -126,16 +123,19 @@ public final class ApexMultifileAnalysis {
     }
 
     /**
-     * Returns true if the org contains a type with the given simple name whose nature is "interface".
+     * Returns true if any type summary in the org matches the given predicate.
+     * This enables rules to define their own matching logic using lambdas or method references.
      * Returns false when multifile analysis is unavailable.
+     *
+     * @param predicate the predicate to test each TypeSummary against
+     * @return true if any TypeSummary matches the predicate
      */
-    public boolean isInterfaceInOrg(String simpleTypeName) {
+    public boolean anyTypeMatches(Predicate<TypeSummary> predicate) {
         if (org == null) {
             return false;
         }
         for (TypeSummary summary : getAllTypeSummaries()) {
-            if ("interface".equalsIgnoreCase(summary.nature())
-                    && summary.typeName().name().value().equalsIgnoreCase(simpleTypeName)) {
+            if (predicate.test(summary)) {
                 return true;
             }
         }
@@ -143,29 +143,12 @@ public final class ApexMultifileAnalysis {
     }
 
     /**
-     * Returns true if the org contains an abstract class that implements the given interface (by simple name)
-     * and also defines {@code equals(Object)} or {@code hashCode()}.
-     * Returns false when multifile analysis is unavailable.
+     * Returns an unmodifiable list of all type summaries in the org.
+     * Returns an empty list when multifile analysis is unavailable.
+     * This enables rules to perform complex cross-type analysis.
      */
-    public boolean hasAbstractImplementorWithEqualsOrHashCode(String interfaceSimpleName) {
-        if (org == null) {
-            return false;
-        }
-        for (TypeSummary summary : getAllTypeSummaries()) {
-            if (!"class".equalsIgnoreCase(summary.nature())) {
-                continue;
-            }
-            if (!isAbstractModifier(summary)) {
-                continue;
-            }
-            if (!summaryImplementsInterface(summary, interfaceSimpleName)) {
-                continue;
-            }
-            if (summaryDefinesEqualsOrHashCode(summary)) {
-                return true;
-            }
-        }
-        return false;
+    public List<TypeSummary> getTypeSummaries() {
+        return getAllTypeSummaries();
     }
 
     /**
@@ -200,45 +183,6 @@ public final class ApexMultifileAnalysis {
         while (nested.hasNext()) {
             collectTypeSummaries(nested.next(), result);
         }
-    }
-
-    private static boolean isAbstractModifier(TypeSummary summary) {
-        scala.collection.Iterator<Modifier> iter = summary.modifiers().iterator();
-        while (iter.hasNext()) {
-            if ("abstract".equalsIgnoreCase(iter.next().name())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean summaryImplementsInterface(TypeSummary summary, String interfaceSimpleName) {
-        scala.collection.Iterator<TypeName> iter = summary.interfaces().iterator();
-        while (iter.hasNext()) {
-            if (iter.next().name().value().equalsIgnoreCase(interfaceSimpleName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean summaryDefinesEqualsOrHashCode(TypeSummary summary) {
-        scala.collection.Iterator<MethodSummary> iter = summary.methods().iterator();
-        while (iter.hasNext()) {
-            MethodSummary method = iter.next();
-            String methodName = method.name();
-            if ("hashCode".equalsIgnoreCase(methodName) && !method.parameters().iterator().hasNext()) {
-                return true;
-            }
-            if ("equals".equalsIgnoreCase(methodName)) {
-                scala.collection.Iterator<ParameterSummary> params = method.parameters().iterator();
-                if (params.hasNext() && "Object".equalsIgnoreCase(params.next().typeName().name().value())
-                        && !params.hasNext()) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     /*

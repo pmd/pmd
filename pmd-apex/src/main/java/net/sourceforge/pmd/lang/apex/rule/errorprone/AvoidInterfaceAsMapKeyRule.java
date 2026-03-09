@@ -5,20 +5,15 @@
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTApexFile;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
-import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
-import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.multifile.ApexMultifileAnalysis;
@@ -26,14 +21,27 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 
+import com.nawforce.apexlink.api.MethodSummary;
+import com.nawforce.apexlink.api.ParameterSummary;
+import com.nawforce.apexlink.api.TypeSummary;
+import com.nawforce.pkgforce.modifiers.Modifier;
+import com.nawforce.pkgforce.names.TypeName;
+
 /**
  * Flags use of an interface as Map key when that interface has an implementing class
  * that is abstract and defines equals or hashCode. In Apex, Map operations like
  * containsKey do not dispatch to the correct equals/hashCode in that case.
  *
+ * <p>Requires multifile analysis: set the {@code PMD_APEX_ROOT_DIRECTORY} environment variable
+ * to the root of your SFDX project (where {@code sfdx-project.json} lives). Without it the
+ * rule produces no violations.
+ *
  * @see <a href="https://github.com/pmd/pmd/issues/6492">Issue 6492</a>
  */
 public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AvoidInterfaceAsMapKeyRule.class);
+    private static boolean warnedAboutMissingOrg = false;
 
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
@@ -42,32 +50,20 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
 
     @Override
     public Object visit(ASTApexFile node, Object data) {
-        List<MapKeyUsage> mapKeyUsages = collectMapKeyUsages(node);
         ApexMultifileAnalysis mfa = node.getMultifileAnalysis();
-
-        if (!mfa.isFailed()) {
-            // Org is loaded: use cross-file type hierarchy for accurate detection.
-            for (MapKeyUsage usage : mapKeyUsages) {
-                String keySimpleName = usage.keyTypeSimpleName;
-                if (mfa.isInterfaceInOrg(keySimpleName)
-                        && mfa.hasAbstractImplementorWithEqualsOrHashCode(keySimpleName)) {
-                    asCtx(data).addViolation(usage.reportNode);
-                }
+        if (mfa.isFailed()) {
+            if (!warnedAboutMissingOrg) {
+                warnedAboutMissingOrg = true;
+                LOG.warn("AvoidInterfaceAsMapKey rule not enforced: multifile analysis unavailable. "
+                        + "Set PMD_APEX_ROOT_DIRECTORY to enable cross-file type resolution.");
             }
-        } else {
-            // No org available: fall back to single-file analysis.
-            Set<String> interfaceSimpleNames = getInterfaceSimpleNamesInFile(node);
-            Map<String, ASTUserClass> classesBySimpleName = getClassesBySimpleName(node);
-
-            for (MapKeyUsage usage : mapKeyUsages) {
-                String keySimpleName = usage.keyTypeSimpleName;
-                if (!interfaceSimpleNames.contains(keySimpleName)) {
-                    continue;
-                }
-                Set<ASTUserClass> implementors = findImplementorsOf(keySimpleName, classesBySimpleName);
-                if (hasAbstractImplementorWithEqualsOrHashCode(implementors, classesBySimpleName)) {
-                    asCtx(data).addViolation(usage.reportNode);
-                }
+            return data;
+        }
+        List<TypeSummary> allTypes = mfa.getTypeSummaries();
+        for (MapKeyUsage usage : collectMapKeyUsages(node)) {
+            TypeHierarchyChecker checker = new TypeHierarchyChecker(usage.keyTypeSimpleName, allTypes);
+            if (checker.isViolation()) {
+                asCtx(data).addViolation(usage.reportNode);
             }
         }
         return data;
@@ -81,8 +77,7 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
             if (typeName != null && typeName.startsWith("Map<")) {
                 List<String> args = field.getTypeArguments();
                 if (args.size() >= 2) {
-                    String keyType = args.get(0);
-                    usages.add(new MapKeyUsage(Helper.getSimpleTypeName(keyType), field));
+                    usages.add(new MapKeyUsage(Helper.getSimpleTypeName(args.get(0)), field));
                 }
             }
         }
@@ -104,131 +99,6 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
         return usages;
     }
 
-    private Set<String> getInterfaceSimpleNamesInFile(ASTApexFile root) {
-        Set<String> names = new HashSet<>();
-        for (ASTUserInterface iface : root.descendants(ASTUserInterface.class).crossFindBoundaries()) {
-            names.add(iface.getSimpleName());
-        }
-        return names;
-    }
-
-    private Map<String, ASTUserClass> getClassesBySimpleName(ASTApexFile root) {
-        Map<String, ASTUserClass> map = new HashMap<>();
-        for (ASTUserClass clazz : root.descendants(ASTUserClass.class).crossFindBoundaries()) {
-            map.put(clazz.getSimpleName(), clazz);
-        }
-        return map;
-    }
-
-    /**
-     * Find all classes in the file that implement the given interface (directly or via superclass).
-     */
-    private Set<ASTUserClass> findImplementorsOf(String interfaceSimpleName, Map<String, ASTUserClass> classesBySimpleName) {
-        Set<ASTUserClass> implementors = new HashSet<>();
-        for (ASTUserClass clazz : classesBySimpleName.values()) {
-            if (directlyImplementsInterface(clazz, interfaceSimpleName)) {
-                implementors.add(clazz);
-            }
-        }
-        // Add classes that extend an implementor (transitive)
-        boolean changed;
-        do {
-            changed = false;
-            for (ASTUserClass clazz : classesBySimpleName.values()) {
-                if (implementors.contains(clazz)) {
-                    continue;
-                }
-                String superName = clazz.getSuperClassName();
-                String superSimple = Helper.getSimpleTypeName(superName);
-                ASTUserClass superClass = classesBySimpleName.get(superSimple);
-                if (superClass != null && implementors.contains(superClass)) {
-                    implementors.add(clazz);
-                    changed = true;
-                }
-            }
-        } while (changed);
-        return implementors;
-    }
-
-    private boolean directlyImplementsInterface(ASTUserClass clazz, String interfaceSimpleName) {
-        for (String iface : clazz.getInterfaceNames()) {
-            if (Helper.getSimpleTypeName(iface).equals(interfaceSimpleName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean hasAbstractImplementorWithEqualsOrHashCode(
-            Set<ASTUserClass> implementors,
-            Map<String, ASTUserClass> classesBySimpleName) {
-        for (ASTUserClass clazz : implementors) {
-            if (abstractClassDefinesEqualsOrHashCodeInChain(clazz, classesBySimpleName)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Walk up the class chain; if any class in the chain is abstract and defines equals or hashCode, return true.
-     */
-    private boolean abstractClassDefinesEqualsOrHashCodeInChain(
-            ASTUserClass clazz,
-            Map<String, ASTUserClass> classesBySimpleName) {
-        ASTUserClass current = clazz;
-        Set<ASTUserClass> visited = new HashSet<>();
-        while (current != null && visited.add(current)) {
-            if (current.getModifiers() != null && current.getModifiers().isAbstract() && definesEqualsOrHashCode(current)) {
-                return true;
-            }
-            String superName = current.getSuperClassName();
-            if (superName.isEmpty()) {
-                break;
-            }
-            current = classesBySimpleName.get(Helper.getSimpleTypeName(superName));
-        }
-        return false;
-    }
-
-    private boolean definesEqualsOrHashCode(ASTUserClass clazz) {
-        for (ASTMethod method : clazz.children(ASTMethod.class)) {
-            if (isEquals(method) || isHashCode(method)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean isEquals(ASTMethod method) {
-        if (!"equals".equalsIgnoreCase(method.getImage())) {
-            return false;
-        }
-        int paramCount = 0;
-        String paramType = null;
-        for (int i = 0; i < method.getNumChildren(); i++) {
-            ApexNode<?> child = method.getChild(i);
-            if (child instanceof ASTParameter) {
-                paramCount++;
-                paramType = ((ASTParameter) child).getType();
-            }
-        }
-        return paramCount == 1 && "Object".equalsIgnoreCase(Helper.getSimpleTypeName(paramType != null ? paramType : ""));
-    }
-
-    private boolean isHashCode(ASTMethod method) {
-        if (!"hashCode".equalsIgnoreCase(method.getImage())) {
-            return false;
-        }
-        int paramCount = 0;
-        for (int i = 0; i < method.getNumChildren(); i++) {
-            if (method.getChild(i) instanceof ASTParameter) {
-                paramCount++;
-            }
-        }
-        return paramCount == 0;
-    }
-
     private static final class MapKeyUsage {
         final String keyTypeSimpleName;
         final ApexNode<?> reportNode;
@@ -236,6 +106,144 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
         MapKeyUsage(String keyTypeSimpleName, ApexNode<?> reportNode) {
             this.keyTypeSimpleName = keyTypeSimpleName;
             this.reportNode = reportNode;
+        }
+    }
+
+    /**
+     * Checks if a given interface name triggers the Map key dispatch bug.
+     * The bug occurs when:
+     * 1. The key type is an interface
+     * 2. There's an abstract class implementing that interface
+     * 3. Either the abstract class OR any class extending it defines equals/hashCode
+     */
+    private static final class TypeHierarchyChecker {
+        private final String interfaceSimpleName;
+        private final List<TypeSummary> allTypes;
+
+        TypeHierarchyChecker(String interfaceSimpleName, List<TypeSummary> allTypes) {
+            this.interfaceSimpleName = interfaceSimpleName;
+            this.allTypes = allTypes;
+        }
+
+        /**
+         * Returns true if using this interface as a Map key would trigger the dispatch bug.
+         */
+        boolean isViolation() {
+            // Step 1: Verify it's actually an interface
+            if (!isInterfaceInOrg()) {
+                return false;
+            }
+
+            // Step 2: Find all abstract classes implementing this interface
+            List<TypeSummary> abstractImplementors = findAbstractImplementors();
+            if (abstractImplementors.isEmpty()) {
+                return false;
+            }
+
+            // Step 3: For each abstract implementor, check if it or any subclass defines equals/hashCode
+            for (TypeSummary abstractImpl : abstractImplementors) {
+                if (definesEqualsOrHashCode(abstractImpl)) {
+                    return true;
+                }
+                // Check all classes that extend this abstract class
+                if (anySubclassDefinesEqualsOrHashCode(abstractImpl)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean isInterfaceInOrg() {
+            for (TypeSummary summary : allTypes) {
+                if ("interface".equalsIgnoreCase(summary.nature())
+                        && summary.typeName().name().value().equalsIgnoreCase(interfaceSimpleName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private List<TypeSummary> findAbstractImplementors() {
+            List<TypeSummary> result = new ArrayList<>();
+            for (TypeSummary summary : allTypes) {
+                if ("class".equalsIgnoreCase(summary.nature())
+                        && isAbstract(summary)
+                        && implementsInterface(summary)) {
+                    result.add(summary);
+                }
+            }
+            return result;
+        }
+
+        private boolean anySubclassDefinesEqualsOrHashCode(TypeSummary abstractClass) {
+            String abstractClassName = abstractClass.typeName().name().value();
+            for (TypeSummary summary : allTypes) {
+                if (!"class".equalsIgnoreCase(summary.nature())) {
+                    continue;
+                }
+                if (extendsClass(summary, abstractClassName) && definesEqualsOrHashCode(summary)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean extendsClass(TypeSummary summary, String superClassName) {
+            // Check direct superclass - superClass() returns Scala Option
+            scala.Option<TypeName> superTypeOpt = summary.superClass();
+            if (superTypeOpt.isDefined()) {
+                TypeName superType = superTypeOpt.get();
+                if (superType.name().value().equalsIgnoreCase(superClassName)) {
+                    return true;
+                }
+            }
+            // For transitive extends, we'd need to walk the hierarchy - for now check direct only
+            // This handles the common case of Interface -> Abstract -> Concrete
+            return false;
+        }
+
+        private static boolean isAbstract(TypeSummary summary) {
+            scala.collection.Iterator<Modifier> iter = summary.modifiers().iterator();
+            while (iter.hasNext()) {
+                if ("abstract".equalsIgnoreCase(iter.next().name())) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean implementsInterface(TypeSummary summary) {
+            scala.collection.Iterator<TypeName> iter = summary.interfaces().iterator();
+            while (iter.hasNext()) {
+                if (iter.next().name().value().equalsIgnoreCase(interfaceSimpleName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private static boolean definesEqualsOrHashCode(TypeSummary summary) {
+            scala.collection.Iterator<MethodSummary> iter = summary.methods().iterator();
+            while (iter.hasNext()) {
+                MethodSummary method = iter.next();
+                String methodName = method.name();
+                if ("hashCode".equalsIgnoreCase(methodName) && !method.parameters().iterator().hasNext()) {
+                    return true;
+                }
+                if ("equals".equalsIgnoreCase(methodName)) {
+                    scala.collection.Iterator<ParameterSummary> params = method.parameters().iterator();
+                    if (params.hasNext()) {
+                        ParameterSummary param = params.next();
+                        String paramTypeName = param.typeName().name().value();
+                        // ApexLink may report "Object$" for System.Object
+                        if (paramTypeName.toLowerCase(java.util.Locale.ROOT).startsWith("object")
+                                && !params.hasNext()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     }
 }

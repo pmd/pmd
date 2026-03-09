@@ -4,20 +4,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
 
-    <test-code>
-        <description>Map with interface key and abstract implementor defining equals/hashCode - violation</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Outer {
-    public interface IKey { }
-    public abstract class AbstractKey implements IKey {
-        public Boolean equals(Object obj) { return false; }
-        public Integer hashCode() { return 0; }
-    }
-    Map<IKey, String> m;
-}
-        ]]></code>
-    </test-code>
+    <!-- Note: This rule requires multifile analysis (PMD_APEX_ROOT_DIRECTORY).
+         Positive violation tests are in AvoidInterfaceAsMapKeyTest.java as integration tests.
+         These XML tests verify no false positives when org is unavailable. -->
 
     <test-code>
         <description>Map with class key - no violation</description>
@@ -26,45 +15,6 @@ public class Outer {
 public class Outer {
     public class Key { }
     Map<Key, String> m;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Map with interface key but no abstract implementor with equals/hashCode - no violation</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Outer {
-    public interface IKey { }
-    public class ConcreteKey implements IKey { }
-    Map<IKey, String> m;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Interface as key, abstract implementor without equals/hashCode - no violation</description>
-        <expected-problems>0</expected-problems>
-        <code><![CDATA[
-public class Outer {
-    public interface IKey { }
-    public abstract class AbstractKey implements IKey { }
-    Map<IKey, String> m;
-}
-        ]]></code>
-    </test-code>
-
-    <test-code>
-        <description>Map key type from parameter - violation when interface has abstract implementor with equals/hashCode</description>
-        <expected-problems>1</expected-problems>
-        <code><![CDATA[
-public class Outer {
-    public interface IKey { }
-    public abstract class AbstractKey implements IKey {
-        public Boolean equals(Object obj) { return false; }
-        public Integer hashCode() { return 0; }
-    }
-    public void foo(Map<IKey, String> theMap) { }
 }
         ]]></code>
     </test-code>
