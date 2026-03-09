@@ -118,6 +118,46 @@ class AvoidInterfaceAsMapKeyTest extends PmdRuleTst {
         assertViolation(report.getViolations().get(0), "MapUser.cls", 7);
     }
 
+    /**
+     * project7: All types (interface, abstract, concrete) are INNER classes within a single outer class.
+     * Expected: 3 violations - multifile analysis should handle nested types.
+     */
+    @Test
+    void innerClassesViolation() throws Exception {
+        Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project7"));
+        assertEquals(3, report.getViolations().size(),
+                "Expected 3 violations when interface and abstract implementor are inner classes");
+        assertViolation(report.getViolations().get(0), "OuterClass.cls", 29); // field
+        assertViolation(report.getViolations().get(1), "OuterClass.cls", 31); // parameter
+        assertViolation(report.getViolations().get(2), "OuterClass.cls", 32); // local variable
+    }
+
+    /**
+     * project8: Indirect implementation via superclass.
+     * Hierarchy: IKey <- BaseKey (virtual concrete) <- MidKey (abstract with equals)
+     * Expected: 1 violation - abstract class indirectly implements the interface.
+     */
+    @Test
+    void indirectImplementationViaSuperclassViolation() throws Exception {
+        Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project8"));
+        assertEquals(1, report.getViolations().size(),
+                "Expected 1 violation when abstract class indirectly implements interface via superclass");
+        assertViolation(report.getViolations().get(0), "MapUser.cls", 3);
+    }
+
+    /**
+     * project9: Deep class hierarchy with abstract class far from interface.
+     * Hierarchy: IBaseKey <- ConcreteBase <- MidKey <- DeepAbstractKey (abstract with equals)
+     * Expected: 1 violation - abstract class is 3 levels removed from interface.
+     */
+    @Test
+    void deepHierarchyViolation() throws Exception {
+        Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project9"));
+        assertEquals(1, report.getViolations().size(),
+                "Expected 1 violation when abstract class is deep in hierarchy");
+        assertViolation(report.getViolations().get(0), "MapUser.cls", 4);
+    }
+
     private void assertViolation(RuleViolation violation, String fileName, int lineNumber) {
         assertEquals(fileName, violation.getFileId().getFileName());
         assertEquals(lineNumber, violation.getBeginLine());
