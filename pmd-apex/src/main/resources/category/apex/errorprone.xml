@@ -120,7 +120,8 @@ public without sharing class Foo {
       In Apex, when a Map uses an interface as key and an abstract class implements that interface
       and defines equals/hashCode, methods like containsKey do not dispatch to the correct implementation.
       This rule reports Map declarations (fields, variables, parameters) whose key type is an interface
-      that has at least one abstract implementing class defining equals or hashCode (in the same file).
+      that has at least one abstract implementing class defining equals or hashCode (requires multi-file
+      analysis provided by apex-link).
     </description>
     <priority>3</priority>
     <example>
