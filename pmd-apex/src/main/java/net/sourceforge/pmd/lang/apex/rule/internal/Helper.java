@@ -231,16 +231,4 @@ public final class Helper {
         }
         return null;
     }
-
-    /**
-     * Returns the simple name of a type (last segment after the last dot).
-     * E.g. {@code "MyNamespace.IKey"} returns {@code "IKey"}, {@code "IKey"} returns {@code "IKey"}.
-     */
-    public static String getSimpleTypeName(String typeName) {
-        if (typeName == null || typeName.isEmpty()) {
-            return typeName;
-        }
-        int dot = typeName.lastIndexOf('.');
-        return dot < 0 ? typeName : typeName.substring(dot + 1);
-    }
 }

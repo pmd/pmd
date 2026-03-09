@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
@@ -120,26 +119,6 @@ public final class ApexMultifileAnalysis {
         // Extract issues for a specific metadata file from the org
         return org == null ? Collections.emptyList()
                            : Collections.unmodifiableList(Arrays.asList(org.issues().issuesForFile(filename)));
-    }
-
-    /**
-     * Returns true if any type summary in the org matches the given predicate.
-     * This enables rules to define their own matching logic using lambdas or method references.
-     * Returns false when multifile analysis is unavailable.
-     *
-     * @param predicate the predicate to test each TypeSummary against
-     * @return true if any TypeSummary matches the predicate
-     */
-    public boolean anyTypeMatches(Predicate<TypeSummary> predicate) {
-        if (org == null) {
-            return false;
-        }
-        for (TypeSummary summary : getAllTypeSummaries()) {
-            if (predicate.test(summary)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
