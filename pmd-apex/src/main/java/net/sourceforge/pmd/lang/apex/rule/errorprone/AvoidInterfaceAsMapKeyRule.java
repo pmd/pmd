@@ -5,7 +5,12 @@
 package net.sourceforge.pmd.lang.apex.rule.errorprone;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.slf4j.Logger;
@@ -43,6 +48,9 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
     private static final Logger LOG = LoggerFactory.getLogger(AvoidInterfaceAsMapKeyRule.class);
     private static boolean warnedAboutMissingOrg = false;
 
+    // Cached index - computed once per PMD run, reused across all file visits
+    private TypeHierarchyIndex cachedIndex;
+
     @Override
     protected @NonNull RuleTargetSelector buildTargetSelector() {
         return RuleTargetSelector.forTypes(ASTApexFile.class);
@@ -59,14 +67,22 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
             }
             return data;
         }
-        List<TypeSummary> allTypes = mfa.getTypeSummaries();
+
+        // Build index once per run (lazily on first file visit)
+        TypeHierarchyIndex index = getOrCreateIndex(mfa);
         for (MapKeyUsage usage : collectMapKeyUsages(node)) {
-            TypeHierarchyChecker checker = new TypeHierarchyChecker(usage.keyTypeSimpleName, allTypes);
-            if (checker.isViolation()) {
+            if (index.isProblematicInterfaceKey(usage.keyTypeSimpleName)) {
                 asCtx(data).addViolation(usage.reportNode);
             }
         }
         return data;
+    }
+
+    private TypeHierarchyIndex getOrCreateIndex(ApexMultifileAnalysis mfa) {
+        if (cachedIndex == null) {
+            cachedIndex = new TypeHierarchyIndex(mfa.getTypeSummaries());
+        }
+        return cachedIndex;
     }
 
     private List<MapKeyUsage> collectMapKeyUsages(ASTApexFile root) {
@@ -110,95 +126,104 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
     }
 
     /**
-     * Checks if a given interface name triggers the Map key dispatch bug.
-     * The bug occurs when:
-     * 1. The key type is an interface
-     * 2. There's an abstract class implementing that interface
-     * 3. Either the abstract class OR any class extending it defines equals/hashCode
+     * Pre-indexes the type hierarchy once to enable efficient queries.
+     * Builds lookup maps in a single O(N) pass for:
+     * - Interfaces in the org
+     * - Interface → abstract implementors
+     * - Class → direct subclasses
+     * - Types that define equals or hashCode
+     *
+     * <p>ApexLink's TypeSummary API provides "what this type extends/implements" (outgoing),
+     * but we need "what extends/implements this type" (incoming). This index inverts
+     * those relationships for efficient lookup.
      */
-    private static final class TypeHierarchyChecker {
-        private final String interfaceSimpleName;
-        private final List<TypeSummary> allTypes;
+    private static final class TypeHierarchyIndex {
+        // Interface name (lowercase) → set of abstract implementors
+        private final Map<String, Set<TypeSummary>> interfaceToAbstractImpls = new HashMap<>();
+        // Class name (lowercase) → set of direct subclasses
+        private final Map<String, Set<TypeSummary>> classToSubclasses = new HashMap<>();
+        // Set of types that define equals or hashCode (for quick lookup)
+        private final Set<TypeSummary> typesWithEqualsOrHashCode = new HashSet<>();
+        // All known interfaces
+        private final Set<String> knownInterfaces = new HashSet<>();
 
-        TypeHierarchyChecker(String interfaceSimpleName, List<TypeSummary> allTypes) {
-            this.interfaceSimpleName = interfaceSimpleName;
-            this.allTypes = allTypes;
+        TypeHierarchyIndex(List<TypeSummary> allTypes) {
+            // Single pass: build all indexes
+            for (TypeSummary summary : allTypes) {
+                String nature = summary.nature();
+                String typeName = summary.typeName().name().value().toLowerCase(Locale.ROOT);
+
+                if ("interface".equalsIgnoreCase(nature)) {
+                    knownInterfaces.add(typeName);
+                } else if ("class".equalsIgnoreCase(nature)) {
+                    // Index by superclass for subclass lookup
+                    scala.Option<TypeName> superOpt = summary.superClass();
+                    if (superOpt.isDefined()) {
+                        String superName = superOpt.get().name().value().toLowerCase(Locale.ROOT);
+                        classToSubclasses.computeIfAbsent(superName, k -> new HashSet<>()).add(summary);
+                    }
+
+                    // Index abstract implementors by interface
+                    if (isAbstract(summary)) {
+                        scala.collection.Iterator<TypeName> ifaces = summary.interfaces().iterator();
+                        while (ifaces.hasNext()) {
+                            String ifaceName = ifaces.next().name().value().toLowerCase(Locale.ROOT);
+                            interfaceToAbstractImpls.computeIfAbsent(ifaceName, k -> new HashSet<>())
+                                    .add(summary);
+                        }
+                    }
+
+                    // Track types with equals/hashCode
+                    if (definesEqualsOrHashCode(summary)) {
+                        typesWithEqualsOrHashCode.add(summary);
+                    }
+                }
+            }
         }
 
         /**
-         * Returns true if using this interface as a Map key would trigger the dispatch bug.
+         * Checks if using this interface as a Map key is problematic.
+         * O(1) interface lookup + O(abstract impls) + O(subclasses per impl)
          */
-        boolean isViolation() {
-            // Step 1: Verify it's actually an interface
-            if (!isInterfaceInOrg()) {
+        boolean isProblematicInterfaceKey(String interfaceSimpleName) {
+            String key = interfaceSimpleName.toLowerCase(Locale.ROOT);
+
+            // Must be a known interface
+            if (!knownInterfaces.contains(key)) {
                 return false;
             }
 
-            // Step 2: Find all abstract classes implementing this interface
-            List<TypeSummary> abstractImplementors = findAbstractImplementors();
-            if (abstractImplementors.isEmpty()) {
+            // Get abstract implementors
+            Set<TypeSummary> abstractImpls = interfaceToAbstractImpls.get(key);
+            if (abstractImpls == null || abstractImpls.isEmpty()) {
                 return false;
             }
 
-            // Step 3: For each abstract implementor, check if it or any subclass defines equals/hashCode
-            for (TypeSummary abstractImpl : abstractImplementors) {
-                if (definesEqualsOrHashCode(abstractImpl)) {
-                    return true;
-                }
-                // Check all classes that extend this abstract class
-                if (anySubclassDefinesEqualsOrHashCode(abstractImpl)) {
+            // Check each abstract implementor and its subclass tree
+            for (TypeSummary abstractImpl : abstractImpls) {
+                if (typeOrDescendantDefinesEqualsOrHashCode(abstractImpl)) {
                     return true;
                 }
             }
             return false;
         }
 
-        private boolean isInterfaceInOrg() {
-            for (TypeSummary summary : allTypes) {
-                if ("interface".equalsIgnoreCase(summary.nature())
-                        && summary.typeName().name().value().equalsIgnoreCase(interfaceSimpleName)) {
-                    return true;
+        /**
+         * Recursively checks if this type or any descendant defines equals/hashCode.
+         */
+        private boolean typeOrDescendantDefinesEqualsOrHashCode(TypeSummary type) {
+            if (typesWithEqualsOrHashCode.contains(type)) {
+                return true;
+            }
+            String typeName = type.typeName().name().value().toLowerCase(Locale.ROOT);
+            Set<TypeSummary> subclasses = classToSubclasses.get(typeName);
+            if (subclasses != null) {
+                for (TypeSummary subclass : subclasses) {
+                    if (typeOrDescendantDefinesEqualsOrHashCode(subclass)) {
+                        return true;
+                    }
                 }
             }
-            return false;
-        }
-
-        private List<TypeSummary> findAbstractImplementors() {
-            List<TypeSummary> result = new ArrayList<>();
-            for (TypeSummary summary : allTypes) {
-                if ("class".equalsIgnoreCase(summary.nature())
-                        && isAbstract(summary)
-                        && implementsInterface(summary)) {
-                    result.add(summary);
-                }
-            }
-            return result;
-        }
-
-        private boolean anySubclassDefinesEqualsOrHashCode(TypeSummary abstractClass) {
-            String abstractClassName = abstractClass.typeName().name().value();
-            for (TypeSummary summary : allTypes) {
-                if (!"class".equalsIgnoreCase(summary.nature())) {
-                    continue;
-                }
-                if (extendsClass(summary, abstractClassName) && definesEqualsOrHashCode(summary)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private boolean extendsClass(TypeSummary summary, String superClassName) {
-            // Check direct superclass - superClass() returns Scala Option
-            scala.Option<TypeName> superTypeOpt = summary.superClass();
-            if (superTypeOpt.isDefined()) {
-                TypeName superType = superTypeOpt.get();
-                if (superType.name().value().equalsIgnoreCase(superClassName)) {
-                    return true;
-                }
-            }
-            // For transitive extends, we'd need to walk the hierarchy - for now check direct only
-            // This handles the common case of Interface -> Abstract -> Concrete
             return false;
         }
 
@@ -206,16 +231,6 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
             scala.collection.Iterator<Modifier> iter = summary.modifiers().iterator();
             while (iter.hasNext()) {
                 if ("abstract".equalsIgnoreCase(iter.next().name())) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private boolean implementsInterface(TypeSummary summary) {
-            scala.collection.Iterator<TypeName> iter = summary.interfaces().iterator();
-            while (iter.hasNext()) {
-                if (iter.next().name().value().equalsIgnoreCase(interfaceSimpleName)) {
                     return true;
                 }
             }
@@ -236,7 +251,7 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
                         ParameterSummary param = params.next();
                         String paramTypeName = param.typeName().name().value();
                         // ApexLink may report "Object$" for System.Object
-                        if (paramTypeName.toLowerCase(java.util.Locale.ROOT).startsWith("object")
+                        if (paramTypeName.toLowerCase(Locale.ROOT).startsWith("object")
                                 && !params.hasNext()) {
                             return true;
                         }

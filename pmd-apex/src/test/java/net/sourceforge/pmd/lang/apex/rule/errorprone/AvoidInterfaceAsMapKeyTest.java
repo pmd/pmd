@@ -49,7 +49,7 @@ class AvoidInterfaceAsMapKeyTest extends PmdRuleTst {
      * Expected: 3 violations (field, parameter, local variable).
      */
     @Test
-    void project1_abstractImplementorWithBothEqualsAndHashCode_violations() throws Exception {
+    void abstractImplementorWithBothEqualsAndHashCodeViolations() throws Exception {
         Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project1"));
 
         assertEquals(3, report.getViolations().size(), "Expected 3 violations in MapUser.cls");
@@ -66,7 +66,7 @@ class AvoidInterfaceAsMapKeyTest extends PmdRuleTst {
      * Expected: 0 violations.
      */
     @Test
-    void project2_noImplementors_noViolations() throws Exception {
+    void noImplementorsNoViolations() throws Exception {
         Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project2"));
         assertEquals(0, report.getViolations().size(), "Expected no violations when interface has no implementors");
     }
@@ -76,7 +76,7 @@ class AvoidInterfaceAsMapKeyTest extends PmdRuleTst {
      * Expected: 0 violations.
      */
     @Test
-    void project3_abstractImplementorWithoutEqualsOrHashCode_noViolations() throws Exception {
+    void abstractImplementorWithoutEqualsOrHashCodeNoViolations() throws Exception {
         Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project3"));
         assertEquals(0, report.getViolations().size(),
                 "Expected no violations when abstract implementor doesn't define equals/hashCode");
@@ -87,7 +87,7 @@ class AvoidInterfaceAsMapKeyTest extends PmdRuleTst {
      * Expected: 1 violation - dispatch bug still occurs with just equals.
      */
     @Test
-    void project4_abstractImplementorWithOnlyEquals_violation() throws Exception {
+    void abstractImplementorWithOnlyEqualsViolation() throws Exception {
         Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project4"));
         assertEquals(1, report.getViolations().size(),
                 "Expected 1 violation when abstract implementor defines only equals");
@@ -99,7 +99,7 @@ class AvoidInterfaceAsMapKeyTest extends PmdRuleTst {
      * Expected: 1 violation - dispatch bug still occurs with just hashCode.
      */
     @Test
-    void project5_abstractImplementorWithOnlyHashCode_violation() throws Exception {
+    void abstractImplementorWithOnlyHashCodeViolation() throws Exception {
         Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project5"));
         assertEquals(1, report.getViolations().size(),
                 "Expected 1 violation when abstract implementor defines only hashCode");
@@ -111,7 +111,7 @@ class AvoidInterfaceAsMapKeyTest extends PmdRuleTst {
      * Expected: 1 violation - dispatch bug occurs because abstract class is in the chain.
      */
     @Test
-    void project6_concreteSubclassDefinesEqualsHashCode_violation() throws Exception {
+    void concreteSubclassDefinesEqualsHashCodeViolation() throws Exception {
         Report report = runRule(Paths.get(TEST_RESOURCES_BASE + "project6"));
         assertEquals(1, report.getViolations().size(),
                 "Expected 1 violation when concrete subclass of abstract implementor defines equals/hashCode");
