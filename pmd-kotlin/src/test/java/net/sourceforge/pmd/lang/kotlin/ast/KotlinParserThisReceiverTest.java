@@ -23,16 +23,12 @@ class KotlinParserThisReceiverTest {
         String code = KotlinParsingHelper.readResourcePath("net/sourceforge/pmd/lang/kotlin/ast/testdata/ThisReceiver.kt");
 
         // Parse using KotlinParsingHelper
-        KtKotlinFile root = KotlinParsingHelper.DEFAULT.parse(code);
+        KtKotlinFile root = KotlinParsingHelper.parseAndAssertNoStderr(code);
 
         assertNotNull(root);
 
         List<KotlinParser.KtThisExpression> thisExpressions = root.descendants(KotlinParser.KtThisExpression.class).toList();
-        assertEquals(1, thisExpressions.size(), "Expected exactly three this expressions, but there is actually only one. The others are LabelDefinitions");
-        //should be this? assertEquals(3, thisExpressions.size(), "Expected exactly three this expressions");
-
-//        List<KotlinParser.KtLabelDefinition> labelDefinitions = root.descendants(KotlinParser.KtLabelDefinition.class).toList();
-//        assertEquals(2, labelDefinitions.size(), "Expected exactly three label definitions");
+        assertEquals(3, thisExpressions.size(), "Expected exactly three this expressions");
 
         List<KotlinParser.KtAnnotatedLambda> annotatedLambdas = root.descendants(KotlinParser.KtAnnotatedLambda.class).toList();
         assertEquals(2, annotatedLambdas.size(), "Expected exactly two annotated lambdas");

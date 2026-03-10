@@ -338,6 +338,12 @@ QUOTE_OPEN: '"' -> pushMode(LineString);
 
 TRIPLE_QUOTE_OPEN: '"""' -> pushMode(MultiLineString);
 
+// Kotlin supports multi-dollar raw strings (e.g. $$$""" ... """), where the number of '$'
+// increases the amount of escaping needed for template entries.
+MultiDollarPrefix
+    : '$'+
+    ;
+
 mode LineString;
 
 QUOTE_CLOSE

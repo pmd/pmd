@@ -58,7 +58,8 @@ class KotlinParserMultiLineStringTest {
         List<KtMultiLineStringLiteral> literals = root.descendants(KtMultiLineStringLiteral.class).toList();
         assertEquals(1, literals.size(), "Expected exactly one multi-line string literal");
 
-        // The `$${...}` / `$$${...}` in this snippet.
+        // The `$${...}` / `$$${...}` in this snippet. Note that both entries now show up as single dollar expressions and
+        // there is not yet a way to only match the one with the expected amount of dollars.
         List<KtMultiLineStringExpression> expressions = root.descendants(KtMultiLineStringExpression.class).toList();
         assertEquals(2, expressions.size(), "Expected two multi-line string expression entries");
     }
