@@ -10,7 +10,7 @@ import net.sourceforge.pmd.lang.test.ast.BaseTreeDumpTest;
 import net.sourceforge.pmd.lang.test.ast.NodePrintersKt;
 
 /**
- *
+ * Base class for tree dump tests for Kotlin. It uses the simple node printer, which prints the node type and its image.
  */
 public class BaseKotlinTreeDumpTest extends BaseTreeDumpTest {
 
