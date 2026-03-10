@@ -4,16 +4,20 @@
 
 package net.sourceforge.pmd.lang.kotlin.ast;
 
-import java.io.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 
 import org.jetbrains.annotations.NotNull;
 
 import net.sourceforge.pmd.lang.kotlin.KotlinLanguageModule;
 import net.sourceforge.pmd.lang.test.ast.BaseParsingHelper;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  *  Parsing helper for Kotlin tests.

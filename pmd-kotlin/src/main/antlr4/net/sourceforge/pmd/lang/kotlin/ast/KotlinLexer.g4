@@ -386,7 +386,7 @@ MultiLineStrText
     ;
 
 MultiLineStrExprStart
-    : '${' -> pushMode(DEFAULT_MODE)
+    : '$'+ '{' -> pushMode(DEFAULT_MODE)
     ;
 
 // SECTION: inside

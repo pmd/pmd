@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.lang.kotlin.ast;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -58,8 +57,14 @@ class KotlinParserMultiLineStringTest {
         List<KtMultiLineStringLiteral> literals = root.descendants(KtMultiLineStringLiteral.class).toList();
         assertEquals(1, literals.size(), "Expected exactly one multi-line string literal");
 
-        // The `$${...}` / `$$${...}` in this snippet. Note that both entries now show up as single dollar expressions and
-        // there is not yet a way to only match the one with the expected amount of dollars.
+        // check number of dollars in the prefix before the tripple quotes
+        List<KotlinTerminalNode> nodes = literals.get(0).children(KotlinTerminalNode.class).toList();
+        assertEquals(3, nodes.size()); // expected: '$$$' and '"""' and '"""'
+        // this is to demonstrate the potential matching of the real multi-dollar expression in next step
+        assertEquals("$$$", nodes.get(0).getText(), "Expected the first token to be the triple dollar prefix");
+
+        // The `$${...}` / `$$${...}` in this snippet. Note that both entries now show up as single dollar expressions.
+        // The count of dollars above can be used to disambiguate if needed in current limited grammar on this point.
         List<KtMultiLineStringExpression> expressions = root.descendants(KtMultiLineStringExpression.class).toList();
         assertEquals(2, expressions.size(), "Expected two multi-line string expression entries");
     }
