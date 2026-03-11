@@ -38,7 +38,7 @@ class KotlinParserMultiLineStringTest {
                             .filter(c -> c.getFirstChild() instanceof KotlinTerminalNode
                                     && ((KotlinTerminalNode) c.getFirstChild()).getFirstAntlrToken().getType() == KotlinParser.MultiLineStrRef)
                             .count();
-        assertEquals(2, refCount, "Expected two multi-line string refs ($$serviceField and $$$productName)");
+        assertEquals(1, refCount, "Expected one multi-line string ref ($$$productName)");
 
         // There is no `${...}` / `$$${...}` in this snippet.
         assertEquals(0, root.descendants(KtMultiLineStringExpression.class).count(), "Expected no multi-line string expression entries");
@@ -63,9 +63,10 @@ class KotlinParserMultiLineStringTest {
         // this is to demonstrate the potential matching of the real multi-dollar expression in next step
         assertEquals("$$$", nodes.get(0).getText(), "Expected the first token to be the triple dollar prefix");
 
-        // The `$${...}` / `$$${...}` in this snippet. Note that both entries now show up as single dollar expressions.
-        // The count of dollars above can be used to disambiguate if needed in current limited grammar on this point.
+        // With Kotlin-style min-dollar gating for `${...}` in multi-dollar raw strings:
+        // - `$${...}` starts an entry (run length 2 < prefix 3 is *not* enough) -> treated as text
+        // - `$$${...}` starts an entry (run length 3 == prefix 3) -> parsed as one expression entry
         List<KtMultiLineStringExpression> expressions = root.descendants(KtMultiLineStringExpression.class).toList();
-        assertEquals(2, expressions.size(), "Expected two multi-line string expression entries");
+        assertEquals(1, expressions.size(), "Expected one multi-line string expression entry");
     }
 }

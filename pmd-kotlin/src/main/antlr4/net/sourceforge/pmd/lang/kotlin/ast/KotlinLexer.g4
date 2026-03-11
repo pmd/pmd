@@ -7,6 +7,24 @@ lexer grammar KotlinLexer;
 
 import UnicodeClasses;
 
+@members {
+    /**
+     * For multi-dollar raw strings (e.g. $$$"""..."""), this stores the number of '$'
+     * required to start a template entry within this multi-line string.
+     *
+     * Kotlin rules: only '$' runs of length >= prefix are treated as template starts.
+     */
+    private int multiLineMinDollars = 1;
+
+    private static int countLeadingDollars(String s) {
+        int i = 0;
+        while (i < s.length() && s.charAt(i) == '$') {
+            i++;
+        }
+        return i;
+    }
+}
+
 // SECTION: lexicalGeneral
 
 ShebangLine
@@ -342,6 +360,7 @@ TRIPLE_QUOTE_OPEN: '"""' -> pushMode(MultiLineString);
 // increases the amount of escaping needed for template entries.
 MultiDollarPrefix
     : '$'+
+      { multiLineMinDollars = getText().length(); }
     ;
 
 mode LineString;
@@ -370,7 +389,7 @@ LineStrExprStart
 mode MultiLineString;
 
 TRIPLE_QUOTE_CLOSE
-    : MultiLineStringQuote? '"""' -> popMode
+    : MultiLineStringQuote? '"""' { multiLineMinDollars = 1; } -> popMode
     ;
 
 MultiLineStringQuote
@@ -378,7 +397,14 @@ MultiLineStringQuote
     ;
 
 MultiLineStrRef
-    : FieldIdentifier
+    : '$'+ IdentifierOrSoftKey
+      {
+          // For multi-dollar raw strings, only '$' runs of length >= the prefix start a template entry.
+          // Otherwise, the whole `$+Identifier` sequence is literal text.
+          if (countLeadingDollars(getText()) < multiLineMinDollars) {
+              setType(MultiLineStrText);
+          }
+      }
     ;
 
 MultiLineStrText
@@ -386,7 +412,17 @@ MultiLineStrText
     ;
 
 MultiLineStrExprStart
-    : '$'+ '{' -> pushMode(DEFAULT_MODE)
+    : '$'+ '{'
+      {
+          // In multi-dollar raw strings, only '$' runs of length >= the prefix start a template entry.
+          // Shorter runs must be treated as literal text, otherwise the parser will see a stray '{'.
+          if (countLeadingDollars(getText()) >= multiLineMinDollars) {
+              pushMode(DEFAULT_MODE);
+          } else {
+              // Re-type this token to plain text; it will be consumed as content.
+              setType(MultiLineStrText);
+          }
+      }
     ;
 
 // SECTION: inside
