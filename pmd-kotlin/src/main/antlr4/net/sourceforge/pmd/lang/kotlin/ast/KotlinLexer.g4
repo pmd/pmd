@@ -399,10 +399,18 @@ MultiLineStringQuote
 MultiLineStrRef
     : '$'+ IdentifierOrSoftKey
       {
-          // For multi-dollar raw strings, only '$' runs of length >= the prefix start a template entry.
-          // Otherwise, the whole `$+Identifier` sequence is literal text.
-          if (countLeadingDollars(getText()) < multiLineMinDollars) {
+          int dollarCount = countLeadingDollars(getText());
+
+          // Too short -> literal text
+          if (dollarCount < multiLineMinDollars) {
               setType(MultiLineStrText);
+          } else if (dollarCount > multiLineMinDollars) {
+              // Too long -> split: emit one literal '$' and re-lex the remainder as a normal ref.
+              // Example (prefix=3): 4 dollars + identifier => `$` (text) + `$$$<identifier>` (ref)
+              int rewind = getText().length() - 1; // keep the first '$'
+              setText("$");
+              setType(MultiLineStrText);
+              _input.seek(_input.index() - rewind);
           }
       }
     ;
@@ -414,13 +422,22 @@ MultiLineStrText
 MultiLineStrExprStart
     : '$'+ '{'
       {
+          int dollarCount = countLeadingDollars(getText());
+
           // In multi-dollar raw strings, only '$' runs of length >= the prefix start a template entry.
           // Shorter runs must be treated as literal text, otherwise the parser will see a stray '{'.
-          if (countLeadingDollars(getText()) >= multiLineMinDollars) {
-              pushMode(DEFAULT_MODE);
-          } else {
+          if (dollarCount < multiLineMinDollars) {
               // Re-type this token to plain text; it will be consumed as content.
               setType(MultiLineStrText);
+          } else if (dollarCount > multiLineMinDollars) {
+              // Too long -> split: emit one literal '$' and re-lex the remainder as `$$$...{`.
+              // Example (prefix=3): 4 dollars + '{' => `$` (text) + `$$$` + '{' (expr start)
+              int rewind = getText().length() - 1; // keep the first '$'
+              setText("$");
+              setType(MultiLineStrText);
+              _input.seek(_input.index() - rewind);
+          } else {
+              pushMode(DEFAULT_MODE);
           }
       }
     ;
