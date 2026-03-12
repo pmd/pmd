@@ -13,4 +13,15 @@ public class UsingVolatile {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6297 allow double and long because of non-atomic treatment</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+class Foo {
+    private volatile double foo;
+    private volatile long bar;
+}
+        ]]></code>
+    </test-code>
 </test-data>
