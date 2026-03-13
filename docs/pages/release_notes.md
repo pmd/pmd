@@ -25,6 +25,8 @@ This is a {{ site.pmd.release_type }} release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* java-errprone
+  * [#6502](https://github.com/pmd/pmd/issues/6502): \[java] CloseResource: False positive for allowedResourceMethodPatterns entries when using unqualified method calls
 
 ### 🚨️ API Changes
 
