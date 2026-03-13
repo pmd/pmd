@@ -167,7 +167,10 @@ public class CloseResourceRule extends AbstractJavaRule {
                 return false;
             }
             ASTExpression qualifier = call.getQualifier();
-            return qualifier != null && TypeTestUtil.isA(qualifierType, qualifier);
+            if (qualifier != null) {
+                return TypeTestUtil.isA(qualifierType, qualifier);
+            }
+            return TypeTestUtil.isA(qualifierType, call.getEnclosingType());
         }
     }
 

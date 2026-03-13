@@ -2270,4 +2270,38 @@ public class ServletExample {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6502 [java] CloseResource: False positive for allowedResourceMethodPatterns entries when using unqualified method calls</description>
+        <rule-property name="allowedResourceMethodPatterns">mypack.Action#getConnection()</rule-property>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+package mypack;
+
+import java.sql.Connection;
+
+public abstract class Action implements AutoCloseable {
+    private Connection connection;
+
+    @Override
+    public void close() throws Exception {
+        connection.close();
+    }
+
+    public Connection getConnection() {
+        return connection;
+    }
+
+    public abstract void run();
+
+    public void func1() {
+        final var c = getConnection(); // false positive violation detected
+    }
+
+    public void func2() {
+        final var c = this.getConnection(); // no violation detected, as method call is qualified with 'this.'
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
