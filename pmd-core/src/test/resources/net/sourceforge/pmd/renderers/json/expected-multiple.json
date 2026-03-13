@@ -14,7 +14,8 @@
           "description": "blah",
           "rule": "Foo",
           "ruleset": "RuleSet",
-          "priority": 5
+          "priority": 5,
+          "externalInfoUrl": "https://example.org/rules/foo"
         },
         {
           "beginline": 1,
@@ -24,7 +25,8 @@
           "description": "blah",
           "rule": "Boo",
           "ruleset": "RuleSet",
-          "priority": 1
+          "priority": 1,
+          "externalInfoUrl": "https://example.org/rules/boo"
         }
       ]
     }

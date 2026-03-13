@@ -16,6 +16,7 @@
           "rule": "Foo",
           "ruleset": "RuleSet",
           "priority": 5,
+          "externalInfoUrl": "https://example.org/rules/foo",
           "suppressiontype": "nopmd",
           "usermsg": "test"
         }
