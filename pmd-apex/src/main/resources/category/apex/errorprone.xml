@@ -109,7 +109,35 @@ public without sharing class Foo {
 ]]>
     </example>
   </rule>
-  
+
+  <rule name="AvoidInterfaceAsMapKey"
+        language="apex"
+        since="7.24.0"
+        message="Avoid using an interface as Map key when an abstract implementing class defines equals or hashCode"
+        class="net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidInterfaceAsMapKeyRule"
+        externalInfoUrl="${pmd.website.baseurl}/pmd_rules_apex_errorprone.html#avoidinterfaceasmapkey">
+    <description>
+      In Apex, when a Map uses an interface as key and an abstract class implements that interface
+      and defines equals/hashCode, methods like containsKey do not dispatch to the correct implementation.
+      This rule reports Map declarations (fields, variables, parameters) whose key type is an interface
+      that has at least one abstract implementing class defining equals or hashCode (requires multi-file
+      analysis provided by apex-link).
+    </description>
+    <priority>3</priority>
+    <example>
+      <![CDATA[
+public class Outer {
+    public interface IKey { }
+    public abstract class AbstractKey implements IKey {
+        public Boolean equals(Object obj) { return false; }
+        public Integer hashCode() { return 0; }
+    }
+    Map<IKey, String> m; // violation: IKey has abstract implementor with equals/hashCode
+}
+]]>
+    </example>
+  </rule>
+
   <rule name="AvoidNonExistentAnnotations"
         language="apex"
         since="6.5.0"
@@ -499,7 +527,7 @@ public class MyClass {
 ]]>
     </example>
   </rule>
-  
+
   <rule name="OverrideBothEqualsAndHashcode"
         language="apex"
         since="6.31.0"
