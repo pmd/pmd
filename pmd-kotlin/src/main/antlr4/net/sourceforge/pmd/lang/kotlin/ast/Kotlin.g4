@@ -570,7 +570,7 @@ lineStringLiteral
     ;
 
 multiLineStringLiteral
-    : TRIPLE_QUOTE_OPEN (multiLineStringContent | multiLineStringExpression | MultiLineStringQuote)* TRIPLE_QUOTE_CLOSE
+    : MultiDollarPrefix? TRIPLE_QUOTE_OPEN (multiLineStringContent | multiLineStringExpression | MultiLineStringQuote)* TRIPLE_QUOTE_CLOSE
     ;
 
 lineStringContent
