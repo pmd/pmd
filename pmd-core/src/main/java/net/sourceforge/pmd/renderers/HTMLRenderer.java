@@ -7,7 +7,7 @@ package net.sourceforge.pmd.renderers;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.net.URLEncoder;
+import java.net.URI;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -149,7 +149,8 @@ public class HTMLRenderer extends AbstractIncrementingRenderer {
 
             String infoUrl = rv.getRule().getExternalInfoUrl();
             if (StringUtils.isNotBlank(infoUrl)) {
-                d = "<a href=\"" + URLEncoder.encode(infoUrl, "UTF-8") + "\">" + d + "</a>";
+                URI uri = URI.create(infoUrl);
+                d = "<a href=\"" + uri + "\">" + d + "</a>";
             }
             buf.append("<td width=\"*\">")
                .append(d)

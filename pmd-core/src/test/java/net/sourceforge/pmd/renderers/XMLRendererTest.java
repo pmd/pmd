@@ -52,7 +52,7 @@ class XMLRendererTest extends AbstractRendererTest {
     @Override
     String getExpected() {
         return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + EOL
-                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
+                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" externalInfoUrl=\"https://example.org/rules/foo\" priority=\"5\">"
                 + EOL + "blah" + EOL + "</violation>" + EOL + "</file>" + EOL + "</pmd>" + EOL;
     }
 
@@ -64,9 +64,9 @@ class XMLRendererTest extends AbstractRendererTest {
     @Override
     String getExpectedMultiple() {
         return getHeader() + "<file name=\"" + getSourceCodeFilename() + "\">" + EOL
-                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" priority=\"5\">"
+                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"1\" rule=\"Foo\" ruleset=\"RuleSet\" externalInfoUrl=\"https://example.org/rules/foo\" priority=\"5\">"
                 + EOL + "blah" + EOL + "</violation>" + EOL
-                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Boo\" ruleset=\"RuleSet\" priority=\"1\">"
+                + "<violation beginline=\"1\" endline=\"1\" begincolumn=\"1\" endcolumn=\"2\" rule=\"Boo\" ruleset=\"RuleSet\" externalInfoUrl=\"https://example.org/rules/boo\" priority=\"1\">"
                 + EOL + "blah" + EOL + "</violation>" + EOL + "</file>" + EOL + "</pmd>" + EOL;
     }
 

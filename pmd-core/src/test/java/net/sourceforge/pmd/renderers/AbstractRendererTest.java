@@ -122,6 +122,7 @@ abstract class AbstractRendererTest {
         booRule.setName("Boo");
         booRule.setDescription("desc");
         booRule.setPriority(RulePriority.HIGH);
+        booRule.setExternalInfoUrl("https://example.org/rules/boo");
         return booRule;
     }
 

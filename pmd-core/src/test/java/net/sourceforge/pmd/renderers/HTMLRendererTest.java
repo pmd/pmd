@@ -61,7 +61,8 @@ class HTMLRendererTest extends AbstractRendererTest {
         return getHeader()
                 + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"center\">1</td>" + EOL
                 + "<td width=\"*%\">" + filename + "</td>" + EOL + "<td align=\"center\" width=\"5%\">1</td>" + EOL
-                + "<td width=\"*\">" + getEscapedRuleMessage() + "</td>" + EOL + "</tr>" + EOL + "</table></body></html>" + EOL;
+                + "<td width=\"*\"><a href=\"https://example.org/rules/foo\">" + getEscapedRuleMessage() + "</a></td>" + EOL
+                + "</tr>" + EOL + "</table></body></html>" + EOL;
     }
 
     @Override
@@ -76,9 +77,10 @@ class HTMLRendererTest extends AbstractRendererTest {
         return getHeader()
                 + "<tr bgcolor=\"lightgrey\"> " + EOL + "<td align=\"center\">1</td>" + EOL
                 + "<td width=\"*%\">" + getEscapedFilename() + "</td>" + EOL + "<td align=\"center\" width=\"5%\">1</td>" + EOL
-                + "<td width=\"*\">" + ruleDescription + "</td>" + EOL + "</tr>" + EOL + "<tr> " + EOL
+                + "<td width=\"*\"><a href=\"https://example.org/rules/foo\">" + ruleDescription + "</a></td>" + EOL + "</tr>" + EOL + "<tr> " + EOL
                 + "<td align=\"center\">2</td>" + EOL + "<td width=\"*%\">" + getEscapedFilename() + "</td>" + EOL
-                + "<td align=\"center\" width=\"5%\">1</td>" + EOL + "<td width=\"*\">" + ruleDescription + "</td>" + EOL + "</tr>"
+                + "<td align=\"center\" width=\"5%\">1</td>" + EOL
+                + "<td width=\"*\"><a href=\"https://example.org/rules/boo\">" + ruleDescription + "</a></td>" + EOL + "</tr>"
                 + EOL + "</table></body></html>" + EOL;
     }
 
@@ -89,7 +91,7 @@ class HTMLRendererTest extends AbstractRendererTest {
                 + "<tr bgcolor=\"lightgrey\"> " + EOL
                 + "<td align=\"left\">someFilename&nbsp;thatNeedsEscaping.ext</td>" + EOL
                 + "<td align=\"center\">1</td>" + EOL
-                + "<td align=\"center\">Foo</td>" + EOL
+                + "<td align=\"center\"><a href=\"https://example.org/rules/foo\">Foo</a></td>" + EOL
                 + "<td align=\"center\">//NOPMD</td>" + EOL
                 + "<td align=\"center\">userMessage should be &lt;script&gt;alert('escaped')&lt;/script&gt;</td>" + EOL
                 + "</tr>" + EOL
@@ -121,7 +123,8 @@ class HTMLRendererTest extends AbstractRendererTest {
         return getHeader()
                 + "</table><hr/><center><h3>Configuration errors</h3></center><table align=\"center\" cellspacing=\"0\" cellpadding=\"3\"><tr>"
                 + EOL + "<th>Rule</th><th>Problem</th></tr>" + EOL + "<tr bgcolor=\"lightgrey\"> " + EOL
-                + "<td>Foo</td>" + EOL + "<td>a configuration error</td>" + EOL + "</tr>" + EOL + "</table></body></html>"
+                + "<td><a href=\"https://example.org/rules/foo\">Foo</a></td>" + EOL + "<td>a configuration error</td>"
+                + EOL + "</tr>" + EOL + "</table></body></html>"
                 + EOL;
     }
 
