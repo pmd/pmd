@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <projectlist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-             xsi:noNamespaceSchemaLocation="projectlist_1_1_0.xsd">
+             xsi:noNamespaceSchemaLocation="projectlist_1_3_0.xsd">
   <description>Standard Projects</description>
 
   <project>
@@ -29,6 +29,16 @@ mvn test-compile -B
 mvn dependency:build-classpath -DincludeScope=test -Dmdep.outputFile=classpath.txt -B
 ]]></build-command>
     <auxclasspath-command>echo -n "${HOME}/openjdk11/lib/jrt-fs.jar:$(pwd)/target/classes:$(pwd)/target/test-classes:"; cat classpath.txt</auxclasspath-command>
+    <cpd-options>
+      <language>java</language>
+      <minimum-tokens>50</minimum-tokens>
+      <max-memory>4g</max-memory>
+      <directories>
+        <!-- this avoids analyzing src/test/resources-noncompilable ... -->
+        <directory>src/main/java</directory>
+        <directory>src/test/java</directory>
+      </directories>
+    </cpd-options>
   </project>
 
   <project>
@@ -158,6 +168,11 @@ EOF
 ./gradlew --console=plain --build-cache --no-daemon --max-workers=4 createSquishClasspath -q > classpath.txt
 ]]></build-command>
     <auxclasspath-command>echo -n "${HOME}/openjdk11/lib/jrt-fs.jar:"; cat classpath.txt</auxclasspath-command>
+    <cpd-options>
+      <language>java</language>
+      <minimum-tokens>150</minimum-tokens>
+      <max-memory>4g</max-memory>
+    </cpd-options>
   </project>
 
   <project>
@@ -167,6 +182,14 @@ EOF
     <tag>jdk-11+28</tag>
     <src-subpath>src/java.base</src-subpath>
     <auxclasspath-command>echo -n "${HOME}/openjdk11/lib/jrt-fs.jar"</auxclasspath-command>
+    <cpd-options>
+      <language>java</language>
+      <minimum-tokens>150</minimum-tokens>
+      <max-memory>4g</max-memory>
+      <directories>
+        <directory>src/java.base</directory>
+      </directories>
+    </cpd-options>
   </project>
 
   <project>
@@ -174,6 +197,11 @@ EOF
     <type>git</type>
     <connection>https://github.com/SalesforceLabs/Schedul-o-matic-9000</connection>
     <tag>6b1229ba43b38931fbbab5924bc9b9611d19a786</tag>
+    <cpd-options>
+      <language>apex</language>
+      <minimum-tokens>100</minimum-tokens>
+      <max-memory>512m</max-memory>
+    </cpd-options>
   </project>
 
   <project>
@@ -181,6 +209,11 @@ EOF
     <type>git</type>
     <connection>https://github.com/apex-enterprise-patterns/fflib-apex-common</connection>
     <tag>7e0891efb86d23de62811af56d87d0959082a322</tag>
+    <cpd-options>
+      <language>apex</language>
+      <minimum-tokens>100</minimum-tokens>
+      <max-memory>512m</max-memory>
+    </cpd-options>
   </project>
 
   <project>
@@ -189,6 +222,11 @@ EOF
     <connection>https://github.com/nawforce/apex-link</connection>
     <tag>v2.3.0</tag>
     <src-subpath>samples</src-subpath>
+    <cpd-options>
+      <language>apex</language>
+      <minimum-tokens>100</minimum-tokens>
+      <max-memory>512m</max-memory>
+    </cpd-options>
   </project>
 
   <project>
@@ -197,6 +235,11 @@ EOF
     <connection>https://github.com/pmd/java-regression-tests</connection>
     <tag>main</tag>
     <auxclasspath-command>realpath java-regression-tests-*.jar</auxclasspath-command>
+    <cpd-options>
+      <language>java</language>
+      <minimum-tokens>100</minimum-tokens>
+      <max-memory>512m</max-memory>
+    </cpd-options>
   </project>
 
   <project>
@@ -204,5 +247,22 @@ EOF
     <type>git</type>
     <connection>https://github.com/Qualtagh/OracleDBUtils</connection>
     <tag>0513fe6b053b31e6c09ac6f86eb2064733ecf32d</tag>
+    <cpd-options>
+      <language>plsql</language>
+      <minimum-tokens>100</minimum-tokens>
+      <max-memory>512m</max-memory>
+    </cpd-options>
+  </project>
+
+  <project>
+    <name>alsa-firmware</name>
+    <type>git</type>
+    <connection>https://github.com/alsa-project/alsa-firmware</connection>
+    <tag>v1.2.1</tag>
+    <cpd-options>
+      <language>cpp</language>
+      <minimum-tokens>100</minimum-tokens>
+      <max-memory>4g</max-memory>
+    </cpd-options>
   </project>
 </projectlist>
