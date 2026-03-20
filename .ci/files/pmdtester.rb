@@ -18,7 +18,7 @@ def get_args(base_branch, autogen = true, patch_config = './pmd/.ci/files/all-re
    '--error-recovery',
    '--baseline-download-url', 'https://pmd-code.org/pmd-regression-tester/',
    '--threads', Etc.nprocessors.to_s,
-   # '--debug',
+   '--debug',
    ]
 end
 
