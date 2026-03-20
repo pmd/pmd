@@ -314,5 +314,18 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- needed for CloseResource tests -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.1.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
