@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class PMDVersion {
 
+
     private static final Logger LOG = LoggerFactory.getLogger(PMDVersion.class);
 
     /**
