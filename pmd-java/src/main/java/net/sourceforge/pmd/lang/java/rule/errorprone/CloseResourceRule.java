@@ -139,40 +139,7 @@ public class CloseResourceRule extends AbstractJavaRule {
     private final Set<String> types = new HashSet<>();
     private final Set<String> simpleTypes = new HashSet<>();
     private final Set<String> closeTargets = new HashSet<>();
-    private final List<ManagedResourceMethodPattern> managedResourceMethodPatterns = new ArrayList<>();
-
-    /**
-     * Helper class to match method invocation patterns. Uses TypeTestUtil.isA() for type matching,
-     * which works regardless of whether types are on the classpath.
-     */
-    private static final class ManagedResourceMethodPattern {
-        private final String qualifierType;
-        private final String methodName;
-
-        ManagedResourceMethodPattern(String pattern) {
-            int hashIndex = pattern.indexOf('#');
-            this.qualifierType = pattern.substring(0, hashIndex);
-            int parenIndex = pattern.indexOf('(');
-            this.methodName = pattern.substring(hashIndex + 1, parenIndex);
-
-        }
-
-        boolean matches(ASTExpression expr) {
-
-            if (!(expr instanceof ASTMethodCall)) {
-                return false;
-            }
-            ASTMethodCall call = (ASTMethodCall) expr;
-            if (!methodName.equals(call.getMethodName())) {
-                return false;
-            }
-            ASTExpression qualifier = call.getQualifier();
-            if (qualifier != null) {
-                return TypeTestUtil.isA(qualifierType, qualifier);
-            }
-            return TypeTestUtil.isA(qualifierType, call.getEnclosingType());
-        }
-    }
+    private final List<InvocationMatcher> managedResourceMethodPatterns = new ArrayList<>();
 
     // keeps track of already reported violations to avoid duplicated violations for the same variable
     private final Set<String> reportedVarNames = new HashSet<>();
@@ -211,7 +178,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             for (String pattern : patterns) {
                 String trimmed = pattern.trim();
                 if (!trimmed.isEmpty()) {
-                    managedResourceMethodPatterns.add(new ManagedResourceMethodPattern(trimmed));
+                    managedResourceMethodPatterns.add(InvocationMatcher.parse(trimmed));
                 }
             }
         }
@@ -626,8 +593,8 @@ public class CloseResourceRule extends AbstractJavaRule {
     }
 
     private boolean matchesManagedResourceMethod(ASTExpression expr) {
-        for (ManagedResourceMethodPattern pattern : managedResourceMethodPatterns) {
-            if (pattern.matches(expr)) {
+        for (InvocationMatcher pattern : managedResourceMethodPatterns) {
+            if (pattern.matchesCall(expr)) {
                 return true;
             }
         }

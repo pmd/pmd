@@ -2182,11 +2182,11 @@ public class RegularWriter {
 
     <test-code>
         <description>#6436 Custom allowedResourceMethodPatterns property</description>
-        <rule-property name="allowedResourceMethodPatterns">com.example.MyFactory#getResource()</rule-property>
+        <rule-property name="allowedResourceMethodPatterns">net.sourceforge.pmd.lang.java.rule.errorprone.closeresource.MyFactory#getResource()</rule-property>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
+package net.sourceforge.pmd.lang.java.rule.errorprone.closeresource;
 import java.io.InputStream;
-import com.example.MyFactory;
 
 public class CustomPattern {
     public void read(MyFactory factory) throws Exception {
