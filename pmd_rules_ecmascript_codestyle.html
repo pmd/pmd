@@ -2059,11 +2059,11 @@ indicative of the bug where the assignment operator ‘=’ was used instead of 
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
 <span class="c1">// Bad</span>
-<span class="k">if</span> <span class="p">((</span><span class="nx">x</span> <span class="o">=</span> <span class="nx">getX</span><span class="p">())</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">3!</span><span class="dl">'</span><span class="p">);</span>
+<span class="k">if </span><span class="p">((</span><span class="nx">x</span> <span class="o">=</span> <span class="nf">getX</span><span class="p">())</span> <span class="o">==</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">alert</span><span class="p">(</span><span class="dl">'</span><span class="s1">3!</span><span class="dl">'</span><span class="p">);</span>
 <span class="p">}</span>
 
-<span class="kd">function</span> <span class="nx">getX</span><span class="p">()</span> <span class="p">{</span>
+<span class="kd">function</span> <span class="nf">getX</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">return</span> <span class="mi">3</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
@@ -2146,13 +2146,13 @@ indicative of the bug where the assignment operator ‘=’ was used instead of 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ok</span>
-<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">foo</span><span class="p">();</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">foo</span><span class="p">();</span>
 <span class="p">}</span>
 
 <span class="c1">// Bad</span>
-<span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
-    <span class="nx">foo</span><span class="p">();</span>
+<span class="k">for </span><span class="p">(</span><span class="kd">var</span> <span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="mi">42</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="nf">foo</span><span class="p">();</span>
 </code></pre></div></div>
 
 <p><strong>Use this rule by referencing it:</strong></p>
@@ -2176,14 +2176,14 @@ indicative of the bug where the assignment operator ‘=’ was used instead of 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ok</span>
-<span class="k">if</span> <span class="p">(</span><span class="nx">foo</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">foo</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">x</span><span class="o">++</span><span class="p">;</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="nx">y</span><span class="o">++</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="c1">// Bad</span>
-<span class="k">if</span> <span class="p">(</span><span class="nx">foo</span><span class="p">)</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">foo</span><span class="p">)</span>
     <span class="nx">x</span><span class="o">++</span><span class="p">;</span>
 <span class="k">else</span>
     <span class="nx">y</span><span class="o">++</span><span class="p">;</span>
@@ -2208,12 +2208,12 @@ indicative of the bug where the assignment operator ‘=’ was used instead of 
 <p><strong>Example(s):</strong></p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ok</span>
-<span class="k">if</span> <span class="p">(</span><span class="nx">foo</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">foo</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">x</span><span class="o">++</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="c1">// Bad</span>
-<span class="k">if</span> <span class="p">(</span><span class="nx">foo</span><span class="p">)</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">foo</span><span class="p">)</span>
     <span class="nx">x</span><span class="o">++</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -2239,14 +2239,14 @@ Then the content of the else block can be put outside.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bad:</span>
-<span class="k">if</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">y</span><span class="p">;</span>
 <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">z</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="c1">// Good:</span>
-<span class="k">if</span> <span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">x</span><span class="p">)</span> <span class="p">{</span>
     <span class="k">return</span> <span class="nx">y</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="k">return</span> <span class="nx">z</span><span class="p">;</span>
@@ -2274,10 +2274,10 @@ be misleading.  Considering removing this unnecessary Block.</p>
 
 <p><strong>Example(s):</strong></p>
 
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="nx">foo</span><span class="p">)</span> <span class="p">{</span>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if </span><span class="p">(</span><span class="nx">foo</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// Ok</span>
 <span class="p">}</span>
-<span class="k">if</span> <span class="p">(</span><span class="nx">bar</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">if </span><span class="p">(</span><span class="nx">bar</span><span class="p">)</span> <span class="p">{</span>
     <span class="p">{</span>
         <span class="c1">// Bad</span>
     <span class="p">}</span>
@@ -2333,11 +2333,11 @@ will never execute.  This is a bug, or extremely poor style.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ok</span>
-<span class="kd">function</span> <span class="nx">foo</span><span class="p">()</span> <span class="p">{</span>
+<span class="kd">function</span> <span class="nf">foo</span><span class="p">()</span> <span class="p">{</span>
    <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
 <span class="p">}</span>
 <span class="c1">// Bad</span>
-<span class="kd">function</span> <span class="nx">bar</span><span class="p">()</span> <span class="p">{</span>
+<span class="kd">function</span> <span class="nf">bar</span><span class="p">()</span> <span class="p">{</span>
    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
    <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
    <span class="nx">x</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
@@ -2363,12 +2363,12 @@ will never execute.  This is a bug, or extremely poor style.</p>
 <p><strong>Example(s):</strong></p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Ok</span>
-<span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+<span class="k">while </span><span class="p">(</span><span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
     <span class="nx">x</span><span class="o">++</span><span class="p">;</span>
 <span class="p">}</span>
 
 <span class="c1">// Bad</span>
-<span class="k">while</span> <span class="p">(</span><span class="kc">true</span><span class="p">)</span>
+<span class="k">while </span><span class="p">(</span><span class="kc">true</span><span class="p">)</span>
     <span class="nx">x</span><span class="o">++</span><span class="p">;</span>
 </code></pre></div></div>
 
@@ -2405,7 +2405,7 @@ will never execute.  This is a bug, or extremely poor style.</p>
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 19, 2026 <br />
+             Site last generated: Mar 20, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

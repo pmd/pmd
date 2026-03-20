@@ -19575,18 +19575,18 @@ and has since been the preferred way to suppress CPD warnings.</p>
 <p>So for instance, in Python we could now do:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BaseHandler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
         <span class="c1"># some unignored code
 </span>
         <span class="c1"># tell cpd to start ignoring code - CPD-OFF
 </span>
         <span class="c1"># mission critical code, manually loop unroll
-</span>        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
-        <span class="n">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+</span>        <span class="nc">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="nc">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="nc">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="nc">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="nc">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+        <span class="nc">GoDoSomethingAwesome</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">x</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
 
         <span class="c1"># resume CPD analysis - CPD-ON
 </span>
@@ -26173,7 +26173,7 @@ Added new HTML report format
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Mar 19, 2026 <br />
+             Site last generated: Mar 20, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
