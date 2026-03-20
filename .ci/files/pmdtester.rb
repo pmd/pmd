@@ -39,7 +39,7 @@ def run_pmdtester
 
     rescue StandardError => e
       write_error_result
-      @logger.error "Running pmdtester failed: #{e.inspect}"
+      @logger.error "Running pmdtester failed: #{e.inspect}\n\n#{e.backtrace.join("\n")}"
     end
   end
 end
