@@ -195,4 +195,40 @@ public final class Helper {
     public static boolean isAnyDatabaseMethodCall(ASTMethodCallExpression node) {
         return isMethodName(node, DATABASE_CLASS_NAME, ANY_METHOD);
     }
+
+    /**
+     * Extracts the key type from a Map type string, e.g. {@code "Map<IKey, String>"} returns {@code "IKey"}.
+     * Handles nested generics e.g. {@code "Map<List<A>, B>"} returns {@code "List<A>"}.
+     *
+     * @param typeName full type string (e.g. from {@link net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration#getType()})
+     * @return the key type, or null if the type is not Map&lt;K,V&gt; or malformed
+     */
+    public static String getMapKeyType(String typeName) {
+        if (typeName == null) {
+            return null;
+        }
+        String t = typeName.trim();
+        if (!t.startsWith("Map<")) {
+            return null;
+        }
+        int start = t.indexOf('<');
+        if (start < 0) {
+            return null;
+        }
+        int depth = 1;
+        int i = start + 1;
+        int keyStart = i;
+        while (i < t.length() && depth > 0) {
+            char c = t.charAt(i);
+            if (c == '<') {
+                depth++;
+            } else if (c == '>') {
+                depth--;
+            } else if (c == ',' && depth == 1) {
+                return t.substring(keyStart, i).trim();
+            }
+            i++;
+        }
+        return null;
+    }
 }

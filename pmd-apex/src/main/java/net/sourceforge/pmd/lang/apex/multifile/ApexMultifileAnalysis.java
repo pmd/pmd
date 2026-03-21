@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.apex.multifile;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +21,10 @@ import net.sourceforge.pmd.lang.apex.ApexLanguageProcessor;
 import net.sourceforge.pmd.lang.apex.ApexLanguageProperties;
 
 import com.nawforce.apexlink.api.Org;
+import com.nawforce.apexlink.api.Package;
+import com.nawforce.apexlink.api.TypeSummary;
 import com.nawforce.pkgforce.diagnostics.LoggerOps;
+import com.nawforce.pkgforce.names.TypeIdentifier;
 import io.github.apexdevtools.api.Issue;
 
 /**
@@ -43,6 +47,9 @@ public final class ApexMultifileAnalysis {
     // Create a new org for each analysis
     // Null if failed.
     private final @Nullable Org org;
+
+    // Lazily computed flat list of all TypeSummary objects in the org (including nested types).
+    private List<TypeSummary> allTypeSummaries = null;
 
     static {
         // Setup logging
@@ -112,6 +119,49 @@ public final class ApexMultifileAnalysis {
         // Extract issues for a specific metadata file from the org
         return org == null ? Collections.emptyList()
                            : Collections.unmodifiableList(Arrays.asList(org.issues().issuesForFile(filename)));
+    }
+
+    /**
+     * Returns an unmodifiable list of all type summaries in the org.
+     * Returns an empty list when multifile analysis is unavailable.
+     * This enables rules to perform complex cross-type analysis.
+     */
+    public List<TypeSummary> getTypeSummaries() {
+        return getAllTypeSummaries();
+    }
+
+    /**
+     * Returns a flat list of all TypeSummary objects in the org, including nested types.
+     * The result is computed once and then cached.
+     */
+    private synchronized List<TypeSummary> getAllTypeSummaries() {
+        if (allTypeSummaries != null) {
+            return allTypeSummaries;
+        }
+        if (org == null) {
+            allTypeSummaries = Collections.emptyList();
+            return allTypeSummaries;
+        }
+        List<TypeSummary> summaries = new ArrayList<>();
+        for (Package pkg : org.getPackages()) {
+            for (TypeIdentifier typeId : pkg.getTypeIdentifiers(false)) {
+                TypeSummary summary = pkg.getSummaryOfType(typeId);
+                if (summary != null) {
+                    collectTypeSummaries(summary, summaries);
+                }
+            }
+        }
+        allTypeSummaries = Collections.unmodifiableList(summaries);
+        return allTypeSummaries;
+    }
+
+    /** Adds the given summary and all its nested type summaries (recursively) to the list. */
+    private static void collectTypeSummaries(TypeSummary summary, List<TypeSummary> result) {
+        result.add(summary);
+        scala.collection.Iterator<TypeSummary> nested = summary.nestedTypes().iterator();
+        while (nested.hasNext()) {
+            collectTypeSummaries(nested.next(), result);
+        }
     }
 
     /*
