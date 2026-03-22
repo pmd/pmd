@@ -190,6 +190,25 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
             iterableExpr = ((ASTFieldAccess) sizeExpr).getQualifier();
         } else if (COLLECTION_SIZE.matchesCall(sizeExpr)) {
             iterableExpr = ((ASTMethodCall) sizeExpr).getQualifier();
+        } else if (sizeExpr instanceof ASTNamedReferenceExpr) {
+            // Handle case where array length is assigned to a pre-declared variable
+            // e.g., int len = array.length; for (int i = 0; i < len; i++)
+            ASTNamedReferenceExpr varRef = (ASTNamedReferenceExpr) sizeExpr;
+            JVariableSymbol sym = varRef.getReferencedSym();
+            if (sym != null) {
+                ASTVariableId varId = sym.tryGetNode();
+                if (varId != null) {
+                    ASTExpression init = varId.getInitializer();
+                    if (init != null) {
+                        // Check if the variable is initialized to array.length or collection.size()
+                        if (init instanceof ASTFieldAccess && "length".equals(((ASTFieldAccess) init).getName())) {
+                            iterableExpr = ((ASTFieldAccess) init).getQualifier();
+                        } else if (COLLECTION_SIZE.matchesCall(init)) {
+                            iterableExpr = ((ASTMethodCall) init).getQualifier();
+                        }
+                    }
+                }
+            }
         }
 
         if (!(iterableExpr instanceof ASTNamedReferenceExpr)
