@@ -4020,4 +4020,30 @@ class Lock {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment false negative when overwritten inside unconditional if(true) block #6518</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,10</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'target' is never used (overwritten on line 5)</message>
+            <message>The initializer for variable 'target' is never used (overwritten on line 11)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class a {
+    public void test1() {
+        Object target = null;
+        if (true) {
+            target = new Object();
+        }
+        System.out.println(target);
+    }
+    public void test2() {
+        Object target = null;
+        target = new Object();
+        System.out.println(target);
+    }
+}
+            ]]></code>
+    </test-code>
 </test-data>

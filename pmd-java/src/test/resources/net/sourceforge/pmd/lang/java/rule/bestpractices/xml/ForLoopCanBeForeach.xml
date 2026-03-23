@@ -452,4 +452,36 @@ public class Test {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6495 Array length assigned to pre-declared variable - should detect foreach candidate</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+public class PMD_FN_Demo {
+    public void testFalseNegative(long[] counts) {
+        double total = 0;
+        int len = counts.length;
+        for (int i = 0; i < len; i++) {
+            total += counts[i];
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6495 List size assigned to pre-declared variable - should detect foreach candidate</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+import java.util.List;
+public class PMD_FN_Demo {
+    public void testFalseNegativeList(List<String> items) {
+        int size = items.size();
+        for (int i = 0; i < size; i++) {
+            System.out.println(items.get(i));
+        }
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
