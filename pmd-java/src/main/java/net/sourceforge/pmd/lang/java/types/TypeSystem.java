@@ -63,7 +63,7 @@ import net.sourceforge.pmd.util.CollectionUtil;
  * <p>Nodes have a reference to the type system they were created for:
  * {@link JavaNode#getTypeSystem()}.
  */
-@SuppressWarnings("PMD.CompareObjectsWithEquals")
+@SuppressWarnings({"PMD.CompareObjectsWithEquals", "PMD.FieldNamingConventions"})
 public final class TypeSystem {
 
     /**

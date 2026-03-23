@@ -4,6 +4,9 @@
 
 package net.sourceforge.pmd.lang.java.symbols.internal.ast;
 
+import static net.sourceforge.pmd.util.CollectionUtil.setOf;
+
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,6 +18,8 @@ import org.pcollections.HashTreePSet;
 import org.pcollections.PSet;
 
 import net.sourceforge.pmd.lang.ast.NodeStream;
+import net.sourceforge.pmd.lang.java.ast.ASTAnnotation;
+import net.sourceforge.pmd.lang.java.ast.ASTAssignableExpr.ASTNamedReferenceExpr;
 import net.sourceforge.pmd.lang.java.ast.ASTBodyDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassType;
@@ -22,6 +27,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumConstant;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTPermitsList;
 import net.sourceforge.pmd.lang.java.ast.ASTRecordComponent;
@@ -30,6 +36,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.InternalApiBridge;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
+import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.internal.JavaAstProcessor;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JConstructorSymbol;
@@ -52,7 +59,6 @@ import net.sourceforge.pmd.util.CollectionUtil;
 final class AstClassSym
     extends AbstractAstTParamOwner<ASTTypeDeclaration>
     implements JClassSymbol {
-
     private final @Nullable JTypeParameterOwnerSymbol enclosing;
     private final List<JClassSymbol> declaredClasses;
     private final List<JMethodSymbol> declaredMethods;
@@ -156,9 +162,69 @@ final class AstClassSym
     }
 
     public void processLombok(JavaAstProcessor processor) {
-        if (node.isAnnotationPresent("lombok.extern.slf4j.Slf4j")) {
+        final String LOMBOK_SLF4J = "lombok.extern.slf4j.Slf4j";
+        final String LOMBOK_GETTER = "lombok.Getter";
+        final String LOMBOK_DATA = "lombok.Data";
+        final String LOMBOK_VALUE = "lombok.Value";
+
+        if (node.isAnnotationPresent(LOMBOK_SLF4J)) {
             declaredFields.add(ImplicitMemberSymbols.lombokSlf4jLoggerField(this, processor));
         }
+
+        declaredFields.stream()
+                .filter(f -> !f.isStatic())
+                .map(f -> f.tryGetNode())
+                .filter(Objects::nonNull)
+                .filter(varId -> !varId.isRecordComponent())
+                .forEach(varId -> {
+                    ASTAnnotation fieldGetter = varId.getAnnotation(LOMBOK_GETTER);
+                    int accessModifier = -1;
+
+                    if (fieldGetter != null) {
+                        accessModifier = getLombokAccessModifier(fieldGetter);
+                    } else {
+                        ASTAnnotation classGetter = node.getAnnotation(LOMBOK_GETTER);
+                        if (classGetter != null) {
+                            accessModifier = getLombokAccessModifier(classGetter);
+                        } else if (JavaAstUtils.hasAnyAnnotation(node, setOf(LOMBOK_DATA, LOMBOK_VALUE))) {
+                            accessModifier = Modifier.PUBLIC;
+                        }
+                    }
+
+                    if (accessModifier != -1) {
+                        JMethodSymbol getter = ImplicitMemberSymbols.lombokGetter(this,
+                                (JFieldSymbol) varId.getSymbol(), accessModifier);
+                        String getterName = getter.getSimpleName();
+                        if (declaredMethods.stream().noneMatch(m -> m.getSimpleName().equals(getterName) && m.getArity() == 0)) {
+                            declaredMethods.add(getter);
+                        }
+                    }
+                });
+    }
+
+    private int getLombokAccessModifier(ASTAnnotation annot) {
+        return annot.getFlatValue(ASTMemberValuePair.VALUE_ATTR)
+                .filter(v -> v instanceof ASTNamedReferenceExpr)
+                .toStream()
+                .map(ASTNamedReferenceExpr.class::cast)
+                .map(ASTNamedReferenceExpr::getName)
+                .findFirst()
+                .map(accessLevel -> {
+                    switch (accessLevel) {
+                    case "PROTECTED":
+                        return Modifier.PROTECTED;
+                    case "PACKAGE":
+                        return 0;
+                    case "PRIVATE":
+                        return Modifier.PRIVATE;
+                    case "NONE":
+                        return -1; // special value for NONE, we'll use -1 as a flag or handle it
+                    case "PUBLIC":
+                    default:
+                        return Modifier.PUBLIC;
+                    }
+                })
+                .orElse(Modifier.PUBLIC); // lombok generates by default public getters
     }
 
 

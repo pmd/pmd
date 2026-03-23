@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.errorprone;
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import static net.sourceforge.pmd.properties.PropertyFactory.stringListProperty;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -107,6 +108,27 @@ public class CloseResourceRule extends AbstractJavaRule {
                     "java.util.stream.DoubleStream")
             .build();
 
+    private static final PropertyDescriptor<List<String>> ALLOWED_RESOURCE_METHOD_PATTERNS =
+            stringListProperty("allowedResourceMethodPatterns")
+            .desc("Method invocation patterns that return resources managed externally (InvocationMatcher syntax)")
+            .defaultValues(
+                // javax.servlet (Java EE / Jakarta EE 8 and earlier)
+                "javax.servlet.ServletRequest#getReader()",
+                "javax.servlet.ServletResponse#getWriter()",
+                "javax.servlet.ServletResponse#getOutputStream()",
+                "javax.servlet.http.HttpServletRequest#getReader()",
+                "javax.servlet.http.HttpServletResponse#getWriter()",
+                "javax.servlet.http.HttpServletResponse#getOutputStream()",
+                // jakarta.servlet (Jakarta EE 9+)
+                "jakarta.servlet.ServletRequest#getReader()",
+                "jakarta.servlet.ServletResponse#getWriter()",
+                "jakarta.servlet.ServletResponse#getOutputStream()",
+                "jakarta.servlet.http.HttpServletRequest#getReader()",
+                "jakarta.servlet.http.HttpServletResponse#getWriter()",
+                "jakarta.servlet.http.HttpServletResponse#getOutputStream()"
+            )
+            .build();
+
     private static final PropertyDescriptor<Boolean> DETECT_CLOSE_NOT_IN_FINALLY =
             booleanProperty("closeNotInFinally")
                 .desc("Detect if 'close' (or other closeTargets) is called outside of a finally-block").defaultValue(false).build();
@@ -117,6 +139,37 @@ public class CloseResourceRule extends AbstractJavaRule {
     private final Set<String> types = new HashSet<>();
     private final Set<String> simpleTypes = new HashSet<>();
     private final Set<String> closeTargets = new HashSet<>();
+    private final List<ManagedResourceMethodPattern> managedResourceMethodPatterns = new ArrayList<>();
+
+    /**
+     * Helper class to match method invocation patterns. Uses TypeTestUtil.isA() for type matching,
+     * which works regardless of whether types are on the classpath.
+     */
+    private static final class ManagedResourceMethodPattern {
+        private final String qualifierType;
+        private final String methodName;
+
+        ManagedResourceMethodPattern(String pattern) {
+            int hashIndex = pattern.indexOf('#');
+            this.qualifierType = pattern.substring(0, hashIndex);
+            int parenIndex = pattern.indexOf('(');
+            this.methodName = pattern.substring(hashIndex + 1, parenIndex);
+
+        }
+
+        boolean matches(ASTExpression expr) {
+
+            if (!(expr instanceof ASTMethodCall)) {
+                return false;
+            }
+            ASTMethodCall call = (ASTMethodCall) expr;
+            if (!methodName.equals(call.getMethodName())) {
+                return false;
+            }
+            ASTExpression qualifier = call.getQualifier();
+            return qualifier != null && TypeTestUtil.isA(qualifierType, qualifier);
+        }
+    }
 
     // keeps track of already reported violations to avoid duplicated violations for the same variable
     private final Set<String> reportedVarNames = new HashSet<>();
@@ -126,6 +179,7 @@ public class CloseResourceRule extends AbstractJavaRule {
         definePropertyDescriptor(TYPES_DESCRIPTOR);
         definePropertyDescriptor(USE_CLOSE_AS_DEFAULT_TARGET);
         definePropertyDescriptor(ALLOWED_RESOURCE_TYPES);
+        definePropertyDescriptor(ALLOWED_RESOURCE_METHOD_PATTERNS);
         definePropertyDescriptor(DETECT_CLOSE_NOT_IN_FINALLY);
     }
 
@@ -145,6 +199,17 @@ public class CloseResourceRule extends AbstractJavaRule {
             types.addAll(getProperty(TYPES_DESCRIPTOR));
             for (String type : getProperty(TYPES_DESCRIPTOR)) {
                 simpleTypes.add(toSimpleType(type));
+            }
+        }
+
+        managedResourceMethodPatterns.clear();
+        List<String> patterns = getProperty(ALLOWED_RESOURCE_METHOD_PATTERNS);
+        if (patterns != null) {
+            for (String pattern : patterns) {
+                String trimmed = pattern.trim();
+                if (!trimmed.isEmpty()) {
+                    managedResourceMethodPatterns.add(new ManagedResourceMethodPattern(trimmed));
+                }
             }
         }
     }
@@ -210,6 +275,7 @@ public class CloseResourceRule extends AbstractJavaRule {
             .filter(var -> isResourceTypeOrSubtype(var) || isNodeInstanceOfResourceType(getTypeOfVariable(var)))
             .filterNot(var -> var.isAnnotationPresent("lombok.Cleanup"))
             .filterNot(this::isDefaultFileSystem)
+            .filterNot(this::isInitializedFromManagedResourceMethod)
             .toList();
 
         for (ASTVariableId var : vars) {
@@ -527,6 +593,42 @@ public class CloseResourceRule extends AbstractJavaRule {
         @Nullable
         ASTExpression initializer = varId.getInitializer();
         return FILESYSTEMS_GET_DEFAULT.matchesCall(initializer);
+    }
+
+    private boolean isInitializedFromManagedResourceMethod(ASTVariableId varId) {
+        @Nullable
+        ASTExpression initializer = varId.getInitializer();
+        if (initializer == null) {
+            return false;
+        }
+
+        // Check if the initializer is directly a managed resource method call
+        if (matchesManagedResourceMethod(initializer)) {
+            return true;
+        }
+
+        // Check if the initializer is a constructor wrapping a managed resource method call
+        // e.g., new ObjectOutputStream(response.getOutputStream())
+        if (initializer instanceof ASTConstructorCall) {
+            ASTConstructorCall constructorCall = (ASTConstructorCall) initializer;
+            ASTArgumentList args = constructorCall.getArguments();
+            if (args != null && args.size() > 0) {
+                ASTExpression firstArg = args.get(0);
+                if (matchesManagedResourceMethod(firstArg)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesManagedResourceMethod(ASTExpression expr) {
+        for (ManagedResourceMethodPattern pattern : managedResourceMethodPatterns) {
+            if (pattern.matches(expr)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isVariableSpecifiedInTryWithResource(ASTVariableId varId, ASTTryStatement tryWithResource) {

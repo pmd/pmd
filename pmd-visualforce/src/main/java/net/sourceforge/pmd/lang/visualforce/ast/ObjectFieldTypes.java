@@ -59,15 +59,15 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
     static {
         // see https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/system_fields.htm
         SYSTEM_FIELDS = new HashMap<>();
-        SYSTEM_FIELDS.put("id", DataType.Lookup);
-        SYSTEM_FIELDS.put("isdeleted", DataType.Checkbox);
-        SYSTEM_FIELDS.put("createdbyid", DataType.Lookup);
-        SYSTEM_FIELDS.put("createddate", DataType.DateTime);
-        SYSTEM_FIELDS.put("lastmodifiedbyid", DataType.Lookup);
-        SYSTEM_FIELDS.put("lastmodifieddate", DataType.DateTime);
-        SYSTEM_FIELDS.put("systemmodstamp", DataType.DateTime);
+        SYSTEM_FIELDS.put("id", DataType.LOOKUP);
+        SYSTEM_FIELDS.put("isdeleted", DataType.CHECKBOX);
+        SYSTEM_FIELDS.put("createdbyid", DataType.LOOKUP);
+        SYSTEM_FIELDS.put("createddate", DataType.DATE_TIME);
+        SYSTEM_FIELDS.put("lastmodifiedbyid", DataType.LOOKUP);
+        SYSTEM_FIELDS.put("lastmodifieddate", DataType.DATE_TIME);
+        SYSTEM_FIELDS.put("systemmodstamp", DataType.DATE_TIME);
         // name is not defined as systemfield, but might occur frequently
-        SYSTEM_FIELDS.put("name", DataType.Text);
+        SYSTEM_FIELDS.put("name", DataType.TEXT);
 
         try {
             // see https://developer.salesforce.com/docs/atlas.en-us.object_reference.meta/object_reference/sforce_api_objects_list.htm
@@ -222,11 +222,11 @@ class ObjectFieldTypes extends SalesforceFieldTypes {
                     }
                     if (dataType == null) {
                         LOG.warn("Couldn't determine data type of customObjectName={} from {}", customObjectName, sfdxCustomFieldPath);
-                        dataType = DataType.Unknown;
+                        dataType = DataType.UNKNOWN;
                     }
                 } else {
                     LOG.warn("Couldn't determine data type of customObjectName={} - no sobject definition found", customObjectName);
-                    dataType = DataType.Unknown;
+                    dataType = DataType.UNKNOWN;
                 }
             }
 

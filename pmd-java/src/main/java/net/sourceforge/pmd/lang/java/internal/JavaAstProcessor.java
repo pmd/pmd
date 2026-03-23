@@ -134,6 +134,12 @@ public final class JavaAstProcessor {
         InternalApiBridge.initTypeResolver(acu, this, typeInferenceLogger);
 
         TimeTracker.bench("Symbol table resolution", () -> SymbolTableResolver.traverse(this, acu));
+        if (hasFirstClassLombokSupport()) {
+            // Desugar lombok after all annotation types have been disambiguated already by the first pass of the
+            // symbol table solver.
+            // That way we can identify annotations with TypeTestUtil#isA...
+            TimeTracker.bench("Lombok desugaring", () -> SymbolTableResolver.desugarLombokMembers(this, acu));
+        }
 
         TimeTracker.bench("AST disambiguation", () -> InternalApiBridge.disambigWithCtx(NodeStream.of(acu), ReferenceCtx.root(this, acu)));
         if (globalProc.getProperties().getProperty(JavaLanguageProperties.INTERNAL_DO_STRICT_TYPERES)) {

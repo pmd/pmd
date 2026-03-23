@@ -913,4 +913,128 @@ class Foo {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#6431 [java] UnitTestShouldIncludeAssert - false positive with SoftAssertionsExtension on parent class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>19</expected-linenumbers>
+        <code><![CDATA[
+package com.tesco.fps.api.client;
+
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(SoftAssertionsExtension.class)
+class SomeTest {
+    @Nested
+    class SomeNestedTest {
+        @Test
+        void nestedTest(SoftAssertions softly) { // false positive (fixed)
+            softly.assertThat(42).isEqualTo(42);
+        }
+
+        @Test
+        void falseNegative() { // line 19
+          // no assertion at all
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6431 [java] UnitTestShouldIncludeAssert - false positive with SoftAssertionsExtension on grandparent class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+package com.tesco.fps.api.client;
+
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(SoftAssertionsExtension.class)
+class ShouldIncludeAssertTest {
+    @Nested
+    class NestedTest {
+        @Test
+        void falseNegative() { // line 14
+        }
+        @Nested
+        class DeeplyNestedTest {
+            @Test
+            void extensionIsDeclaredOnGrandparentClass(SoftAssertions softly) { // false positive (fixed)
+                softly.assertThat(42).isEqualTo(42);
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6431 [java] UnitTestShouldIncludeAssert - false positive with SoftAssertionsExtension on immediate parent nested class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+package com.tesco.fps.api.client;
+
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+class ShouldIncludeAssertTest {
+    @Nested
+    @ExtendWith(SoftAssertionsExtension.class)
+    class NestedTest {
+        @Test
+        void falseNegative() { // line 14
+        }
+        @Nested
+        class DeeplyNestedTest {
+            @Test
+            void extensionIsDeclaredOnParentNestedClassTest(SoftAssertions softly) {
+                softly.assertThat(42).isEqualTo(42);
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6431 [java] UnitTestShouldIncludeAssert - false positive with SoftAssertionsExtension on nested class itself</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>14</expected-linenumbers>
+        <code><![CDATA[
+package com.tesco.fps.api.client;
+
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+class ShouldIncludeAssertTest {
+    @Nested
+    @ExtendWith(SoftAssertionsExtension.class)
+    class NestedTest {
+        @Test
+        void falseNegative() { // line 14
+        }
+        @Test
+        void extensionIsDeclaredOnTheNestedTest(SoftAssertions softly) {
+            softly.assertThat(42).isEqualTo(42);
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

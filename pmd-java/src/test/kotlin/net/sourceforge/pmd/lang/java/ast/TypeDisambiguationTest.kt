@@ -280,7 +280,7 @@ class TypeDisambiguationTest : ParserTestSpec({
                 @interface A { }
                 interface I { }
 
-                @T
+                // @T // this is invalid code, T is a type, not an annotation
                 @C
                 @I
                 @Unresolved
@@ -290,7 +290,7 @@ class TypeDisambiguationTest : ParserTestSpec({
         """
         )
 
-        val (aT, aC, aI, aUnresolved, aOk) =
+        val (aC, aI, aUnresolved, aOk) =
             acu.descendants(ASTAnnotation::class.java).map { it.typeNode }.toList()
 
         fun assertErrored(t: ASTClassType) {
@@ -308,7 +308,6 @@ class TypeDisambiguationTest : ParserTestSpec({
         assertNoError(aUnresolved)
         assertNoError(aOk)
 
-        assertErrored(aT)
         assertErrored(aC)
         assertErrored(aI)
     }

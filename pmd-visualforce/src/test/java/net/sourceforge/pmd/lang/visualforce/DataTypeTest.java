@@ -14,27 +14,27 @@ class DataTypeTest {
 
     @Test
     void testFromString() {
-        assertEquals(DataType.AutoNumber, DataType.fromString("AutoNumber"));
-        assertEquals(DataType.AutoNumber, DataType.fromString("autonumber"));
-        assertEquals(DataType.Unknown, DataType.fromString(""));
-        assertEquals(DataType.Unknown, DataType.fromString(null));
+        assertEquals(DataType.AUTO_NUMBER, DataType.fromString("AutoNumber"));
+        assertEquals(DataType.AUTO_NUMBER, DataType.fromString("autonumber"));
+        assertEquals(DataType.UNKNOWN, DataType.fromString(""));
+        assertEquals(DataType.UNKNOWN, DataType.fromString(null));
     }
 
     @Test
     void testFromTypeName() {
-        assertEquals(DataType.Checkbox, DataType.fromTypeName("Boolean"));
-        assertEquals(DataType.Currency, DataType.fromTypeName("Currency"));
-        assertEquals(DataType.DateTime, DataType.fromTypeName("Datetime"));
-        assertEquals(DataType.Number, DataType.fromTypeName("DECIMAL"));
-        assertEquals(DataType.Number, DataType.fromTypeName("double"));
-        assertEquals(DataType.Text, DataType.fromTypeName("string"));
-        assertEquals(DataType.Unknown, DataType.fromTypeName("Object"));
-        assertEquals(DataType.Unknown, DataType.fromTypeName(null));
+        assertEquals(DataType.CHECKBOX, DataType.fromTypeName("Boolean"));
+        assertEquals(DataType.CURRENCY, DataType.fromTypeName("Currency"));
+        assertEquals(DataType.DATE_TIME, DataType.fromTypeName("Datetime"));
+        assertEquals(DataType.NUMBER, DataType.fromTypeName("DECIMAL"));
+        assertEquals(DataType.NUMBER, DataType.fromTypeName("double"));
+        assertEquals(DataType.TEXT, DataType.fromTypeName("string"));
+        assertEquals(DataType.UNKNOWN, DataType.fromTypeName("Object"));
+        assertEquals(DataType.UNKNOWN, DataType.fromTypeName(null));
     }
 
     @Test
     void testRequiresEncoding() {
-        assertFalse(DataType.AutoNumber.requiresEscaping);
-        assertTrue(DataType.Text.requiresEscaping);
+        assertFalse(DataType.AUTO_NUMBER.requiresEscaping);
+        assertTrue(DataType.TEXT.requiresEscaping);
     }
 }

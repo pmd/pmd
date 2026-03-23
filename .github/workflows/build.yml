@@ -47,7 +47,7 @@ jobs:
           # version exactly is available in the staging repo. But if we rerun the build using the
           # older cache, it points to the old staging versions, which are not available anymore.
           find .m2/repository/net/sourceforge/pmd -type d -name "*-SNAPSHOT" -and -not -path "*/pmd-designer/*" -print0 | xargs -0 rm -vrf
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: compile-artifact
           if-no-files-found: error
@@ -58,12 +58,12 @@ jobs:
             !pmd-dist/target/pmd-dist-*-src.zip
             !pmd-dist/target/pmd-*-cyclonedx.xml
             !pmd-dist/target/pmd-*-cyclonedx.json
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: staging-repository
           if-no-files-found: error
           path: target/staging
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: dist-artifact
           if-no-files-found: error
@@ -77,7 +77,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 #v6.0.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #v6.0.2
       - name: Spell Check Repo
         # note: don't fail the build on typos, just annotate them
         # so that publish-pull-requests job still runs.
@@ -105,7 +105,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         with:
           name: compile-artifact
       - name: Full Build with Maven
@@ -113,7 +113,7 @@ jobs:
           ./mvnw --show-version --errors --batch-mode \
               -Dmaven.repo.local=.m2/repository \
               verify -DskipTests
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: javadocs-artifact
           if-no-files-found: error
@@ -160,7 +160,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         # we can only reuse compile-artifacts under linux due to file timestamp issues and
         # platform specific line endings in test resource files.
         if: ${{ runner.os == 'Linux' }}
@@ -205,10 +205,10 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         with:
           name: compile-artifact
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         with:
           name: staging-repository
           path: target/staging
@@ -291,7 +291,7 @@ jobs:
           restore-keys: maven-
           path: .m2/repository
           enableCrossOsArchive: true
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         with:
           name: compile-artifact
       - name: Generate rule docs
@@ -302,7 +302,7 @@ jobs:
             -Pgenerate-rule-docs,fastSkip \
             -DskipTests -Dassembly.skipAssembly=true
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd #v1.288.0
+        uses: ruby/setup-ruby@319994f95fa847cf3fb3cd3dbe89f6dcde9f178f #v1.295.0
         with:
           ruby-version: 3.3
       - name: Setup bundler
@@ -318,7 +318,7 @@ jobs:
         run: |
           cd docs
           bundle exec render_release_notes.rb pages/release_notes.md | tail -n +6 > _site/pmd_release_notes.md
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: docs-artifact
           if-no-files-found: error
@@ -343,7 +343,7 @@ jobs:
             11
             21
       - name: Set up Ruby 3.3
-        uses: ruby/setup-ruby@09a7688d3b55cf0e976497ff046b70949eeaccfd #v1.288.0
+        uses: ruby/setup-ruby@319994f95fa847cf3fb3cd3dbe89f6dcde9f178f #v1.295.0
         with:
           ruby-version: 3.3
       - uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306 #v5.0.3
@@ -355,7 +355,7 @@ jobs:
             .ci/files/vendor/bundle
           key: regressiontester-${{ hashFiles('.ci/files/project-list.xml', '.ci/files/Gemfile.lock') }}
           restore-keys: regressiontester-
-      - uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 #v7.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c #v8.0.1
         with:
           name: dist-artifact
           path: pmd-dist/target
@@ -376,7 +376,7 @@ jobs:
         run: |
           echo "artifacts_path=$(realpath ..)" >> "${GITHUB_ENV}"
       - name: Upload regression tester report
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f #v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f #v7.0.0
         with:
           name: pmd-regression-tester
           if-no-files-found: error
