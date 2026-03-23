@@ -482,6 +482,14 @@ public final class DataflowPass {
         }
 
         SpanInfo makeConditional(SpanInfo before, ASTExpression condition, JavaNode thenBranch, JavaNode elseBranch) {
+            if (JavaAstUtils.isBooleanLiteral(condition, true)) {
+                SpanInfo state = acceptOpt(condition, before);
+                return acceptOpt(thenBranch, state);
+            } else if (JavaAstUtils.isBooleanLiteral(condition, false)) {
+                SpanInfo state = acceptOpt(condition, before);
+                return acceptOpt(elseBranch, state);
+            }
+
             SpanInfo thenState = before.fork();
             SpanInfo elseState = elseBranch != null ? before.fork() : before;
 
