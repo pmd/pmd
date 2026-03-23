@@ -309,4 +309,28 @@ class Tester {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] SimplifyBooleanReturns false negative with unnecessary anonymous block #6519</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>3,8</expected-linenumbers>
+        <expected-messages>
+            <message>This if statement can be replaced by `return !{condition};`</message>
+            <message>This if statement can be replaced by `return !{condition};`</message>
+        </expected-messages>
+        <code><![CDATA[
+public class a {
+    public boolean tp(Object obj) {
+        if (obj == null) return false;
+        return true;
+    }
+    public boolean fn(Object obj) {
+        {
+            if (obj == null) return false;
+        }
+        return true;
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

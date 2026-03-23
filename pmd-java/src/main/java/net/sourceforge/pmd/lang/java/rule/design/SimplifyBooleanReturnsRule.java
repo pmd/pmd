@@ -190,7 +190,42 @@ public class SimplifyBooleanReturnsRule extends AbstractJavaRulechainRule {
 
     private @Nullable ASTExpression getElseExpr(ASTIfStatement node) {
         return node.hasElse() ? getReturnExpr(node.getElseBranch())
-                              : getReturnExpr(node.getNextSibling()); // may be followed immediately by return
+                              : getReturnExprAfterIf(node);
+    }
+
+    /**
+     * Handles if-return followed by return with optional redundant wrapping blocks.
+     *
+     * <pre>
+     * {
+     *     if (cond) return false;
+     * }
+     * return true;
+     * </pre>
+     */
+    private @Nullable ASTExpression getReturnExprAfterIf(ASTIfStatement ifStmt) {
+        JavaNode current = ifStmt;
+        while (true) {
+            ASTExpression siblingExpr = getReturnExpr(current.getNextSibling());
+            if (siblingExpr != null) {
+                return siblingExpr;
+            }
+
+            if (current.getNextSibling() != null) {
+                return null;
+            }
+
+            if (!(current.getParent() instanceof ASTBlock)) {
+                return null;
+            }
+
+            ASTBlock parentBlock = (ASTBlock) current.getParent();
+            if (parentBlock.size() != 1) {
+                return null;
+            }
+
+            current = parentBlock;
+        }
     }
 
 
