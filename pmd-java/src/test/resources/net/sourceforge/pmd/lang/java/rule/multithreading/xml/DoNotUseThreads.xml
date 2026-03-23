@@ -220,4 +220,20 @@ class DoNotUseThreadsTest {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Static method calls like Thread.onSpinWait() should not trigger the rule - issue #6520</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class OnSpinWaitExample {
+    public void foo() {
+        java.lang.Thread.onSpinWait();
+    }
+    
+    public void bar() {
+        Thread.onSpinWait();
+    }
+}
+]]></code>
+    </test-code>
 </test-data>
