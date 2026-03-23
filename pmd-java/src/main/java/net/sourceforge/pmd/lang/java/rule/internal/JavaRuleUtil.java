@@ -60,6 +60,9 @@ public final class JavaRuleUtil {
         // actually not all of them, probs only stream of some type
         // arg which doesn't implement Closeable...
         "java.util.stream.Stream#_(_*)",
+        "java.util.stream.IntStream#_(_*)",
+        "java.util.stream.LongStream#_(_*)",
+        "java.util.stream.DoubleStream#_(_*)",
         "java.util.Collection#contains(_)",
         "java.util.Collection#size()",
         "java.util.List#get(int)",
