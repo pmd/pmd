@@ -212,6 +212,8 @@ Also, EJBs might be moved between machines in a cluster and only managed resourc
                                               ]
                            ]
 )]
+(: allow Thread.onSpinWait() :)
+[not(parent::TypeExpression[parent::MethodCall[pmd-java:matchesSig('_#onSpinWait()')]])]
 (: exclude duplicated types on the same line :)
  [not((parent::FieldDeclaration|parent::LocalVariableDeclaration)/VariableDeclarator/*[2][pmd-java:typeIs('java.lang.Thread') or pmd-java:typeIs('java.util.concurrent.ExecutorService')])
  or
