@@ -2108,7 +2108,7 @@ exactly identical.</p>
 
 <h3 id="cli-options-reference">CLI options reference</h3>
 
-<div class="bs-callout bs-callout-primary">The file collection options are common to PMD and CPD and <a href="pmd_userdocs_cli_reference.html#file-collection-options">described over there</a>.</div>
+<div class="bs-callout bs-callout-primary"><span class="label label-info">Since 7.14.0</span> The file collection options are common to PMD and CPD and <a href="pmd_userdocs_cli_reference.html#file-collection-options">described over there</a>.</div>
 
 <table>
     <tr>
@@ -2250,6 +2250,28 @@ exactly identical.</p>
     <td>Output format of the analysis report. The available formats
                             are described <a href="#available-report-formats">here</a>.</td>
     <td><code>text</code></td>
+    <td></td>
+</tr>
+
+    <!-- Row of the CLI reference table, describing an option -->
+<!-- Rows can be linked to the name of the option (without leading dash) -->
+<!-- Argument summary: -->
+<!-- options: comma separated list of aliases for the option.-->
+<!-- option_arg: optional name for the argument of the option, eg 'arg', will be formatted eg to '<arg>'-->
+<!-- description: description, you can use "some" inline markdown -->
+<!-- required: whether the option is required, if specified, whatever the value, it's considered required -->
+<!-- languages: languages to which the option applies -->
+<!-- default: default value -->
+
+
+
+<!-- fragment id in the page -->
+
+
+<tr>
+    <td><a style="pointer-events: none; cursor: default;" name="-report-file"><code>--report-file&nbsp;&lt;path&gt;</code><br /><code>-r&nbsp;&lt;path&gt;</code></a></td>
+    <td><span class="label label-info">Since 7.14.0</span> Path to a file to which report output is written. The file is created if it does not exist. If this option is not specified, the report is rendered to standard output.</td>
+    <td><code></code></td>
     <td></td>
 </tr>
 
@@ -3281,7 +3303,7 @@ the comment based approach will be extended to those of them that can support it
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            August 2025 (7.17.0)<br /> Site last generated: Mar 20, 2026 <br />
+            March 2026 (7.23.0)<br /> Site last generated: Mar 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

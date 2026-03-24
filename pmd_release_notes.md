@@ -19,6 +19,8 @@ This is a minor release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
+* core
+  * [#6503](https://github.com/pmd/pmd/issues/6503): \[core] Links in HTML report are broken
 
 ### 🚨️ API Changes
 
