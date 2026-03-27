@@ -1,9 +1,9 @@
 
 
 
-## 27-March-2026 - 7.23.0-SNAPSHOT
+## 24-April-2026 - 7.24.0-SNAPSHOT
 
-The PMD team is pleased to announce PMD 7.23.0-SNAPSHOT.
+The PMD team is pleased to announce PMD 7.24.0-SNAPSHOT.
 
 This is a minor release.
 
@@ -19,12 +19,6 @@ This is a minor release.
 ### 🚀️ New and noteworthy
 
 ### 🐛️ Fixed Issues
-* core
-  * [#6503](https://github.com/pmd/pmd/issues/6503): \[core] Links in HTML report are broken
-* java-errorprone
-  * [#6502](https://github.com/pmd/pmd/issues/6502): \[java] CloseResource: False positive for allowedResourceMethodPatterns entries when using unqualified method calls
-* java-security
-  * [#6531](https://github.com/pmd/pmd/issues/6531): \[java] InsecureCryptoIv: False negative with fixed IVs from array initializers
 
 ### 🚨️ API Changes
 
