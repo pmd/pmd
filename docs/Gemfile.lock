@@ -78,7 +78,7 @@ PLATFORMS
 DEPENDENCIES
   bigdecimal
   csv
-  jekyll
+  jekyll (>= 4.4.1)
   liquid
   rouge
   safe_yaml
