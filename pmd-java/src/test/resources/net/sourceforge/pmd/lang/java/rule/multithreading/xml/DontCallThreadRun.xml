@@ -56,4 +56,18 @@ public class Foo {
             }
             ]]></code>
     </test-code>
+    <test-code>
+        <description>calling run on superclass #6528</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class TestThread extends Thread {
+
+                public void run() {
+                    super.run();
+                    TestThread.super.run();
+                }
+
+            }
+        ]]></code>
+    </test-code>
 </test-data>
