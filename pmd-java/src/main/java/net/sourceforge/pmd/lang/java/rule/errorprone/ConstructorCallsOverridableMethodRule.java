@@ -28,7 +28,9 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JExecutableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
+import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.reporting.RuleContext;
 
@@ -153,7 +155,9 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
 
     private static boolean isCallOnThisInstance(ASTMethodCall call) {
         ASTExpression qualifier = call.getQualifier();
-        return qualifier == null || JavaAstUtils.isUnqualifiedThis(qualifier);
+        JTypeMirror declaringType = call.getMethodType().getDeclaringType();
+        JClassType typeOfThisInstance = call.getEnclosingType().getTypeMirror();
+        return declaringType.equals(typeOfThisInstance) && (qualifier == null || JavaAstUtils.isUnqualifiedThis(qualifier));
     }
 
     private static boolean isOverridable(JExecutableSymbol method) {
