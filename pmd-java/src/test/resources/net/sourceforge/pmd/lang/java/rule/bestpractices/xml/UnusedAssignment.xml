@@ -4020,4 +4020,88 @@ class Lock {
             }
             ]]></code>
     </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment: fix false negative with unconditional if(true) overwrite #6518</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'x' is never used (overwritten on line 5)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        int x = 0; // should be reported as unused
+        if (true) {
+            x = 1;
+        }
+        System.out.println(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment: if(false) case</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'x' is never used</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        int x = 0; // should be reported as unused
+        if (false) {
+            x = 1;
+        }
+        System.out.println(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment: if(true) with else branch</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'x' is never used (overwritten on line 5)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        int x = 0; // should be reported as unused
+        if (true) {
+            x = 1;
+        } else {
+            x = 2;
+        }
+        System.out.println(x);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>[java] UnusedAssignment: if(false) with else branch</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>The initializer for variable 'x' is never used (overwritten on line 7)</message>
+        </expected-messages>
+        <code><![CDATA[
+public class Test {
+    void test() {
+        int x = 0; // should be reported as unused
+        if (false) {
+            x = 1;
+        } else {
+            x = 2;
+        }
+        System.out.println(x);
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>
