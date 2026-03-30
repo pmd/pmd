@@ -50,8 +50,22 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
                 return null;
             }
 
+            // Check if nullCheckExpr is a null check on the instanceOfSubject
+            // If not, it might be a && or || chain, so we need to check all operands
             if (!isNullCheck(nullCheckExpr, instanceOfSubject)) {
-                return null;
+                // Check if nullCheckExpr is a && expression and contains a null check
+                if (isInfixExprWithOperator(nullCheckExpr, CONDITIONAL_AND)) {
+                    if (!containsNullCheckInChain((ASTInfixExpression) nullCheckExpr, instanceOfSubject, CONDITIONAL_AND)) {
+                        return null;
+                    }
+                } else if (isInfixExprWithOperator(nullCheckExpr, CONDITIONAL_OR)) {
+                    // For || case: a == null || b == null || !(a instanceof T)
+                    if (!containsNullCheckInChain((ASTInfixExpression) nullCheckExpr, instanceOfSubject, CONDITIONAL_OR)) {
+                        return null;
+                    }
+                } else {
+                    return null;
+                }
             }
 
             if (negated != isInfixExprWithOperator(nullCheckExpr, NE)) {
@@ -59,5 +73,32 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
             }
         }
         return null;
+    }
+    
+    /**
+     * Check if a && or || expression chain contains a null check on the given subject.
+     */
+    private boolean containsNullCheckInChain(ASTInfixExpression expr, StablePathMatcher subject, net.sourceforge.pmd.lang.java.ast.BinaryOp operator) {
+        // Check left operand
+        if (isNullCheck(expr.getLeftOperand(), subject)) {
+            return true;
+        }
+        // If left operand is also a same operator expression, recurse
+        if (isInfixExprWithOperator(expr.getLeftOperand(), operator)) {
+            if (containsNullCheckInChain((ASTInfixExpression) expr.getLeftOperand(), subject, operator)) {
+                return true;
+            }
+        }
+        // Check right operand
+        if (isNullCheck(expr.getRightOperand(), subject)) {
+            return true;
+        }
+        // If right operand is also a same operator expression, recurse
+        if (isInfixExprWithOperator(expr.getRightOperand(), operator)) {
+            if (containsNullCheckInChain((ASTInfixExpression) expr.getRightOperand(), subject, operator)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
