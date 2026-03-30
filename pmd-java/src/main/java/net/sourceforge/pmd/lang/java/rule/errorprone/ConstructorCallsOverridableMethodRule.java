@@ -157,7 +157,7 @@ public final class ConstructorCallsOverridableMethodRule extends AbstractJavaRul
         ASTExpression qualifier = call.getQualifier();
         JTypeMirror declaringType = call.getMethodType().getDeclaringType();
         JClassType typeOfThisInstance = call.getEnclosingType().getTypeMirror();
-        return declaringType.equals(typeOfThisInstance) && (qualifier == null || JavaAstUtils.isUnqualifiedThis(qualifier));
+        return typeOfThisInstance.isSubtypeOf(declaringType) && (qualifier == null || JavaAstUtils.isUnqualifiedThis(qualifier));
     }
 
     private static boolean isOverridable(JExecutableSymbol method) {

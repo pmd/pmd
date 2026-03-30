@@ -632,7 +632,7 @@ class Foo1 {
 ]]></code>
     </test-code>
     <test-code>
-        <description>[java] ConstructorCallsOverridableMethod: false positive with call to enclosing class</description>
+        <description>#6163 [java] ConstructorCallsOverridableMethod: false positive with call to enclosing class</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 public class TestOverridableNestedClass {
@@ -649,5 +649,22 @@ public class TestOverridableNestedClass {
     }
 }
 ]]></code>
+    </test-code>
+    <test-code>
+        <description>[java] ConstructorCallsOverridableMethod: flag implicit call to parent class</description>
+        <expected-problems>1</expected-problems>
+        <code><![CDATA[
+class SeniorClass {
+    public String toString(){
+        return "IAmSeniorClass";
+    }
+}
+
+class JuniorClass extends SeniorClass {
+    public SeniorClass(){
+        toString();
+    }
+}
+     ]]></code>
     </test-code>
 </test-data>
