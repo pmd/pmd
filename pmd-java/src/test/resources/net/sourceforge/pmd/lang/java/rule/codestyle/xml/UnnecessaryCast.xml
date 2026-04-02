@@ -1175,6 +1175,7 @@ class Tester {
             }
             ]]></code>
     </test-code>
+
     <test-code>
         <description>#6237 Error with lambdas in switch expr</description>
         <expected-problems>1</expected-problems>
@@ -1198,6 +1199,22 @@ class Tester {
             interface Supplier<T> {
                 T get();
             }
+            ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>#6427 False positive with bitwise operators</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void testCastLongIsUseful() {
+        int someInt = 1;
+        long withCast = ((long) someInt & 0xFF) << 32;
+        long withCast2 = ((long) someInt | 0xFF) << 32;
+        long withCast3 = ((long) someInt ^ 0xFF) << 32;
+        long withoutCast = (someInt & 0xFF) << 32;
+    }
+}
             ]]></code>
     </test-code>
 </test-data>
