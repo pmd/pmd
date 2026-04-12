@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Detects conditional expressions and statements where both branches are equal.
@@ -23,11 +24,11 @@ public class IdenticalConditionalBranchesRule extends AbstractJavaRulechainRule 
     }
 
     @Override
-    public Object visit(ASTIfStatement node, Object data) {
+    public RuleContext visit(ASTIfStatement node, RuleContext data) {
         if (node.getElseBranch() != null
                 && areEquivalent(normalize(node.getThenBranch()),
                     normalize(node.getElseBranch()))) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }
@@ -49,10 +50,10 @@ public class IdenticalConditionalBranchesRule extends AbstractJavaRulechainRule 
     }
 
     @Override
-    public Object visit(ASTConditionalExpression node, Object data) {
+    public RuleContext visit(ASTConditionalExpression node, RuleContext data) {
         if (node.getElseBranch() != null
             && JavaAstUtils.tokenEquals(node.getThenBranch(), node.getElseBranch())) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }

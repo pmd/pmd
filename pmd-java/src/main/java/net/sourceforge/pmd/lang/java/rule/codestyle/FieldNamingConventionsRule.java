@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -63,7 +64,7 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
     }
 
     @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
+    public RuleContext visit(ASTFieldDeclaration node, RuleContext data) {
         for (ASTVariableId id : node) {
             if (getProperty(EXCLUDED_NAMES).contains(id.getName())) {
                 continue;
@@ -86,13 +87,16 @@ public class FieldNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     @Override
-    public Object visit(ASTEnumConstant node, Object data) {
+    public RuleContext visit(ASTEnumConstant node, RuleContext data) {
         // This inlines checkMatches because there's no variable declarator id
 
         if (!getProperty(enumConstantRegex).matcher(node.getImage()).matches()) {
-            asCtx(data).addViolation(node, "enum constant",
-                                     node.getImage(),
-                                     getProperty(enumConstantRegex).toString());
+            data.addViolation(
+                    node,
+                    "enum constant",
+                    node.getImage(),
+                    getProperty(enumConstantRegex).toString()
+            );
         }
 
         return data;

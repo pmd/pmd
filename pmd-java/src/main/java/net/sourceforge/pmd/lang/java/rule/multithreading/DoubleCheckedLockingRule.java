@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * <pre>
@@ -61,7 +62,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public RuleContext visit(ASTMethodDeclaration node, RuleContext data) {
         if (node.isVoid() || node.getResultTypeNode() instanceof ASTPrimitiveType || node.getBody() == null) {
             return data;
         }
@@ -104,7 +105,7 @@ public class DoubleCheckedLockingRule extends AbstractJavaRule {
                         .filter(innerIf -> JavaRuleUtil.isNullCheck(innerIf.getCondition(), returnVariable))
                         .flatMap(innerIf -> innerIf.descendants(ASTAssignmentExpression.class));
                     if (assignments.all(assignment -> JavaAstUtils.isReferenceToVar(assignment.getLeftOperand(), returnVariable))) {
-                        assignments.firstOpt().ifPresent(ignored -> asCtx(data).addViolation(node));
+                        assignments.firstOpt().ifPresent(ignored -> data.addViolation(node));
                     }
                 }
             }

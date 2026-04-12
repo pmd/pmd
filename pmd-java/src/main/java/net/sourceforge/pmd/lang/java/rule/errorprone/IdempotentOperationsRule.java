@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAssignmentExpression;
 import net.sourceforge.pmd.lang.java.ast.AssignmentOp;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class IdempotentOperationsRule extends AbstractJavaRulechainRule {
 
@@ -16,10 +17,10 @@ public class IdempotentOperationsRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTAssignmentExpression node, Object data) {
+    public RuleContext visit(ASTAssignmentExpression node, RuleContext data) {
         if (node.getOperator() == AssignmentOp.ASSIGN
             && JavaAstUtils.isReferenceToSameVar(node.getLeftOperand(), node.getRightOperand())) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return null;
     }

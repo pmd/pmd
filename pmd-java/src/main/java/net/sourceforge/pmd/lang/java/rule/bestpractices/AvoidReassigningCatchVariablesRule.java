@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCatchParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidReassigningCatchVariablesRule extends AbstractJavaRule {
 
@@ -21,11 +22,11 @@ public class AvoidReassigningCatchVariablesRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTCatchParameter catchParam, Object data) {
+    public RuleContext visit(ASTCatchParameter catchParam, RuleContext data) {
         ASTVariableId caughtExceptionId = catchParam.getVarId();
         for (ASTNamedReferenceExpr usage : caughtExceptionId.getLocalUsages()) {
             if (usage.getAccessType() == AccessType.WRITE) {
-                asCtx(data).addViolation(usage, caughtExceptionId.getName());
+                data.addViolation(usage, caughtExceptionId.getName());
             }
 
         }

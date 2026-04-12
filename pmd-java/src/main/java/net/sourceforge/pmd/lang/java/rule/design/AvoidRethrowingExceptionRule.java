@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTCatchClause;
 import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Avoid rethrowing exceptions unless there's a subsequent catch clause
@@ -22,7 +23,7 @@ public class AvoidRethrowingExceptionRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTTryStatement tryStmt, Object data) {
+    public RuleContext visit(ASTTryStatement tryStmt, RuleContext data) {
         List<ASTCatchClause> catchClauses = tryStmt.getCatchClauses().toList();
         
         for (int i = 0; i < catchClauses.size(); i++) {
@@ -34,7 +35,7 @@ public class AvoidRethrowingExceptionRule extends AbstractJavaRulechainRule {
 
             List<ASTCatchClause> subsequentCatches = catchClauses.subList(i + 1, catchClauses.size());
             if (!hasSubsequentSuperclassCatch(currentCatch, subsequentCatches)) {
-                asCtx(data).addViolation(currentCatch);
+                data.addViolation(currentCatch);
             }
         }
 

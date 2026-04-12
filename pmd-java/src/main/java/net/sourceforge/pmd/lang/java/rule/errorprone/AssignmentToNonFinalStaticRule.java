@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * @author Eric Olander
@@ -26,25 +27,25 @@ public class AssignmentToNonFinalStaticRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTVariableAccess node, Object data) {
+    public RuleContext visit(ASTVariableAccess node, RuleContext data) {
         checkAccess(node, data);
         return null;
     }
 
     @Override
-    public Object visit(ASTFieldAccess node, Object data) {
+    public RuleContext visit(ASTFieldAccess node, RuleContext data) {
         checkAccess(node, data);
         return null;
     }
 
-    private void checkAccess(ASTNamedReferenceExpr node, Object data) {
+    private void checkAccess(ASTNamedReferenceExpr node, RuleContext data) {
         if (isInsideConstructor(node) && node.getAccessType() == AccessType.WRITE) {
             @Nullable
             JVariableSymbol symbol = node.getReferencedSym();
             if (symbol != null && symbol.isField()) {
                 JFieldSymbol field = (JFieldSymbol) symbol;
                 if (field.isStatic() && !field.isFinal()) {
-                    asCtx(data).addViolation(node, field.getSimpleName());
+                    data.addViolation(node, field.getSimpleName());
                 }
             }
         }

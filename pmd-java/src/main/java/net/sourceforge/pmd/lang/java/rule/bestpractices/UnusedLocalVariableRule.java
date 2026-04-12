@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnusedLocalVariableRule extends AbstractJavaRule {
 
@@ -25,23 +26,23 @@ public class UnusedLocalVariableRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTLocalVariableDeclaration decl, Object data) {
+    public RuleContext visit(ASTLocalVariableDeclaration decl, RuleContext data) {
         for (ASTVariableId varId : decl.getVarIds()) {
             if (JavaAstUtils.isNeverUsed(varId)
                 && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
-                asCtx(data).addViolation(varId, varId.getName());
+                data.addViolation(varId, varId.getName());
             }
         }
         return data;
     }
 
     @Override
-    public Object visit(ASTTypePattern pattern, Object data) {
+    public RuleContext visit(ASTTypePattern pattern, RuleContext data) {
         ASTVariableId varId = pattern.getVarId();
         if (JavaAstUtils.isNeverUsed(varId)
                 && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())
                 && !neededForSwitchOrRecord(pattern)) {
-            asCtx(data).addViolation(varId, varId.getName());
+            data.addViolation(varId, varId.getName());
         }
         return data;
     }

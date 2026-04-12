@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule finds StringBuffers which may have been pre-sized incorrectly.
@@ -122,7 +123,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
     }
 
     @Override
-    public Object visit(ASTVariableId node, Object data) {
+    public RuleContext visit(ASTVariableId node, RuleContext data) {
         if (!TypeTestUtil.isA(StringBuilder.class, node) && !TypeTestUtil.isA(StringBuffer.class, node)) {
             return data;
         }
@@ -143,7 +144,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
 
                 if (newState.rootNode != null) {
                     if (state.isInsufficient()) {
-                        asCtx(data).addViolation(state.rootNode, state.getParamsForViolation());
+                        data.addViolation(state.rootNode, state.getParamsForViolation());
                     }
                     state = newState;
                 } else {
@@ -153,7 +154,7 @@ public class InsufficientStringBufferDeclarationRule extends AbstractJavaRulecha
         }
 
         if (state.isInsufficient()) {
-            asCtx(data).addViolation(state.rootNode, state.getParamsForViolation());
+            data.addViolation(state.rootNode, state.getParamsForViolation());
         }
         return data;
     }

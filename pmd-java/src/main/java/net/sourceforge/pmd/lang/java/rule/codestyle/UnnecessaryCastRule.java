@@ -45,6 +45,7 @@ import net.sourceforge.pmd.lang.java.types.TypeOps.Convertibility;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext;
 import net.sourceforge.pmd.lang.java.types.ast.ExprContext.ExprContextKind;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Detects casts where the operand is already a subtype of the context
@@ -60,7 +61,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTCastExpression castExpr, Object data) {
+    public RuleContext visit(ASTCastExpression castExpr, RuleContext data) {
         ASTExpression operand = castExpr.getOperand();
 
         // eg in
@@ -110,7 +111,7 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
     }
 
     private void handleMethodCall(ASTCastExpression castExpr, JMethodSig methodType,
-            JTypeMirror operandType, Object data) {
+            JTypeMirror operandType, RuleContext data) {
         boolean generic = methodType.getSymbol().getFormalParameters().stream()
             .anyMatch(fp -> isTypeExpression(fp.getTypeMirror(Substitution.EMPTY)));
         if (!generic) {
@@ -161,8 +162,8 @@ public class UnnecessaryCastRule extends AbstractJavaRulechainRule {
         return coercionType.isRaw() && !operandType.isRaw();
     }
 
-    private void reportCast(ASTCastExpression castExpr, Object data) {
-        asCtx(data).addViolation(castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
+    private void reportCast(ASTCastExpression castExpr, RuleContext data) {
+        data.addViolation(castExpr, PrettyPrintingUtil.prettyPrintType(castExpr.getCastType()));
     }
 
     private static boolean castIsUnnecessaryToMatchContext(ExprContext context,

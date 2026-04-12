@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
 
@@ -33,7 +34,7 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTTryStatement node, Object data) {
+    public RuleContext visit(ASTTryStatement node, RuleContext data) {
         boolean isJava9OrLater = node.getLanguageVersion().compareToVersion("9") >= 0;
 
         ASTFinallyClause finallyClause = node.getFinallyClause();
@@ -47,7 +48,7 @@ public final class UseTryWithResourcesRule extends AbstractJavaRulechainRule {
                         && TypeTestUtil.isA(AutoCloseable.class, closeTarget)
                         && (isJava9OrLater || JavaAstUtils.isReferenceToLocal(closeTarget))
                         || hasAutoClosableArguments(method)) {
-                    asCtx(data).addViolation(node);
+                    data.addViolation(node);
                     break; // only report the first closeable
                 }
             }

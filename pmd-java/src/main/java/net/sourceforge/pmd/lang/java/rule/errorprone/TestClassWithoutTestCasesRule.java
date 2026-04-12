@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
 
@@ -31,7 +32,7 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext data) {
         if (isJUnit3Class(node) || isJUnit5NestedClass(node) || isTestClassByPattern(node)) {
             boolean hasTests =
                 node.getDeclarations(ASTMethodDeclaration.class)
@@ -40,7 +41,7 @@ public class TestClassWithoutTestCasesRule extends AbstractJavaRulechainRule {
                     .any(TestFrameworksUtil::isJUnit5NestedClass);
 
             if (!hasTests && !hasNestedTestClasses) {
-                asCtx(data).addViolation(node, node.getSimpleName());
+                data.addViolation(node, node.getSimpleName());
             }
         }
         return null;

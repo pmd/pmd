@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JFieldSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Implementation note: this rule currently ignores return types of y.x.z,
@@ -33,7 +34,7 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration method, Object data) {
+    public RuleContext visit(ASTMethodDeclaration method, RuleContext data) {
         if (!method.getResultTypeNode().getTypeMirror().isArray()
             || method.getVisibility() == Visibility.V_PRIVATE) {
             return data;
@@ -45,14 +46,14 @@ public class MethodReturnsInternalArrayRule extends AbstractJavaRulechainRule {
                 ASTNamedReferenceExpr reference = (ASTNamedReferenceExpr) expr;
 
                 if (JavaAstUtils.isRefToFieldOfThisInstance(reference)) {
-                    asCtx(data).addViolation(returnStmt, reference.getName());
+                    data.addViolation(returnStmt, reference.getName());
                 } else {
                     // considers static, non-final fields
                     JVariableSymbol symbol = reference.getReferencedSym();
                     if (symbol instanceof JFieldSymbol) {
                         JFieldSymbol field = (JFieldSymbol) symbol;
                         if (field.isStatic() && isInternal(field) && !isZeroLengthArrayConstant(field)) {
-                            asCtx(data).addViolation(returnStmt, reference.getName());
+                            data.addViolation(returnStmt, reference.getName());
                         }
                     }
                 }

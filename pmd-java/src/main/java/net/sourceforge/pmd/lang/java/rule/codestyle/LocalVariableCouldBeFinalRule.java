@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
 
@@ -24,7 +25,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTLocalVariableDeclaration node, Object data) {
+    public RuleContext visit(ASTLocalVariableDeclaration node, RuleContext data) {
         if (node.isFinal()) { // also for implicit finals, like resources, or lombok.val
             return data;
         }
@@ -37,7 +38,7 @@ public class LocalVariableCouldBeFinalRule extends AbstractJavaRulechainRule {
             for (ASTVariableId vid : node.getVarIds()) {
                 if (!JavaAstUtils.isNeverUsed(vid)) {
                     // filter out unused variables
-                    asCtx(data).addViolation(vid, vid.getName());
+                    data.addViolation(vid, vid.getName());
                 }
             }
         }

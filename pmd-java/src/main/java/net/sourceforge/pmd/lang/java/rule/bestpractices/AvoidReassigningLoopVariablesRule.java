@@ -59,7 +59,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
     }
 
     @Override
-    public Object visit(ASTForeachStatement loopStmt, Object data) {
+    public RuleContext visit(ASTForeachStatement loopStmt, RuleContext data) {
         ForeachReassignOption behavior = getProperty(FOREACH_REASSIGN);
         if (behavior == ForeachReassignOption.ALLOW) {
             return data;
@@ -72,7 +72,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                     ignoreNext = false;
                     continue;
                 }
-                asCtx(data).addViolation(usage, loopVar.getName());
+                data.addViolation(usage, loopVar.getName());
             } else {
                 ignoreNext = false;
             }
@@ -81,7 +81,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
     }
 
     @Override
-    public Object visit(ASTForStatement loopStmt, Object data) {
+    public RuleContext visit(ASTForStatement loopStmt, RuleContext data) {
         ForReassignOption behavior = getProperty(FOR_REASSIGN);
         if (behavior == ForReassignOption.ALLOW) {
             return data;
@@ -95,14 +95,14 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                         if (update != null && usage.ancestors(ASTForUpdate.class).first() == update) {
                             continue;
                         }
-                        asCtx(data).addViolation(usage, loopVar.getName());
+                        data.addViolation(usage, loopVar.getName());
                     }
                 }
             }
         } else {
             Set<String> loopVarNames = loopVars.collect(Collectors.mapping(ASTVariableId::getName, Collectors.toSet()));
             Set<String> labels = JavaAstUtils.getStatementLabels(loopStmt);
-            new ControlFlowCtx(false, loopVarNames, (RuleContext) data, labels, false, false).roamStatementsForExit(loopStmt.getBody());
+            new ControlFlowCtx(false, loopVarNames, data, labels, false, false).roamStatementsForExit(loopStmt.getBody());
         }
         return null;
     }
@@ -208,7 +208,7 @@ public class AvoidReassigningLoopVariablesRule extends AbstractJavaRulechainRule
                 .filter(it -> loopVarNames.contains(it.getName()))
                 .filter(it -> onlyConsiderWrite ? it.getAccessType() == AccessType.WRITE && !isSimpleSkipOperation(it)
                                                 : JavaAstUtils.isVarAccessReadAndWrite(it))
-                .forEach(it -> asCtx(ruleCtx).addViolation(it, it.getName()));
+                .forEach(it -> ruleCtx.addViolation(it, it.getName()));
         }
 
         private boolean isSimpleSkipOperation(ASTNamedReferenceExpr expr) {

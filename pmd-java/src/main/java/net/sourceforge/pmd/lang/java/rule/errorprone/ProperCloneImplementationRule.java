@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
 
@@ -22,11 +23,11 @@ public class ProperCloneImplementationRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration method, Object data) {
+    public RuleContext visit(ASTMethodDeclaration method, RuleContext data) {
         if (JavaAstUtils.isCloneMethod(method) && !method.isAbstract()) {
             ASTTypeDeclaration enclosingType = method.getEnclosingType();
             if (isNotFinal(enclosingType) && hasAnyAllocationOfClass(method, enclosingType)) {
-                asCtx(data).addViolation(method);
+                data.addViolation(method);
             }
         }
         return data;

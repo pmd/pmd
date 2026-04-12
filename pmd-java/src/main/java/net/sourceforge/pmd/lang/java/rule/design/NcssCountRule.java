@@ -62,15 +62,15 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visitJavaNode(JavaNode node, Object data) {
+    public RuleContext visitJavaNode(JavaNode node, RuleContext data) {
         int methodReportLevel = getProperty(METHOD_REPORT_LEVEL_DESCRIPTOR);
         int classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
         MetricOptions ncssOptions = MetricOptions.ofOptions(getProperty(NCSS_OPTIONS_DESCRIPTOR));
 
         if (node instanceof ASTTypeDeclaration) {
-            visitTypeDecl((ASTTypeDeclaration) node, classReportLevel, ncssOptions, (RuleContext) data);
+            visitTypeDecl((ASTTypeDeclaration) node, classReportLevel, ncssOptions, data);
         } else if (node instanceof ASTExecutableDeclaration) {
-            visitMethod((ASTExecutableDeclaration) node, methodReportLevel, ncssOptions, (RuleContext) data);
+            visitMethod((ASTExecutableDeclaration) node, methodReportLevel, ncssOptions, data);
         } else {
             throw AssertionUtil.shouldNotReachHere("node is not handled: " + node);
         }
@@ -92,7 +92,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
                                           node.getSimpleName(),
                                           classSize + " (Highest = " + classHighest + ")", };
 
-                asCtx(data).addViolation(node, (Object[]) messageParams);
+                data.addViolation(node, (Object[]) messageParams);
             }
         }
     }
@@ -106,7 +106,7 @@ public final class NcssCountRule extends AbstractJavaRulechainRule {
         if (JavaMetrics.NCSS.supports(node)) {
             int methodSize = MetricsUtil.computeMetric(JavaMetrics.NCSS, node, ncssOptions);
             if (methodSize >= level) {
-                asCtx(data).addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                data.addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                          PrettyPrintingUtil.displaySignature(node), "" + methodSize);
             }
         }

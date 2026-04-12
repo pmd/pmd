@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * An operation on an Immutable object (String, BigDecimal or BigInteger) won't
@@ -28,7 +29,7 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall node, Object data) {
+    public RuleContext visit(ASTMethodCall node, RuleContext data) {
         ASTExpression qualifier = node.getQualifier();
         boolean returnsVoid = node.getTypeMirror().isVoid();
         if (node.getParent() instanceof ASTExpressionStatement && qualifier != null && !returnsVoid) {
@@ -37,15 +38,15 @@ public class UselessOperationOnImmutableRule extends AbstractJavaRulechainRule {
             // result is ignored is a violation
             if (TypeTestUtil.isA(String.class, qualifier)) {
                 if (!"getChars".equals(node.getMethodName())) {
-                    asCtx(data).addViolation(node);
+                    data.addViolation(node);
                 }
             } else if (TypeTestUtil.isA(BigDecimal.class, qualifier)
                 || TypeTestUtil.isA(BigInteger.class, qualifier)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             } else if (TypeTestUtil.isA(Temporal.class, qualifier)
                 || TypeTestUtil.isA(Duration.class, qualifier)
                 || TypeTestUtil.isA(Period.class, qualifier)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
         return null;

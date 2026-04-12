@@ -67,7 +67,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTStringLiteral node, Object data) {
+    public RuleContext visit(ASTStringLiteral node, RuleContext data) {
         final String image = node.getConstValue();
 
         // Note: We used to check the addresses using
@@ -81,7 +81,7 @@ public class AvoidUsingHardCodedIPRule extends AbstractJavaRulechainRule {
             boolean checkIPv4MappedIPv6 = kindsToCheck.contains(AddressKinds.IPV4_MAPPED_IPV6);
 
             if (checkIPv4 && isIPv4(firstChar, image) || isIPv6(firstChar, image, checkIPv6, checkIPv4MappedIPv6)) {
-                asCtx(data).addViolation(node, image);
+                data.addViolation(node, image);
             }
         }
         return data;

@@ -9,6 +9,7 @@ import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
 import net.sourceforge.pmd.lang.java.ast.ASTNumericLiteral;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class AvoidUsingOctalValuesRule extends AbstractJavaRulechainRule {
@@ -25,10 +26,10 @@ public class AvoidUsingOctalValuesRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTNumericLiteral node, Object data) {
+    public RuleContext visit(ASTNumericLiteral node, RuleContext data) {
         if (node.getBase() == 8) {
             if (getProperty(STRICT_METHODS_DESCRIPTOR) || !isBetweenZeroAnd7(node)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
         return null;

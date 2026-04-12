@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -53,7 +54,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext data) {
 
         if (isTestClass(node)) {
             checkMatches(node, testClassRegex, data);
@@ -75,19 +76,19 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionRule<AST
 
 
     @Override
-    public Object visit(ASTEnumDeclaration node, Object data) {
+    public RuleContext visit(ASTEnumDeclaration node, RuleContext data) {
         checkMatches(node, enumerationRegex, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTRecordDeclaration node, Object data) {
+    public RuleContext visit(ASTRecordDeclaration node, RuleContext data) {
         checkMatches(node, classRegex, data); // property?
         return data;
     }
 
     @Override
-    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+    public RuleContext visit(ASTAnnotationTypeDeclaration node, RuleContext data) {
         checkMatches(node, annotationRegex, data);
         return data;
     }

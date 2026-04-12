@@ -97,7 +97,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTExpressionStatement node, Object data) {
+    public RuleContext visit(ASTExpressionStatement node, RuleContext data) {
         ASTExpression expr = node.getExpr();
         if (!(expr instanceof ASTMethodCall)) {
             return null;
@@ -107,7 +107,7 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
         String logLevel = getLogLevelName(methodCall);
         if (logLevel != null && guardStmtByLogLevel.containsKey(logLevel)) {
             if (needsGuard(methodCall) && !hasGuard(methodCall, logLevel)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
         return null;

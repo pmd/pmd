@@ -40,18 +40,18 @@ public class CommentSizeRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTCompilationUnit cUnit, Object data) {
+    public RuleContext visit(ASTCompilationUnit cUnit, RuleContext data) {
 
         for (JavaComment comment : cUnit.getComments()) {
             if (hasTooManyLines(comment)) {
-                asCtx(data).addViolationWithPosition(
+                data.addViolationWithPosition(
                     comment.getToken(),
                     cUnit.getAstInfo(),
                     comment.getReportLocation(),
                     getMessage() + ": Too many lines");
             }
 
-            reportLinesTooLong(cUnit, asCtx(data), comment);
+            reportLinesTooLong(cUnit, data, comment);
         }
 
         return null;

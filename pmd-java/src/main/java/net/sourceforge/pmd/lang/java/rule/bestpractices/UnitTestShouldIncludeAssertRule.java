@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
 
@@ -37,7 +38,7 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration method, Object data) {
+    public RuleContext visit(ASTMethodDeclaration method, RuleContext data) {
         boolean usesSoftAssertExtension = usesSoftAssertExtension(method.getEnclosingType());
         Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
         Predicate<ASTMethodCall> isAssertCall = TestFrameworksUtil::isProbableAssertCall;
@@ -52,7 +53,7 @@ public class UnitTestShouldIncludeAssertRule extends AbstractJavaRulechainRule {
             && getAllMethodCallsFrom(body)
                 .none(isAssertCall
                         .or(call -> extraAsserts.contains(call.getMethodName())))) {
-            asCtx(data).addViolation(method);
+            data.addViolation(method);
         }
         return data;
     }

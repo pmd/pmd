@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -22,9 +23,9 @@ public class MissingOverrideRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public RuleContext visit(ASTMethodDeclaration node, RuleContext data) {
         if (node.isOverridden() && !node.isAnnotationPresent(Override.class)) {
-            asCtx(data).addViolation(node, PrettyPrintingUtil.displaySignature(node));
+            data.addViolation(node, PrettyPrintingUtil.displaySignature(node));
         }
         return data;
     }

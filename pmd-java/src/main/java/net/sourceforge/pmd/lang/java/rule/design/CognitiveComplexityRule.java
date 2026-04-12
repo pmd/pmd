@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Cognitive complexity rule.
@@ -39,16 +40,16 @@ public class CognitiveComplexityRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public final Object visit(ASTMethodDeclaration node, Object data) {
+    public final RuleContext visit(ASTMethodDeclaration node, RuleContext data) {
         return visitMethod(node, data);
     }
 
     @Override
-    public final Object visit(ASTConstructorDeclaration node, Object data) {
+    public final RuleContext visit(ASTConstructorDeclaration node, RuleContext data) {
         return visitMethod(node, data);
     }
 
-    private Object visitMethod(ASTExecutableDeclaration node, Object data) {
+    private RuleContext visitMethod(ASTExecutableDeclaration node, RuleContext data) {
         if (!COGNITIVE_COMPLEXITY.supports(node)) {
             return data;
         }
@@ -56,7 +57,7 @@ public class CognitiveComplexityRule extends AbstractJavaRulechainRule {
         int cognitive = MetricsUtil.computeMetric(COGNITIVE_COMPLEXITY, node);
         final int reportLevel = getReportLevel();
         if (cognitive >= reportLevel) {
-            asCtx(data).addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
+            data.addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
                                      PrettyPrintingUtil.displaySignature(node),
                                      String.valueOf(cognitive),
                                      String.valueOf(reportLevel));

@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.NumericConstraints;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRule {
 
@@ -40,7 +41,7 @@ public class UnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRul
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration method, Object data) {
+    public RuleContext visit(ASTMethodDeclaration method, RuleContext data) {
         ASTBlock body = method.getBody();
         if (body != null && TestFrameworksUtil.isTestMethod(method)) {
             Set<String> extraAsserts = getProperty(EXTRA_ASSERT_METHOD_NAMES);
@@ -49,7 +50,7 @@ public class UnitTestContainsTooManyAssertsRule extends AbstractJavaRulechainRul
                                   || extraAsserts.contains(call.getMethodName()))
                                   .count();
             if (assertCount > getProperty(MAX_ASSERTS)) {
-                asCtx(data).addViolation(method);
+                data.addViolation(method);
             }
         }
         return data;

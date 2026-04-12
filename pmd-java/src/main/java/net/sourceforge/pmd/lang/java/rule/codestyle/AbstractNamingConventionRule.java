@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil.CaseConvention;
 
 
@@ -57,12 +58,15 @@ abstract class AbstractNamingConventionRule<T extends JavaNode> extends Abstract
     abstract String nameExtractor(T node);
 
 
-    void checkMatches(T node, PropertyDescriptor<Pattern> regex, Object data) {
+    void checkMatches(T node, PropertyDescriptor<Pattern> regex, RuleContext data) {
         String name = nameExtractor(node);
         if (!getProperty(regex).matcher(name).matches()) {
-            asCtx(data).addViolation(node, kindDisplayName(node, regex),
-                                     name,
-                                     getProperty(regex).toString());
+            data.addViolation(
+                    node,
+                    kindDisplayName(node, regex),
+                    name,
+                    getProperty(regex).toString()
+            );
         }
     }
 

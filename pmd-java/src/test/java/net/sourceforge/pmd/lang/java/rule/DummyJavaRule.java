@@ -33,8 +33,8 @@ public class DummyJavaRule extends AbstractJavaRule {
         }
 
         @Override
-        public Object visit(ASTVariableId node, Object data) {
-            asCtx(data).addViolation(node, node.getName());
+        public RuleContext visit(ASTVariableId node, RuleContext data) {
+            data.addViolation(node, node.getName());
             return super.visit(node, data);
         }
     }

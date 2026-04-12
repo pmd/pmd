@@ -29,17 +29,17 @@ public class InefficientStringBufferingRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall node, Object data) {
+    public RuleContext visit(ASTMethodCall node, RuleContext data) {
         if (JavaRuleUtil.isStringBuilderCtorOrAppend(node)) {
-            checkArgument(node.getArguments(), (RuleContext) data);
+            checkArgument(node.getArguments(), data);
         }
         return null;
     }
 
     @Override
-    public Object visit(ASTConstructorCall node, Object data) {
+    public RuleContext visit(ASTConstructorCall node, RuleContext data) {
         if (JavaRuleUtil.isStringBuilderCtorOrAppend(node)) {
-            checkArgument(node.getArguments(), (RuleContext) data);
+            checkArgument(node.getArguments(), data);
         }
         return null;
     }

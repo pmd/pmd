@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableDeclarator;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class NullAssignmentRule extends AbstractJavaRulechainRule {
 
@@ -24,18 +25,18 @@ public class NullAssignmentRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTNullLiteral node, Object data) {
+    public RuleContext visit(ASTNullLiteral node, RuleContext data) {
         if (node.getParent() instanceof ASTAssignmentExpression) {
             ASTAssignmentExpression assignment = (ASTAssignmentExpression) node.getParent();
             if (isAssignmentToFinal(assignment)) {
                 return data;
             }
             if (assignment.getRightOperand() == node) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         } else if (node.getParent() instanceof ASTConditionalExpression) {
             if (isBadTernary((ASTConditionalExpression) node.getParent(), node)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
 

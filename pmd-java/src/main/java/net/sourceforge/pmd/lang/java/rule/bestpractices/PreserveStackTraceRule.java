@@ -35,6 +35,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     // todo dfa
@@ -56,7 +57,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTCatchClause catchStmt, Object data) {
+    public RuleContext visit(ASTCatchClause catchStmt, RuleContext data) {
         ASTVariableId exceptionParam = catchStmt.getParameter().getVarId();
         if (JavaRuleUtil.isExplicitUnusedVarName(exceptionParam.getName())) {
             // ignore those
@@ -68,7 +69,7 @@ public class PreserveStackTraceRule extends AbstractJavaRulechainRule {
             ASTExpression thrownExpr = throwStatement.getExpr();
 
             if (!exprConsumesException(Collections.singleton(exceptionParam), thrownExpr, true)) {
-                asCtx(data).addViolation(thrownExpr, exceptionParam.getName());
+                data.addViolation(thrownExpr, exceptionParam.getName());
             }
         }
         recursingOnVars.clear();

@@ -27,6 +27,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher.CompoundInvocationMatcher;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Checks for variables in methods that are defined before they are really
@@ -49,7 +50,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTLocalVariableDeclaration node, Object data) {
+    public RuleContext visit(ASTLocalVariableDeclaration node, RuleContext data) {
         if (node.getParent() instanceof ASTForInit
             || node.getParent() instanceof ASTResource) {
             // those don't count
@@ -76,7 +77,7 @@ public class PrematureDeclarationRule extends AbstractJavaRulechainRule {
                 }
 
                 if (hasExit(stmt)) {
-                    asCtx(data).addViolation(node, id.getName());
+                    data.addViolation(node, id.getName());
                     break;
                 }
             }

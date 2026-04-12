@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefiniti
 import net.sourceforge.pmd.lang.java.symbols.JLocalVariableSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Finds <code>throw</code> statements containing <code>NullPointerException</code>
@@ -29,14 +30,14 @@ public class AvoidThrowingNullPointerExceptionRule extends AbstractJavaRulechain
     }
 
     @Override
-    public Object visit(ASTThrowStatement throwStmt, Object data) {
+    public RuleContext visit(ASTThrowStatement throwStmt, RuleContext data) {
         ASTExpression thrown = throwStmt.getExpr();
         if (TypeTestUtil.isA(NullPointerException.class, thrown)) {
-            asCtx(data).addViolation(throwStmt);
+            data.addViolation(throwStmt);
         } else if (thrown instanceof ASTVariableAccess) {
             JVariableSymbol sym = ((ASTVariableAccess) thrown).getReferencedSym();
             if (sym instanceof JLocalVariableSymbol && hasNpeValue((ASTVariableAccess) thrown)) {
-                asCtx(data).addViolation(throwStmt);
+                data.addViolation(throwStmt);
             }
         }
         return null;

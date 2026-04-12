@@ -218,8 +218,8 @@ public class ModifierOrderRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTModifierList modList, Object data) {
-        RuleContext ctx = asCtx(data);
+    public RuleContext visit(ASTModifierList modList, RuleContext data) {
+        RuleContext ctx = data;
         boolean acceptsTypeAnnot = contextCanHaveTypeAnnots(modList);
         ModifierOrderEvents eventHandler = new ModifierOrderEvents() {
 

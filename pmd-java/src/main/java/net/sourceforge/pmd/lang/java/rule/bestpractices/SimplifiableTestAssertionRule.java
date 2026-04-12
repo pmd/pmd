@@ -23,6 +23,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.JPrimitiveType.PrimitiveTypeKind;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  *
@@ -36,7 +37,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall node, Object data) {
+    public RuleContext visit(ASTMethodCall node, RuleContext data) {
         final boolean isAssertTrue = isAssertionCall(node, "assertTrue");
         final boolean isAssertFalse = isAssertionCall(node, "assertFalse");
 
@@ -58,7 +59,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
                         suggestion = isPositive ? "assertSame" : "assertNotSame";
                     }
                 }
-                asCtx(data).addViolation(node, suggestion);
+                data.addViolation(node, suggestion);
 
             } else {
                 @Nullable ASTExpression negatedExprOperand = getNegatedExprOperand(lastArg);
@@ -66,17 +67,17 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
                 if (OBJECT_EQUALS.matchesCall(negatedExprOperand)) {
                     //assertTrue(!a.equals(b))
                     String suggestion = isAssertTrue ? "assertNotEquals" : "assertEquals";
-                    asCtx(data).addViolation(node, suggestion);
+                    data.addViolation(node, suggestion);
 
                 } else if (negatedExprOperand != null) {
                     //assertTrue(!something)
                     String suggestion = isAssertTrue ? "assertFalse" : "assertTrue";
-                    asCtx(data).addViolation(node, suggestion);
+                    data.addViolation(node, suggestion);
 
                 } else if (OBJECT_EQUALS.matchesCall(lastArg)) {
                     //assertTrue(a.equals(b))
                     String suggestion = isAssertTrue ? "assertEquals" : "assertNotEquals";
-                    asCtx(data).addViolation(node, suggestion);
+                    data.addViolation(node, suggestion);
                 }
             }
         }
@@ -99,7 +100,7 @@ public class SimplifiableTestAssertionRule extends AbstractJavaRulechainRule {
                     if (comp1.getTypeMirror().isPrimitive(PrimitiveTypeKind.BOOLEAN)) {
                         ASTBooleanLiteral literal = (ASTBooleanLiteral) comp0;
                         String suggestion = literal.isTrue() == isAssertEquals ? "assertTrue" : "assertFalse";
-                        asCtx(data).addViolation(node, suggestion);
+                        data.addViolation(node, suggestion);
                     }
                 }
             }

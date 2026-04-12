@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -45,7 +46,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
     protected abstract int getMetric(T node);
 
     @Override
-    public Object visitJavaNode(JavaNode node, Object data) {
+    public RuleContext visitJavaNode(JavaNode node, RuleContext data) {
         @SuppressWarnings("unchecked")
         T t = (T) node;
         // since we only visit this node, it's ok
@@ -54,7 +55,7 @@ public abstract class AbstractJavaCounterCheckRule<T extends JavaNode> extends A
             int metric = getMetric(t);
             int threshold = getProperty(reportLevel);
             if (metric >= threshold) {
-                asCtx(data).addViolation(node, metric, threshold);
+                data.addViolation(node, metric, threshold);
             }
         }
 

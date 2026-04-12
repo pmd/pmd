@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.rule.design.UseUtilityClassRule;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule detects non-static classes with no constructors;
@@ -43,7 +44,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     @Override
-    public Object visit(final ASTClassDeclaration node, final Object data) {
+    public RuleContext visit(final ASTClassDeclaration node, final RuleContext data) {
         // Ignore interfaces / static classes / classes that have a constructor / classes ignored through annotations
         if (!node.isRegularClass()
             || node.isStatic()
@@ -57,7 +58,7 @@ public class AtLeastOneConstructorRule extends AbstractIgnoredAnnotationRule {
                                              .filterNot(it -> it instanceof ASTTypeDeclaration);
         if (members.isEmpty() || members.any(it -> !it.hasModifiers(JModifier.STATIC))) {
             // Do we have any non-static members?
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
 
         return data;

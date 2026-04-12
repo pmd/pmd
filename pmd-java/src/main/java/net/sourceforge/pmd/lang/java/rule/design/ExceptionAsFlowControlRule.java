@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Catches the use of exception statements as a flow control device.
@@ -28,7 +29,7 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTThrowStatement node, Object data) {
+    public RuleContext visit(ASTThrowStatement node, RuleContext data) {
         JTypeMirror thrownType = node.getExpr().getTypeMirror();
         JavaNode parent = node.getParent();
         while (!(parent instanceof ASTBodyDeclaration)) {
@@ -43,7 +44,7 @@ public class ExceptionAsFlowControlRule extends AbstractJavaRulechainRule {
                 for (ASTCatchClause catchClause : ((ASTTryStatement) parent).getCatchClauses()) {
                     if (catchClause.getParameter().getAllExceptionTypes().any(it -> thrownType.isSubtypeOf(it.getTypeMirror()))) {
                         if (!JavaAstUtils.isJustRethrowException(catchClause)) {
-                            asCtx(data).addViolation(catchClause, node.getReportLocation().getStartLine());
+                            data.addViolation(catchClause, node.getReportLocation().getStartLine());
                             return null;
                         } else {
                             break;

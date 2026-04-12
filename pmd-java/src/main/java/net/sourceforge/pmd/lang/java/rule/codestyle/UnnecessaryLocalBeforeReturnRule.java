@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * @deprecated Since 7.17.0. This rule is replaced by {@link VariableCanBeInlinedRule}.
@@ -28,7 +29,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
     }
 
     @Override
-    public Object visit(ASTReturnStatement returnStmt, Object data) {
+    public RuleContext visit(ASTReturnStatement returnStmt, RuleContext data) {
         if (!(returnStmt.getExpr() instanceof ASTVariableAccess)) {
             return null;
         }
@@ -50,7 +51,7 @@ public class UnnecessaryLocalBeforeReturnRule extends AbstractJavaRulechainRule 
 
         if (!getProperty(STATEMENT_ORDER_MATTERS)
             || varDecl.ancestors(ASTLocalVariableDeclaration.class).firstOrThrow().getNextSibling() == returnStmt) {
-            asCtx(data).addViolation(varDecl, varDecl.getName());
+            data.addViolation(varDecl, varDecl.getName());
         }
         return null;
     }

@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTryStatement;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
 
@@ -29,7 +30,7 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTReturnStatement node, Object data) {
+    public RuleContext visit(ASTReturnStatement node, RuleContext data) {
         if (node.getNumChildren() > 0) {
             return null;
         }
@@ -39,7 +40,7 @@ public class UnnecessaryReturnRule extends AbstractJavaRulechainRule {
                 .filterIs(ASTStatement.class);
 
         if (enclosingStatements.all(UnnecessaryReturnRule::isLastStatementOfParent)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return null;
     }

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.LanguageRegistry;
 import net.sourceforge.pmd.lang.java.ast.ASTUnaryExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.rule.Rule;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.test.PmdRuleTst;
 
 class UnnecessaryWarningSuppressionTest extends PmdRuleTst {
@@ -33,9 +34,9 @@ class UnnecessaryWarningSuppressionTest extends PmdRuleTst {
         }
 
         @Override
-        public Object visit(ASTUnaryExpression node, Object data) {
+        public RuleContext visit(ASTUnaryExpression node, RuleContext data) {
             if (node.getOperator().isIncrement()) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
             return null;
         }
@@ -51,9 +52,9 @@ class UnnecessaryWarningSuppressionTest extends PmdRuleTst {
         }
 
         @Override
-        public Object visit(ASTUnaryExpression node, Object data) {
+        public RuleContext visit(ASTUnaryExpression node, RuleContext data) {
             if (node.getOperator().isDecrement()) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
             return null;
         }

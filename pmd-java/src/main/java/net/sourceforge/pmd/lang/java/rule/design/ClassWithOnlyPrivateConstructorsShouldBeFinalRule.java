@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJavaRulechainRule {
 
@@ -21,14 +22,14 @@ public class ClassWithOnlyPrivateConstructorsShouldBeFinalRule extends AbstractJ
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext data) {
         if (node.isRegularClass()
             && !node.hasModifiers(JModifier.FINAL)
             && !node.isAnnotationPresent("lombok.Value")
             && !hasPublicLombokConstructors(node)
             && hasOnlyPrivateCtors(node)
             && hasNoSubclasses(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return null;
     }

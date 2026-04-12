@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTWhileStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.StringUtil;
 
 public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulechainRule {
@@ -92,7 +93,7 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
 
 
     @Override
-    public Object visit(ASTBreakStatement node, Object data) {
+    public RuleContext visit(ASTBreakStatement node, RuleContext data) {
         // skip breaks, that are within a switch statement
         if (node.ancestors().get(1) instanceof ASTSwitchStatement) {
             return data;
@@ -106,10 +107,14 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
      */
     @Deprecated
     protected Object check(PropertyDescriptor<List<LoopTypes>> property, Node node, Object data) {
+        return null;
+    }
+
+    private RuleContext check(PropertyDescriptor<List<LoopTypes>> property, Node node, RuleContext data) {
         return checkInternal(property, node, data);
     }
 
-    private Object checkInternal(PropertyDescriptor<List<LoopTypes>> property, Node node, Object data) {
+    private RuleContext checkInternal(PropertyDescriptor<List<LoopTypes>> property, Node node, RuleContext data) {
         Node parent = node.getParent();
         if (parent instanceof ASTBlock) {
             parent = parent.getParent();
@@ -121,15 +126,15 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
         }
         if (parent instanceof ASTForStatement || parent instanceof ASTForeachStatement) {
             if (hasPropertyValue(property, LoopTypes.FOR)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         } else if (parent instanceof ASTWhileStatement) {
             if (hasPropertyValue(property, LoopTypes.WHILE)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         } else if (parent instanceof ASTDoStatement) {
             if (hasPropertyValue(property, LoopTypes.DO)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
         return data;
@@ -150,13 +155,13 @@ public class AvoidBranchingStatementAsLastInLoopRule extends AbstractJavaRulecha
 
 
     @Override
-    public Object visit(ASTContinueStatement node, Object data) {
+    public RuleContext visit(ASTContinueStatement node, RuleContext data) {
         return check(CHECK_CONTINUE_LOOP_TYPES_PROPERTY, node, data);
     }
 
 
     @Override
-    public Object visit(ASTReturnStatement node, Object data) {
+    public RuleContext visit(ASTReturnStatement node, RuleContext data) {
         return check(CHECK_RETURN_LOOP_TYPES_PROPERTY, node, data);
     }
 

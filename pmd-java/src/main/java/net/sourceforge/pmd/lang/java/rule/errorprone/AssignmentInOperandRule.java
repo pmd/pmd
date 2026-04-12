@@ -72,15 +72,15 @@ public class AssignmentInOperandRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTAssignmentExpression node, Object data) {
-        checkAssignment(node, (RuleContext) data);
+    public RuleContext visit(ASTAssignmentExpression node, RuleContext data) {
+        checkAssignment(node, data);
         return null;
     }
 
     @Override
-    public Object visit(ASTUnaryExpression node, Object data) {
+    public RuleContext visit(ASTUnaryExpression node, RuleContext data) {
         if (!getProperty(ALLOW_INCREMENT_DECREMENT_DESCRIPTOR) && !node.getOperator().isPure()) {
-            checkAssignment(node, (RuleContext) data);
+            checkAssignment(node, data);
         }
         return null;
     }

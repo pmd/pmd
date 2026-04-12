@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableAccess;
 import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulechainRule {
 
@@ -28,7 +29,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
     }
 
     @Override
-    public Object visit(ASTConstructorCall node, Object data) {
+    public RuleContext visit(ASTConstructorCall node, RuleContext data) {
         if (TypeTestUtil.isA(type, node)) {
             ASTArgumentList arguments = node.getArguments();
             if (arguments.size() > 0) {
@@ -44,7 +45,7 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
      *
      * <p>Then checks the expression for being a string literal or array
      */
-    private void validateProperKeyArgument(Object data, ASTExpression firstArgumentExpression) {
+    private void validateProperKeyArgument(RuleContext data, ASTExpression firstArgumentExpression) {
         if (firstArgumentExpression == null) {
             return;
         }
@@ -70,28 +71,28 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
                 validateVarUsages(data, varDecl);
             } else if (varAccess.isCompileTimeConstant()
                     && varAccess.getConstValue() instanceof String) {
-                asCtx(data).addViolation(varAccess);
+                data.addViolation(varAccess);
             }
         } else if (firstArgumentExpression instanceof ASTArrayAllocation) {
             // hard coded array
             ASTArrayInitializer arrayInit = ((ASTArrayAllocation) firstArgumentExpression).getArrayInitializer();
             if (arrayInit != null) {
-                asCtx(data).addViolation(arrayInit);
+                data.addViolation(arrayInit);
             }
         } else if (firstArgumentExpression instanceof ASTArrayInitializer) {
             // hard coded array
-            asCtx(data).addViolation(firstArgumentExpression);
+            data.addViolation(firstArgumentExpression);
         } else {
             // string literal
             ASTStringLiteral literal = firstArgumentExpression.descendantsOrSelf()
                     .filterIs(ASTStringLiteral.class).first();
             if (literal != null) {
-                asCtx(data).addViolation(literal);
+                data.addViolation(literal);
             }
         }
     }
 
-    private void validateVarUsages(Object data, ASTVariableId varDecl) {
+    private void validateVarUsages(RuleContext data, ASTVariableId varDecl) {
         varDecl.getLocalUsages().stream()
             .filter(u -> u.getAccessType() == AccessType.WRITE)
             .filter(u -> u.getParent() instanceof ASTAssignmentExpression)

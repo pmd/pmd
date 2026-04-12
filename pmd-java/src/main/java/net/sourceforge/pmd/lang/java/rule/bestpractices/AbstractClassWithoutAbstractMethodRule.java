@@ -8,6 +8,7 @@ package net.sourceforge.pmd.lang.java.rule.bestpractices;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRulechainRule {
 
@@ -16,13 +17,13 @@ public class AbstractClassWithoutAbstractMethodRule extends AbstractJavaRulechai
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext data) {
         if (node.isInterface() || !node.isAbstract() || doesExtend(node) || doesImplement(node)) {
             return data;
         }
 
         if (node.getDeclarations(ASTMethodDeclaration.class).none(ASTMethodDeclaration::isAbstract)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }

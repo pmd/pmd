@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * @since 7.22.0
@@ -39,7 +40,7 @@ public class UnnecessaryInterfaceDeclarationRule extends AbstractJavaRulechainRu
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object context) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext context) {
         Map<JTypeMirror, JavaNode> directSupertypes = new HashMap<>();
         ASTList<?> ext = node.children(ASTExtendsList.class).first();
         ASTList<?> impl = node.children(ASTImplementsList.class).first();
@@ -57,13 +58,13 @@ public class UnnecessaryInterfaceDeclarationRule extends AbstractJavaRulechainRu
     }
 
     private void checkRelated(JavaNode supertypeNode, JTypeMirror supertype, JTypeMirror supertype1,
-                              Object context) {
+                              RuleContext context) {
         List<String> allowed = getProperty(ALLOWED_INTERFACES);
         if (allowed.contains(supertype.toString())) {
             return;
         }
         if (TypeTestUtil.isA(supertype, supertype1)) {
-            asCtx(context).addViolation(supertypeNode, supertype, supertype1);
+            context.addViolation(supertypeNode, supertype, supertype1);
         }
     }
 }

@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
@@ -34,7 +35,7 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTClassDeclaration klass, Object data) {
+    public RuleContext visit(ASTClassDeclaration klass, RuleContext data) {
         if (JavaAstUtils.hasAnyAnnotation(klass, IGNORED_CLASS_ANNOT)
             || TypeTestUtil.isA("junit.framework.TestSuite", klass) // suite method is ok
             || klass.isInterface()
@@ -77,7 +78,7 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
 
         if (hasAnyMethods && hasNonPrivateCtor) {
-            asCtx(data).addViolation(klass);
+            data.addViolation(klass);
         }
         return null;
     }

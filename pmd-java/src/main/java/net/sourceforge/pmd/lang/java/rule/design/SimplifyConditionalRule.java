@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.StablePathMatcher;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
@@ -27,7 +28,7 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTInfixExpression node, Object data) {
+    public RuleContext visit(ASTInfixExpression node, RuleContext data) {
         if (node.getOperator() == INSTANCEOF) {
 
             StablePathMatcher instanceOfSubject = StablePathMatcher.matching(node.getLeftOperand());
@@ -55,7 +56,7 @@ public class SimplifyConditionalRule extends AbstractJavaRulechainRule {
             }
 
             if (negated != isInfixExprWithOperator(nullCheckExpr, NE)) {
-                asCtx(data).addViolation(nullCheckExpr);
+                data.addViolation(nullCheckExpr);
             }
         }
         return null;

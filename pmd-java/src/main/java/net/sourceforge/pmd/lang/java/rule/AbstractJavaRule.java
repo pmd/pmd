@@ -17,10 +17,10 @@ import net.sourceforge.pmd.reporting.RuleContext;
  * TODO add documentation
  *
  */
-public abstract class AbstractJavaRule extends AbstractRule implements JavaVisitor {
+public abstract class AbstractJavaRule extends AbstractRule implements JavaVisitor<RuleContext, RuleContext> {
 
     @Override
-    public Object visitNode(Node node, Object param) {
+    public RuleContext visitNode(Node node, RuleContext param) {
         node.children().forEach(n -> n.acceptVisitor(this, param));
         return param;
     }

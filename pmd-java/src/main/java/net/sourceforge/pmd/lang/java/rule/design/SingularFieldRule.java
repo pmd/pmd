@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefinitionSet;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaPropertyUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -71,7 +72,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visitJavaNode(JavaNode node, Object data) {
+    public RuleContext visitJavaNode(JavaNode node, RuleContext data) {
         ASTTypeDeclaration enclosingType = (ASTTypeDeclaration) node;
         if (JavaAstUtils.hasAnyAnnotation(enclosingType, INVALIDATING_CLASS_ANNOT)) {
             return null;
@@ -88,7 +89,7 @@ public class SingularFieldRule extends AbstractJavaRulechainRule {
                     dataflow = DataflowPass.getDataflowResult(node.getRoot());
                 }
                 if (isSingularField(enclosingType, varId, dataflow)) {
-                    asCtx(data).addViolation(varId, varId.getName());
+                    data.addViolation(varId, varId.getName());
                 }
             }
         }

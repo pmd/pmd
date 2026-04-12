@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class AddEmptyStringRule extends AbstractJavaRulechainRule {
@@ -23,7 +24,7 @@ public class AddEmptyStringRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTStringLiteral node, Object data) {
+    public RuleContext visit(ASTStringLiteral node, RuleContext data) {
         if (!node.isEmpty()) {
             return null;
         }
@@ -40,10 +41,10 @@ public class AddEmptyStringRule extends AbstractJavaRulechainRule {
         return null;
     }
 
-    private void checkExpr(Object data, JavaNode parent, JavaNode emptyStringNode) {
+    private void checkExpr(RuleContext data, JavaNode parent, JavaNode emptyStringNode) {
         if (JavaAstUtils.isInfixExprWithOperator(parent, BinaryOp.ADD)
             && parent.ancestors(ASTAnnotation.class).isEmpty()) {
-            asCtx(data).addViolationWithPosition(parent, parent.getAstInfo(),
+            data.addViolationWithPosition(parent, parent.getAstInfo(),
                 emptyStringNode.getReportLocation(), getMessage());
         }
     }

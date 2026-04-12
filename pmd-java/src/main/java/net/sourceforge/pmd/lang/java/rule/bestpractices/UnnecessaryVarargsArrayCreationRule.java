@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRule {
 
@@ -23,7 +24,7 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
     }
 
     @Override
-    public Object visit(ASTArrayAllocation array, Object data) {
+    public RuleContext visit(ASTArrayAllocation array, RuleContext data) {
         if (array.getArrayInitializer() == null) {
             return null;
         }
@@ -44,7 +45,7 @@ public class UnnecessaryVarargsArrayCreationRule extends AbstractJavaRulechainRu
             if (array.getTypeMirror().equals(lastFormal)) {
                 // If type not equal, then it would not actually be equivalent to remove the array creation.
                 // That case may be caught by ConfusingArgumentToVarargsMethod
-                asCtx(data).addViolation(array);
+                data.addViolation(array);
             }
         }
 

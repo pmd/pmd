@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule detects private methods, that are not used and can therefore be
@@ -53,7 +54,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
     }
 
     @Override
-    public Object visit(ASTCompilationUnit file, Object param) {
+    public RuleContext visit(ASTCompilationUnit file, RuleContext param) {
         // this does a couple of traversals:
         // - one to find annotations that potentially reference a method
         // - one to collect candidates, that is, potentially unused methods
@@ -81,7 +82,7 @@ public class UnusedPrivateMethodRule extends AbstractIgnoredAnnotationRule {
             });
 
         for (ASTMethodDeclaration unusedMethod : candidates.values()) {
-            asCtx(param).addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
+            param.addViolation(unusedMethod, PrettyPrintingUtil.displaySignature(unusedMethod));
         }
         return null;
     }

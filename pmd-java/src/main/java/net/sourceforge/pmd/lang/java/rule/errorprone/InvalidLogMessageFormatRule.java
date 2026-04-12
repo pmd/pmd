@@ -33,6 +33,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.ReachingDefiniti
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
@@ -60,7 +61,7 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall call, Object data) {
+    public RuleContext visit(ASTMethodCall call, RuleContext data) {
         if (isLoggerCall(call, "org.slf4j.Logger", SLF4J)
             || isLoggerCall(call, "org.apache.logging.log4j.Logger", APACHE_SLF4J)) {
 
@@ -95,11 +96,11 @@ public class InvalidLogMessageFormatRule extends AbstractJavaRulechainRule {
             }
 
             if (providedArguments < expectedArguments) {
-                asCtx(data).addViolationWithMessage(
+                data.addViolationWithMessage(
                     call,
                     "Missing arguments," + getExpectedMessage(providedArguments, expectedArguments));
             } else if (providedArguments > expectedArguments) {
-                asCtx(data).addViolationWithMessage(
+                data.addViolationWithMessage(
                     call,
                     "Too many arguments," + getExpectedMessage(providedArguments, expectedArguments));
             }

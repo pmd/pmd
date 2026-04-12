@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -95,7 +96,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTVariableId node, Object data) {
+    public RuleContext visit(ASTVariableId node, RuleContext data) {
         if (!isStringBuilderOrBuffer(node)) {
             return data;
         }
@@ -152,7 +153,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
      *
      * @param node
      */
-    private void checkConstructor(Object data, ASTVariableId node) {
+    private void checkConstructor(RuleContext data, ASTVariableId node) {
         ASTExpression initializer = node.getInitializer();
         if (initializer == null) {
             return;
@@ -173,7 +174,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
         }
     }
 
-    private void analyzeInvocation(Object data, InvocationNode invocation) {
+    private void analyzeInvocation(RuleContext data, InvocationNode invocation) {
         if (!(invocation instanceof ASTExpression)) {
             return;
         }
@@ -192,7 +193,7 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
         }
     }
 
-    private void processAdditive(Object data, InvocationNode invocation) {
+    private void processAdditive(RuleContext data, InvocationNode invocation) {
         ASTExpression firstArg = invocation.getArguments().getFirstChild();
         if (firstArg.descendants(ASTNamedReferenceExpr.class).count() > 0) {
             // at least one variable/field access found
@@ -255,10 +256,10 @@ public class ConsecutiveLiteralAppendsRule extends AbstractJavaRulechainRule {
      * Helper method checks to see if a violation occurred, and adds a
      * RuleViolation if it did
      */
-    private void checkForViolation(Object data) {
+    private void checkForViolation(RuleContext data) {
         if (counter.isViolation()) {
             assert counter.getReportNode() != null;
-            asCtx(data).addViolation(counter.getReportNode(), String.valueOf(counter.getCounter()));
+            data.addViolation(counter.getReportNode(), String.valueOf(counter.getCounter()));
         }
     }
 

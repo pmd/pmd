@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
 import net.sourceforge.pmd.properties.PropertyBuilder.RegexPropertyBuilder;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class MethodNamingConventionsRule extends AbstractNamingConventionRule<ASTMethodDeclaration> {
@@ -38,7 +39,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionRule<AS
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public RuleContext visit(ASTMethodDeclaration node, RuleContext data) {
 
         if (node.isOverridden()) {
             return data;

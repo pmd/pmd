@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChain;
 import net.sourceforge.pmd.lang.java.symbols.table.coreimpl.ShadowChainIterator;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.AssertionUtil;
 
 public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule {
@@ -60,7 +61,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
     }
 
     @Override
-    public Object visit(final ASTClassType deepest, Object data) {
+    public RuleContext visit(final ASTClassType deepest, RuleContext data) {
         if (deepest.getQualifier() != null) {
             // the child will be visited instead
             return data;
@@ -95,7 +96,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                     // we don't actually know where the method came from
                     String simpleName = formatMemberName(next, methodCall.getMethodType().getSymbol());
                     String unnecessary = produceQualifier(deepest, next, true);
-                    asCtx(data).addViolation(next, unnecessary, simpleName, "");
+                    data.addViolation(next, unnecessary, simpleName, "");
                     return null;
                 }
             } else if (getProperty(REPORT_FIELDS) && opa instanceof ASTFieldAccess) {
@@ -105,7 +106,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
                     String simpleName = formatMemberName(next, fieldAccess.getReferencedSym());
                     String reasonToString = unnecessaryReasonWrapper(reasonForFieldInScope);
                     String unnecessary = produceQualifier(deepest, next, true);
-                    asCtx(data).addViolation(next, unnecessary, simpleName, reasonToString);
+                    data.addViolation(next, unnecessary, simpleName, reasonToString);
                     return null;
                 }
             }
@@ -115,7 +116,7 @@ public class UnnecessaryFullyQualifiedNameRule extends AbstractJavaRulechainRule
             String simpleName = next.getSimpleName();
             String reasonToString = unnecessaryReasonWrapper(bestReason);
             String unnecessary = produceQualifier(deepest, next, false);
-            asCtx(data).addViolation(next, unnecessary, simpleName, reasonToString);
+            data.addViolation(next, unnecessary, simpleName, reasonToString);
         }
         return null;
     }

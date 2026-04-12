@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTExpressionStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class CheckSkipResultRule extends AbstractJavaRulechainRule {
 
@@ -18,9 +19,9 @@ public class CheckSkipResultRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall call, Object data) {
+    public RuleContext visit(ASTMethodCall call, RuleContext data) {
         if (SKIP_METHOD.matchesCall(call) && !isResultUsed(call)) {
-            asCtx(data).addViolation(call);
+            data.addViolation(call);
         }
         return null;
     }

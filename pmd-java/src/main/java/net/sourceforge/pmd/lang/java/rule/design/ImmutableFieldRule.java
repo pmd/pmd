@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.AssignmentEntry;
 import net.sourceforge.pmd.lang.java.rule.internal.DataflowPass.DataflowResult;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 public class ImmutableFieldRule extends AbstractJavaRulechainRule {
@@ -52,7 +53,7 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTFieldDeclaration field, Object data) {
+    public RuleContext visit(ASTFieldDeclaration field, RuleContext data) {
         ASTTypeDeclaration enclosingType = field.getEnclosingType();
         if (field.getEffectiveVisibility().isAtMost(Visibility.V_PRIVATE)
             && !field.getModifiers().hasAny(JModifier.VOLATILE, JModifier.STATIC, JModifier.FINAL)
@@ -84,9 +85,9 @@ public class ImmutableFieldRule extends AbstractJavaRulechainRule {
 
                 if (!hasWrite && !isBlank) {
                     //todo this case may also handle static fields easily.
-                    asCtx(data).addViolation(varId, varId.getName());
+                    data.addViolation(varId, varId.getName());
                 } else if (hasWrite && defaultValueDoesNotReachEndOfCtor(dataflow, varId)) {
-                    asCtx(data).addViolation(varId, varId.getName());
+                    data.addViolation(varId, varId.getName());
                 }
             }
 

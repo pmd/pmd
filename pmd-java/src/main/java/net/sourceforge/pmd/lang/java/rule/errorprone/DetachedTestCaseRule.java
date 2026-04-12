@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class DetachedTestCaseRule extends AbstractJavaRulechainRule {
 
@@ -18,7 +19,7 @@ public class DetachedTestCaseRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, final Object data) {
+    public RuleContext visit(ASTClassDeclaration node, final RuleContext data) {
         NodeStream<ASTMethodDeclaration> methods = node.getDeclarations(ASTMethodDeclaration.class);
         if (methods.any(TestFrameworksUtil::isTestMethod)) {
             // looks like a test case
@@ -27,7 +28,7 @@ public class DetachedTestCaseRule extends AbstractJavaRulechainRule {
                        && !m.getModifiers().hasAny(JModifier.STATIC, JModifier.PRIVATE, JModifier.PROTECTED, JModifier.ABSTRACT))
                    // the method itself has no annotation
                    .filter(it -> it.getDeclaredAnnotations().isEmpty())
-                   .forEach(m -> asCtx(data).addViolation(m));
+                   .forEach(m -> data.addViolation(m));
         }
         return null;
     }

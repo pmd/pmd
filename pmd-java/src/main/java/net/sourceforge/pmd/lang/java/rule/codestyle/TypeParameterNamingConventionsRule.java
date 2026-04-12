@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import net.sourceforge.pmd.lang.java.ast.ASTTypeParameter;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -23,7 +24,7 @@ public class TypeParameterNamingConventionsRule extends AbstractNamingConvention
     }
 
     @Override
-    public Object visit(ASTTypeParameter node, Object data) {
+    public RuleContext visit(ASTTypeParameter node, RuleContext data) {
         checkMatches(node, typeParameterRegex, data);
         return data;
     }

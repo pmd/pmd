@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
 
@@ -46,7 +47,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public RuleContext visit(ASTMethodDeclaration node, RuleContext data) {
         if (!node.isOverridden()
             || node.getBody() == null
             // Can skip methods which are final or have new behavior (synchronized, native)
@@ -90,7 +91,7 @@ public class UselessOverridingMethodRule extends AbstractJavaRulechainRule {
                     && overload.getMethodType().equals(node.getOverriddenMethod())
                     && sameModifiers(node.getOverriddenMethod().getSymbol(), node.getSymbol())
                     && argumentsAreUnchanged(node, methodCall)) {
-                    asCtx(data).addViolation(node);
+                    data.addViolation(node);
                 }
             }
         }

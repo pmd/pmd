@@ -60,8 +60,7 @@ public class CollectionTypeMismatchRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall node, Object data) {
-        RuleContext ctx = (RuleContext) data;
+    public RuleContext visit(ASTMethodCall node, RuleContext ctx) {
 
         if (COLLECTION_CONTAINS.matchesCall(node)
                 || COLLECTION_REMOVE.matchesCall(node)

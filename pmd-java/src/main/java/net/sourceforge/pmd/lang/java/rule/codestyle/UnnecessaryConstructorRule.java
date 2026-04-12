@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.rule.internal.AbstractIgnoredAnnotationRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule detects when a constructor is not necessary;
@@ -41,7 +42,7 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext data) {
         if (node.isRegularClass()) {
             checkClassOrEnum(node, data);
         }
@@ -49,19 +50,19 @@ public class UnnecessaryConstructorRule extends AbstractIgnoredAnnotationRule {
     }
 
     @Override
-    public Object visit(ASTEnumDeclaration node, Object data) {
+    public RuleContext visit(ASTEnumDeclaration node, RuleContext data) {
         checkClassOrEnum(node, data);
         return data;
     }
 
-    private void checkClassOrEnum(ASTTypeDeclaration node, Object data) {
+    private void checkClassOrEnum(ASTTypeDeclaration node, RuleContext data) {
         List<ASTConstructorDeclaration> ctors = node.getDeclarations(ASTConstructorDeclaration.class).take(2).toList();
         if (ctors.size() != 1) {
             return;
         }
         ASTConstructorDeclaration ctor = ctors.get(0);
         if (isExplicitDefaultConstructor(node, ctor) && ctor.getJavadocComment() == null) {
-            asCtx(data).addViolation(ctor);
+            data.addViolation(ctor);
         }
     }
 

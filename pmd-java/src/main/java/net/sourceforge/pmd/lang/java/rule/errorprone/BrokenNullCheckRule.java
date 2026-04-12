@@ -22,8 +22,8 @@ public class BrokenNullCheckRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTInfixExpression node, Object data) {
-        checkBrokenNullCheck(node, (RuleContext) data);
+    public RuleContext visit(ASTInfixExpression node, RuleContext data) {
+        checkBrokenNullCheck(node, data);
         return data;
     }
 

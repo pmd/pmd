@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
@@ -29,7 +30,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTConstructorDeclaration node, Object data) {
+    public RuleContext visit(ASTConstructorDeclaration node, RuleContext data) {
         if (node.getVisibility() != Visibility.V_PRIVATE && !getProperty(CHECKALL_DESCRIPTOR)) {
             return data;
         }
@@ -38,7 +39,7 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public RuleContext visit(ASTMethodDeclaration node, RuleContext data) {
         if (node.getVisibility() != Visibility.V_PRIVATE && !getProperty(CHECKALL_DESCRIPTOR)) {
             return data;
         }
@@ -51,11 +52,11 @@ public class UnusedFormalParameterRule extends AbstractJavaRulechainRule {
         return data;
     }
 
-    private void check(ASTExecutableDeclaration node, Object data) {
+    private void check(ASTExecutableDeclaration node, RuleContext data) {
         for (ASTFormalParameter formal : node.getFormalParameters()) {
             ASTVariableId varId = formal.getVarId();
             if (JavaAstUtils.isNeverUsed(varId) && !JavaRuleUtil.isExplicitUnusedVarName(varId.getName())) {
-                asCtx(data).addViolation(varId, node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName());
+                data.addViolation(varId, node instanceof ASTMethodDeclaration ? "method" : "constructor", varId.getName());
             }
         }
     }

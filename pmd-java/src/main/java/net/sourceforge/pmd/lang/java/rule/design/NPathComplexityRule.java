@@ -37,11 +37,11 @@ public class NPathComplexityRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visitJavaNode(JavaNode node, Object data) {
-        return visitMethod((ASTExecutableDeclaration) node, (RuleContext) data);
+    public RuleContext visitJavaNode(JavaNode node, RuleContext data) {
+        return visitMethod((ASTExecutableDeclaration) node, data);
     }
 
-    private Object visitMethod(ASTExecutableDeclaration node, RuleContext data) {
+    private RuleContext visitMethod(ASTExecutableDeclaration node, RuleContext data) {
         int reportLevel = getProperty(REPORT_LEVEL_DESCRIPTOR);
         if (!JavaMetrics.NPATH_COMP.supports(node)) {
             return data;
@@ -49,10 +49,10 @@ public class NPathComplexityRule extends AbstractJavaRulechainRule {
 
         long npath = MetricsUtil.computeMetric(JavaMetrics.NPATH_COMP, node);
         if (npath >= reportLevel) {
-            asCtx(data).addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
-                                     PrettyPrintingUtil.displaySignature(node),
-                                     String.valueOf(npath),
-                                     String.valueOf(reportLevel));
+            data.addViolation(node, node instanceof ASTMethodDeclaration ? "method" : "constructor",
+                              PrettyPrintingUtil.displaySignature(node),
+                              String.valueOf(npath),
+                              String.valueOf(reportLevel));
         }
 
         return data;

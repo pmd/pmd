@@ -59,7 +59,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
+    public RuleContext visit(ASTFieldDeclaration node, RuleContext data) {
         if (checkNonStaticFields || node.hasModifiers(JModifier.STATIC)) {
             for (ASTVariableId varId : node.getVarIds()) {
                 fields.add(varId.getName());
@@ -70,7 +70,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTMethodDeclaration node, Object data) {
+    public RuleContext visit(ASTMethodDeclaration node, RuleContext data) {
         if (checkNonStaticMethods && !node.hasModifiers(JModifier.STATIC)
                 || node.hasModifiers(JModifier.SYNCHRONIZED)) {
             return data;
@@ -104,7 +104,7 @@ public class NonThreadSafeSingletonRule extends AbstractJavaRulechainRule {
                 }
             }
             if (violation) {
-                asCtx(data).addViolation(ifStatement);
+                data.addViolation(ifStatement);
             }
         }
         return data;

@@ -8,6 +8,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Base class for rules using the rulechain. The visit methods don't
@@ -37,7 +38,7 @@ public abstract class AbstractJavaRulechainRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visitJavaNode(JavaNode node, Object data) {
+    public RuleContext visitJavaNode(JavaNode node, RuleContext data) {
         return data;
     }
 }

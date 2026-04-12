@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
@@ -29,16 +30,16 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public RuleContext visit(ASTCompilationUnit node, RuleContext data) {
         depth = 0;
         depthLimit = getProperty(PROBLEM_DEPTH_DESCRIPTOR);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTIfStatement node, Object data) {
+    public RuleContext visit(ASTIfStatement node, RuleContext data) {
         if (depth + 1 == depthLimit) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
             // return early so that if-else chains are only reported once
             return data;
         }

@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -49,12 +50,20 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
     }
 
     @Override
-    public Object visitJavaNode(JavaNode node, Object data) {
+    public RuleContext visitJavaNode(JavaNode node, RuleContext data) {
         assert node instanceof ASTTypeDeclaration;
         return visit((ASTTypeDeclaration) node, data);
     }
 
+    /**
+     * @deprecated should have never been public
+     */
+    @Deprecated
     public Object visit(ASTTypeDeclaration node, Object data) {
+        return visit(node, (RuleContext) data);
+    }
+
+    private RuleContext visit(ASTTypeDeclaration node, RuleContext data) {
         boolean inStartOfClass = true;
         for (ASTBodyDeclaration declaration : node.getDeclarations()) {
             if (!isAllowedAtStartOfClass(declaration)) {
@@ -63,7 +72,7 @@ public class FieldDeclarationsShouldBeAtStartOfClassRule extends AbstractJavaRul
             if (!inStartOfClass && declaration instanceof ASTFieldDeclaration) {
                 ASTFieldDeclaration field = (ASTFieldDeclaration) declaration;
                 if (!isInitializerOk(field)) {
-                    asCtx(data).addViolation(declaration);
+                    data.addViolation(declaration);
                 }
             }
         }

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * The method clone() should only be implemented if the class implements the
@@ -29,7 +30,7 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
     }
 
     @Override
-    public Object visit(final ASTMethodDeclaration node, final Object data) {
+    public RuleContext visit(final ASTMethodDeclaration node, final RuleContext data) {
         if (!JavaAstUtils.isCloneMethod(node)) {
             return data;
         }
@@ -41,7 +42,7 @@ public class CloneMethodMustImplementCloneableRule extends AbstractJavaRulechain
         ASTTypeDeclaration type = node.getEnclosingType();
         if (type instanceof ASTClassDeclaration && !TypeTestUtil.isA(Cloneable.class, type)) {
             // Nothing can save us now
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }

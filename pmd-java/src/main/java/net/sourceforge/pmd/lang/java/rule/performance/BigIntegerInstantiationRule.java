@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTArgumentList;
 import net.sourceforge.pmd.lang.java.ast.ASTConstructorCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -32,7 +33,7 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTConstructorCall node, Object data) {
+    public RuleContext visit(ASTConstructorCall node, RuleContext data) {
         LanguageVersion languageVersion = node.getTextDocument().getLanguageVersion();
 
         @NonNull
@@ -56,24 +57,24 @@ public class BigIntegerInstantiationRule extends AbstractJavaRulechainRule {
         if (TypeTestUtil.isA(BigInteger.class, node)) {
             // BigInteger.ZERO, ONE: since 1.2
             if ("0".equals(constValue) || "1".equals(constValue)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
             // BigInteger.TEN: since 1.5
             if (java5 && "10".equals(constValue)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
             // BigInteger.TWO: since 9
             if (java9 && "2".equals(constValue)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         } else if (TypeTestUtil.isA(BigDecimal.class, node)) {
             // BigDecimal.ZERO, ONE, TEN: since 1.5
             if (java5 && BIGDECIMAL_CONSTANTS.contains(String.valueOf(constValue))) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
             // BigDecimal.TWO: since 19
             if (java19 && "2".equals(String.valueOf(constValue))) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
         return data;

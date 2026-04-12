@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule finds code which inefficiently determines empty strings.
@@ -47,10 +48,10 @@ public class InefficientEmptyStringCheckRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall call, Object data) {
+    public RuleContext visit(ASTMethodCall call, RuleContext data) {
         if (isTrimOrStripCall(call.getQualifier())
             && (isLengthZeroCheck(call) || isIsEmptyOrIsBlankCall(call))) {
-            asCtx(data).addViolation(call);
+            data.addViolation(call);
         }
         return null;
     }

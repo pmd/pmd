@@ -46,6 +46,7 @@ import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeSystem;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 import net.sourceforge.pmd.lang.java.types.TypesFromReflection;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 import net.sourceforge.pmd.util.IteratorUtil;
 
@@ -122,7 +123,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
                                                 EXCEPTION_PATTERN, LINK_IN_SNIPPET, MARKDOWN_PATTERN };
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public RuleContext visit(ASTCompilationUnit node, RuleContext data) {
         this.moduleImports.clear();
         this.allSingleNameImports.clear();
         this.staticImportsOnDemand.clear();
@@ -152,7 +153,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         return data;
     }
 
-    private void doReporting(Object data) {
+    private void doReporting(RuleContext data) {
         for (ImportWrapper wrapper : allSingleNameImports) {
             String message = wrapper.isStatic() ? UNUSED_STATIC_IMPORT_MESSAGE : UNUSED_IMPORT_MESSAGE;
             reportWithMessage(wrapper.node, data, message);
@@ -236,7 +237,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         }
     }
 
-    private void visitImport(ASTImportDeclaration node, Object data, String thisPackageName) {
+    private void visitImport(ASTImportDeclaration node, RuleContext data, String thisPackageName) {
         if (thisPackageName.equals(node.getPackageName())) {
             unnecessaryImportsFromSamePackage.add(new ImportWrapper(node));
         }
@@ -262,12 +263,12 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
         return allSingleNameImports;
     }
 
-    private void reportWithMessage(ASTImportDeclaration node, Object data, String message) {
-        asCtx(data).addViolationWithMessage(node, message, PrettyPrintingUtil.prettyImport(node));
+    private void reportWithMessage(ASTImportDeclaration node, RuleContext data, String message) {
+        data.addViolationWithMessage(node, message, PrettyPrintingUtil.prettyImport(node));
     }
 
     @Override
-    public Object visit(ASTClassType node, Object data) {
+    public RuleContext visit(ASTClassType node, RuleContext data) {
         if (node.getQualifier() == null
             && !node.isFullyQualified()
             && node.getTypeMirror().isClassOrInterface()) {
@@ -281,7 +282,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTAmbiguousName node, Object data) {
+    public RuleContext visit(ASTAmbiguousName node, RuleContext data) {
         // ambiguous name means the symbol table could not resolve the first name
 
         // only consider static imports
@@ -308,7 +309,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall node, Object data) {
+    public RuleContext visit(ASTMethodCall node, RuleContext data) {
         if (node.getQualifier() == null) {
             OverloadSelectionResult overload = node.getOverloadSelectionInfo();
             if (overload.isFailed()) {
@@ -332,7 +333,7 @@ public class UnnecessaryImportRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTVariableAccess node, Object data) {
+    public RuleContext visit(ASTVariableAccess node, RuleContext data) {
         JVariableSymbol sym = node.getReferencedSym();
         if (sym != null
             && sym.isField()

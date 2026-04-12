@@ -127,9 +127,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTFieldAccess node, Object data) {
+    public RuleContext visit(ASTFieldAccess node, RuleContext data) {
         if (shouldReport(node)) {
-            asCtx(data).addViolationWithMessage(
+            data.addViolationWithMessage(
                 node,
                 FIELD_ACCESS_ON_FOREIGN_VALUE,
                 node.getName(),
@@ -140,9 +140,9 @@ public class LawOfDemeterRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall node, Object data) {
+    public RuleContext visit(ASTMethodCall node, RuleContext data) {
         if (shouldReport(node)) {
-            asCtx(data).addViolationWithMessage(
+            data.addViolationWithMessage(
                 node,
                 METHOD_CALL_ON_FOREIGN_VALUE,
                 node.getMethodName(),

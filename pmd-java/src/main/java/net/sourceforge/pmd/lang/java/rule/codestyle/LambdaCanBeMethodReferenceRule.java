@@ -81,14 +81,14 @@ public class LambdaCanBeMethodReferenceRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTLambdaExpression node, Object data) {
+    public RuleContext visit(ASTLambdaExpression node, RuleContext data) {
         if (node.isExpressionBody()) {
             ASTExpression expression = node.getExpressionBody();
-            processLambdaWithBody(node, asCtx(data), expression);
+            processLambdaWithBody(node, data, expression);
         } else {
             ASTStatement onlyStmt = ASTList.singleOrNull(node.getBlockBody());
             if (onlyStmt instanceof ASTReturnStatement) {
-                processLambdaWithBody(node, asCtx(data), ((ASTReturnStatement) onlyStmt).getExpr());
+                processLambdaWithBody(node, data, ((ASTReturnStatement) onlyStmt).getExpr());
             }
         }
         return null;

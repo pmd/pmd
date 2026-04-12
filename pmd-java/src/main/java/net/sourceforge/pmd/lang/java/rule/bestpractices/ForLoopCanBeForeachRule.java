@@ -37,6 +37,7 @@ import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.symbols.JVariableSymbol;
 import net.sourceforge.pmd.lang.java.types.InvocationMatcher;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * @author Clément Fournier
@@ -55,7 +56,7 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTForStatement forLoop, Object data) {
+    public RuleContext visit(ASTForStatement forLoop, RuleContext data) {
 
         final @Nullable ASTStatement init = forLoop.getInit();
         final @Nullable ASTStatementExpressionList update = forLoop.getUpdate();
@@ -77,12 +78,12 @@ public class ForLoopCanBeForeachRule extends AbstractJavaRulechainRule {
             if (iterable != null) {
                 if (isReplaceableArrayLoop(forLoop, index, iterable)
                     || isReplaceableListLoop(forLoop, index, iterable)) {
-                    asCtx(data).addViolation(forLoop);
+                    data.addViolation(forLoop);
                 }
             }
         } else if (TypeTestUtil.isA(Iterator.class, index.getTypeMirror())) {
             if (isReplaceableIteratorLoop(index, forLoop)) {
-                asCtx(data).addViolation(forLoop);
+                data.addViolation(forLoop);
             }
             return data;
         }

@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 
@@ -79,24 +80,24 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTIfStatement node, Object data) {
+    public RuleContext visit(ASTIfStatement node, RuleContext data) {
         // look for "if (match) ..; else .."
         if (node.hasElse()
             && isMatch(node.getCondition())) {
             if (!getProperty(IGNORE_ELSE_IF)
                 || !(node.getElseBranch() instanceof ASTIfStatement)
                 && !(node.getParent() instanceof ASTIfStatement)) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
         return data;
     }
 
     @Override
-    public Object visit(ASTConditionalExpression node, Object data) {
+    public RuleContext visit(ASTConditionalExpression node, RuleContext data) {
         // look for "match ? .. : .."
         if (isMatch(node.getCondition())) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }

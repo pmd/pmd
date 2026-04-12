@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.lang.java.types.TypePrettyPrint;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainRule {
 
@@ -24,7 +25,7 @@ public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainR
     }
 
     @Override
-    public Object visit(ASTArgumentList argList, Object data) {
+    public RuleContext visit(ASTArgumentList argList, RuleContext data) {
         if (argList.isEmpty()) {
             return null;
         }
@@ -56,7 +57,7 @@ public class ConfusingArgumentToVarargsMethodRule extends AbstractJavaRulechainR
             } else {
                 message = "Unclear if a varargs or non-varargs call is intended. Cast to {0} or {0}[] to clarify intent.";
             }
-            asCtx(data).addViolationWithMessage(varargsArg, message, TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent));
+            data.addViolationWithMessage(varargsArg, message, TypePrettyPrint.prettyPrintWithSimpleNames(expectedComponent));
         }
 
         return null;

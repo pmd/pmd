@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.rule.internal.TestFrameworksUtil;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class JUnitSpellingRule extends AbstractJavaRulechainRule {
 
@@ -17,11 +18,11 @@ public class JUnitSpellingRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext data) {
         if (TestFrameworksUtil.isJUnit3Class(node)) {
             node.getDeclarations(ASTMethodDeclaration.class)
                 .filter(this::isViolation)
-                .forEach(it -> asCtx(data).addViolation(it));
+                .forEach(it -> data.addViolation(it));
         }
         return null;
     }

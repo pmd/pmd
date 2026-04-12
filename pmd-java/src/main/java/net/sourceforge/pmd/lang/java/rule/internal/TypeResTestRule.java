@@ -63,7 +63,7 @@ public class TypeResTestRule extends AbstractJavaRule {
 
 
     @Override
-    public Object visit(ASTCompilationUnit node, Object data) {
+    public RuleContext visit(ASTCompilationUnit node, RuleContext data) {
         for (JavaNode descendant : node.descendants().crossFindBoundaries()) {
             visitJavaNode(descendant, data);
         }
@@ -71,7 +71,7 @@ public class TypeResTestRule extends AbstractJavaRule {
     }
 
     @Override
-    public Object visitJavaNode(JavaNode node, Object data) {
+    public RuleContext visitJavaNode(JavaNode node, RuleContext data) {
 
         if (node instanceof TypeNode) {
             try {

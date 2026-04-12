@@ -80,7 +80,7 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
         super.end(ctx);
     }
 
-    private void processResults(Object data) {
+    private void processResults(RuleContext data) {
 
         int threshold = getProperty(THRESHOLD_DESCRIPTOR);
 
@@ -89,13 +89,13 @@ public class AvoidDuplicateLiteralsRule extends AbstractJavaRulechainRule {
             if (occurrences.size() >= threshold) {
                 ASTStringLiteral first = occurrences.first();
                 Object[] args = { first.toPrintableString(), occurrences.size(), first.getBeginLine(), };
-                asCtx(data).addViolation(first, args);
+                data.addViolation(first, args);
             }
         }
     }
 
     @Override
-    public Object visit(ASTStringLiteral node, Object data) {
+    public RuleContext visit(ASTStringLiteral node, RuleContext data) {
         String image = node.getImage();
 
         // just catching strings of 'minLength' chars or more (including the

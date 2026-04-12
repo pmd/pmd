@@ -16,8 +16,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTVariableId;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
-
-
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -39,13 +38,13 @@ public class RedundantFieldInitializerRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTFieldDeclaration fieldDeclaration, Object data) {
+    public RuleContext visit(ASTFieldDeclaration fieldDeclaration, RuleContext data) {
         if (!fieldDeclaration.hasModifiers(JModifier.FINAL) && !JavaAstUtils.hasAnyAnnotation(fieldDeclaration.getEnclosingType(), MAKE_FIELD_FINAL_CLASS_ANNOT)) {
             for (ASTVariableId varId : fieldDeclaration.getVarIds()) {
                 ASTExpression init = varId.getInitializer();
                 if (init != null) {
                     if (!isWhitelisted(init) && JavaAstUtils.isDefaultValue(varId.getTypeMirror(), init)) {
-                        asCtx(data).addViolation(varId);
+                        data.addViolation(varId);
                     }
                 }
             }

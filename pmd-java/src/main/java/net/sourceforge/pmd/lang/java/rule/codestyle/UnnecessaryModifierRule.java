@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.java.ast.JavaNode;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner;
 import net.sourceforge.pmd.lang.java.ast.internal.PrettyPrintingUtil;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
@@ -43,18 +44,18 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     }
 
 
-    private void reportUnnecessaryModifiers(Object data, JavaNode node,
+    private void reportUnnecessaryModifiers(RuleContext data, JavaNode node,
                                             JModifier unnecessaryModifier, String explanation) {
         reportUnnecessaryModifiers(data, node, EnumSet.of(unnecessaryModifier), explanation);
     }
 
 
-    private void reportUnnecessaryModifiers(Object data, JavaNode node,
+    private void reportUnnecessaryModifiers(RuleContext data, JavaNode node,
                                             Set<JModifier> unnecessaryModifiers, String explanation) {
         if (unnecessaryModifiers.isEmpty()) {
             return;
         }
-        asCtx(data).addViolation(node, formatUnnecessaryModifiers(unnecessaryModifiers),
+        data.addViolation(node, formatUnnecessaryModifiers(unnecessaryModifiers),
                                  PrettyPrintingUtil.getPrintableNodeKind(node),
                                  PrettyPrintingUtil.getNodeName(node),
                                  explanation.isEmpty() ? "" : ": " + explanation);
@@ -69,7 +70,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTEnumDeclaration node, Object data) {
+    public RuleContext visit(ASTEnumDeclaration node, RuleContext data) {
 
         if (node.hasExplicitModifiers(PUBLIC)) {
             checkDeclarationInInterfaceType(data, node, EnumSet.of(PUBLIC));
@@ -85,7 +86,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTAnnotationTypeDeclaration node, Object data) {
+    public RuleContext visit(ASTAnnotationTypeDeclaration node, RuleContext data) {
         if (node.hasExplicitModifiers(ABSTRACT)) {
             // may have several violations, with different explanations
             reportUnnecessaryModifiers(data, node, ABSTRACT, "annotations types are implicitly abstract");
@@ -115,7 +116,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
 
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext data) {
 
         if (node.isInterface() && node.hasExplicitModifiers(ABSTRACT)) {
             // an abstract interface
@@ -137,7 +138,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(final ASTMethodDeclaration node, Object data) {
+    public RuleContext visit(final ASTMethodDeclaration node, RuleContext data) {
 
         checkDeclarationInInterfaceType(data, node, EnumSet.of(PUBLIC, ABSTRACT));
 
@@ -163,7 +164,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(final ASTResource node, final Object data) {
+    public RuleContext visit(final ASTResource node, final RuleContext data) {
         if (!node.isConciseResource() && node.asLocalVariableDeclaration().hasExplicitModifiers(FINAL)) {
             reportUnnecessaryModifiers(data, node, FINAL, "resource specifications are implicitly final");
         }
@@ -172,13 +173,13 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
+    public RuleContext visit(ASTFieldDeclaration node, RuleContext data) {
         checkDeclarationInInterfaceType(data, node, EnumSet.of(PUBLIC, STATIC, FINAL));
         return data;
     }
 
     @Override
-    public Object visit(ASTConstructorDeclaration node, Object data) {
+    public RuleContext visit(ASTConstructorDeclaration node, RuleContext data) {
         if (node.getEnclosingType().isEnum() && node.hasExplicitModifiers(PRIVATE)) {
             reportUnnecessaryModifiers(data, node, PRIVATE, "enum constructors are implicitly private");
         }
@@ -186,7 +187,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTRecordDeclaration node, Object data) {
+    public RuleContext visit(ASTRecordDeclaration node, RuleContext data) {
         if (node.hasExplicitModifiers(STATIC)) {
             reportUnnecessaryModifiers(data, node, STATIC, "records are implicitly static");
         }
@@ -202,7 +203,7 @@ public class UnnecessaryModifierRule extends AbstractJavaRulechainRule {
     }
 
 
-    private void checkDeclarationInInterfaceType(Object data, ModifierOwner member, Set<JModifier> unnecessary) {
+    private void checkDeclarationInInterfaceType(RuleContext data, ModifierOwner member, Set<JModifier> unnecessary) {
         // third ancestor could be an AllocationExpression
         // if this is a method in an anonymous inner class
         ASTTypeDeclaration parent = member.getEnclosingType();

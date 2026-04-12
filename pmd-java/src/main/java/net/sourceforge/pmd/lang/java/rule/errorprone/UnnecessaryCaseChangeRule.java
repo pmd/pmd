@@ -11,6 +11,7 @@ import java.util.List;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodCall;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnnecessaryCaseChangeRule extends AbstractJavaRulechainRule {
 
@@ -22,11 +23,11 @@ public class UnnecessaryCaseChangeRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTMethodCall node, Object data) {
+    public RuleContext visit(ASTMethodCall node, RuleContext data) {
         if (EQUALITY_METHODS.contains(node.getMethodName()) && node.getArguments().size() == 1) {
             if (isCaseChangingMethodCall(node.getQualifier())
                     || isCaseChangingMethodCall(node.getArguments().get(0))) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
         return data;

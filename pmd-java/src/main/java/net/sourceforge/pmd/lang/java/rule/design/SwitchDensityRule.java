@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTSwitchStatement;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Switch Density - This is the number of statements over the number of
@@ -41,16 +42,25 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTSwitchStatement node, Object data) {
+    public RuleContext visit(ASTSwitchStatement node, RuleContext data) {
         return visitSwitchLike(node, data);
     }
 
     @Override
-    public Object visit(ASTSwitchExpression node, Object data) {
+    public RuleContext visit(ASTSwitchExpression node, RuleContext data) {
         return visitSwitchLike(node, data);
     }
 
+    /**
+     * @deprecated should have never been public
+     */
+    @Deprecated
     public Void visitSwitchLike(ASTSwitchLike node, Object data) {
+        visitSwitchLike(node, (RuleContext) data);
+        return null;
+    }
+
+    private RuleContext visitSwitchLike(ASTSwitchLike node, RuleContext data) {
         // note: this does not cross find boundaries.
         int stmtCount = node.descendants(ASTStatement.class).count();
         int labelCount = node.getBranches()
@@ -60,7 +70,7 @@ public class SwitchDensityRule extends AbstractJavaRulechainRule {
         // note: if labelCount is zero, double division will produce +Infinity or NaN, not ArithmeticException
         double density = stmtCount / (double) labelCount;
         if (density >= getProperty(REPORT_LEVEL)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return null;
     }

@@ -68,24 +68,24 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTClassDeclaration node, Object data) {
+    public RuleContext visit(ASTClassDeclaration node, RuleContext data) {
         checkSerialPersistentFieldsField(node, data);
         return null;
     }
 
     @Override
-    public Object visit(ASTEnumDeclaration node, Object data) {
+    public RuleContext visit(ASTEnumDeclaration node, RuleContext data) {
         checkSerialPersistentFieldsField(node, data);
         return null;
     }
 
     @Override
-    public Object visit(ASTRecordDeclaration node, Object data) {
+    public RuleContext visit(ASTRecordDeclaration node, RuleContext data) {
         checkSerialPersistentFieldsField(node, data);
         return null;
     }
 
-    private void checkSerialPersistentFieldsField(ASTTypeDeclaration typeDeclaration, Object data) {
+    private void checkSerialPersistentFieldsField(ASTTypeDeclaration typeDeclaration, RuleContext data) {
         for (ASTFieldDeclaration field : typeDeclaration.descendants(ASTFieldDeclaration.class)) {
             for (ASTVariableId varId : field) {
                 if (SERIAL_PERSISTENT_FIELDS_NAME.equals(varId.getName())) {
@@ -93,7 +93,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
                             || field.getVisibility() != ModifierOwner.Visibility.V_PRIVATE
                             || !field.hasModifiers(JModifier.STATIC)
                             || !field.hasModifiers(JModifier.FINAL)) {
-                        asCtx(data).addViolationWithMessage(varId, "The field ''{0}'' should be private static final with type ''{1}''.",
+                        data.addViolationWithMessage(varId, "The field ''{0}'' should be private static final with type ''{1}''.",
                                 varId.getName(), SERIAL_PERSISTENT_FIELDS_TYPE);
                     }
                 }
@@ -102,7 +102,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
     }
 
     @Override
-    public Object visit(ASTVariableId node, Object data) {
+    public RuleContext visit(ASTVariableId node, RuleContext data) {
         ASTTypeDeclaration typeDeclaration = node.ancestors(ASTTypeDeclaration.class).first();
 
         if (typeDeclaration == null
@@ -116,7 +116,7 @@ public class NonSerializableClassRule extends AbstractJavaRulechainRule {
         }
 
         if (isPersistentField(typeDeclaration, node) && isNotSerializable(node)) {
-            asCtx(data).addViolation(node, node.getName(), typeDeclaration.getBinaryName(), node.getTypeMirror());
+            data.addViolation(node, node.getName(), typeDeclaration.getBinaryName(), node.getTypeMirror());
         }
         return null;
     }

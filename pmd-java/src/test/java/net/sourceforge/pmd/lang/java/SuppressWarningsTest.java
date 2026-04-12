@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRule;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 class SuppressWarningsTest {
 
@@ -26,12 +27,12 @@ class SuppressWarningsTest {
         }
 
         @Override
-        public Object visit(ASTCompilationUnit cu, Object ctx) {
+        public RuleContext visit(ASTCompilationUnit cu, RuleContext ctx) {
             // Convoluted rule to make sure the violation is reported for the
             // ASTCompilationUnit node
             for (ASTClassDeclaration c : cu.descendants(ASTClassDeclaration.class)) {
                 if ("bar".equalsIgnoreCase(c.getSimpleName())) {
-                    asCtx(ctx).addViolation(cu);
+                    ctx.addViolation(cu);
                 }
             }
             return super.visit(cu, ctx);
