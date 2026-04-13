@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Flags dangerous method calls, e.g. FinancialForce
@@ -49,7 +50,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
 
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (Helper.isTestMethodOrClass(node)) {
             return data;
         }
@@ -59,7 +60,7 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
         List<ASTMethodCallExpression> methodCalls = node.descendants(ASTMethodCallExpression.class).toList();
         for (ASTMethodCallExpression methodCall : methodCalls) {
             if (Helper.isMethodName(methodCall, CONFIGURATION, DISABLE_CRUD)) {
-                asCtx(data).addViolation(methodCall);
+                data.addViolation(methodCall);
             }
 
             if (Helper.isMethodName(methodCall, SYSTEM, DEBUG)) {
@@ -90,12 +91,12 @@ public class ApexDangerousMethodsRule extends AbstractApexRule {
 
     }
 
-    private void validateParameters(ASTMethodCallExpression methodCall, Object data) {
+    private void validateParameters(ASTMethodCallExpression methodCall, RuleContext data) {
         List<ASTVariableExpression> variables = methodCall.descendants(ASTVariableExpression.class).toList();
         for (ASTVariableExpression var : variables) {
             if (REGEXP.matcher(var.getImage()).matches()) {
                 if (!whiteListedVariables.contains(Helper.getFQVariableName(var))) {
-                    asCtx(data).addViolation(methodCall);
+                    data.addViolation(methodCall);
                 }
             }
         }

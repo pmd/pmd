@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 import com.nawforce.apexlink.api.MethodSummary;
 import com.nawforce.apexlink.api.ParameterSummary;
@@ -51,12 +52,12 @@ public class AvoidInterfaceAsMapKeyRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTApexFile node, Object data) {
+    public RuleContext visit(ASTApexFile node, RuleContext data) {
         // Build index once per run (lazily on first file visit)
         TypeHierarchyIndex index = getOrCreateIndex(node.getTypeSummaries());
         for (MapKeyUsage usage : collectMapKeyUsages(node)) {
             if (index.isProblematicInterfaceKey(usage.keyTypeName)) {
-                asCtx(data).addViolation(usage.reportNode);
+                data.addViolation(usage.reportNode);
             }
         }
         return data;

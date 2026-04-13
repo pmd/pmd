@@ -34,12 +34,12 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTIfBlockStatement node, Object data) {
+    public RuleContext visit(ASTIfBlockStatement node, RuleContext data) {
         depth++;
 
         super.visit(node, data);
         if (depth == depthLimit) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         depth--;
 

@@ -34,14 +34,14 @@ public class AvoidNonRestrictiveQueriesRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTSoqlExpression node, Object data) {
-        visitSoqlOrSosl(node, "SOQL", node.getQuery(), asCtx(data));
+    public RuleContext visit(ASTSoqlExpression node, RuleContext data) {
+        visitSoqlOrSosl(node, "SOQL", node.getQuery(), data);
         return data;
     }
 
     @Override
-    public Object visit(ASTSoslExpression node, Object data) {
-        visitSoqlOrSosl(node, "SOSL", node.getQuery(), asCtx(data));
+    public RuleContext visit(ASTSoslExpression node, RuleContext data) {
+        visitSoqlOrSosl(node, "SOSL", node.getQuery(), data);
         return data;
     }
 

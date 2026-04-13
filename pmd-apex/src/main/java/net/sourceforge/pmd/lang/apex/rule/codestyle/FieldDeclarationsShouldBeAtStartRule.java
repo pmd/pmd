@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
     private static final Comparator<ApexNode<?>> NODE_BY_SOURCE_LOCATION_COMPARATOR =
@@ -33,7 +34,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         // Unfortunately the parser re-orders the AST to put field declarations before method declarations
         // so we have to rely on line numbers / positions to work out where the first non-field declaration starts
         // so we can check if the fields are in acceptable places.
@@ -58,7 +59,7 @@ public class FieldDeclarationsShouldBeAtStartRule extends AbstractApexRule {
 
         for (ASTFieldDeclaration field : fields) {
             if (NODE_BY_SOURCE_LOCATION_COMPARATOR.compare(field, firstNonFieldDeclaration.get()) > 0) {
-                asCtx(data).addViolation(field, field.getName());
+                data.addViolation(field, field.getName());
             }
         }
 

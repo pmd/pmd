@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression;
 import net.sourceforge.pmd.lang.apex.ast.ASTSoslExpression;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Warn users when code that could trigger governor limits is executing within a looping construct.
@@ -54,46 +55,46 @@ public class OperationWithLimitsInLoopRule extends AbstractAvoidNodeInLoopsRule 
 
     // Begin DML Statements
     @Override
-    public Object visit(ASTDmlDeleteStatement node, Object data) {
+    public RuleContext visit(ASTDmlDeleteStatement node, RuleContext data) {
         return checkForViolation(node, data);
     }
 
     @Override
-    public Object visit(ASTDmlInsertStatement node, Object data) {
+    public RuleContext visit(ASTDmlInsertStatement node, RuleContext data) {
         return checkForViolation(node, data);
     }
 
     @Override
-    public Object visit(ASTDmlMergeStatement node, Object data) {
+    public RuleContext visit(ASTDmlMergeStatement node, RuleContext data) {
         return checkForViolation(node, data);
     }
 
     @Override
-    public Object visit(ASTDmlUndeleteStatement node, Object data) {
+    public RuleContext visit(ASTDmlUndeleteStatement node, RuleContext data) {
         return checkForViolation(node, data);
     }
 
     @Override
-    public Object visit(ASTDmlUpdateStatement node, Object data) {
+    public RuleContext visit(ASTDmlUpdateStatement node, RuleContext data) {
         return checkForViolation(node, data);
     }
 
     @Override
-    public Object visit(ASTDmlUpsertStatement node, Object data) {
+    public RuleContext visit(ASTDmlUpsertStatement node, RuleContext data) {
         return checkForViolation(node, data);
     }
     // End DML Statements
 
     // Begin SOQL method invocations
     @Override
-    public Object visit(ASTSoqlExpression node, Object data) {
+    public RuleContext visit(ASTSoqlExpression node, RuleContext data) {
         return checkForViolation(node, data);
     }
     // End SOQL method invocations
 
     // Begin SOSL method invocations
     @Override
-    public Object visit(ASTSoslExpression node, Object data) {
+    public RuleContext visit(ASTSoslExpression node, RuleContext data) {
         return checkForViolation(node, data);
     }
     // End SOSL method invocations
@@ -101,12 +102,12 @@ public class OperationWithLimitsInLoopRule extends AbstractAvoidNodeInLoopsRule 
     // Begin general method invocations
 
     @Override
-    public Object visit(ASTRunAsBlockStatement node, Object data) {
+    public RuleContext visit(ASTRunAsBlockStatement node, RuleContext data) {
         return checkForViolation(node, data);
     }
 
     @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
+    public RuleContext visit(ASTMethodCallExpression node, RuleContext data) {
         if (Helper.isAnyDatabaseMethodCall(node)
             || Helper.isMethodName(node, APPROVAL_CLASS_NAME, Helper.ANY_METHOD)
             || checkLimitClassMethods(node, MESSAGING_CLASS_NAME, MESSAGING_LIMIT_METHODS)

@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
 
@@ -21,7 +22,7 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         ApexNode<?> equalsNode = null;
         ApexNode<?> hashNode = null;
         for (ASTMethod method : node.children(ASTMethod.class)) {
@@ -37,9 +38,9 @@ public class OverrideBothEqualsAndHashcodeRule extends AbstractApexRule {
         }
 
         if (equalsNode != null && hashNode == null) {
-            asCtx(data).addViolation(equalsNode);
+            data.addViolation(equalsNode);
         } else if (hashNode != null && equalsNode == null) {
-            asCtx(data).addViolation(hashNode);
+            data.addViolation(hashNode);
         }
 
         return data;

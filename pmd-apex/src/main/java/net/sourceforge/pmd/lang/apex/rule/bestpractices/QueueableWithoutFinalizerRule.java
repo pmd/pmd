@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Scans classes which implement the `Queueable` interface. If the `public void
@@ -41,14 +42,14 @@ public class QueueableWithoutFinalizerRule extends AbstractApexRule {
      * `System.attachFinalizer(Finalizer f)` method, then add a violation.
      */
     @Override
-    public Object visit(ASTUserClass theClass, Object data) {
+    public RuleContext visit(ASTUserClass theClass, RuleContext data) {
         if (!implementsTheQueueableInterface(theClass)) {
             return data;
         }
         for (ASTMethod theMethod : theClass.descendants(ASTMethod.class).toList()) {
             if (isTheExecuteMethodOfTheQueueableInterface(theMethod)
                     && !callsTheSystemAttachFinalizerMethod(theMethod)) {
-                asCtx(data).addViolation(theMethod);
+                data.addViolation(theMethod);
             }
         }
         return data;

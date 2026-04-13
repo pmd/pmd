@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.apex.ast.ASTLiteralExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidHardcodingIdRule extends AbstractApexRule {
     private static final Pattern PATTERN = Pattern.compile("^[a-zA-Z0-9]{5}0[a-zA-Z0-9]{9}([a-zA-Z0-5]{3})?$");
@@ -37,7 +38,7 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
 
 
     @Override
-    public Object visit(ASTLiteralExpression node, Object data) {
+    public RuleContext visit(ASTLiteralExpression node, RuleContext data) {
         if (node.isString()) {
             String literal = node.getImage();
             if (PATTERN.matcher(literal).matches()) {
@@ -45,7 +46,7 @@ public class AvoidHardcodingIdRule extends AbstractApexRule {
                 if (literal.length() == 18 && !validateChecksum(literal)) {
                     return data;
                 }
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
         return data;

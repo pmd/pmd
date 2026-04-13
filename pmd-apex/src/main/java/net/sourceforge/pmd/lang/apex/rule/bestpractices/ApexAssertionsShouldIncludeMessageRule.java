@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.apex.rule.bestpractices;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTestRule {
 
@@ -22,11 +23,11 @@ public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTest
     private static final String IS_TRUE = "Assert.isTrue";
 
     @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
+    public RuleContext visit(ASTMethodCallExpression node, RuleContext data) {
         String methodName = node.getFullMethodName();
 
         if (FAIL.equalsIgnoreCase(methodName) && node.getNumChildren() == 1) {
-            asCtx(data).addViolationWithMessage(node,
+            data.addViolationWithMessage(node,
                     "''{0}'' should have 1 parameters.",
                     FAIL);
         } else if ((ASSERT.equalsIgnoreCase(methodName)
@@ -35,7 +36,7 @@ public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTest
                 || IS_NULL.equalsIgnoreCase(methodName)
                 || IS_TRUE.equalsIgnoreCase(methodName))
                 && node.getNumChildren() == 2) {
-            asCtx(data).addViolationWithMessage(node,
+            data.addViolationWithMessage(node,
                     "''{0}'' should have 2 parameters.",
                     methodName);
         } else if ((ASSERT_EQUALS.equalsIgnoreCase(methodName)
@@ -45,7 +46,7 @@ public class ApexAssertionsShouldIncludeMessageRule extends AbstractApexUnitTest
                 || IS_INSTANCE_OF_TYPE.equalsIgnoreCase(methodName)
                 || IS_NOT_INSTANCE_OF_TYPE.equalsIgnoreCase(methodName))
                 && node.getNumChildren() == 3) {
-            asCtx(data).addViolationWithMessage(node,
+            data.addViolationWithMessage(node,
                     "''{0}'' should have 3 parameters.",
                     methodName);
         }

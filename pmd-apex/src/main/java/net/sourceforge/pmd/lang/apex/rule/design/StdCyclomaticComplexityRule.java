@@ -94,13 +94,13 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         entryStack.push(new Entry());
         super.visit(node, data);
         Entry classEntry = entryStack.pop();
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                asCtx(data).addViolation(node, "class", node.getSimpleName(),
+                data.addViolation(node, "class", node.getSimpleName(),
                     classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')');
             }
         }
@@ -108,13 +108,13 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserTrigger node, Object data) {
+    public RuleContext visit(ASTUserTrigger node, RuleContext data) {
         entryStack.push(new Entry());
         super.visit(node, data);
         Entry classEntry = entryStack.pop();
         if (showClassesComplexity) {
             if (classEntry.getComplexityAverage() >= reportLevel || classEntry.highestDecisionPoints >= reportLevel) {
-                asCtx(data).addViolation(node, "trigger", node.getSimpleName(),
+                data.addViolation(node, "trigger", node.getSimpleName(),
                     classEntry.getComplexityAverage() + " (Highest = " + classEntry.highestDecisionPoints + ')');
             }
         }
@@ -122,17 +122,17 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserInterface node, Object data) {
+    public RuleContext visit(ASTUserInterface node, RuleContext data) {
         return data;
     }
 
     @Override
-    public Object visit(ASTUserEnum node, Object data) {
+    public RuleContext visit(ASTUserEnum node, RuleContext data) {
         return data;
     }
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
+    public RuleContext visit(ASTMethod node, RuleContext data) {
         entryStack.push(new Entry());
         super.visit(node, data);
         Entry methodEntry = entryStack.pop();
@@ -147,63 +147,63 @@ public class StdCyclomaticComplexityRule extends AbstractApexRule {
 
         if (showMethodsComplexity && methodEntry.decisionPoints >= reportLevel) {
             String methodType = node.isConstructor() ? "constructor" : "method";
-            asCtx(data).addViolation(node,
+            data.addViolation(node,
                     methodType, node.getImage(), String.valueOf(methodEntry.decisionPoints));
         }
         return data;
     }
 
     @Override
-    public Object visit(ASTIfBlockStatement node, Object data) {
+    public RuleContext visit(ASTIfBlockStatement node, RuleContext data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTTryCatchFinallyBlockStatement node, Object data) {
+    public RuleContext visit(ASTTryCatchFinallyBlockStatement node, RuleContext data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTForLoopStatement node, Object data) {
+    public RuleContext visit(ASTForLoopStatement node, RuleContext data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTForEachStatement node, Object data) {
+    public RuleContext visit(ASTForEachStatement node, RuleContext data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTWhileLoopStatement node, Object data) {
+    public RuleContext visit(ASTWhileLoopStatement node, RuleContext data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTDoLoopStatement node, Object data) {
+    public RuleContext visit(ASTDoLoopStatement node, RuleContext data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTTernaryExpression node, Object data) {
+    public RuleContext visit(ASTTernaryExpression node, RuleContext data) {
         entryStack.peek().bumpDecisionPoints();
         super.visit(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTBooleanExpression node, Object data) {
+    public RuleContext visit(ASTBooleanExpression node, RuleContext data) {
         return data;
     }
 }

@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Detects potential XSS when controller extracts a variable from URL query and
@@ -50,7 +51,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     private final Set<String> urlParameterStrings = new HashSet<>();
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
             return data; // stops all the rules
         }
@@ -59,35 +60,35 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTAssignmentExpression node, Object data) {
+    public RuleContext visit(ASTAssignmentExpression node, RuleContext data) {
         findTaintedVariables(node, data);
         processVariableAssignments(node, data, false);
         return data;
     }
 
     @Override
-    public Object visit(ASTVariableDeclaration node, Object data) {
+    public RuleContext visit(ASTVariableDeclaration node, RuleContext data) {
         findTaintedVariables(node, data);
         processVariableAssignments(node, data, true);
         return data;
     }
 
     @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
+    public RuleContext visit(ASTFieldDeclaration node, RuleContext data) {
         findTaintedVariables(node, data);
         processVariableAssignments(node, data, true);
         return data;
     }
 
     @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
+    public RuleContext visit(ASTMethodCallExpression node, RuleContext data) {
         processEscapingMethodCalls(node, data);
         processInlineMethodCalls(node, data, false);
         return data;
     }
 
     @Override
-    public Object visit(ASTReturnStatement node, Object data) {
+    public RuleContext visit(ASTReturnStatement node, RuleContext data) {
         ASTBinaryExpression binaryExpression = node.firstChild(ASTBinaryExpression.class);
         if (binaryExpression != null) {
             processBinaryExpression(binaryExpression, data);
@@ -105,7 +106,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
         for (ASTVariableExpression varExpression : nodes) {
             if (urlParameterStrings.contains(Helper.getFQVariableName(varExpression))) {
-                asCtx(data).addViolation(nodes.get(0));
+                data.addViolation(nodes.get(0));
             }
         }
 
@@ -141,7 +142,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
                 || Helper.isMethodCallChain(methodNode, STRING_ISNOTBLANK);
     }
 
-    private void processInlineMethodCalls(ASTMethodCallExpression methodNode, Object data, final boolean isNested) {
+    private void processInlineMethodCalls(ASTMethodCallExpression methodNode, RuleContext data, final boolean isNested) {
         ASTMethodCallExpression nestedCall = methodNode.firstChild(ASTMethodCallExpression.class);
         if (nestedCall != null) {
 
@@ -152,13 +153,13 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
         if (Helper.isMethodCallChain(methodNode, URL_PARAMETER_METHOD)) {
             if (isNested) {
-                asCtx(data).addViolation(methodNode);
+                data.addViolation(methodNode);
             }
         }
 
     }
 
-    private void findTaintedVariables(ApexNode<?> node, Object data) {
+    private void findTaintedVariables(ApexNode<?> node, RuleContext data) {
         final ASTMethodCallExpression right = node.firstChild(ASTMethodCallExpression.class);
         // Looks for: (String) foo =
         // ApexPages.currentPage().getParameters().get(..)
@@ -185,7 +186,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         }
     }
 
-    private void processEscapingMethodCalls(ASTMethodCallExpression methodNode, Object data) {
+    private void processEscapingMethodCalls(ASTMethodCallExpression methodNode, RuleContext data) {
         ASTMethodCallExpression nestedCall = methodNode.firstChild(ASTMethodCallExpression.class);
         if (nestedCall != null) {
             processEscapingMethodCalls(nestedCall, data);
@@ -196,14 +197,14 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         if (variable != null) {
             if (urlParameterStrings.contains(Helper.getFQVariableName(variable))) {
                 if (!isEscapingMethod(methodNode)) {
-                    asCtx(data).addViolation(variable);
+                    data.addViolation(variable);
                 }
             }
         }
 
     }
 
-    private void processVariableAssignments(ApexNode<?> node, Object data, final boolean reverseOrder) {
+    private void processVariableAssignments(ApexNode<?> node, RuleContext data, final boolean reverseOrder) {
         ASTMethodCallExpression methodCallAssignment = node.firstChild(ASTMethodCallExpression.class);
         if (methodCallAssignment != null) {
 
@@ -236,7 +237,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
             final ASTVariableExpression right = reverseOrder ? nodes.get(0) : nodes.get(1);
 
             if (urlParameterStrings.contains(Helper.getFQVariableName(right))) {
-                asCtx(data).addViolation(right);
+                data.addViolation(right);
             }
         }
             break;
@@ -246,7 +247,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
 
     }
 
-    private void processBinaryExpression(ApexNode<?> node, Object data) {
+    private void processBinaryExpression(ApexNode<?> node, RuleContext data) {
         ASTBinaryExpression nestedBinaryExpression = node.firstChild(ASTBinaryExpression.class);
         if (nestedBinaryExpression != null) {
             processBinaryExpression(nestedBinaryExpression, data);
@@ -260,7 +261,7 @@ public class ApexXSSFromURLParamRule extends AbstractApexRule {
         for (ASTVariableExpression n : node.children(ASTVariableExpression.class)) {
 
             if (urlParameterStrings.contains(Helper.getFQVariableName(n))) {
-                asCtx(data).addViolation(n);
+                data.addViolation(n);
             }
         }
     }

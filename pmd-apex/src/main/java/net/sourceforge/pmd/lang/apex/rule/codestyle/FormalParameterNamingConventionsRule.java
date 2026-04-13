@@ -13,6 +13,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class FormalParameterNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
@@ -34,7 +35,7 @@ public class FormalParameterNamingConventionsRule extends AbstractNamingConventi
     }
 
     @Override
-    public Object visit(ASTParameter node, Object data) {
+    public RuleContext visit(ASTParameter node, RuleContext data) {
         // classes that extend Exception will contains methods that have parameters with null names
         if (node.getImage() == null) {
             return data;

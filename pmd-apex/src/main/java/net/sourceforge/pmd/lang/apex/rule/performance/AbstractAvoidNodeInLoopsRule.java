@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTWhileLoopStatement;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.ast.Node;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Base class for any rules that detect operations contained within a loop that could be more efficiently executed by
@@ -23,9 +24,9 @@ abstract class AbstractAvoidNodeInLoopsRule extends AbstractApexRule {
      * Adds a violation if any parent of {@code node} is a looping construct that would cause {@code node} to execute
      * multiple times and {@code node} is not part of a return statement that short circuits the loop.
      */
-    protected Object checkForViolation(ApexNode<?> node, Object data) {
+    protected RuleContext checkForViolation(ApexNode<?> node, RuleContext data) {
         if (insideLoop(node) && parentNotReturn(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }

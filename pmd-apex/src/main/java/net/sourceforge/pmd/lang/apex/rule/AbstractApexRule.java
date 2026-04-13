@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-public abstract class AbstractApexRule extends AbstractRule implements ApexVisitor<Object, Object> {
+public abstract class AbstractApexRule extends AbstractRule implements ApexVisitor<RuleContext, RuleContext> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
@@ -17,7 +17,7 @@ public abstract class AbstractApexRule extends AbstractRule implements ApexVisit
     }
 
     @Override
-    public Object visitNode(Node node, Object param) {
+    public RuleContext visitNode(Node node, RuleContext param) {
         node.children().forEach(n -> n.acceptVisitor(this, param));
         return param;
     }

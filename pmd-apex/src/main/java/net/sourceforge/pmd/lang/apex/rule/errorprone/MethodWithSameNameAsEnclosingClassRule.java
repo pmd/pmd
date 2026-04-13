@@ -10,6 +10,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
 
@@ -20,14 +21,14 @@ public class MethodWithSameNameAsEnclosingClassRule extends AbstractApexRule {
 
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         String className = node.getSimpleName();
 
         for (ASTMethod m : node.descendants(ASTMethod.class)) {
             String methodName = m.getImage();
 
             if (!m.isConstructor() && methodName.equalsIgnoreCase(className)) {
-                asCtx(data).addViolation(m);
+                data.addViolation(m);
             }
         }
 

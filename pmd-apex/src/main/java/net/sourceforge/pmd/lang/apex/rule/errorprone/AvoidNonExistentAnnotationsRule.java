@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Apex supported non existent annotations for legacy reasons.
@@ -25,46 +26,46 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
  */
 public class AvoidNonExistentAnnotationsRule extends AbstractApexRule {
     @Override
-    public Object visit(final ASTUserClass node, final Object data) {
+    public RuleContext visit(final ASTUserClass node, final RuleContext data) {
         checkForNonExistentAnnotation(node, node.getModifiers(), data);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(final ASTUserInterface node, final Object data) {
+    public RuleContext visit(final ASTUserInterface node, final RuleContext data) {
         checkForNonExistentAnnotation(node, node.getModifiers(), data);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(final ASTUserEnum node, final Object data) {
+    public RuleContext visit(final ASTUserEnum node, final RuleContext data) {
         checkForNonExistentAnnotation(node, node.getModifiers(), data);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(final ASTMethod node, final Object data) {
+    public RuleContext visit(final ASTMethod node, final RuleContext data) {
         return checkForNonExistentAnnotation(node, node.getModifiers(), data);
     }
 
     @Override
-    public Object visit(final ASTProperty node, final Object data) {
+    public RuleContext visit(final ASTProperty node, final RuleContext data) {
         // may have nested methods, don't visit children
         return checkForNonExistentAnnotation(node, node.getModifiers(), data);
     }
 
     @Override
-    public Object visit(final ASTField node, final Object data) {
+    public RuleContext visit(final ASTField node, final RuleContext data) {
         return checkForNonExistentAnnotation(node, node.getModifiers(), data);
     }
 
-    private Object checkForNonExistentAnnotation(final ApexNode<?> node, final ASTModifierNode modifierNode, final Object data) {
+    private RuleContext checkForNonExistentAnnotation(final ApexNode<?> node, final ASTModifierNode modifierNode, final RuleContext data) {
         if (modifierNode == null) {
             return data;
         }
         for (ASTAnnotation annotation : modifierNode.children(ASTAnnotation.class)) {
             if (!annotation.isResolved()) {
-                asCtx(data).addViolationWithMessage(node, "Use of non existent annotations will lead to broken Apex code which will not compile in the future.");
+                data.addViolationWithMessage(node, "Use of non existent annotations will lead to broken Apex code which will not compile in the future.");
             }
         }
         return data;

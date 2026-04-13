@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Finds encryption schemes using hardcoded IV, hardcoded key
@@ -44,7 +45,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (Helper.isTestMethodOrClass(node)) {
             return data;
         }
@@ -84,7 +85,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
         }
     }
 
-    private void validateStaticIVOrKey(ASTMethodCallExpression methodCall, Object data) {
+    private void validateStaticIVOrKey(ASTMethodCallExpression methodCall, RuleContext data) {
         // .encrypt('AES128', key, exampleIv, data);
         int numberOfChildren = methodCall.getNumChildren();
         switch (numberOfChildren) {
@@ -108,7 +109,7 @@ public class ApexBadCryptoRule extends AbstractApexRule {
 
     }
 
-    private void reportIfHardCoded(Object data, Object potentialIV) {
+    private void reportIfHardCoded(RuleContext data, Object potentialIV) {
         if (potentialIV instanceof ASTMethodCallExpression) {
             ASTMethodCallExpression expression = (ASTMethodCallExpression) potentialIV;
             if (expression.getNumChildren() > 1) {
@@ -116,14 +117,14 @@ public class ApexBadCryptoRule extends AbstractApexRule {
                 if (potentialStaticIV instanceof ASTLiteralExpression) {
                     ASTLiteralExpression variable = (ASTLiteralExpression) potentialStaticIV;
                     if (variable.isString()) {
-                        asCtx(data).addViolation(variable);
+                        data.addViolation(variable);
                     }
                 }
             }
         } else if (potentialIV instanceof ASTVariableExpression) {
             ASTVariableExpression variable = (ASTVariableExpression) potentialIV;
             if (potentiallyStaticBlob.contains(Helper.getFQVariableName(variable))) {
-                asCtx(data).addViolation(variable);
+                data.addViolation(variable);
             }
         }
     }

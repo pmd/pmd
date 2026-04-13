@@ -11,24 +11,25 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidGlobalModifierRule extends AbstractApexRule {
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         return checkForGlobal(node, data);
     }
 
     @Override
-    public Object visit(ASTUserInterface node, Object data) {
+    public RuleContext visit(ASTUserInterface node, RuleContext data) {
         return checkForGlobal(node, data);
     }
 
-    private Object checkForGlobal(ApexNode<?> node, Object data) {
+    private RuleContext checkForGlobal(ApexNode<?> node, RuleContext data) {
         ASTModifierNode modifierNode = node.firstChild(ASTModifierNode.class);
 
         if (isGlobal(modifierNode) && !hasRestAnnotation(modifierNode) && !hasWebServices(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
 
         // Note, the rule reports the whole class, since that's enough and stops to visit right here.

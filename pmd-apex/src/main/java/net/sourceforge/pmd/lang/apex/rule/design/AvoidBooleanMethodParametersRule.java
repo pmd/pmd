@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Rule that detects boolean parameters in public and global Apex methods.
@@ -46,12 +47,12 @@ public class AvoidBooleanMethodParametersRule extends AbstractApexRule {
      * @return the rule context data
      */
     @Override
-    public Object visit(ASTMethod theMethod, Object data) {
+    public RuleContext visit(ASTMethod theMethod, RuleContext data) {
         if (!isPublicOrGlobal(theMethod)) {
             return data;
         }
         theMethod.descendants(ASTParameter.class).filter(parameter -> isBoolean(parameter))
-                .forEach(parameter -> asCtx(data).addViolation(parameter));
+                .forEach(parameter -> data.addViolation(parameter));
         return data;
     }
 

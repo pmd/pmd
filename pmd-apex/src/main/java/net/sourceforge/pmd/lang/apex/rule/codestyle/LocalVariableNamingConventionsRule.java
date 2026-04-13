@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclarationStatements;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class LocalVariableNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
@@ -37,7 +38,7 @@ public class LocalVariableNamingConventionsRule extends AbstractNamingConvention
 
 
     @Override
-    public Object visit(ASTVariableDeclaration node, Object data) {
+    public RuleContext visit(ASTVariableDeclaration node, RuleContext data) {
         if (node.ancestors(ASTVariableDeclarationStatements.class).first().getModifiers().isFinal()) {
             checkMatches(FINAL_REGEX, node, data);
         } else {

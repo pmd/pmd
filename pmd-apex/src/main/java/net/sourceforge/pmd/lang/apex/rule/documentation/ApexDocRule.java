@@ -26,6 +26,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Validates ApexDoc comments according to the Salesforce ApexDoc specification.
@@ -73,19 +74,19 @@ public class ApexDocRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         handleClassOrInterface(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTUserInterface node, Object data) {
+    public RuleContext visit(ASTUserInterface node, RuleContext data) {
         handleClassOrInterface(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
+    public RuleContext visit(ASTMethod node, RuleContext data) {
         if (node.getParent() instanceof ASTProperty) {
             // Skip property methods, doc is required on the property itself
             return data;
@@ -94,20 +95,20 @@ public class ApexDocRule extends AbstractApexRule {
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
+                data.addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
             if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
-                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
+                data.addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
 
             String returnType = node.getReturnType();
             boolean shouldHaveReturn = !(returnType.isEmpty() || "void".equalsIgnoreCase(returnType));
             if (comment.hasReturn != shouldHaveReturn) {
                 if (shouldHaveReturn) {
-                    asCtx(data).addViolationWithMessage(node, MISSING_RETURN_MESSAGE);
+                    data.addViolationWithMessage(node, MISSING_RETURN_MESSAGE);
                 } else {
-                    asCtx(data).addViolationWithMessage(node, UNEXPECTED_RETURN_MESSAGE);
+                    data.addViolationWithMessage(node, UNEXPECTED_RETURN_MESSAGE);
                 }
             }
 
@@ -116,7 +117,7 @@ public class ApexDocRule extends AbstractApexRule {
                     .collect(Collectors.toList());
 
             if (!comment.params.equals(params)) {
-                asCtx(data).addViolationWithMessage(node, MISMATCHED_PARAM_MESSAGE);
+                data.addViolationWithMessage(node, MISMATCHED_PARAM_MESSAGE);
             }
         }
 
@@ -124,31 +125,31 @@ public class ApexDocRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTProperty node, Object data) {
+    public RuleContext visit(ASTProperty node, RuleContext data) {
         ApexDocComment comment = getApexDocComment(node);
 
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
+                data.addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
             if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
-                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
+                data.addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
         }
 
         return data;
     }
 
-    private void handleClassOrInterface(ApexNode<?> node, Object data) {
+    private void handleClassOrInterface(ApexNode<?> node, RuleContext data) {
         ApexDocComment comment = getApexDocComment(node);
         if (comment == null) {
             if (shouldHaveApexDocs(node)) {
-                asCtx(data).addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
+                data.addViolationWithMessage(node, MISSING_COMMENT_MESSAGE);
             }
         } else {
             if (getProperty(REPORT_MISSING_DESCRIPTION_DESCRIPTOR) && !comment.hasDescription) {
-                asCtx(data).addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
+                data.addViolationWithMessage(node, MISSING_DESCRIPTION_MESSAGE);
             }
         }
     }

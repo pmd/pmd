@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.lang.test.ast.TestUtilsKt;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 class AbstractApexRuleTest extends ApexParserTestBase {
 
@@ -52,32 +53,32 @@ class AbstractApexRuleTest extends ApexParserTestBase {
         }
 
         @Override
-        public Object visit(ASTUserClass node, Object data) {
-            asCtx(data).addViolation(node);
+        public RuleContext visit(ASTUserClass node, RuleContext data) {
+            data.addViolation(node);
             return data;
         }
 
         @Override
-        public Object visit(ASTUserInterface node, Object data) {
-            asCtx(data).addViolation(node);
+        public RuleContext visit(ASTUserInterface node, RuleContext data) {
+            data.addViolation(node);
             return data;
         }
 
         @Override
-        public Object visit(ASTUserTrigger node, Object data) {
-            asCtx(data).addViolation(node);
+        public RuleContext visit(ASTUserTrigger node, RuleContext data) {
+            data.addViolation(node);
             return data;
         }
 
         @Override
-        public Object visit(ASTUserEnum node, Object data) {
-            asCtx(data).addViolation(node);
+        public RuleContext visit(ASTUserEnum node, RuleContext data) {
+            data.addViolation(node);
             return data;
         }
 
         @Override
-        public Object visit(ASTAnonymousClass node, Object data) {
-            asCtx(data).addViolation(node);
+        public RuleContext visit(ASTAnonymousClass node, RuleContext data) {
+            data.addViolation(node);
             return data;
         }
     }

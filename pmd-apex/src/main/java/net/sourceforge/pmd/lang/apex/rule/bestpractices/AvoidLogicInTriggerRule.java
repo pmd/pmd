@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTBlockStatement;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserTrigger;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidLogicInTriggerRule extends AbstractApexRule {
 
@@ -21,11 +22,11 @@ public class AvoidLogicInTriggerRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserTrigger node, Object data) {
+    public RuleContext visit(ASTUserTrigger node, RuleContext data) {
         List<ASTBlockStatement> blockStatements = node.descendants(ASTBlockStatement.class).toList();
 
         if (!blockStatements.isEmpty()) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
 
         return data;

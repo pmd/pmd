@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexParserTestBase;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.reporting.ViolationSuppressor;
 
 class SuppressWarningsTest extends ApexParserTestBase {
@@ -32,9 +33,9 @@ class SuppressWarningsTest extends ApexParserTestBase {
         }
 
         @Override
-        public Object visit(ASTUserClass clazz, Object ctx) {
+        public RuleContext visit(ASTUserClass clazz, RuleContext ctx) {
             if ("bar".equalsIgnoreCase(clazz.getSimpleName())) {
-                asCtx(ctx).addViolation(clazz);
+                ctx.addViolation(clazz);
             }
             return super.visit(clazz, ctx);
         }

@@ -60,55 +60,55 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTSoqlExpression node, Object data) {
+    public RuleContext visit(ASTSoqlExpression node, RuleContext data) {
         checkForViolation(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTSoslExpression node, Object data) {
+    public RuleContext visit(ASTSoslExpression node, RuleContext data) {
         checkForViolation(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTDmlUpsertStatement node, Object data) {
+    public RuleContext visit(ASTDmlUpsertStatement node, RuleContext data) {
         checkForViolation(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTDmlUpdateStatement node, Object data) {
+    public RuleContext visit(ASTDmlUpdateStatement node, RuleContext data) {
         checkForViolation(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTDmlUndeleteStatement node, Object data) {
+    public RuleContext visit(ASTDmlUndeleteStatement node, RuleContext data) {
         checkForViolation(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTDmlMergeStatement node, Object data) {
+    public RuleContext visit(ASTDmlMergeStatement node, RuleContext data) {
         checkForViolation(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTDmlInsertStatement node, Object data) {
+    public RuleContext visit(ASTDmlInsertStatement node, RuleContext data) {
         checkForViolation(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTDmlDeleteStatement node, Object data) {
+    public RuleContext visit(ASTDmlDeleteStatement node, RuleContext data) {
         checkForViolation(node, data);
         return data;
     }
 
     @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
+    public RuleContext visit(ASTMethodCallExpression node, RuleContext data) {
         if (Helper.isAnyDatabaseMethodCall(node)) {
             checkForViolation(node, data);
         }
@@ -116,7 +116,7 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
         return data;
     }
 
-    private void checkForViolation(ApexNode<?> node, Object data) {
+    private void checkForViolation(ApexNode<?> node, RuleContext data) {
         // The closest ASTUserClass class in the tree hierarchy is the node that requires the sharing declaration
         ASTUserClass sharingDeclarationClass = node.ancestors(ASTUserClass.class).first();
 
@@ -134,15 +134,15 @@ public class ApexSharingViolationsRule extends AbstractApexRule {
         }
     }
 
-    private void reportViolation(ApexNode<?> node, Object data) {
+    private void reportViolation(ApexNode<?> node, RuleContext data) {
         ASTModifierNode modifier = node.firstChild(ASTModifierNode.class);
         if (modifier != null) {
             if (localCacheOfReportedNodes.put(modifier, data) == null) {
-                asCtx(data).addViolation(modifier);
+                data.addViolation(modifier);
             }
         } else {
             if (localCacheOfReportedNodes.put(node, data) == null) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
     }

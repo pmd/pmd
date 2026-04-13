@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.metrics.MetricsUtil;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class CognitiveComplexityRule extends AbstractApexRule {
 
@@ -45,7 +46,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
 
 
     @Override
-    public Object visit(ASTUserTrigger node, Object data) {
+    public RuleContext visit(ASTUserTrigger node, RuleContext data) {
         inTrigger = true;
         super.visit(node, data);
         inTrigger = false;
@@ -54,7 +55,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
 
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
 
         classNames.push(node.getSimpleName());
         super.visit(node, data);
@@ -75,7 +76,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
                     String.valueOf(classLevelThreshold),
                 };
 
-                asCtx(data).addViolation(node, (Object[]) messageParams);
+                data.addViolation(node, (Object[]) messageParams);
             }
         }
         return data;
@@ -83,7 +84,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
 
 
     @Override
-    public final Object visit(ASTMethod node, Object data) {
+    public final RuleContext visit(ASTMethod node, RuleContext data) {
 
         if (ApexMetrics.COGNITIVE_COMPLEXITY.supports(node)) {
             int cognitive = MetricsUtil.computeMetric(ApexMetrics.COGNITIVE_COMPLEXITY, node);
@@ -93,7 +94,7 @@ public class CognitiveComplexityRule extends AbstractApexRule {
                         : node.getImage().equals(classNames.peek()) ? "constructor"
                         : "method";
 
-                asCtx(data).addViolation(node, opType,
+                data.addViolation(node, opType,
                         node.getQualifiedName().getOperation(),
                         "",
                         "" + cognitive,

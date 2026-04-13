@@ -16,6 +16,7 @@ import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class TooManyFieldsRule extends AbstractApexRule {
 
@@ -41,7 +42,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
 
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
 
         List<ASTField> fields = node.children(ASTField.class).toList();
 
@@ -53,7 +54,7 @@ public class TooManyFieldsRule extends AbstractApexRule {
             val++;
         }
         if (val > getProperty(MAX_FIELDS_DESCRIPTOR)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }

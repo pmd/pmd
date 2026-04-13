@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Looking for potential Open redirect via PageReference variable input
@@ -39,7 +40,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
             return data; // stops all the rules
         }
@@ -122,7 +123,7 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
      * @param node
      * @param data
      */
-    private void checkNewObjects(ASTNewObjectExpression node, Object data) {
+    private void checkNewObjects(ASTNewObjectExpression node, RuleContext data) {
 
         ASTMethod method = node.ancestors(ASTMethod.class).first();
         if (method != null && Helper.isTestMethodOrClass(method)) {
@@ -142,12 +143,12 @@ public class ApexOpenRedirectRule extends AbstractApexRule {
      * @param data
      *
      */
-    private void getObjectValue(ApexNode<?> node, Object data) {
+    private void getObjectValue(ApexNode<?> node, RuleContext data) {
         // PageReference(foo);
         for (ASTVariableExpression variable : node.children(ASTVariableExpression.class)) {
             if (variable.getIndexInParent() == 0
                     && !listOfStringLiteralVariables.contains(Helper.getFQVariableName(variable))) {
-                asCtx(data).addViolation(variable);
+                data.addViolation(variable);
             }
         }
 

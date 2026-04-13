@@ -176,7 +176,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
             return data; // stops all the rules
         }
@@ -192,7 +192,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
+    public RuleContext visit(ASTMethodCallExpression node, RuleContext data) {
         if (Helper.isAnyDatabaseMethodCall(node)) {
 
             if (hasAccessLevelArgument(node)) {
@@ -265,7 +265,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTDmlInsertStatement node, Object data) {
+    public RuleContext visit(ASTDmlInsertStatement node, RuleContext data) {
         if (hasRunAsMode(node)) {
             return data;
         }
@@ -275,7 +275,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTDmlDeleteStatement node, Object data) {
+    public RuleContext visit(ASTDmlDeleteStatement node, RuleContext data) {
         if (hasRunAsMode(node)) {
             return data;
         }
@@ -285,7 +285,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTDmlUndeleteStatement node, Object data) {
+    public RuleContext visit(ASTDmlUndeleteStatement node, RuleContext data) {
         if (hasRunAsMode(node)) {
             return data;
         }
@@ -295,7 +295,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTDmlUpdateStatement node, Object data) {
+    public RuleContext visit(ASTDmlUpdateStatement node, RuleContext data) {
         if (hasRunAsMode(node)) {
             return data;
         }
@@ -305,7 +305,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTDmlUpsertStatement node, Object data) {
+    public RuleContext visit(ASTDmlUpsertStatement node, RuleContext data) {
         if (hasRunAsMode(node)) {
             return data;
         }
@@ -316,7 +316,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTDmlMergeStatement node, Object data) {
+    public RuleContext visit(ASTDmlMergeStatement node, RuleContext data) {
         if (hasRunAsMode(node)) {
             return data;
         }
@@ -326,7 +326,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(final ASTAssignmentExpression node, Object data) {
+    public RuleContext visit(final ASTAssignmentExpression node, RuleContext data) {
         final ASTSoqlExpression soql = node.descendants(ASTSoqlExpression.class).first();
         if (soql != null) {
             checkForAccessibility(soql, data);
@@ -336,7 +336,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(final ASTVariableDeclaration node, Object data) {
+    public RuleContext visit(final ASTVariableDeclaration node, RuleContext data) {
         String type = node.getType();
         addVariableToMapping(Helper.getFQVariableName(node), type);
 
@@ -350,14 +350,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTParameter node, Object data) {
+    public RuleContext visit(ASTParameter node, RuleContext data) {
         String type = node.getType();
         addVariableToMapping(Helper.getFQVariableName(node), type);
         return data;
     }
 
     @Override
-    public Object visit(final ASTFieldDeclaration node, Object data) {
+    public RuleContext visit(final ASTFieldDeclaration node, RuleContext data) {
         ASTFieldDeclarationStatements field = node.ancestors(ASTFieldDeclarationStatements.class).first();
         if (field != null) {
             String namesString = field.getTypeName();
@@ -372,7 +372,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(final ASTReturnStatement node, Object data) {
+    public RuleContext visit(final ASTReturnStatement node, RuleContext data) {
         final ASTSoqlExpression soql = node.descendants(ASTSoqlExpression.class).first();
         if (soql != null) {
             checkForAccessibility(soql, data);
@@ -382,7 +382,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(final ASTForEachStatement node, Object data) {
+    public RuleContext visit(final ASTForEachStatement node, RuleContext data) {
         final ASTSoqlExpression soql = node.firstChild(ASTSoqlExpression.class);
         if (soql != null) {
             checkForAccessibility(soql, data);
@@ -412,7 +412,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(final ASTProperty node, Object data) {
+    public RuleContext visit(final ASTProperty node, RuleContext data) {
         ASTField field = node.firstChild(ASTField.class);
         if (field != null) {
             String fieldType = field.getType();
@@ -523,7 +523,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private void checkForCRUD(final ApexNode<?> node, final Object data, final String crudMethod) {
+    private void checkForCRUD(final ApexNode<?> node, final RuleContext data, final String crudMethod) {
         final Set<ASTMethodCallExpression> prevCalls = getPreviousMethodCalls(node);
         for (ASTMethodCallExpression prevCall : prevCalls) {
             collectCRUDMethodLevelChecks(prevCall);
@@ -564,7 +564,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private void checkInlineObject(final ApexNode<?> node, final Object data, final String crudMethod) {
+    private void checkInlineObject(final ApexNode<?> node, final RuleContext data, final String crudMethod) {
 
         final ASTNewKeyValueObjectExpression newObj = node.firstChild(ASTNewKeyValueObjectExpression.class);
         if (newObj != null) {
@@ -573,7 +573,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         }
     }
 
-    private void checkInlineNonArgsObject(final ApexNode<?> node, final Object data, final String crudMethod) {
+    private void checkInlineNonArgsObject(final ApexNode<?> node, final RuleContext data, final String crudMethod) {
 
         final ASTNewObjectExpression newEmptyObj = node.firstChild(ASTNewObjectExpression.class);
         if (newEmptyObj != null) {
@@ -688,7 +688,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
 
     }
 
-    private boolean validateCRUDCheckPresent(final ApexNode<?> node, final Object data, final String crudMethod,
+    private boolean validateCRUDCheckPresent(final ApexNode<?> node, final RuleContext data, final String crudMethod,
             final String typeCheck) {
         boolean missingKey = !typeToDMLOperationMapping.containsKey(typeCheck);
         boolean isImproperDMLCheck = !isProperESAPICheckForDML(typeCheck, crudMethod)
@@ -699,7 +699,7 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
         if (missingKey) {
             if (isImproperDMLCheck) {
                 if (noSecurityEnforced && noUserMode && noSystemMode) {
-                    asCtx(data).addViolation(node);
+                    data.addViolation(node);
                     return true;
                 }
             }
@@ -719,14 +719,14 @@ public class ApexCRUDViolationRule extends AbstractApexRule {
             }
 
             if (!properChecksHappened) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
                 return true;
             }
         }
         return false;
     }
 
-    private void checkForAccessibility(final ASTSoqlExpression node, Object data) {
+    private void checkForAccessibility(final ASTSoqlExpression node, RuleContext data) {
         // TODO: This includes sub-relation queries which are incorrectly flagged because you authorize the type
         //  and not the sub-relation name. Should we (optionally) exclude sub-relations until/unless they can be
         //  resolved to the proper SObject type?

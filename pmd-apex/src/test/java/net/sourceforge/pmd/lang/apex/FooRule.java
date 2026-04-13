@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTParameter;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ASTVariableDeclaration;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Sample rule that detect any node with an image of "Foo". Used for testing.
@@ -20,33 +21,33 @@ public class FooRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass c, Object ctx) {
+    public RuleContext visit(ASTUserClass c, RuleContext ctx) {
         if ("Foo".equalsIgnoreCase(c.getSimpleName())) {
-            asCtx(ctx).addViolation(c);
+            ctx.addViolation(c);
         }
         return super.visit(c, ctx);
     }
 
     @Override
-    public Object visit(ASTVariableDeclaration c, Object ctx) {
+    public RuleContext visit(ASTVariableDeclaration c, RuleContext ctx) {
         if ("Foo".equalsIgnoreCase(c.getImage())) {
-            asCtx(ctx).addViolation(c);
+            ctx.addViolation(c);
         }
         return super.visit(c, ctx);
     }
 
     @Override
-    public Object visit(ASTField c, Object ctx) {
+    public RuleContext visit(ASTField c, RuleContext ctx) {
         if ("Foo".equalsIgnoreCase(c.getImage())) {
-            asCtx(ctx).addViolation(c);
+            ctx.addViolation(c);
         }
         return super.visit(c, ctx);
     }
 
     @Override
-    public Object visit(ASTParameter c, Object ctx) {
+    public RuleContext visit(ASTParameter c, RuleContext ctx) {
         if ("Foo".equalsIgnoreCase(c.getImage())) {
-            asCtx(ctx).addViolation(c);
+            ctx.addViolation(c);
         }
         return super.visit(c, ctx);
     }

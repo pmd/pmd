@@ -32,6 +32,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Detects if variables in Database.query(variable) or Database.countQuery is escaped with
@@ -63,7 +64,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
 
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
             return data; // stops all the rules
@@ -208,7 +209,7 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
 
     }
 
-    private void reportStrings(ASTMethodCallExpression m, Object data) {
+    private void reportStrings(ASTMethodCallExpression m, RuleContext data) {
         final Set<ASTVariableExpression> setOfSafeVars = new HashSet<>();
         for (ASTStandardCondition c : m.descendants(ASTStandardCondition.class)) {
             List<ASTVariableExpression> vars = c.descendants(ASTVariableExpression.class).toList();
@@ -235,20 +236,20 @@ public class ApexSOQLInjectionRule extends AbstractApexRule {
                         || Helper.isMethodName(parentCall, STRING, JOIN);
 
                 if (!isSafeMethod) {
-                    asCtx(data).addViolation(v);
+                    data.addViolation(v);
                 }
             }
         }
     }
 
-    private void reportVariables(final ASTMethodCallExpression m, Object data) {
+    private void reportVariables(final ASTMethodCallExpression m, RuleContext data) {
         final ASTVariableExpression var = m.firstChild(ASTVariableExpression.class);
         if (var != null) {
             String nameFQ = Helper.getFQVariableName(var);
             if (selectContainingVariables.containsKey(nameFQ)) {
                 boolean isLiteral = selectContainingVariables.get(nameFQ);
                 if (!isLiteral) {
-                    asCtx(data).addViolation(var);
+                    data.addViolation(var);
                 }
             }
         }

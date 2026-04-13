@@ -9,6 +9,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Constructor and init method might contain DML, which constitutes a CSRF
@@ -21,7 +22,7 @@ public class ApexCSRFRule extends AbstractApexRule {
     public static final String INIT = "init";
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
             return data; // stops all the rules
         }
@@ -30,7 +31,7 @@ public class ApexCSRFRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
+    public RuleContext visit(ASTMethod node, RuleContext data) {
         if (!Helper.isTestMethodOrClass(node)) {
             checkForCSRF(node, data);
         }
@@ -38,21 +39,21 @@ public class ApexCSRFRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTBlockStatement node, Object data) {
+    public RuleContext visit(ASTBlockStatement node, RuleContext data) {
         if (node.getParent() instanceof ASTUserClass && Helper.foundAnyDML(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }
 
-    private void checkForCSRF(ASTMethod node, Object data) {
+    private void checkForCSRF(ASTMethod node, RuleContext data) {
         if (node.isConstructor() && Helper.foundAnyDML(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
 
         String name = node.getImage();
         if ((node.isStaticInitializer() || isInitializerMethod(name)) && Helper.foundAnyDML(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
     }
 

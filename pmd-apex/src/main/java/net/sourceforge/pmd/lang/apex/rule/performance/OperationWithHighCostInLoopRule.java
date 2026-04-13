@@ -12,6 +12,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -36,7 +37,7 @@ public class OperationWithHighCostInLoopRule extends AbstractAvoidNodeInLoopsRul
 
     // Begin general method invocations
     @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
+    public RuleContext visit(ASTMethodCallExpression node, RuleContext data) {
         if (checkHighCostClassMethods(node)) {
             return checkForViolation(node, data);
         } else {

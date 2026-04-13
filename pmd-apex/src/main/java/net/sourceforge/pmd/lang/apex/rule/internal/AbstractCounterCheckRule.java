@@ -17,6 +17,7 @@ import net.sourceforge.pmd.lang.document.FileLocation;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -66,7 +67,7 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
     }
 
     @Override
-    public Object visitApexNode(ApexNode<?> node, Object data) {
+    public RuleContext visitApexNode(ApexNode<?> node, RuleContext data) {
         @SuppressWarnings("unchecked")
         T t = (T) node;
         // since we only visit this node, it's ok
@@ -75,7 +76,7 @@ public abstract class AbstractCounterCheckRule<T extends ApexNode<?>> extends Ab
             int metric = getMetric(t);
             int limit = getProperty(reportLevel);
             if (metric >= limit) {
-                asCtx(data).addViolationWithPosition(t, t.getAstInfo(), getReportLocation(t), getMessage(), getViolationParameters(t, metric, limit));
+                data.addViolationWithPosition(t, t.getAstInfo(), getReportLocation(t), getMessage(), getViolationParameters(t, metric, limit));
             }
         }
 

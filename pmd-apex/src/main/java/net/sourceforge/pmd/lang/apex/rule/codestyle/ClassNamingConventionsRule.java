@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserInterface;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
@@ -56,7 +57,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (node.isNested()) {
             checkMatches(INNER_CLASS_REGEX, node, data);
         } else if (node.getModifiers().isTest()) {
@@ -71,7 +72,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
     }
 
     @Override
-    public Object visit(ASTUserInterface node, Object data) {
+    public RuleContext visit(ASTUserInterface node, RuleContext data) {
         if (node.isNested()) {
             checkMatches(INNER_INTERFACE_REGEX, node, data);
         } else {
@@ -82,7 +83,7 @@ public class ClassNamingConventionsRule extends AbstractNamingConventionsRule {
     }
 
     @Override
-    public Object visit(ASTUserEnum node, Object data) {
+    public RuleContext visit(ASTUserEnum node, RuleContext data) {
         checkMatches(ENUM_REGEX, node, data);
         return data;
     }

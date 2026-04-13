@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Insecure HTTP endpoints passed to (req.setEndpoint)
@@ -33,19 +34,19 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     private final Set<String> httpEndpointStrings = new HashSet<>();
 
     @Override
-    public Object visit(ASTAssignmentExpression node, Object data) {
+    public RuleContext visit(ASTAssignmentExpression node, RuleContext data) {
         findInsecureEndpoints(node);
         return data;
     }
 
     @Override
-    public Object visit(ASTVariableDeclaration node, Object data) {
+    public RuleContext visit(ASTVariableDeclaration node, RuleContext data) {
         findInsecureEndpoints(node);
         return data;
     }
 
     @Override
-    public Object visit(ASTFieldDeclaration node, Object data) {
+    public RuleContext visit(ASTFieldDeclaration node, RuleContext data) {
         findInsecureEndpoints(node);
         return data;
     }
@@ -75,12 +76,12 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTMethodCallExpression node, Object data) {
+    public RuleContext visit(ASTMethodCallExpression node, RuleContext data) {
         processInsecureEndpoint(node, data);
         return data;
     }
 
-    private void processInsecureEndpoint(ASTMethodCallExpression node, Object data) {
+    private void processInsecureEndpoint(ASTMethodCallExpression node, RuleContext data) {
         if (!Helper.isMethodName(node, SET_ENDPOINT)) {
             return;
         }
@@ -94,19 +95,19 @@ public class ApexInsecureEndpointRule extends AbstractApexRule {
 
     }
 
-    private void runChecks(ApexNode<?> node, Object data) {
+    private void runChecks(ApexNode<?> node, RuleContext data) {
         ASTLiteralExpression literalNode = node.firstChild(ASTLiteralExpression.class);
         if (literalNode != null && literalNode.isString()) {
             String literal = literalNode.getImage();
             if (PATTERN.matcher(literal).matches()) {
-                asCtx(data).addViolation(literalNode);
+                data.addViolation(literalNode);
             }
         }
 
         ASTVariableExpression variableNode = node.firstChild(ASTVariableExpression.class);
         if (variableNode != null) {
             if (httpEndpointStrings.contains(Helper.getFQVariableName(variableNode))) {
-                asCtx(data).addViolation(variableNode);
+                data.addViolation(variableNode);
             }
 
         }

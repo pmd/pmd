@@ -15,6 +15,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserEnum;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
     private static final Map<String, String> DESCRIPTOR_TO_DISPLAY_NAME = new HashMap<>();
@@ -42,7 +43,7 @@ public class MethodNamingConventionsRule extends AbstractNamingConventionsRule {
 
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
+    public RuleContext visit(ASTMethod node, RuleContext data) {
         if (isOverriddenMethod(node) || isPropertyAccessor(node) || isConstructor(node)) {
             return data;
         }

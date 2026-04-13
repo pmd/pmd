@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 import net.sourceforge.pmd.util.CollectionUtil;
 
 /**
@@ -38,7 +39,7 @@ public final class AvoidStatefulDatabaseResultRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass theClass, Object data) {
+    public RuleContext visit(ASTUserClass theClass, RuleContext data) {
         if (!implementsDatabaseStateful(theClass)) {
             return data;
         }
@@ -46,7 +47,7 @@ public final class AvoidStatefulDatabaseResultRule extends AbstractApexRule {
         // interface, so we only need to check the top level class
         for (ASTField theField : theClass.descendants(ASTField.class)) {
             if (isNonTransientInstanceDatabaseResultField(theField)) {
-                asCtx(data).addViolation(theField);
+                data.addViolation(theField);
             }
         }
         return data;

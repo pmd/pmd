@@ -59,14 +59,14 @@ public final class NcssCountRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visitApexNode(ApexNode<?> node, Object data) {
+    public RuleContext visitApexNode(ApexNode<?> node, RuleContext data) {
         int methodReportLevel = getProperty(METHOD_REPORT_LEVEL_DESCRIPTOR);
         int classReportLevel = getProperty(CLASS_REPORT_LEVEL_DESCRIPTOR);
 
         if (node instanceof ASTUserClassOrInterface) {
-            visitTypeDecl((ASTUserClassOrInterface<?>) node, classReportLevel, (RuleContext) data);
+            visitTypeDecl((ASTUserClassOrInterface<?>) node, classReportLevel, data);
         } else if (node instanceof ASTMethod) {
-            visitMethod((ASTMethod) node, methodReportLevel, (RuleContext) data);
+            visitMethod((ASTMethod) node, methodReportLevel, data);
         } else {
             throw AssertionUtil.shouldNotReachHere("node is not handled: " + node);
         }

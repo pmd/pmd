@@ -20,6 +20,7 @@ import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Flags usage of http request.setHeader('Authorization',..) and suggests using
@@ -43,7 +44,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (Helper.isTestMethodOrClass(node)) {
             return data;
         }
@@ -114,7 +115,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
         }
     }
 
-    private void flagAuthorizationHeaders(final ASTMethodCallExpression node, Object data) {
+    private void flagAuthorizationHeaders(final ASTMethodCallExpression node, RuleContext data) {
         if (!Helper.isMethodName(node, SET_HEADER)) {
             return;
         }
@@ -122,7 +123,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
         runChecks(node, data);
     }
 
-    private void runChecks(final ApexNode<?> node, Object data) {
+    private void runChecks(final ApexNode<?> node, RuleContext data) {
         ApexNode<?> keyNode = node.getChild(1);
         ApexNode<?> valueNode = node.getChild(2);
 
@@ -131,7 +132,7 @@ public class ApexSuggestUsingNamedCredRule extends AbstractApexRule {
         }
 
         if (valueNode == null || !isCredentialReference(valueNode)) {
-            asCtx(data).addViolation(keyNode);
+            data.addViolation(keyNode);
         }
     }
 

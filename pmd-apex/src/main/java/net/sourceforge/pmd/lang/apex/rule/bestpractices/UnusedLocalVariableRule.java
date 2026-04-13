@@ -29,6 +29,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnusedLocalVariableRule extends AbstractApexRule {
     private static final Set<String> DATABASE_QUERY_METHODS = new HashSet<>(Arrays.asList(
@@ -45,7 +46,7 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTVariableDeclaration node, Object data) {
+    public RuleContext visit(ASTVariableDeclaration node, RuleContext data) {
         String variableName = node.getImage();
 
         ASTBlockStatement variableContext = node.ancestors(ASTBlockStatement.class).first();
@@ -77,7 +78,7 @@ public class UnusedLocalVariableRule extends AbstractApexRule {
             return data;
         }
 
-        asCtx(data).addViolation(node, variableName);
+        data.addViolation(node, variableName);
         return data;
     }
 

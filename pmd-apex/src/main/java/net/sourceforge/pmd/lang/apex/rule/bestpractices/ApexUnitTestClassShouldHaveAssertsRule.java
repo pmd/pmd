@@ -21,6 +21,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTMethod;
 import net.sourceforge.pmd.lang.apex.ast.ASTMethodCallExpression;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Apex unit tests should have System.assert methods in them
@@ -75,7 +76,7 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
     }
 
     @Override
-    public Object visit(ASTMethod node, Object data) {
+    public RuleContext visit(ASTMethod node, RuleContext data) {
         if (!isTestMethodOrClass(node)) {
             return data;
         }
@@ -83,7 +84,7 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         return checkForAssertStatements(node, data);
     }
 
-    private Object checkForAssertStatements(ApexNode<?> node, Object data) {
+    private RuleContext checkForAssertStatements(ApexNode<?> node, RuleContext data) {
         final List<ASTBlockStatement> blockStatements = node.descendants(ASTBlockStatement.class).toList();
         final List<ASTMethodCallExpression> methodCalls = new ArrayList<>();
         for (ASTBlockStatement blockStatement : blockStatements) {
@@ -115,7 +116,7 @@ public class ApexUnitTestClassShouldHaveAssertsRule extends AbstractApexUnitTest
         }
 
         if (!isAssertFound) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
 
         return data;

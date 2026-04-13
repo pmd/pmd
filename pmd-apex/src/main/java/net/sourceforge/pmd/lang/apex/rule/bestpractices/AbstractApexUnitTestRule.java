@@ -8,6 +8,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTUserClass;
 import net.sourceforge.pmd.lang.apex.ast.ApexNode;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Do special checks for apex unit test classes and methods
@@ -21,7 +22,7 @@ abstract class AbstractApexUnitTestRule extends AbstractApexRule {
      * newer than API v24 (V176 internal).
      */
     @Override
-    public Object visit(final ASTUserClass node, final Object data) {
+    public RuleContext visit(final ASTUserClass node, final RuleContext data) {
         if (!isTestMethodOrClass(node)) {
             return data;
         }

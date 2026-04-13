@@ -11,6 +11,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTField;
 import net.sourceforge.pmd.lang.apex.ast.ASTFieldDeclarationStatements;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Rule that checks if Apex annotations are written in PascalCase. This rule
@@ -20,9 +21,9 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 public class AnnotationsNamingConventionsRule extends AbstractApexRule {
 
     @Override
-    public Object visit(ASTAnnotation annotation, Object data) {
+    public RuleContext visit(ASTAnnotation annotation, RuleContext data) {
         if (annotation.isResolved() && isNotField(annotation) && !isPascalCase(annotation)) {
-            asCtx(data).addViolation(annotation, annotation.getRawName(), annotation.getName());
+            data.addViolation(annotation, annotation.getRawName(), annotation.getName());
         }
         return data;
     }

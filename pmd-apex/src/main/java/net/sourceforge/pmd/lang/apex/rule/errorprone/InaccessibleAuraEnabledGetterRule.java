@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTModifierNode;
 import net.sourceforge.pmd.lang.apex.ast.ASTProperty;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * In the Summer '21 release, a mandatory security update enforces access
@@ -29,7 +30,7 @@ public class InaccessibleAuraEnabledGetterRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTProperty node, Object data) {
+    public RuleContext visit(ASTProperty node, RuleContext data) {
         // Find @AuraEnabled property
         ASTModifierNode propModifiers = node.getModifiers();
         if (hasAuraEnabledAnnotation(propModifiers)) {
@@ -40,7 +41,7 @@ public class InaccessibleAuraEnabledGetterRule extends AbstractApexRule {
                     // Ensure getter is not private or protected
                     ASTModifierNode methodModifiers = method.getModifiers();
                     if (isPrivate(methodModifiers) || isProtected(methodModifiers)) {
-                        asCtx(data).addViolation(node);
+                        data.addViolation(node);
                     }
                 }
             }

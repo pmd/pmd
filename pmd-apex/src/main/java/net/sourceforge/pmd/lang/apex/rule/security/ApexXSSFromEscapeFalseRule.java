@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.apex.ast.ASTVariableExpression;
 import net.sourceforge.pmd.lang.apex.rule.AbstractApexRule;
 import net.sourceforge.pmd.lang.apex.rule.internal.Helper;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Finds all .addError method calls that are not HTML escaped on purpose
@@ -29,7 +30,7 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
     }
 
     @Override
-    public Object visit(ASTUserClass node, Object data) {
+    public RuleContext visit(ASTUserClass node, RuleContext data) {
         if (Helper.isTestMethodOrClass(node) || Helper.isSystemLevelClass(node)) {
             return data; // stops all the rules
         }
@@ -42,7 +43,7 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
         return data;
     }
 
-    private void validateBooleanParameter(ASTMethodCallExpression methodCall, Object data) {
+    private void validateBooleanParameter(ASTMethodCallExpression methodCall, RuleContext data) {
         int numberOfChildren = methodCall.getNumChildren();
         if (numberOfChildren == 3) { // addError('',false)
             Object potentialLiteral = methodCall.getChild(2);
@@ -58,9 +59,9 @@ public class ApexXSSFromEscapeFalseRule extends AbstractApexRule {
         }
     }
 
-    private void validateLiteralPresence(ASTMethodCallExpression methodCall, Object data) {
+    private void validateLiteralPresence(ASTMethodCallExpression methodCall, RuleContext data) {
         for (ASTVariableExpression v : methodCall.descendants(ASTVariableExpression.class)) {
-            asCtx(data).addViolation(v);
+            data.addViolation(v);
         }
     }
 
