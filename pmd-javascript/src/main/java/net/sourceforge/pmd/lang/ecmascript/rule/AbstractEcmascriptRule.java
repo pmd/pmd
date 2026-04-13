@@ -11,7 +11,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public abstract class AbstractEcmascriptRule extends AbstractRule
-        implements EcmascriptVisitor<Object, Object> {
+        implements EcmascriptVisitor<RuleContext, RuleContext> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
@@ -19,7 +19,7 @@ public abstract class AbstractEcmascriptRule extends AbstractRule
     }
 
     @Override
-    public Object visitNode(Node node, Object param) {
+    public RuleContext visitNode(Node node, RuleContext param) {
         node.children().forEach(c -> c.acceptVisitor(this, param));
         return param;
     }

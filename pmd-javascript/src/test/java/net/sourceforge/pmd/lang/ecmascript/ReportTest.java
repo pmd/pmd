@@ -14,6 +14,7 @@ import net.sourceforge.pmd.lang.ecmascript.ast.EcmascriptParserTestBase;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.lang.rule.Rule;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 class ReportTest extends EcmascriptParserTestBase {
 
@@ -21,8 +22,8 @@ class ReportTest extends EcmascriptParserTestBase {
     void testExclusionsInReportWithNOPMDEcmascript() {
         Rule rule = new AbstractEcmascriptRule() {
             @Override
-            public Object visit(ASTFunctionNode node, Object data) {
-                asCtx(data).addViolationWithMessage(node, "Test");
+            public RuleContext visit(ASTFunctionNode node, RuleContext data) {
+                data.addViolationWithMessage(node, "Test");
                 return data;
             }
         };

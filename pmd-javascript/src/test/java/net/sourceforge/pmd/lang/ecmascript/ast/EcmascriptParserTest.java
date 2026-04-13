@@ -19,6 +19,7 @@ import org.mozilla.javascript.ast.AstRoot;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ecmascript.rule.AbstractEcmascriptRule;
 import net.sourceforge.pmd.reporting.Report;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 class EcmascriptParserTest extends EcmascriptParserTestBase {
 
@@ -62,8 +63,8 @@ class EcmascriptParserTest extends EcmascriptParserTestBase {
 
         class MyEcmascriptRule extends AbstractEcmascriptRule {
 
-            public Object visit(ASTScope node, Object data) {
-                asCtx(data).addViolationWithMessage(node, "Scope from " + node.getBeginLine() + " to " + node.getEndLine());
+            public RuleContext visit(ASTScope node, RuleContext data) {
+                data.addViolationWithMessage(node, "Scope from " + node.getBeginLine() + " to " + node.getEndLine());
                 return super.visit(node, data);
             }
         }
