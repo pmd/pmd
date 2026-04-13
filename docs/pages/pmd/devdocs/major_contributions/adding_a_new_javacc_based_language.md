@@ -167,7 +167,8 @@ The Scala module also has a test, written in Kotlin instead of Java:
 
 
 ### 10. Create an abstract rule class for the language
-*   Extend `AbstractRule` and implement the parser visitor interface for your language *(see AbstractVmRule for example)*
+*   Extend `AbstractRule` and implement the parser visitor interface for your language *(see AbstractVfRule for example)*
+*   Make sure to apply the proper type arguments.
 *   All other rules for your language should extend this class. The purpose of this class is to implement visit
     methods for all AST types to simply delegate to default behavior. This is useful because most rules care only
     about specific AST nodes, but PMD needs to know what to do with each node - so this just lets you use default
