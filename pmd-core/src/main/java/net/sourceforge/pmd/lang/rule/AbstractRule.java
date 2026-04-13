@@ -249,7 +249,10 @@ public abstract class AbstractRule extends AbstractPropertySource implements Rul
      * rules use an appropriate visitor. Many rules have not been refactored yet.
      * Once this is done, this method will be deprecated as useless. Until then,
      * this is a way to hide the explicit cast to {@link RuleContext} in rules.
+     *
+     * @deprecated Don't use this. Make sure your rules are properly typed, instead.
      */
+    @Deprecated
     protected final RuleContext asCtx(Object ctx) {
         if (ctx instanceof RuleContext) {
             assert isThisRule(InternalApiBridge.getRule((RuleContext) ctx))
