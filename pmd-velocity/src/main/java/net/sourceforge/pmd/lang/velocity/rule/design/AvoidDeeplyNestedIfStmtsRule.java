@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.velocity.ast.VtlNode;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class AvoidDeeplyNestedIfStmtsRule extends AbstractVtlRule {
@@ -30,27 +31,27 @@ public class AvoidDeeplyNestedIfStmtsRule extends AbstractVtlRule {
     }
 
     @Override
-    public Object visit(ASTTemplate node, Object data) {
+    public RuleContext visit(ASTTemplate node, RuleContext data) {
         depth = 0;
         depthLimit = getProperty(PROBLEM_DEPTH_DESCRIPTOR);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTIfStatement node, Object data) {
+    public RuleContext visit(ASTIfStatement node, RuleContext data) {
         return handleIf(node, data);
     }
 
     @Override
-    public Object visit(ASTElseIfStatement node, Object data) {
+    public RuleContext visit(ASTElseIfStatement node, RuleContext data) {
         return handleIf(node, data);
     }
 
-    private Object handleIf(VtlNode node, Object data) {
+    private RuleContext handleIf(VtlNode node, RuleContext data) {
         depth++;
         super.visitVtlNode(node, data);
         if (depth == depthLimit) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         depth--;
         return data;

@@ -7,13 +7,14 @@ package net.sourceforge.pmd.lang.velocity.rule.errorprone;
 import net.sourceforge.pmd.lang.velocity.ast.ASTBlock;
 import net.sourceforge.pmd.lang.velocity.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class EmptyForeachStmtRule extends AbstractVtlRule {
 
     @Override
-    public Object visit(final ASTForeachStatement node, final Object data) {
+    public RuleContext visit(final ASTForeachStatement node, final RuleContext data) {
         if (node.firstChild(ASTBlock.class).isEmpty()) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return super.visit(node, data);
     }

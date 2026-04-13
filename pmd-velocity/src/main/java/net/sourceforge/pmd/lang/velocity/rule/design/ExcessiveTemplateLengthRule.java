@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.lang.velocity.ast.ASTTemplate;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ExcessiveTemplateLengthRule extends AbstractVtlRule {
 
@@ -33,10 +34,10 @@ public class ExcessiveTemplateLengthRule extends AbstractVtlRule {
     }
 
     @Override
-    public Object visit(final ASTTemplate node, final Object data) {
+    public RuleContext visit(final ASTTemplate node, final RuleContext data) {
 
         if (node.getEndLine() - node.getBeginLine() >= getProperty(REPORT_LEVEL)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
         return data;
     }

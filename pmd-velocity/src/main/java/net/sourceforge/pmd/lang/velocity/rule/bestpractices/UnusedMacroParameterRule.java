@@ -12,11 +12,12 @@ import net.sourceforge.pmd.lang.velocity.ast.ASTDirective;
 import net.sourceforge.pmd.lang.velocity.ast.ASTReference;
 import net.sourceforge.pmd.lang.velocity.ast.ASTStringLiteral;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class UnusedMacroParameterRule extends AbstractVtlRule {
 
     @Override
-    public Object visit(final ASTDirective node, final Object data) {
+    public RuleContext visit(final ASTDirective node, final RuleContext data) {
         if ("macro".equals(node.getDirectiveName())) {
             final Set<String> paramNames = new HashSet<>();
             for (final ASTReference param : node.children(ASTReference.class)) {
@@ -33,7 +34,7 @@ public class UnusedMacroParameterRule extends AbstractVtlRule {
                 }
             }
             if (!paramNames.isEmpty()) {
-                asCtx(data).addViolation(node, paramNames.toString());
+                data.addViolation(node, paramNames.toString());
             }
         }
         return super.visit(node, data);

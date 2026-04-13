@@ -10,29 +10,30 @@ import net.sourceforge.pmd.lang.velocity.ast.ASTElseStatement;
 import net.sourceforge.pmd.lang.velocity.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.velocity.ast.VtlNode;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class EmptyIfStmtRule extends AbstractVtlRule {
     @Override
-    public Object visit(final ASTIfStatement node, final Object data) {
+    public RuleContext visit(final ASTIfStatement node, final RuleContext data) {
         handleIf(node, data);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(final ASTElseIfStatement node, final Object data) {
+    public RuleContext visit(final ASTElseIfStatement node, final RuleContext data) {
         handleIf(node, data);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(final ASTElseStatement node, final Object data) {
+    public RuleContext visit(final ASTElseStatement node, final RuleContext data) {
         handleIf(node, data);
         return super.visit(node, data);
     }
 
-    private void handleIf(final VtlNode node, final Object data) {
+    private void handleIf(final VtlNode node, final RuleContext data) {
         if (node.firstChild(ASTBlock.class).isEmpty()) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
     }
 }

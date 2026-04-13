@@ -11,11 +11,12 @@ import net.sourceforge.pmd.lang.velocity.ast.ASTDirective;
 import net.sourceforge.pmd.lang.velocity.ast.ASTReference;
 import net.sourceforge.pmd.lang.velocity.ast.ASTSetDirective;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidReassigningParametersRule extends AbstractVtlRule {
 
     @Override
-    public Object visit(final ASTDirective node, final Object data) {
+    public RuleContext visit(final ASTDirective node, final RuleContext data) {
         if ("macro".equals(node.getDirectiveName())) {
             final Set<String> paramNames = new HashSet<>();
             for (final ASTReference param : node.children(ASTReference.class)) {
@@ -24,7 +25,7 @@ public class AvoidReassigningParametersRule extends AbstractVtlRule {
             for (final ASTSetDirective assignment : node.descendants(ASTSetDirective.class)) {
                 final ASTReference ref = assignment.firstChild(ASTReference.class);
                 if (ref != null && paramNames.contains(ref.getFirstToken().getImage())) {
-                    asCtx(data).addViolation(node, ref.getFirstToken().getImage());
+                    data.addViolation(node, ref.getFirstToken().getImage());
                 }
             }
         }

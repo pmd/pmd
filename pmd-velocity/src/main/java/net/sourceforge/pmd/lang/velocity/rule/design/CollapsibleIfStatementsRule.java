@@ -14,17 +14,18 @@ import net.sourceforge.pmd.lang.velocity.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.velocity.ast.ASTText;
 import net.sourceforge.pmd.lang.velocity.ast.VtlNode;
 import net.sourceforge.pmd.lang.velocity.rule.AbstractVtlRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class CollapsibleIfStatementsRule extends AbstractVtlRule {
 
     @Override
-    public Object visit(final ASTIfStatement node, final Object data) {
+    public RuleContext visit(final ASTIfStatement node, final RuleContext data) {
         handleIfElseIf(node, data);
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(final ASTElseIfStatement node, final Object data) {
+    public RuleContext visit(final ASTElseIfStatement node, final RuleContext data) {
         // verify that this elseif doesn't have any siblings
         if (node.getParent().children(ASTElseIfStatement.class).count() == 1) {
             handleIfElseIf(node, data);
@@ -32,7 +33,7 @@ public class CollapsibleIfStatementsRule extends AbstractVtlRule {
         return super.visit(node, data);
     }
 
-    private void handleIfElseIf(final VtlNode node, final Object data) {
+    private void handleIfElseIf(final VtlNode node, final RuleContext data) {
         if (node.firstChild(ASTElseStatement.class) == null
                 && node.firstChild(ASTElseIfStatement.class) == null) {
             final ASTBlock ifBlock = node.firstChild(ASTBlock.class);
@@ -66,7 +67,7 @@ public class CollapsibleIfStatementsRule extends AbstractVtlRule {
                 }
             }
             if (violationFound && ifCounter == 1) {
-                asCtx(data).addViolation(node);
+                data.addViolation(node);
             }
         }
     }
