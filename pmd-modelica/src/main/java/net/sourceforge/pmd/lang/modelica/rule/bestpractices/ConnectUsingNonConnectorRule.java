@@ -12,9 +12,10 @@ import net.sourceforge.pmd.lang.modelica.resolver.ModelicaComponentDeclaration;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolutionResult;
 import net.sourceforge.pmd.lang.modelica.resolver.ResolvableEntity;
 import net.sourceforge.pmd.lang.modelica.rule.AbstractModelicaRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class ConnectUsingNonConnectorRule extends AbstractModelicaRule {
-    private void reportIfViolated(ASTComponentReference ref, Object data) {
+    private void reportIfViolated(ASTComponentReference ref, RuleContext data) {
         ResolutionResult<ResolvableEntity> resolution = ref.getResolutionCandidates();
         if (!resolution.isUnresolved()) { // no false positive if not resolved at all
             ResolvableEntity firstDecl = resolution.getBestCandidates().get(0);
@@ -26,20 +27,20 @@ public class ConnectUsingNonConnectorRule extends AbstractModelicaRule {
                         ModelicaClassType classDecl = (ModelicaClassType) componentTypes.getBestCandidates().get(0);
                         ModelicaClassSpecialization restriction = classDecl.getSpecialization();
                         if (!classDecl.isConnectorLike()) {
-                            asCtx(data).addViolation(ref, restriction.toString());
+                            data.addViolation(ref, restriction.toString());
                         }
                     } else {
-                        asCtx(data).addViolation(ref, firstDecl.getDescriptiveName());
+                        data.addViolation(ref, firstDecl.getDescriptiveName());
                     }
                 }
             } else {
-                asCtx(data).addViolation(ref, firstDecl.getDescriptiveName());
+                data.addViolation(ref, firstDecl.getDescriptiveName());
             }
         }
     }
 
     @Override
-    public Object visit(ASTConnectClause node, Object data) {
+    public RuleContext visit(ASTConnectClause node, RuleContext data) {
         ASTComponentReference lhs = (ASTComponentReference) node.getChild(0);
         ASTComponentReference rhs = (ASTComponentReference) node.getChild(1);
 

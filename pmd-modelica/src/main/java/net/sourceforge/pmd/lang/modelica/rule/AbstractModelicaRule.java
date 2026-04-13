@@ -12,7 +12,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
 /**
  * Base class for rules for Modelica language.
  */
-public abstract class AbstractModelicaRule extends AbstractRule implements ModelicaVisitor<Object, Object> {
+public abstract class AbstractModelicaRule extends AbstractRule implements ModelicaVisitor<RuleContext, RuleContext> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
@@ -20,7 +20,7 @@ public abstract class AbstractModelicaRule extends AbstractRule implements Model
     }
 
     @Override
-    public Object visitNode(Node node, Object param) {
+    public RuleContext visitNode(Node node, RuleContext param) {
         node.children().forEach(c -> c.acceptVisitor(this, param));
         return param;
     }
