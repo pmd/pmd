@@ -7,6 +7,7 @@ package net.sourceforge.pmd.lang.jsp.rule.security;
 import net.sourceforge.pmd.lang.jsp.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.jsp.ast.ASTElement;
 import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule detects unsanitized JSP Expressions (can lead to Cross Site
@@ -16,9 +17,9 @@ import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
  */
 public class NoUnsanitizedJSPExpressionRule extends AbstractJspRule {
     @Override
-    public Object visit(ASTElExpression node, Object data) {
+    public RuleContext visit(ASTElExpression node, RuleContext data) {
         if (elOutsideTaglib(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
 
         return super.visit(node, data);

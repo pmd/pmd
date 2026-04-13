@@ -12,6 +12,7 @@ import java.util.Set;
 import net.sourceforge.pmd.lang.jsp.ast.ASTAttribute;
 import net.sourceforge.pmd.lang.jsp.ast.ASTElement;
 import net.sourceforge.pmd.lang.jsp.rule.AbstractJspRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * This rule checks that no "style" elements (like &lt;B&gt;, &lt;FONT&gt;, ...) are used,
@@ -43,18 +44,18 @@ public class NoInlineStyleInformationRule extends AbstractJspRule {
         setOf("STYLE", "FONT", "SIZE", "COLOR", "FACE", "ALIGN", "VALIGN", "BGCOLOR");
 
     @Override
-    public Object visit(ASTAttribute node, Object data) {
+    public RuleContext visit(ASTAttribute node, RuleContext data) {
         if (isStyleAttribute(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
 
         return super.visit(node, data);
     }
 
     @Override
-    public Object visit(ASTElement node, Object data) {
+    public RuleContext visit(ASTElement node, RuleContext data) {
         if (isStyleElement(node)) {
-            asCtx(data).addViolation(node);
+            data.addViolation(node);
         }
 
         return super.visit(node, data);

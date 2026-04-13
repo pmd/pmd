@@ -22,7 +22,7 @@ public class DuplicateJspImportsRule extends AbstractJspRule {
     }
 
     @Override
-    public Object visit(ASTJspDirectiveAttribute node, Object data) {
+    public RuleContext visit(ASTJspDirectiveAttribute node, RuleContext data) {
 
         if (!"import".equals(node.getName())) {
             return super.visit(node, data);
@@ -33,7 +33,7 @@ public class DuplicateJspImportsRule extends AbstractJspRule {
         for (int ix = 0; ix < count; ix++) {
             String token = st.nextToken();
             if (imports.contains(token)) {
-                asCtx(data).addViolation(node, token);
+                data.addViolation(node, token);
             } else {
                 imports.add(token);
             }

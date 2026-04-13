@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.jsp.ast.JspVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-public abstract class AbstractJspRule extends AbstractRule implements JspVisitor<Object, Object> {
+public abstract class AbstractJspRule extends AbstractRule implements JspVisitor<RuleContext, RuleContext> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
@@ -17,7 +17,7 @@ public abstract class AbstractJspRule extends AbstractRule implements JspVisitor
     }
 
     @Override
-    public Object visitNode(Node node, Object param) {
+    public RuleContext visitNode(Node node, RuleContext param) {
         node.children().forEach(c -> c.acceptVisitor(this, param));
         return param;
     }
