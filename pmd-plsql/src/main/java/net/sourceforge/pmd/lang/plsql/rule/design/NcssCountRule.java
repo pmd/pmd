@@ -65,7 +65,7 @@ public class NcssCountRule extends AbstractPLSQLRule {
     }
 
     @Override
-    public Object visitPlsqlNode(PLSQLNode node, Object data) {
+    public RuleContext visitPlsqlNode(PLSQLNode node, RuleContext data) {
         int methodReportLevel = getProperty(METHOD_REPORT_LEVEL_DESCRIPTOR);
         int objectReportLevel = getProperty(OBJECT_REPORT_LEVEL_DESCRIPTOR);
 
@@ -75,19 +75,19 @@ public class NcssCountRule extends AbstractPLSQLRule {
         }
         // Special handling for ProgramUnit to distinguish between Object and Method
         if (node instanceof ASTProgramUnit && !(node.getParent() instanceof ASTGlobal)) {
-            visitMethod((ExecutableCode) node, methodReportLevel, (RuleContext) data);
+            visitMethod((ExecutableCode) node, methodReportLevel, data);
             alreadyVisitedProgramUnits.add(node);
             return data;
         } else if (node instanceof ASTProgramUnit && node.getParent() instanceof ASTGlobal) {
-            visitObject((OracleObject) node, objectReportLevel, (RuleContext) data);
+            visitObject((OracleObject) node, objectReportLevel, data);
             alreadyVisitedProgramUnits.add(node);
             return data;
         }
 
         if (node instanceof ExecutableCode) {
-            visitMethod((ExecutableCode) node, methodReportLevel, (RuleContext) data);
+            visitMethod((ExecutableCode) node, methodReportLevel, data);
         } else if (node instanceof OracleObject) {
-            visitObject((OracleObject) node, objectReportLevel, (RuleContext) data);
+            visitObject((OracleObject) node, objectReportLevel, data);
         } else {
             throw AssertionUtil.shouldNotReachHere("node is not handled: " + node);
         }

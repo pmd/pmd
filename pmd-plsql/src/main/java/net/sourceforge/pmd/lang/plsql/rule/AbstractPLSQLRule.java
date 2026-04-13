@@ -17,7 +17,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PlsqlVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-public abstract class AbstractPLSQLRule extends AbstractRule implements PlsqlVisitor<Object, Object> {
+public abstract class AbstractPLSQLRule extends AbstractRule implements PlsqlVisitor<RuleContext, RuleContext> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
@@ -25,7 +25,7 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PlsqlVis
     }
 
     @Override
-    public Object visitNode(Node node, Object param) {
+    public RuleContext visitNode(Node node, RuleContext param) {
         node.children().forEach(c -> c.acceptVisitor(this, param));
         return param;
     }
@@ -83,7 +83,11 @@ public abstract class AbstractPLSQLRule extends AbstractRule implements PlsqlVis
     /*
      * Treat all Executable Code
      */
+    /**
+     * @deprecated use PlsqlVisitor.visitPlsqlNode(PLSQLNode, RuleContext) instead.
+     */
+    @Deprecated
     public Object visit(ExecutableCode node, Object data) {
-        return visitPlsqlNode(node, data);
+        return visitPlsqlNode(node, (RuleContext) data);
     }
 }

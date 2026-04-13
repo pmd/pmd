@@ -13,6 +13,7 @@ import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.NumericConstraints;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class LineLengthRule extends AbstractPLSQLRule {
 
@@ -37,14 +38,14 @@ public class LineLengthRule extends AbstractPLSQLRule {
     }
 
     @Override
-    public Object visit(ASTInput node, Object data) {
+    public RuleContext visit(ASTInput node, RuleContext data) {
         boolean eachLine = getProperty(EACH_LINE);
         int maxLineLength = getProperty(MAX_LINE_LENGTH);
 
         int lineNumber = 1;
         for (Chars line : node.getText().lines()) {
             if (line.length() > maxLineLength) {
-                asCtx(data).addViolationWithPosition(node, lineNumber, lineNumber,
+                data.addViolationWithPosition(node, lineNumber, lineNumber,
                         "The line is too long. Only " + maxLineLength + " characters are allowed.");
 
                 if (!eachLine) {

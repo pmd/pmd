@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.lang.rule.internal.CommonPropertyDescriptors;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -98,7 +99,7 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
     protected abstract int getMetric(T node);
 
     @Override
-    public Object visitPlsqlNode(PLSQLNode node, Object data) {
+    public RuleContext visitPlsqlNode(PLSQLNode node, RuleContext data) {
         @SuppressWarnings("unchecked")
         T t = (T) node;
         // since we only visit this node, it's ok
@@ -107,7 +108,7 @@ abstract class AbstractCounterCheckRule<T extends PLSQLNode> extends AbstractPLS
             int metric = getMetric(t);
             int limit = getProperty(reportLevel);
             if (metric >= limit) {
-                asCtx(data).addViolation(node, getViolationParameters(t, metric, limit));
+                data.addViolation(node, getViolationParameters(t, metric, limit));
             }
         }
 

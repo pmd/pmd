@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.lang.rule.RuleTargetSelector;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class AvoidTabCharacterRule extends AbstractPLSQLRule {
 
@@ -30,13 +31,13 @@ public class AvoidTabCharacterRule extends AbstractPLSQLRule {
     }
 
     @Override
-    public Object visit(ASTInput node, Object data) {
+    public RuleContext visit(ASTInput node, RuleContext data) {
         boolean eachLine = getProperty(EACH_LINE);
 
         int lineNumber = 1;
         for (Chars line : node.getText().lines()) {
             if (line.indexOf('\t', 0) != -1) {
-                asCtx(data).addViolationWithPosition(node, lineNumber, lineNumber,
+                data.addViolationWithPosition(node, lineNumber, lineNumber,
                                         "Tab characters are not allowed. Use spaces for indentation");
 
                 if (!eachLine) {

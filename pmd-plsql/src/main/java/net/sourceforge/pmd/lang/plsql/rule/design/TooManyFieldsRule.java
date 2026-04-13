@@ -19,6 +19,7 @@ import net.sourceforge.pmd.lang.plsql.ast.PLSQLNode;
 import net.sourceforge.pmd.lang.plsql.rule.AbstractPLSQLRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 public class TooManyFieldsRule extends AbstractPLSQLRule {
 
@@ -39,7 +40,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     }
 
     @Override
-    public Object visit(ASTInput node, Object data) {
+    public RuleContext visit(ASTInput node, RuleContext data) {
 
         stats = new HashMap<>(5);
         nodes = new HashMap<>(5);
@@ -48,7 +49,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
     }
 
     @Override
-    public Object visit(ASTPackageSpecification node, Object data) {
+    public RuleContext visit(ASTPackageSpecification node, RuleContext data) {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
 
@@ -61,14 +62,14 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
             int val = stats.get(k);
             Node n = nodes.get(k);
             if (val > maxFields) {
-                asCtx(data).addViolation(n);
+                data.addViolation(n);
             }
         }
         return data;
     }
 
     @Override
-    public Object visit(ASTTypeSpecification node, Object data) {
+    public RuleContext visit(ASTTypeSpecification node, RuleContext data) {
 
         int maxFields = getProperty(MAX_FIELDS_DESCRIPTOR);
 
@@ -81,7 +82,7 @@ public class TooManyFieldsRule extends AbstractPLSQLRule {
             int val = stats.get(k);
             Node n = nodes.get(k);
             if (val > maxFields) {
-                asCtx(data).addViolation(n);
+                data.addViolation(n);
             }
         }
         return data;
