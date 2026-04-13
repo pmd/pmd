@@ -42,11 +42,10 @@ class HtmlJavaRuleTest {
             }
 
             @Override
-            public Object visit(ASTHtmlElement node, Object data) {
+            public RuleContext visit(ASTHtmlElement node, RuleContext data) {
                 for (Attribute attribute : node.getAttributes()) {
                     if ("{".equals(attribute.getValue())) {
-                        RuleContext ctx = (RuleContext) data;
-                        ctx.addViolation(node);
+                        data.addViolation(node);
                     }
                 }
                 return super.visit(node, data);

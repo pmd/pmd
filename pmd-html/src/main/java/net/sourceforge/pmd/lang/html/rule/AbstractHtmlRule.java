@@ -9,10 +9,10 @@ import net.sourceforge.pmd.lang.html.ast.HtmlVisitor;
 import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-public abstract class AbstractHtmlRule extends AbstractRule implements HtmlVisitor {
+public abstract class AbstractHtmlRule extends AbstractRule implements HtmlVisitor<RuleContext, RuleContext> {
 
     @Override
-    public Object visitNode(Node node, Object param) {
+    public RuleContext visitNode(Node node, RuleContext param) {
         node.children().forEach(c -> c.acceptVisitor(this, param));
         return param;
     }

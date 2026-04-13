@@ -21,10 +21,9 @@ public class UseAltAttributeForImagesRule extends AbstractHtmlRule {
     }
 
     @Override
-    public Object visit(ASTHtmlElement node, Object data) {
+    public RuleContext visit(ASTHtmlElement node, RuleContext data) {
         if (!node.hasAttribute("alt")) {
-            RuleContext ctx = (RuleContext) data;
-            ctx.addViolation(node);
+            data.addViolation(node);
             return data;
         }
 

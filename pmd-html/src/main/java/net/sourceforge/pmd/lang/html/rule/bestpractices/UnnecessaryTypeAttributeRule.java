@@ -11,7 +11,7 @@ import net.sourceforge.pmd.reporting.RuleContext;
 public class UnnecessaryTypeAttributeRule extends AbstractHtmlRule {
 
     @Override
-    public Object visit(ASTHtmlElement node, Object data) {
+    public RuleContext visit(ASTHtmlElement node, RuleContext data) {
         if ("link".equalsIgnoreCase(node.getNodeName())) {
             checkLink(node, data);
         } else if ("script".equalsIgnoreCase(node.getNodeName())) {
@@ -20,13 +20,13 @@ public class UnnecessaryTypeAttributeRule extends AbstractHtmlRule {
         return super.visit(node, data);
     }
 
-    private void checkScript(ASTHtmlElement node, Object data) {
+    private void checkScript(ASTHtmlElement node, RuleContext data) {
         if (node.hasAttribute("type")) {
             addViolation(node, data);
         }
     }
 
-    private void checkLink(ASTHtmlElement node, Object data) {
+    private void checkLink(ASTHtmlElement node, RuleContext data) {
         String rel = node.getAttribute("rel");
         if (node.hasAttribute("type") && "stylesheet".equalsIgnoreCase(rel)) {
             addViolation(node, data);
@@ -34,8 +34,8 @@ public class UnnecessaryTypeAttributeRule extends AbstractHtmlRule {
     }
 
 
-    private void addViolation(ASTHtmlElement node, Object data) {
-        RuleContext ctx = (RuleContext) data;
+    private void addViolation(ASTHtmlElement node, RuleContext data) {
+        RuleContext ctx = data;
         ctx.addViolation(node);
     }
 }
