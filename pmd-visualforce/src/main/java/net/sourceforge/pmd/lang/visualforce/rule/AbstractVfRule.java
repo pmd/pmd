@@ -9,7 +9,7 @@ import net.sourceforge.pmd.lang.rule.AbstractRule;
 import net.sourceforge.pmd.lang.visualforce.ast.VfVisitor;
 import net.sourceforge.pmd.reporting.RuleContext;
 
-public abstract class AbstractVfRule extends AbstractRule implements VfVisitor<Object, Object> {
+public abstract class AbstractVfRule extends AbstractRule implements VfVisitor<RuleContext, RuleContext> {
 
     @Override
     public void apply(Node target, RuleContext ctx) {
@@ -17,7 +17,7 @@ public abstract class AbstractVfRule extends AbstractRule implements VfVisitor<O
     }
 
     @Override
-    public Object visitNode(Node node, Object param) {
+    public RuleContext visitNode(Node node, RuleContext param) {
         node.children().forEach(n -> n.acceptVisitor(this, param));
         return param;
     }

@@ -22,6 +22,7 @@ import net.sourceforge.pmd.lang.visualforce.ast.ASTLiteral;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTText;
 import net.sourceforge.pmd.lang.visualforce.rule.AbstractVfRule;
 import net.sourceforge.pmd.lang.visualforce.rule.security.internal.ElEscapeDetector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 /**
@@ -50,13 +51,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
     private static final Set<ElEscapeDetector.Escaping> ANY_ENCODE = EnumSet.of(ElEscapeDetector.Escaping.ANY);
 
     @Override
-    public Object visit(ASTHtmlScript node, Object data) {
+    public RuleContext visit(ASTHtmlScript node, RuleContext data) {
         checkIfCorrectlyEscaped(node, data);
 
         return super.visit(node, data);
     }
 
-    private void checkIfCorrectlyEscaped(ASTHtmlScript node, Object data) {
+    private void checkIfCorrectlyEscaped(ASTHtmlScript node, RuleContext data) {
         // churn thru every child just once instead of twice
         for (int i = 0; i < node.getNumChildren(); i++) {
             Node n = node.getChild(i);
@@ -67,9 +68,9 @@ public class VfUnescapeElRule extends AbstractVfRule {
         }
     }
 
-    private void processElInScriptContext(ASTElExpression elExpression, Object data) {
+    private void processElInScriptContext(ASTElExpression elExpression, RuleContext data) {
         if (!properlyEscaped(elExpression)) {
-            asCtx(data).addViolation(elExpression);
+            data.addViolation(elExpression);
         }
     }
 
@@ -84,7 +85,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
     }
 
     @Override
-    public Object visit(ASTElement node, Object data) {
+    public RuleContext visit(ASTElement node, RuleContext data) {
         if (doesTagSupportEscaping(node)) {
             checkApexTagsThatSupportEscaping(node, data);
         } else {
@@ -95,7 +96,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         return super.visit(node, data);
     }
 
-    private void checkLimitedFlags(ASTElement node, Object data) {
+    private void checkLimitedFlags(ASTElement node, RuleContext data) {
         switch (node.getName().toLowerCase(Locale.ROOT)) {
         case IFRAME_CONST:
         case APEXIFRAME_CONST:
@@ -150,13 +151,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         if (isEL) {
             for (ASTElExpression expr : toReport) {
-                asCtx(data).addViolation(expr);
+                data.addViolation(expr);
             }
         }
 
     }
 
-    private void checkAllOnEventTags(ASTElement node, Object data) {
+    private void checkAllOnEventTags(ASTElement node, RuleContext data) {
         boolean isEL = false;
         final Set<ASTElExpression> toReport = new HashSet<>();
 
@@ -181,7 +182,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         if (isEL) {
             for (ASTElExpression expr : toReport) {
-                asCtx(data).addViolation(expr);
+                data.addViolation(expr);
             }
         }
 
@@ -205,7 +206,7 @@ public class VfUnescapeElRule extends AbstractVfRule {
         return false;
     }
 
-    private void checkApexTagsThatSupportEscaping(ASTElement node, Object data) {
+    private void checkApexTagsThatSupportEscaping(ASTElement node, RuleContext data) {
         final Set<ASTElExpression> toReport = new HashSet<>();
         boolean isUnescaped = false;
         boolean isEL = false;
@@ -255,13 +256,13 @@ public class VfUnescapeElRule extends AbstractVfRule {
 
         if (hasPlaceholders && isUnescaped) {
             for (ASTElExpression expr : hasELInInnerElements(node)) {
-                asCtx(data).addViolation(expr);
+                data.addViolation(expr);
             }
         }
 
         if (isEL && isUnescaped) {
             for (ASTElExpression expr : toReport) {
-                asCtx(data).addViolation(expr);
+                data.addViolation(expr);
             }
         }
     }

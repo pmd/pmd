@@ -12,6 +12,7 @@ import net.sourceforge.pmd.lang.visualforce.ast.ASTElExpression;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTElement;
 import net.sourceforge.pmd.lang.visualforce.ast.ASTIdentifier;
 import net.sourceforge.pmd.lang.visualforce.rule.AbstractVfRule;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * @author sergey.gorbaty
@@ -22,7 +23,7 @@ public class VfCsrfRule extends AbstractVfRule {
     private static final String APEX_PAGE = "apex:page";
 
     @Override
-    public Object visit(ASTElement node, Object data) {
+    public RuleContext visit(ASTElement node, RuleContext data) {
         if (APEX_PAGE.equalsIgnoreCase(node.getName())) {
             List<ASTAttribute> attribs = node.children(ASTAttribute.class).toList();
             boolean controller = false;
@@ -51,7 +52,7 @@ public class VfCsrfRule extends AbstractVfRule {
             }
 
             if (controller && isEl && valToReport != null) {
-                asCtx(data).addViolation(valToReport);
+                data.addViolation(valToReport);
             }
 
         }

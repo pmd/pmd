@@ -18,6 +18,7 @@ import net.sourceforge.pmd.lang.visualforce.ast.ASTText;
 import net.sourceforge.pmd.lang.visualforce.ast.VfNode;
 import net.sourceforge.pmd.lang.visualforce.rule.AbstractVfRule;
 import net.sourceforge.pmd.lang.visualforce.rule.security.internal.ElEscapeDetector;
+import net.sourceforge.pmd.reporting.RuleContext;
 
 
 public class VfHtmlStyleTagXssRule extends AbstractVfRule {
@@ -46,7 +47,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
      * }</pre>
      */
     @Override
-    public Object visit(ASTElExpression node, Object data) {
+    public RuleContext visit(ASTElExpression node, RuleContext data) {
         final VfNode nodeParent = node.getParent();
         if (!(nodeParent instanceof ASTContent)) {
             // nothing to do here.
@@ -83,7 +84,7 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
             ASTElExpression node,
             ASTContent contentNode,
             ASTElement elementNode,
-            Object data) {
+            RuleContext data) {
         final String previousText = getPreviousText(contentNode, node);
         final boolean isWithinSafeResource = ElEscapeDetector.startsWithSafeResource(node);
 
@@ -105,24 +106,24 @@ public class VfHtmlStyleTagXssRule extends AbstractVfRule {
         return STYLE_TAG.equalsIgnoreCase(elementNode.getLocalName());
     }
 
-    private void verifyEncodingWithinUrl(ASTElExpression elExpressionNode, Object data) {
+    private void verifyEncodingWithinUrl(ASTElExpression elExpressionNode, RuleContext data) {
 
         // only allow URLENCODING or JSINHTMLENCODING
         if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
                 elExpressionNode,
                 URLENCODE_JSINHTMLENCODE)) {
-            asCtx(data).addViolationWithMessage(
+            data.addViolationWithMessage(
                     elExpressionNode,
                     "Dynamic EL content within URL in style tag should be URLENCODED or JSINHTMLENCODED as appropriate");
         }
 
     }
 
-    private void verifyEncodingWithoutUrl(ASTElExpression elExpressionNode, Object data) {
+    private void verifyEncodingWithoutUrl(ASTElExpression elExpressionNode, RuleContext data) {
         if (ElEscapeDetector.doesElContainAnyUnescapedIdentifiers(
                 elExpressionNode,
                 ANY_ENCODE)) {
-            asCtx(data).addViolationWithMessage(
+            data.addViolationWithMessage(
                     elExpressionNode,
                     "Dynamic EL content in style tag should be appropriately encoded");
         }
