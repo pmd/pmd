@@ -2170,7 +2170,7 @@ public class Foo {
           since="6.34.0"
           minimumLanguageVersion="1.7"
           message="Please use StandardCharsets constants"
-          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          class="net.sourceforge.pmd.lang.java.rule.bestpractices.UseStandardCharsetsRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_bestpractices.html#usestandardcharsets">
         <description>
 Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
@@ -2178,19 +2178,6 @@ Using the constants is less error prone, and can provide a small performance adv
 since no scan across the internal `Charset` caches is needed.
         </description>
         <priority>3</priority>
-        <properties>
-            <property name="xpath">
-                <value>
-<![CDATA[
-//MethodCall[@MethodName = 'forName'][pmd-java:typeIs('java.nio.charset.Charset')]
-    [
-        ArgumentList/StringLiteral
-            [@Image = ('"US-ASCII"', '"ISO-8859-1"', '"UTF-8"', '"UTF-16BE"', '"UTF-16LE"', '"UTF-16"')]
-    ]
-]]>
-                </value>
-            </property>
-        </properties>
         <example>
 <![CDATA[
 public class UseStandardCharsets {
