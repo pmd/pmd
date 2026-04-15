@@ -72,24 +72,24 @@ corresponding `visit` method:
 public class MyRule extends AbstractJavaRule {
 
     @Override
-    public Object visit(ASTVariableId node, Object data) {
+    public RuleContext visit(ASTVariableId node, RuleContext ctx) {
         // This method is called on each node of type ASTVariableId
         // in the AST
 
         if (node.getType() == short.class) {
             // reports a violation at the position of the node
-            // the "data" parameter is a context object handed to by your rule
+            // the "ctx" parameter is a context object handed to by your rule
             // the message for the violation is the message defined in the rule declaration XML element
-            asCtx(data).addViolation(node);
+            ctx.addViolation(node);
         }
 
         // this calls back to the default implementation, which recurses further down the subtree
-        return super.visit(node, data);
+        return super.visit(node, ctx);
     }
 }
 ```
 
-The `super.visit(node, data)` call is super common in rule implementations,
+The `super.visit(node, ctx)` call is super common in rule implementations,
 because it makes the traversal continue by visiting all the descendants of the
 current node.
 
