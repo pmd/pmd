@@ -240,4 +240,40 @@ public class Foo {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>call inside the same class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(String x) {
+        foo(x, "UTF-8");
+    }
+
+    public void foo(String x, String enc) {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>call inside the same class, alternative exists</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.nio.charset.Charset;
+
+public class Foo {
+    public void foo(String x) {
+        foo(x, "UTF-8");
+    }
+
+    public void foo(String x, String enc) {
+    }
+
+    public void foo(String x, Charset enc) {
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

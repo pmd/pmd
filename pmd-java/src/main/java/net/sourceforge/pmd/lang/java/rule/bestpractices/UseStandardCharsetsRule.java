@@ -69,9 +69,7 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
         ASTExpression ex = call.getArguments().get(index);
         if (STANDARD_CHARSET_EXISTS.contains(ex.getConstValue())) {
             JMethodSig callSignature = call.getMethodType();
-            Stream<JMethodSig> otherSignatures = (call instanceof ASTMethodCall)
-                    ? ((ASTMethodCall) call).getQualifier().getTypeMirror().streamMethods(sig -> true)
-                    : ((ASTConstructorCall) call).getTypeNode().getTypeMirror().getConstructors().stream();
+            Stream<JMethodSig> otherSignatures = streamMethodSignatures(call);
             long count = otherSignatures
                     .filter(sig -> Modifier.isPublic(sig.getModifiers()))
                     .filter(sig -> isSameSignatureExcept(callSignature, sig, index))
@@ -81,6 +79,14 @@ public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
                 ctx.addViolation(call);
             }
         }
+    }
+
+    private Stream<JMethodSig> streamMethodSignatures(InvocationNode call) {
+        if (call instanceof ASTConstructorCall) {
+            return ((ASTConstructorCall) call).getTypeNode().getTypeMirror().getConstructors().stream();
+        }
+        ASTMethodCall methodCall = (ASTMethodCall) call;
+        return methodCall.getMethodType().getDeclaringType().streamMethods(sig -> true);
     }
 
     /**
