@@ -2181,17 +2181,20 @@ or `String.getBytes(String)` since no scan across the internal `Charset` caches 
         <example>
 <![CDATA[
 public class UseStandardCharsets {
-    public void run() {
-
+    public void bad() {
         // looking up the charset dynamically
         try (OutputStreamWriter osw = new OutputStreamWriter(out, Charset.forName("UTF-8"))) {
             osw.write("test");
         }
+        "foo".getBytes("UTF-8");
+    }
 
+    public void good() {
         // best to use StandardCharsets
         try (OutputStreamWriter osw = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
             osw.write("test");
         }
+        "foo".getBytes(StandardCharsets.UTF_8);
     }
 }
 ]]>
