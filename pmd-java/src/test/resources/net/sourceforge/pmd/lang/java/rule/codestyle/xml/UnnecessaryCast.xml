@@ -1215,6 +1215,37 @@ public class Foo {
         long withoutCast = (someInt & 0xFF) << 32;
     }
 }
-            ]]></code>
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Overload resolution</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int someInt) {
+        bar((long) someInt & 0xFF);
+        bar((long) someInt | 0xFF);
+        bar((long) someInt ^ 0xFF);
+    }
+
+    public void bar(int x) {}
+    public void bar(long x) {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Type of 'var' variable</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void foo(int someInt) {
+        var x = (long) someInt & 0xFF;
+        var y = (long) someInt | 0xFF;
+        var z = (long) someInt ^ 0xFF;
+    }
+}
+        ]]></code>
     </test-code>
 </test-data>
