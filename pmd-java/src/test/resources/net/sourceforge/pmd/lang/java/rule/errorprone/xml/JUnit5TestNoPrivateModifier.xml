@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>test must not be private</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class MyTests {
+    @Test
+    private void testRegular() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>test class must not be private</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+private class MyTests {
+    @Test
+    void testRegular() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>other kinds of tests</description>
+        <expected-problems>5</expected-problems>
+        <expected-linenumbers>4,6,8,10,12</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+
+private class MyTests {
+    @RepeatedTest
+    private void testRepeated() { }
+    @TestFactory
+    private void testFactory() { }
+    @TestTemplate
+    private void testTemplate() { }
+    @ParameterizedTest
+    private void testParameterized() { }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>default/protected/public are fine</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+class MyTests {
+    @Test
+    void testDefault() { }
+    @Test
+    protected void testProtected() { }
+    @Test
+    public void testPublic() { }
+}
+        ]]></code>
+    </test-code>
+</test-data>

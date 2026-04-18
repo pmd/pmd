@@ -2060,6 +2060,70 @@ public class JumbledIncrementerRule1 {
         </example>
     </rule>
 
+    <rule name="JUnit5TestNoPrivateModifier"
+          language="java"
+          since="7.24.0"
+          message="JUnit tests cannot be private"
+          class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junit5testnoprivatemodifier">
+        <description>
+            JUnit 5/6 tests cannot be private. Otherwise, they won't be found by the framework
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="xpath">
+                <value>
+                    <![CDATA[
+//ClassDeclaration[
+    (: a Junit 5 test class, ie, it has methods with the annotation :)
+    @Interface = false() and
+    ClassBody/MethodDeclaration
+    [ModifierList/Annotation[
+               pmd-java:typeIs('org.junit.jupiter.api.Test')
+            or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+    ]]
+]/(
+       self::*[@Abstract = false() and @Visibility = ("private")]
+|      ClassBody/MethodDeclaration
+       [@Visibility = ("private")]
+       [ModifierList/Annotation[
+               pmd-java:typeIs('org.junit.jupiter.api.Test')
+            or pmd-java:typeIs('org.junit.jupiter.api.RepeatedTest')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestFactory')
+            or pmd-java:typeIs('org.junit.jupiter.api.TestTemplate')
+            or pmd-java:typeIs('org.junit.jupiter.params.ParameterizedTest')
+       ]]
+)
+]]>
+                </value>
+            </property>
+        </properties>
+        <example>
+import org.junit.jupiter.api.Test;
+
+//bad
+class MyTests {
+    @Test
+    private void testFoo() { }
+}
+
+//bad
+private class MyTests {
+    @Test
+    void testFoo() { }
+}
+
+//good
+class MyTests {
+    @Test
+    void testFoo() { }
+}
+        </example>
+    </rule>
+
     <rule name="JUnitSpelling"
           language="java"
           since="1.0"
