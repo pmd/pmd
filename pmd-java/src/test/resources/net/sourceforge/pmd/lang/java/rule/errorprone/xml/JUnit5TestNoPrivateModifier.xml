@@ -69,4 +69,30 @@ class MyTests {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>test class must not be private, even if the test methods are in a parent class</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>8</expected-linenumbers>
+        <code><![CDATA[
+import org.junit.jupiter.api.Test;
+
+abstract class Parent {
+    @Test
+    void testRegular() { }
+}
+
+private class Child extends Parent {}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>non-test class</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+private class NoTest {
+    void notATest() { }
+}
+        ]]></code>
+    </test-code>
 </test-data>
