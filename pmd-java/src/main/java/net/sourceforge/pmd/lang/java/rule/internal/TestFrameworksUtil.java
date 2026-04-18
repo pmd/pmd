@@ -152,6 +152,11 @@ public final class TestFrameworksUtil {
                    .any(TestFrameworksUtil::isTestMethod));
     }
 
+    public static boolean isJUnit5Class(ASTTypeDeclaration classDeclaration) {
+        return classDeclaration.isRegularClass() && !classDeclaration.isAbstract() && !classDeclaration.isNested()
+                && classDeclaration.getDeclarations(ASTMethodDeclaration.class)
+                        .any(TestFrameworksUtil::isJUnit5Method);
+    }
 
     public static boolean isJUnit5NestedClass(ASTTypeDeclaration innerClassDecl) {
         return innerClassDecl.isAnnotationPresent(JUNIT5_NESTED);
