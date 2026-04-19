@@ -5,7 +5,6 @@
 package net.sourceforge.pmd.cpd;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,27 +26,6 @@ final class CpdTestUtils {
         // utility class
     }
 
-    static CPDReport makeReport(List<Match> matches) {
-        return makeReport(matches, Collections.emptyMap(), Collections.emptyList());
-    }
-
-    static CPDReport makeReport(List<Match> matches, Map<FileId, Integer> numTokensPerFile, List<Report.ProcessingError> processingErrors) {
-        Set<TextFile> textFiles = new HashSet<>();
-        for (Match match : matches) {
-            match.iterator().forEachRemaining(
-                mark -> textFiles.add(
-                    TextFile.forCharSeq(DUMMY_FILE_CONTENT,
-                                        mark.getLocation().getFileId(),
-                                        DummyLanguageModule.getInstance().getDefaultVersion())));
-        }
-        return new CPDReport(
-            new SourceManager(new ArrayList<>(textFiles)),
-            matches,
-            numTokensPerFile,
-            processingErrors
-        );
-    }
-
     static class CpdReportBuilder {
 
         private final Map<FileId, String> fileContents = new HashMap<>();
@@ -55,6 +33,7 @@ final class CpdTestUtils {
         private final List<Match> matches = new ArrayList<>();
         private Map<FileId, Integer> numTokensPerFile = new HashMap<>();
         private final Map<FileId, LanguageVersion> languageVersionPerFile = new HashMap<>();
+        private final List<Report.ProcessingError> processingErrors = new ArrayList<>();
 
         CpdReportBuilder setFileContent(FileId fileName, String content) {
             fileContents.put(fileName, content);
@@ -76,6 +55,11 @@ final class CpdTestUtils {
             return this;
         }
 
+        public CpdReportBuilder addProcessingError(Report.ProcessingError processingError) {
+            processingErrors.add(processingError);
+            return this;
+        }
+
         CPDReport build() {
             Set<TextFile> textFiles = new HashSet<>();
             fileContents.forEach((fname, contents) -> {
@@ -89,7 +73,7 @@ final class CpdTestUtils {
                 new SourceManager(new ArrayList<>(textFiles)),
                 matches,
                 numTokensPerFile,
-                Collections.emptyList()
+                processingErrors
             );
 
         }

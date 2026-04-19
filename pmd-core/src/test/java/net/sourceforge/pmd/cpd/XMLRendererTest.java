@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Collections;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -54,7 +53,7 @@ class XMLRendererTest {
     void testWithNoDuplication() throws IOException, ParserConfigurationException, SAXException {
         CPDReportRenderer renderer = new XMLRenderer();
         StringWriter sw = new StringWriter();
-        renderer.render(CpdTestUtils.makeReport(Collections.emptyList()), sw);
+        renderer.render(new CpdTestUtils.CpdReportBuilder().build(), sw);
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
@@ -299,7 +298,7 @@ class XMLRendererTest {
                 fileId);
         CPDReportRenderer renderer = new XMLRenderer();
         StringWriter sw = new StringWriter();
-        renderer.render(CpdTestUtils.makeReport(Collections.emptyList(), Collections.emptyMap(), Collections.singletonList(processingError)), sw);
+        renderer.render(new CpdTestUtils.CpdReportBuilder().addProcessingError(processingError).build(), sw);
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
@@ -333,7 +332,7 @@ class XMLRendererTest {
                 fileId);
         CPDReportRenderer renderer = new XMLRenderer();
         StringWriter sw = new StringWriter();
-        renderer.render(CpdTestUtils.makeReport(Collections.emptyList(), Collections.emptyMap(), Collections.singletonList(processingError)), sw);
+        renderer.render(new CpdTestUtils.CpdReportBuilder().addProcessingError(processingError).build(), sw);
         String report = sw.toString();
         assertReportIsValidSchema(report);
 
