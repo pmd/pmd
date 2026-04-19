@@ -11,6 +11,7 @@ import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.reporting.Report;
@@ -82,5 +83,14 @@ public class CPDReport {
      */
     public String getDisplayName(FileId fileId) {
         return sourceManager.getFileDisplayName(fileId);
+    }
+
+    /**
+     * Return the {@link LanguageVersion} of the fileId
+     * @param fileId
+     * @return
+     */
+    public LanguageVersion getLanguageVersion(FileId fileId) {
+        return sourceManager.getFileLanguageVersion(fileId);
     }
 }

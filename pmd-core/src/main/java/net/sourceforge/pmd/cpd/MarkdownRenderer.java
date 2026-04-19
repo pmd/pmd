@@ -7,13 +7,13 @@ package net.sourceforge.pmd.cpd;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 
 import net.sourceforge.pmd.lang.document.Chars;
+import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.FileLocation;
 
 /**
@@ -51,15 +51,22 @@ public class MarkdownRenderer implements CPDReportRenderer {
         }
 
         Mark firstMark = match.getFirstMark();
-        String filename = firstMark.getFileId().getFileName().toLowerCase(Locale.ROOT);
-        String highlightLanguage = null;
-        if (filename.endsWith(".java") || filename.endsWith(".jav")) {
-            highlightLanguage = "java";
-        }
+        String highlightLanguage = getMarkdownLanguageTag(report, firstMark.getFileId());
 
         Chars source = report.getSourceCodeSlice(firstMark);
         final MarkdownCodeBlock markdownCodeBlock = new MarkdownCodeBlock(source, highlightLanguage);
         writer.append(markdownCodeBlock.toString());
+    }
+
+    String getMarkdownLanguageTag(CPDReport report, FileId fileId) {
+        String languageId = report.getLanguageVersion(fileId).getLanguage().getId();
+
+        switch (languageId) {
+        case "ecmascript": return "js";
+        case "typescript": return "ts";
+        default: return languageId;
+        }
+
     }
 
     static class MarkdownCodeBlock {

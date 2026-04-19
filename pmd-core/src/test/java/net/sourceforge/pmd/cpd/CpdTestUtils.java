@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.sourceforge.pmd.lang.DummyLanguageModule;
+import net.sourceforge.pmd.lang.LanguageVersion;
 import net.sourceforge.pmd.lang.document.FileId;
 import net.sourceforge.pmd.lang.document.TextFile;
 import net.sourceforge.pmd.reporting.Report;
@@ -53,6 +54,7 @@ final class CpdTestUtils {
         final Tokens tokens = new Tokens();
         private final List<Match> matches = new ArrayList<>();
         private Map<FileId, Integer> numTokensPerFile = new HashMap<>();
+        private final Map<FileId, LanguageVersion> languageVersionPerFile = new HashMap<>();
 
         CpdReportBuilder setFileContent(FileId fileName, String content) {
             fileContents.put(fileName, content);
@@ -69,9 +71,20 @@ final class CpdTestUtils {
             return this;
         }
 
+        public CpdReportBuilder setLanguageVersionOfFile(FileId fileName, LanguageVersion languageVersion) {
+            languageVersionPerFile.put(fileName, languageVersion);
+            return this;
+        }
+
         CPDReport build() {
             Set<TextFile> textFiles = new HashSet<>();
-            fileContents.forEach((fname, contents) -> textFiles.add(TextFile.forCharSeq(contents, fname, DummyLanguageModule.getInstance().getDefaultVersion())));
+            fileContents.forEach((fname, contents) -> {
+                textFiles.add(TextFile.forCharSeq(
+                        contents,
+                        fname,
+                        languageVersionPerFile.getOrDefault(fname, DummyLanguageModule.getInstance().getDefaultVersion())
+                ));
+            });
             return new CPDReport(
                 new SourceManager(new ArrayList<>(textFiles)),
                 matches,
