@@ -2050,6 +2050,21 @@
 
 <p>Java-based rules and XPath-based rules are supported.</p>
 
+<h2 id="kotlin-language-versions--feature-support">Kotlin language versions / feature support</h2>
+
+<p>PMD’s Kotlin parser may lag behind the latest Kotlin compiler and does not aim to implement all new language features immediately.</p>
+
+<p>The only Kotlin 2.x feature currently supported is <strong>“Multidollar interpolation: improved handling of $ in string literals”</strong>.
+This feature was preview in Kotlin 2.1.0 and stabilized in Kotlin 2.2.0.
+See <a href="https://kotlinlang.org/docs/strings.html#multi-dollar-string-interpolation">Multi-dollar string interpolation</a>.</p>
+
+<p>For informational purposes, PMD advertises Kotlin 2.2.0 as the highest supported version.
+Selecting a different Kotlin language version does not currently change the parser behavior (unlike Java).</p>
+
+<p>Other Kotlin 2.0.0 / 2.1.0 / 2.2.0 / 2.3.0 language features are not supported at this time.
+PRs to improve Kotlin parser coverage are welcome.</p>
+
+
 
     <div class="tags">
         
@@ -2095,7 +2110,7 @@
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 2024 (7.0.0)<br /> Site last generated: Apr 17, 2026 <br />
+            March 2024 (7.0.0)<br /> Site last generated: Apr 23, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
