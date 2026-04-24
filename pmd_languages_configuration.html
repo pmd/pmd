@@ -2165,10 +2165,10 @@ Default: “true”</p>
 <ul>
   <li>
     <p><code class="language-plaintext highlighter-rouge">rootDirectory</code>: With this property the root directory of the Salesforce metadata, where <code class="language-plaintext highlighter-rouge">sfdx-project.json</code>
-resides, is specified. <a href="https://github.com/nawforce/ApexLink">ApexLink</a> can then load all the classes
-in the project and figure out, whether a method is used or not.</p>
+resides, is specified. <a href="https://github.com/apex-dev-tools/apex-ls">Apex Language Server</a> can then load all the classes
+in the project and figure out, whether a method is used or not, and retrieve the type hierarchy.</p>
 
-    <p>This property is needed for <a href="pmd_rules_apex_design.html#unusedmethod"><code class="language-plaintext highlighter-rouge">UnusedMethod</code></a>.</p>
+    <p>This property is needed for <a href="pmd_rules_apex_design.html#unusedmethod"><code class="language-plaintext highlighter-rouge">UnusedMethod</code></a> and <a href="pmd_rules_apex_errorprone.html#avoidinterfaceasmapkey"><code class="language-plaintext highlighter-rouge">AvoidInterfaceAsMapKey</code></a>.</p>
 
     <p>Environment variable: <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOT_DIRECTORY</code></p>
   </li>
@@ -2242,7 +2242,7 @@ that is conditionally compiled out. Set this property to empty to disable this.<
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
             <span>Page last updated:</span>
-            March 2025 (7.12.0)<br /> Site last generated: Apr 23, 2026 <br />
+            March 2025 (7.12.0)<br /> Site last generated: Apr 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

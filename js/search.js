@@ -1004,6 +1004,14 @@ let pmd_doc_search_index = [
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/apex/errorprone.md",
+  "title": "AvoidInterfaceAsMapKey (Apex, Error Prone)",
+  "tags": "",
+  "keywords": "Avoid Interface As Map Key",
+  "url": "pmd_rules_apex_errorprone.html#avoidinterfaceasmapkey",
+  "summary": "In Apex, when a `Map` uses an interface as key and an abstract class implements..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/apex/errorprone.md",
   "title": "AvoidNonExistentAnnotations (Apex, Error Prone)",
   "tags": "",
   "keywords": "Avoid Non Existent Annotations",
@@ -3753,6 +3761,14 @@ let pmd_doc_search_index = [
   "keywords": "Non Thread Safe Singleton",
   "url": "pmd_rules_java_multithreading.html#nonthreadsafesingleton",
   "summary": "Non-thread safe singletons can result in bad state changes. Eliminate static singletons if possible by..."
+},{
+  "type": "ruledoc",
+  "source": "pages/pmd/rules/java/multithreading.md",
+  "title": "OverridingThreadRun (Java, Multithreading)",
+  "tags": "",
+  "keywords": "Overriding Thread Run",
+  "url": "pmd_rules_java_multithreading.html#overridingthreadrun",
+  "summary": "Overriding `Thread::run` method is not recommended. Instead, implement `Runnable` and pass an instance to the..."
 },{
   "type": "ruledoc",
   "source": "pages/pmd/rules/java/multithreading.md",

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules to detect constructs that are either broken, extremely confusing or prone to runtime errors.">
-<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidNonExistentAnnotations, AvoidStatefulDatabaseResult, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses, TypeShadowsBuiltInNamespace">
+<meta name="keywords" content=" Error Prone, ApexCSRF, AvoidDirectAccessTriggerMap, AvoidHardcodingId, AvoidInterfaceAsMapKey, AvoidNonExistentAnnotations, AvoidStatefulDatabaseResult, EmptyCatchBlock, EmptyIfStmt, EmptyStatementBlock, EmptyTryOrFinallyBlock, EmptyWhileStmt, InaccessibleAuraEnabledGetter, MethodWithSameNameAsEnclosingClass, OverrideBothEqualsAndHashcode, TestMethodsMustBeInTestClasses, TypeShadowsBuiltInNamespace">
 <title>Error Prone | PMD Source Code Analyzer</title>
 
 
@@ -2132,6 +2132,70 @@ the logic can dynamically identify the proper data to operate against and not fa
 <div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/AvoidHardcodingId"</span> <span class="nt">/&gt;</span>
 </code></pre></div></div>
 
+<h2 id="avoidinterfaceasmapkey">AvoidInterfaceAsMapKey</h2>
+
+<p><strong>Since:</strong> PMD 7.24.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>In Apex, when a <code class="language-plaintext highlighter-rouge">Map</code> uses an interface as key and an abstract class implements that interface
+and defines <code class="language-plaintext highlighter-rouge">equals</code>/<code class="language-plaintext highlighter-rouge">hashCode</code>, methods like <code class="language-plaintext highlighter-rouge">containsKey</code> do not dispatch to the correct implementation.
+This results in potentially duplicated map entries or not being able to get entries by key.</p>
+
+<p>This rule reports <code class="language-plaintext highlighter-rouge">Map</code> declarations (fields, variables, parameters) whose key type is an interface that
+has at least one abstract implementing class defining <code class="language-plaintext highlighter-rouge">equals</code> or <code class="language-plaintext highlighter-rouge">hashCode</code>.</p>
+
+<p><a href="https://github.com/apex-dev-tools/apex-ls">Apex Language Server</a> is used to make this possible and this needs
+additional configuration. The environment variable <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOT_DIRECTORY</code> needs to be set prior to executing
+PMD. With this variable the root directory of the Salesforce metadata, where <code class="language-plaintext highlighter-rouge">sfdx-project.json</code> resides, is
+specified. Apex Language Server can then load all the types in the project and figure out the type hierarchy.</p>
+
+<p><strong>This rule is defined by the following Java class:</strong> <a href="https://github.com/pmd/pmd/blob/main/pmd-apex/src/main/java/net/sourceforge/pmd/lang/apex/rule/errorprone/AvoidInterfaceAsMapKeyRule.java">net.sourceforge.pmd.lang.apex.rule.errorprone.AvoidInterfaceAsMapKeyRule</a></p>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Outer</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">interface</span> <span class="nc">IKey</span> <span class="o">{</span>
+        <span class="nc">Boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span><span class="o">);</span>
+        <span class="nc">Integer</span> <span class="nf">hashCode</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractKey</span> <span class="kd">implements</span> <span class="nc">IKey</span> <span class="o">{</span>
+        <span class="kd">protected</span> <span class="kd">abstract</span> <span class="nc">String</span> <span class="nf">getKeyValue</span><span class="o">();</span>
+        <span class="kd">public</span> <span class="nc">Boolean</span> <span class="nf">equals</span><span class="o">(</span><span class="nc">Object</span> <span class="n">obj</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">obj</span> <span class="k">instanceof</span> <span class="nc">AbstractKey</span><span class="o">)</span> <span class="o">{</span>
+                <span class="k">return</span> <span class="o">((</span><span class="nc">AbstractKey</span><span class="o">)</span> <span class="n">obj</span><span class="o">).</span><span class="na">getKeyValue</span><span class="o">()</span> <span class="o">==</span> <span class="k">this</span><span class="o">.</span><span class="na">getKeyValue</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">public</span> <span class="nc">Integer</span> <span class="nf">hashCode</span><span class="o">()</span> <span class="o">{</span>
+            <span class="nc">String</span> <span class="n">v</span> <span class="o">=</span> <span class="n">getKeyValue</span><span class="o">();</span>
+            <span class="k">return</span> <span class="n">v</span> <span class="o">!=</span> <span class="kc">null</span> <span class="o">?</span> <span class="nc">System</span><span class="o">.</span><span class="na">hashCode</span><span class="o">(</span><span class="n">v</span><span class="o">)</span> <span class="o">:</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+    <span class="kd">public</span> <span class="kd">class</span> <span class="nc">StringKey</span> <span class="kd">extends</span> <span class="nc">AbstractKey</span> <span class="o">{</span>
+        <span class="kd">private</span> <span class="nc">String</span> <span class="n">value</span><span class="o">;</span>
+        <span class="kd">public</span> <span class="nf">StringKey</span><span class="o">(</span><span class="nc">String</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="kd">protected</span> <span class="n">override</span> <span class="nc">String</span> <span class="nf">getKeyValue</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">value</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">method</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">IKey</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">m</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">IKey</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;();</span> <span class="c1">// violation: IKey has abstract implementor with equals/hashCode</span>
+
+        <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="k">new</span> <span class="nc">StringKey</span><span class="o">(</span><span class="err">'</span><span class="n">hello</span><span class="err">'</span><span class="o">),</span> <span class="err">'</span><span class="n">value</span><span class="err">'</span><span class="o">);</span>
+        <span class="nc">Boolean</span> <span class="n">exists</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="k">new</span> <span class="nc">StringKey</span><span class="o">(</span><span class="err">'</span><span class="n">hello</span><span class="err">'</span><span class="o">));</span> <span class="c1">// might return false</span>
+        <span class="n">m</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="k">new</span> <span class="nc">StringKey</span><span class="o">(</span><span class="err">'</span><span class="n">hello</span><span class="err">'</span><span class="o">),</span> <span class="err">'</span><span class="n">other</span> <span class="n">value</span><span class="err">'</span><span class="o">);</span> <span class="c1">// might add a second entry instead of replacing the existing one</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/apex/errorprone.xml/AvoidInterfaceAsMapKey"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="avoidnonexistentannotations">AvoidNonExistentAnnotations</h2>
 
 <p><strong>Since:</strong> PMD 6.5.0</p>
@@ -2730,7 +2794,7 @@ the new types and produce false-negatives und the standard types are updated.</p
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 23, 2026 <br />
+             Site last generated: Apr 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

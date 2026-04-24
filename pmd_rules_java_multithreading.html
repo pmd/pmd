@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Rules that flag issues when dealing with multiple threads of execution.">
-<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidSynchronizedStatement, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, UnsynchronizedStaticFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
+<meta name="keywords" content=" Multithreading, AvoidSynchronizedAtMethodLevel, AvoidSynchronizedStatement, AvoidThreadGroup, AvoidUsingVolatile, DoNotUseThreads, DontCallThreadRun, DoubleCheckedLocking, NonThreadSafeSingleton, OverridingThreadRun, UnsynchronizedStaticFormatter, UseConcurrentHashMap, UseNotifyAllInsteadOfNotify">
 <title>Multithreading | PMD Source Code Analyzer</title>
 
 
@@ -2400,6 +2400,46 @@ performance penalty. <a href="http://www.cs.umd.edu/~pugh/java/memoryModel/Doubl
 <span class="nt">&lt;/rule&gt;</span>
 </code></pre></div></div>
 
+<h2 id="overridingthreadrun">OverridingThreadRun</h2>
+
+<p><strong>Since:</strong> PMD 7.24.0</p>
+
+<p><strong>Priority:</strong> Medium (3)</p>
+
+<p>Overriding <code class="language-plaintext highlighter-rouge">Thread::run</code> method is not recommended. Instead, implement <code class="language-plaintext highlighter-rouge">Runnable</code>
+and pass an instance to the thread constructor. Using <code class="language-plaintext highlighter-rouge">Runnable</code> to represent a task
+makes it more reusable and allows your class to extend another class.
+When you use lambdas, this also allows you to write more concise code,
+e.g. <code class="language-plaintext highlighter-rouge">new Thread(() -&gt; System.out.println("Hello!")).start();</code>.</p>
+
+<p><strong>This rule is defined by the following XPath expression:</strong></p>
+<div class="language-xpath highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">//</span><span class="nt">ClassDeclaration</span><span class="p">[</span><span class="w"> </span><span class="nn">pmd-java:</span><span class="nf">typeIs</span><span class="p">(</span><span class="s1">'java.lang.Thread'</span><span class="p">)</span><span class="w"> </span><span class="p">]</span><span class="o">/</span><span class="nt">ClassBody</span><span class="w">
+    </span><span class="o">/</span><span class="nt">MethodDeclaration</span><span class="p">[</span><span class="na">@Name</span><span class="err">=</span><span class="s2">"run"</span><span class="p">][</span><span class="nf">count</span><span class="p">(</span><span class="o">//</span><span class="nt">FormalParameter</span><span class="p">)</span><span class="err">=</span><span class="m">0</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p><strong>Example(s):</strong></p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GreetingThread</span> <span class="kd">extends</span> <span class="nc">Thread</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello!"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="k">new</span> <span class="nf">GreetingThread</span><span class="o">().</span><span class="na">start</span><span class="o">();</span> <span class="c1">// not recommended, use Runnable instead</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">GreetingRunnable</span> <span class="kd">implements</span> <span class="nc">Runnable</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Hello!"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+<span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="k">new</span> <span class="nc">GreetingRunnable</span><span class="o">()).</span><span class="na">start</span><span class="o">();</span> <span class="c1">// preferred</span>
+</code></pre></div></div>
+
+<p><strong>Use this rule by referencing it:</strong></p>
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;rule</span> <span class="na">ref=</span><span class="s">"category/java/multithreading.xml/OverridingThreadRun"</span> <span class="nt">/&gt;</span>
+</code></pre></div></div>
+
 <h2 id="unsynchronizedstaticformatter">UnsynchronizedStaticFormatter</h2>
 
 <p><strong>Since:</strong> PMD 6.11.0</p>
@@ -2547,7 +2587,7 @@ one is chosen.  The thread chosen is arbitrary; thus it’s usually safer to cal
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 23, 2026 <br />
+             Site last generated: Apr 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

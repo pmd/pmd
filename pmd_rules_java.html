@@ -2343,6 +2343,7 @@
   <li><a href="pmd_rules_java_multithreading.html#dontcallthreadrun">DontCallThreadRun</a>: Explicitly calling Thread.run() method will execute in the caller’s thread of control.  Instead, …</li>
   <li><a href="pmd_rules_java_multithreading.html#doublecheckedlocking">DoubleCheckedLocking</a>: Partially created objects can be returned by the Double Checked Locking pattern when used in Java…</li>
   <li><a href="pmd_rules_java_multithreading.html#nonthreadsafesingleton">NonThreadSafeSingleton</a>: Non-thread safe singletons can result in bad state changes. Eliminate static singletons if possib…</li>
+  <li><a href="pmd_rules_java_multithreading.html#overridingthreadrun">OverridingThreadRun</a>: Overriding ‘Thread::run’ method is not recommended. Instead, implement ‘Runnable’             and…</li>
   <li><a href="pmd_rules_java_multithreading.html#unsynchronizedstaticformatter">UnsynchronizedStaticFormatter</a>: Instances of ‘java.text.Format’ are generally not synchronized. Sun recommends using separate for…</li>
   <li><a href="pmd_rules_java_multithreading.html#useconcurrenthashmap">UseConcurrentHashMap</a>: Since Java5 brought a new implementation of the Map designed for multi-threaded access, you can p…</li>
   <li><a href="pmd_rules_java_multithreading.html#usenotifyallinsteadofnotify">UseNotifyAllInsteadOfNotify</a>: Thread.notify() awakens a thread monitoring the object. If more than one thread is monitoring, th…</li>
@@ -2429,7 +2430,7 @@
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 23, 2026 <br />
+             Site last generated: Apr 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>

@@ -2939,10 +2939,10 @@ the class itself is not entirely unused. A class is considered used, if it conta
 least one other method/variable declaration that is used, as shown in the
 <a href="https://github.com/pmd/pmd/blob/469b2a67ae375bde52bb33ccd4fb69e3c2993948/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1/src/Foo.cls#L6-L8">test project file Foo.cls</a>.</p>
 
-<p><a href="https://github.com/nawforce/ApexLink">ApexLink</a> is used to make this possible and this needs
+<p><a href="https://github.com/apex-dev-tools/apex-ls">Apex Language Server</a> is used to make this possible and this needs
 additional configuration. The environment variable <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOT_DIRECTORY</code> needs to be set prior to executing
 PMD. With this variable the root directory of the Salesforce metadata, where <code class="language-plaintext highlighter-rouge">sfdx-project.json</code> resides, is
-specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.</p>
+specified. Apex Language Server can then load all the classes in the project and figure out, whether a method is used or not.</p>
 
 <p>For an accurate analysis it is important that the <code class="language-plaintext highlighter-rouge">PMD_APEX_ROOT_DIRECTORY</code> contains a complete set of metadata that
 may be referenced from the Apex source code, such as Custom Objects, Visualforce Pages, Flows and Labels. The
@@ -3027,7 +3027,7 @@ well-formed <code class="language-plaintext highlighter-rouge">sfdx-project.json
         <div class="col-lg-12 footer">
             &copy;2026 PMD Open Source Project. All rights
             reserved. <br />
-             Site last generated: Apr 23, 2026 <br />
+             Site last generated: Apr 24, 2026 <br />
             <p>
                 <img src="images/logo/pmd-logo-70px.png" alt="PMD
                 logo"/>
