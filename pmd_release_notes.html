@@ -42,11 +42,11 @@
                 <!-- toggle sidebar button -->
                 <li class="nav-item"><a id="tg-sb-link" class="nav-link" href="#"><i id="tg-sb-icon" class="fas fa-toggle-on"></i> Nav</a></li>
                 <!-- entries without drop-downs appear here -->
-                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.24.0-SNAPSHOT" target="_blank">Download</a></li>
+                <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd/releases/tag/pmd_releases%2F7.25.0-SNAPSHOT" target="_blank">Download</a></li>
                 <li class="nav-item"><a class="nav-link" href="https://github.com/pmd/pmd" target="_blank">GitHub</a></li>
                 <!-- entries with drop-downs appear here -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.24.0-SNAPSHOT<b class="caret"></b></a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarPmdVersionsDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">7.25.0-SNAPSHOT<b class="caret"></b></a>
                     <div class="dropdown-menu" aria-labelledby="navbarPmdVersionsDropdownMenuLink" id="pmdVersions">
                     </div>
                 </li>
@@ -79,8 +79,8 @@
 
 
 <ul id="mysidebar" class="nav">
-    <li class="sidebarTitle">PMD 7.24.0-SNAPSHOT</li>
-    <div class="sidebarTitleDate">Release date: 24-April-2026</div>
+    <li class="sidebarTitle">PMD 7.25.0-SNAPSHOT</li>
+    <div class="sidebarTitleDate">Release date: 29-May-2026</div>
     
     
     
@@ -2030,72 +2030,20 @@
     </details>
 
   
-<h2 id="24-april-2026---7240-snapshot">24-April-2026 - 7.24.0-SNAPSHOT</h2>
+<h2 id="29-may-2026---7250-snapshot">29-May-2026 - 7.25.0-SNAPSHOT</h2>
 
-<p>The PMD team is pleased to announce PMD 7.24.0-SNAPSHOT.</p>
+<p>The PMD team is pleased to announce PMD 7.25.0-SNAPSHOT.</p>
 
 <p>This is a minor release.</p>
 
 <h3 id="️-new-and-noteworthy">🚀️ New and noteworthy</h3>
 
-<h3 id="️-new-rules">🌟️ New Rules</h3>
-<ul>
-  <li>The new Apex rule <a href="pmd_rules_apex_errorprone.html#avoidinterfaceasmapkey"><code class="language-plaintext highlighter-rouge">AvoidInterfaceAsMapKey</code></a> reports <code class="language-plaintext highlighter-rouge">Map</code> declarations
-(fields, variables, parameters) whose key type is an interface that has at least one abstract implementing
-class defining <code class="language-plaintext highlighter-rouge">equals</code> or <code class="language-plaintext highlighter-rouge">hashCode</code>. Using such maps results in potentially duplicated map entries or
-not being able to get entries by key.</li>
-  <li>The new Java rule <a href="pmd_rules_java_multithreading.html#overridingthreadrun"><code class="language-plaintext highlighter-rouge">OverridingThreadRun</code></a> finds overridden <code class="language-plaintext highlighter-rouge">Thread::run</code> methods.
-This is not recommended. Instead, implement <code class="language-plaintext highlighter-rouge">Runnable</code> and pass an instance to the thread constructor.</li>
-</ul>
-
 <h3 id="️-fixed-issues">🐛️ Fixed Issues</h3>
-<ul>
-  <li>apex
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5386">#5386</a>: [apex] Apex files ending in “Test” are skipped with a number of rules</li>
-    </ul>
-  </li>
-  <li>apex-errorprone
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6492">#6492</a>: [apex] New rule: Prevent use of interface -&gt; abstract class with equals/hashCode as key in Map</li>
-    </ul>
-  </li>
-  <li>apex-security
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/5385">#5385</a>: [apex] ApexCRUDViolation not reported even if SOQL doesn’t have permissions check on it</li>
-    </ul>
-  </li>
-  <li>java-bestpractices
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/4272">#4272</a>: [java] JUnitTestsShouldIncludeAssert: False positive with assert in lambda</li>
-    </ul>
-  </li>
-  <li>java-multithreading
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/595">#595</a>: [java] New rule: Implement Runnable instead of extending Thread</li>
-    </ul>
-  </li>
-  <li>kotlin
-    <ul>
-      <li><a href="https://github.com/pmd/pmd/issues/6003">#6003</a>: [kotlin] Support multidollar interpolation (Kotlin 2.2)</li>
-    </ul>
-  </li>
-</ul>
 
 <h3 id="️-api-changes">🚨️ API Changes</h3>
 
 <h3 id="️-merged-pull-requests">✨️ Merged pull requests</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
-<ul>
-  <li><a href="https://github.com/pmd/pmd/pull/6493">#6493</a>: [apex] New Rule: AvoidInterfaceAsMapKeyRule - <a href="https://github.com/JonnyPower">Jonny Alexander Power</a> (@JonnyPower)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6497">#6497</a>: [kotlin] Fix kotlin grammar for parsing multidollar interpolation - <a href="https://github.com/stokpop">Peter Paul Bakker</a> (@stokpop)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6555">#6555</a>: [java] New rule: OverridingThreadRun to prefer using Runnable - <a href="https://github.com/zbynek">Zbynek Konecny</a> (@zbynek)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6556">#6556</a>: [java] Fix #4272: False positive in UnitTestShouldIncludeAssert when using assertion in lambda - <a href="https://github.com/lukasgraef">Lukas Gräf</a> (@lukasgraef)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6563">#6563</a>: [apex] Remove class name suffix “Test” as indicator of test classes - <a href="https://github.com/dschach">David Schach</a> (@dschach)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6576">#6576</a>: [test] chore: Throw a TestAbortedException on disabled tests - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6577">#6577</a>: [dist] chore: Improve error message for missing JAVA_HOME in AntIT.java - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-  <li><a href="https://github.com/pmd/pmd/pull/6607">#6607</a>: [doc] basic.xml has been gone for a long time - <a href="https://github.com/UncleOwen">UncleOwen</a> (@UncleOwen)</li>
-</ul>
 
 <h3 id="️-dependency-updates">📦️ Dependency updates</h3>
 <!-- content will be automatically generated, see /do-release.sh -->
