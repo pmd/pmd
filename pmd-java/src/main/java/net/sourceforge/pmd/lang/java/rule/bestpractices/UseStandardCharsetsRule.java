@@ -22,10 +22,10 @@ import net.sourceforge.pmd.reporting.RuleContext;
 
 /**
  * Starting with Java 7, StandardCharsets provides constants for common Charset objects, such as UTF-8.
- * Using the constants is less error prone, and can provide a small performance advantage compared to
+ * Using the constants is less error-prone, and can provide a small performance advantage compared to
  * `Charset.forName(...)` or `String.getBytes(String)` since no scan across the internal `Charset` caches is needed.
  *
- * @since 6.34.0 (as XPath) / 7.24.0 (as Java)
+ * @since 6.34.0 (as XPath) / 7.25.0 (as Java)
  */
 public class UseStandardCharsetsRule extends AbstractJavaRulechainRule {
 
