@@ -2062,7 +2062,7 @@ public class JumbledIncrementerRule1 {
 
     <rule name="JUnit5TestNoPrivateModifier"
           language="java"
-          since="7.24.0"
+          since="7.25.0"
           message="JUnit tests cannot be private"
           class="net.sourceforge.pmd.lang.java.rule.errorprone.JUnit5TestNoPrivateModifierRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_errorprone.html#junit5testnoprivatemodifier">
