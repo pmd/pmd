@@ -23,7 +23,7 @@ public class JUnit5TestNoPrivateModifierRule extends AbstractJavaRulechainRule {
     public RuleContext visit(ASTClassDeclaration node, Object data) {
         RuleContext ctx = (RuleContext) data;
 
-        if (isJUnit5Class(node) && node.hasVisibility(V_PRIVATE)) {
+        if (isJUnit5Class(node.getTypeMirror()) && node.hasVisibility(V_PRIVATE)) {
             ctx.addViolation(node);
         }
 

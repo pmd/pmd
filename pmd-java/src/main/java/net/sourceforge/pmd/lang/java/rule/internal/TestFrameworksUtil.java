@@ -15,7 +15,9 @@ import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JModifier;
 import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
+import net.sourceforge.pmd.lang.java.symbols.JMethodSymbol;
 import net.sourceforge.pmd.lang.java.symbols.JTypeDeclSymbol;
+import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
 
@@ -116,6 +118,12 @@ public final class TestFrameworksUtil {
         );
     }
 
+    public static boolean isJUnit5Method(JMethodSymbol methodSymbol) {
+        return methodSymbol.getDeclaredAnnotations().stream().anyMatch(it -> {
+            return JUNIT5_ALL_TEST_ANNOTS.contains(it.getBinaryName());
+        });
+    }
+
     public static boolean isJUnit3Method(ASTMethodDeclaration method) {
         return isJUnit3Class(method.getEnclosingType())
             && isJunit3MethodSignature(method);
@@ -152,10 +160,10 @@ public final class TestFrameworksUtil {
                    .any(TestFrameworksUtil::isTestMethod));
     }
 
-    public static boolean isJUnit5Class(ASTTypeDeclaration classDeclaration) {
-        return classDeclaration.isRegularClass() && !classDeclaration.isAbstract() && !classDeclaration.isNested()
-                && classDeclaration.getDeclarations(ASTMethodDeclaration.class)
-                        .any(TestFrameworksUtil::isJUnit5Method);
+    public static boolean isJUnit5Class(JClassType typeMirror) {
+        return !typeMirror.isInterface() && !typeMirror.getSymbol().isAbstract() && typeMirror.getEnclosingType() == null
+                && typeMirror.streamMethods(TestFrameworksUtil::isJUnit5Method)
+                        .findAny().isPresent();
     }
 
     public static boolean isJUnit5NestedClass(ASTTypeDeclaration innerClassDecl) {
