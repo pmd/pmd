@@ -154,12 +154,8 @@ public final class TestFrameworksUtil {
 
     public static boolean isJUnit5Class(ASTTypeDeclaration classDeclaration) {
         return classDeclaration.isRegularClass() && !classDeclaration.isAbstract() && !classDeclaration.isNested()
-                && classDeclaration.getTypeMirror().streamMethods(x -> true)
-                        .map(x -> x.getSymbol().tryGetNode())
-                        .filter(x -> x != null)
-                        .filter(x -> x instanceof ASTMethodDeclaration)
-                        .map(x -> (ASTMethodDeclaration) x)
-                        .anyMatch(TestFrameworksUtil::isJUnit5Method);
+                && classDeclaration.getDeclarations(ASTMethodDeclaration.class)
+                        .any(TestFrameworksUtil::isJUnit5Method);
     }
 
     public static boolean isJUnit5NestedClass(ASTTypeDeclaration innerClassDecl) {
