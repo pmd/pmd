@@ -5,6 +5,7 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils.getMethodLevelStatement;
+import static net.sourceforge.pmd.lang.java.rule.internal.JavaRuleUtil.isGuardIf;
 
 import java.util.List;
 
@@ -12,7 +13,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTBlock;
 import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTReturnStatement;
-import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
 import net.sourceforge.pmd.properties.PropertyFactory;
@@ -62,7 +62,7 @@ public class OnlyOneReturnRule extends AbstractJavaRulechainRule {
 
     private List<ASTIfStatement> findGuardIfs(ASTBlock body) {
         return body.children()
-                .takeWhile(node -> JavaAstUtils.isGuardIf(node))
+                .takeWhile(node -> isGuardIf(node))
                 .map(node -> (ASTIfStatement) node)
                 .toList();
     }

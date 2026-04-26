@@ -51,7 +51,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTForStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTForeachStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameter;
 import net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;
-import net.sourceforge.pmd.lang.java.ast.ASTIfStatement;
 import net.sourceforge.pmd.lang.java.ast.ASTInfixExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTInitializer;
 import net.sourceforge.pmd.lang.java.ast.ASTLabeledStatement;
@@ -909,38 +908,6 @@ public final class JavaAstUtils {
             return true;
         }
         return switchLike.isExhaustive();
-    }
-
-    /**
-     * Determine if the node argument has the typical form of a "guard if", that is
-     * an if statement with no else block, and the only thing the then block does is either
-     * return or throw an expression.
-     *
-     * Does NOT check if the node is at the beginning of a function!
-     */
-    public static boolean isGuardIf(JavaNode node) {
-        if (!(node instanceof ASTIfStatement)) {
-            return false;
-        }
-        ASTIfStatement ifStatement = (ASTIfStatement) node;
-
-        if (ifStatement.getElseBranch() != null) {
-            return false;
-        }
-
-        ASTStatement thenBranch = ifStatement.getThenBranch();
-        ASTStatement onlyStatementInThenBranch;
-        if (thenBranch instanceof ASTBlock) {
-            onlyStatementInThenBranch = ASTList.singleOrNull((ASTBlock) thenBranch);
-            if (onlyStatementInThenBranch == null) {
-                return false;
-            }
-        } else {
-            onlyStatementInThenBranch = thenBranch;
-        }
-
-        return onlyStatementInThenBranch instanceof ASTReturnStatement
-                || onlyStatementInThenBranch instanceof ASTThrowStatement;
     }
 
 }
