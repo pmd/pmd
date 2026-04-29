@@ -2,7 +2,7 @@
 <test-data
     xmlns="http://pmd.sourceforge.net/rule-tests"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests https://pmd.sourceforge.net/rule-tests_1_1_1.xsd">
 
     <test-code>
         <description>Overriding run</description>
@@ -12,6 +12,25 @@
             public class Foo extends Thread {
                 @Override
                 public void run() {
+                }
+
+                public static void main(String[] args) {
+                    new Foo().start();
+                }
+            }
+        </code>
+    </test-code>
+    <test-code>
+        <description>Overriding anonymous run</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code>
+            public class Foo  {
+                public void run() {
+                    new Thread() {
+                        @Override
+                        public void run() { }
+                    }.start();
                 }
             }
         </code>

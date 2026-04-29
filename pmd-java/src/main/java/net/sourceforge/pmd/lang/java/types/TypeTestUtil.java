@@ -169,13 +169,19 @@ public final class TypeTestUtil {
 
     private static boolean isA(@NonNull String canonicalName, @NonNull JTypeMirror thisType, @Nullable UnresolvedClassStore unresolvedStore) {
         OptionalBool exactMatch = isExactlyAOrAnon(canonicalName, thisType);
-        if (exactMatch != OptionalBool.NO) {
-            return exactMatch == OptionalBool.YES; // otherwise anon, and we return false
+        if (exactMatch == OptionalBool.YES) {
+            return true;
         }
+        JTypeMirror closestNamedSuperclass = thisType;
+        if (exactMatch == OptionalBool.UNKNOWN && thisType instanceof JClassType) {
+            closestNamedSuperclass = ((JClassType) thisType).getSuperClass();
+        }
+        if (closestNamedSuperclass == null) {
+            return false;
+        }
+        JTypeDeclSymbol closestNamedSuperclassSymbol = closestNamedSuperclass.getSymbol();
 
-        JTypeDeclSymbol thisClass = thisType.getSymbol();
-
-        if (thisClass != null && thisClass.isUnresolved()) {
+        if (closestNamedSuperclassSymbol != null && closestNamedSuperclassSymbol.isUnresolved()) {
             // we can't get any useful info from this, isSubtypeOf would return true
             // do not test for equality, we already checked isExactlyA, which has its fallback
             return false;
@@ -184,7 +190,7 @@ public final class TypeTestUtil {
         TypeSystem ts = thisType.getTypeSystem();
         @Nullable JTypeMirror otherType = TypesFromReflection.loadType(ts, canonicalName, unresolvedStore);
 
-        return isA(otherType, thisType);
+        return isA(otherType, closestNamedSuperclass);
     }
 
     /**
@@ -283,8 +289,8 @@ public final class TypeTestUtil {
         if (canonical == null) {
             return OptionalBool.UNKNOWN; // anonymous
         }
-        canonicalName = StringUtils.deleteWhitespace(canonicalName);
-        return OptionalBool.definitely(canonical.equals(canonicalName));
+        String cleanCanonicalName = StringUtils.deleteWhitespace(canonicalName);
+        return OptionalBool.definitely(canonical.equals(cleanCanonicalName));
     }
 
 
