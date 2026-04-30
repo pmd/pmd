@@ -481,7 +481,9 @@ public class BugSealedClassTest {
 public class Foo {
     void bar() {
         int x = 2;
-        switch (x) {
+        switch // <-- violation: line 4
+        (x)
+        {
             case 2: int y=8;
         }
     }
