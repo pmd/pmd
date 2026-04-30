@@ -415,4 +415,40 @@ public class Outer extends Object {
 }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>only static fields</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>both static and non-static fields</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public final int instance_const = 1337;
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>mix of static fields and static member function</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>1</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public static final int SOME_CONSTANT = 42;
+
+    public static void foo() {};
+}
+        ]]></code>
+    </test-code>
 </test-data>

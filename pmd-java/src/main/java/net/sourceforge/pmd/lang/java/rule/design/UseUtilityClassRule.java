@@ -4,6 +4,7 @@
 
 package net.sourceforge.pmd.lang.java.rule.design;
 
+import static net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility.V_PRIVATE;
 import static net.sourceforge.pmd.util.CollectionUtil.setOf;
 
 import java.util.Set;
@@ -17,7 +18,6 @@ import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTMemberValuePair;
 import net.sourceforge.pmd.lang.java.ast.ASTMethodDeclaration;
 import net.sourceforge.pmd.lang.java.ast.JavaNode;
-import net.sourceforge.pmd.lang.java.ast.ModifierOwner.Visibility;
 import net.sourceforge.pmd.lang.java.ast.internal.JavaAstUtils;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.lang.java.types.TypeTestUtil;
@@ -46,25 +46,36 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
         }
 
         boolean hasAnyMethods = false;
+        boolean hasAnyFields = false;
         boolean hasNonPrivateCtor = false;
         boolean hasAnyCtor = false;
         for (ASTBodyDeclaration declaration : klass.getDeclarations()) {
-            if (declaration instanceof ASTFieldDeclaration
-                && !((ASTFieldDeclaration) declaration).isStatic()) {
-                return null;
+            if (declaration instanceof ASTFieldDeclaration) {
+                ASTFieldDeclaration fieldDeclaration = (ASTFieldDeclaration) declaration;
+
+                if (fieldDeclaration.getVisibility() != V_PRIVATE) {
+                    hasAnyFields = true;
+                }
+                if (!fieldDeclaration.isStatic()) {
+                    return null;
+                }
             }
             if (declaration instanceof ASTConstructorDeclaration) {
+                ASTConstructorDeclaration constructorDeclaration = (ASTConstructorDeclaration) declaration;
+
                 hasAnyCtor = true;
-                if (((ASTConstructorDeclaration) declaration).getVisibility() != Visibility.V_PRIVATE) {
+                if (constructorDeclaration.getVisibility() != V_PRIVATE) {
                     hasNonPrivateCtor = true;
                 }
             }
 
             if (declaration instanceof ASTMethodDeclaration) {
-                if (((ASTMethodDeclaration) declaration).getVisibility() != Visibility.V_PRIVATE) {
+                ASTMethodDeclaration methodDeclaration = (ASTMethodDeclaration) declaration;
+
+                if (methodDeclaration.getVisibility() != V_PRIVATE) {
                     hasAnyMethods = true;
                 }
-                if (!((ASTMethodDeclaration) declaration).isStatic()) {
+                if (!methodDeclaration.isStatic()) {
                     return null;
                 }
             }
@@ -72,11 +83,11 @@ public class UseUtilityClassRule extends AbstractJavaRulechainRule {
 
         // account for default ctor
         hasNonPrivateCtor |= !hasAnyCtor
-            && klass.getVisibility() != Visibility.V_PRIVATE
+            && klass.getVisibility() != V_PRIVATE
             && !hasLombokPrivateCtor(klass);
 
 
-        if (hasAnyMethods && hasNonPrivateCtor) {
+        if ((hasAnyMethods || hasAnyFields) && hasNonPrivateCtor) {
             asCtx(data).addViolation(klass);
         }
         return null;
