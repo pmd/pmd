@@ -361,7 +361,7 @@ public static Foo getFoo() {
     <rule name="OverridingThreadRun"
           language="java"
           since="7.24.0"
-          message="Don't override Thread.run() method, use Runnable instead"
+          message="Don''t override Thread.run() method, use Runnable instead"
           class="net.sourceforge.pmd.lang.rule.xpath.XPathRule"
           externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_multithreading.html#overridingthreadrun">
         <description>
