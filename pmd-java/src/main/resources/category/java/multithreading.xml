@@ -376,7 +376,7 @@ public static Foo getFoo() {
             <property name="xpath">
                 <value>
                     <![CDATA[
-(//AnonymousClassDeclaration|//ClassDeclaration)[ pmd-java:typeIs('java.lang.Thread') ]/ClassBody
+//(AnonymousClassDeclaration|ClassDeclaration)[ pmd-java:typeIs('java.lang.Thread') ]/ClassBody
     /MethodDeclaration[@Name="run"][FormalParameters/@Size=0]
 ]]>
                 </value>
