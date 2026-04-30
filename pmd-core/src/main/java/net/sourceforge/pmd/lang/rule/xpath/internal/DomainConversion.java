@@ -14,6 +14,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import net.sf.saxon.om.AtomicArray;
 import net.sf.saxon.om.AtomicSequence;
 import net.sf.saxon.om.EmptyAtomicSequence;
+import net.sf.saxon.str.StringTool;
 import net.sf.saxon.type.BuiltInAtomicType;
 import net.sf.saxon.type.SchemaType;
 import net.sf.saxon.value.AtomicValue;
@@ -146,6 +147,8 @@ public final class DomainConversion {
             return new FloatValue((Float) value);
         } else if (value instanceof Pattern || value instanceof Enum) {
             return new StringValue(String.valueOf(value));
+        } else if (value instanceof CharSequence) {
+            return new StringValue(StringTool.fromCharSequence((CharSequence) value));
         } else {
             // We could maybe use UntypedAtomicValue
             throw new RuntimeException("Unable to create ValueRepresentation for value of type: " + value.getClass());

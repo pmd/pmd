@@ -3,7 +3,7 @@ title: Newcomers' Guide
 tags: [devdocs]
 permalink: pmd_devdocs_contributing_newcomers_guide.html
 author: Andreas Dangel <andreas.dangel@pmd-code.org>
-last_updated: January 2025 (7.10.0)
+last_updated: November 2025 (7.20.0)
 ---
 
 This is a small guide for GSoC Students and new contributors.
@@ -82,6 +82,17 @@ pull requests later for your fix.
 
     ``` shell
     $ ./mvnw clean verify -pl pmd-apex
+    ```
+
+6.  You might get an error about not being able to resolve a `snapshot` module:
+    ```shell
+    Could not resolve dependencies for project net.sourceforge.pmd:pmd-apex:jar:7.20.0-SNAPSHOT
+    ```
+    Then you are on snapshot commit and need snapshot dependencies for your module. You can activate building the
+    required dependencies yourself (line 1) or you can activate the snapshot repository (line 2) for your build:
+    ```shell
+    $ ./mvnw clean verify -pl pmd-apex -am
+    $ ./mvnw clean verify -pl pmd-apex -Pcentral-portal-snapshots
     ```
 
     We recommend to read the documentation [Building PMD General Info](pmd_devdocs_building_general.html) and

@@ -47,7 +47,7 @@ import net.sourceforge.pmd.util.AssertionUtil;
  *
  * @author Clément Fournier
  * @since 7.0.0
- * @apiNote Internal API
+ * @internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.
  */
 @InternalApi
 public final class InternalApiBridge {
@@ -75,6 +75,10 @@ public final class InternalApiBridge {
 
     public static void disambigWithCtx(NodeStream<? extends JavaNode> nodes, ReferenceCtx ctx) {
         AstDisambiguationPass.disambigWithCtx(nodes, ctx);
+    }
+
+    public static void retryDisambigWithCtx(NodeStream<? extends ASTAmbiguousName> nodes, ReferenceCtx ctx, JSymbolTable symbolTable) {
+        AstDisambiguationPass.retryDisambigWithCtx(nodes, ctx, symbolTable);
     }
 
     /**

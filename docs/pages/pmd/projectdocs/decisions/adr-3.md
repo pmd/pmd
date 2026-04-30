@@ -6,7 +6,7 @@ sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
 adr_status: "Accepted"
-last_updated: February 2024
+last_updated: January 2026 (7.21.0)
 ---
 
 <!-- https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/templates/decision-record-template-by-michael-nygard/index.md -->
@@ -102,6 +102,8 @@ All packages are considered to be public API by default, with **two exceptions**
   The `@InternalApi` annotation will be used for types that have to live outside of
   these packages, e.g. methods of a public type that shouldn't be used outside PMD (again,
   these can be removed anytime).
+  The javadoc tag `@internalApi None of this is published API, and compatibility can be broken anytime! Use this only at your own risk.`
+  will be added additionally.
 
 * Any package that contains an `impl` segment is considered internal. E.g. `net.sourceforge.pmd.lang.impl`.
   These packages contain base classes that are needed for extending PMD (like adding a new language).
@@ -117,6 +119,7 @@ All packages are considered to be public API by default, with **two exceptions**
 
 * APIs can be deprecated at any time (even in PATCH versions). Deprecated APIs are marked with the
   `@Deprecated` annotation.
+  The javadoc tag `@deprecated Since x.y.z. Description` will be added additionally.
 * Deprecations should be listed in the release notes.
 * Deprecated APIs can only be removed with a MAJOR version change.
 
@@ -124,6 +127,7 @@ All packages are considered to be public API by default, with **two exceptions**
 
 * New features often introduce new APIs. These new APIs can be marked with the annotation `@Experimental` at
   the class or method level.
+  These new APIs should use the javadoc tags `@since x.y.z` and `@experimental Description`.
 * APIs marked with the `@Experimental` annotation are subject to change and are considered **not stable**.
   They can be modified in any way, or even removed, at any time. You should not use or rely
   on them in any production code. They are purely to allow broad testing and feedback.
@@ -183,6 +187,8 @@ Non-concrete AST classes (like base classes or common interfaces) should follow 
 * Refactoring of the implementation is possible without affecting public API.
 
 ## Change History
+
+2026-01-29: Added details on how to use javadoc tags for deprecated, experimental and internal APIs. ([#6392](https://github.com/pmd/pmd/pull/6392))
 
 2024-02-01: Changed status to "Accepted". ([#4756](https://github.com/pmd/pmd/pull/4756))
 

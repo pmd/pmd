@@ -6,7 +6,7 @@ sidebaractiveurl: /pmd_projectdocs_decisions.html
 adr: true
 # Proposed / Accepted / Deprecated / Superseded
 adr_status: ""
-last_updated: July 2022
+last_updated: December 2023 (7.0.0)
 ---
 
 <!-- https://github.com/joelparkerhenderson/architecture-decision-record/blob/main/templates/decision-record-template-by-michael-nygard/index.md -->

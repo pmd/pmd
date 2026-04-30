@@ -40,6 +40,16 @@ public interface ExprMirror {
      */
     JavaNode getLocation();
 
+    /**
+     * Return the text of the location node. May be overridden if this
+     * mirror is fake (eg, using a lambda node but presenting a method ref,
+     * or using a method ref node but presenting an invocation).
+     * Use this only to log messages and for debugging.
+     */
+    default CharSequence getLocationText() {
+        return getLocation().getText();
+    }
+
 
     /**
      * If this expression is of a standalone form, returns the type of
@@ -309,7 +319,7 @@ public interface ExprMirror {
          * while we don't).
          */
         @Override
-        JTypeMirror getTypeToSearch();
+        @NonNull JTypeMirror getTypeToSearch();
 
 
         /**
@@ -324,6 +334,9 @@ public interface ExprMirror {
         @Nullable
         JTypeMirror getLhsIfType();
 
+        default boolean isLhsAType() {
+            return getLhsIfType() != null;
+        }
 
         /**
          * Returns the name of the invoked method, or {@link JConstructorSymbol#CTOR_NAME}
@@ -521,19 +534,22 @@ public interface ExprMirror {
             private final OptionalBool needsUncheckedConversion;
             private final boolean failed;
             private final @Nullable MethodUsageMirror expr;
+            private final boolean neededSpecificityCheck;
 
             MethodCtDecl(JMethodSig methodType,
                          MethodResolutionPhase resolvePhase,
                          boolean canSkipInvocation,
                          OptionalBool needsUncheckedConversion,
                          boolean failed,
-                         @Nullable MethodUsageMirror expr) {
+                         @Nullable MethodUsageMirror expr,
+                         boolean neededSpecificityCheck) {
                 this.methodType = methodType;
                 this.resolvePhase = resolvePhase;
                 this.canSkipInvocation = canSkipInvocation;
                 this.needsUncheckedConversion = needsUncheckedConversion;
                 this.failed = failed;
                 this.expr = expr;
+                this.neededSpecificityCheck = neededSpecificityCheck;
             }
 
             // package-private:
@@ -542,12 +558,16 @@ public interface ExprMirror {
                 return withMethod(method, failed);
             }
 
+            MethodCtDecl neededSpecificityCheck(boolean needed) {
+                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr, needed);
+            }
+
             MethodCtDecl withMethod(JMethodSig method, boolean failed) {
-                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+                return new MethodCtDecl(method, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr, neededSpecificityCheck);
             }
 
             public MethodCtDecl withExpr(MethodUsageMirror expr) {
-                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr);
+                return new MethodCtDecl(methodType, resolvePhase, canSkipInvocation, needsUncheckedConversion, failed, expr, neededSpecificityCheck);
             }
 
             MethodCtDecl asFailed() {
@@ -563,7 +583,7 @@ public interface ExprMirror {
             }
 
             static MethodCtDecl unresolved(TypeSystem ts) {
-                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, OptionalBool.UNKNOWN, true, null);
+                return new MethodCtDecl(ts.UNRESOLVED_METHOD, STRICT, true, OptionalBool.UNKNOWN, true, null, false);
             }
 
             // public:
@@ -597,6 +617,11 @@ public interface ExprMirror {
             @Override
             public @Nullable JTypeMirror getTypeToSearch() {
                 return expr != null ? expr.getTypeToSearch() : null;
+            }
+
+            @Override
+            public boolean hadSeveralApplicableOverloads() {
+                return neededSpecificityCheck;
             }
         }
     }

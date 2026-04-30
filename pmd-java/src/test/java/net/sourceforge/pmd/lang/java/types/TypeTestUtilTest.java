@@ -24,6 +24,7 @@ import net.sourceforge.pmd.lang.java.ast.ASTAnonymousClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTClassDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTEnumDeclaration;
 import net.sourceforge.pmd.lang.java.ast.ASTFieldDeclaration;
+import net.sourceforge.pmd.lang.java.ast.ASTNullLiteral;
 import net.sourceforge.pmd.lang.java.ast.ASTType;
 import net.sourceforge.pmd.lang.java.ast.ASTTypeDeclaration;
 import net.sourceforge.pmd.lang.java.ast.TypeNode;
@@ -276,6 +277,27 @@ class TypeTestUtilTest extends BaseParserTest {
         assertThrows(NullPointerException.class, () -> TypeTestUtil.isA((Class<?>) null, node));
         assertThrows(NullPointerException.class, () -> TypeTestUtil.isExactlyA((Class<?>) null, node));
         assertThrows(NullPointerException.class, () -> TypeTestUtil.isExactlyA((String) null, node));
+    }
+
+
+    @Test
+    void testNullLiteralIsNotAnyType() {
+        final ASTNullLiteral node = java.parse("class Foo {{ Integer i = null; }}")
+                                       .descendants(ASTNullLiteral.class).firstOrThrow();
+        assertNotNull(node);
+
+        assertTrue(TypeTestUtil.isA(node.getTypeSystem().NULL_TYPE, node), "null literal matches the null type");
+        // assertTrue(TypeTestUtil.isExactlyA(node.getTypeSystem().NULL_TYPE, node), "null literal matches the null type exactly");
+
+        assertTrue(TypeTestUtil.isA(Object.class, node), "null is considered subtype of Object");
+        assertFalse(TypeTestUtil.isExactlyA(Object.class, node), "null is not considered an instance of Object");
+
+        assertFalse(TypeTestUtil.isA(Integer.class, node), "null is not considered a subtype of a more specific type");
+        assertFalse(TypeTestUtil.isExactlyA(Integer.class, node), "null is not considered an instance of a more specific type");
+
+        // overloads with name
+        assertFalse(TypeTestUtil.isA(Integer.class.getName(), node), "null is not considered a subtype of a more specific type");
+        assertFalse(TypeTestUtil.isExactlyA(Integer.class.getName(), node), "null is not considered an instance of a more specific type");
     }
 
     private void assertIsA(TypeNode node, Class<?> type) {

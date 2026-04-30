@@ -186,15 +186,15 @@ class ModelicaClassDeclaration extends AbstractModelicaDeclaration implements Mo
             ModelicaComponentDeclaration component = (ModelicaComponentDeclaration) resolvedSimpleName;
             if (result.getState().needRecurseInto(component)) {
                 ResolutionResult<ModelicaType> componentTypes = component.getTypeCandidates();
-                for (ModelicaType tpe : componentTypes.getBestCandidates()) {
-                    if (tpe instanceof ModelicaClassDeclaration) {
-                        ((ModelicaClassDeclaration) tpe).lookupInInstanceScope(result, furtherParts);
+                for (ModelicaType type : componentTypes.getBestCandidates()) {
+                    if (type instanceof ModelicaClassDeclaration) {
+                        ((ModelicaClassDeclaration) type).lookupInInstanceScope(result, furtherParts);
                     }
                 }
                 result.markHidingPoint();
-                for (ModelicaType tpe : componentTypes.getHiddenCandidates()) {
-                    if (tpe instanceof ModelicaClassDeclaration) {
-                        ((ModelicaClassDeclaration) tpe).lookupInInstanceScope(result, furtherParts);
+                for (ModelicaType type : componentTypes.getHiddenCandidates()) {
+                    if (type instanceof ModelicaClassDeclaration) {
+                        ((ModelicaClassDeclaration) type).lookupInInstanceScope(result, furtherParts);
                     }
                 }
             }

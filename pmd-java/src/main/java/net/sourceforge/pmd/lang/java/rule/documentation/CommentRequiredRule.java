@@ -34,13 +34,16 @@ import net.sourceforge.pmd.util.CollectionUtil;
 public class CommentRequiredRule extends AbstractJavaRulechainRule {
     // Used to pretty print a message
     private static final Map<String, String> DESCRIPTOR_NAME_TO_COMMENT_TYPE = new HashMap<>();
+    private static final Map<String, CommentRequirement> COMMENT_REQUIREMENT_DEPRECATED_MAPPING =
+            CollectionUtil.mapOf("Required", CommentRequirement.REQUIRED, "Ignored", CommentRequirement.IGNORED,
+                    "Unwanted", CommentRequirement.UNWANTED);
 
     private static final PropertyDescriptor<CommentRequirement> ACCESSOR_CMT_DESCRIPTOR
         = requirementPropertyBuilder("accessorCommentRequirement", "Comments on getters and setters\"")
-        .defaultValue(CommentRequirement.Ignored).build();
+        .defaultValue(CommentRequirement.IGNORED).build();
     private static final PropertyDescriptor<CommentRequirement> OVERRIDE_CMT_DESCRIPTOR
         = requirementPropertyBuilder("methodWithOverrideCommentRequirement", "Comments on @Override methods")
-        .defaultValue(CommentRequirement.Ignored).build();
+        .defaultValue(CommentRequirement.IGNORED).build();
     private static final PropertyDescriptor<CommentRequirement> CLASS_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("classCommentRequirement", "Class comments").build();
     private static final PropertyDescriptor<CommentRequirement> FIELD_CMT_REQUIREMENT_DESCRIPTOR
@@ -53,10 +56,10 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         = requirementPropertyBuilder("enumCommentRequirement", "Enum comments").build();
     private static final PropertyDescriptor<CommentRequirement> SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("serialVersionUIDCommentRequired", "Serial version UID comments")
-        .defaultValue(CommentRequirement.Ignored).build();
+        .defaultValue(CommentRequirement.IGNORED).build();
     private static final PropertyDescriptor<CommentRequirement> SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR
         = requirementPropertyBuilder("serialPersistentFieldsCommentRequired", "Serial persistent fields comments")
-        .defaultValue(CommentRequirement.Ignored).build();
+        .defaultValue(CommentRequirement.IGNORED).build();
 
     /** stores the resolved property values. This is necessary in order to transparently use deprecated properties. */
     private final Map<PropertyDescriptor<CommentRequirement>, CommentRequirement> propertyValues = new HashMap<>();
@@ -92,14 +95,14 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
     private void checkCommentMeetsRequirement(Object data, JavadocCommentOwner node,
                                               PropertyDescriptor<CommentRequirement> descriptor) {
         switch (propertyValues.get(descriptor)) {
-        case Ignored:
+        case IGNORED:
             break;
-        case Required:
+        case REQUIRED:
             if (node.getJavadocComment() == null) {
                 commentRequiredViolation(data, node, descriptor);
             }
             break;
-        case Unwanted:
+        case UNWANTED:
             if (node.getJavadocComment() != null) {
                 commentRequiredViolation(data, node, descriptor);
             }
@@ -116,7 +119,7 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
         asCtx(data).addViolationWithMessage(node,
             DESCRIPTOR_NAME_TO_COMMENT_TYPE.get(descriptor.name())
             + " are "
-            + getProperty(descriptor).label.toLowerCase(Locale.ROOT));
+            + getProperty(descriptor).name().toLowerCase(Locale.ROOT));
     }
 
 
@@ -178,15 +181,15 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
 
     private boolean allCommentsAreIgnored() {
 
-        return getProperty(OVERRIDE_CMT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(ACCESSOR_CMT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(ENUM_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored
-                && getProperty(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.Ignored;
+        return getProperty(OVERRIDE_CMT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(ACCESSOR_CMT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(CLASS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(FIELD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(PUB_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(PROT_METHOD_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(ENUM_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(SERIAL_VERSION_UID_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED
+                && getProperty(SERIAL_PERSISTENT_FIELDS_CMT_REQUIREMENT_DESCRIPTOR) == CommentRequirement.IGNORED;
     }
 
     @Override
@@ -195,21 +198,14 @@ public class CommentRequiredRule extends AbstractJavaRulechainRule {
     }
 
     private enum CommentRequirement {
-        Required("Required"), Ignored("Ignored"), Unwanted("Unwanted");
-
-        private final String label;
-
-        CommentRequirement(String theLabel) {
-            label = theLabel;
-        }
+        REQUIRED, IGNORED, UNWANTED
     }
-
 
     // pre-filled builder
     private static GenericPropertyBuilder<CommentRequirement> requirementPropertyBuilder(String name, String commentType) {
         DESCRIPTOR_NAME_TO_COMMENT_TYPE.put(name, commentType);
-        return PropertyFactory.enumProperty(name, CommentRequirement.class, cr -> cr.label)
-                              .desc(commentType + ". Possible values: " + CollectionUtil.map(CommentRequirement.values(), cr -> cr.label))
-                              .defaultValue(CommentRequirement.Required);
+        return PropertyFactory.enumPropertyTransitional(name, CommentRequirement.class, COMMENT_REQUIREMENT_DEPRECATED_MAPPING)
+                              .desc(commentType)
+                              .defaultValue(CommentRequirement.REQUIRED);
     }
 }

@@ -58,43 +58,64 @@ public class Foo {
     </test-code>
 
     <test-code>
-        <description>null check, ok (if) - any branch</description>
+        <description>null check, ok (if) - any branch (deprecated property test)</description>
         <rule-property name="nullCheckBranch">Any</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="nullCheckIfElse"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, ok (if) - any branch</description>
+        <rule-property name="nullCheckBranch">any</rule-property>
+        <expected-problems>0</expected-problems>
+        <code-ref id="nullCheckIfElse"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, ok (if) - else branch (deprecated property test)</description>
+        <rule-property name="nullCheckBranch">Else</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="nullCheckIfElse"/>
     </test-code>
 
     <test-code>
         <description>null check, ok (if) - else branch</description>
-        <rule-property name="nullCheckBranch">Else</rule-property>
+        <rule-property name="nullCheckBranch">else</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="nullCheckIfElse"/>
     </test-code>
 
     <test-code>
-        <description>null check, not ok (if) - then branch</description>
+        <description>null check, not ok (if) - then branch (deprecated property test)</description>
         <rule-property name="nullCheckBranch">Then</rule-property>
+        <expected-problems>1</expected-problems>
+        <code-ref id="nullCheckIfElse"/>
+    </test-code>
+
+    <test-code>
+        <description>null check, not ok (if) - then branch</description>
+        <rule-property name="nullCheckBranch">then</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="nullCheckIfElse"/>
     </test-code>
 
     <test-code>
         <description>null check, ok (if) - any branch</description>
-        <rule-property name="nullCheckBranch">Any</rule-property>
+        <rule-property name="nullCheckBranch">any</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="nullCheckIfThen"/>
     </test-code>
 
     <test-code>
         <description>null check, not ok (if) - else branch</description>
-        <rule-property name="nullCheckBranch">Else</rule-property>
+        <rule-property name="nullCheckBranch">else</rule-property>
         <expected-problems>1</expected-problems>
         <code-ref id="nullCheckIfThen"/>
     </test-code>
 
     <test-code>
         <description>null check, ok (if) - then branch</description>
-        <rule-property name="nullCheckBranch">Then</rule-property>
+        <rule-property name="nullCheckBranch">then</rule-property>
         <expected-problems>0</expected-problems>
         <code-ref id="nullCheckIfThen"/>
     </test-code>

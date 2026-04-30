@@ -158,7 +158,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
             }
 
             if (si.isSubtypeOf(ti)) {
-                return true;
+                continue;
             } else if (ti.isSubtypeOf(si)) {
                 return false;
             }
@@ -176,7 +176,7 @@ final class PhaseOverloadSet extends OverloadSet<MethodCtDecl> {
                         // the boxing/unboxing conversion, without widening
                         // afterwards.
                         if (stdExprTy.box().equals(si.box())) {
-                            return true;
+                            continue;
                         } else if (stdExprTy.box().equals(ti.box())) {
                             return false;
                         }

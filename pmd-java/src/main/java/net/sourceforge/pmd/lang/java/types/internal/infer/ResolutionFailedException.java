@@ -165,6 +165,12 @@ final class ResolutionFailedException extends RuntimeException {
                                                                      + actual));
     }
 
+    static ResolutionFailedException unboundMrefCannotTargetInstanceMethod(TypeInferenceLogger logger, MethodRefMirror mref, JMethodSig targetFun) {
+        return getShared(logger.isNoop() ? UNKNOWN
+                                         : new ResolutionFailure(mref.getLocation(),
+            "Instance method reference cannot target functional type " + targetFun));
+    }
+
     static ResolutionFailedException noCtDeclaration(TypeInferenceLogger logger, JMethodSig fun, MethodRefMirror mref) {
         return getShared(logger.isNoop() ? UNKNOWN
                                          : new ResolutionFailure(mref.getLocation(),

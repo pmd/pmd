@@ -809,4 +809,28 @@ public class MyLogger {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#4282 GuardLogStatement only detects guard methods immediately around it</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+
+public class Foo {
+    private static final Logger LOG = LogManager.getLogger(Foo.class);
+    public void test(String arg1) {
+        if (LOG.isWarnEnabled()) {
+            if (someCondition) {
+                String msg = "Message 1 with one argument: ";
+                LOG.warn(msg + arg1);
+            } else {
+                String msg = "Message 2 with two arguments: {}, {}.";
+                LOG.warn(msg + arg1);
+            }
+        }
+    }
+}
+    ]]></code>
+    </test-code>
 </test-data>

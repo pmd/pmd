@@ -273,9 +273,9 @@ class ModelicaResolverTest {
         ModelicaComponentDeclaration x = (ModelicaComponentDeclaration) xs.get(0);
         ResolutionResult<ModelicaType> xTypes = x.getTypeCandidates();
         ensureCounts(xTypes, 1, 0);
-        ResolvableEntity tpe = xTypes.getBestCandidates().get(0);
-        assertTrue(tpe instanceof ModelicaBuiltinType);
-        assertEquals(ModelicaBuiltinType.BaseType.REAL, ((ModelicaBuiltinType) tpe).getBaseType());
+        ResolvableEntity type = xTypes.getBestCandidates().get(0);
+        assertTrue(type instanceof ModelicaBuiltinType);
+        assertEquals(ModelicaBuiltinType.BaseType.REAL, ((ModelicaBuiltinType) type).getBaseType());
     }
 
     @Test

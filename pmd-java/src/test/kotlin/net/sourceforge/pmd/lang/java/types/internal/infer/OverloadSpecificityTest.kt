@@ -6,11 +6,11 @@
 package net.sourceforge.pmd.lang.java.types.internal.infer
 
 import io.kotest.matchers.shouldBe
-import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.lang.java.ast.*
 import net.sourceforge.pmd.lang.java.types.*
 import net.sourceforge.pmd.lang.java.types.TypeOps.areOverrideEquivalent
 import net.sourceforge.pmd.lang.java.types.testdata.Overloads
+import net.sourceforge.pmd.lang.test.ast.shouldBe
 import net.sourceforge.pmd.util.OptionalBool
 import net.sourceforge.pmd.lang.java.types.internal.infer.OverloadSet.shouldAlwaysTakePrecedence as shouldTakePrecedence
 
@@ -424,5 +424,71 @@ class Scratch {
         spy.shouldBeAmbiguous(voidM)
         spy.shouldBeAmbiguous(stdM)
         spy.shouldBeAmbiguous(polyM)
+    }
+
+    parserTest("Non ambiguous test, no diff between lambda and mref") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            public final class Foo {
+
+                public static void iTakeLambda(Lambda1Arg l) {}
+                public static void iTakeLambda(Lambda2Args l) {}
+                static {
+                    iTakeLambda(x -> x.isEmpty());
+                    iTakeLambda(String::isEmpty);
+                    iTakeLambda((x,c) -> x.contains(c));
+                    iTakeLambda(String::contains);
+                }
+                public boolean correct(int a) {
+                    return false;
+                }
+            }
+
+            interface Lambda2Args {
+                boolean doSomething(String a, CharSequence c);
+            }
+            interface Lambda1Arg {
+                boolean doSomething(String a);
+            }
+            """.trimIndent()
+        )
+
+        val (takes1ArgLambda, takes2ArgsLambda) = acu.declaredMethodSignatures().toList()
+        val (a, b, c, d) = acu.descendants(ASTInitializer::class.java).firstOrThrow().body!!.children().children(ASTMethodCall::class.java).toList()
+        spy.shouldBeOk {
+            a.methodType shouldBeSomeInstantiationOf  takes1ArgLambda
+            b.methodType shouldBeSomeInstantiationOf  takes1ArgLambda
+            c.methodType shouldBeSomeInstantiationOf  takes2ArgsLambda
+            d.methodType shouldBeSomeInstantiationOf  takes2ArgsLambda
+        }
+    }
+
+    parserTest("Test specificity between args with explicit cast") {
+        val (acu, spy) = parser.parseWithTypeInferenceSpy(
+            """
+            interface Collection<T> {}
+            interface Multiset<K> extends Collection<K> { }
+            public final class Scratch {
+                static <E> Multiset<E> addAllImpl(
+                        Multiset<E> self, Collection<?> elements) {
+                    return addAllImpl(self, (Multiset) elements);
+                }
+
+                private static <E> Multiset<E> addAllImpl(
+                        Multiset<E> self, Multiset<E> elements) {
+                }
+            }
+            """.trimIndent()
+        )
+
+        val (_, multiSetTy) = acu.declaredTypeSignatures()
+        val (addAllImpl) = acu.methodCalls().toList()
+        val (_, multisetMethod) = acu.declaredMethodSignatures()
+
+        spy.shouldBeOk {
+            addAllImpl.methodType shouldBeSomeInstantiationOf multisetMethod
+            // since unchecked conversion is necessary the return type is erased
+            addAllImpl.typeMirror shouldBe multiSetTy.erasure
+        }
     }
 })

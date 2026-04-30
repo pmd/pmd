@@ -30,23 +30,23 @@ class VfExpressionTypeVisitorTest {
 
     static {
         EXPECTED_CUSTOM_FIELD_DATA_TYPES = new HashMap<>();
-        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("CreatedDate", DataType.DateTime);
-        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("DateTime__c", DataType.DateTime);
-        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("Checkbox__c", DataType.Checkbox);
-        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("Name", DataType.Text);
-        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("Text__c", DataType.Text);
-        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("TextArea__c", DataType.TextArea);
-        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("LongTextArea__c", DataType.LongTextArea);
-        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("Picklist__c", DataType.Picklist);
+        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("CreatedDate", DataType.DATE_TIME);
+        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("DateTime__c", DataType.DATE_TIME);
+        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("Checkbox__c", DataType.CHECKBOX);
+        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("Name", DataType.TEXT);
+        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("Text__c", DataType.TEXT);
+        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("TextArea__c", DataType.TEXT_AREA);
+        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("LongTextArea__c", DataType.LONG_TEXT_AREA);
+        EXPECTED_CUSTOM_FIELD_DATA_TYPES.put("Picklist__c", DataType.PICKLIST);
 
         EXPECTED_APEX_DATA_TYPES = new HashMap<>();
-        EXPECTED_APEX_DATA_TYPES.put("AccountIdProp", DataType.Lookup);
-        EXPECTED_APEX_DATA_TYPES.put("AccountId", DataType.Lookup);
-        EXPECTED_APEX_DATA_TYPES.put("InnerAccountId", DataType.Lookup);
-        EXPECTED_APEX_DATA_TYPES.put("InnerAccountIdProp", DataType.Lookup);
-        EXPECTED_APEX_DATA_TYPES.put("AccountName", DataType.Text);
-        EXPECTED_APEX_DATA_TYPES.put("InnerAccountName", DataType.Text);
-        EXPECTED_APEX_DATA_TYPES.put("ConflictingProp", DataType.Unknown);
+        EXPECTED_APEX_DATA_TYPES.put("AccountIdProp", DataType.LOOKUP);
+        EXPECTED_APEX_DATA_TYPES.put("AccountId", DataType.LOOKUP);
+        EXPECTED_APEX_DATA_TYPES.put("InnerAccountId", DataType.LOOKUP);
+        EXPECTED_APEX_DATA_TYPES.put("InnerAccountIdProp", DataType.LOOKUP);
+        EXPECTED_APEX_DATA_TYPES.put("AccountName", DataType.TEXT);
+        EXPECTED_APEX_DATA_TYPES.put("InnerAccountName", DataType.TEXT);
+        EXPECTED_APEX_DATA_TYPES.put("ConflictingProp", DataType.UNKNOWN);
     }
 
     /**
@@ -168,7 +168,7 @@ class VfExpressionTypeVisitorTest {
         ASTIdentifier description = rootNode.descendants(ASTIdentifier.class)
                 .filterMatching(ASTIdentifier::getImage, "Description")
                 .firstOrThrow();
-        assertEquals(DataType.Text, description.getDataType());
+        assertEquals(DataType.TEXT, description.getDataType());
     }
 
     private Node compile(String pageName) {

@@ -33,7 +33,7 @@ public abstract class AbstractTokenManager implements TokenManager<JavaccToken> 
     }
 
     /**
-     * @deprecated since 7.14.0. Use {@link #getSuppressionComments()} instead.
+     * @deprecated Since 7.14.0. Use {@link #getSuppressionComments()} instead.
      */
     @Deprecated
     public Map<Integer, String> getSuppressMap() {

@@ -450,4 +450,25 @@ class AvoidArrayLoopsSamples {
 }
 ]]></code>
     </test-code>
+
+    <test-code>
+        <description>#5877 false-negative when break inside switch statement</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <code><![CDATA[
+class Foo {
+    public void bar(int[] source, int condition) {
+        int[] destination = new int[source.length];
+        for (int i = 0; i < source.length; i++) {           // violation line 4
+            destination[i] = source[i];
+            switch (condition) {
+                case 0:
+                    System.out.println("This is an unreachable switch case.");
+                    break;
+            }
+        }
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

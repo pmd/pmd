@@ -29,16 +29,16 @@ class ApexClassPropertyTypesTest {
         // must have the correct case since it is used to lookup the file. The Apex class name is guaranteed to be correct
         // in the Visualforce page, but the property names are not
         EXPECTED_DATA_TYPES = new HashMap<>();
-        EXPECTED_DATA_TYPES.put("ApexController.accOuntIdProp", DataType.Lookup);
-        EXPECTED_DATA_TYPES.put("ApexController.AcCountId", DataType.Lookup);
-        EXPECTED_DATA_TYPES.put("ApexController.AcCountname", DataType.Text);
+        EXPECTED_DATA_TYPES.put("ApexController.accOuntIdProp", DataType.LOOKUP);
+        EXPECTED_DATA_TYPES.put("ApexController.AcCountId", DataType.LOOKUP);
+        EXPECTED_DATA_TYPES.put("ApexController.AcCountname", DataType.TEXT);
 
         // InnerController
         // The class should be parsed to Unknown. It's not a valid expression on its own.
-        EXPECTED_DATA_TYPES.put("ApexController.innErController", DataType.Unknown);
-        EXPECTED_DATA_TYPES.put("ApexController.innErController.innErAccountIdProp", DataType.Lookup);
-        EXPECTED_DATA_TYPES.put("ApexController.innErController.innErAccountid", DataType.Lookup);
-        EXPECTED_DATA_TYPES.put("ApexController.innErController.innErAccountnAme", DataType.Text);
+        EXPECTED_DATA_TYPES.put("ApexController.innErController", DataType.UNKNOWN);
+        EXPECTED_DATA_TYPES.put("ApexController.innErController.innErAccountIdProp", DataType.LOOKUP);
+        EXPECTED_DATA_TYPES.put("ApexController.innErController.innErAccountid", DataType.LOOKUP);
+        EXPECTED_DATA_TYPES.put("ApexController.innErController.innErAccountnAme", DataType.TEXT);
 
         // Edge cases
         // Invalid class should return null
@@ -48,9 +48,9 @@ class ApexClassPropertyTypesTest {
         /*
          * It is possible to have a property and method with different types that resolve to the same Visualforce
          * expression. An example is an Apex class with a property "public String Foo {get; set;}" and a method of
-         * "Integer getFoo() { return 1; }". These properties should map to {@link DataType#Unknown}.
+         * "Integer getFoo() { return 1; }". These properties should map to {@link DataType#UNKNOWN}.
          */
-        EXPECTED_DATA_TYPES.put("ApexController.ConflictingProp", DataType.Unknown);
+        EXPECTED_DATA_TYPES.put("ApexController.ConflictingProp", DataType.UNKNOWN);
     }
 
     @Test

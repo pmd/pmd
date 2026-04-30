@@ -19,7 +19,7 @@ import net.sourceforge.pmd.lang.apex.rule.internal.AbstractCounterCheckRule;
  * subclasses.</p>
  *
  * <p>A large proportion of public members and operations means the class
- * has high potential to be affected by external classes. Futhermore,
+ * has high potential to be affected by external classes. Furthermore,
  * increased effort will be required to thoroughly test the class.</p>
  *
  * @author ported from Java original of aglover

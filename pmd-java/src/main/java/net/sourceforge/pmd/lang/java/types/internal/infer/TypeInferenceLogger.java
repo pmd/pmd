@@ -13,6 +13,7 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -107,6 +108,11 @@ public interface TypeInferenceLogger {
 
     default void ivarDependencyRegistered(InferenceContext ctx, InferenceVar var, Set<InferenceVar> deps) { }
 
+    // Context management
+
+    default <T> T inContext(String st, Supplier<T> action) {
+        return action.get();
+    }
 
     /**
      * Log that the instantiation of the method type m for the given
@@ -205,7 +211,7 @@ public interface TypeInferenceLogger {
 
         protected void removeIndentSegment(String segment) {
             assert indent.endsWith(segment) : "mismatched end section!";
-            indent = StringUtils.removeEnd(indent, segment);
+            indent = indent.substring(0, indent.length() - segment.length());
         }
 
         protected void setIndent(String indent) {
@@ -221,6 +227,18 @@ public interface TypeInferenceLogger {
             out.println(str);
         }
 
+        @Override
+        public <T> T inContext(String st, Supplier<T> action) {
+            String indent = "│   ";
+            println("START " + st);
+            addIndentSegment(indent);
+            try {
+                return action.get();
+            } finally {
+                removeIndentSegment(indent);
+                println("└  END " + st);
+            }
+        }
 
         protected void endSection(String footer) {
             removeIndentSegment(BASE_INDENT);
@@ -329,7 +347,7 @@ public interface TypeInferenceLogger {
         }
 
         protected void printExpr(ExprMirror expr) {
-            String exprText = expr.getLocation().getText().toString();
+            String exprText = expr.getLocationText().toString();
             exprText = exprText.replaceAll("\\R\\s+", "");
             exprText = StringUtil.escapeJava(StringUtils.truncate(exprText, 100));
             println("At:   " + fileLocation(expr));

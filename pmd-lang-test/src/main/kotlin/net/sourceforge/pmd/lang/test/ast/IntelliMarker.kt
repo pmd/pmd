@@ -14,10 +14,16 @@ import org.junit.jupiter.api.Test
  * Kotest, but was removed in 4.2.0 without explanation.
  */
 interface IntelliMarker {
+    /**
+     * @deprecated Since 7.16.0. This is not an API.
+     */
     @Deprecated("This is not an API")
     fun primer() {
     }
 
+    /**
+     * @apiNote Internal API
+     */
     @Test
     @InternalApi
     fun dummyTestForIntelliJIntegration() {

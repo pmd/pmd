@@ -9,11 +9,11 @@ import static net.sourceforge.pmd.lang.apex.ast.ASTSoqlExpression.convertToCanon
 import com.google.summit.ast.expression.SoslExpression;
 
 public final class ASTSoslExpression extends AbstractApexNode.Single<SoslExpression> {
-    private final String canoncialQuery;
+    private final String canonicalQuery;
 
     ASTSoslExpression(SoslExpression soslExpression) {
         super(soslExpression);
-        canoncialQuery = convertToCanonicalQuery(soslExpression.getQuery());
+        canonicalQuery = convertToCanonicalQuery(soslExpression.getQuery());
     }
 
 
@@ -33,6 +33,6 @@ public final class ASTSoslExpression extends AbstractApexNode.Single<SoslExpress
      * Returns the query with the SOSL keywords normalized as uppercase.
      */
     public String getCanonicalQuery() {
-        return canoncialQuery;
+        return canonicalQuery;
     }
 }

@@ -2780,6 +2780,23 @@ class Foo {
             ]]></code>
     </test-code>
 
+    <test-code>
+        <description>#6028 FP with raw type</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            interface Collection<T> {}
+            public final class addAllImpl {
+                private static abstract class Multiset<K> extends Collection<K> { }
+                static <E> boolean addAllImpl(
+                        Multiset<E> self, Collection<?> elements) {
+                    return addAllImpl(self, (Multiset) elements);
+                }
 
+                private static <E> boolean addAllImpl(
+                        Multiset<E> self, Multiset<E> elements) {
+                }
+            }
+        ]]></code>
+    </test-code>
 
 </test-data>

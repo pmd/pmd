@@ -159,6 +159,9 @@ public final class TypeTestUtil {
                 }
             }
             return false;
+        } else if (t2.isBottom()) {
+            // null type should only be considered subtype of top and itself.
+            return t1.isTop() || t1.isBottom();
         }
 
         return t2.isSubtypeOf(t1);

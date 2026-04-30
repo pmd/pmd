@@ -21,7 +21,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/create-github-app-token@7e473efe3cb98aa54f8d4bac15400b15fad77d94 #v2.2.0
+      - uses: actions/create-github-app-token@1b10c78c7865c340bc4f6099eb2f838309f1e8c3 #v3.1.1
         id: pmd-actions-helper-app-token
         with:
           app-id: ${{ secrets.PMD_ACTIONS_HELPER_ID }}
@@ -70,7 +70,18 @@ jobs:
         run: |
           mkdir docs-artifact
           cd docs-artifact
-          gh run download "${RUN_ID}" --repo pmd/pmd --name docs-artifact
+          # gh run download "${RUN_ID}" --repo pmd/pmd --name docs-artifact
+          # apply workaround for https://github.com/cli/cli/issues/12437
+          download_url=$(gh api \
+            "/repos/pmd/pmd/actions/runs/$RUN_ID/artifacts?name=docs-artifact" \
+            --jq '.artifacts|sort_by(.created_at)|.[-1]|.archive_download_url' \
+          )
+          curl -L \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            --output artifact.zip \
+            $download_url
+          unzip -q artifact.zip
+          rm artifact.zip
       - name: Upload docs-artifact to s3://pmd-pull-requests
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID }}
@@ -114,7 +125,18 @@ jobs:
         run: |
           mkdir pmd-regression-tester
           cd pmd-regression-tester
-          gh run download "${RUN_ID}" --repo pmd/pmd --name pmd-regression-tester
+          # gh run download "${RUN_ID}" --repo pmd/pmd --name pmd-regression-tester
+          # apply workaround for https://github.com/cli/cli/issues/12437
+          download_url=$(gh api \
+            "/repos/pmd/pmd/actions/runs/$RUN_ID/artifacts?name=pmd-regression-tester" \
+            --jq '.artifacts|sort_by(.created_at)|.[-1]|.archive_download_url' \
+          )
+          curl -L \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            --output artifact.zip \
+            $download_url
+          unzip -q artifact.zip
+          rm artifact.zip
       - name: Upload regression report to s3://pmd-pull-requests
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_S3_PMD_PULL_REQUESTS_ACCESS_KEY_ID }}
@@ -185,7 +207,7 @@ jobs:
           
           echo "### Result" >> "${GITHUB_STEP_SUMMARY}"
           echo "${comment}" >> "${GITHUB_STEP_SUMMARY}"
-      - uses: marocchino/sticky-pull-request-comment@773744901bac0e8cbb5a0dc842800d45e9b2b405 #v2.9.4
+      - uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 #v3.0.4
         with:
           GITHUB_TOKEN: ${{ steps.pmd-actions-helper-app-token.outputs.token }}
           header: pmd-publish-pull-requests

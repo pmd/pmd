@@ -2,7 +2,7 @@
 title: Maven PMD Plugin
 tags: [userdocs, tools]
 permalink: pmd_userdocs_tools_maven.html
-last_updated: June 2024 (7.3.0)
+last_updated: July 2024 (7.4.0)
 mpmd_version: 3.23.0
 author: >
     Miguel Griffa <mikkey@users.sourceforge.net>,
@@ -39,7 +39,7 @@ section:
 </build>
 ```
 
-When defining the version in the pluginManagment section, then it doesn't need to be specified in the normal plugins
+When defining the version in the pluginManagement section, then it doesn't need to be specified in the normal plugins
 section. However, it should additionally be specified in the reporting section.
 
 More information, see [Guide to Configuring Plugin-ins](https://maven.apache.org/guides/mini/guide-configuring-plugins.html).

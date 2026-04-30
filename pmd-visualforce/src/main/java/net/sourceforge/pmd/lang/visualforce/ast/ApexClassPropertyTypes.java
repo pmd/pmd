@@ -101,13 +101,13 @@ class ApexClassPropertyTypes extends SalesforceFieldTypes {
         if (previousType != null && previousType != dataType) {
             // It is possible to have a property and method with different types that appear the same to this code. An
             // example is an Apex class with a property "public String Foo {get; set;}" and a method of
-            // "Integer getFoo() { return 1; }". In this case set the value as Unknown because we can't be sure which it
+            // "Integer getFoo() { return 1; }". In this case set the value as UNKNOWN because we can't be sure which it
             // is. This code could be more complex in an attempt to determine if all the types are safe from escaping,
             // but we will allow a false positive in order to let the user know that the code could be refactored to be
             // more clear.
-            super.putDataType(name, DataType.Unknown);
+            super.putDataType(name, DataType.UNKNOWN);
             LOG.warn("Conflicting types for {}. CurrentType={}, PreviousType={}",
-                    name, dataType, previousType);
+                    name, dataType.fieldTypeName(), previousType.fieldTypeName());
         }
         return previousType;
     }

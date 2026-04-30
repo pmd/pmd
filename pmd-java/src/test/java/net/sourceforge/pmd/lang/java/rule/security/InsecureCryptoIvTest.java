@@ -6,6 +6,9 @@ package net.sourceforge.pmd.lang.java.rule.security;
 
 import net.sourceforge.pmd.test.PmdRuleTst;
 
+/**
+ * Test for {@link InsecureCryptoIvRule}
+ */
 class InsecureCryptoIvTest extends PmdRuleTst {
     // no additional unit tests
 }

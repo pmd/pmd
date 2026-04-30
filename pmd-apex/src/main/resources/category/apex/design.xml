@@ -534,10 +534,10 @@ the class itself is not entirely unused. A class is considered used, if it conta
 least one other method/variable declaration that is used, as shown in the
 [test project file Foo.cls](https://github.com/pmd/pmd/blob/469b2a67ae375bde52bb33ccd4fb69e3c2993948/pmd-apex/src/test/resources/net/sourceforge/pmd/lang/apex/rule/design/UnusedMethod/project1/src/Foo.cls#L6-L8).
 
-[ApexLink](https://github.com/nawforce/ApexLink) is used to make this possible and this needs
+[Apex Language Server](https://github.com/apex-dev-tools/apex-ls) is used to make this possible and this needs
 additional configuration. The environment variable `PMD_APEX_ROOT_DIRECTORY` needs to be set prior to executing
 PMD. With this variable the root directory of the Salesforce metadata, where `sfdx-project.json` resides, is
-specified. ApexLink can then load all the classes in the project and figure out, whether a method is used or not.
+specified. Apex Language Server can then load all the classes in the project and figure out, whether a method is used or not.
 
 For an accurate analysis it is important that the `PMD_APEX_ROOT_DIRECTORY` contains a complete set of metadata that
 may be referenced from the Apex source code, such as Custom Objects, Visualforce Pages, Flows and Labels. The

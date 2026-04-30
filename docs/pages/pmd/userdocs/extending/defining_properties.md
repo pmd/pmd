@@ -3,7 +3,7 @@ title: Defining rule properties
 short_title: Defining rule properties
 tags: [extending, userdocs]
 summary: "Learn how to define your own properties both for Java and XPath rules."
-last_updated: December 2023 (7.0.0)
+last_updated: September 2024 (7.6.0)
 permalink: pmd_userdocs_extending_defining_properties.html
 author: Hooper Bloob <hooperbloob@users.sourceforge.net>, Romain Pelisse <rpelisse@users.sourceforge.net>, Clément Fournier <clement.fournier76@gmail.com>
 ---

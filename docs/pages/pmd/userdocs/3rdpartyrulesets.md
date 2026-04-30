@@ -5,7 +5,7 @@ language_name: 3rd party rulesets
 tags: [rule_references, userdocs]
 summary: Lists rulesets and rules from the community
 permalink: pmd_userdocs_3rdpartyrulesets.html
-last_updated: December 2024 (7.9.0)
+last_updated: January 2026 (7.21.0)
 ---
 
 ## For Java
@@ -27,4 +27,6 @@ last_updated: December 2024 (7.9.0)
 ## For Apex
 * **unhappy-soup**, a repository with problematic Salesforce code to showcase PMD, the SFDX Scanner CLI
   * <https://github.com/rsoesemann/unhappy-soup/blob/master/ruleset.xml>
+* **sca-extra**, additional PMD and Regex rules for testing Salesforce Apex code using Salesforce Code Analyzer
+  * <https://github.com/starch-uk/sca-extra>
 

@@ -11,7 +11,7 @@ import net.sourceforge.pmd.lang.scala.internal.ScalaDialect;
 import scala.meta.Dialect;
 import scala.meta.Source;
 import scala.meta.inputs.Input;
-import scala.meta.internal.parsers.ScalametaParser;
+import scala.meta.parsers.Parse;
 
 /**
  * Scala's Parser implementation. Defers parsing to the scala compiler via
@@ -24,7 +24,7 @@ public final class ScalaParser implements Parser {
     public ASTSource parse(ParserTask task) throws ParseException {
         Input.VirtualFile virtualFile = new Input.VirtualFile(task.getFileId().getAbsolutePath(), task.getSourceText());
         Dialect dialect = ScalaDialect.dialectOf(task.getLanguageVersion());
-        Source src = new ScalametaParser(virtualFile, dialect).parseSource();
+        Source src = Parse.parseSource().apply(virtualFile, dialect).get();
         ASTSource root = (ASTSource) new ScalaTreeBuilder().build(src);
         root.addTaskInfo(task);
         return root;

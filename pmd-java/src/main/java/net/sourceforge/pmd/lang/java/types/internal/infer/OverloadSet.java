@@ -25,6 +25,7 @@ import net.sourceforge.pmd.lang.java.symbols.JClassSymbol;
 import net.sourceforge.pmd.lang.java.types.JClassType;
 import net.sourceforge.pmd.lang.java.types.JMethodSig;
 import net.sourceforge.pmd.lang.java.types.JTypeMirror;
+import net.sourceforge.pmd.lang.java.types.OverloadSelectionResult;
 import net.sourceforge.pmd.lang.java.types.TypeOps;
 import net.sourceforge.pmd.util.OptionalBool;
 
@@ -35,6 +36,13 @@ import net.sourceforge.pmd.util.OptionalBool;
 public abstract class OverloadSet<T> {
 
     private final List<T> overloads = new ArrayList<>();
+    /**
+     * Whether several signatures were added, and some of them were
+     * thrown out because they were less specific than others. This
+     * is used to surface whether a call needed disambiguating between
+     * several applicable overloads in {@link OverloadSelectionResult#hadSeveralApplicableOverloads()}.
+     */
+    private boolean threwAwaySomeOverloads;
 
     OverloadSet() {
         // package-private
@@ -48,10 +56,12 @@ public abstract class OverloadSet<T> {
             switch (shouldTakePrecedence(existing, sig)) {
             case YES:
                 // new sig is less specific than an existing one, don't add it
+                threwAwaySomeOverloads = true;
                 return;
             case NO:
                 // new sig is more specific than an existing one
                 iterator.remove();
+                threwAwaySomeOverloads = true;
                 break;
             case UNKNOWN:
                 // neither sig is more specific
@@ -69,6 +79,10 @@ public abstract class OverloadSet<T> {
 
     boolean nonEmpty() {
         return !overloads.isEmpty();
+    }
+
+    boolean threwAwaySomeOverloads() {
+        return threwAwaySomeOverloads;
     }
 
     /**

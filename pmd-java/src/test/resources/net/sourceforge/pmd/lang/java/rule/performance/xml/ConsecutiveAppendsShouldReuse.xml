@@ -299,4 +299,19 @@ public class Foo {
             }
         ]]></code>
     </test-code>
+    <test-code>
+        <description>#4910 if-statement without blocks</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+            public class Bar {
+                public void foo(boolean condition, StringBuilder builder) {
+                    // expressions in if-statements without blocks are siblings
+                    if (condition)
+                        builder.append("first");
+                    else
+                        builder.append("second");
+                }
+            }
+        ]]></code>
+    </test-code>
 </test-data>

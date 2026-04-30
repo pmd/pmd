@@ -67,6 +67,9 @@ public class CPDTask extends Task {
 
     private static final String TEXT_FORMAT = "text";
     private static final String XML_FORMAT = "xml";
+    /**
+     * @deprecated Since 7.3.0.
+     */
     @Deprecated
     private static final String XMLOLD_FORMAT = "xmlold";
     private static final String CSV_FORMAT = "csv";
@@ -78,6 +81,9 @@ public class CPDTask extends Task {
     private boolean ignoreIdentifiers;
     private boolean ignoreAnnotations;
     private boolean ignoreUsings;
+    /**
+     * @deprecated Since 7.3.0.
+     */
     @Deprecated
     private boolean skipLexicalErrors;
     private boolean skipDuplicateFiles;
@@ -241,7 +247,7 @@ public class CPDTask extends Task {
     }
 
     /**
-     * @deprecated Use {@link #setFailOnError(boolean)} instead.
+     * @deprecated Since 7.3.0. Use {@link #setFailOnError(boolean)} instead.
      */
     @Deprecated
     public void setSkipLexicalErrors(boolean skipLexicalErrors) {

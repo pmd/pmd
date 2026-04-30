@@ -30,7 +30,7 @@
     </test-code>
 
     <test-code>
-        <description>using an axis descendant::self abreviation with checkSelfDescendantAbreviation @true</description>
+        <description>using an axis descendant::self abbreviation with checkSelfDescendantAbreviation @true</description>
         <rule-property name="checkSelfDescendantAbreviation">true</rule-property>
         <expected-problems>1</expected-problems>
         <code><![CDATA[

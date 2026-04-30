@@ -172,7 +172,7 @@ public class Foo {
         <description>#1177 Incorrect StringBuffer warning when that class is not used</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
-public class Ineffecient
+public class Inefficient
 {
     public static String getValue(int in)
     {
@@ -186,7 +186,7 @@ public class Ineffecient
 
     public String toString()
     {
-        return "Ineffecient";
+        return "Inefficient";
     }
 }
         ]]></code>

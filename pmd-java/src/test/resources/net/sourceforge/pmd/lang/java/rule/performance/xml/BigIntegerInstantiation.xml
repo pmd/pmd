@@ -204,4 +204,20 @@ class Foo {
 ]]></code>
         <source-type>java 19</source-type>
     </test-code>
+
+    <test-code>
+        <description>#4158: False negative with constant value</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>5</expected-linenumbers>
+        <code><![CDATA[
+import java.math.BigInteger;
+public class Foo {
+    public void bar(String input) {
+        final String str = "1";
+        BigInteger a = new BigInteger(str); //Violation, str is effectively constant
+        BigInteger b = new BigInteger(input); //OK
+    }
+}
+        ]]></code>
+    </test-code>
 </test-data>

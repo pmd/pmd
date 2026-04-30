@@ -5,7 +5,9 @@
 package net.sourceforge.pmd.lang.java.rule.codestyle;
 
 import static net.sourceforge.pmd.properties.PropertyFactory.booleanProperty;
-import static net.sourceforge.pmd.properties.PropertyFactory.enumProperty;
+import static net.sourceforge.pmd.properties.PropertyFactory.enumPropertyTransitional;
+
+import java.util.Map;
 
 import net.sourceforge.pmd.lang.java.ast.ASTConditionalExpression;
 import net.sourceforge.pmd.lang.java.ast.ASTExpression;
@@ -17,6 +19,7 @@ import net.sourceforge.pmd.lang.java.ast.BinaryOp;
 import net.sourceforge.pmd.lang.java.ast.UnaryOp;
 import net.sourceforge.pmd.lang.java.rule.AbstractJavaRulechainRule;
 import net.sourceforge.pmd.properties.PropertyDescriptor;
+import net.sourceforge.pmd.util.CollectionUtil;
 
 
 /**
@@ -57,13 +60,16 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
     private static final PropertyDescriptor<Boolean> IGNORE_ELSE_IF = booleanProperty("ignoreElseIf")
             .desc("Ignore conditions with an else-if case").defaultValue(false).build();
 
-    private static final PropertyDescriptor<NullCheckBranch> NULL_CHECK_BRANCH = enumProperty("nullCheckBranch", NullCheckBranch.class)
-        .desc("One of `Any`, `Then`, `Else`. For `Any` null checks may have any form,"
-            + " for `Then` only `foo == null` is allowed, for `Else` only `foo != null` is allowed")
-        .defaultValue(NullCheckBranch.Any).build();
+    private static final Map<String, NullCheckBranch> DEPRECATED_MAPPING =
+            CollectionUtil.mapOf("Any", NullCheckBranch.ANY, "Then", NullCheckBranch.THEN, "Else", NullCheckBranch.ELSE);
+
+    private static final PropertyDescriptor<NullCheckBranch> NULL_CHECK_BRANCH = enumPropertyTransitional("nullCheckBranch", NullCheckBranch.class, DEPRECATED_MAPPING)
+        .desc("For `any` null checks may have any form,"
+            + " for `then` only `foo == null` is allowed, for `else` only `foo != null` is allowed")
+        .defaultValue(NullCheckBranch.ANY).build();
 
     private enum NullCheckBranch {
-        Any, Then, Else
+        ANY, THEN, ELSE
     }
 
     public ConfusingTernaryRule() {
@@ -114,12 +120,12 @@ public class ConfusingTernaryRule extends AbstractJavaRulechainRule {
         // look for "x != y"
         if (infix.getOperator() == BinaryOp.NE) {
             return !isNullComparison(infix)
-                || getProperty(NULL_CHECK_BRANCH) == NullCheckBranch.Then;
+                || getProperty(NULL_CHECK_BRANCH) == NullCheckBranch.THEN;
 
         }
         return infix.getOperator() == BinaryOp.EQ
             && isNullComparison(infix)
-            && getProperty(NULL_CHECK_BRANCH) == NullCheckBranch.Else;
+            && getProperty(NULL_CHECK_BRANCH) == NullCheckBranch.ELSE;
     }
 
     private boolean isNullComparison(ASTInfixExpression infix) {

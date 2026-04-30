@@ -7,6 +7,628 @@ Previous versions of PMD can be downloaded here: [Releases - pmd/pmd (GitHub)](h
 
 
 
+## 24-April-2026 - 7.24.0
+
+The PMD team is pleased to announce PMD 7.24.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🌟️ New Rules](#new-rules)
+* [🐛️ Fixed Issues](#fixed-issues)
+* [✨️ Merged pull requests](#merged-pull-requests)
+* [📦️ Dependency updates](#dependency-updates)
+* [📈️ Stats](#stats)
+
+### 🌟️ New Rules
+* The new Apex rule [`AvoidInterfaceAsMapKey`](https://docs.pmd-code.org/pmd-doc-7.24.0/pmd_rules_apex_errorprone.html#avoidinterfaceasmapkey) reports `Map` declarations
+  (fields, variables, parameters) whose key type is an interface that has at least one abstract implementing
+  class defining `equals` or `hashCode`. Using such maps results in potentially duplicated map entries or
+  not being able to get entries by key.
+* The new Java rule [`OverridingThreadRun`](https://docs.pmd-code.org/pmd-doc-7.24.0/pmd_rules_java_multithreading.html#overridingthreadrun) finds overridden `Thread::run` methods.
+  This is not recommended. Instead, implement `Runnable` and pass an instance to the thread constructor.
+
+### 🐛️ Fixed Issues
+* apex
+  * [#5386](https://github.com/pmd/pmd/issues/5386): \[apex] Apex files ending in "Test" are skipped with a number of rules
+* apex-errorprone
+  * [#6492](https://github.com/pmd/pmd/issues/6492): \[apex] New rule: Prevent use of interface -&gt; abstract class with equals/hashCode as key in Map
+* apex-security
+  * [#5385](https://github.com/pmd/pmd/issues/5385): \[apex] ApexCRUDViolation not reported even if SOQL doesn't have permissions check on it
+* java-bestpractices
+  * [#4272](https://github.com/pmd/pmd/issues/4272): \[java] JUnitTestsShouldIncludeAssert: False positive with assert in lambda
+* java-multithreading
+  * [#595](https://github.com/pmd/pmd/issues/595): \[java] New rule: Implement Runnable instead of extending Thread
+* kotlin
+  * [#6003](https://github.com/pmd/pmd/issues/6003): \[kotlin] Support multidollar interpolation (Kotlin 2.2)
+
+### ✨️ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6493](https://github.com/pmd/pmd/pull/6493): \[apex] New Rule: AvoidInterfaceAsMapKeyRule - [Jonny Alexander Power](https://github.com/JonnyPower) (@JonnyPower)
+* [#6497](https://github.com/pmd/pmd/pull/6497): \[kotlin] Fix kotlin grammar for parsing multidollar interpolation - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#6555](https://github.com/pmd/pmd/pull/6555): \[java] New rule: OverridingThreadRun to prefer using Runnable - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6556](https://github.com/pmd/pmd/pull/6556): \[java] Fix #4272: False positive in UnitTestShouldIncludeAssert when using assertion in lambda - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6563](https://github.com/pmd/pmd/pull/6563): \[apex] Remove class name suffix "Test" as indicator of test classes - [David Schach](https://github.com/dschach) (@dschach)
+* [#6576](https://github.com/pmd/pmd/pull/6576): \[test] chore: Throw a TestAbortedException on disabled tests - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6577](https://github.com/pmd/pmd/pull/6577): \[dist] chore: Improve error message for missing JAVA_HOME in AntIT.java - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+* [#6607](https://github.com/pmd/pmd/pull/6607): \[doc] basic.xml has been gone for a long time - [UncleOwen](https://github.com/UncleOwen) (@UncleOwen)
+
+### 📦️ Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6515](https://github.com/pmd/pmd/pull/6515): chore: bump pmd-regression-tester from 1.6.2 to 1.7.0
+* [#6552](https://github.com/pmd/pmd/pull/6552): Bump PMD from 7.22.0 to 7.23.0
+* [#6564](https://github.com/pmd/pmd/pull/6564): chore(deps): bump ruby/setup-ruby from 1.295.0 to 1.299.0
+* [#6565](https://github.com/pmd/pmd/pull/6565): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.7 to 1.18.8
+* [#6566](https://github.com/pmd/pmd/pull/6566): chore(deps): bump com.puppycrawl.tools:checkstyle from 13.3.0 to 13.4.0
+* [#6567](https://github.com/pmd/pmd/pull/6567): chore(deps-dev): bump log4j.version from 2.25.3 to 2.25.4
+* [#6569](https://github.com/pmd/pmd/pull/6569): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.7 to 1.18.8
+* [#6570](https://github.com/pmd/pmd/pull/6570): chore(deps): bump org.apache.groovy:groovy from 5.0.4 to 5.0.5
+* [#6571](https://github.com/pmd/pmd/pull/6571): chore(deps-dev): bump io.github.git-commit-id:git-commit-id-maven-plugin from 9.0.2 to 9.1.0
+* [#6572](https://github.com/pmd/pmd/pull/6572): chore(deps): bump bigdecimal from 4.0.1 to 4.1.0 in /docs
+* [#6578](https://github.com/pmd/pmd/pull/6578): chore(deps): bump marocchino/sticky-pull-request-comment from 3.0.2 to 3.0.3
+* [#6579](https://github.com/pmd/pmd/pull/6579): chore(deps): bump crate-ci/typos from 1.44.0 to 1.45.0
+* [#6580](https://github.com/pmd/pmd/pull/6580): chore(deps): bump ruby/setup-ruby from 1.299.0 to 1.300.0
+* [#6581](https://github.com/pmd/pmd/pull/6581): chore(deps-dev): bump io.github.git-commit-id:git-commit-id-maven-plugin from 9.1.0 to 10.0.0
+* [#6582](https://github.com/pmd/pmd/pull/6582): chore(deps): bump org.checkerframework:checker-qual from 3.54.0 to 4.0.0
+* [#6583](https://github.com/pmd/pmd/pull/6583): chore(deps-dev): bump ant.version from 1.10.15 to 1.10.16
+* [#6584](https://github.com/pmd/pmd/pull/6584): chore(deps): bump bigdecimal from 4.1.0 to 4.1.1 in /docs
+* [#6588](https://github.com/pmd/pmd/pull/6588): chore(deps): bump actions/cache from 5.0.4 to 5.0.5
+* [#6589](https://github.com/pmd/pmd/pull/6589): chore(deps): bump marocchino/sticky-pull-request-comment from 3.0.3 to 3.0.4
+* [#6590](https://github.com/pmd/pmd/pull/6590): chore(deps): bump crate-ci/typos from 1.45.0 to 1.45.1
+* [#6591](https://github.com/pmd/pmd/pull/6591): chore(deps): bump actions/upload-artifact from 7.0.0 to 7.0.1
+* [#6592](https://github.com/pmd/pmd/pull/6592): chore(deps): bump actions/create-github-app-token from 3.0.0 to 3.1.1
+* [#6593](https://github.com/pmd/pmd/pull/6593): chore(deps): bump scalameta.version from 4.15.2 to 4.16.0
+* [#6594](https://github.com/pmd/pmd/pull/6594): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.25.4 to 0.25.5
+* [#6595](https://github.com/pmd/pmd/pull/6595): chore(deps-dev): bump com.google.guava:guava from 33.5.0-jre to 33.6.0-jre
+* [#6596](https://github.com/pmd/pmd/pull/6596): chore(deps-dev): bump ant.version from 1.10.16 to 1.10.17
+* [#6599](https://github.com/pmd/pmd/pull/6599): chore(deps-dev): Bump lodash from 4.17.23 to 4.18.1
+* [#6600](https://github.com/pmd/pmd/pull/6600): chore(deps-dev): Bump addressable from 2.8.9 to 2.9.0
+* [#6613](https://github.com/pmd/pmd/pull/6613): chore(deps): bump ruby/setup-ruby from 1.300.0 to 1.305.0
+* [#6614](https://github.com/pmd/pmd/pull/6614): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.25.5 to 0.25.6
+* [#6615](https://github.com/pmd/pmd/pull/6615): chore(deps): bump scalameta.version from 4.16.0 to 4.16.1
+* [#6616](https://github.com/pmd/pmd/pull/6616): chore(deps-dev): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.5.0.6356 to 5.6.0.6792
+* [#6617](https://github.com/pmd/pmd/pull/6617): chore(deps): bump org.jsoup:jsoup from 1.22.1 to 1.22.2
+* [#6618](https://github.com/pmd/pmd/pull/6618): chore(deps): bump bigdecimal from 4.1.1 to 4.1.2 in /docs
+
+### 📈️ Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 82 commits
+* 14 closed tickets & PRs
+* Days since last release: 27
+
+
+
+## 27-March-2026 - 7.23.0
+
+The PMD team is pleased to announce PMD 7.23.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🐛️ Fixed Issues](#fixed-issues)
+* [✨️ Merged pull requests](#merged-pull-requests)
+* [📦️ Dependency updates](#dependency-updates)
+* [📈️ Stats](#stats)
+
+### 🐛️ Fixed Issues
+* core
+  * [#6503](https://github.com/pmd/pmd/issues/6503): \[core] Links in HTML report are broken
+* java-errorprone
+  * [#6502](https://github.com/pmd/pmd/issues/6502): \[java] CloseResource: False positive for allowedResourceMethodPatterns entries when using unqualified method calls
+* java-security
+  * [#6531](https://github.com/pmd/pmd/issues/6531): \[java] InsecureCryptoIv: False negative with fixed IVs from array initializers
+
+### ✨️ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6467](https://github.com/pmd/pmd/pull/6467): \[ci] Use typos gh-action - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6488](https://github.com/pmd/pmd/pull/6488): \[doc] Update security.md for CVE-2026-28338 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6489](https://github.com/pmd/pmd/pull/6489): \[doc] CPD: document --report-file parameter - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6504](https://github.com/pmd/pmd/pull/6504): \[core] Fix #6503: Don't escape externalInfoUrl in reports - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6505](https://github.com/pmd/pmd/pull/6505): \[java] Fix #6502: CloseResource should consider unqualified method calls - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6545](https://github.com/pmd/pmd/pull/6545): \[java] Fix #6531: False negative in InsecureCryptoIv with array initializers - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+
+### 📦️ Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6476](https://github.com/pmd/pmd/pull/6476): Bump PMD from 7.21.0 to 7.22.0
+* [#6479](https://github.com/pmd/pmd/pull/6479): chore(deps): bump actions/download-artifact from 7.0.0 to 8.0.0
+* [#6480](https://github.com/pmd/pmd/pull/6480): chore(deps): bump actions/upload-artifact from 6.0.0 to 7.0.0
+* [#6481](https://github.com/pmd/pmd/pull/6481): chore(deps): bump com.puppycrawl.tools:checkstyle from 13.2.0 to 13.3.0
+* [#6482](https://github.com/pmd/pmd/pull/6482): chore(deps): bump org.mockito:mockito-core from 5.21.0 to 5.22.0
+* [#6483](https://github.com/pmd/pmd/pull/6483): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.5 to 1.18.7
+* [#6484](https://github.com/pmd/pmd/pull/6484): chore(deps): bump org.yaml:snakeyaml from 2.5 to 2.6
+* [#6485](https://github.com/pmd/pmd/pull/6485): chore(deps): bump org.checkerframework:checker-qual from 3.53.1 to 3.54.0
+* [#6486](https://github.com/pmd/pmd/pull/6486): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.5 to 1.18.7
+* [#6487](https://github.com/pmd/pmd/pull/6487): chore(deps): bump com.google.protobuf:protobuf-java from 4.33.5 to 4.34.0
+* [#6490](https://github.com/pmd/pmd/pull/6490): chore: Update gems, remove github-pages
+* [#6498](https://github.com/pmd/pmd/pull/6498): chore(deps): bump ruby/setup-ruby from 1.288.0 to 1.290.0
+* [#6499](https://github.com/pmd/pmd/pull/6499): chore(deps-dev): bump commons-logging:commons-logging from 1.3.5 to 1.3.6
+* [#6500](https://github.com/pmd/pmd/pull/6500): chore(deps-dev): bump org.apache.maven.plugins:maven-shade-plugin from 3.6.1 to 3.6.2
+* [#6501](https://github.com/pmd/pmd/pull/6501): chore(deps): bump org.apache.maven.plugins:maven-resources-plugin from 3.4.0 to 3.5.0
+* [#6506](https://github.com/pmd/pmd/pull/6506): chore(deps): bump actions/create-github-app-token from 2.2.1 to 3.0.0
+* [#6507](https://github.com/pmd/pmd/pull/6507): chore(deps): bump actions/download-artifact from 8.0.0 to 8.0.1
+* [#6508](https://github.com/pmd/pmd/pull/6508): chore(deps): bump marocchino/sticky-pull-request-comment from 2.9.4 to 3.0.2
+* [#6509](https://github.com/pmd/pmd/pull/6509): chore(deps): bump ruby/setup-ruby from 1.290.0 to 1.295.0
+* [#6511](https://github.com/pmd/pmd/pull/6511): chore(deps): bump org.mockito:mockito-core from 5.22.0 to 5.23.0
+* [#6514](https://github.com/pmd/pmd/pull/6514): chore: bump maven from 3.9.12 to 3.9.14
+* [#6516](https://github.com/pmd/pmd/pull/6516): chore: bump json from 2.19.0 to 2.19.2
+* [#6548](https://github.com/pmd/pmd/pull/6548): chore(deps): bump actions/cache from 5.0.3 to 5.0.4
+* [#6549](https://github.com/pmd/pmd/pull/6549): chore(deps): bump com.google.protobuf:protobuf-java from 4.34.0 to 4.34.1
+* [#6551](https://github.com/pmd/pmd/pull/6551): chore: use ruby4
+
+### 📈️ Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 38 commits
+* 9 closed tickets & PRs
+* Days since last release: 27
+
+
+
+## 27-February-2026 - 7.22.0
+
+The PMD team is pleased to announce PMD 7.22.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [Security fixes](#security-fixes)
+* [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [New Rules](#new-rules)
+    * [Changed Rules](#changed-rules)
+* [🐛️ Fixed Issues](#fixed-issues)
+* [🚨️ API Changes](#api-changes)
+    * [Deprecations](#deprecations)
+* [✨️ Merged pull requests](#merged-pull-requests)
+* [📦️ Dependency updates](#dependency-updates)
+* [📈️ Stats](#stats)
+
+### 🚀️ New and noteworthy
+
+#### Security fixes
+* This release fixes a stored XSS vulnerability in VBHTMLRenderer and YAHTMLRenderer via unescaped violation messages.  
+  Affects CI/CD pipelines that run PMD with `--format vbhtml` or `--format yahtml` on untrusted source code
+  (e.g. pull requests from external contributors) and expose the HTML report as a build artifact.
+  JavaScript executes in the browser context of anyone who opens the report.  
+  Note: The default `html` format is **not affected** by unescaped violation messages, but a similar problem
+  existed with suppressed violation markers.  
+  If you use these reports, it is recommended to upgrade PMD.  
+  Reported by [Smaran Chand](https://github.com/smaranchand) (@smaranchand).
+
+### 🌟️ New and Changed Rules
+#### New Rules
+* The new Java rule [`UnnecessaryInterfaceDeclaration`](https://docs.pmd-code.org/pmd-doc-7.22.0/pmd_rules_java_codestyle.html#unnecessaryinterfacedeclaration) detects classes that
+  implement interfaces that are already implemented by its superclass, and interfaces
+  that extend other interfaces already declared by their superinterfaces.  
+  These declarations are redundant and can be removed to simplify the code.
+
+#### Changed Rules
+* The rule [`CloseResource`](https://docs.pmd-code.org/pmd-doc-7.22.0/pmd_rules_java_errorprone.html#closeresource) introduces a new property, `allowedResourceMethodPatterns`,
+  which lets you specify method invocation patterns whose return values are resources managed externally.
+  This is useful for ignoring managed resources - for example, `Reader`/`Writer` instances obtained from
+  `HttpServletRequest`/`HttpServletResponse` - because the servlet container, not application code,
+  is responsible for closing them. By default, the rule ignores `InputStream`/`OutputStream`/`Reader`/`Writer`
+  resources returned by methods on `(Http)ServletRequest` and `(Http)ServletResponse`
+  (both `javax.servlet` and `jakarta.servlet`).
+
+### 🐛️ Fixed Issues
+* core
+  * [#6471](https://github.com/pmd/pmd/issues/6471): \[core] BaseAntlrTerminalNode should return type instead of index for getTokenKind()
+  * [#6475](https://github.com/pmd/pmd/issues/6475): \[core] Fix stored XSS in VBHTMLRenderer and YAHTMLRenderer
+* doc
+  * [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing
+* java-bestpractices
+  * [#6431](https://github.com/pmd/pmd/issues/6431): \[java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes
+* java-codestyle
+  * [#6458](https://github.com/pmd/pmd/pull/6458): \[java] New Rule: UnnecessaryInterfaceDeclaration
+* java-errorprone
+  * [#5787](https://github.com/pmd/pmd/issues/5787): \[java] InvalidLogMessageFormat: False positive with lombok @<!-- -->Value generated methods
+  * [#6436](https://github.com/pmd/pmd/issues/6436): \[java] CloseResource: Allow to ignore managed resources
+
+### 🚨️ API Changes
+
+#### Deprecations
+* core
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.22.0/net/sourceforge/pmd/renderers/CodeClimateIssue.html#"><code>CodeClimateIssue</code></a>: This class is an implementation detail of
+    <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.22.0/net/sourceforge/pmd/renderers/CodeClimateRenderer.html#"><code>CodeClimateRenderer</code></a>. It will be internalized in a future release.
+* visualforce
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.22.0/net/sourceforge/pmd/lang/visualforce/DataType.html#"><code>DataType</code></a>. The enum constants have been renamed to follow Java naming
+    conventions. The old enum constants are deprecated and should no longer be used.  
+    The method <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.22.0/net/sourceforge/pmd/lang/visualforce/DataType.html#fromString(java.lang.String)"><code>DataType#fromString</code></a> will return the new
+    enum constants.  
+    Use <a href="https://docs.pmd-code.org/apidocs/pmd-visualforce/7.22.0/net/sourceforge/pmd/lang/visualforce/DataType.html#fieldTypeNameOf()"><code>DataType#fieldTypeNameOf</code></a> to get the original field type name.
+
+### ✨️ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6396](https://github.com/pmd/pmd/pull/6396): \[doc] Mention test-pmd-tool as alternative for testing - [Beech Horn](https://github.com/metalshark) (@metalshark)
+* [#6397](https://github.com/pmd/pmd/pull/6397): \[java] Add support for Lombok-generated getters in symbol resolution - [Anurag Agarwal](https://github.com/altaiezior) (@altaiezior)
+* [#6420](https://github.com/pmd/pmd/pull/6420): \[ci] build: Add typos as spell checker - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6432](https://github.com/pmd/pmd/pull/6432): \[java] UnitTestShouldIncludeAssert: False positive with SoftAssertionsExtension on parent/grandparent classes - [Artur Kalimullin](https://github.com/kaliy) (@kaliy)
+* [#6434](https://github.com/pmd/pmd/pull/6434): \[java] chore(style): Fix lambda argument indentation for checkstyle compliance - [Kai](https://github.com/aclfe) (@aclfe)
+* [#6437](https://github.com/pmd/pmd/pull/6437): \[java] CloseResource: Allow to ignore managed resources - [Gildas Cuisinier](https://github.com/gcuisinier) (@gcuisinier)
+* [#6445](https://github.com/pmd/pmd/pull/6445): chore: Fix FieldNamingConventions - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6446](https://github.com/pmd/pmd/pull/6446): \[doc] Add new IntelliJ Plugin "PMD X" - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6447](https://github.com/pmd/pmd/pull/6447): chore: Small release process fixes - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6458](https://github.com/pmd/pmd/pull/6458): \[java] New Rule: UnnecessaryInterfaceDeclaration - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6472](https://github.com/pmd/pmd/pull/6472): \[core] Fix BaseAntlrTerminalNode getTokenKind to return type instead of index - [Peter Paul Bakker](https://github.com/stokpop) (@stokpop)
+* [#6475](https://github.com/pmd/pmd/pull/6475): \[core] Fix stored XSS in VBHTMLRenderer and YAHTMLRenderer - [Andreas Dangel](https://github.com/adangel) (@adangel)
+
+### 📦️ Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6433](https://github.com/pmd/pmd/pull/6433): Bump PMD from 7.20.0 to 7.21.0
+* [#6438](https://github.com/pmd/pmd/pull/6438): chore(deps): bump actions/cache from 5.0.2 to 5.0.3
+* [#6439](https://github.com/pmd/pmd/pull/6439): chore(deps): bump ruby/setup-ruby from 1.286.0 to 1.288.0
+* [#6440](https://github.com/pmd/pmd/pull/6440): chore(deps): bump scalameta.version from 4.14.6 to 4.14.7
+* [#6441](https://github.com/pmd/pmd/pull/6441): chore(deps): bump org.apache.maven.plugins:maven-compiler-plugin from 3.14.1 to 3.15.0
+* [#6442](https://github.com/pmd/pmd/pull/6442): chore(deps): bump org.checkerframework:checker-qual from 3.53.0 to 3.53.1
+* [#6443](https://github.com/pmd/pmd/pull/6443): chore(deps): bump com.puppycrawl.tools:checkstyle from 13.0.0 to 13.1.0
+* [#6444](https://github.com/pmd/pmd/pull/6444): chore(deps): bump com.google.protobuf:protobuf-java from 4.33.4 to 4.33.5
+* [#6452](https://github.com/pmd/pmd/pull/6452): chore(deps): bump actions/checkout from 6.0.1 to 6.0.2
+* [#6455](https://github.com/pmd/pmd/pull/6455): chore(deps): bump org.apache.maven.plugins:maven-dependency-plugin from 3.9.0 to 3.10.0
+* [#6456](https://github.com/pmd/pmd/pull/6456): chore(deps): bump com.puppycrawl.tools:checkstyle from 13.1.0 to 13.2.0
+* [#6462](https://github.com/pmd/pmd/pull/6462): chore(deps): bump junit.version from 6.0.2 to 6.0.3
+* [#6463](https://github.com/pmd/pmd/pull/6463): chore(deps): bump scalameta.version from 4.14.7 to 4.15.2
+* [#6465](https://github.com/pmd/pmd/pull/6465): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.4 to 1.18.5
+* [#6468](https://github.com/pmd/pmd/pull/6468): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.4 to 1.18.5
+* [#6469](https://github.com/pmd/pmd/pull/6469): chore(deps): bump surefire.version from 3.5.4 to 3.5.5
+* [#6470](https://github.com/pmd/pmd/pull/6470): chore(deps): bump org.jetbrains:annotations from 26.0.2-1 to 26.1.0
+* [#6473](https://github.com/pmd/pmd/pull/6473): chore(deps): bump nokogiri to 1.19.1
+* [#6474](https://github.com/pmd/pmd/pull/6474): chore(deps): bump faraday from 2.13.3 to 2.14.1
+
+### 📈️ Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 66 commits
+* 16 closed tickets & PRs
+* Days since last release: 28
+
+
+
+## 30-January-2026 - 7.21.0
+
+The PMD team is pleased to announce PMD 7.21.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🚀️ New and noteworthy](#new-and-noteworthy)
+    * [🚀️ New: Java 26 Support](#new-java-26-support)
+    * [Build Requirement is Java 21](#build-requirement-is-java-21)
+    * [CPD](#cpd)
+* [🌟️ New and Changed Rules](#new-and-changed-rules)
+    * [New Rules](#new-rules)
+    * [Changed Rules](#changed-rules)
+    * [Deprecated Rules](#deprecated-rules)
+* [🐛️ Fixed Issues](#fixed-issues)
+* [🚨️ API Changes](#api-changes)
+    * [Deprecations](#deprecations)
+* [✨️ Merged pull requests](#merged-pull-requests)
+* [📦️ Dependency updates](#dependency-updates)
+* [📈️ Stats](#stats)
+
+### 🚀️ New and noteworthy
+
+#### 🚀️ New: Java 26 Support
+This release of PMD brings support for Java 26.
+
+There are no new standard language features.
+
+There is one preview language feature:
+* [JEP 530: Primitive Types in Patterns, instanceof, and switch (Fourth Preview)](https://openjdk.org/jeps/530)
+
+In order to analyze a project with PMD that uses these preview language features,
+you'll need to select the new language version `26-preview`:
+
+    pmd check --use-version java-26-preview ...
+
+Note: Support for Java 24 preview language features have been removed. The version "24-preview"
+is no longer available.
+
+#### Build Requirement is Java 21
+From now on, Java 21 or newer is required to build PMD. PMD itself still remains compatible with Java 8,
+so that it still can be used in a pure Java 8 environment. This allows us to use the latest
+checkstyle version during the build.
+
+#### CPD
+* The Apex module now supports [suppression](https://docs.pmd-code.org/latest/pmd_userdocs_cpd.html#suppression) through `CPD-ON`/`CPD-OFF` comment pairs. See [#6417](https://github.com/pmd/pmd/pull/6417)
+
+### 🌟️ New and Changed Rules
+#### New Rules
+* The new Java rule [`PublicMemberInNonPublicType`](https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_design.html#publicmemberinnonpublictype) detects public members (such as methods
+  or fields) within non-public types. Non-public types should not declare public members, as their effective
+  visibility is limited, and using the `public` modifier can create confusion.
+* The new Java rule [`UnsupportedJdkApiUsage`](https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#unsupportedjdkapiusage) flags the use of unsupported and non-portable
+  JDK APIs, including `sun.*` packages, `sun.misc.Unsafe`, and `jdk.internal.misc.Unsafe`. These APIs are unstable,
+  intended for internal use, and may change or be removed. The rule complements Java compiler warnings by
+  highlighting such usage during code reviews and encouraging migration to official APIs like VarHandle and
+  the Foreign Function & Memory API.
+
+#### Changed Rules
+The following rules have been changed to use a consistent implementation of enum based
+rule properties:
+* The property `checkAddressTypes` of rule [`AvoidUsingHardCodedIP`](https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_bestpractices.html#avoidusinghardcodedip) has changed:
+  * Instead of `IPv4` use `ipv4`
+  * Instead of `IPv6` use `ipv6`
+  * Instead of `IPv4 mapped IPv6` use `ipv4MappedIpv6`
+  * The old values still work, but you'll see a deprecation warning.
+* The property `nullCheckBranch` of rule [`ConfusingTernary`](https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_codestyle.html#confusingternary) has changed:
+  * Instead of `Any` use `any`
+  * Instead of `Then` use `then`
+  * Instead of `Else` use `else`
+  * The old values still work, but you'll see a deprecation warning.
+* The property `typeAnnotations` of rule [`ModifierOrder`](https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_codestyle.html#modifierorder) has changed:
+  * Instead of `ontype` use `onType`
+  * Instead of `ondecl` use `onDecl`
+  * The old values still work, but you'll see a deprecation warning.
+* The values of the properties of rule [`CommentRequired`](https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_documentation.html#commentrequired) have changed:
+  * Instead of `Required` use `required`
+  * Instead of `Ignored` use `ignored`
+  * Instead of `Unwanted` use `unwanted`
+  * The old values still work, but you'll see a deprecation warning.
+
+#### Deprecated Rules
+* The Java rule [`DontImportSun`](https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#dontimportsun) has been deprecated. It is replaced by
+  [`UnsupportedJdkApiUsage`](https://docs.pmd-code.org/pmd-doc-7.21.0/pmd_rules_java_errorprone.html#unsupportedjdkapiusage).
+
+### 🐛️ Fixed Issues
+* core
+  * [#6184](https://github.com/pmd/pmd/issues/6184): \[core] Consistent implementation of enum properties
+* apex
+  * [#6417](https://github.com/pmd/pmd/issues/6417): \[apex] Support CPD suppression with "CPD-OFF" & "CPD-ON"
+* apex-codestyle
+  * [#6349](https://github.com/pmd/pmd/issues/6349): \[apex] FieldDeclarationsShouldBeAtStart: False positive with properties
+* cli
+  * [#6290](https://github.com/pmd/pmd/issues/6290): \[cli] Improve Designer start script
+* java
+  * [#5871](https://github.com/pmd/pmd/issues/5871): \[java] Support Java 26
+  * [#6364](https://github.com/pmd/pmd/issues/6364): \[java] Parse error with yield lambda inside switch
+* java-design
+  * [#6231](https://github.com/pmd/pmd/issues/6231): \[java] New Rule: PublicMemberInNonPublicType
+* java-errorprone
+  * [#3601](https://github.com/pmd/pmd/issues/3601): \[java] InvalidLogMessageFormat: False positive when final parameter is Supplier&lt;Throwable&gt;
+  * [#5882](https://github.com/pmd/pmd/issues/5882): \[java] UnconditionalIfStatement: False negative when true/false is not literal but local variable
+  * [#5923](https://github.com/pmd/pmd/issues/5923): \[java] New Rule: Catch usages of sun.misc.Unsafe or jdk.internal.misc.Unsafe
+* java-performance
+  * [#3857](https://github.com/pmd/pmd/issues/3857): \[java] InsufficientStringBufferDeclaration: False negatives with String constants
+
+### 🚨️ API Changes
+
+#### Deprecations
+* core
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/lang/metrics/MetricOption.html#valueName()"><code>MetricOption#valueName</code></a>: When metrics are used for (rule) properties,
+    then the conventional enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
+    See <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumListProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumListProperty</code></a>.
+  * In <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#"><code>PropertyFactory</code></a>:
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.util.Map)"><code>enumProperty(String, Map)</code></a>. Use
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumProperty</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.lang.Class)"><code>enumProperty(String, Class)</code></a>. Use
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumProperty</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumProperty(java.lang.String,java.lang.Class,java.util.function.Function)"><code>enumProperty(String, Class, Function)</code></a>. Use
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumProperty</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.util.Map)"><code>enumListProperty(String, Map)</code></a>. Use
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumListProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumListProperty</code></a> instead.
+    * <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#enumListProperty(java.lang.String,java.lang.Class,java.util.function.Function)"><code>enumListProperty(String, Class, Function)</code></a>. Use
+      <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/PropertyFactory.html#conventionalEnumListProperty(java.lang.String,java.lang.Class)"><code>conventionalEnumListProperty</code></a> instead.
+* java
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_FOR"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_FOR</code></a>. This constant should
+    have never been public.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_DO"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_DO</code></a>. This constant should
+    have never been public.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_WHILE"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_WHILE</code></a>. This constant should
+    have never been public.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_BREAK_LOOP_TYPES"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_BREAK_LOOP_TYPES</code></a>. This property
+    descriptor should have been private. It won't be used anymore. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptor(java.lang.String)"><code>getPropertyDescriptor</code></a>
+    on the rule to retrieve the property descriptor.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_CONTINUE_LOOP_TYPES"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_CONTINUE_LOOP_TYPES</code></a>. This property
+    descriptor should have been private. It won't be used anymore. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptor(java.lang.String)"><code>getPropertyDescriptor</code></a>
+    on the rule to retrieve the property descriptor.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#CHECK_RETURN_LOOP_TYPES"><code>AvoidBranchingStatementAsLastInLoopRule#CHECK_RETURN_LOOP_TYPES</code></a>. This property
+    descriptor should have been private. It won't be used anymore. Use <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/properties/AbstractPropertySource.html#getPropertyDescriptor(java.lang.String)"><code>getPropertyDescriptor</code></a>
+    on the rule to retrieve the property descriptor.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#check(net.sourceforge.pmd.properties.PropertyDescriptor,net.sourceforge.pmd.lang.ast.Node,java.lang.Object)"><code>AvoidBranchingStatementAsLastInLoopRule#check</code></a>.
+    This method should have been private and will be internalized.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#hasPropertyValue(net.sourceforge.pmd.properties.PropertyDescriptor,java.lang.String)"><code>AvoidBranchingStatementAsLastInLoopRule#hasPropertyValue</code></a>.
+    This method should have been private and will be internalized.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/rule/errorprone/AvoidBranchingStatementAsLastInLoopRule.html#checksNothing()"><code>AvoidBranchingStatementAsLastInLoopRule#checksNothing</code></a>.
+    This method should have been private and will be internalized.
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.ClassFanOutOption.html#valueName()"><code>ClassFanOutOption#valueName</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.CycloOption.html#valueName()"><code>CycloOption#valueName</code></a>,
+    <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.21.0/net/sourceforge/pmd/lang/java/metrics/JavaMetrics.NcssOption.html#valueName()"><code>NcssOption#valueName</code></a>
+* lang-test
+  * <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.21.0/net/sourceforge/pmd/lang/test/AbstractMetricTestRule.html#optionMappings()"><code>AbstractMetricTestRule#optionMappings</code></a>. No extra mapping is required anymore.
+    The <a href="https://docs.pmd-code.org/apidocs/pmd-core/7.21.0/net/sourceforge/pmd/lang/metrics/MetricOption.html#"><code>MetricOption</code></a> enum values are used. See 
+    <a href="https://docs.pmd-code.org/apidocs/pmd-lang-test/7.21.0/net/sourceforge/pmd/lang/test/AbstractMetricTestRule.html#AbstractMetricTestRule(net.sourceforge.pmd.lang.metrics.Metric,java.lang.Class)"><code>AbstractMetricTestRule(Metric, Class)</code></a>
+    to provide the enum at construction time.
+
+### ✨️ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6231](https://github.com/pmd/pmd/pull/6231): \[java] New Rule: PublicMemberInNonPublicType - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6232](https://github.com/pmd/pmd/pull/6232): \[java] New Rule: UnsupportedJdkApiUsage - [Thomas Leplus](https://github.com/thomasleplus) (@thomasleplus)
+* [#6233](https://github.com/pmd/pmd/pull/6233): \[core] Fix #6184: More consistent enum properties - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6290](https://github.com/pmd/pmd/pull/6290): \[cli] Improve Designer start script - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6315](https://github.com/pmd/pmd/pull/6315): \[java] Fix #5882: UnconditionalIfStatement false-negative if true/false is not literal - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6362](https://github.com/pmd/pmd/pull/6362): chore: Fix typos - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6366](https://github.com/pmd/pmd/pull/6366): \[java] Fix #3857: InsufficientStringBufferDeclaration should consider constant Strings - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6373](https://github.com/pmd/pmd/pull/6373): \[java] Support Java 26 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6377](https://github.com/pmd/pmd/pull/6377): \[doc] chore: update last_updated - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6384](https://github.com/pmd/pmd/pull/6384): chore: helper script check-all-contributors.sh - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6386](https://github.com/pmd/pmd/pull/6386): \[core] chore: Bump minimum Java version required for building to 21 - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6387](https://github.com/pmd/pmd/pull/6387): \[ci] publish-pull-requests: download latest build result - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6389](https://github.com/pmd/pmd/pull/6389): chore: update javadoc deprecated tags - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6390](https://github.com/pmd/pmd/pull/6390): chore: update javadoc experimental tags - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6391](https://github.com/pmd/pmd/pull/6391): chore: update javadoc internal API tags - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6392](https://github.com/pmd/pmd/pull/6392): \[doc] ADR 3: Clarify javadoc tags - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6394](https://github.com/pmd/pmd/pull/6394): \[apex] Fix #6349: FieldDeclarationsShouldBeAtStart false positive with properties - [Mohamed Hamed](https://github.com/mdhamed238) (@mdhamed238)
+* [#6407](https://github.com/pmd/pmd/pull/6407): \[java]  Fix #3601: InvalidLogMessageFormat: False positive when final parameter is Supplier<Throwable>  - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6417](https://github.com/pmd/pmd/pull/6417): \[apex] Support CPD suppression with "CPD-OFF" & "CPD-ON" - [Jade](https://github.com/goto-dev-null) (@goto-dev-null)
+* [#6428](https://github.com/pmd/pmd/pull/6428): \[ci] chore: run extensive integration tests under linux only - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6429](https://github.com/pmd/pmd/pull/6429): \[doc] chore: add keywords for auxclasspath in Java documentation - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#6430](https://github.com/pmd/pmd/pull/6430): \[java] Fix #6364: Parse error with yield lambda - [Andreas Dangel](https://github.com/adangel) (@adangel)
+
+### 📦️ Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6367](https://github.com/pmd/pmd/pull/6367): Bump PMD from 7.19.0 to 7.20.0
+* [#6369](https://github.com/pmd/pmd/pull/6369): chore(deps): bump ruby/setup-ruby from 1.275.0 to 1.277.0
+* [#6370](https://github.com/pmd/pmd/pull/6370): chore(deps): bump org.apache.groovy:groovy from 5.0.2 to 5.0.3
+* [#6371](https://github.com/pmd/pmd/pull/6371): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.2 to 1.18.3
+* [#6372](https://github.com/pmd/pmd/pull/6372): chore(deps): bump org.codehaus.mojo:exec-maven-plugin from 3.6.2 to 3.6.3
+* [#6375](https://github.com/pmd/pmd/pull/6375): chore: Bump maven from 3.9.11 to 3.9.12
+* [#6378](https://github.com/pmd/pmd/pull/6378): chore(deps): bump ruby/setup-ruby from 1.277.0 to 1.279.0
+* [#6379](https://github.com/pmd/pmd/pull/6379): chore(deps): bump scalameta.version from 4.14.2 to 4.14.4
+* [#6380](https://github.com/pmd/pmd/pull/6380): chore(deps): bump junit.version from 6.0.1 to 6.0.2
+* [#6381](https://github.com/pmd/pmd/pull/6381): chore(deps): bump org.jsoup:jsoup from 1.21.2 to 1.22.1
+* [#6382](https://github.com/pmd/pmd/pull/6382): chore(deps): bump org.checkerframework:checker-qual from 3.52.1 to 3.53.0
+* [#6383](https://github.com/pmd/pmd/pull/6383): chore(deps): bump com.puppycrawl.tools:checkstyle from 12.3.0 to 13.0.0
+* [#6385](https://github.com/pmd/pmd/pull/6385): chore(deps): bump uri from 1.0.3 to 1.0.4 in /docs
+* [#6399](https://github.com/pmd/pmd/pull/6399): chore(deps): bump ruby/setup-ruby from 1.279.0 to 1.282.0
+* [#6400](https://github.com/pmd/pmd/pull/6400): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.25.1 to 0.25.4
+* [#6401](https://github.com/pmd/pmd/pull/6401): chore(deps): bump org.sonatype.central:central-publishing-maven-plugin from 0.9.0 to 0.10.0
+* [#6403](https://github.com/pmd/pmd/pull/6403): chore(deps): bump com.google.protobuf:protobuf-java from 4.33.2 to 4.33.4
+* [#6410](https://github.com/pmd/pmd/pull/6410): chore(deps): bump ruby/setup-ruby from 1.282.0 to 1.285.0
+* [#6411](https://github.com/pmd/pmd/pull/6411): chore(deps): bump actions/cache from 5.0.1 to 5.0.2
+* [#6412](https://github.com/pmd/pmd/pull/6412): chore(deps): bump scalameta.version from 4.14.4 to 4.14.5
+* [#6413](https://github.com/pmd/pmd/pull/6413): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.3 to 1.18.4
+* [#6414](https://github.com/pmd/pmd/pull/6414): chore(deps-dev): bump org.codehaus.mojo:versions-maven-plugin from 2.20.1 to 2.21.0
+* [#6415](https://github.com/pmd/pmd/pull/6415): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.3 to 1.18.4
+* [#6419](https://github.com/pmd/pmd/pull/6419): chore(deps-dev): bump lodash from 4.17.21 to 4.17.23
+* [#6421](https://github.com/pmd/pmd/pull/6421): chore(deps): bump actions/setup-java from 5.1.0 to 5.2.0
+* [#6422](https://github.com/pmd/pmd/pull/6422): chore(deps): bump actions/checkout from 6.0.1 to 6.0.2
+* [#6423](https://github.com/pmd/pmd/pull/6423): chore(deps): bump scalameta.version from 4.14.5 to 4.14.6
+* [#6424](https://github.com/pmd/pmd/pull/6424): chore(deps-dev): bump org.assertj:assertj-core from 3.27.6 to 3.27.7
+* [#6425](https://github.com/pmd/pmd/pull/6425): chore(deps): bump org.apache.groovy:groovy from 5.0.3 to 5.0.4
+
+### 📈️ Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 146 commits
+* 30 closed tickets & PRs
+* Days since last release: 30
+
+
+
+## 30-December-2025 - 7.20.0
+
+The PMD team is pleased to announce PMD 7.20.0.
+
+This is a minor release.
+
+### Table Of Contents
+
+* [🌟️ Changed Rules](#changed-rules)
+* [🐛️ Fixed Issues](#fixed-issues)
+* [🚨️ API Changes](#api-changes)
+    * [Experimental API](#experimental-api)
+* [✨️ Merged pull requests](#merged-pull-requests)
+* [📦️ Dependency updates](#dependency-updates)
+* [📈️ Stats](#stats)
+
+### 🌟️ Changed Rules
+* The Java rule [`OnlyOneReturn`](https://docs.pmd-code.org/pmd-doc-7.20.0/pmd_rules_java_codestyle.html#onlyonereturn) has a new property `ignoredMethodNames`. This property by
+  default is set to `compareTo` and `equals`, thus this rule now by default allows multiple return statements
+  for these methods. To restore the old behavior, simply set this property to an empty value.
+
+### 🐛️ Fixed Issues
+* core
+  * [#6330](https://github.com/pmd/pmd/issues/6330): \[core] "Unable to create ValueRepresentation" when using @<!-- -->LiteralText (XPath)
+* java
+  * [#6234](https://github.com/pmd/pmd/issues/6234): \[java] Parser fails to parse switch expressions in super() constructor calls
+  * [#6299](https://github.com/pmd/pmd/issues/6299): \[java] Fix grammar of switch label
+* java-bestpractices
+  * [#4282](https://github.com/pmd/pmd/issues/4282): \[java] GuardLogStatement: False positive when guard is not a direct parent
+  * [#6028](https://github.com/pmd/pmd/issues/6028): \[java] UnusedPrivateMethod: False positive with raw type for generic method
+  * [#6257](https://github.com/pmd/pmd/issues/6257): \[java] UnusedLocalVariable: False positive with instanceof pattern guard
+  * [#6291](https://github.com/pmd/pmd/issues/6291): \[java] EnumComparison: False positive for any object when object.equals(null)
+  * [#6328](https://github.com/pmd/pmd/issues/6328): \[java] UnusedLocalVariable: False positive for pattern variable in for-each without braces
+* java-codestyle
+  * [#4257](https://github.com/pmd/pmd/issues/4257): \[java] OnlyOneReturn: False positive with equals method
+  * [#5043](https://github.com/pmd/pmd/issues/5043): \[java] LambdaCanBeMethodReference: False positive on overloaded methods
+  * [#6237](https://github.com/pmd/pmd/issues/6237): \[java] UnnecessaryCast: ContextedRuntimeException when parsing switch expression with lambdas
+  * [#6279](https://github.com/pmd/pmd/issues/6279): \[java] EmptyMethodInAbstractClassShouldBeAbstract: False positive for final empty methods
+  * [#6284](https://github.com/pmd/pmd/issues/6284): \[java] UnnecessaryConstructor: False positive for JavaDoc-bearing constructor
+* java-errorprone
+  * [#6276](https://github.com/pmd/pmd/issues/6276): \[java] NullAssignment: False positive when assigning null to a final field in a constructor
+  * [#6343](https://github.com/pmd/pmd/issues/6343): \[java] MissingStaticMethodInNonInstantiatableClass: False negative when method in nested class returns null
+* java-performance
+  * [#4158](https://github.com/pmd/pmd/issues/4158): \[java] BigIntegerInstantiation: False negative with compile-time constant
+  * [#4910](https://github.com/pmd/pmd/issues/4910): \[java] ConsecutiveAppendsShouldReuse: False positive within if-statement without curly braces
+  * [#5877](https://github.com/pmd/pmd/issues/5877): \[java] AvoidArrayLoops: False negative when break inside switch statement
+* maintenance
+  * [#6230](https://github.com/pmd/pmd/issues/6230): \[core] Single module snapshot build fails
+
+### 🚨️ API Changes
+
+#### Experimental API
+* pmd-java: <a href="https://docs.pmd-code.org/apidocs/pmd-java/7.20.0/net/sourceforge/pmd/lang/java/types/OverloadSelectionResult.html#hadSeveralApplicableOverloads()"><code>OverloadSelectionResult#hadSeveralApplicableOverloads</code></a>
+
+### ✨️ Merged pull requests
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6262](https://github.com/pmd/pmd/pull/6262): \[java] UnusedLocalVariable: fix false positive with guard in switch - [Zbynek Konecny](https://github.com/zbynek) (@zbynek)
+* [#6285](https://github.com/pmd/pmd/pull/6285): \[java] Fix #5043: FP in LambdaCanBeMethodReference when method ref would be ambiguous - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6287](https://github.com/pmd/pmd/pull/6287): \[doc] Explain how to build or pull snapshot dependencies for single module builds - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6288](https://github.com/pmd/pmd/pull/6288): \[java] Fix #6279: EmptyMethodInAbstractClassShouldBeAbstract should ignore final methods - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6292](https://github.com/pmd/pmd/pull/6292): \[java] Fix #6291: EnumComparison FP when comparing with null - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6293](https://github.com/pmd/pmd/pull/6293): \[java] Fix #6276: NullAssignment should not report assigning null to a final field in a constructor - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6294](https://github.com/pmd/pmd/pull/6294): \[java] Fix #6028: UnusedPrivateMethod FP - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6295](https://github.com/pmd/pmd/pull/6295): \[java] Fix #6237: UnnecessaryCast error with switch expr returning lambdas - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6296](https://github.com/pmd/pmd/pull/6296): \[java] Fix #4282: GuardLogStatement only detects guard methods immediately around it - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6299](https://github.com/pmd/pmd/pull/6299): \[java] Fix grammar of switch label - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6309](https://github.com/pmd/pmd/pull/6309): \[java] Fix #4257: Allow ignoring methods in OnlyOneReturn - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6311](https://github.com/pmd/pmd/pull/6311): \[java] Fix #6284: UnnecessaryConstructor reporting false-positive on JavaDoc-bearing constructor - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6313](https://github.com/pmd/pmd/pull/6313): \[java] Fix #4910: if-statement triggers ConsecutiveAppendsShouldReuse - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6316](https://github.com/pmd/pmd/pull/6316): \[java] Fix #5877: AvoidArrayLoops false-negative when break inside switch statement - [Marcel](https://github.com/mrclmh) (@mrclmh)
+* [#6342](https://github.com/pmd/pmd/pull/6342): \[core] Fix #6330: Cannot access Chars attribute from XPath - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
+* [#6344](https://github.com/pmd/pmd/pull/6344): \[java] Fix #6328: UnusedLocalVariable should consider pattern variable in for-each without curly braces - [Mohamed Hamed](https://github.com/mdhamed238) (@mdhamed238)
+* [#6348](https://github.com/pmd/pmd/pull/6348): \[jsp] Fix malformed Javadoc HTML in JspDocStyleTest - [Gianmarco](https://github.com/gianmarcoschifone) (@gianmarcoschifone)
+* [#6359](https://github.com/pmd/pmd/pull/6359): \[java] Fix #6234: Parser fails to parse switch expressions in super() constructor calls - [Mohamed Hamed](https://github.com/mdhamed238) (@mdhamed238)
+* [#6360](https://github.com/pmd/pmd/pull/6360): \[java] Fix #4158: BigIntegerInstantiation false-negative with compile-time constant - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
+* [#6361](https://github.com/pmd/pmd/pull/6361): \[vf] Fix invalid Javadoc syntax in VfDocStyleTest - [Gianmarco](https://github.com/gianmarcoschifone) (@gianmarcoschifone)
+* [#6363](https://github.com/pmd/pmd/pull/6363): \[apex] Add sca-extra ruleset for Salesforce Apex testing - [Beech Horn](https://github.com/metalshark) (@metalshark)
+
+### 📦️ Dependency updates
+<!-- content will be automatically generated, see /do-release.sh -->
+* [#6286](https://github.com/pmd/pmd/pull/6286): Bump PMD from 7.18.0 to 7.19.0
+* [#6300](https://github.com/pmd/pmd/pull/6300): chore(deps): bump actions/checkout from 6.0.0 to 6.0.1
+* [#6301](https://github.com/pmd/pmd/pull/6301): chore(deps): bump org.checkerframework:checker-qual from 3.52.0 to 3.52.1
+* [#6302](https://github.com/pmd/pmd/pull/6302): chore(deps): bump org.apache.maven.plugins:maven-resources-plugin from 3.3.1 to 3.4.0
+* [#6303](https://github.com/pmd/pmd/pull/6303): chore(deps-dev): bump net.bytebuddy:byte-buddy from 1.18.1 to 1.18.2
+* [#6304](https://github.com/pmd/pmd/pull/6304): chore(deps): bump com.puppycrawl.tools:checkstyle from 12.1.2 to 12.2.0
+* [#6305](https://github.com/pmd/pmd/pull/6305): chore(deps): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.3.0.6276 to 5.4.0.6343
+* [#6306](https://github.com/pmd/pmd/pull/6306): chore(deps): bump webrick from 1.9.1 to 1.9.2 in /docs
+* [#6318](https://github.com/pmd/pmd/pull/6318): chore(deps): bump actions/create-github-app-token from 2.2.0 to 2.2.1
+* [#6319](https://github.com/pmd/pmd/pull/6319): chore(deps): bump actions/setup-java from 5.0.0 to 5.1.0
+* [#6320](https://github.com/pmd/pmd/pull/6320): chore(deps): bump ruby/setup-ruby from 1.268.0 to 1.269.0
+* [#6321](https://github.com/pmd/pmd/pull/6321): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.1 to 1.18.2
+* [#6323](https://github.com/pmd/pmd/pull/6323): chore(deps): bump com.google.protobuf:protobuf-java from 4.33.1 to 4.33.2
+* [#6324](https://github.com/pmd/pmd/pull/6324): chore(deps): bump io.github.apex-dev-tools:apex-ls_2.13 from 6.0.1 to 6.0.2
+* [#6325](https://github.com/pmd/pmd/pull/6325): chore(deps): bump org.apache.maven.plugins:maven-assembly-plugin from 3.7.1 to 3.8.0
+* [#6329](https://github.com/pmd/pmd/pull/6329): chore(deps): bump org.mozilla:rhino from 1.7.15 to 1.7.15.1
+* [#6331](https://github.com/pmd/pmd/pull/6331): chore(deps): bump actions/upload-artifact from 5.0.0 to 6.0.0
+* [#6332](https://github.com/pmd/pmd/pull/6332): chore(deps): bump org.mockito:mockito-core from 5.20.0 to 5.21.0
+* [#6333](https://github.com/pmd/pmd/pull/6333): chore(deps): bump actions/download-artifact from 6.0.0 to 7.0.0
+* [#6334](https://github.com/pmd/pmd/pull/6334): chore(deps): bump ruby/setup-ruby from 1.269.0 to 1.270.0
+* [#6335](https://github.com/pmd/pmd/pull/6335): chore(deps): bump com.puppycrawl.tools:checkstyle from 12.2.0 to 12.3.0
+* [#6336](https://github.com/pmd/pmd/pull/6336): chore(deps): bump actions/cache from 4.3.0 to 5.0.1
+* [#6337](https://github.com/pmd/pmd/pull/6337): chore(deps): bump bigdecimal from 3.3.1 to 4.0.0 in /docs
+* [#6339](https://github.com/pmd/pmd/pull/6339): chore(deps): bump org.apache.maven.plugins:maven-release-plugin from 3.2.0 to 3.3.1
+* [#6341](https://github.com/pmd/pmd/pull/6341): chore(deps): bump org.apache.maven.plugins:maven-source-plugin from 3.3.1 to 3.4.0
+* [#6347](https://github.com/pmd/pmd/pull/6347): chore(deps-dev): bump org.apache.logging.log4j:log4j-core from 2.25.2 to 2.25.3 in /pmd-java
+* [#6350](https://github.com/pmd/pmd/pull/6350): chore(deps): bump com.github.siom79.japicmp:japicmp-maven-plugin from 0.24.2 to 0.25.1
+* [#6352](https://github.com/pmd/pmd/pull/6352): chore(deps): bump ruby/setup-ruby from 1.270.0 to 1.275.0
+* [#6353](https://github.com/pmd/pmd/pull/6353): chore(deps): bump org.ow2.asm:asm from 9.9 to 9.9.1
+* [#6354](https://github.com/pmd/pmd/pull/6354): chore(deps-dev): bump net.bytebuddy:byte-buddy-agent from 1.18.2 to 1.18.3
+* [#6356](https://github.com/pmd/pmd/pull/6356): chore(deps): bump org.sonarsource.scanner.maven:sonar-maven-plugin from 5.4.0.6343 to 5.5.0.6356
+* [#6357](https://github.com/pmd/pmd/pull/6357): chore(deps): bump org.apache.commons:commons-text from 1.14.0 to 1.15.0
+* [#6358](https://github.com/pmd/pmd/pull/6358): chore(deps): bump bigdecimal from 4.0.0 to 4.0.1 in /docs
+
+### 📈️ Stats
+<!-- content will be automatically generated, see /do-release.sh -->
+* 102 commits
+* 39 closed tickets & PRs
+* Days since last release: 32
+
+
+
 ## 28-November-2025 - 7.19.0
 
 The PMD team is pleased to announce PMD 7.19.0.
@@ -1085,7 +1707,7 @@ for a list of common, shared parameters that are valid for both commands.
 * [#5736](https://github.com/pmd/pmd/pull/5736): Fix #5061: \[java] UnusedLocalVariable FP when using compound assignment - [Lukas Gräf](https://github.com/lukasgraef) (@lukasgraef)
 * [#5741](https://github.com/pmd/pmd/pull/5741): \[cli] Make CLI default to multithreaded - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
 * [#5742](https://github.com/pmd/pmd/pull/5742): \[ci] publish-snapshot/old build: migrate to central portal - [Andreas Dangel](https://github.com/adangel) (@adangel)
-* [#5743](https://github.com/pmd/pmd/pull/5743): \[ci] Make build a reuseable workflow - [Andreas Dangel](https://github.com/adangel) (@adangel)
+* [#5743](https://github.com/pmd/pmd/pull/5743): \[ci] Make build a reusable workflow - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5744](https://github.com/pmd/pmd/pull/5744): Fix #5705: \[cli] Always determine PMD_HOME based on script location - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5748](https://github.com/pmd/pmd/pull/5748): \[core] Reformat SarifLog to comply to coding standards - [Andreas Dangel](https://github.com/adangel) (@adangel)
 * [#5763](https://github.com/pmd/pmd/pull/5763): \[java] Support annotated constructor return type in symbol API - [Clément Fournier](https://github.com/oowekyala) (@oowekyala)
@@ -7698,7 +8320,7 @@ This minor release will be the last one in 2021. The next release is scheduled t
 
 #### Command Line Interface
 
-The command line options for PMD and CPD now use GNU-syle long options format. E.g. instead of `-rulesets` the
+The command line options for PMD and CPD now use GNU-style long options format. E.g. instead of `-rulesets` the
 preferred usage is now `--rulesets`. Alternatively one can still use the short option `-R`.
 Some options also have been renamed to a more consistent casing pattern at the same time
 (`--fail-on-violation` instead of `-failOnViolation`).
@@ -14719,7 +15341,7 @@ public class Foo {
 Detects hardcoded credentials used in requests to an endpoint.
 
 You should refrain from hardcoding credentials:
-  * They are hard to mantain by being mixed in application code
+  * They are hard to maintain by being mixed in application code
   * Particularly hard to update them when used from different classes
   * Granting a developer access to the codebase means granting knowledge
      of credentials, keeping a two-level access is not possible.

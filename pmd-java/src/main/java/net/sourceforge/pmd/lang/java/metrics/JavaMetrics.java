@@ -605,19 +605,17 @@ public final class JavaMetrics {
      */
     public enum NcssOption implements MetricOption {
         /** Counts import and package statement. This makes the metric JavaNCSS compliant. */
-        COUNT_IMPORTS("countImports");
+        COUNT_IMPORTS;
 
-        private final String vName;
-
-
-        NcssOption(String valueName) {
-            this.vName = valueName;
-        }
-
-
+        /**
+         * @deprecated Since 7.21.0. When metrics are used for (rule) properties, then the conventional
+         * enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
+         * See {@link net.sourceforge.pmd.properties.PropertyFactory#conventionalEnumListProperty(String, Class)}.
+         */
+        @Deprecated
         @Override
         public String valueName() {
-            return vName;
+            return MetricOption.super.valueName();
         }
     }
 
@@ -627,21 +625,19 @@ public final class JavaMetrics {
      */
     public enum CycloOption implements MetricOption {
         /** Do not count the paths in boolean expressions as decision points. */
-        IGNORE_BOOLEAN_PATHS("ignoreBooleanPaths"),
+        IGNORE_BOOLEAN_PATHS,
         /** Consider assert statements as if they were {@code if (..) throw new AssertionError(..)}. */
-        CONSIDER_ASSERT("considerAssert");
+        CONSIDER_ASSERT;
 
-        private final String vName;
-
-
-        CycloOption(String valueName) {
-            this.vName = valueName;
-        }
-
-
+        /**
+         * @deprecated Since 7.21.0. When metrics are used for (rule) properties, then the conventional
+         * enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
+         * See {@link net.sourceforge.pmd.properties.PropertyFactory#conventionalEnumListProperty(String, Class)}.
+         */
+        @Deprecated
         @Override
         public String valueName() {
-            return vName;
+            return MetricOption.super.valueName();
         }
     }
 
@@ -679,17 +675,17 @@ public final class JavaMetrics {
      */
     public enum ClassFanOutOption implements MetricOption {
         /** Whether to include classes in the {@code java.lang} package. */
-        INCLUDE_JAVA_LANG("includeJavaLang");
+        INCLUDE_JAVA_LANG;
 
-        private final String vName;
-
-        ClassFanOutOption(String valueName) {
-            this.vName = valueName;
-        }
-
+        /**
+         * @deprecated Since 7.21.0. When metrics are used for (rule) properties, then the conventional
+         * enum mapping (from SCREAMING_SNAKE_CASE to camelCase) will be used for the enum values.
+         * See {@link net.sourceforge.pmd.properties.PropertyFactory#conventionalEnumListProperty(String, Class)}.
+         */
+        @Deprecated
         @Override
         public String valueName() {
-            return vName;
+            return MetricOption.super.valueName();
         }
     }
 }

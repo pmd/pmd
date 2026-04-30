@@ -27,7 +27,7 @@ public final class TestFrameworksUtil {
     private static final String JUNIT3_CLASS_NAME = "junit.framework.TestCase";
     private static final String JUNIT4_TEST_ANNOT = "org.junit.Test";
 
-    private static final String TESTNG_TEST_ANNOT = "org.testng.annotations.Test";
+    private static final String TEST_NG_TEST_ANNOT = "org.testng.annotations.Test";
 
     private static final Set<String> JUNIT5_ALL_TEST_ANNOTS =
         setOf("org.junit.jupiter.api.Test",
@@ -99,7 +99,7 @@ public final class TestFrameworksUtil {
     }
 
     private static boolean isTestNgMethod(ASTMethodDeclaration method) {
-        return method.isAnnotationPresent(TESTNG_TEST_ANNOT);
+        return method.isAnnotationPresent(TEST_NG_TEST_ANNOT);
     }
 
     public static boolean isJUnit4Method(ASTMethodDeclaration method) {

@@ -405,4 +405,21 @@ public class Foo {
             }
         ]]></code>
     </test-code>
+
+    <test-code>
+        <description>Chained assignments</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>4</expected-linenumbers>
+        <expected-messages>
+            <message>Avoid assignment to b in operand</message>
+        </expected-messages>
+        <code><![CDATA[
+class Foo {
+    void bar() {
+        int a, b; // would be OneDeclarationPerLine
+        a = b = 1; // violation
+    }
+}
+]]></code>
+    </test-code>
 </test-data>

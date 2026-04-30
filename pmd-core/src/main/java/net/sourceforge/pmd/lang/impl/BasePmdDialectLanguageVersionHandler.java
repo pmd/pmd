@@ -14,7 +14,7 @@ import net.sourceforge.pmd.lang.ast.Parser;
  *
  * @author Juan Martín Sotuyo Dodero
  * @since 7.13.0
- * @experimental Since 7.13.0. See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
+ * @experimental See <a href="https://github.com/pmd/pmd/pull/5438">[core] Support language dialects #5438</a>.
  */
 @Experimental
 public class BasePmdDialectLanguageVersionHandler extends AbstractPmdLanguageVersionHandler {

@@ -209,7 +209,7 @@ try {
     </test-code>
 
     <test-code>
-        <description>Ok, destructure assigments (#2305)</description>
+        <description>Ok, destructuring assignments (#2305)</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 import {foo} from 'bar'
@@ -249,7 +249,7 @@ function fn( ({arg}) ){ return arg}
     </test-code>
 
     <test-code>
-        <description>Ok, destructure assigments (#2305) - without semicolons</description>
+        <description>Ok, destructuring assignments (#2305) - without semicolons</description>
         <expected-problems>0</expected-problems>
         <code><![CDATA[
 // note: this code can't be parsed by rhino, we get several syntax errors

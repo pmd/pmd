@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class ModelicaParserTest {
     @Test
-    void testParsingGrapgical() {
+    void testParsingGraphical() {
         ModelicaParsingHelper.DEFAULT.parseResource("ParserTestGraphical.mo");
     }
 

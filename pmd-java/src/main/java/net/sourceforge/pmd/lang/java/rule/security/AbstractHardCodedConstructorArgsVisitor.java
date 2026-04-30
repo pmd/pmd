@@ -78,6 +78,9 @@ abstract class AbstractHardCodedConstructorArgsVisitor extends AbstractJavaRulec
             if (arrayInit != null) {
                 asCtx(data).addViolation(arrayInit);
             }
+        } else if (firstArgumentExpression instanceof ASTArrayInitializer) {
+            // hard coded array
+            asCtx(data).addViolation(firstArgumentExpression);
         } else {
             // string literal
             ASTStringLiteral literal = firstArgumentExpression.descendantsOrSelf()

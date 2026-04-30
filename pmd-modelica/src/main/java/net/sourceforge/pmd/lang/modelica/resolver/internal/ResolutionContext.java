@@ -72,14 +72,14 @@ public class ResolutionContext {
         private final List<A> hiddenCandidates = new ArrayList<>();
         private final boolean timedOut;
 
-        Result(Class<A> tpe, List<?> best, List<?> hidden, boolean timedOut) {
+        Result(Class<A> type, List<?> best, List<?> hidden, boolean timedOut) {
             for (Object b: best) {
-                if (tpe.isInstance(b)) {
+                if (type.isInstance(b)) {
                     bestCandidates.add((A) b);
                 }
             }
             for (Object h: hidden) {
-                if (tpe.isInstance(h)) {
+                if (type.isInstance(h)) {
                     hiddenCandidates.add((A) h);
                 }
             }

@@ -46,7 +46,7 @@ class YAHTMLRendererTest extends AbstractRendererTest {
         FileLocation loc = createLocation(beginLine, beginColumn, endLine, endColumn);
         Map<String, String> additionalInfo = CollectionUtil.mapOf(RuleViolation.PACKAGE_NAME, packageNameArg,
                                                                   RuleViolation.CLASS_NAME, classNameArg);
-        return InternalApiBridge.createRuleViolation(new FooRule(), loc, "blah", additionalInfo);
+        return InternalApiBridge.createRuleViolation(new FooRule(), loc, "This should be escaped: \"<script>alert('test')</script>\".", additionalInfo);
     }
 
     @Override

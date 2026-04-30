@@ -624,7 +624,7 @@ SELECT   '
 DECLARE @emailBodyText NVARCHAR(MAX); 
 SET @emailBodyText = 'Timeline of all jobs between '
    + CONVERT(VARCHAR(20), @StartDate, 120) + ' to '
-   + CONVERT(VARCHAR(20), @EndDate, 120) + ' open the attachement.'
+   + CONVERT(VARCHAR(20), @EndDate, 120) + ' open the attachment.'
 
 DECLARE @emailSubjectText NVARCHAR(MAX); 
 SET @emailSubjectText = @@servername + ' Jons between '

@@ -133,28 +133,13 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
     }
 
     private boolean hasGuard(ASTMethodCall node, String logLevel) {
-        ASTIfStatement ifStatement = node.ancestors(ASTIfStatement.class).first();
-        if (ifStatement == null) {
-            return false;
-        }
-
-        for (ASTMethodCall maybeAGuardCall : ifStatement.getCondition().descendantsOrSelf().filterIs(ASTMethodCall.class)) {
-            String guardMethodName = maybeAGuardCall.getMethodName();
-            // the guard is adapted to the actual log statement
-
-            if (!guardStmtByLogLevel.get(logLevel).contains(guardMethodName)) {
-                continue;
+        for (ASTIfStatement ifStatement: node.ancestors(ASTIfStatement.class).take(2)) {
+            if (ifStatement == null) {
+                return false;
             }
-
-            if (JAVA_UTIL_LOG_GUARD_METHOD.equals(guardMethodName)) {
-                // java.util.logging: guard method with argument. Verify the log level
-                if (logLevel.equals(getJutilLogLevelInFirstArg(maybeAGuardCall))) {
-                    return true;
-                }
-            } else {
+            if (containsGuardMethod(ifStatement, logLevel)) {
                 return true;
             }
-
         }
         return false;
     }
@@ -263,5 +248,27 @@ public class GuardLogStatementRule extends AbstractJavaRulechainRule {
                 guardStmtByLogLevel.put(logLevel, guardMethods.get(i));
             }
         }
+    }
+
+    private boolean containsGuardMethod(ASTIfStatement ifStatement, String logLevel) {
+        for (ASTMethodCall maybeAGuardCall : ifStatement.getCondition().descendantsOrSelf().filterIs(ASTMethodCall.class)) {
+            String guardMethodName = maybeAGuardCall.getMethodName();
+            // the guard is adapted to the actual log statement
+
+            if (!guardStmtByLogLevel.get(logLevel).contains(guardMethodName)) {
+                continue;
+            }
+
+            if (JAVA_UTIL_LOG_GUARD_METHOD.equals(guardMethodName)) {
+                // java.util.logging: guard method with argument. Verify the log level
+                if (logLevel.equals(getJutilLogLevelInFirstArg(maybeAGuardCall))) {
+                    return true;
+                }
+            } else {
+                return true;
+            }
+
+        }
+        return false;
     }
 }

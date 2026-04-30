@@ -714,4 +714,54 @@ class Foo {
         ]]></code>
         <source-type>java 22</source-type>
     </test-code>
+    <test-code>
+        <description>pattern with guard #6257</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+        public class Reproducer {
+            private String barString;
+            public static boolean customEquals(Object foo, Object bar) {
+                return switch (foo) {
+                    case String fooString when bar instanceof String barString -> fooString.equals(barString);
+                    default -> false;
+                };
+            }
+        }
+        ]]> </code>
+        <source-type>java 21</source-type>
+    </test-code>
+    <test-code>
+        <description>pattern with negative guard #6257</description>
+        <expected-problems>1</expected-problems>
+        <expected-messages>
+            <message>Avoid unused local variables such as 'barString'.</message>
+        </expected-messages>
+        <code><![CDATA[
+        public class Reproducer {
+            private String barString;
+            public static boolean customEquals(Object foo, Object bar) {
+                return switch (foo) {
+                    case String fooString when !(bar instanceof String barString) -> fooString.equals(barString);
+                    default -> false;
+                };
+            }
+        }
+        ]]> </code>
+        <source-type>java 21</source-type>
+    </test-code>
+    <test-code>
+        <description>Pattern variable in for-each without brackets (Issue 6328)</description>
+        <expected-problems>0</expected-problems>
+        <code
+        ><![CDATA[
+        public class Foo {
+            public void test() {
+                Object[] array = {1, "a"};
+                for(Object o : array)
+                    if(o instanceof String s)
+                        System.out.println(s);
+            }
+        }
+        ]]></code>
+    </test-code>
 </test-data>

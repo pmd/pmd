@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+        xmlns="http://pmd.sourceforge.net/rule-tests"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_0_0.xsd">
+
+    <test-code>
+        <description>Rule example</description>
+        <expected-problems>2</expected-problems>
+        <expected-linenumbers>2-2,3-3</expected-linenumbers>
+        <expected-messages>
+            <message>Public member 'method' declared in a non-public type</message>
+            <message>Public member 'field' declared in a non-public type</message>
+        </expected-messages>
+        <code><![CDATA[
+class Wrong {
+    public void method() {} // violation
+    public int field; // violation
+}
+
+class Correct {
+    void method() {}
+    // or even
+    private void privateMethod() {}
+
+    int field;
+    // or even
+    private int privateField;
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>More declarations</description>
+        <expected-problems>8</expected-problems>
+        <expected-linenumbers>2,3,8,10,11,14,15,19</expected-linenumbers>
+        <expected-messages>
+            <message>Public member 'PackagePrivateClass' declared in a non-public type</message>
+            <message>Public member 'publicMethod' declared in a non-public type</message>
+            <message>Public member 'field' declared in a non-public type</message>
+            <message>Public member 'Nested' declared in a non-public type</message>
+            <message>Public member 'Foo' declared in a non-public type</message>
+            <message>Public member 'Intf' declared in a non-public type</message>
+            <message>Public member 'Annotation' declared in a non-public type</message>
+            <message>Public member 'MyRecord' declared in a non-public type</message>
+        </expected-messages>
+        <code><![CDATA[
+class PackagePrivateClass {
+  public PackagePrivateClass() {} // violation, line 2
+  public void publicMethod() {} // violation, line 3
+  void packageMethod() {}
+  private void privateMethod() {}
+  public int hashCode() {} // no violation, inherited/overridden
+
+  public int field; // violation, line 8
+
+  public class Nested {} // violation, line 10
+  public enum Foo { // violation, line 11
+    A
+  }
+  public interface Intf {} // violation, line 14
+  public @interface Annotation {} // violation, line 15
+}
+
+record MyRecord(String a) {
+  public MyRecord { // violation, line 19
+  }
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Verify location of violation</description>
+        <expected-problems>4</expected-problems>
+        <expected-linenumbers>4-4,10-10,14-14,15-15</expected-linenumbers>
+        <code><![CDATA[
+class Wrong {
+    public
+    void
+    method // violation
+    ()
+    {
+    }
+    public
+    int
+    field // violation
+    ;
+    public
+    int
+    iField1, // violation
+    iField2; // violation
+}
+]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Members of top-level interface are implicitly public</description>
+        <expected-problems>0</expected-problems>
+        <code>
+/*package*/ interface Intf {
+    String CONST = "constant";
+    public static final String CONST2 = "constant";
+
+    void method1();
+    public abstract void method2();
+
+    default void method3() {};
+    public default void method4() {};
+
+    class MemberClass {}
+    public static class MemberClass2 {}
+
+    enum MemberEnum { A }
+    public enum MemberEnum2 { A }
+}
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Members of top-level annotation interface are implicitly public</description>
+        <expected-problems>0</expected-problems>
+        <code>
+/*package*/ @interface Annot {
+    String value();
+    public String value2();
+}
+        </code>
+    </test-code>
+
+    <test-code>
+        <description>Members of nested interface are implicitly public</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>2-2</expected-linenumbers>
+        <code>
+/*package*/ class TopLevel {
+    public interface PublicIntf {} // violation here
+    /*package*/ interface Intf {
+        // fields are implicit public
+        String CONST = "constant";
+        public static final String CONST2 = "constant";
+
+        void method1();
+        public abstract void method2();
+
+        default void method3() {};
+        public default void method4() {};
+
+        class MemberClass {}
+        public static class MemberClass2 {}
+    }
+
+    /*package*/ @interface Annot {
+        String value();
+    }
+}
+        </code>
+    </test-code>
+</test-data>

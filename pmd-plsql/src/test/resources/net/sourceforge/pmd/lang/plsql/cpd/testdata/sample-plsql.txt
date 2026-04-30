@@ -659,10 +659,10 @@ L263
     [SUBTYPE]                               1         8
     [ADVICE_RECORD]                         9         22
     [IS]                                    23        25
-    [ADVICES]                               26        33
-    [%]                                     33        34
-    [ROWTYPE]                               34        41
-    [;]                                     41        42
+    [ADVICE]                                26        32
+    [%]                                     32        33
+    [ROWTYPE]                               33        40
+    [;]                                     40        41
 L264
     [TYPE]                                  1         5
     [ADVICE_TABLE]                          6         18
@@ -856,8 +856,8 @@ L329
     [;]                                     37        38
 L332
     [PROCEDURE]                             1         10
-    [LIST_ADVICES]                          11        23
-    [(]                                     24        25
+    [LIST_ADVICE]                           11        22
+    [(]                                     23        24
 L333
     [P_CONTRACT_ID]                         3         16
     [VARCHAR2]                              21        29

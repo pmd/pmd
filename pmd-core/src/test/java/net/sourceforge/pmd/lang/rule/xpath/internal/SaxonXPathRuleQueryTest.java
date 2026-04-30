@@ -28,6 +28,7 @@ import net.sourceforge.pmd.lang.ast.DummyNode.DummyRootNode;
 import net.sourceforge.pmd.lang.ast.DummyNodeWithListAndEnum;
 import net.sourceforge.pmd.lang.ast.Node;
 import net.sourceforge.pmd.lang.ast.RootNode;
+import net.sourceforge.pmd.lang.document.Chars;
 import net.sourceforge.pmd.lang.rule.xpath.PmdXPathException;
 import net.sourceforge.pmd.lang.rule.xpath.XPathVersion;
 import net.sourceforge.pmd.lang.rule.xpath.impl.XPathHandler;
@@ -138,6 +139,19 @@ class SaxonXPathRuleQueryTest {
                 "//dummyNode[count(distinct-values(@Lines)) > 0 and not(empty(index-of(@Lines, 'a')))]", dummy);
 
         assertEquals(dummy.getChild(0), result.get(0));
+    }
+
+    @Test
+    void testCharsAttributes() {
+        DummyRootNode dummy = helper.parse("(a(b))");
+        Chars value = Chars.wrap("__abcd__").slice(2, 4);
+        //                          ----
+        dummy.setXPathAttribute("CharsAttr", value, Chars.class);
+
+        List<Node> result = assertQuery(1,
+            "//dummyRootNode[@CharsAttr = 'abcd']", dummy);
+
+        assertEquals(dummy, result.get(0));
     }
 
     @Test

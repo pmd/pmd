@@ -98,8 +98,21 @@ public interface OverloadSelectionResult {
      * constructor call expressions.
      *
      * @see ExprMirror.MethodUsageMirror#getTypeToSearch()
+     * @since 7.14.0
      * @experimental Since 7.14.0
      */
     @Experimental
     @Nullable JTypeMirror getTypeToSearch();
+
+
+    /**
+     * Return whether several overloads were applicable, and needed to
+     * be disambiguated through specificity checks.
+     *
+     * @since 7.20.0
+     * @experimental Since 7.20.0
+     */
+    @Experimental
+    boolean hadSeveralApplicableOverloads();
+
 }

@@ -34,8 +34,8 @@ public class ModelicaBuiltinType implements ModelicaType {
 
     private final BaseType baseType;
 
-    ModelicaBuiltinType(BaseType tpe) {
-        baseType = tpe;
+    ModelicaBuiltinType(BaseType type) {
+        baseType = type;
     }
 
     public BaseType getBaseType() {

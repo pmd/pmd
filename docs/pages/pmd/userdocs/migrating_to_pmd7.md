@@ -2997,7 +2997,7 @@ super.method();
 
 └─ ExpressionStatement
    └─ AssignmentExpression "="
-      ├─ FieldAccess[ @AcessType = "WRITE" ] "field"
+      ├─ FieldAccess[ @AccessType = "WRITE" ] "field"
       │  └─ SuperExpression
       └─ NumericLiteral "1"
 

@@ -543,7 +543,7 @@ relationalOperator
   | '<'
   ;
 
-// 16.26 Bitwize Expression
+// 16.26 Bitwise Expression
 bitwiseOrExpression
   : bitwiseXorExpression ('|' bitwiseXorExpression)*
   | 'super' ('|' bitwiseOrExpression)+

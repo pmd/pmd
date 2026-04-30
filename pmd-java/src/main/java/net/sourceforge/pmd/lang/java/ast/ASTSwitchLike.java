@@ -171,4 +171,15 @@ public interface ASTSwitchLike extends JavaNode, Iterable<ASTSwitchBranch> {
         return getBranches().filterIs(ASTSwitchFallthroughBranch.class).nonEmpty();
     }
 
+    /**
+     * Return true if this switch accepts null. This must be explicitly
+     * declared in a branch which matches {@link ASTSwitchLabel#isCaseNull()}.
+     * Any switch that does not have this branch throws NullPointerException
+     * at runtime if the scrutinee is null.
+     * This is a feature of Java 25.
+     * @since 7.20.0
+     */
+    default boolean isNullTolerant() {
+        return getBranches().map(ASTSwitchBranch::getLabel).any(ASTSwitchLabel::isCaseNull);
+    }
 }

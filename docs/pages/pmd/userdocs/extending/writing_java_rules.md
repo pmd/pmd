@@ -2,7 +2,7 @@
 title:  Writing a custom rule
 tags: [extending, userdocs]
 summary: "Learn how to write a custom rule for PMD"
-last_updated: December 2023 (7.0.0)
+last_updated: February 2024 (7.0.0)
 permalink: pmd_userdocs_extending_writing_java_rules.html
 author: Tom Copeland <tomcopeland@users.sourceforge.net>
 ---
