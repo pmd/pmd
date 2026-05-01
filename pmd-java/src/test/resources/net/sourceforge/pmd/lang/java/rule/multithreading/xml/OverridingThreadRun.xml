@@ -8,6 +8,9 @@
         <description>Overriding run</description>
         <expected-problems>1</expected-problems>
         <expected-linenumbers>3</expected-linenumbers>
+        <expected-messages>
+            <message>Don't override Thread.run() method, use Runnable instead</message>
+        </expected-messages>
         <code>
             public class Foo extends Thread {
                 @Override
