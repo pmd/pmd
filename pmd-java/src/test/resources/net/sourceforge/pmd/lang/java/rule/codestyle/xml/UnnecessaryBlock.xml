@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test-data
+    xmlns="http://pmd.sourceforge.net/rule-tests"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/rule-tests http://pmd.sourceforge.net/rule-tests_1_1_1.xsd">
+
+    <test-code>
+        <description>Block is unnecessary</description>
+        <expected-problems>1</expected-problems>
+        <expected-linenumbers>3-5</expected-linenumbers>
+        <code><![CDATA[
+public class Foo {
+    public boolean bad(Object o) {
+        {
+            if(obj == null) return false;
+        }
+        return true;
+    }}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Class blocks and method blocks are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>constructor blocks are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public Foo() {
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Loop bodies are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        for(int i = 0; i < 5; i++) {
+            System.out.println(i);
+        }
+        for(Object o : new ArrayList<Object>()) {}
+        while(true) {}
+        do {} while(true);
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bodies of if are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        if(true) {}
+        if(true) {} else {}
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>bodies of switch statement are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar(int i) {
+        switch(i) {
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>try blocks are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        try {
+            System.out.println("hi");
+        } catch (Exception e) {
+            System.out.println("error");
+        } finally {
+            System.out.println("finally");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>lambda blocks are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        Runnable r = () -> {
+            System.out.println("hi");
+        };
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>synchronized blocks are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public void bar() {
+        synchronized(this) {
+            System.out.println("hi");
+        }
+    }
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>initializer blocks are necessary</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    {}
+
+    static {}
+}
+        ]]></code>
+    </test-code>
+
+    <test-code>
+        <description>Block is necessary, because it contains variable declaration</description>
+        <expected-problems>0</expected-problems>
+        <code><![CDATA[
+public class Foo {
+    public boolean bad(Object o) {
+        {
+            if(obj == null) return false;
+            Object blub;
+        }
+        return true;
+    }}
+        ]]></code>
+    </test-code>
+
+</test-data>
