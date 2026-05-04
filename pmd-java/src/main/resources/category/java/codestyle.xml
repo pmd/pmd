@@ -2276,4 +2276,37 @@ public class Foo {
             ]]>
         </example>
     </rule>
+    <rule name="VariableDeclarationDistance"
+          language="java"
+          since="5.0"
+          message="Declaration of ''{0}'' can be moved closer to its usages"
+          class="net.sourceforge.pmd.lang.java.rule.codestyle.VariableDeclarationDistanceRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_java_codestyle.html#variabledeclarationdistance">
+        <description>
+            Checks for variables that are defined long before they are used.
+
+            Keeping variable declaration closer to its usage makes the code more readable.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="maxDistance" type="Integer" value="7" description="Maximum distance between declaration and usage" />
+        </properties>
+        <example>
+            <![CDATA[
+public void main(String[] strings) {
+
+    int length = 0; // violation: could be moved closer to the loop
+    final String message = "Total length is "; // ok: final variables are accepted
+
+    // ... many unrelated statements
+
+    for (String str : strings) {
+        length += str.length();
+    }
+
+    System.out.println(message + length);
+}
+]]>
+        </example>
+    </rule>
 </ruleset>
