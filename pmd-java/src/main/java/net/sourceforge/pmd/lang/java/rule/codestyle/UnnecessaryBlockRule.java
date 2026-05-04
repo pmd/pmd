@@ -37,6 +37,6 @@ public class UnnecessaryBlockRule extends AbstractJavaRulechainRule {
     }
 
     private boolean containsVariableDeclaration(ASTBlock block) {
-        return block.children(ASTLocalVariableDeclaration.class).count() > 0;
+        return block.children(ASTLocalVariableDeclaration.class).nonEmpty();
     }
 }
