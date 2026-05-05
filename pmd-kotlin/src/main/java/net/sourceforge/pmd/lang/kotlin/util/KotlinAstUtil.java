@@ -135,8 +135,8 @@ public final class KotlinAstUtil {
         if (functionBody == null) {
             return result;
         }
-        for (KotlinParser.KtPropertyDeclaration propDecl :
-                functionBody.descendants(KotlinParser.KtPropertyDeclaration.class).toList()) {
+        for (KotlinParser.KtPropertyDeclaration propDecl
+                : functionBody.descendants(KotlinParser.KtPropertyDeclaration.class).toList()) {
             KotlinParser.KtVariableDeclaration varDecl = propDecl.variableDeclaration();
             if (varDecl != null) {
                 String name = getIdentifierText(varDecl.simpleIdentifier());
@@ -159,8 +159,8 @@ public final class KotlinAstUtil {
         if (classDecl == null) {
             return result;
         }
-        for (KotlinParser.KtPropertyDeclaration propDecl :
-                classDecl.descendants(KotlinParser.KtPropertyDeclaration.class).toList()) {
+        for (KotlinParser.KtPropertyDeclaration propDecl
+                : classDecl.descendants(KotlinParser.KtPropertyDeclaration.class).toList()) {
             if (propDecl.children(KotlinTerminalNode.class).any(t -> "var".equals(t.getText()))) {
                 KotlinParser.KtVariableDeclaration varDecl = propDecl.variableDeclaration();
                 if (varDecl != null) {
