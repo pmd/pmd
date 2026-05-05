@@ -239,4 +239,35 @@ class Foo {
         ]]></example>
     </rule>
 
+    <rule name="ExcessiveParameterList"
+          language="kotlin"
+          since="7.14.0"
+          message="Avoid long parameter lists ({0} parameters - threshold is {1})."
+          class="net.sourceforge.pmd.lang.kotlin.rule.design.ExcessiveParameterListRule"
+          externalInfoUrl="${pmd.website.baseurl}/pmd_rules_kotlin_design.html#excessiveparameterlist">
+        <description>
+Functions and constructors with numerous parameters are a challenge to maintain, especially if most
+of them share the same datatype. These situations usually denote the need for new data classes to
+wrap the numerous parameters.
+        </description>
+        <priority>3</priority>
+        <properties>
+            <property name="threshold" value="10"/>
+            <property name="javaEquivalentRule" type="String"
+                      description="The equivalent Java rule"
+                      value="category/java/design.xml/ExcessiveParameterList"/>
+        </properties>
+        <example>
+<![CDATA[
+// violation: too many parameters
+fun createRecord(a: Int, b: Int, c: Int, d: Int, e: Int,
+                 f: Int, g: Int, h: Int, i: Int, j: Int, k: Int) { }
+
+// ok: wrap related parameters in a data class
+data class RecordParams(val a: Int, val b: Int, val c: Int)
+fun createRecord(params: RecordParams) { }
+]]>
+        </example>
+    </rule>
+
 </ruleset>
